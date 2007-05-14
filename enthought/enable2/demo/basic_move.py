@@ -1,0 +1,86 @@
+"""
+This builds on the simple_wx_demo and allows a simple component to be moved
+around the screen.
+
+"""
+import wx
+
+from enthought.traits.api import Float, Int, Tuple
+
+from enthought.enable2.api import Component, Container, Pointer
+from enthought.enable2.wx_backend.api import Window
+from enthought.enable2.demo.demo_base import DemoFrame, demo_main
+
+class Box(Component):
+    """
+    The box moves wherever the user clicks and drags.
+    """
+    normal_pointer = Pointer("arrow")
+    moving_pointer = Pointer("hand")
+    
+    offset_x = Float
+    offset_y = Float
+    
+    fill_color = (0.8, 0.0, 0.1, 1.0)
+    moving_color = (0.0, 0.8, 0.1, 1.0)
+    
+    move_count = Int(0)
+    
+    def _draw(self, gc, view_bounds=None, mode="default"):
+        gc.save_state()
+        if self.event_state == "moving":
+            gc.set_fill_color(self.moving_color)
+        else:
+            gc.set_fill_color(self.fill_color)
+        dx, dy = self.bounds
+        x, y = self.position
+        gc.rect(x, y, dx, dy)
+        gc.fill_path()
+        
+        # draw line around outer box
+        gc.set_stroke_color((0,0,0,1))
+        gc.rect(self.outer_x, self.outer_y, self.outer_width, self.outer_height)
+        gc.stroke_path()
+        
+        gc.restore_state()
+        return
+        
+    def normal_key_pressed(self, event):
+        print "Key:", event.character
+
+    def normal_left_down(self, event):
+        self.event_state = "moving"
+        self.pointer = self.moving_pointer
+        self.offset_x = event.x - self.x
+        self.offset_y = event.y - self.y
+        return
+
+    def moving_mouse_move(self, event):
+        self.position = [event.x-self.offset_x, event.y-self.offset_y]
+        self.move_count += 1
+        i, remainder = divmod(self.move_count, 10)
+        if remainder == 0:
+            self.padding = self.padding[0] + 1
+        self.request_redraw()
+        return
+
+    def moving_left_up(self, event):
+        self.event_state = "normal"
+        self.pointer = self.normal_pointer
+        self.request_redraw()
+        return
+    
+    def moving_mouse_leave(self, event):
+        self.moving_left_up(event)
+        return
+
+class MyFrame(DemoFrame):
+    
+    def _create_window(self):
+        box = Box(bounds=[100,100], position=[50,50], padding=15)
+        return Window(self, -1, component=box)
+
+if __name__ == "__main__":
+    demo_main(MyFrame, title="Click and drag to move the box")
+
+# EOF
