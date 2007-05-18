@@ -135,7 +135,8 @@ class AbstractWindow ( HasTraits ):
         
         if mouse_owner is not None:
             # A mouse_owner has grabbed the mouse
-            mouse_event.offset_xy(*self.mouse_owner_transform)
+            if self.mouse_owner_transform is not None:
+                mouse_event.offset_xy(*self.mouse_owner_transform)
             mouse_owner.dispatch(mouse_event, event_name)
             self._pointer_owner = mouse_owner
         else:
