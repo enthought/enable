@@ -70,6 +70,10 @@ class Container(Component):
     #       turn fit_window off.
     fit_window = true
 
+    # If true, the container get events before its children.  Otherwise, it
+    # gets them afterwards.
+    intercept_events = true
+
     #------------------------------------------------------------------------
     # DOM-related traits
     #------------------------------------------------------------------------
@@ -349,7 +353,7 @@ class Container(Component):
         should be set to True, and contained components will not be called
         with the event.
         """
-        pass
+        super(Container, self)._dispatch_stateful_event(event, suffix)
         
     def _dispatch_stateful_event(self, event, suffix):
         """
@@ -360,8 +364,9 @@ class Container(Component):
         "suffix" is the name of the mouse event as a suffix to the event state
         name, e.g. "_left_down" or "_window_enter".
         """
-        
-        self._container_handle_mouse_event(event, suffix)
+
+        if self.intercept_events:
+            self._container_handle_mouse_event(event, suffix)
         
         if not event.handled:
             components = self.components_at(event.x, event.y)
@@ -418,6 +423,10 @@ class Container(Component):
                         break
             finally:
                 event.pop()
+
+            if not event.handled and not self.intercept_events:
+                self._container_handle_mouse_event(event, suffix)
+            
         return
     
     #------------------------------------------------------------------------
