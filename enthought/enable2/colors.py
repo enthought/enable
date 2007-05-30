@@ -217,7 +217,7 @@ try:
 
 except ImportError:
     ColorTrait = Trait("black", Tuple, List, Str, color_table)
-
+    ColorEditorFactory = None
 
 black_color_trait = ColorTrait("black")
 white_color_trait = ColorTrait("white")
