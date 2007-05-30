@@ -9,7 +9,10 @@ from container import Container
 from viewport import Viewport
 
 # This is crappy; we need to make this be backend-independent.
-from wx_backend import NativeScrollBar
+try:
+    from wx_backend import NativeScrollBar
+except:
+    NativeScrollBar = None
 
 
 class Scrolled(Container):

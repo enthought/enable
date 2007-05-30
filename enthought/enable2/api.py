@@ -41,11 +41,17 @@ from graphics_context import GraphicsContextEnable
 
 from abstract_window import AbstractWindow
 #from controls import LabelTraits, Label, CheckBox, Radio
+
 #This is not the way we want it, but we need to come up 
 #with a good system of handing imports when we have multiple
 #underlying widget sets.
-from wx_backend.scrollbar import NativeScrollBar
-from scrolled import Scrolled
+try:
+    from wx_backend.scrollbar import NativeScrollBar
+    from scrolled import Scrolled
+except:
+    NativeScrollBar = None
+    Scrolled = None
+
 #from key_bindings import KeyBinding, KeyBindings
 #from color_picker import ColorPicker
 
