@@ -80,35 +80,5 @@ class GraphicsContextEnable(GraphicsContext):
         self.restore_state()
         return
     
-    #~ def text(self, text, bounds, font = default_font, color = black_color, 
-             #~ shadow_color = white_color, style = 0, alignment = LEFT,
-             #~ y_offset = 0.0, info = None):
-        #~ "Draw a text string within a specified area with various attributes"
-        #~ # Set up the font and get the text bounding box information:
-        #~ self.set_font(font)
-        #~ if info is None:
-            #~ info = self.get_full_text_extent(text)
-        #~ tdx, tdy, descent, leading = info
-        
-        #~ # Calculate the text position, based on its alignment:
-        #~ xl, yb, dx, dy = bounds
-        #~ y = yb + y_offset + (dy - tdy) / 2.0
-        #~ if alignment & LEFT:
-            #~ x = xl
-        #~ elif alignment & RIGHT:
-            #~ x = xl + dx - tdx - 4.0  # 4.0 is a hack!!!
-        #~ else:
-            #~ x = xl + (dx - tdx) / 2.0
-        
-        #~ self.save_state()
-        #~ self.clip_to_rect(*bounds)
-            
-        #~ # Draw the normal text:
-        #~ self.set_fill_color(color)
-        #~ self.show_text(text, (x,y))
-        
-        #~ self.restore_state()
-        #~ self.set_fill_color(color)
-        #~ return
 
 # EOF

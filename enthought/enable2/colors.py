@@ -1,19 +1,7 @@
 # This is a redirection file that determines what constitutes a color trait
 # in Chaco, and what constitutes the standard colors.
-#
-# Until the color handling in Enable and Traits UI get unified/sorted out,
-# this class serves as a generic color handling facility.
 
 from enthought.traits.api import List, Str, Trait, Tuple, TraitError
-from enthought.traits.ui.api import ColorEditor, EditorFactory
-from enthought.traits.ui.wx.color_editor import ToolkitEditorFactory as StandardColorEditorFactory
-import wx
-
-# Version dependent imports (ColourPtr not defined in wxPython 2.8):
-try:
-    ColourPtr = wx.ColourPtr
-except:
-    class ColourPtr ( object ): pass
 
 
 # Color definitions
@@ -171,56 +159,65 @@ color_table = {"aliceblue": (0.941, 0.973, 1.000, 1.0),
     "none": transparent_color
 }
 
-# Mostly copied from traits/ui/wx/color_trait.py
-def convert_from_wx_color(obj, name, value):
-    if isinstance(value, wx.ColourPtr) or isinstance(value, wx.Colour):
-        return (value.Red()/255.0, value.Green()/255.0, value.Blue()/255.0, 1.0)
-    elif isinstance(value, Str):
-        return color_table.get(value, transparent_color)
-    elif type(value) is int:
-        num = int( value )
-        return ((num >> 16)/255.0, ((num>>8) & 0xFF)/255.0, (num & 0xFF)/255.0)
-    elif type(value) in (list, tuple):
-        if len(value) == 3:
-            return (value[0]/255.0, value[1]/255.0, value[2]/255.0, 1.0)
-        elif len(value) == 4:
-            return value
+try:
+    import wx
+    from enthought.traits.ui.wx.color_editor import ToolkitEditorFactory as StandardColorEditorFactory
+
+    # Version dependent imports (ColourPtr not defined in wxPython 2.8):
+    try:
+        ColourPtr = wx.ColourPtr
+    except:
+        class ColourPtr ( object ): pass
+    
+    # Mostly copied from traits/ui/wx/color_trait.py
+    def convert_from_wx_color(obj, name, value):
+        if isinstance(value, ColourPtr) or isinstance(value, wx.Colour):
+            return (value.Red()/255.0, value.Green()/255.0, value.Blue()/255.0, 1.0)
+        elif isinstance(value, Str):
+            return color_table.get(value, transparent_color)
+        elif type(value) is int:
+            num = int( value )
+            return ((num >> 16)/255.0, ((num>>8) & 0xFF)/255.0, (num & 0xFF)/255.0)
+        elif type(value) in (list, tuple):
+            if len(value) == 3:
+                return (value[0]/255.0, value[1]/255.0, value[2]/255.0, 1.0)
+            elif len(value) == 4:
+                return value
+            else:
+                raise TraitError
         else:
             raise TraitError
-    else:
-        raise TraitError
-convert_from_wx_color.info = ('a wx.Colour instance, an integer which in hex is of '
-                         'the form 0xRRGGBB, where RR is red, GG is green, '
-                         'and BB is blue, a list/tuple of (r,g,b) or (r,g,b,a)')
-
-class ColorEditorFactory(StandardColorEditorFactory):
-    def to_wx_color(self, editor):
-        if self.mapped:
-            retval = getattr( editor.object, editor.name + '_' )
-        else:
-            retval = getattr( editor.object, editor.name )
-        
-        if isinstance(retval, tuple):
-            retval = wx.Colour(int(255*retval[0]), int(255*retval[1]),
-                               int(255*retval[2]))
-        return retval
-
-    #def from_wx_color(self, color):
-        #print "\n\n color:", color, "\n\n\n"
-        #return (color.Red()/255.0, color.Green()/255.0, color.Blue()/255.0, 1.0)
+    convert_from_wx_color.info = ('a wx.Colour instance, an integer which in hex is of '
+                             'the form 0xRRGGBB, where RR is red, GG is green, '
+                             'and BB is blue, a list/tuple of (r,g,b) or (r,g,b,a)')
     
-    def str_color(self, color):
-        if isinstance( color, ( wx.Colour, ColourPtr ) ):
-            return "(%d,%d,%d)" % ( color.Red(), color.Green(), color.Blue() )
-        elif isinstance(color, tuple):
-            fmt = "(" + ",".join(["%0.3f"]*len(color)) + ")"
-            return fmt % color
-        return color
 
+    class ColorEditorFactory(StandardColorEditorFactory):
+        def to_wx_color(self, editor):
+            if self.mapped:
+                retval = getattr( editor.object, editor.name + '_' )
+            else:
+                retval = getattr( editor.object, editor.name )
 
-# Traits
-ColorTrait = Trait("black", Tuple, List, Str, color_table,
-                    convert_from_wx_color, editor=ColorEditorFactory)
+            if isinstance(retval, tuple):
+                retval = wx.Colour(int(255*retval[0]), int(255*retval[1]),
+                                   int(255*retval[2]))
+            return retval
+
+        def str_color(self, color):
+            if isinstance( color, ( wx.Colour, ColourPtr ) ):
+                return "(%d,%d,%d)" % ( color.Red(), color.Green(), color.Blue() )
+            elif isinstance(color, tuple):
+                fmt = "(" + ",".join(["%0.3f"]*len(color)) + ")"
+                return fmt % color
+            return color
+
+    ColorTrait = Trait("black", Tuple, List, Str, color_table,
+                       convert_from_wx_color, editor=ColorEditorFactory)
+
+except ImportError:
+    ColorTrait = Trait("black", Tuple, List, Str, color_table)
+
 
 black_color_trait = ColorTrait("black")
 white_color_trait = ColorTrait("white")
