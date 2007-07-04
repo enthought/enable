@@ -21,9 +21,8 @@ and the color editor factory.
 
 import wx
 
-from enthought.enable import ColorPicker
-from enthought.enable.wx import Window
-from enthought.traits.api import Enum, Str, KivaFont, true
+from enthought.kiva.traits.kiva_font_trait import KivaFont
+from enthought.traits.api import Enum, Str, true
 from enthought.traits.ui.api import View
 from enthought.traits.ui.wx.editor import Editor
 from enthought.traits.ui.wx.helper import position_near
@@ -58,12 +57,16 @@ class ToolkitEditorFactory ( EditorFactory ):
 
     # Should the color be updated automatically?
     auto_set   = true
+
     # Initial color space mode
     mode       = Enum( 'rgb', 'hsv', 'hsv2', 'hsv3', cols = 2 )
+
     # Should the alpha channel be edited?
     edit_alpha = true
+
     # Text to display in the color well
     text       = Str( '%R' )
+
     # Font to use when displaying text
     font       = KivaFont( 'modern 10' )
 
@@ -126,6 +129,9 @@ class ColorEditor ( Editor ):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
+        from enthought.enable import ColorPicker
+        from enthought.enable.wx import Window
+
         factory = self.factory
         picker  = ColorPicker( color      = factory.get_color( self ),
                                bg_color   = WindowColor,
