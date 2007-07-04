@@ -11,25 +11,24 @@ as the user drags the circles around.
 """
 from numpy import array
 
-from enthought.traits.api import Any, Array, Enum, Float, KivaFont, Instance, Trait, Tuple
-
 from enthought.enable2.api import Container, Component, Container, Pointer, str_to_font
 from enthought.enable2.wx_backend.api import Window
+from enthought.traits.api import Any, Array, Enum, Float, Instance, Trait, Tuple
 
 # Relative imports
 from demo_base import DemoFrame, demo_main
 
 class MyFilledContainer(Container):
-    
+
     fit_window = False
     border_width = 2
     _font = Any
-    
+
     def _draw_container(self, gc, mode="default"):
         'Draws a filled container with the word "Container" in the center'
         if not self._font:
             self._font = str_to_font(None, None, "modern 10")
-        
+
         gc.save_state()
         gc.set_fill_color(self.bgcolor_)
         gc.rect(self.x, self.y, self.width, self.height)
@@ -52,21 +51,21 @@ class Circle(Component):
     """
     color = (0.0, 0.0, 1.0, 1.0)
     bgcolor = "none"
-    
+
     normal_pointer = Pointer("arrow")
     moving_pointer = Pointer("hand")
-    
+
     offset_x = Float
     offset_y = Float
-    
+
     shadow_type = Enum("light", "dashed")
     shadow = Instance(Component)
-    
+
     def __init__(self, **traits):
         Component.__init__(self, **traits)
         self.pointer = self.normal_pointer
         return
-    
+
     def _draw(self, gc, view_bounds=None, mode="default"):
         gc.save_state()
         gc.set_fill_color(self.color)
@@ -77,11 +76,11 @@ class Circle(Component):
         gc.fill_path()
         gc.restore_state()
         return
-    
+
     def normal_left_down(self, event):
         self.event_state = "moving"
         self.pointer = self.moving_pointer
-        
+
         # Create our shadow
         if self.shadow_type == "light":
             klass = LightCircle
@@ -114,11 +113,11 @@ class Circle(Component):
 
 
 class LightCircle(Component):
-    
+
     color = Tuple
     bgcolor = "none"
     radius = Float(1.0)
-    
+
     def _draw(self, gc, view_bounds=None, mode="default"):
         gc.save_state()
         gc.set_fill_color(self.color[0:3] + (self.color[3]*0.3,))
@@ -131,12 +130,12 @@ class LightCircle(Component):
         return
 
 class DashedCircle(Component):
-    
+
     color = Tuple
     bgcolor = "none"
     radius = Float(1.0)
     line_dash = array([2.0, 2.0])
-    
+
     def _draw(self, gc, view_bounds=None, mode="default"):
         gc.save_state()
         gc.set_fill_color(self.color)
@@ -160,8 +159,8 @@ class MyFrame(DemoFrame):
         container.add(circle1)
         container.add(circle2)
         return Window(self, -1, component=container)
-        
+
 if __name__ == "__main__":
     demo_main(MyFrame, title="Click and drag to move the circles")
-    
+
 # EOF

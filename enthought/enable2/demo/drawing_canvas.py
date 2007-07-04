@@ -1,31 +1,32 @@
 
 from enthought.enable2.api import Container, Component, ColorTrait
 from enthought.kiva.constants import FILL, FILL_STROKE, MODERN
-from enthought.traits.api import Any, Delegate, Enum, false, Instance, Int, KivaFont, List, Str
+from enthought.kiva.traits.kiva_font_trait import KivaFont
+from enthought.traits.api import Any, Delegate, Enum, false, Instance, Int, List, Str
 
 
 class Button(Component):
-    
+
     color = ColorTrait("lightblue")
-    
+
     down_color = ColorTrait("darkblue")
-    
+
     border_color = ColorTrait("blue")
-    
+
     label = Str
-    
+
     label_font = KivaFont("modern 12")
-    
+
     label_color = ColorTrait("white")
-    
+
     button_state = Enum("up", "down")
 
     # A reference to the radio group that this button belongs to
     radio_group = Any
-    
+
     # Default size of the button if no label is present
     bounds=[32,32]
-    
+
     _got_mousedown = false
 
     def perform(self, event):
@@ -79,7 +80,7 @@ class Button(Component):
         self.request_redraw()
         event.handled = True
         return
-    
+
     def normal_left_up(self, event):
         self.button_state = "up"
         self._got_mousedown = False
@@ -90,9 +91,9 @@ class Button(Component):
 
 
 class ToolbarButton(Button):
-    
+
     toolbar = Any
-    
+
     canvas = Delegate("toolbar")
 
     def __init__(self, *args, **kw):
@@ -108,19 +109,19 @@ class DrawingCanvasToolbar(Container):
     """
     The tool bar hosts Buttons and also consumes other mouse events, so that tools
     on the underlying canvas don't get them.
-    
+
     FIXME: Right now this toolbar only supports the addition of buttons, and not
            button removal.  (Why would you ever want to remove a useful button?)
     """
-    
+
     canvas = Instance("DrawingCanvas")
-    
+
     button_spacing = Int(5)
-    
+
     auto_size = False
-    
+
     _last_button_position = Int(0)
-    
+
     def add_button(self, button):
         self.add(button)
         button.toolbar = self
@@ -129,12 +130,12 @@ class DrawingCanvasToolbar(Container):
         self._last_button_position += button.width + self.button_spacing * 2
         button.y = int((self.height - button.height) / 2)
         return
-    
+
     def _canvas_changed(self, old, new):
         if old:
             old.on_trait_change(self._canvas_bounds_changed, "bounds", remove=True)
             old.on_trait_change(self._canvas_bounds_changed, "bounds_items", remove=True)
-        
+
         if new:
             new.on_trait_change(self._canvas_bounds_changed, "bounds")
             new.on_trait_change(self._canvas_bounds_changed, "bounds_items")
@@ -144,7 +145,7 @@ class DrawingCanvasToolbar(Container):
         self.width = self.canvas.width
         self.y = self.canvas.height - self.height
         return
-    
+
     def _dispatch_stateful_event(self, event, suffix):
         super(DrawingCanvasToolbar, self)._dispatch_stateful_event(event, suffix)
         event.handled = True
@@ -161,18 +162,18 @@ class DrawingCanvas(Container):
     # a chance to handle events before they are passed on to other components
     # and listener tools.
     active_tool = Any
-    
+
     # Listening tools are always enabled and get all events (unless the active
     # tool has vetoed it), but they cannot prevent other tools from getting events.
     listening_tools = List
-    
+
     # The background color of the canvas
     bgcolor = ColorTrait("white")
-    
+
     toolbar = Instance(DrawingCanvasToolbar, args=())
-    
+
     fit_window = True
-    
+
     def dispatch(self, event, suffix):
         # See if the event happened on the toolbar:
         event.offset_xy(*self.position)
@@ -181,19 +182,19 @@ class DrawingCanvas(Container):
         event.pop()
         if event.handled:
             return
-        
+
         if self.active_tool is not None:
             self.active_tool.dispatch(event, suffix)
-        
+
         if event.handled:
             return
-        
+
         for tool in self.listening_tools:
             tool.dispatch(event, suffix)
-        
+
         super(DrawingCanvas, self).dispatch(event, suffix)
         return
-    
+
     def activate(self, tool):
         """
         Makes the indicated tool the active tool on the canvas and moves the
@@ -201,7 +202,7 @@ class DrawingCanvas(Container):
         """
         self.active_tool = tool
         return
-    
+
     def _draw(self, gc, view_bounds=None, mode="default"):
         active_tool = self.active_tool
         if active_tool and active_tool.draw_mode == "exclusive":
@@ -212,10 +213,10 @@ class DrawingCanvas(Container):
                 tool.draw(gc, view_bounds, mode)
             if active_tool:
                 active_tool.draw(gc, view_bounds, mode)
-            
+
             self.toolbar.draw(gc, view_bounds, mode)
         return
-    
+
     def _draw_container(self, gc, mode="default"):
         if self.bgcolor not in ("clear", "transparent", "none"):
             gc.save_state()
@@ -226,15 +227,15 @@ class DrawingCanvas(Container):
             finally:
                 gc.restore_state()
         return
-    
+
     #------------------------------------------------------------------------
     # Event listeners
     #------------------------------------------------------------------------
-    
+
     def _tools_items_changed(self):
         self.request_redraw()
         return
-    
-    
+
+
 
 # EOF

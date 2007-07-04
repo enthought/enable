@@ -8,9 +8,10 @@ from types import ListType, TupleType
 
 # Enthought library imports
 from enthought.kiva.fonttools import Font
+from enthought.kiva.traits.kiva_font_trait import KivaFont
 from enthought.traits.api import HasTraits, Trait, TraitError, Range, Undefined,\
                              TraitPrefixList, TraitPrefixMap, TraitHandler, \
-                             Delegate, Str, Float, KivaFont, RGBAColor, List, \
+                             Delegate, Str, Float, RGBAColor, List, \
                              TraitFactory
 from enthought.traits.ui.api import ImageEnumEditor, EnumEditor, FileEditor, TupleEditor, \
                                 TextEditor, Handler

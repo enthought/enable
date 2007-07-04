@@ -18,7 +18,8 @@ from numpy import zeros, ones, floor, putmask, uint8, choose, concatenate, \
                   repeat, newaxis, arange
 
 # Enthought library imports
-from enthought.traits.api import RGBAColor, KivaFont, Enum, Event, Str, true
+from enthought.kiva.traits.kiva_font_trait import KivaFont
+from enthought.traits.api import RGBAColor, Enum, Event, Str, true
 
 # Local, relative imports
 from base import coordinates_to_bounds, HCENTER, LEFT, GraphicsContextArray
@@ -784,7 +785,7 @@ def rgb_to_hsv ( r, g, b, a ):
     v = max( r, g, b )
 
     if v == 0.0:
-        # r = g = b = 0	=> s = 0, v is undefined
+        # r = g = b = 0    => s = 0, v is undefined
         return ( 0.0, 0.0, 0.0 )
 
     delta = v - min( r, g, b )
