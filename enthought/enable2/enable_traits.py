@@ -11,7 +11,7 @@ from enthought.kiva.fonttools import Font
 from enthought.kiva.traits.kiva_font_trait import KivaFont
 from enthought.traits.api import HasTraits, Trait, TraitError, Range, Undefined,\
                              TraitPrefixList, TraitPrefixMap, TraitHandler, \
-                             Delegate, Str, Float, RGBAColor, List, \
+                             Delegate, Str, Float, List, \
                              TraitFactory
 from enthought.traits.ui.api import ImageEnumEditor, EnumEditor, FileEditor, TupleEditor, \
                                 TextEditor, Handler

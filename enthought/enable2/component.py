@@ -2,7 +2,7 @@
 
 # Enthought library imports
 from enthought.traits.api import Any, Delegate, Enum, false, Float, Instance, Int, \
-                             List, Property, RGBAColor, Str, Trait, true
+                             List, Property, Str, Trait, true
 
 # Local relative imports
 from colors import black_color_trait, white_color_trait
@@ -18,20 +18,20 @@ class Component(CoordinateBox, Interactor):
     Component is the base class for most Enable objects.  In addition to the
     basic position and container features of Component, it also supports
     Viewports and has finite bounds.
-    
+
     Since Components can have a border and padding, there is an additional set
     of bounds and position attributes that define the "outer box" of the component.
     These cannot be set, since they are secondary attributes (computed from
     the component's "inner" size and margin-area attributes).
     """
-    
+
     #------------------------------------------------------------------------
     # Object/containment hierarchy traits
     #------------------------------------------------------------------------
-    
+
     # Our container object
-    container = Any    # Instance("Container") 
-    
+    container = Any    # Instance("Container")
+
     # A reference to our top-level Enable Window.  This is stored as a shadow
     # attribute if this component is the direct child of the Window; otherwise,
     # the getter function recurses up the containment hierarchy.
@@ -45,10 +45,10 @@ class Component(CoordinateBox, Interactor):
     # These classes will be used to determine how this component is styled,
     # is rendered, is laid out, and receives events.  There is no automatic
     # management of conflicting class names, so if a component is placed
-    # into more than one class and that class 
+    # into more than one class and that class
     classes = List
-    
-    # The optional element ID of this component.  
+
+    # The optional element ID of this component.
     id = Str("")
 
     #------------------------------------------------------------------------
@@ -74,7 +74,7 @@ class Component(CoordinateBox, Interactor):
     # need to be aware of padding when doing layout, object collision/overlay
     # calculations, etc.
     #------------------------------------------------------------------------
-    
+
     # The amount of space to put on the left side of the component
     padding_left = Int(0)
 
@@ -93,10 +93,10 @@ class Component(CoordinateBox, Interactor):
     # it is read, this property always returns the padding as a list of 4 elements,
     # even if they are all the same.
     padding = Property
-    
+
     # Readonly property expressing the total amount of horizontal padding
     hpadding = Property
-    
+
     # Readonly property expressing the total amount of vertical padding
     vpadding = Property
 
@@ -109,22 +109,22 @@ class Component(CoordinateBox, Interactor):
     # All of these are read-only properties.  To set them directly, use
     # set_outer_coordinates() or set_outer_pos_bounds().
     #------------------------------------------------------------------------
-    
+
     # The x,y point of the lower left corner of the padding outer box around
     # the component.  Setting this position will move the component, but
     # will not change the padding or bounds.
     # This returns a tuple because modifying the returned value has no effect.
     # To modify outer_position element-wise, use set_outer_position().
     outer_position = Property
-    
+
     # The number of horizontal and vertical pixels in the padding outer box.
     # Setting these bounds will modify the bounds of the component, but
-    # will not change the lower-left position (self.outer_position) or 
+    # will not change the lower-left position (self.outer_position) or
     # the padding.
     # This returns a tuple because modifying the returned value has no effect.
     # To modify outer_bounds element-wise, use set_outer_bounds().
     outer_bounds = Property
-    
+
     outer_x = Property
     outer_x2 = Property
     outer_y = Property
@@ -140,14 +140,14 @@ class Component(CoordinateBox, Interactor):
     # The width of the border around this component.  This is taken into account
     # during layout, but only if the border is visible.
     border_width = Int(1)
-    
+
     # Is the border visible?  If this is false, then all the other border
-    # properties are not 
+    # properties are not
     border_visible = false
-    
+
     # The line style (i.e. dash pattern) of the border.
     border_dash = LineStyle
-    
+
     # The color of the border.  Only used if border_visible is True.
     border_color = black_color_trait
 
@@ -155,12 +155,12 @@ class Component(CoordinateBox, Interactor):
     # a white background.  This can be set to "transparent" or "none" if the
     # component should be see-through.
     bgcolor = white_color_trait
-    
-    
+
+
     #------------------------------------------------------------------------
     # Private traits
     #------------------------------------------------------------------------
-    
+
     # Shadow trait for self.window.  Only gets set if this is the top-level
     # enable component in a Window.
     _window = Any    # Instance("Window")
@@ -180,15 +180,15 @@ class Component(CoordinateBox, Interactor):
         else:
             Interactor.__init__(self, **traits)
         return
-    
+
     def draw(self, gc, view_bounds=None, mode="default"):
         """
         Renders this component onto a GraphicsContext.
-        
+
         "view_bounds" is a 4-tuple (x, y, dx, dy) of the viewed region relative
         to the CTM of the gc.
         """
-        
+
         # By default, the component is drawn, and then the border is drawn.
         # Subclasses should implement _draw() instead of overriding this
         # method, unless they really know what they are doing.
@@ -202,11 +202,11 @@ class Component(CoordinateBox, Interactor):
         """ Given coordinates relative to this component's origin, returns
         the "absolute" coordinates in the frame of the top-level parent
         Window enclosing this component's ancestor containers.
-        
+
         Can be called in two ways:
             get_absolute_coords(x, y)
             get_absolute_coords( (x,y) )
-        
+
         Returns a tuple (x,y) representing the new coordinates.
         """
         if self.container is not None:
@@ -228,14 +228,14 @@ class Component(CoordinateBox, Interactor):
     def is_in(self, x, y):
         # A basic implementation of is_in(); subclasses should provide their
         # own if they are more accurate/faster/shinier.
-        
+
         if self.padding_accepts_focus:
             bounds = self.outer_bounds
             pos = self.outer_position
         else:
             bounds = self.bounds
             pos = self.position
-        
+
         return (x >= pos[0]) and (x < pos[0] + bounds[0]) and \
                (y >= pos[1]) and (y < pos[1] + bounds[1])
 
@@ -244,7 +244,7 @@ class Component(CoordinateBox, Interactor):
         cleanup is called on the component to give it the opportunity to
         delete any transient state it may have (such as backbuffers)."""
         return
-    
+
 
     def set_outer_position(self, ndx, val):
         """
@@ -258,7 +258,7 @@ class Component(CoordinateBox, Interactor):
         else:
             self.outer_y = val
         return
-    
+
     def set_outer_bounds(self, ndx, val):
         """
         Since self.outer_bounds is a property whose value is determined
@@ -282,17 +282,17 @@ class Component(CoordinateBox, Interactor):
         elif self._window:
             self._window.redraw()
         return
-    
+
     def _draw(self, gc, view_bounds=None, mode="default"):
         # The default Component is an empty object that doesn't do anything
         # when drawn.
         pass
-    
+
     def _draw_border(self, gc, view_bounds=None, mode="default"):
         """ Utility method to draw the borders around this component """
         if not self.border_visible:
             return
-        
+
         border_width = self.border_width
         gc.save_state()
         gc.set_line_width(border_width)
@@ -318,7 +318,7 @@ class Component(CoordinateBox, Interactor):
             return self.border_width
         else:
             return 0
-    
+
     #------------------------------------------------------------------------
     # Event handlers
     #------------------------------------------------------------------------
@@ -346,7 +346,7 @@ class Component(CoordinateBox, Interactor):
         if self.container is not None:
             self.container._component_position_changed(self)
         return
-    
+
     #------------------------------------------------------------------------
     # Position and padding setters and getters
     #------------------------------------------------------------------------
@@ -357,17 +357,17 @@ class Component(CoordinateBox, Interactor):
     def _set_window(self, win):
         self._window = win
         return
-    
+
     def _get_x(self):
         return self.position[0]
-    
+
     def _set_x(self, val):
         self.position[0] = val
         return
 
     def _get_y(self):
         return self.position[1]
-    
+
     def _set_y(self, val):
         self.position[1] = val
         return
@@ -377,7 +377,7 @@ class Component(CoordinateBox, Interactor):
 
     def _set_padding(self, val):
         old_padding = self.padding
-        
+
         if type(val) == int:
             self.padding_left = self.padding_right = \
                 self.padding_top = self.padding_bottom = val
@@ -395,7 +395,7 @@ class Component(CoordinateBox, Interactor):
 
     def _get_hpadding(self):
         return 2*self._get_visible_border() + self.padding_right + self.padding_left
-    
+
     def _get_vpadding(self):
         return 2*self._get_visible_border() + self.padding_bottom + self.padding_top
 
@@ -418,28 +418,28 @@ class Component(CoordinateBox, Interactor):
 
     def _get_outer_x(self):
         return self.x - self.padding_left - self._get_visible_border()
-    
+
     def _set_outer_x(self, val):
         self.position[0] = val + self.padding_left + self._get_visible_border()
         return
-    
+
     def _get_outer_x2(self):
         return self.x2 + self.padding_right + self._get_visible_border()
-    
+
     def _set_outer_x2(self, val):
         self.x2 = val - self.hpadding
         return
 
     def _get_outer_y(self):
         return self.y - self.padding_bottom - self._get_visible_border()
-    
+
     def _set_outer_y(self, val):
         self.position[1] = val + self.padding_bottom + self._get_visible_border()
         return
-    
+
     def _get_outer_y2(self):
         return self.y2 + self.padding_top + self._get_visible_border()
-        
+
     def _set_outer_y2(self, val):
         self.y2 = val - self.vpadding
         return
@@ -452,18 +452,18 @@ class Component(CoordinateBox, Interactor):
         border = self._get_visible_border()
         bounds = self.bounds
         return (bounds[0] + self.hpadding, bounds[1] + self.vpadding)
-    
+
     def _set_outer_bounds(self, bounds):
         self.bounds = [bounds[0] - self.hpadding, bounds[1] - self.vpadding]
         return
-    
+
     def _get_outer_width(self):
         return self.outer_bounds[0]
-    
+
     def _set_outer_width(self, width):
         self.bounds[0] = width - self.hpadding
         return
-    
+
     def _get_outer_height(self):
         return self.outer_bounds[1]
 
