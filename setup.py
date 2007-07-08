@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'enthought.enable2',
-    version = '2.1.0',
+    version = '3.0a1',
     description  = 'Kiva-based GUI Window and Component package',
     author       = 'Enthought, Inc',
     author_email = 'info@enthought.com',
