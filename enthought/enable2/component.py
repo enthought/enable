@@ -3,6 +3,7 @@
 # Enthought library imports
 from enthought.traits.api import Any, Delegate, Enum, false, Float, Instance, Int, \
                              List, Property, Str, Trait, true
+from enthought.kiva import GraphicsContext
 
 # Local relative imports
 from colors import black_color_trait, white_color_trait
@@ -51,6 +52,7 @@ class Component(CoordinateBox, Interactor):
     # The optional element ID of this component.
     id = Str("")
 
+
     #------------------------------------------------------------------------
     # Layout traits
     #------------------------------------------------------------------------
@@ -64,7 +66,6 @@ class Component(CoordinateBox, Interactor):
     max_height = Any
 
     min_height = Any
-
 
 
     #------------------------------------------------------------------------
@@ -158,12 +159,38 @@ class Component(CoordinateBox, Interactor):
 
 
     #------------------------------------------------------------------------
+    # Backbuffer traits
+    #------------------------------------------------------------------------
+
+    # Should this component do a backbuffered draw, i.e. render itself to an
+    # offscreen buffer that is cached for later use?  If False, then
+    # the component will *never* render itself backbuffered, even if asked
+    # to do so.
+    use_backbuffer = false
+    
+    # Should the backbuffer extend to the pad area?
+    backbuffer_padding = true
+
+    # If a draw were to occur, whether the component would actually change.
+    # This is useful for determining whether a backbuffer is valid, and is
+    # usually set by the component itself or set on the component by calling
+    # _invalidate_draw().  It is exposed as a public trait for the rare cases
+    # when another component wants to know the validity of this component's
+    # backbuffer.
+    draw_valid = false
+
+
+    #------------------------------------------------------------------------
     # Private traits
     #------------------------------------------------------------------------
 
     # Shadow trait for self.window.  Only gets set if this is the top-level
     # enable component in a Window.
     _window = Any    # Instance("Window")
+
+    # The backbuffer of this component.  In most cases, this should be an
+    # instance of GraphicsContext, but this is not enforced.
+    _backbuffer = Any
 
 
     #------------------------------------------------------------------------
@@ -192,11 +219,49 @@ class Component(CoordinateBox, Interactor):
         # By default, the component is drawn, and then the border is drawn.
         # Subclasses should implement _draw() instead of overriding this
         # method, unless they really know what they are doing.
-        self._draw_background(gc, view_bounds, mode)
-        self._draw(gc, view_bounds, mode)
-        self._draw_border(gc, view_bounds, mode)
+        if self.use_backbuffer:
+            if self.backbuffer_padding:
+                x, y = self.outer_position
+                width, height = self.outer_bounds
+            else:
+                x, y = self.position
+                width, height = self.bounds
+
+            if not self.draw_valid:
+                # Fixme: should there be a +1 here?
+                bb = GraphicsContext((int(width), int(height)))
+                bb.translate_ctm(-x+0.5, -y+0.5)
+                # There are a couple of strategies we could use here, but we
+                # have to do something about view_bounds.  This is because
+                # if we only partially render the object into the backbuffer,
+                # we will have problems if we then render with different view
+                # bounds.
+
+                self._draw_background(bb, view_bounds, mode)
+                self._draw(bb, view_bounds, mode)
+                self._draw_border(bb, view_bounds, mode)
+                               
+                self._backbuffer = bb
+                self.draw_valid = True
+            
+            # Blit the backbuffer and then draw the overlay on top
+            gc.draw_image(self._backbuffer, (x, y, width, height))
+        else:
+            self._draw_background(gc, view_bounds, mode)
+            self._draw(gc, view_bounds, mode)
+            self._draw_border(gc, view_bounds, mode)
+
         return
 
+    def invalidate_draw(self):
+        """This method should be called whenever a component's internal state
+        changes such that it should be redrawn on the next draw call, as opposed
+        to using any backbuffer that may exist."""
+
+        self.draw_valid = False
+        if hasattr(self.container, "invalidate_draw"):
+            self.container.invalidate_draw()
+        return
 
     def get_absolute_coords(self, *coords):
         """ Given coordinates relative to this component's origin, returns
