@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 #
-#  Define standard Enable 'control' components, like text/image labels, 
+#  Define standard Enable 'control' components, like text/image labels,
 #  push buttons, radio buttons, check boxes, and so on.
 #
 #  Written by: David C. Morrill
@@ -19,7 +19,8 @@
 import os.path
 
 # Enthought library imports
-from enthought.traits.api import Delegate, false, HasTraits, RGBAColor, Str, Trait, \
+from enthought.enable2.traits.rgba_color_trait import RGBAColor
+from enthought.traits.api import Delegate, false, HasTraits, Str, Trait, \
                                  TraitPrefixList, true
 from enthought.traits.ui.api import View, Group, Include
 
@@ -31,11 +32,11 @@ from enable_traits import spacing_trait, padding_trait, margin_trait,\
                           border_size_trait, image_trait
 from enable_traits import position_trait, alignment_trait, font_trait, \
                           engraving_trait
-from radio_group import RadioStyle, RadioGroup                          
+from radio_group import RadioStyle, RadioGroup
 
 
 #-------------------------------------------------------------------------------
-#  Constants:  
+#  Constants:
 #-------------------------------------------------------------------------------
 
 empty_text_info = ( 0, 0, 0, 0 )
@@ -46,18 +47,18 @@ TOP_OR_BOTTOM = TOP  | BOTTOM
 orientation_trait = Trait( 'text', TraitPrefixList( [ 'text', 'component' ] ) )
 
 class LabelTraits ( HasTraits ):
-    
+
     text              = Str
     font              = font_trait
     text_position     = position_trait("left")
     color             = RGBAColor("black")
     shadow_color      = RGBAColor("white")
     style             = engraving_trait
-                        
+
     image             = image_trait
     image_position    = position_trait("left")
     image_orientation = orientation_trait
-                       
+
     spacing_height    = spacing_trait
     spacing_width     = spacing_trait
     padding_left      = padding_trait
@@ -71,44 +72,44 @@ class LabelTraits ( HasTraits ):
     border_size       = border_size_trait
     border_color      = RGBAColor("black")
     bg_color          = RGBAColor("clear")
-                        
+
     enabled           = true
     selected          = false
 
     #---------------------------------------------------------------------------
     #  Trait view definitions:
     #---------------------------------------------------------------------------
-    
+
     traits_view = View(
-        Group( 'enabled', 'selected', 
+        Group( 'enabled', 'selected',
                id = 'component' ),
-        Group( 'text',   ' ', 
-               'font',   ' ', 
-               'color',  ' ', 
-               'shadow_color', ' ', 
+        Group( 'text',   ' ',
+               'font',   ' ',
+               'color',  ' ',
+               'shadow_color', ' ',
                'style',
-               id    = 'text', 
+               id    = 'text',
                style = 'custom' ),
         Group( 'bg_color{Background Color}', '_',
-               'border_color', '_', 
+               'border_color', '_',
                'border_size',
                id    = 'border',
                style = 'custom' ),
         Group( 'text_position',      '_',
-               'image_position',     '_', 
-               'image_orientation',  ' ', 
+               'image_position',     '_',
+               'image_orientation',  ' ',
                'image',
                id    = 'position',
                style = 'custom' ),
-        Group( 'spacing_height', 'spacing_width', '_',  
-               'padding_left',   'padding_right',  
+        Group( 'spacing_height', 'spacing_width', '_',
+               'padding_left',   'padding_right',
                'padding_top',    'padding_bottom', '_',
-               'margin_left',    'margin_right',   
+               'margin_left',    'margin_right',
                'margin_top',     'margin_bottom',
                id = 'margin' )
         )
-    
-default_label_traits = LabelTraits()    
+
+default_label_traits = LabelTraits()
 
 #-------------------------------------------------------------------------------
 #  'Label' class:
@@ -119,7 +120,7 @@ LayoutLabelTraitDelegate = LabelTraitDelegate( layout = True )
 LabelContentDelegate     = LayoutLabelTraitDelegate( content = True )
 
 class Label ( Component ):
-    
+
     #---------------------------------------------------------------------------
     #  Trait definitions:
     #---------------------------------------------------------------------------
@@ -131,11 +132,11 @@ class Label ( Component ):
     color             = LabelTraitDelegate
     shadow_color      = LabelTraitDelegate
     style             = LabelTraitDelegate
-                       
+
     image             = LayoutLabelTraitDelegate
     image_position    = LayoutLabelTraitDelegate
     image_orientation = LayoutLabelTraitDelegate
-                       
+
     spacing_height    = LayoutLabelTraitDelegate
     spacing_width     = LayoutLabelTraitDelegate
     padding_left      = LayoutLabelTraitDelegate
@@ -149,97 +150,97 @@ class Label ( Component ):
     border_size       = LayoutLabelTraitDelegate
     border_color      = LabelTraitDelegate
     bg_color          = LabelTraitDelegate
-                                            
+
     enabled           = LabelTraitDelegate
     selected          = LabelTraitDelegate
-    
+
     #---------------------------------------------------------------------------
     #  Trait view definitions:
     #---------------------------------------------------------------------------
-    
+
     traits_view = View(
         Group( '<component>', 'enabled', 'selected',
                id = 'component' ),
         Group( '<links>', 'delegate',
                id = 'links' ),
-        Group( 'text',         ' ', 
-               'font',         ' ', 
-               'color',        ' ', 
-               'shadow_color', ' ', 
+        Group( 'text',         ' ',
+               'font',         ' ',
+               'color',        ' ',
+               'shadow_color', ' ',
                'style',
                id    = 'text',
                style = 'custom' ),
         Group( 'bg_color{Background Color}', '_',
-               'border_color', '_', 
+               'border_color', '_',
                'border_size',
                id    = 'border',
                style = 'custom' ),
         Group( 'text_position',      '_',
-               'image_position',     '_', 
-               'image_orientation',  ' ', 
+               'image_position',     '_',
+               'image_orientation',  ' ',
                'image',
                id    = 'position',
                style = 'custom' ),
-        Group( 'spacing_height', 'spacing_width', '_',  
-               'padding_left',   'padding_right',  
+        Group( 'spacing_height', 'spacing_width', '_',
+               'padding_left',   'padding_right',
                'padding_top',    'padding_bottom', '_',
-               'margin_left',    'margin_right',   
+               'margin_left',    'margin_right',
                'margin_top',     'margin_bottom',
                id = 'margin' )
     )
-    
+
     colorchip_map = {
        'fg_color':     'color',
        'bg_color':     'bg_color',
        'shadow_color': 'shadow_color',
        'alt_color':    'border_color'
     }
-    
+
     #---------------------------------------------------------------------------
-    #  Initialize the object: 
+    #  Initialize the object:
     #---------------------------------------------------------------------------
-    
+
     def __init__ ( self, text = '', **traits ):
         self.text = text
         Component.__init__( self, **traits )
-        
+
     #---------------------------------------------------------------------------
-    #  Handle any trait being modified: 
+    #  Handle any trait being modified:
     #---------------------------------------------------------------------------
-    
+
     def _anytrait_changed ( self, name, old, new ):
         trait = self.trait( name )
         if trait.content:
             self.update_text()
         if trait.redraw:
             if trait.layout:
-               self.layout() 
+               self.layout()
             self.redraw()
-                       
+
     #---------------------------------------------------------------------------
     #  Return the components that contain a specified (x,y) point:
     #---------------------------------------------------------------------------
-       
+
     def _components_at ( self, x, y ):
         if self._in_margins( x, y ):
             return [ self ]
         return []
-        
+
     #---------------------------------------------------------------------------
     #  Return whether not a specified point is inside the component margins:
     #---------------------------------------------------------------------------
-                
+
     def _in_margins ( self, x, y ):
         ml = self.margin_left
         mb = self.margin_bottom
-        return xy_in_bounds( x, y, add_rectangles( 
-            self.bounds, 
+        return xy_in_bounds( x, y, add_rectangles(
+            self.bounds,
             ( ml, mb, -(self.margin_right + ml), -(self.margin_top + mb) ) ) )
-            
+
     #---------------------------------------------------------------------------
-    #  Update any information related to the text content of the control:  
+    #  Update any information related to the text content of the control:
     #---------------------------------------------------------------------------
-                        
+
     def update_text ( self ):
         text = self.text
         if text == '':
@@ -258,12 +259,12 @@ class Label ( Component ):
                 max_tdx = max( max_tdx, tdx )
                 _tdx[i] = tdx
             self._max_tdx = max_tdx
-            self._tdy     = tdy    
-    
+            self._tdy     = tdy
+
     #---------------------------------------------------------------------------
-    #  Layout and compute the minimum size of the control: 
+    #  Layout and compute the minimum size of the control:
     #---------------------------------------------------------------------------
-    
+
     def layout ( self ):
         sdx  = self.spacing_width
         sdy  = self.spacing_height
@@ -272,7 +273,7 @@ class Label ( Component ):
             tdx = tdy = sdx = sdy = 0
         else:
             tdx = self._max_tdx
-            tdy = self._tdy * n 
+            tdy = self._tdy * n
         image = self._image
         if image is not None:
             idx = image.width()
@@ -305,21 +306,21 @@ class Label ( Component ):
             iy   = (itdy - idy) / 2.0
             ty   = (itdy - tdy) / 2.0
         bs = 2 * self.border_size
-        self.min_width  = itdx + (self.margin_left  + self.margin_right  + 
-                                  self.padding_left + self.padding_right + bs) 
-        self.min_height = itdy + (self.margin_top   + self.margin_bottom  + 
-                                  self.padding_top  + self.padding_bottom + bs) 
+        self.min_width  = itdx + (self.margin_left  + self.margin_right  +
+                                  self.padding_left + self.padding_right + bs)
+        self.min_height = itdy + (self.margin_top   + self.margin_bottom  +
+                                  self.padding_top  + self.padding_bottom + bs)
         self._info = ( ix, iy, idx, idy, tx, ty, tdx, self._tdy, itdx, itdy )
-        
+
     #---------------------------------------------------------------------------
     #  Draw the contents of the control:
     #---------------------------------------------------------------------------
-    
+
     def _draw ( self, gc, view_bounds, mode):
-        
+
         # Save the current graphics context:
         gc.save_state()
-        
+
         # Set up all the control variables for quick access:
         ml  = self.margin_left
         mr  = self.margin_right
@@ -333,18 +334,18 @@ class Label ( Component ):
         bsd = bs + bs
         bsh = bs / 2.0
         x, y, dx, dy = self.bounds
-        
+
         ix, iy, idx, idy, tx, ty, tdx, tdy, itdx, itdy = self._info
-        
+
         # Fill the background region (if required);
         bg_color = self.bg_color_
         if bg_color is not transparent_color:
             gc.set_fill_color( bg_color )
             gc.begin_path()
-            gc.rect( x + ml + bs, y + mb + bs, 
-                     dx - ml - mr - bsd, dy - mb - mt - bsd ) 
+            gc.rect( x + ml + bs, y + mb + bs,
+                     dx - ml - mr - bsd, dy - mb - mt - bsd )
             gc.fill_path()
-            
+
         # Draw the border (if required):
         if bs > 0:
             border_color = self.border_color_
@@ -352,13 +353,13 @@ class Label ( Component ):
                 gc.set_stroke_color( border_color )
                 gc.set_line_width( bs )
                 gc.begin_path()
-                gc.rect( x + ml + bsh, y + mb + bsh, 
+                gc.rect( x + ml + bsh, y + mb + bsh,
                          dx - ml - mr - bs, dy - mb - mt - bs )
                 gc.stroke_path()
-            
+
         # Calculate the origin of the image/text box:
         text_position = self.text_position_
-        
+
         if self.image_orientation == 'text':
             # Handle the 'image relative to text' case:
             if text_position & RIGHT:
@@ -388,7 +389,7 @@ class Label ( Component ):
                 ty = y + mb + bs + pb
                 if text_position & VCENTER:
                    ty += (dy - mb - mt - bsd - pb - pt - tdy) / 2.0
-                   
+
             image_position = self.image_position_
             if image_position & RIGHT:
                 ix = x + dx - mr - bs - pr - idx
@@ -402,12 +403,12 @@ class Label ( Component ):
                 iy = y + mb + bs + pb
                 if image_position & VCENTER:
                    iy += (dy - mb - mt - bsd - pb - pt - idy) / 2.0
-        
+
         # Draw the image (if required):
         image = self._image
         if image is not None:
             gc.draw_image( image, ( itx + ix, ity + iy, idx, idy ) )
-            
+
         # Draw the text (if required):
         gc.set_font( self.font )
         _text = self._text
@@ -436,15 +437,15 @@ class Label ( Component ):
                     gc.set_fill_color( shadow_color )
                     gc.set_text_position( _tx + 2.0, ty - 2.0 )
                 gc.show_text( text )
-                
+
             # Draw the normal text:
             gc.set_fill_color( text_color )
             gc.set_text_position( _tx, ty )
             gc.show_text( text )
-        
+
         # Restore the graphics context:
         gc.restore_state()
-                     
+
 #-- Pickling Protocol ----------------------------------------------------------
 
     def __getstate__ ( self ):
@@ -454,17 +455,17 @@ class Label ( Component ):
         except:
             pass
         return dict
-        
+
     def __setstate__ ( self, state ):
         self.__dict__.update( state )
         self.image = self.image
-        
+
 #-------------------------------------------------------------------------------
-#  'CheckBox' class:  
+#  'CheckBox' class:
 #-------------------------------------------------------------------------------
 
 class CheckBox ( Label ):
-    
+
     #---------------------------------------------------------------------------
     #  Trait definitions:
     #---------------------------------------------------------------------------
@@ -474,21 +475,21 @@ class CheckBox ( Label ):
     #---------------------------------------------------------------------------
     #  Trait editor definition:
     #---------------------------------------------------------------------------
-    
-    position = Group( '<position>', 'image_base' ) 
-        
+
+    position = Group( '<position>', 'image_base' )
+
     #---------------------------------------------------------------------------
     #  Initialize the object:
     #---------------------------------------------------------------------------
-    
+
     def __init__ ( self, text = '', **traits ):
         Label.__init__( self, text, **traits )
         self._select_image()
-            
+
     #---------------------------------------------------------------------------
     #  Select the correct image to display:
     #---------------------------------------------------------------------------
-    
+
     def _select_image ( self, *suffixes ):
         if len( suffixes ) == 0:
             suffixes = [ self._suffix() ]
@@ -498,33 +499,33 @@ class CheckBox ( Label ):
             if self.image_for( image ) is not None:
                 self.image = image
                 break
-                
+
     #---------------------------------------------------------------------------
     #  Select the image suffix based on the current selection state:
     #---------------------------------------------------------------------------
-    
+
     def _suffix ( self ):
         return [ '', '_on' ][ self.selected ]
 
     #---------------------------------------------------------------------------
-    #  Set the selection state of the component: 
+    #  Set the selection state of the component:
     #---------------------------------------------------------------------------
-            
+
     def _select ( self ):
         self.selected = not self.selected
-        
+
     #---------------------------------------------------------------------------
-    #  Handle the 'selected' status of the checkbox being changed: 
+    #  Handle the 'selected' status of the checkbox being changed:
     #---------------------------------------------------------------------------
-    
+
     def _selected_changed ( self ):
         base = self._suffix()
-        self._select_image( base + [ '', '_over'][ self._over == True ], base )            
-        
+        self._select_image( base + [ '', '_over'][ self._over == True ], base )
+
     #---------------------------------------------------------------------------
     #  Handle mouse events:
     #---------------------------------------------------------------------------
-    
+
     def _left_down_changed ( self, event ):
         event.handled = True
         if self._in_margins( event.x, event.y ):
@@ -532,10 +533,10 @@ class CheckBox ( Label ):
             base = self._suffix()
             self._select_image( base + '_down', base )
             self._down = True
-        
+
     def _left_dclick_changed ( self, event ):
         self._left_down_changed( event )
-        
+
     def _left_up_changed ( self, event ):
         event.handled           = True
         event.window.mouse_owner = self._down = None
@@ -548,19 +549,19 @@ class CheckBox ( Label ):
         if self._over:
             event.window.mouse_owner = self
             base = self._suffix()
-            self._select_image( 
-                 base + [ '_over', '_down' ][ self._down is not None ], base )            
+            self._select_image(
+                 base + [ '_over', '_down' ][ self._down is not None ], base )
         else:
             if self._down is None:
                 event.window.mouse_owner = None
             self._select_image()
 
 #-------------------------------------------------------------------------------
-#  'RadioButton' class:  
+#  'RadioButton' class:
 #-------------------------------------------------------------------------------
 
 class Radio ( CheckBox, RadioStyle ):
-    
+
     #---------------------------------------------------------------------------
     #  Trait definitions:
     #---------------------------------------------------------------------------
@@ -568,16 +569,16 @@ class Radio ( CheckBox, RadioStyle ):
     image_base = Str( '=radio' )
 
     #---------------------------------------------------------------------------
-    #  Set the selection state of the component: 
+    #  Set the selection state of the component:
     #---------------------------------------------------------------------------
-            
+
     def _select ( self ):
         self.selected = True
-        
+
     #---------------------------------------------------------------------------
-    #  Handle the container the component belongs to being changed: 
+    #  Handle the container the component belongs to being changed:
     #---------------------------------------------------------------------------
-    
+
     def _container_changed ( self, old, new ):
         CheckBox._container_changed( self )
         if self.radio_group is old.radio_group:
@@ -586,13 +587,13 @@ class Radio ( CheckBox, RadioStyle ):
             if new.radio_group is None:
                 new.radio_group = RadioGroup()
             new.radio_group.add( self )
-        
+
     #---------------------------------------------------------------------------
-    #  Handle the 'selected' status of the checkbox being changed: 
+    #  Handle the 'selected' status of the checkbox being changed:
     #---------------------------------------------------------------------------
-    
+
     def _selected_changed ( self ):
         CheckBox._selected_changed( self )
         if self.selected:
             self.radio_group.selection = self
-            
+

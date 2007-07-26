@@ -1,9 +1,9 @@
 """ Defines the Component class """
 
 # Enthought library imports
-from enthought.traits.api import Any, Delegate, Enum, false, Float, Instance, Int, \
+from enthought.traits.api import Any, Bool, Delegate, Enum, false, Float, Instance, Int, \
                              List, Property, Str, Trait, true
-from enthought.kiva import GraphicsContext
+from enthought.kiva import GraphicsContext, FILL
 
 # Local relative imports
 from colors import black_color_trait, white_color_trait
@@ -66,7 +66,6 @@ class Component(CoordinateBox, Interactor):
     max_height = Any
 
     min_height = Any
-
 
     #------------------------------------------------------------------------
     # Padding-related traits
@@ -157,7 +156,6 @@ class Component(CoordinateBox, Interactor):
     # component should be see-through.
     bgcolor = white_color_trait
 
-
     #------------------------------------------------------------------------
     # Backbuffer traits
     #------------------------------------------------------------------------
@@ -166,7 +164,7 @@ class Component(CoordinateBox, Interactor):
     # offscreen buffer that is cached for later use?  If False, then
     # the component will *never* render itself backbuffered, even if asked
     # to do so.
-    use_backbuffer = false
+    use_backbuffer = Bool(False)
     
     # Should the backbuffer extend to the pad area?
     backbuffer_padding = true
@@ -179,6 +177,9 @@ class Component(CoordinateBox, Interactor):
     # backbuffer.
     draw_valid = false
 
+    # The backbuffer of this component.  In most cases, this is an
+    # instance of GraphicsContext, but this requirement is not enforced.
+    _backbuffer = Any
 
     #------------------------------------------------------------------------
     # Private traits
@@ -187,11 +188,6 @@ class Component(CoordinateBox, Interactor):
     # Shadow trait for self.window.  Only gets set if this is the top-level
     # enable component in a Window.
     _window = Any    # Instance("Window")
-
-    # The backbuffer of this component.  In most cases, this should be an
-    # instance of GraphicsContext, but this is not enforced.
-    _backbuffer = Any
-
 
     #------------------------------------------------------------------------
     # Public methods
@@ -250,17 +246,6 @@ class Component(CoordinateBox, Interactor):
             self._draw_background(gc, view_bounds, mode)
             self._draw(gc, view_bounds, mode)
             self._draw_border(gc, view_bounds, mode)
-
-        return
-
-    def invalidate_draw(self):
-        """This method should be called whenever a component's internal state
-        changes such that it should be redrawn on the next draw call, as opposed
-        to using any backbuffer that may exist."""
-
-        self.draw_valid = False
-        if hasattr(self.container, "invalidate_draw"):
-            self.container.invalidate_draw()
         return
 
     def get_absolute_coords(self, *coords):
@@ -289,6 +274,17 @@ class Component(CoordinateBox, Interactor):
             view.request_redraw()
         self._request_redraw()
         return
+
+    def invalidate_draw(self):
+        """ Invalidates any backbuffer that may exist.
+        
+        Call this method whenever a component's internal state
+        changes such that it must be redrawn on the next draw() call."""
+        self.draw_valid = False
+        if hasattr(self.container, "invalidate_draw"):
+            self.container.invalidate_draw()
+        return
+
 
     def is_in(self, x, y):
         # A basic implementation of is_in(); subclasses should provide their

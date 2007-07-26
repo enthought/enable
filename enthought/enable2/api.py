@@ -20,7 +20,7 @@ from colors import color_table, transparent_color, ColorTrait, black_color_trait
                    white_color_trait, transparent_color_trait, ColorEditorFactory
 
 from events import drag_event_trait, key_event_trait, mouse_event_trait, \
-    DragEvent, KeyEvent, MouseEvent
+    BasicEvent, DragEvent, KeyEvent, MouseEvent
 from interactor import Interactor
 
 from component import Component

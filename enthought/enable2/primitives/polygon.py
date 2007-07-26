@@ -7,11 +7,12 @@ from numpy import array
 # Enthought library imports.
 from enthought.kiva import EOF_FILL_STROKE, FILL_STROKE
 from enthought.traits.api import Any, Event, Float, HasTraits, Instance, List, \
-                             Property, RGBAColor, Trait, Tuple
+                             Property, Trait, Tuple
 from enthought.traits.ui.api import Group, View
 
 # Local imports.
 from enthought.enable2.api import border_size_trait, Component, transparent_color
+from enthought.enable2.traits.rgba_color_trait import RGBAColor
 
 
 class PolygonModel(HasTraits):
@@ -24,14 +25,14 @@ class PolygonModel(HasTraits):
         self.points = []
         return
 
-    
+
 class Polygon(Component):
     """ A filled polygon component. """
 
     #--------------------------------------------------------------------------
     # Trait definitions.
     #--------------------------------------------------------------------------
-    
+
     # The background color of this polygon.
     background_color = RGBAColor("white")
 
@@ -40,7 +41,7 @@ class Polygon(Component):
 
     # The dash pattern to use for this polygon.
     border_dash = Any
-    
+
     # The thickness of the border of this polygon.
     border_size = Trait(1.0, border_size_trait)
 
@@ -50,7 +51,7 @@ class Polygon(Component):
     # The rule to use to determine the inside of the polygon.
     inside_rule = Trait('winding',
                         {'winding':FILL_STROKE, 'oddeven':EOF_FILL_STROKE })
-    
+
     # The points that make up this polygon.
     model = Instance(PolygonModel, ())
 
@@ -63,14 +64,14 @@ class Polygon(Component):
     # The size of each vertex.
     vertex_size = Float(3.0)
 
-    traits_view = View(Group('<component>', id = 'component'), 
+    traits_view = View(Group('<component>', id = 'component'),
                        Group('<links>', id = 'links'),
                        Group('background_color', '_',
                              'border_color', '_',
-                             'border_size', 
-                             id = 'Box', 
+                             'border_size',
+                             id = 'Box',
                              style = 'custom'))
-    
+
     colorchip_map = {'color': 'color', 'alt_color': 'border_color'}
 
     #--------------------------------------------------------------------------
@@ -89,7 +90,7 @@ class Polygon(Component):
         self.model.reset()
         self.event_state = 'normal'
         return
-    
+
     #--------------------------------------------------------------------------
     # 'Component' interface
     #--------------------------------------------------------------------------
@@ -143,22 +144,22 @@ class Polygon(Component):
 
             gc.close_path()
             gc.draw_path(self.inside_rule_)
-    
+
             # Draw the vertices.
             self._draw_vertices(gc)
 
         return
-    
+
     def _draw_open ( self, gc ):
         "Draw this polygon as an open polygon"
-        
+
         if len(self.model.points) > 2:
             # Set the drawing parameters.
             gc.set_fill_color( self.background_color_ )
             gc.set_stroke_color( self.border_color_ )
             gc.set_line_width( self.border_size )
             gc.set_line_dash( self.border_dash )
-    
+
             # Draw the path.
             gc.begin_path()
             gc.move_to(self.model.points[0][0] - self.x,
@@ -166,7 +167,7 @@ class Polygon(Component):
             offset_points = [(x - self.x, y + self.y) for x, y in self.model.points ]
             gc.lines(offset_points)
             gc.draw_path(self.inside_rule_)
-    
+
             # Draw the vertices.
             self._draw_vertices(gc)
         return
@@ -176,11 +177,11 @@ class Polygon(Component):
 
         gc.set_fill_color(self.vertex_color_)
         gc.set_line_dash(None)
-        
+
         offset = self.vertex_size / 2.0
         offset_points = [(x + self.x, y + self.y)
                          for x, y in self.model.points]
-        
+
         if hasattr(gc, 'draw_path_at_points'):
             path = gc.get_empty_path()
             path.rect(-offset, -offset, self.vertex_size, self.vertex_size)
@@ -193,6 +194,6 @@ class Polygon(Component):
                         self.vertex_size, self.vertex_size)
                 gc.fill_path()
         return
-    
+
 
 # EOF

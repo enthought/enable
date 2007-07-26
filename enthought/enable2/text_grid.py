@@ -6,9 +6,9 @@ TextGrid is a text grid widget that is meant to be used with Numpy.
 from numpy import arange, array, dstack, indices, repeat, newaxis
 
 # Enthought library imports
+from enthought.traits.api import Any, Array, false, Int, List, Property, Trait, Tuple
 from enthought.kiva import font_metrics_provider
 from enthought.kiva.traits.kiva_font_trait import KivaFont
-from enthought.traits.api import Any, Array, false, Int, List, Property, Trait, Tuple
 
 # Relative imports
 from component import Component

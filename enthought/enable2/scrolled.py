@@ -1,6 +1,7 @@
 
 # Enthought library imports
-from enthought.traits.api import Instance, RGBAColor, true, Int, Any, Float
+from enthought.enable2.traits.rgba_color_trait import RGBAColor
+from enthought.traits.api import Instance, true, Int, Any, Float
 
 # Local, relative imports
 from base import transparent_color, add_rectangles, intersect_bounds, empty_rectangle
@@ -16,7 +17,7 @@ except:
 
 
 class Scrolled(Container):
-    
+
     #---------------------------------------------------------------------------
     #  Trait definitions:
     #---------------------------------------------------------------------------
@@ -28,7 +29,7 @@ class Scrolled(Container):
     # the scrolled area/leftcomponent.
     inside_padding_width = Int(5)
     # The inside border is a border drawn on the inner edge of the inside padding area
-    # to highlight the 
+    # to highlight the
     inside_border_color = RGBAColor("black")
     inside_border_width = Int(0)
 
@@ -38,12 +39,12 @@ class Scrolled(Container):
     auto_size = False
     leftborder = Float(0) #The size of the left border space
     leftcomponent = Any(None) # None or a component
-    
-    
+
+
     #---------------------------------------------------------------------------
     # Private traits
     #---------------------------------------------------------------------------
-    
+
     _vsb = Instance(NativeScrollBar)
     _hsb = Instance(NativeScrollBar)
     _layout_needed = true
@@ -54,7 +55,7 @@ class Scrolled(Container):
         self.component = component
         Container.__init__( self, **traits )
         return
-    
+
     def update_bounds( self):
         self._layout_needed = True
         return
@@ -64,7 +65,7 @@ class Scrolled(Container):
         # Perhaps a placeholder -- not sure if there's a way to get the standard
         # width or height of a wx scrollbar -- you can set them to whatever you want.
         return 15
-        
+
     def sb_width(self):
         "Returns the standard scroll bar width"
         return 15
@@ -77,7 +78,7 @@ class Scrolled(Container):
     def _layout_and_draw(self):
         self._layout_needed = True
         self.request_redraw()
-        
+
     def _bgcolor_changed ( self ):
         self._layout_and_draw()
         return
@@ -90,8 +91,8 @@ class Scrolled(Container):
     def _inside_padding_width_changed(self):
         self._layout_needed = True
         self.request_redraw()
-        
-    
+
+
 
     def _component_bounds_items_handler(self, object, new):
         if new.added != new.removed:
@@ -101,10 +102,10 @@ class Scrolled(Container):
         if old == None or new == None or old[0] != new[0] or old[1] != new[1]:
             self.update_bounds()
         return
-    
-        
-        
-    
+
+
+
+
     def _component_changed ( self, old, new ):
         if old is not None:
             old.on_trait_change(self._component_bounds_handler, 'bounds', remove=True)
@@ -118,15 +119,15 @@ class Scrolled(Container):
         new.on_trait_change(self._component_bounds_items_handler, 'bounds_items')
         self._layout_needed = True
         return
-    
+
     def _alternate_vsb_changed(self, old, new):
         self._component_update(old, new)
         return
-    
+
     def _leftcomponent_changed(self, old, new):
         self._component_update(old, new)
         return
-    
+
     def _component_update(self, old, new):
         """Generic function to manage adding and removing
         components"""
@@ -135,12 +136,12 @@ class Scrolled(Container):
         if new is not None:
             self.add(new)
         return
-    
+
     def _bounds_changed ( self, old, new ):
         Component._bounds_changed( self, old, new )
         self.update_bounds()
         return
-    
+
     def _bounds_items_changed(self, event):
         Component._bounds_items_changed(self, event)
         self.update_bounds()
@@ -154,7 +155,7 @@ class Scrolled(Container):
     #---------------------------------------------------------------------------
     # Protected methods
     #---------------------------------------------------------------------------
-    
+
     def _do_layout ( self ):
         """ This is explicitly called by _draw(). """
         # Window is composed of border + scrollbar + canvas in each direction.
@@ -173,7 +174,7 @@ class Scrolled(Container):
                                                view_bounds = self.bounds,
                                                view_position = [0,0])
             self.add(self.viewport_component)
-            
+
         padding = self.inside_padding_width
         scrl_x_size, scrl_y_size = self.bounds
         cont_x_size, cont_y_size = self.component.bounds
@@ -182,7 +183,7 @@ class Scrolled(Container):
         #Container
         available_x = scrl_x_size - 2*padding - self.leftborder
         available_y = scrl_y_size - 2*padding
-        
+
         #Figure out which scrollbars we will need
         need_x_scrollbar = False
         need_y_scrollbar = False
@@ -242,7 +243,7 @@ class Scrolled(Container):
             self.alternate_vsb.bounds = [self.sb_width(), available_y]
             self.alternate_vsb.position = [2*padding + available_x + self.leftborder,
                                            container_y_pos]
-            
+
         if need_y_scrollbar and (not self.alternate_vsb):
             bounds = [self.sb_width(), available_y]
             vsb_position = [2*padding + available_x + self.leftborder,
@@ -277,7 +278,7 @@ class Scrolled(Container):
             if self._vsb:
                 self._vsb = self._release_sb(self._vsb)
                 self.viewport_component.view_position[1] = 0
-        
+
         self._layout_needed = False
         return
 
@@ -295,23 +296,23 @@ class Scrolled(Container):
             # It must be held by another object, but which one?
             sb.destroy()
         return None
-       
+
     def _handle_horizontal_scroll( self, position ):
         self.viewport_component.view_position[0] = position
         return
-    
+
     def _handle_vertical_scroll(self, position):
         self.viewport_component.view_position[1] = position
         return
 
     def _draw(self, gc, view_bounds=None, mode="default"):
-        
+
         if self._layout_needed:
             self._do_layout()
         try:
             gc.save_state()
             self._draw_container(gc, mode)
-            
+
             self._draw_inside_border(gc, view_bounds, mode)
 
             dx, dy = self.bounds
@@ -343,7 +344,7 @@ class Scrolled(Container):
         right_edge = self.x + self.viewport_component.x2+2 + width_adjustment
         bottom_edge = self.viewport_component.y+1 - width_adjustment
         top_edge = self.viewport_component.y2 + width_adjustment
-        
+
         gc.save_state()
         try:
             gc.set_stroke_color(self.inside_border_color_)
@@ -353,12 +354,12 @@ class Scrolled(Container):
             gc.stroke_path()
         finally:
             gc.restore_state()
-            
-    
+
+
     #---------------------------------------------------------------------------
     # Mouse event handlers
     #---------------------------------------------------------------------------
-    
+
     def _container_handle_mouse_event(self, event, suffix):
         """
         Implement a container-level dispatch hook that intercepts mousewheel
@@ -376,9 +377,9 @@ class Scrolled(Container):
     #---------------------------------------------------------------------------
     # Persistence
     #---------------------------------------------------------------------------
-    
+
     #_pickles = ("scale_plot", "selected_tracks")
-    
+
     def __getstate__(self):
         state = super(Scrolled,self).__getstate__()
         for key in ['alternate_vsb', '_vsb', '_hsb', ]:

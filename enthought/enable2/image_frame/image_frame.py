@@ -23,13 +23,15 @@
 #  Imports:
 #-------------------------------------------------------------------------------
 
-from enthought.traits.api       import RGBAColor, Trait, Str, true
+from enthought.traits.api       import Trait, Str, true
 from enthought.traits.ui.api    import Group, View, Include
 
 from enthought.enable.base  import add_rectangles
 from enthought.enable.frame import Frame
 from enthought.enable.enable_traits import alignment_trait, font_trait, engraving_trait, \
      string_image_trait
+from enthought.enable2.traits.rgba_color_trait import RGBAColor
+
 
 #-------------------------------------------------------------------------------
 #  Constants:

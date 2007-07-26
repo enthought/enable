@@ -267,7 +267,7 @@ class Window ( AbstractWindow ):
     _cursor_color = Any  # PZW: figure out the correct type for this...
 
     # Reference to the actual wxPython window:
-    control      = Instance( wx.Window )
+    control      = Instance(WidgetClass)
     
     # This is set by downstream components to notify us of whether or not
     # the current drag operation should return DragCopy, DragMove, or DragNone.
@@ -463,11 +463,13 @@ class Window ( AbstractWindow ):
             mouse_wheel = ((event.GetLinesPerAction() * 
                             event.GetWheelRotation()) / 
                             (event.GetWheelDelta() or 1))
-            # Note: The following code fixes a 'bug' in wxPython that returns
+            
+            # Note: The following code fixes a bug in wxPython that returns
             # 'mouse_wheel' events in screen coordinates, rather than window
             # coordinates:
-            if mouse_wheel != 0 and sys.platform == "win32":
-                x, y = self.control.ScreenToClientXY( x, y )
+            if float(wx.VERSION_STRING[:3]) < 2.8:
+                if mouse_wheel != 0 and sys.platform == "win32":
+                    x, y = self.control.ScreenToClientXY( x, y )
             return MouseEvent( x            = x,
                                y            = self._flip_y( y ),
                                alt_down     = event.AltDown(),    

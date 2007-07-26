@@ -6,7 +6,7 @@ toolkit, based on the kiva driver for OS X.
 import wx
 
 # Enthought library imports.
-from enthought.kiva.mac import ABCGI, get_macport
+from enthought.kiva.backend_wx import gc_for_dc
 
 # Local imports.
 from window import Window
@@ -39,8 +39,7 @@ class MacWindow(Window):
 
         self.bitmap = wx.EmptyBitmap(size[0], size[1])
         self.memDC.SelectObject(self.bitmap)
-        port = get_macport(self.memDC)
-        gc = ABCGI.CGContextForPort(port)
+        gc = gc_for_dc(self.memDC)
         gc.begin()
         return gc
  

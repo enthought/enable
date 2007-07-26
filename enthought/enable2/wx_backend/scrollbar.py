@@ -1,10 +1,11 @@
 """
-Define a standard horizontal and vertical Enable 'scrollbar' component.
+Define a standard horizontal and vertical Enable scrollbar component that wraps
+the standard WX one.
 """
 
-# Global Imports
+# Major library imports
 import wx
-from types import TupleType
+from types import ListType, TupleType
 
 # Enthought Imports
 from enthought.traits.api import Event, Property, Trait, TraitError, \
@@ -13,31 +14,28 @@ from enthought.traits.ui.api import Group, View, Include
 
 from enthought.enable2.component import Component
 
-def valid_range ( object, name, value ):
+def valid_range(object, name, value):
     "Verify that a set of range values for a scrollbar is valid"
     try:
-        if (type( value ) is TupleType) and (len( value ) == 4):
+        if (type(value) in (TupleType, ListType)) and (len(value) == 4):
             low, high, page_size, line_size = value
             if high < low:
                 low, high = high, low
             elif high == low:
                 high = low + 1.0
-            page_size = max( min( page_size, high - low ), 0.0 )
-            line_size = max( min( line_size, page_size ),  0.0 )
-            return ( float( low ),       float( high ),
-                     float( page_size ), float( line_size ) )
+            page_size = max(min(page_size, high - low), 0.0)
+            line_size = max(min(line_size, page_size), 0.0)
+            return (float(low), float(high), float(page_size), float(line_size))
     except:
         raise
     raise TraitError
-
 valid_range.info = 'a (low,high,page_size,line_size) range tuple'
 
-
-def valid_scroll_position ( object, name, value ):
+def valid_scroll_position(object, name, value):
     "Verify that a specified scroll bar position is valid"
     try:
         low, high, page_size, line_size = object.range
-        return max( min( float( value ), high - page_size ), low ) 
+        return max(min(float(value), high - page_size), low)
     except:
         raise
     raise TraitError
@@ -45,25 +43,41 @@ def valid_scroll_position ( object, name, value ):
 
 
 class NativeScrollBar(Component):
-    """Native scroll bar for Enable"""
+    "An Enable scrollbar component that wraps/embeds the standard WX scrollbar"
     
-    #-------------------------------------------
+    #------------------------------------------------------------------------
     # Public Traits
-    #-------------------------------------------
+    #------------------------------------------------------------------------
     
+    # The current position of the scroll bar.  This must be within the range
+    # (self.low, self.high)
     scroll_position = Trait( 0.0, valid_scroll_position )
-    #Range is (low, high, page_size, line_size
+    
+    # A tuple (low, high, page_size, line_size).  Can be accessed using
+    # convenience properties (see below).
     range = Trait( ( 0.0, 100.0, 10.0, 1.0 ), valid_range )
+    
+    # The orientation of the scrollbar
     orientation = Trait("horizontal", "vertical")
+
+    # Is y=0 at the top or bottom?
     origin = Trait('bottom', 'top')
+    
+    # Determines if the scroll bar should be visible and respond to events
     enabled = Bool(True)
     
-    
+    # The scroll increment associated with a single mouse wheel increment
     mouse_wheel_speed = Int(3)
 
-    #--------------------------------------------
+    # Expose scroll_position, low, high, page_size as properties
+    low = Property
+    high = Property
+    page_size = Property
+    line_size = Property
+
+    #------------------------------------------------------------------------
     # Private Traits
-    #--------------------------------------------
+    #------------------------------------------------------------------------
     _control = Any(None)
     _clean = false
     _last_widget_x = Float(0)
@@ -71,59 +85,20 @@ class NativeScrollBar(Component):
     _last_widget_height = Float(0)
     _list_widget_width = Float(0)
 
-    #--------------------------------------------
+    #------------------------------------------------------------------------
     # Public Methods
-    #--------------------------------------------
+    #------------------------------------------------------------------------
     
     def destroy(self):
         """Destroy the native widget associated with this component"""
         if self._control:
             self._control.Destroy()
         return
-
-    #--------------------------------------------
-    # Trait Event Handlers
-    #--------------------------------------------
-
-    def __low_get ( self ):
-        return self.range[0]
-        
-    def __low_set ( self, low ):
-        ignore, high, page_size, line_size = self.range
-        self._clean = False
-        self.range = ( low, high, page_size, line_size )
-        
-    def __high_get ( self ):
-        return self.range[1]
-        
-    def __high_set ( self, high ):
-        low, ignore, page_size, line_size = self.range
-        self._clean = False
-        self.range = ( low, high, page_size, line_size )
-        
-    def __page_size_get ( self ):
-        return self.range[2]
-        
-    def __page_size_set ( self, page_size ):
-        low, high, ignore, line_size = self.range
-        self._clean = False
-        self.range = ( low, high, page_size, line_size )
-        
-    def __line_size_get ( self ):
-        return self.range[3]
-        
-    def __line_size_set ( self, line_size ):
-        low, high, page_size, ignore = self.range
-        self._clean = False
-        self.range = ( low, high, page_size, line_size )
-        
-    # Define 'scroll_position, low, high, page_size' properties:
-    low = Property( __low_get, __low_set )
-    high = Property( __high_get, __high_set )
-    page_size = Property( __page_size_get, __page_size_set)
-    line_size = Property( __line_size_get, __line_size_set)
-
-
+    
+    #------------------------------------------------------------------------
+    # Protected methods
+    #------------------------------------------------------------------------
+    
     def __del__(self):
         self.destroy()
         return
@@ -148,7 +123,6 @@ class NativeScrollBar(Component):
         if window is None:
             return
         wx_ypos = window._flip_y(wx_ypos)
-
 
         if self._clean and \
                self._last_widget_x == wx_xpos and \
@@ -178,7 +152,6 @@ class NativeScrollBar(Component):
             wx.EVT_SCROLL(self._control, self._wx_scroll_handler)
             wx.EVT_SET_FOCUS(self._control, self._yield_focus)
             self._control.Disable()
-        
         
         # Ideally we would only SetPosition if the position change came from the
         # program rather than from the user.  Perhaps we should have a position_dirty
@@ -251,5 +224,43 @@ class NativeScrollBar(Component):
         if self.origin == 'bottom' and self.orientation == 'vertical':
             enablepos = (high-page_size)-enablepos
         return enablepos
+
+
+    #------------------------------------------------------------------------
+    # Property getters and setters
+    #------------------------------------------------------------------------
+
+    def _get_low(self):
+        return self.range[0]
+        
+    def _set_low(self, low):
+        ignore, high, page_size, line_size = self.range
+        self._clean = False
+        self.range =(low, high, page_size, line_size)
+        
+    def _get_high(self):
+        return self.range[1]
+        
+    def _set_high(self, high):
+        low, ignore, page_size, line_size = self.range
+        self._clean = False
+        self.range =(low, high, page_size, line_size)
+        
+    def _get_page_size(self):
+        return self.range[2]
+        
+    def _set_page_size(self, page_size):
+        low, high, ignore, line_size = self.range
+        self._clean = False
+        self.range =(low, high, page_size, line_size)
+        
+    def _get_line_size(self):
+        return self.range[3]
+        
+    def _set_line_size(self, line_size):
+        low, high, page_size, ignore = self.range
+        self._clean = False
+        self.range =(low, high, page_size, line_size)
+
 
 # EOF

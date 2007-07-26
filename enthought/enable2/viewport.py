@@ -5,7 +5,8 @@ from numpy import array
 from sets import Set
 
 # Enthought library traits
-from enthought.traits.api import false, Instance, RGBAColor
+from enthought.enable2.traits.rgba_color_trait import RGBAColor
+from enthought.traits.api import false, Instance
 
 # Local relative imports
 from enable_traits import bounds_trait, coordinate_trait
@@ -19,7 +20,7 @@ class Viewport(Component):
     """
     A "window" or "view" into a sub-region of another component.
     """
-    
+
     # The component we are viewing
     component = Instance(Component)
 
@@ -43,18 +44,18 @@ class Viewport(Component):
     #------------------------------------------------------------------------
     # Public methods
     #------------------------------------------------------------------------
-    
+
     def __init__(self, **traits):
         Component.__init__(self, **traits)
         _prev_event_handlers = Set()
         return
-    
+
     def components_at(self, x, y, add_containers = False):
         """
         Returns the list of components inside the viewport at the given (x,y)
         in the viewport's native coordinate space (not in the space of the
         component it is viewing).
-        
+
         Although Viewports are not containers, they support this method.
         """
         if self.is_in(x, y):
@@ -76,7 +77,7 @@ class Viewport(Component):
         delete any transient state it may have (such as backbuffers)."""
         if self.component:
             self.component.cleanup(window)
-    
+
     #------------------------------------------------------------------------
     # Component interface
     #------------------------------------------------------------------------
@@ -93,7 +94,7 @@ class Viewport(Component):
             gc.clip_to_rect(view_x-0.5, view_y-0.5, self.view_bounds[0]+1, self.view_bounds[1]+1)
             # transform the passed-in view_bounds; this is not the same thing as
             # self.view_bounds!
-            
+
             if view_bounds:
                 # Find the intersection rectangle of the viewport with the view_bounds,
                 # and transform this into the component's space.
@@ -102,7 +103,7 @@ class Viewport(Component):
                     # clipped_view and self.position are in the space of our parent
                     # containers.  we know that self.position -> view_x,view_y
                     # in the coordinate space of our component.  So, find the
-                    # vector from self.position to clipped_view, then add this to 
+                    # vector from self.position to clipped_view, then add this to
                     # view_x and view_y to generate the transformed coordinates
                     # of clipped_view in our component's space.
                     offset = array(clipped_view[:2]) - array(self.position)
@@ -111,7 +112,7 @@ class Viewport(Component):
                     self.component.draw(gc, new_bounds, mode=mode)
                 else:
                     pass
-            
+
             gc.restore_state()
         else:
             pass
@@ -124,7 +125,7 @@ class Viewport(Component):
     def _component_changed(self, old, new):
         if (old is not None) and (self in old.viewports):
             old.viewports.remove(self)
-        
+
         if (new is not None) and (self not in new.viewports):
             new.viewports.append(self)
         return
@@ -133,14 +134,14 @@ class Viewport(Component):
         Component._bounds_changed(self, old, new)
         self.set(view_bounds = new, trait_change_notify=False)
         return
-    
+
     def _bounds_items_changed(self, event):
         return self._bounds_changed(None, self.bounds)
-    
+
     def _view_bounds_changed(self, old, new):
         self.set(bounds = new, trait_change_notify=False)
         return
-    
+
     def _view_bounds_items_changed(self, event):
         return self._view_bounds_changed(None, self.bounds)
 
@@ -152,7 +153,7 @@ class Viewport(Component):
             finally:
                 event.pop()
         return
-        
-        
+
+
 # EOF
 

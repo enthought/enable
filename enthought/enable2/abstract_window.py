@@ -59,6 +59,70 @@ class AbstractWindow ( HasTraits ):
     # (dx, dy) integer size of the Window.
     _size = Trait(None, Tuple)
 
+
+    #---------------------------------------------------------------------------
+    #  Abstract methods that must be implemented by concrete subclasses
+    #---------------------------------------------------------------------------
+
+    def set_drag_result(self, result):
+        """ Sets the result that should be returned to the system from the
+        handling of the current drag operation.  Valid result values are:
+        "error", "none", "copy", "move", "link", "cancel".  These have the
+        meanings associated with their WX equivalents.
+        """
+        raise NotImplementedError
+
+    def _capture_mouse(self):
+        "Capture all future mouse events"
+        raise NotImplementedError
+
+    def _release_mouse(self):
+        "Release the mouse capture"
+        raise NotImplementedError
+
+    def _create_mouse_event(self, event):
+        "Convert a GUI toolkit mouse event into a MouseEvent"
+        raise NotImplementedError
+
+    def _redraw(self, coordinates=None):
+        """ Request a redraw of the window, within just the (x,y,w,h) coordinates
+        (if provided), or over the entire window if coordinates is None.
+        """
+        raise NotImplementedError
+
+    def _get_control_size(self):
+        "Get the size of the underlying toolkit control"
+        raise NotImplementedError
+
+    def _create_gc(self, size, pix_format = "bgr24"):
+        "Create a Kiva graphics context of a specified size"
+        raise NotImplementedError
+
+    def _window_paint(self, event):
+        "Do a GUI toolkit specific screen update"
+        raise NotImplementedError
+
+    def set_pointer(self, pointer):
+        "Sets the current cursor shape"
+        raise NotImplementedError
+
+    def set_tooltip(self, tooltip):
+        "Sets the current tooltip for the window"
+        raise NotImplementedError
+
+    def _set_timer_interval(self, component, interval):
+        "Set up or cancel a timer for a specified component"
+        raise NotImplementedError
+
+    def _set_focus(self):
+        "Sets this window to have keyboard focus"
+        raise NotImplementedError
+
+
+    #------------------------------------------------------------------------
+    # Public methods
+    #------------------------------------------------------------------------
+
     def __init__(self, **traits):
         self.window = self
         self._scroll_origin = (0.0, 0.0)
@@ -221,62 +285,6 @@ class AbstractWindow ( HasTraits ):
         for attrib in attribs:
             state[attrib] = getattr(self, attrib)
         return state
-
-    #---------------------------------------------------------------------------
-    #  Abstract methods that must be implemented by concrete subclasses
-    #---------------------------------------------------------------------------
-
-    def set_drag_result(self, result):
-        """ Sets the result that should be returned to the system from the
-        handling of the current drag operation.  Valid result values are:
-        "error", "none", "copy", "move", "link", "cancel".  These have the
-        meanings associated with their WX equivalents.
-        """
-        raise NotImplementedError
-
-    def _capture_mouse(self):
-        "Capture all future mouse events"
-        raise NotImplementedError
-
-    def _release_mouse(self):
-        "Release the mouse capture"
-        raise NotImplementedError
-
-    def _create_mouse_event(self, event):
-        "Convert a GUI toolkit mouse event into a MouseEvent"
-        raise NotImplementedError
-
-    def _redraw(self, coordinates=None):
-        "Request a redraw of the window"
-        raise NotImplementedError
-
-    def _get_control_size(self):
-        "Get the size of the underlying toolkit control"
-        raise NotImplementedError
-
-    def _create_gc(self, size, pix_format = "bgr24"):
-        "Create a Kiva graphics context of a specified size"
-        raise NotImplementedError
-
-    def _window_paint(self, event):
-        "Do a GUI toolkit specific screen update"
-        raise NotImplementedError
-
-    def set_pointer(self, pointer):
-        "Sets the current cursor shape"
-        raise NotImplementedError
-
-    def set_tooltip(self, tooltip):
-        "Sets the current tooltip for the window"
-        raise NotImplementedError
-
-    def _set_timer_interval(self, component, interval):
-        "Set up or cancel a timer for a specified component"
-        raise NotImplementedError
-
-    def _set_focus(self):
-        "Sets this window to have keyboard focus"
-        raise NotImplementedError
 
     #---------------------------------------------------------------------------
     # Wire up the mouse event handlers

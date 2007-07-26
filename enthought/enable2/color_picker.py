@@ -18,8 +18,9 @@ from numpy import zeros, ones, floor, putmask, uint8, choose, concatenate, \
                   repeat, newaxis, arange
 
 # Enthought library imports
+from enthought.enable2.traits.rgba_color_trait import RGBAColor
 from enthought.kiva.traits.kiva_font_trait import KivaFont
-from enthought.traits.api import RGBAColor, Enum, Event, Str, true
+from enthought.traits.api import Enum, Event, Str, true
 
 # Local, relative imports
 from base import coordinates_to_bounds, HCENTER, LEFT, GraphicsContextArray
