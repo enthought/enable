@@ -3,7 +3,7 @@
 # Standard library imports
 
 # Qt imports
-from PyQt4.Qt import Qt
+from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QCursor, QImage, QPainter, QPixmap, QWheelEvent, QWidget
 
 # Enthought library imports
@@ -271,8 +271,3 @@ class Window(AbstractWindow):
     def _flip_y(self, y):
         "Converts between a Kiva and a Qt y coordinate"
         return int(self._size[1] - y - 1)
-    
-    
-
-
-

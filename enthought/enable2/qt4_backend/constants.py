@@ -1,5 +1,5 @@
 
-from PyQt4.Qt import Qt
+from PyQt4.QtCore import Qt
 
 BUTTON_NAME_MAP = {
     Qt.LeftButton: "left",
