@@ -6,12 +6,12 @@ from enthought.traits.api import Any, Delegate, Instance
 
 from enthought.enable2.api import Box, Component, Container
 from enthought.enable2.drawing.api import DragLine, DragPolygon, DragSegment, \
-                                      DrawingTool, PointLine, PointPolygon
+    DrawingTool, PointLine, PointPolygon, DrawingCanvas, ToolbarButton, \
+    DrawingCanvasToolbar
 from enthought.enable2.wx_backend.api import Window
 
 # Relative imports
-from demo_base import DemoFrame, demo_main
-from drawing_canvas import DrawingCanvas, ToolbarButton, DrawingCanvasToolbar
+from enthought.enable2.example_support import DemoFrame, demo_main
 
 
 class ResetButton(ToolbarButton):

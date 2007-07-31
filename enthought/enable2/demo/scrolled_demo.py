@@ -8,9 +8,7 @@ from enthought.traits.api import Array, Enum, Float, Instance, Trait, Tuple
 from enthought.enable2.api import Component, Scrolled, Container, Container,\
                                   Pointer, NativeScrollBar, Viewport
 from enthought.enable2.wx_backend.api import Window
-
-# Relative imports
-from demo_base import DemoFrame, demo_main
+from enthought.enable2.example_support import DemoFrame, demo_main
 
 
 class Circle(Component):

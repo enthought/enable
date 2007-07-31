@@ -5,11 +5,11 @@ around the screen.
 """
 import wx
 
-from enthought.traits.api import Float, Int, Tuple
+from enthought.traits.api import Float, Tuple
 
 from enthought.enable2.api import Component, Container, Pointer
 from enthought.enable2.wx_backend.api import Window
-from enthought.enable2.demo.demo_base import DemoFrame, demo_main
+from enthought.enable2.example_support import DemoFrame, demo_main
 
 class Box(Component):
     """
@@ -23,8 +23,6 @@ class Box(Component):
     
     fill_color = (0.8, 0.0, 0.1, 1.0)
     moving_color = (0.0, 0.8, 0.1, 1.0)
-    
-    move_count = Int(0)
     
     def _draw(self, gc, view_bounds=None, mode="default"):
         gc.save_state()
@@ -57,10 +55,6 @@ class Box(Component):
 
     def moving_mouse_move(self, event):
         self.position = [event.x-self.offset_x, event.y-self.offset_y]
-        self.move_count += 1
-        i, remainder = divmod(self.move_count, 10)
-        if remainder == 0:
-            self.padding = self.padding[0] + 1
         self.request_redraw()
         return
 
