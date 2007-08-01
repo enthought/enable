@@ -4,7 +4,7 @@ from PyQt4.QtCore import Qt
 BUTTON_NAME_MAP = {
     Qt.LeftButton: "left",
     Qt.RightButton: "right",
-    Qt.MiddleButton: "middle",
+    Qt.MidButton: "middle",
 }
 
 # TODO: Create bitmap cursor for the following:
