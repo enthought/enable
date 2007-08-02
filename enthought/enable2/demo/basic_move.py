@@ -48,7 +48,7 @@ class Box(Component):
 
     def normal_left_down(self, event):
         self.event_state = "moving"
-        self.pointer = self.moving_pointer
+        event.window.set_pointer(self.moving_pointer)
         self.offset_x = event.x - self.x
         self.offset_y = event.y - self.y
         return
@@ -60,7 +60,7 @@ class Box(Component):
 
     def moving_left_up(self, event):
         self.event_state = "normal"
-        self.pointer = self.normal_pointer
+        event.window.set_pointer(self.normal_pointer)
         self.request_redraw()
         return
     
