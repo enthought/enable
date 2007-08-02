@@ -44,6 +44,7 @@ from abstract_window import AbstractWindow
 
 from native_scrollbar import NativeScrollBar
 from scrolled import Scrolled
+from window import Window
 
 #from key_bindings import KeyBinding, KeyBindings
 #from color_picker import ColorPicker
