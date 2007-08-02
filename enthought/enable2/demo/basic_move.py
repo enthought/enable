@@ -1,15 +1,11 @@
 """
-This builds on the simple_wx_demo and allows a simple component to be moved
-around the screen.
-
+This allows a simple component to be moved around the screen.
 """
-import wx
+
+from enthought.enable2.example_support import DemoFrame, demo_main
 
 from enthought.traits.api import Float, Tuple
-
-from enthought.enable2.api import Component, Container, Pointer
-from enthought.enable2.wx_backend.api import Window
-from enthought.enable2.example_support import DemoFrame, demo_main
+from enthought.enable2.api import Component, Container, Pointer, Window
 
 class Box(Component):
     """

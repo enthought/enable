@@ -29,29 +29,21 @@ class _QtWindow(QtGui.QWidget):
     def __init__(self, enable_window, parent):
         QtGui.QWidget.__init__(self, parent)
 
-        #self._enable_window = enable_window
+        self._enable_window = enable_window
 
-        #pos = self.mapFromGlobal(QtGui.QCursor.pos())
-        #self.last_mouse_pos = (pos.x(), pos.y())
+        pos = self.mapFromGlobal(QtGui.QCursor.pos())
+        self.last_mouse_pos = (pos.x(), pos.y())
 
-        #self.setAttribute(QtCore.Qt.WA_OpaquePaintEvent)
-        #self.setFocusPolicy(QtCore.Qt.WheelFocus)
-        #self.setMouseTracking(True)
-
-    def _event(self, e):
-        print "Got event", e, e.type()
-        return False
+        self.setAttribute(QtCore.Qt.WA_OpaquePaintEvent)
+        self.setFocusPolicy(QtCore.Qt.WheelFocus)
+        self.setMouseTracking(True)
 
     def paintEvent(self, event):
-        print "In paintEvent()"
-        #self._enable_window._paint(event)
-        print "Leaving paintEvent()"
+        self._enable_window._paint(event)
 
     def resizeEvent(self, event):
         dx = self.width()
         dy = self.height()
-        print "In resizeEvent()", dx, dy
-        return
 
         self._enable_window.resized = (dx, dy)
 
@@ -67,20 +59,43 @@ class _QtWindow(QtGui.QWidget):
             if "v" in component.resizable:
                 component.outer_y = 0
                 component.outer_height = dy
-        print "Leaving resizeEvent()"
 
     def closeEvent(self, event):
-        print "In closeEvent()"
-        return
-
         if self._enable_window.component is not None:
             self._enable_window.component.cleanup(self)
             self._enable_window.component.parent = None
             self._enable_window.component.window = None
             self._enable_window.component = None
 
-        if self.control is not None:
-            self._enable_window.control = None
+        self._enable_window.control = None
+
+    #------------------------------------------------------------------------
+    # Qt Mouse event handlers
+    #------------------------------------------------------------------------
+
+    def enterEvent(self, event):
+        self._enable_window._handle_mouse_event("mouse_enter", event)
+
+    def leaveEvent(self, event):
+        self._enable_window._handle_mouse_event("mouse_leave", event)
+
+    def mouseDoubleClickEvent(self, event):
+        name = BUTTON_NAME_MAP[event.button()]
+        self._enable_window._handle_mouse_event(name + "_dclick", event)
+
+    def mouseMoveEvent(self, event):
+        self._enable_window._handle_mouse_event("mouse_move", event)
+
+    def mousePressEvent(self, event):
+        name = BUTTON_NAME_MAP[event.button()]
+        self._enable_window._handle_mouse_event(name + "_down", event)
+
+    def mouseReleaseEvent(self, event):
+        name = BUTTON_NAME_MAP[event.button()]
+        self._enable_window._handle_mouse_event(name + "_up", event)
+
+    def wheelEvent(self, event):
+        self._enable_window._handle_mouse_event("mouse_wheel", event)
 
 
 class Window(AbstractWindow):
@@ -99,35 +114,6 @@ class Window(AbstractWindow):
 
         if size is not None:
             self.control.resize(*size)
-        print "In __init__()", size
-
-    #------------------------------------------------------------------------
-    # Qt Mouse event handlers
-    #------------------------------------------------------------------------
-
-    def enterEvent(self, event):
-        self._handle_mouse_event("mouse_enter", event)
-
-    def leaveEvent(self, event):
-        self._handle_mouse_event("mouse_leave", event)
-
-    def mouseDoubleClickEvent(self, event):
-        name = BUTTON_NAME_MAP[event.button()]
-        self._handle_mouse_event(name + "_dclick", event)
-
-    def mouseMoveEvent(self, event):
-        self._handle_mouse_event("mouse_move", event)
-
-    def mousePressEvent(self, event):
-        name = BUTTON_NAME_MAP[event.button()]
-        self._handle_mouse_event(name + "_down", event)
-
-    def mouseReleaseEvent(self, event):
-        name = BUTTON_NAME_MAP[event.button()]
-        self._handle_mouse_event(name + "_up", event)
-
-    def wheelEvent(self, event):
-        self._handle_mouse_event("mouse_wheel", event)
 
     #------------------------------------------------------------------------
     # Qt Drag and drop event handlers
@@ -148,10 +134,6 @@ class Window(AbstractWindow):
     #------------------------------------------------------------------------
     # Qt keyboard event handlers
     #------------------------------------------------------------------------
-
-    def keyPressEvent(self, event):
-        # Enable doesn't have a key_down event yet, so ignore
-        pass
 
     def keyReleaseEvent(self, event):
         focus_owner = self.focus_owner
@@ -212,33 +194,30 @@ class Window(AbstractWindow):
         return
 
     def _create_mouse_event(self, event):
-        print "In _create_mouse_event()"
-        if event is not None:
+        # If the event (if there is one) doesn't contain the mouse position,
+        # modifiers and buttons then get sensible defaults.
+        try:
             x = event.x()
             y = event.y()
-            self.control.last_mouse_pos = (x,y)
-
-            # A bit crap, because AbstractWindow was written with WX in mind, and
-            # we treat wheel events like mouse events
-            if isinstance(event, QtGui.QWheelEvent):
-                delta = event.delta()
-                degrees_per_step = 15.0
-                mouse_wheel = delta / float(8 * degrees_per_step)
-            else:
-                mouse_wheel = 0
-
             modifiers = event.modifiers()
             buttons = event.buttons()
-
-        else:
-            # If no event was specified, make one up
+        except AttributeError:
             pos = self.control.mapFromGlobal(QtGui.QCursor.pos())
             x = pos.x()
             y = pos.y()
-            self.control.last_mouse_pos = (x,y)
-            mouse_wheel = 0
             modifiers = 0
             buttons = 0
+
+        self.control.last_mouse_pos = (x, y)
+
+        # A bit crap, because AbstractWindow was written with wx in mind, and
+        # we treat wheel events like mouse events.
+        if isinstance(event, QtGui.QWheelEvent):
+            delta = event.delta()
+            degrees_per_step = 15.0
+            mouse_wheel = delta / float(8 * degrees_per_step)
+        else:
+            mouse_wheel = 0
 
         return MouseEvent(x=x, y=self._flip_y(y), mouse_wheel=mouse_wheel,
                         alt_down = modifiers & QtCore.Qt.AltModifier,
@@ -250,7 +229,6 @@ class Window(AbstractWindow):
                         window = self)
 
     def _redraw(self, coordinates=None):
-        print "In _redraw()"
         if self.control:
             if coordinates is None:
                 self.control.update()
@@ -258,17 +236,14 @@ class Window(AbstractWindow):
                 self.control.update(*coordinates)
 
     def _get_control_size(self):
-        print "In _get_control_size()", self.control
         if self.control:
-            print "Returning:", self.control.width(), self.control.height()
             return (self.control.width(), self.control.height())
 
-        print "Returning None"
         return None
 
+    # FIXME
     #def _create_gc(self, size, pix_format="bgr24"):
     def _create_gc(self, size, pix_format="bgra32"):
-        print "In _create_gc(), pix_format:", pix_format
         gc = GraphicsContextEnable((size[0]+1, size[1]+1),
                 pix_format=pix_format, window=self)
         gc.translate_ctm(0.5, 0.5)
@@ -276,18 +251,14 @@ class Window(AbstractWindow):
         return gc
 
     def _window_paint(self, event):
-        #s = self._gc.pixel_map.convert_to_argb32string()
-        print "In _window_paint()"
-        #img = QtGui.QImage(s, self._gc.width(), self._gc.height(),
-        #        QtGui.QImage.Format_ARGB32)
-        #p = QtGui.QPainter(self.control)
-        #p.drawPixmap(0, 0, QtGui.QPixmap.fromImage(img))
-        print "Leaving _window_paint()"
+        s = self._gc.pixel_map.convert_to_argb32string()
+        img = QtGui.QImage(s, self._gc.width(), self._gc.height(),
+                QtGui.QImage.Format_ARGB32)
+        p = QtGui.QPainter(self.control)
+        p.drawPixmap(0, 0, QtGui.QPixmap.fromImage(img))
 
     def set_pointer(self, pointer):
-        print "In set_pointer()"
-        ptr = POINTER_MAP[pointer]
-        self.control.SetCursor(ptr)
+        self.control.setCursor(POINTER_MAP[pointer])
 
     def _set_timer_interval(self, component, interval):
         print "In _set_timer_interval()"
