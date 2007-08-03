@@ -69,6 +69,41 @@ class _QtWindow(QtGui.QWidget):
 
         self._enable_window.control = None
 
+    def keyReleaseEvent(self, event):
+        focus_owner = self._enable_window.focus_owner
+
+        if focus_owner is None:
+            focus_owner = self._enable_window.component
+
+            if focus_owner is None:
+                event.ignore()
+                return
+
+        # Convert the keypress to a standard enable2 key if possible, otherwise
+        # to text.
+        key = KEY_MAP.get(event.key())
+
+        if key is None:
+            key = unicode(event.text())
+
+            if not key:
+                return
+
+        # Use the last-seen mouse position as the coordinates of this event.
+        x, y = self.last_mouse_pos
+
+        modifiers = event.modifiers()
+
+        enable_event = KeyEvent(character=key, x=x,
+                y=self._enable_window._flip_y(y),
+                alt_down=bool(modifiers & QtCore.Qt.AltModifier),
+                shift_down=bool(modifiers & QtCore.Qt.ShiftModifier),
+                control_down=bool(modifiers & QtCore.Qt.ControlModifier),
+                event=event,
+                window=self._enable_window)
+
+        focus_owner.dispatch(enable_event, "key_pressed")
+
     #------------------------------------------------------------------------
     # Qt Mouse event handlers
     #------------------------------------------------------------------------
@@ -132,66 +167,23 @@ class Window(AbstractWindow):
         pass
 
     #------------------------------------------------------------------------
-    # Qt keyboard event handlers
-    #------------------------------------------------------------------------
-
-    def keyReleaseEvent(self, event):
-        focus_owner = self.focus_owner
-        if focus_owner is None:
-            focus_owner = self.component
-
-        key_code = event.key()
-        key = KEY_MAP.get(key_code, None)
-        if key is None:
-            if key_code >= 0x20 and key_code < 256:
-                # handle all of the standard ASCII table
-                key = chr(key_code)
-
-        modifiers = event.modifiers()
-
-        # Use the last-seen mouse position as the coordinates of this event
-        x, y =  self.last_mouse_pos
-
-        enable_event = KeyEvent(character = key,
-                            alt_down = modifiers & QtCore.Qt.AltModifier,
-                            shift_down = modifiers & QtCore.Qt.ShiftModifier,
-                            control_down = modifiers & QtCore.Qt.ControlModifier,
-                            x = x,
-                            y = self._flip_y(y),
-                            event = event,
-                            window = self)
-
-        if focus_owner is not None:
-            focus_owner.dispatch(enable_event, "key_pressed")
-        else:
-            event.ignore()
-
-    #------------------------------------------------------------------------
     # Implementations of abstract methods in AbstractWindow
     #------------------------------------------------------------------------
 
     def set_drag_result(self, result):
+        # FIXME
         print "In set_drag_result()"
         raise NotImplementedError
 
     def _capture_mouse ( self ):
         "Capture all future mouse events"
-        print "In _capture_mouse()"
-        # TODO: Investigate whether this is even necessary with Qt, since it
-        # grabs the mouse if a key is pressed.
-        if not self._mouse_captured:
-            self._mouse_captured = True
-            self.control.grabMouse()
-        return
+        # Nothing needed with Qt.
+        pass
 
     def _release_mouse ( self ):
         "Release the mouse capture"
-        print "In _release_mouse()"
-        # TODO: see TODO in _capture_mouse()
-        if self._mouse_captured:
-            self._mouse_captured = False
-            self.control.releaseMouse()
-        return
+        # Nothing needed with Qt.
+        pass
 
     def _create_mouse_event(self, event):
         # If the event (if there is one) doesn't contain the mouse position,
@@ -220,13 +212,13 @@ class Window(AbstractWindow):
             mouse_wheel = 0
 
         return MouseEvent(x=x, y=self._flip_y(y), mouse_wheel=mouse_wheel,
-                        alt_down = modifiers & QtCore.Qt.AltModifier,
-                        shift_down = modifiers & QtCore.Qt.ShiftModifier,
-                        control_down = modifiers & QtCore.Qt.ControlModifier,
-                        left_down = buttons & QtCore.Qt.LeftButton,
-                        middle_down = buttons & QtCore.Qt.MidButton,
-                        right_down = buttons & QtCore.Qt.RightButton,
-                        window = self)
+                alt_down=bool(modifiers & QtCore.Qt.AltModifier),
+                shift_down=bool(modifiers & QtCore.Qt.ShiftModifier),
+                control_down=bool(modifiers & QtCore.Qt.ControlModifier),
+                left_down=bool(buttons & QtCore.Qt.LeftButton),
+                middle_down=bool(buttons & QtCore.Qt.MidButton),
+                right_down=bool(buttons & QtCore.Qt.RightButton),
+                window=self)
 
     def _redraw(self, coordinates=None):
         if self.control:
@@ -261,15 +253,14 @@ class Window(AbstractWindow):
         self.control.setCursor(POINTER_MAP[pointer])
 
     def _set_timer_interval(self, component, interval):
+        # FIXME
         print "In _set_timer_interval()"
         raise NotImplementedError
 
     def set_tooltip(self, tooltip):
-        print "In set_tooltip()"
-        pass
+        self.control.setToolTip(tooltip)
 
     def _set_focus(self):
-        print "In _set_focus()"
         self.control.setFocus(QtCore.Qt.OtherFocusReason)
 
     #------------------------------------------------------------------------
