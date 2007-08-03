@@ -46,13 +46,14 @@ class Shape(Component):
     def normal_left_down(self, event):
         """ Event handler. """
 
-        self.container.bring_to_top(self)
-        
         self.event_state = 'moving'
+        event.window.mouse_owner = self
         event.window.set_pointer(self.moving_pointer)
-        
+
         self._offset_x = event.x - self.x
         self._offset_y = event.y - self.y
+
+        self.container.bring_to_top(self)
 
         return
 
@@ -70,6 +71,8 @@ class Shape(Component):
         self.event_state = 'normal'
 
         event.window.set_pointer(self.normal_pointer)
+        event.window.mouse_owner = None
+        
         self.request_redraw()
 
         return
