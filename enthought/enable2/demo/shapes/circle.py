@@ -43,6 +43,9 @@ class Circle(Shape):
         x, y = self.position
         gc.arc(x + self.radius, y + self.radius, self.radius, 0, 0, True)
         gc.fill_path()
+
+        # Draw the shape's text.
+        self._draw_text(gc)
         
         gc.restore_state()
 

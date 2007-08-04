@@ -7,7 +7,7 @@ from shape import Shape
 
 class Box(Shape):
     """ A moveable box shape. """
-        
+
     ###########################################################################
     # Protected 'Component' interface.
     ###########################################################################
@@ -23,7 +23,10 @@ class Box(Shape):
         x, y = self.position
         gc.rect(x, y, dx, dy)
         gc.fill_path()
-        
+
+        # Draw the shape's text.
+        self._draw_text(gc)
+
         gc.restore_state()
 
         return

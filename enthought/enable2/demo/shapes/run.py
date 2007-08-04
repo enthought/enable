@@ -37,29 +37,29 @@ class MyFrame(DemoFrame):
         box1 = Box(
             bounds     = [100, 100],
             position   = [50, 50],
-            padding    = 15,
-            fill_color = 'red'
+            fill_color = 'red',
+            text       = 'Box 1'
         )
         
         box2 = Box(
             bounds     = [100, 100],
             position   = [150, 150],
-            padding    = 15,
-            fill_color = 'green'
+            fill_color = 'green',
+            text       = 'Box 2'
         )
         
         circle1 = Circle(
             radius     = 50,
             position   = [250,250],
-            padding    = 15,
-            fill_color = 'blue'
+            fill_color = 'blue',
+            text       = 'Circle 1'
         )
 
         circle2 = Circle(
             radius     = 50,
             position   = [350,350],
-            padding    = 15,
-            fill_color = 'yellow'
+            fill_color = 'yellow',
+            text       = 'Circle 2'
         )
 
         return box1, box2, circle1, circle2
