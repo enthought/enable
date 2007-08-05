@@ -1,10 +1,13 @@
 """ The base class for moveable shapes. """
 
 
+# Standard library imports.
+import math
+
 # Enthought library imports.
 from enthought.enable2.api import ColorTrait, Component, Pointer
 from enthought.kiva import Font, MODERN
-from enthought.traits.api import Float, Str
+from enthought.traits.api import Float, Property, Str, Tuple
 
 
 class Shape(Component):
@@ -17,6 +20,9 @@ class Shape(Component):
     
     #### 'Shape' interface ####################################################
 
+    # The coordinates of the centre of the shape.
+    centre = Property(Tuple)
+    
     # The fill color.
     fill_color = ColorTrait
 
@@ -53,14 +59,16 @@ class Shape(Component):
     def normal_left_down(self, event):
         """ Event handler. """
 
-        self.event_state = 'moving'
-        event.window.mouse_owner = self
-        event.window.set_pointer(self.moving_pointer)
-        
-        self._offset_x = event.x - self.x
-        self._offset_y = event.y - self.y
+        if self.is_in(event.x, event.y):
+            self.event_state = 'moving'
+            
+            event.window.mouse_owner = self
+            event.window.set_pointer(self.moving_pointer)
+            
+            self._offset_x = event.x - self.x
+            self._offset_y = event.y - self.y
 
-        self.container.bring_to_top(self)
+            self.container.bring_to_top(self)
 
         return
 
@@ -95,6 +103,17 @@ class Shape(Component):
     # 'Shape' interface
     ###########################################################################
 
+    def _get_centre(self):
+        """ Property getter. """
+
+        dx, dy = self.bounds
+        ox, oy = self.position
+
+        cx = ox + dx/2
+        cy = oy + dy/2
+
+        return cx, cy
+    
     def _text_default(self):
         """ Trait initializer. """
 
@@ -104,6 +123,28 @@ class Shape(Component):
     # Protected 'Shape' interface
     ###########################################################################
 
+    def _distance_between(self, (x1, y1), (x2, y2)):
+        """ Return the distance between two points. """
+
+        return math.sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2))
+        
+    def _draw_text(self, gc):
+        """ Draw the shape's text. """
+
+        if len(self.text) > 0:
+            gc.set_fill_color(self._get_text_color(self.event_state))
+
+            gc.set_font(Font(family=MODERN, size=16))
+            tx, ty, tw, th = gc.get_text_extent(self.text)
+            
+            dx, dy = self.bounds
+            x, y = self.position
+            gc.set_text_position(x+(dx-tw)/2, y+(dy-th)/2)
+            
+            gc.show_text(self.text)
+
+        return
+    
     def _get_fill_color(self, event_state):
         """ Return the fill color based on the event state. """
 
@@ -128,21 +169,4 @@ class Shape(Component):
 
         return text_color
 
-    def _draw_text(self, gc):
-        """ Draw the shape's text. """
-
-        if len(self.text) > 0:
-            gc.set_fill_color(self._get_text_color(self.event_state))
-
-            gc.set_font(Font(family=MODERN, size=16))
-            tx, ty, tw, th = gc.get_text_extent(self.text)
-            
-            dx, dy = self.bounds
-            x, y = self.position
-            gc.set_text_position(x+(dx-tw)/2, y+(dy-th)/2)
-            
-            gc.show_text(self.text)
-
-        return
-    
 #### EOF ######################################################################

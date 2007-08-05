@@ -30,6 +30,15 @@ class Circle(Shape):
         return
 
     ###########################################################################
+    # 'Component' interface.
+    ###########################################################################
+
+    def is_in(self, x, y):
+        """ Return True if a point is considered to be 'in' the component. """
+
+        return self._distance_between(self.centre, (x, y)) <= self.radius
+
+    ###########################################################################
     # Protected 'Component' interface.
     ###########################################################################
 
