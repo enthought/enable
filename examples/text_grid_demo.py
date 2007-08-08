@@ -1,16 +1,17 @@
 
 from numpy import array
 
-from enthought.enable2.example_support import DemoFrame, demo_main
 
-from enthought.enable2.api import Container, Window
 from enthought.enable2.text_grid import TextGrid
+from enthought.enable2.wx_backend.api import Window
+from enthought.enable2.api import Container
+from enthought.enable2.example_support import DemoFrame, demo_main
 
 class MyFrame(DemoFrame):
     def _create_window(self):
         
         strings = array([["apple", "banana", "cherry", "durian"],
-                         ["eggfruit", "fig", "grape", "honeydew"]])
+                         ["eggfruit", "fig", "grape", "huckleberry"]])
         grid = TextGrid(string_array=strings)
         container = Container(bounds=[500,100])
         container.add(grid)

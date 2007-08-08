@@ -8,7 +8,12 @@ from base import transparent_color, add_rectangles, intersect_bounds, empty_rect
 from component import Component
 from container import Container
 from viewport import Viewport
-from native_scrollbar import NativeScrollBar
+
+# This is crappy; we need to make this be backend-independent.
+try:
+    from wx_backend import NativeScrollBar
+except:
+    NativeScrollBar = None
 
 
 class Scrolled(Container):

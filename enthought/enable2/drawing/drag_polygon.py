@@ -2,10 +2,10 @@
 
 from enthought.enable2.primitives.api import Polygon
 from enthought.enable2.api import Pointer
-from enthought.pyface.action.api import MenuManager
-from enthought.traits.api import Delegate, Instance
+from enthought.traits.api import Any, Delegate, Instance
 
 from drawing_tool import DrawingTool
+
 
 class DragPolygon(DrawingTool):
     """ A drag drawn polygon. """
@@ -39,8 +39,8 @@ class DragPolygon(DrawingTool):
     #### Miscellaneous. ####
 
     # The context menu for the polygon.
-    menu = Instance(MenuManager)
-    
+    menu = Instance(Any)
+
 
     def reset(self):
         self.vertex_color = (0,0,0,0)
@@ -71,23 +71,25 @@ class DragPolygon(DrawingTool):
 
     def complete_right_down ( self, event ):
         """ Do the context menu if available. """
-        if self.menu is not None:
+
+        # Only do something if our menu value has a create menu method.
+        if self.menu is not None and hasattr(self.menu, 'create_menu'):
             if self._is_in((event.x + self.x, event.y - self.y)):
                 menu = self.menu.create_menu(event.window.control)
                 ### FIXME : The call to _flip_y is necessary but inappropriate.
                 menu.show(event.x, event.window._flip_y(event.y))
         return
-        
+
     #### 'drawing' state ######################################################
 
     def drawing_draw ( self, gc ):
         """ Draw the polygon while in 'drawing' state. """
-        
+
         gc.save_state()
         self.poly.border_dash = (4.0, 2.0)
         self.poly._draw_open( gc )
         gc.restore_state()
-        
+
         return
 
     def drawing_left_up ( self, event ):
@@ -95,11 +97,11 @@ class DragPolygon(DrawingTool):
 
         self.event_state = 'complete'
         self.pointer = self.complete_pointer
-        
+
         self.request_redraw()
 
         self.complete = True
-        
+
         return
 
     def drawing_mouse_move ( self, event ):
@@ -111,7 +113,7 @@ class DragPolygon(DrawingTool):
         if last_point != (event.x + self.x, event.y - self.y):
             self.poly.model.points.append((event.x + self.x, event.y - self.y))
             self.request_redraw()
-            
+
         return
 
     #### 'normal' state #######################################################
@@ -127,7 +129,7 @@ class DragPolygon(DrawingTool):
         self.request_redraw()
 
         return
-    
+
     def normal_mouse_move ( self, event ):
         """ Handle the mouse moving in the 'normal' state. """
 

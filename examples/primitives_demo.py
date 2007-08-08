@@ -2,14 +2,14 @@
 This demo is a canvas that showcases some of the drawing primitives in Enable.
 """
 
-from enthought.enable2.example_support import DemoFrame, demo_main
+from enthought.traits.api import Any, Delegate, Instance
 
-from enthought.enable2.api import Box, Component, Container, Window
+from enthought.enable2.api import Box, Component, Container
 from enthought.enable2.drawing.api import DragLine, DragPolygon, DragSegment, \
     DrawingTool, PointLine, PointPolygon, DrawingCanvas, ToolbarButton, \
     DrawingCanvasToolbar
-
-from enthought.traits.api import Any, Delegate, Instance
+from enthought.enable2.wx_backend.api import Window
+from enthought.enable2.example_support import DemoFrame, demo_main
 
 
 class ResetButton(ToolbarButton):

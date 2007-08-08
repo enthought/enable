@@ -21,16 +21,8 @@
 from enthought.traits.api import Trait, TraitError, TraitFactory
 from enthought.traits.trait_base import SequenceTypes
 
-from enthought.etsconfig.api import ETSConfig
-
-if ETSConfig.toolkit == 'wx':
-    from enthought.traits.ui.wx.color_trait import standard_colors
-elif ETSConfig.toolkit == 'qt4':
-    # FIXME
-    #from enthought.traits.ui.qt4.color_trait import standard_colors
-    standard_colors = {}
-else:
-    raise ImportError, "no TraitsUI implementation for the '%s' toolkit" % ETSConfig.toolkit
+# This wx specific stuff has got to go.
+from enthought.traits.ui.wx.color_trait import standard_colors
 
 
 #-------------------------------------------------------------------------------
@@ -99,14 +91,7 @@ def RGBAColorFunc(*args, **metadata):
     For wxPython, (0.0, 0.0, 0.0, 1.0) (that is, opaque white)
     """
     # The editor is commented out for now to avoid a circular import.
-    if ETSConfig.toolkit == 'wx':
-        from enthought.enable2.traits.ui.wx.rgba_color_editor import RGBAColorEditor
-    elif ETSConfig.toolkit == 'qt4':
-        # FIXME
-        #from enthought.enable2.traits.ui.qt4.rgba_color_editor import RGBAColorEditor
-        RGBAColorEditor = None
-    else:
-        raise ImportError, "no enable2 implementation for the '%s' toolkit" % ETSConfig.toolkit
+    from enthought.enable2.traits.ui.wx.rgba_color_editor import RGBAColorEditor
     
     return Trait( 'white', convert_to_color, rgba_standard_colors, 
            editor = RGBAColorEditor )

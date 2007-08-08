@@ -4,11 +4,14 @@ component is created and added to a container.
 """
 
 
+from enthought.enable2.api import Component, Container
+from enthought.enable2.wx_backend.api import Window
 from enthought.enable2.example_support import DemoFrame, demo_main
-from enthought.enable2.api import Component, Container, Window
 
 class Box(Component):
-    def _draw(self, gc, view_bounds=None, mode="default"):
+    resizable = ""
+
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         gc.save_state()
         gc.set_fill_color((1.0, 0.0, 0.0, 1.0))
         dx, dy = self.bounds

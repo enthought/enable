@@ -1,0 +1,7 @@
+* Remove the imports of enthought.tkenable (which does not exist.) from the
+    deprecated demos.
+* See if we can remove the dependency on enthought.util.  Currently, this is
+    only required by two files:
+        key_bindings.py imports enthought.util.wx.dialog
+        wx_backend/window imports enthought.util.wx.drag_and_drop
+

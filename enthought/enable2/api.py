@@ -20,7 +20,7 @@ from colors import color_table, transparent_color, ColorTrait, black_color_trait
                    white_color_trait, transparent_color_trait, ColorEditorFactory
 
 from events import drag_event_trait, key_event_trait, mouse_event_trait, \
-    BasicEvent, DragEvent, KeyEvent, MouseEvent
+    BasicEvent, BlobEvent, DragEvent, KeyEvent, MouseEvent
 from interactor import Interactor
 
 from component import Component
@@ -42,9 +42,15 @@ from graphics_context import GraphicsContextEnable
 from abstract_window import AbstractWindow
 #from controls import LabelTraits, Label, CheckBox, Radio
 
-from native_scrollbar import NativeScrollBar
-from scrolled import Scrolled
-from window import Window
+#This is not the way we want it, but we need to come up 
+#with a good system of handing imports when we have multiple
+#underlying widget sets.
+try:
+    from wx_backend.scrollbar import NativeScrollBar
+    from scrolled import Scrolled
+except:
+    NativeScrollBar = None
+    Scrolled = None
 
 #from key_bindings import KeyBinding, KeyBindings
 #from color_picker import ColorPicker

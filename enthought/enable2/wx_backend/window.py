@@ -6,7 +6,6 @@ toolkit, based on the kiva agg driver.
 import sys
 import time
 import wx
-import gc
 
 WidgetClass = wx.Window
 
@@ -386,13 +385,15 @@ class Window ( AbstractWindow ):
         if focus_owner is not None:
             control_down = event.ControlDown()
             key_code     = event.GetKeyCode()
-            if (1 <= key_code <= 26) and control_down and not key_map.has_key(key_code):
-                key = chr( key_code + 96 )
-            else:
+            key = None
+            if control_down:
+                if (1 <= key_code <= 26):
+                    key = chr( key_code + 96 )
+            elif key_map.has_key(key_code):
                 key = key_map.get( key_code )
-                if key is None:
-                    if key_code >= 0 and key_code < 256:
-                        key = chr( key_code )
+            if key is None:
+                if key_code >= 0 and key_code < 256:
+                    key = chr( key_code )
 
             # Use the last-seen mouse coordinates instead of GetX/GetY due
             # to wx bug.
@@ -569,6 +570,12 @@ class Window ( AbstractWindow ):
         "Sets the keyboard focus to this window"
         self.control.SetFocus()
         return
+
+    def screen_to_window(self, x, y):
+        pt = wx.Point(x,y)
+        x,y = self.control.ScreenToClient(pt)
+        y = self._flip_y(y)
+        return x,y
     
     def set_drag_result(self, result):
         if result not in drag_results_map:
