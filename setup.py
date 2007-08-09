@@ -17,8 +17,6 @@ def etsdep(p, min, max=None, literal=False):
 
 
 # Declare our ETS project dependencies.
-ENABLE = etsdep('enthought.enable', '1.9b1')
-ENABLE_WX = etsdep('enthought.enable[wx]', '1.9b1')
 KIVA_TRAITS = etsdep('enthought.kiva[traits]', '2.0b1')
 TRAITS_UI = etsdep('enthought.traits[ui]', '2.0b1')
 TRAITSUIWX = etsdep('enthought.traits.ui.wx', '2.0b1')
@@ -31,7 +29,6 @@ setup(
     description  = 'Kiva-based GUI Window and Component package',
     extras_require = {
         "wx": [
-            ENABLE_WX,
             TRAITSUIWX,
             UTIL,
             ],
@@ -44,7 +41,6 @@ setup(
         },
     include_package_data = True,
     install_requires = [
-        ENABLE,
         KIVA_TRAITS,
         TRAITS_UI,
         ],

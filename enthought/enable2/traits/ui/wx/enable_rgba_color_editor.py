@@ -20,8 +20,8 @@ and the color editor factory.
 
 import wx
 
-from enthought.enable import ColorPicker
-from enthought.enable.wx import Window
+from enthought.enable2.color_picker import ColorPicker
+from enthought.enable2.wx_backend import Window
 from enthought.enable2.traits.ui.wx.rgba_color_editor import \
     ToolkitEditorFactory as EditorFactory
 from enthought.kiva.traits.kiva_font_trait import KivaFont
