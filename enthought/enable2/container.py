@@ -1,5 +1,8 @@
 """ Defines the basic Container class """
 
+# Major library imports
+import warnings
+
 # Enthought library imports
 from enthought.traits.api \
         import Any, Enum, false, HasTraits, Instance, List, Property, \
@@ -131,6 +134,10 @@ class Container(Component):
             self.add(component)
         if "bounds" in traits.keys() or "auto_size" not in traits.keys():
             self.auto_size = False
+
+        if 'intercept_events' in traits:
+            warnings.warn("'intercept_events' is a deprecated trait",
+                    warnings.DeprecationWarning)
         return
         
     def add(self, *components):
@@ -316,18 +323,11 @@ class Container(Component):
         gc.set_antialias(False)
 
         self._draw_container(gc, mode)
+        self._draw_background(gc, view_bounds, mode)
+        self._draw_underlay(gc, view_bounds, mode)
         self._draw_children(gc, view_bounds, mode) #This was children_draw_mode
         self._draw_overlays(gc, view_bounds, mode)
         gc.restore_state()
-        return
-    
-        # The container's annotation and overlay layers draw over those of 
-        # its components.
-        if layer in ("annotation", "overlay"):
-            my_handler = getattr(self, "_draw_container_" + layer, None)
-            if my_handler:
-                my_handler(gc, view_bounds, mode)
-        
         return
 
     def _draw_container(self, gc, mode="default"):
@@ -506,9 +506,6 @@ class Container(Component):
         name, e.g. "_left_down" or "_window_enter".
         """
 
-        if self.intercept_events:
-            self._container_handle_mouse_event(event, suffix)
-        
         if not event.handled:
             components = self.components_at(event.x, event.y)
             
@@ -518,63 +515,67 @@ class Container(Component):
             try:
                 new_component_set = set(components)
                 
-                # Notify the previous listening components of a mouse or 
+                # For "real" mouse events (i.e., not pre_mouse_* events), 
+                # notify the previous listening components of a mouse or 
                 # drag leave
-                components_left = self._prev_event_handlers - new_component_set
-                if components_left:
-                    if isinstance(event, MouseEvent):
-                        leave_event = event
-                        leave_suffix = "mouse_leave"
-                    elif isinstance(event, DragEvent):
-                        leave_event = event
-                        leave_suffix = "drag_leave"
-                    #elif isinstance(event, BlobEvent):
-                    #    leave_event = event
-                    #    leave_suffix = "blob_leave"
-                    else:
-                        # TODO: think of a better way to handle this rare case?
-                        leave_event = MouseEvent(x=event.x, y=event.y, 
-                                                 window=event.window)
-                        leave_suffix = "mouse_leave"
-                    
-                    for component in components_left:
-                        component.dispatch(leave_event, leave_suffix)
-                    event.handled = False
-                
-                # Notify new components of a mouse enter, if the event is 
-                # not a mouse_leave or a drag_leave
-                if suffix not in ("mouse_leave", "drag_leave"):
-                    components_entered = \
-                        new_component_set - self._prev_event_handlers
-                    if components_entered:
-                        enter_event = None
+                if not suffix.startswith("pre_"):
+                    components_left = self._prev_event_handlers - new_component_set
+                    if components_left:
                         if isinstance(event, MouseEvent):
-                            enter_event = event
-                            enter_suffix = "mouse_enter"
+                            leave_event = event
+                            leave_suffix = "mouse_leave"
                         elif isinstance(event, DragEvent):
-                            enter_event = event
-                            enter_suffix = "drag_enter"
+                            leave_event = event
+                            leave_suffix = "drag_leave"
                         #elif isinstance(event, BlobEvent):
-                        #    enter_event = event
-                        #    enter_suffix = "blob_enter"
-                        if enter_event:
-                            for component in components_entered:
-                                component.dispatch(enter_event, enter_suffix)
-                                event.handled = False
+                        #    leave_event = event
+                        #    leave_suffix = "blob_leave"
+                        else:
+                            # TODO: think of a better way to handle this rare case?
+                            leave_event = MouseEvent(x=event.x, y=event.y, 
+                                                     window=event.window)
+                            leave_suffix = "mouse_leave"
+                        
+                        for component in components_left:
+                            component.dispatch(leave_event, leave_suffix)
+                        event.handled = False
+                    
+                    # Notify new components of a mouse enter, if the event is 
+                    # not a mouse_leave or a drag_leave
+                    if suffix not in ("mouse_leave", "drag_leave"):
+                        components_entered = \
+                            new_component_set - self._prev_event_handlers
+                        if components_entered:
+                            enter_event = None
+                            if isinstance(event, MouseEvent):
+                                enter_event = event
+                                enter_suffix = "mouse_enter"
+                            elif isinstance(event, DragEvent):
+                                enter_event = event
+                                enter_suffix = "drag_enter"
+                            #elif isinstance(event, BlobEvent):
+                            #    enter_event = event
+                            #    enter_suffix = "blob_enter"
+                            if enter_event:
+                                for component in components_entered:
+                                    component.dispatch(enter_event, enter_suffix)
+                                    event.handled = False
                 
                 # Handle the actual event
                 # Only add event handlers to the list of previous event handlers
-                # if they actually receive the event.
+                # if they actually receive the event (and the event is not a
+                # pre_* event.
                 self._prev_event_handlers = set()
                 for component in components:
                     component.dispatch(event, suffix)
-                    self._prev_event_handlers.add(component)
+                    if not suffix.startswith("pre_"):
+                        self._prev_event_handlers.add(component)
                     if event.handled:
                         break
             finally:
                 event.pop()
 
-            if not event.handled and not self.intercept_events:
+            if not event.handled:
                 self._container_handle_mouse_event(event, suffix)
             
         return
