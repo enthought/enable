@@ -59,7 +59,7 @@ setup(
         ],
     test_suite = 'nose.collector',
     url = 'http://code.enthought.com/ets',
-    version = '2.0b2',
+    version = '3.0.0a1',
     zip_safe = False,
     )
 
