@@ -567,7 +567,8 @@ class Container(Component):
                 # Only add event handlers to the list of previous event handlers
                 # if they actually receive the event (and the event is not a
                 # pre_* event.
-                self._prev_event_handlers = set()
+                if not suffix.startswith("pre_"):
+                    self._prev_event_handlers = set()
                 for component in components:
                     component.dispatch(event, suffix)
                     if not suffix.startswith("pre_"):
