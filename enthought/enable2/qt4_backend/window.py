@@ -261,7 +261,7 @@ class Window(AbstractWindow):
         self.control.setToolTip(tooltip)
 
     def _set_focus(self):
-        self.control.setFocus(QtCore.Qt.OtherFocusReason)
+        self.control.setFocus()
 
     #------------------------------------------------------------------------
     # Private methods
