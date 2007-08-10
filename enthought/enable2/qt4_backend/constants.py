@@ -1,5 +1,5 @@
 
-from PyQt4.Qt import Qt
+from PyQt4.QtCore import Qt
 
 BUTTON_NAME_MAP = {
     Qt.LeftButton: "left",
@@ -8,7 +8,7 @@ BUTTON_NAME_MAP = {
 }
 
 # TODO: Create bitmap cursor for the following:
-#   right arrow
+#   arrow wait
 #   bullseye
 #   char
 #   magnifier
@@ -16,12 +16,12 @@ BUTTON_NAME_MAP = {
 #   pencil
 #   point left
 #   point right
+#   right arrow
 #   spray can
-#   arrow wait
 
 POINTER_MAP = {
    'arrow':            Qt.ArrowCursor,
-   'right arrow':      Qt.ArrowCursor,
+   'arrow wait':       Qt.BusyCursor,
    'blank':            Qt.BlankCursor,
    'bullseye':         Qt.CrossCursor,
    'char':             Qt.IBeamCursor,
@@ -37,20 +37,20 @@ POINTER_MAP = {
    'point left':       Qt.ArrowCursor,
    'point right':      Qt.ArrowCursor,
    'question arrow':   Qt.WhatsThisCursor,
+   'right arrow':      Qt.ArrowCursor,
    'right button':     Qt.ArrowCursor,
-   'size top':         Qt.SizeVerCursor,
    'size bottom':      Qt.SizeVerCursor,
+   'size bottom left': Qt.SizeBDiagCursor,
+   'size bottom right':Qt.SizeFDiagCursor,
    'size left':        Qt.SizeHorCursor,
    'size right':       Qt.SizeHorCursor,
-   'size top right':   Qt.SizeBDiagCursor,
-   'size bottom left': Qt.SizeBDiagCursor,
+   'size top':         Qt.SizeVerCursor,
    'size top left':    Qt.SizeFDiagCursor,
-   'size bottom right':Qt.SizeFDiagCursor,
+   'size top right':   Qt.SizeBDiagCursor,
    'sizing':           Qt.SizeAllCursor,
    'spray can':        Qt.CrossCursor,
    'wait':             Qt.WaitCursor,
    'watch':            Qt.BusyCursor,
-   'arrow wait':       Qt.BusyCursor,
 }
 
 KEY_MAP = {
@@ -74,11 +74,12 @@ KEY_MAP = {
     Qt.Key_Down: "Down",
     Qt.Key_PageUp: "Page Up",
     Qt.Key_PageDown: "Page Down",
-    Qt.Key_Shift: "Shift",
-    Qt.Key_Control: "Control",
+    # We don't pass these on so we don't bother having entries for them.
+    #Qt.Key_Shift: "Shift",
+    #Qt.Key_Control: "Control",
+    #Qt.Key_Alt: "Alt",
+    #Qt.Key_AltGr: "Alt",
     Qt.Key_Meta: "Meta",
-    Qt.Key_Alt: "Alt",
-    Qt.Key_AltGr: "Alt",
     Qt.Key_CapsLock: "Caps Lock",
     Qt.Key_NumLock: "Num Lock",
     Qt.Key_ScrollLock: "Scroll Lock",

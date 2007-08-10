@@ -1,5 +1,0 @@
-[wx]
-#enthought.enable2.colors = * -- import wrapped in a try...except
-enthought.enable2.key_bindings = *
-enthought.enable2.traits = *
-enthought.enable2.wx_backend = *

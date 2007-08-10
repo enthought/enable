@@ -11,10 +11,11 @@ as the user drags the circles around.
 """
 from numpy import array
 
-from enthought.traits.api import Any, Array, Enum, Float, Instance, Trait, Tuple
-from enthought.enable2.api import Container, Component, Container, Pointer, str_to_font
-from enthought.enable2.wx_backend.api import Window
 from enthought.enable2.example_support import DemoFrame, demo_main
+
+from enthought.enable2.api import Container, Component, Container, Pointer, str_to_font, Window
+
+from enthought.traits.api import Any, Array, Enum, Float, Instance, Trait, Tuple
 
 
 class MyFilledContainer(Container):

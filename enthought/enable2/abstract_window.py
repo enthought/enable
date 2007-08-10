@@ -118,10 +118,6 @@ class AbstractWindow ( HasTraits ):
         "Sets this window to have keyboard focus"
         raise NotImplementedError
 
-    def screen_to_window(self, x, y):
-        "Returns local window coordinates for given global screen coordinates"
-        raise NotImplementedError
-
 
     #------------------------------------------------------------------------
     # Public methods
@@ -218,7 +214,6 @@ class AbstractWindow ( HasTraits ):
                     if not self._prev_event_handler.is_in(mouse_event.x, mouse_event.y):
                         self._prev_event_handler.dispatch(mouse_event, "pre_mouse_leave")
                         self._prev_event_handler.dispatch(mouse_event, "mouse_leave")
-                        self._prev_event_handler = None
 
                 if self.component.is_in(mouse_event.x, mouse_event.y):
                     # Test to see if we need to generate a mouse_enter event

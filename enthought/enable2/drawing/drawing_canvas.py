@@ -36,7 +36,7 @@ class Button(Component):
         """
         pass
 
-    def _draw_mainlayer(self, gc, view_bounds, mode="default"):
+    def _draw(self, gc, view_bounds, mode="default"):
         if self.button_state == "up":
             self.draw_up(gc, view_bounds)
         else:

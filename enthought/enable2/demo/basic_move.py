@@ -1,15 +1,11 @@
 """
-This builds on the simple_wx_demo and allows a simple component to be moved
-around the screen.
-
+This allows a simple component to be moved around the screen.
 """
-import wx
 
-from enthought.traits.api import Float, Int, Tuple
-
-from enthought.enable2.api import Component, Container, Pointer
-from enthought.enable2.wx_backend.api import Window
 from enthought.enable2.example_support import DemoFrame, demo_main
+
+from enthought.traits.api import Float, Tuple
+from enthought.enable2.api import Component, Container, Pointer, Window
 
 class Box(Component):
     """
@@ -23,10 +19,8 @@ class Box(Component):
     
     fill_color = (0.8, 0.0, 0.1, 1.0)
     moving_color = (0.0, 0.8, 0.1, 1.0)
-
-    resizable = ""
     
-    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
+    def _draw(self, gc, view_bounds=None, mode="default"):
         gc.save_state()
         if self.event_state == "moving":
             gc.set_fill_color(self.moving_color)

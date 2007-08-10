@@ -1,6 +1,5 @@
 from setuptools import setup, find_packages
 
-
 # Function to convert simple ETS project names and versions to a requirements
 # spec that works for both development builds and stable builds.  Allows
 # a caller to specify a max version, which is intended to work along with
@@ -24,19 +23,30 @@ UTIL = etsdep('enthought.util', '2.0b1')
 
 
 setup(
-    author = 'Enthought, Inc',
-    author_email = 'info@enthought.com',
+    name = 'enthought.enable2',
+    version = '3.0a1',
     description  = 'Kiva-based GUI Window and Component package',
+    author       = 'Enthought, Inc',
+    author_email = 'info@enthought.com',
+    url          = 'http://code.enthought.com/ets',
+    license      = 'BSD',
+    zip_safe     = False,
+    packages = find_packages(),
+    include_package_data = True,
+    install_requires = [
+        "enthought.etsconfig",
+        "enthought.kiva",
+        "enthought.traits",
+    ],
     extras_require = {
         "wx": [
             TRAITSUIWX,
             UTIL,
             ],
-
         # All non-ets dependencies should be in this extra to ensure users can
         # decide whether to require them or not.
         'nonets': [
-            "numpy>=1.0.2",
+            'numpy >=1.0.2',
             ],
         },
     include_package_data = True,

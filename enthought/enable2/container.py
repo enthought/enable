@@ -4,15 +4,14 @@
 import warnings
 
 # Enthought library imports
-from enthought.traits.api \
-        import Any, Enum, false, HasTraits, Instance, List, Property, \
-               Trait, true, Tuple
+from enthought.traits.api import Any, false, HasTraits, Instance, List, Property, \
+                                 Trait, true, Tuple
 
 # Local, relative imports
 from base import empty_rectangle, intersect_bounds
 from component import Component
 from enable_traits import border_size_trait
-from events import BlobEvent, DragEvent, MouseEvent
+from events import DragEvent, MouseEvent
 from abstract_layout_controller import AbstractLayoutController
 
 
@@ -111,7 +110,7 @@ class Container(Component):
     # Set of components that last handled a mouse event.  We keep track of
     # this so that we can generate mouse_enter and mouse_leave events of
     # our own.
-    _prev_event_handlers = Instance( set, () )
+    _prev_event_handlers = Instance( Set, () )
 
     # Used by the resolver to cache previous lookups
     _lookup_cache = Any
@@ -123,7 +122,6 @@ class Container(Component):
     # is used.
     _children_draw_mode = Enum("default", "normal", "overlay", "interactive")
 
-
     #------------------------------------------------------------------------
     # Public methods
     #------------------------------------------------------------------------
@@ -132,7 +130,7 @@ class Container(Component):
         Component.__init__(self, **traits)
         for component in components:
             self.add(component)
-        if "bounds" in traits.keys() or "auto_size" not in traits.keys():
+        if "bounds" in traits.keys():
             self.auto_size = False
 
         if 'intercept_events' in traits:
@@ -159,20 +157,16 @@ class Container(Component):
                     return
         else:
             pass
-
-        self.invalidate_draw()
-
         return
 
     def remove(self, *components):
         """ Removes components from this container """
 
-        # Determine if we need to contract our bounds after removing components
+        # Determine if we need to contract our bounds after removing the component
         for component in self.components:
             if self.auto_size and \
                 ((component.outer_x <= 0) or (component.outer_y <= 0) or \
-                 (component.outer_x2 >= self.width) or \
-                 (component.outer_y2 >= self.height)):
+                 (component.outer_x2 >= self.width) or (component.outer_y2 >= self.height)):
                     need_compact = True
                     break
         else:
@@ -188,9 +182,6 @@ class Container(Component):
         # Contract our bounds
         if self.auto_size and need_compact:
             self.compact()
-
-        self.invalidate_draw()
-
         return
 
     def insert(self, index, component):
@@ -199,15 +190,12 @@ class Container(Component):
             component.container.remove(component)
         component.container = self
         self._components.insert(index, component)
-
-        self.invalidate_draw()
-
         return
 
     def components_at(self, x, y):
         """
-        Returns a list of the components underneath the given point (given in
-        the parent coordinate frame of this container).
+        Returns a list of the components underneath the given point (given in the
+        parent coordinate frame of this container).
         """
         result = []
         if self.is_in(x,y):
@@ -262,6 +250,10 @@ class Container(Component):
     # Protected methods
     #------------------------------------------------------------------------
 
+    def _draw_container(self, gc, mode="default"):
+        "Draw the container background in a specified graphics context"
+        pass
+        
     def _calc_bounding_box(self):
         """
         Returns a 4-tuple (x,y,x2,y2) of the bounding box of all our contained
@@ -406,18 +398,6 @@ class Container(Component):
             self.compact()
         return
 
-    #------------------------------------------------------------------------
-    # Deprecated interface
-    #------------------------------------------------------------------------
-
-    def _draw_overlays(self, gc, view_bounds=None, mode="normal"):
-        """ Method for backward compatability with old drawing scheme.
-        """
-        import warnings
-        warnings.warn("Containter._draw_overlays is deprecated.")
-        for component in self.overlays:
-            component.overlay(component, gc, view_bounds, mode)
-        return
 
     #------------------------------------------------------------------------
     # Component interface
@@ -467,7 +447,6 @@ class Container(Component):
 
         return
 
-
     #------------------------------------------------------------------------
     # Property setters & getters
     #------------------------------------------------------------------------
@@ -483,7 +462,7 @@ class Container(Component):
         event.offset_xy(*self.position)
         for component in self._prev_event_handlers:
             component.dispatch(event, "mouse_leave")
-        self._prev_event_handlers = set()
+        self._prev_event_handlers = Set()
         event.pop()
         return
 
@@ -513,7 +492,7 @@ class Container(Component):
             event.offset_xy(*self.position)
 
             try:
-                new_component_set = set(components)
+                new_component_set = Set(components)
 
                 # For "real" mouse events (i.e., not pre_mouse_* events),
                 # notify the previous listening components of a mouse or
@@ -613,19 +592,7 @@ class Container(Component):
                 self._window.on_trait_change(self._window_resized, "resized")
         return
 
-    def _bounds_changed(self, old, new):
-        # crappy... calling our parent's handler seems like a common traits
-        # event handling problem
-        super(Container, self)._bounds_changed(old, new)
-        self._layout_needed = True
-        self.invalidate_draw()
-        return
 
-    def _bounds_items_changed(self, event):
-        super(Container, self)._bounds_items_changed(event)
-        self._layout_needed = True
-        self.invalidate_draw()
-        return
 
     def _bgcolor_changed(self):
         self.invalidate_draw()
@@ -640,8 +607,6 @@ class Container(Component):
         self._layout_needed = True
         self.invalidate_draw()
         return
-
-
 
 
 ### EOF

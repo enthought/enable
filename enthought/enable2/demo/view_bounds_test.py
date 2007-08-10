@@ -2,11 +2,10 @@
 Demonstrates how clipping of objects occurs with the view_bounds parameter to draw().
 """
 
-from enthought.enable2.api import Container, Component, Scrolled
-from enthought.enable2.base import empty_rectangle, intersect_bounds
-from enthought.enable2.wx_backend.api import Window
+from enthought.enable2.example_support import DemoFrame, demo_main
 
-from demo_base import DemoFrame, demo_main
+from enthought.enable2.api import Container, Component, Scrolled, Window
+from enthought.enable2.base import empty_rectangle, intersect_bounds
 
 
 class Box(Component):

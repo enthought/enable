@@ -4,7 +4,7 @@ Define the event objects and traits used by Enable components.
 For a list of all the possible event suffixes, see interactor.py.
 """
     
-from enthought.traits.api import Any, false, Float, HasTraits, Int, Event, List, ReadOnly
+from enthought.traits.api import Any, false, Float, HasTraits, Event, List, ReadOnly
 
 
 class BasicEvent(HasTraits):
@@ -102,14 +102,5 @@ class KeyEvent(BasicEvent):
     event        = ReadOnly    # what is this??
 
 key_event_trait = Event( KeyEvent )
-
-
-class BlobEvent(BasicEvent):
-
-    bid = Int(-1)
-    
-    v_x = Float(0.0)
-    v_y = Float(0.0)
-
 
 # EOF
