@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 
+
 # Function to convert simple ETS project names and versions to a requirements
 # spec that works for both development builds and stable builds.  Allows
 # a caller to specify a max version, which is intended to work along with
@@ -16,28 +17,21 @@ def etsdep(p, min, max=None, literal=False):
 
 
 # Declare our ETS project dependencies.
-KIVA_TRAITS = etsdep('enthought.kiva[traits]', '2.0b1')
-TRAITS_UI = etsdep('enthought.traits[ui]', '2.0b1')
-TRAITSUIWX = etsdep('enthought.traits.ui.wx', '2.0b1')
-UTIL = etsdep('enthought.util', '2.0b1')
+ETSCONFIG = etsdep('enthought.etsconfig', '2.0.0b1')
+KIVA_TRAITS = etsdep('enthought.kiva[traits]', '2.0.0b1')
+TRAITS_UI = etsdep('enthought.traits[ui]', '2.0.0b1')
+TRAITSUIWX = etsdep('enthought.traits.ui.wx', '2.0.0b1')
+UTIL = etsdep('enthought.util', '2.0.0b1')
 
 
 setup(
-    name = 'enthought.enable2',
-    version = '3.0a1',
-    description  = 'Kiva-based GUI Window and Component package',
-    author       = 'Enthought, Inc',
+    author = 'Enthought, Inc',
     author_email = 'info@enthought.com',
-    url          = 'http://code.enthought.com/ets',
-    license      = 'BSD',
-    zip_safe     = False,
-    packages = find_packages(),
-    include_package_data = True,
-    install_requires = [
-        "enthought.etsconfig",
-        "enthought.kiva",
-        "enthought.traits",
-    ],
+    dependency_links = [
+        'http://code.enthought.com/enstaller/eggs/source',
+        'http://code.enthought.com/enstaller/eggs/source/unstable',
+        ],
+    description = 'Kiva-based GUI Window and Component package',
     extras_require = {
         "wx": [
             TRAITSUIWX,
@@ -51,6 +45,7 @@ setup(
         },
     include_package_data = True,
     install_requires = [
+        ETSCONFIG,
         KIVA_TRAITS,
         TRAITS_UI,
         ],
@@ -59,7 +54,9 @@ setup(
     namespace_packages = [
         "enthought",
         ],
-    packages = find_packages(exclude=['examples']),
+    packages = find_packages(
+        exclude=['examples'],
+        ),
     tests_require = [
         'nose >= 0.9',
         ],
