@@ -95,7 +95,7 @@ class Polygon(Component):
     # 'Component' interface
     #--------------------------------------------------------------------------
 
-    def _draw(self, gc):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="normal"):
         "Draw the component in the specified graphics context"
         self._draw_closed(gc)
         return

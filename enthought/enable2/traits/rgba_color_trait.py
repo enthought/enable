@@ -96,7 +96,7 @@ def RGBAColorFunc(*args, **metadata):
 
     Default Value
     -------------
-    For wxPython, (0.0, 0.0, 0.0, 1.0) (that is, opaque white)
+    For wxPython, (1.0, 1.0, 1.0, 1.0) (that is, opaque white)
     """
     # The editor is commented out for now to avoid a circular import.
     if ETSConfig.toolkit == 'wx':
@@ -108,8 +108,9 @@ def RGBAColorFunc(*args, **metadata):
     else:
         raise ImportError, "no enable2 implementation for the '%s' toolkit" % ETSConfig.toolkit
     
-    return Trait( 'white', convert_to_color, rgba_standard_colors, 
+    tmp_trait = Trait( 'white', convert_to_color, rgba_standard_colors, 
            editor = RGBAColorEditor )
+    return tmp_trait(*args, **metadata)
 
 
 RGBAColorTrait = TraitFactory( RGBAColorFunc )

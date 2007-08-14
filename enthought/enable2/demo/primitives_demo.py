@@ -20,6 +20,7 @@ class ResetButton(ToolbarButton):
             self.canvas.request_redraw()
         return
 
+
 class ActivateButton(ToolbarButton):
     
     tool = Instance(DrawingTool)

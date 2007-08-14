@@ -66,7 +66,7 @@ class PointLine(DrawingTool):
         # Draw the completed line
         gc.save_state()
         self.line.line_dash = None
-        self.line._draw(gc)
+        self.line._draw_mainlayer(gc)
         gc.restore_state()
         return
 
@@ -115,7 +115,7 @@ class PointLine(DrawingTool):
 
     def drag_point_draw(self, gc):
         """ Draw the polygon in the 'drag_point' state. """
-        self.line._draw(gc)
+        self.line._draw_mainlayer(gc)
         return
         
     def drag_point_left_up(self, event):
@@ -140,7 +140,11 @@ class PointLine(DrawingTool):
 
     def incomplete_draw(self, gc):
         """ Draw the line in the 'incomplete' state. """
-        self.line._draw(gc)
+        gc.save_state()
+        gc.set_fill_color((0, 0, 0, 0))
+        gc.rect(50, 50, 100, 100)
+        gc.restore_state()
+        self.line._draw_mainlayer(gc)
         return
 
     def incomplete_left_dclick(self, event):

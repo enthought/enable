@@ -36,7 +36,7 @@ class DragLine(DrawingTool):
         """ Draw the completed line. """
         self.line.line_dash = None
         gc.save_state()
-        self.line._draw(gc)
+        self.line._draw_mainlayer(gc)
         gc.restore_state()
         return
 
@@ -46,7 +46,7 @@ class DragLine(DrawingTool):
 
     def drawing_draw(self, gc):
         self.line.line_dash = (4.0, 2.0)
-        self.line._draw(gc)
+        self.line._draw_mainlayer(gc)
         return
 
     def drawing_left_up(self, event):

@@ -14,7 +14,7 @@
 #-------------------------------------------------------------------------------
 
 from base import bounds_to_coordinates, TOP, BOTTOM, LEFT, RIGHT
-from interactors import Interactor
+from interactor import Interactor
 
 from enthought.traits.api import Any
     

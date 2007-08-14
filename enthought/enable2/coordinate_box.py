@@ -109,6 +109,7 @@ class CoordinateBox(HasTraits):
         return
 
     def _get_x2(self):
+        if self.bounds[0] == 0: return self.position[0]
         return self.position[0] + self.bounds[0] - 1
     
     def _set_x2(self, val):
@@ -124,6 +125,8 @@ class CoordinateBox(HasTraits):
         return
     
     def _get_y2(self):
+        if self.bounds[1] == 0: 
+            return self.position[1]
         return self.position[1] + self.bounds[1] - 1
     
     def _set_y2(self, val):

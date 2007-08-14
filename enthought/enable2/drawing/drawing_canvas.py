@@ -36,7 +36,7 @@ class Button(Component):
         """
         pass
 
-    def _draw(self, gc, view_bounds, mode="default"):
+    def _draw_mainlayer(self, gc, view_bounds, mode="default"):
         if self.button_state == "up":
             self.draw_up(gc, view_bounds)
         else:
@@ -152,6 +152,9 @@ class DrawingCanvasToolbar(Container):
         return
 
 
+import pdb
+
+
 class DrawingCanvas(Container):
     """
     A DrawingCanvas has some buttons which toggle what kind of drawing tools
@@ -176,6 +179,7 @@ class DrawingCanvas(Container):
 
     def dispatch(self, event, suffix):
         # See if the event happened on the toolbar:
+
         event.offset_xy(*self.position)
         if self.toolbar.is_in(event.x, event.y):
             self.toolbar.dispatch(event, suffix)
@@ -203,12 +207,12 @@ class DrawingCanvas(Container):
         self.active_tool = tool
         return
 
-    def _draw(self, gc, view_bounds=None, mode="default"):
+    def _draw_container_mainlayer(self, gc, view_bounds=None, mode="default"):
         active_tool = self.active_tool
         if active_tool and active_tool.draw_mode == "exclusive":
             active_tool.draw(gc, view_bounds, mode)
         else:
-            super(DrawingCanvas, self)._draw(gc, view_bounds, mode)
+            #super(DrawingCanvas, self)._draw(gc, view_bounds, mode)
             for tool in self.listening_tools:
                 tool.draw(gc, view_bounds, mode)
             if active_tool:
@@ -217,7 +221,7 @@ class DrawingCanvas(Container):
             self.toolbar.draw(gc, view_bounds, mode)
         return
 
-    def _draw_container(self, gc, mode="default"):
+    def _draw_container_background(self, gc, view_bounds=None, mode="default"):
         if self.bgcolor not in ("clear", "transparent", "none"):
             gc.save_state()
             gc.set_antialias(False)

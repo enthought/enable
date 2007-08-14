@@ -54,9 +54,10 @@ class Line(Component):
     # 'Component' interface
     #--------------------------------------------------------------------------
 
-    def _draw(self, gc):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         "Draw this line in the specified graphics context"
         gc.save_state()
+
         try:
             # Set the drawing parameters.
             gc.set_stroke_color(self.line_color_)
@@ -68,6 +69,7 @@ class Line(Component):
             offset_points = [(x, y) for x, y in self.points ]
             offset_points = resize(array(offset_points), (len(self.points),2))
             gc.lines(offset_points)
+            gc.close_path()
             gc.draw_path(STROKE)
 
             # Draw the vertices.

@@ -22,9 +22,10 @@ class MyFilledContainer(Container):
 
     fit_window = False
     border_width = 2
+    resizable = ""
     _font = Any
 
-    def _draw_container(self, gc, mode="default"):
+    def _draw_container_mainlayer(self, gc, view_bounds, mode="default"):
         'Draws a filled container with the word "Container" in the center'
         if not self._font:
             self._font = str_to_font(None, None, "modern 10")
@@ -49,6 +50,7 @@ class Circle(Component):
     The circle moves with the mouse cursor but leaves a translucent version of
     itself in its original position until the mouse button is released.
     """
+
     color = (0.0, 0.0, 1.0, 1.0)
     bgcolor = "none"
 
@@ -61,12 +63,14 @@ class Circle(Component):
     shadow_type = Enum("light", "dashed")
     shadow = Instance(Component)
 
+    resizable = ""
+
     def __init__(self, **traits):
         Component.__init__(self, **traits)
         self.pointer = self.normal_pointer
         return
 
-    def _draw(self, gc, view_bounds=None, mode="default"):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         gc.save_state()
         gc.set_fill_color(self.color)
         dx, dy = self.bounds
@@ -80,6 +84,7 @@ class Circle(Component):
     def normal_left_down(self, event):
         self.event_state = "moving"
         self.pointer = self.moving_pointer
+        event.window.set_mouse_owner(self, event.net_transform())
 
         # Create our shadow
         if self.shadow_type == "light":
@@ -102,6 +107,7 @@ class Circle(Component):
     def moving_left_up(self, event):
         self.event_state = "normal"
         self.pointer = self.normal_pointer
+        event.window.set_mouse_owner(None)
         event.window.redraw()
         # Remove our shadow
         self.container.remove(self.shadow)
@@ -117,8 +123,9 @@ class LightCircle(Component):
     color = Tuple
     bgcolor = "none"
     radius = Float(1.0)
+    resizable = ""
 
-    def _draw(self, gc, view_bounds=None, mode="default"):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         gc.save_state()
         gc.set_fill_color(self.color[0:3] + (self.color[3]*0.3,))
         dx, dy = self.bounds
@@ -135,8 +142,9 @@ class DashedCircle(Component):
     bgcolor = "none"
     radius = Float(1.0)
     line_dash = array([2.0, 2.0])
+    resizable = ""
 
-    def _draw(self, gc, view_bounds=None, mode="default"):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         gc.save_state()
         gc.set_fill_color(self.color)
         dx, dy = self.bounds

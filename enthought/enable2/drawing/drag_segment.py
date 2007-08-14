@@ -52,7 +52,7 @@ class DragSegment(DrawingTool):
     def complete_draw(self, gc):
         """ Draw the completed line. """
         self.line.line_dash = None
-        self.line._draw(gc)
+        self.line._draw_mainlayer(gc)
         self.request_redraw()
         return
 
@@ -62,7 +62,7 @@ class DragSegment(DrawingTool):
 
     def drawing_draw(self, gc):
         self.line.line_dash = (4.0, 2.0)
-        self.line._draw(gc)
+        self.line._draw_mainlayer(gc)
         return
 
     def drawing_mouse_move(self, event):

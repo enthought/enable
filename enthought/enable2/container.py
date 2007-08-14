@@ -4,14 +4,15 @@
 import warnings
 
 # Enthought library imports
-from enthought.traits.api import Any, false, HasTraits, Instance, List, Property, \
-                                 Trait, true, Tuple
+from enthought.traits.api \
+        import Any, Enum, false, HasTraits, Instance, List, Property, \
+               Trait, true, Tuple
 
 # Local, relative imports
 from base import empty_rectangle, intersect_bounds
 from component import Component
 from enable_traits import border_size_trait
-from events import DragEvent, MouseEvent
+from events import BlobEvent, DragEvent, MouseEvent
 from abstract_layout_controller import AbstractLayoutController
 
 
@@ -85,9 +86,13 @@ class Container(Component):
     # The default size of this container if it is empty.
     default_size = Tuple(0, 0)
 
+    # The layers that the container will draw first, so that they appear
+    # under the component layers of the same name.
+    container_under_layers = Tuple("background", "image", "underlay", "mainlayer")
 
     #------------------------------------------------------------------------
     # DOM-related traits
+    # (Note: These are unused as of 8/13/2007)
     #------------------------------------------------------------------------
 
     # The layout controller determines how the container's internal layout
@@ -110,11 +115,11 @@ class Container(Component):
     # Set of components that last handled a mouse event.  We keep track of
     # this so that we can generate mouse_enter and mouse_leave events of
     # our own.
-    _prev_event_handlers = Instance( Set, () )
+    _prev_event_handlers = Instance( set, () )
 
     # Used by the resolver to cache previous lookups
     _lookup_cache = Any
-
+    
     # This container can render itself in a different mode than what it asks of
     # its contained components.  This attribute stores the rendering mode that
     # this container requests of its children when it does a _draw(). If the
@@ -130,7 +135,7 @@ class Container(Component):
         Component.__init__(self, **traits)
         for component in components:
             self.add(component)
-        if "bounds" in traits.keys():
+        if "bounds" in traits.keys() or "auto_size" not in traits.keys():
             self.auto_size = False
 
         if 'intercept_events' in traits:
@@ -157,16 +162,20 @@ class Container(Component):
                     return
         else:
             pass
+
+        self.invalidate_draw()
+
         return
 
     def remove(self, *components):
         """ Removes components from this container """
 
-        # Determine if we need to contract our bounds after removing the component
+        # Determine if we need to contract our bounds after removing components
         for component in self.components:
             if self.auto_size and \
                 ((component.outer_x <= 0) or (component.outer_y <= 0) or \
-                 (component.outer_x2 >= self.width) or (component.outer_y2 >= self.height)):
+                 (component.outer_x2 >= self.width) or \
+                 (component.outer_y2 >= self.height)):
                     need_compact = True
                     break
         else:
@@ -182,6 +191,9 @@ class Container(Component):
         # Contract our bounds
         if self.auto_size and need_compact:
             self.compact()
+
+        self.invalidate_draw()
+
         return
 
     def insert(self, index, component):
@@ -190,12 +202,15 @@ class Container(Component):
             component.container.remove(component)
         component.container = self
         self._components.insert(index, component)
+
+        self.invalidate_draw()
+
         return
 
     def components_at(self, x, y):
         """
-        Returns a list of the components underneath the given point (given in the
-        parent coordinate frame of this container).
+        Returns a list of the components underneath the given point (given in
+        the parent coordinate frame of this container).
         """
         result = []
         if self.is_in(x,y):
@@ -250,10 +265,6 @@ class Container(Component):
     # Protected methods
     #------------------------------------------------------------------------
 
-    def _draw_container(self, gc, mode="default"):
-        "Draw the container background in a specified graphics context"
-        pass
-        
     def _calc_bounding_box(self):
         """
         Returns a 4-tuple (x,y,x2,y2) of the bounding box of all our contained
@@ -280,22 +291,22 @@ class Container(Component):
         return (ll_x, ll_y, ur_x, ur_y)
 
     def _draw_children(self, gc, view_bounds=None, mode="normal"):
-
+        
         new_bounds = self._transform_view_bounds(view_bounds)
         if new_bounds == empty_rectangle:
             return
-
+        
         gc.save_state()
         try:
             gc.set_antialias(False)
             gc.translate_ctm(*self.position)
             for component in self.components:
                 if new_bounds:
-                    tmp = intersect_bounds(component.outer_position +
+                    tmp = intersect_bounds(component.outer_position + 
                                            component.outer_bounds, new_bounds)
                     if tmp == empty_rectangle:
                         continue
-
+                
                 gc.save_state()
                 try:
                     component.draw(gc, new_bounds, mode)
@@ -308,8 +319,8 @@ class Container(Component):
     def _draw_component(self, gc, view_bounds=None, mode="normal"):
         """ Draws the component.
 
-        This method is preserved for backwards compatibility. Overrides
-        PlotComponent.
+        This method is preserved for backwards compatibility. Overrides 
+        the implementation in Component.
         """
         gc.save_state()
         gc.set_antialias(False)
@@ -321,15 +332,24 @@ class Container(Component):
         self._draw_overlays(gc, view_bounds, mode)
         gc.restore_state()
         return
+    
+        # The container's annotation and overlay layers draw over those of 
+        # its components.
+        if layer in ("annotation", "overlay"):
+            my_handler = getattr(self, "_draw_container_" + layer, None)
+            if my_handler:
+                my_handler(gc, view_bounds, mode)
+        
+        return
 
     def _draw_container(self, gc, mode="default"):
         "Draw the container background in a specified graphics context"
         pass
-
+        
     def _draw_container_background(self, gc, view_bounds=None, mode="normal"):
         Component._draw_background(self, gc, view_bounds, mode)
         return
-
+        
     def _draw_container_overlay(self, gc, view_bounds=None, mode="normal"):
         Component._draw_overlay(self, gc, view_bounds, mode)
         return
@@ -342,12 +362,12 @@ class Container(Component):
         """ Returns a list of this plot's children that are in the bounds. """
         if bounds is None:
             return self.components
-
+        
         visible_components = []
         for component in self.components:
             if not component.visible:
                 continue
-            tmp = intersect_bounds(component.outer_position +
+            tmp = intersect_bounds(component.outer_position + 
                                    component.outer_bounds, bounds)
             if tmp != empty_rectangle:
                 visible_components.append(component)
@@ -389,8 +409,8 @@ class Container(Component):
         # For now, just punt and call compact()
         if self.auto_size:
             self.compact()
-        return
-
+        return 
+    
     def _component_position_changed(self, component):
         "Called by contained objects when their position changes"
         # For now, just punt and call compact()
@@ -398,28 +418,39 @@ class Container(Component):
             self.compact()
         return
 
+    #------------------------------------------------------------------------
+    # Deprecated interface
+    #------------------------------------------------------------------------
+
+    def _draw_overlays(self, gc, view_bounds=None, mode="normal"):
+        """ Method for backward compatability with old drawing scheme.
+        """
+        import warnings
+        warnings.warn("Containter._draw_overlays is deprecated.")
+        for component in self.overlays:
+            component.overlay(component, gc, view_bounds, mode)
+        return
 
     #------------------------------------------------------------------------
     # Component interface
     #------------------------------------------------------------------------
-
     def _dispatch_draw(self, layer, gc, view_bounds, mode):
-        """ Renders the named *layer* of this component.
+        """ Renders the named *layer* of this component. 
         """
         new_bounds = self._transform_view_bounds(view_bounds)
         if new_bounds == empty_rectangle:
             return
-
+        
         if self._layout_needed:
             self.do_layout()
 
         # Give the container a chance to draw first for the layers that are
-        # considered "under" or "at" the plot level.
-        if layer in ("background", "image", "underlay", "plot"):
+        # considered "under" or "at" the main layer level
+        if layer in self.container_under_layers:
             my_handler = getattr(self, "_draw_container_" + layer, None)
             if my_handler:
                 my_handler(gc, view_bounds, mode)
-
+        
         # Now transform coordinates and draw the children
         visible_components = self._get_visible_components(new_bounds)
         if visible_components:
@@ -428,8 +459,8 @@ class Container(Component):
                 gc.translate_ctm(*self.position)
                 for component in visible_components:
                     if component.unified_draw:
-                        # Plot containers that want unified_draw only get
-                        # called if their draw_layer matches the current layer
+                        # Plot containers that want unified_draw only get 
+                        # called if their draw_layer matches the current layer 
                         # we're rendering
                         if component.draw_layer == layer:
                             component._draw(gc, new_bounds, mode)
@@ -437,15 +468,16 @@ class Container(Component):
                         component._dispatch_draw(layer, gc, new_bounds, mode)
             finally:
                 gc.restore_state()
-
-        # The container's annotation and overlay layers draw over those of
+        
+        # The container's annotation and overlay layers draw over those of 
         # its components.
         if layer in ("annotation", "overlay"):
             my_handler = getattr(self, "_draw_container_" + layer, None)
             if my_handler:
                 my_handler(gc, view_bounds, mode)
-
+        
         return
+
 
     #------------------------------------------------------------------------
     # Property setters & getters
@@ -462,7 +494,7 @@ class Container(Component):
         event.offset_xy(*self.position)
         for component in self._prev_event_handlers:
             component.dispatch(event, "mouse_leave")
-        self._prev_event_handlers = Set()
+        self._prev_event_handlers = set()
         event.pop()
         return
 
@@ -492,7 +524,7 @@ class Container(Component):
             event.offset_xy(*self.position)
 
             try:
-                new_component_set = Set(components)
+                new_component_set = set(components)
 
                 # For "real" mouse events (i.e., not pre_mouse_* events),
                 # notify the previous listening components of a mouse or
@@ -563,6 +595,7 @@ class Container(Component):
         return
 
 
+    
     #------------------------------------------------------------------------
     # Event handlers
     #------------------------------------------------------------------------
@@ -592,13 +625,24 @@ class Container(Component):
                 self._window.on_trait_change(self._window_resized, "resized")
         return
 
+    def _bounds_changed(self, old, new):
+        # crappy... calling our parent's handler seems like a common traits
+        # event handling problem
+        super(Container, self)._bounds_changed(old, new)
+        self._layout_needed = True
+        self.invalidate_draw()
+        return
 
+    def _bounds_items_changed(self, event):
+        super(Container, self)._bounds_items_changed(event)
+        self._layout_needed = True
+        self.invalidate_draw()
+        return
 
     def _bgcolor_changed(self):
         self.invalidate_draw()
         self.request_redraw()
         return
-
     def __components_items_changed(self, event):
         self._layout_needed = True
         return
@@ -607,6 +651,5 @@ class Container(Component):
         self._layout_needed = True
         self.invalidate_draw()
         return
-
 
 ### EOF

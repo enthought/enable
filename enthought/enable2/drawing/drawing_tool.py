@@ -37,7 +37,7 @@ class DrawingTool(Component):
         self.normal_left_down(event)
         return
     
-    def draw(self, gc, view_bounds, mode="default"):
+    def _draw_mainlayer(self, gc, view_bounds, mode="default"):
         draw_func = getattr(self, self.event_state + "_draw", None)
         if draw_func:
             draw_func(gc)

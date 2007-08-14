@@ -20,6 +20,8 @@ class Box(Component):
     fill_color = (0.8, 0.0, 0.1, 1.0)
     moving_color = (0.0, 0.8, 0.1, 1.0)
     
+    resizable = ""
+
     def _draw(self, gc, view_bounds=None, mode="default"):
         gc.save_state()
         if self.event_state == "moving":
@@ -45,6 +47,7 @@ class Box(Component):
     def normal_left_down(self, event):
         self.event_state = "moving"
         event.window.set_pointer(self.moving_pointer)
+        event.window.set_mouse_owner(self, event.net_transform())
         self.offset_x = event.x - self.x
         self.offset_y = event.y - self.y
         return
@@ -57,6 +60,7 @@ class Box(Component):
     def moving_left_up(self, event):
         self.event_state = "normal"
         event.window.set_pointer(self.normal_pointer)
+        event.window.set_mouse_owner(None)
         self.request_redraw()
         return
     
