@@ -9,7 +9,7 @@ from enthought.enable2.base import empty_rectangle, intersect_bounds
 
 
 class Box(Component):
-    def _draw(self, gc, view_bounds=None, mode="default"):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         gc.save_state()
         gc.set_fill_color((1.0, 0.0, 0.0, 1.0))
         dx, dy = self.bounds
@@ -28,18 +28,14 @@ class VerboseContainer(Container):
     
     fit_window = False
     
-    def _draw_container(self, gc, mode="default"):
+    def _draw_container_mainlayer(self, gc, view_bounds, mode="default"):
         gc.save_state()
         gc.set_fill_color((1.0, 1.0, 1.0, 1.0))
         gc.set_stroke_color((1.0, 1.0, 1.0, 1.0))
         gc.rect(self.x, self.y, self.width, self.height)
         gc.fill_path()
         gc.restore_state()
-        return
 
-    def _draw(self, gc, view_bounds=None, mode="default"):
-        self._draw_container(gc, mode)
-        
         if view_bounds:
             v = view_bounds
             new_bounds = (v[0]-self.x, v[1]-self.y, v[2], v[3])
@@ -52,7 +48,8 @@ class VerboseContainer(Container):
             gc.set_stroke_color((0.0, 0.0, 0.0, 1.0))
             for component in self._components:
                 # See if the component is visible:
-                tmp = intersect_bounds(component.position + component.bounds, new_bounds)
+                tmp = intersect_bounds(component.position + component.bounds, 
+                                       new_bounds)
                 if tmp == empty_rectangle:
                     print "skipping component:", component.__class__.__name__,
                     print "\tbounds:", component.position, component.bounds
@@ -69,7 +66,8 @@ class VerboseContainer(Container):
 
 class MyFrame(DemoFrame):
     def _create_window(self):
-        container = VerboseContainer(auto_size=False, bounds = [800, 800])
+
+        container = VerboseContainer(auto_size=False, bounds = [800,800])
         a = Box(bounds=[50.0,50.0], position=[50.0,50.0])
         b = Box(bounds=[50.0,50.0], position=[200.0,50.0])
         c = Box(bounds=[50.0,50.0], position=[50.0,200.0])
@@ -78,7 +76,8 @@ class MyFrame(DemoFrame):
         container.add(b)
         container.add(c)
         container.add(d)
-        scr = Scrolled(container, bounds=[300,300], position=[50,50], fit_window=False)
+        scr = Scrolled(container, bounds=[300,300], position=[50,50], 
+                       fit_window=False)
         return Window(self, -1, component=scr)
 
 

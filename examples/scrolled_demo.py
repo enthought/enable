@@ -33,7 +33,7 @@ class Circle(Component):
         self.pointer = self.normal_pointer
         return
     
-    def _draw(self, gc, view=None, mode="default"):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         gc.save_state()
         gc.set_fill_color(self.color)
         dx, dy = self.bounds
@@ -41,6 +41,7 @@ class Circle(Component):
         radius = min(dx/2.0, dy/2.0)
         gc.arc(x+dx/2.0, y+dy/2.0, radius, 0.0, 2*3.14159)
         gc.fill_path()
+        gc.restore_state()
         return
     
     def normal_left_down(self, event):
@@ -85,7 +86,7 @@ class LightCircle(Component):
     bgcolor = "none"
     radius = Float(1.0)
     
-    def _draw(self, gc, view=None, mode="default"):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         gc.save_state()
         gc.set_fill_color(self.color[0:3] + (self.color[3]*0.3,))
         dx, dy = self.bounds
@@ -103,7 +104,7 @@ class DashedCircle(Component):
     radius = Float(1.0)
     line_dash = array([2.0, 2.0])
     
-    def _draw(self, gc, view=None, mode="default"):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         gc.save_state()
         gc.set_fill_color(self.color)
         dx, dy = self.bounds
@@ -120,17 +121,15 @@ class DashedCircle(Component):
 class MyFrame(DemoFrame):
     def _create_window(self):
 
+        container = Container(bounds=[800,600], bgcolor="red", auto_size = False,
+                              fit_window=False)
         circle1 = Circle(bounds=[75,75], position=[100,100], shadow_type="dashed")
-        container = Container(bounds=[300,300], bgcolor="red",
-                                     auto_size = False)
-        scr = Scrolled(container, bounds=[200,200], position=[50,50])
         container.add(circle1)
-        
-        scr2 = Scrolled(container, bounds=[200,200], position=[300,50])
-        topcontainer = Container()
-        topcontainer.add(scr)
-        topcontainer.add(scr2)
-        return Window(self, -1, component=topcontainer)
+
+        scr = Scrolled(container, bounds=[200,200], position=[50,50],
+                       fit_window=False)
+
+        return Window(self, -1, component=scr)
 
 
 if __name__ == "__main__":

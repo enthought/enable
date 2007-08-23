@@ -103,7 +103,7 @@ class NativeScrollBar(Component):
         self.destroy()
         return
 
-    def _draw(self, gc, view_bounds=None, mode="default"):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         """Draw the component."""
         # To determine whether to actually redraw the component, we first check whether
         # we're clean or not.  If we are clean, we must additionally check whether we
@@ -146,12 +146,10 @@ class NativeScrollBar(Component):
         (wxpos, wxthumbsize, wxrange)  = tmp
         
         if not self._control:
-            self._control = wx.ScrollBar(window.control, size=wx.Size(x_size, y_size), \
-                                         style=wxstyle)
+            self._control = wx.ScrollBar(window.control, style=wxstyle)
             self._control.SetScrollbar(wxpos, wxthumbsize, wxrange, wxthumbsize, True)
             wx.EVT_SCROLL(self._control, self._wx_scroll_handler)
             wx.EVT_SET_FOCUS(self._control, self._yield_focus)
-            self._control.Disable()
         
         # Ideally we would only SetPosition if the position change came from the
         # program rather than from the user.  Perhaps we should have a position_dirty
