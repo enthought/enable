@@ -49,6 +49,7 @@ class Scrolled(Container):
     def __init__(self, component, **traits):
         self.component = component
         Container.__init__( self, **traits )
+        self._viewport_component_changed()
         return
 
     def update_bounds( self):
@@ -88,7 +89,6 @@ class Scrolled(Container):
         self.request_redraw()
 
 
-
     def _component_bounds_items_handler(self, object, new):
         if new.added != new.removed:
             self.update_bounds()
@@ -97,9 +97,6 @@ class Scrolled(Container):
         if old == None or new == None or old[0] != new[0] or old[1] != new[1]:
             self.update_bounds()
         return
-
-
-
 
     def _component_changed ( self, old, new ):
         if old is not None:
@@ -114,6 +111,14 @@ class Scrolled(Container):
         new.on_trait_change(self._component_bounds_items_handler, 'bounds_items')
         self._layout_needed = True
         return
+
+    def _viewport_component_changed(self):
+        if self.viewport_component is None:
+            self.viewport_component = Viewport()
+        self.viewport_component.component = self.component
+        self.viewport_component.view_position = [0,0]
+        self.viewport_component.view_bounds = self.bounds
+        self.add(self.viewport_component)
 
     def _alternate_vsb_changed(self, old, new):
         self._component_update(old, new)
@@ -163,12 +168,6 @@ class Scrolled(Container):
 
         if not self._layout_needed:
             return
-
-        if self.viewport_component is None:
-            self.viewport_component = Viewport(component=self.component,
-                                               view_bounds = self.bounds,
-                                               view_position = [0,0])
-            self.add(self.viewport_component)
 
         padding = self.inside_padding_width
         scrl_x_size, scrl_y_size = self.bounds
