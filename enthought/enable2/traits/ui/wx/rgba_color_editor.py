@@ -152,7 +152,7 @@ class SimpleColorEditor ( Editor ):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
-        from enthought.enable2.api import Label
+        from enthought.enable import Label
         from enthought.enable2.wx_backend import Window
         window = Window( parent,
                     component = Label( '', border_size = 1, font = 'modern 9' ) )
@@ -302,7 +302,7 @@ class ReadonlyColorEditor ( ReadonlyEditor ):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
-        from enthought.enable2.api import Label
+        from enthought.enable import Label
         from enthought.enable2.wx_backend import Window
         window = Window( parent,
                     component = Label( '', border_size = 1, font = 'modern 9' ) )
