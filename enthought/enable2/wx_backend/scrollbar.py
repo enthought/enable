@@ -88,9 +88,22 @@ class NativeScrollBar(Component):
     #------------------------------------------------------------------------
     # Public Methods
     #------------------------------------------------------------------------
+
+    def set_position(self, pos):
+        """ Given a floating point number between 0.0 and 1.0 (inclusive),
+            set the position of the scrollbar so that is scrolled approximately
+            that percent.
+        """
+        if pos < 0 or pos > 1:
+            raise ValueError, "pos must be between 0 and 1"
+        if self._control:
+            range = float(self._control.GetRange()-self._control.GetThumbSize())
+            self._control.SetThumbPosition(int(round(pos*range)))
+        return
     
     def destroy(self):
-        """Destroy the native widget associated with this component"""
+        """ Destroy the native widget associated with this component.
+        """
         if self._control:
             self._control.Destroy()
         return

@@ -20,11 +20,11 @@ class Scrolled(Container):
     component      = Instance(Container)
     viewport_component = Instance(Viewport)
     bgcolor       = RGBAColor("white")
-    # Inside padding is a background drawn area between the edges or scrollbars and
-    # the scrolled area/leftcomponent.
+    # Inside padding is a background drawn area between the edges or scrollbars
+    # and the scrolled area/left component.
     inside_padding_width = Int(5)
-    # The inside border is a border drawn on the inner edge of the inside padding area
-    # to highlight the
+    # The inside border is a border drawn on the inner edge of the inside 
+    # padding area to highlight the
     inside_border_color = RGBAColor("black")
     inside_border_width = Int(0)
 
@@ -35,7 +35,6 @@ class Scrolled(Container):
     leftborder = Float(0) #The size of the left border space
     leftcomponent = Any(None) # None or a component
 
-
     #---------------------------------------------------------------------------
     # Private traits
     #---------------------------------------------------------------------------
@@ -45,6 +44,9 @@ class Scrolled(Container):
     _layout_needed = true
 
 
+    #---------------------------------------------------------------------------
+    # Scrolled interface
+    #---------------------------------------------------------------------------
 
     def __init__(self, component, **traits):
         self.component = component
@@ -52,18 +54,32 @@ class Scrolled(Container):
         self._viewport_component_changed()
         return
 
-    def update_bounds( self):
+    def update_bounds(self):
         self._layout_needed = True
         return
 
+    def update_from_viewport(self):
+        """ Repositions the scrollbars based on the current position/bounds of
+            viewport_component. 
+        """
+        x, y = self.viewport_component.view_position
+        w, h = self.viewport_component.view_bounds
+        if self._hsb:
+            self._hsb.set_position((x + w/2.0)/self.component.bounds[0])
+        if self._vsb:
+            self._vsb.set_position((y + h/2.0)/self.component.bounds[1])
+        return
+
     def sb_height(self):
-        "Returns the standard scroll bar height"
+        """ Returns the standard scroll bar height
+        """
         # Perhaps a placeholder -- not sure if there's a way to get the standard
         # width or height of a wx scrollbar -- you can set them to whatever you want.
         return 15
 
     def sb_width(self):
-        "Returns the standard scroll bar width"
+        """ Returns the standard scroll bar width 
+        """
         return 15
 
 
@@ -77,13 +93,10 @@ class Scrolled(Container):
 
     def _bgcolor_changed ( self ):
         self._layout_and_draw()
-        return
     def _inside_border_color_changed ( self ):
         self._layout_and_draw()
-        return
     def _inside_border_width_changed ( self ):
         self._layout_and_draw()
-        return
     def _inside_padding_width_changed(self):
         self._layout_needed = True
         self.request_redraw()
@@ -157,11 +170,13 @@ class Scrolled(Container):
     #---------------------------------------------------------------------------
 
     def _do_layout ( self ):
-        """ This is explicitly called by _draw(). """
+        """ This is explicitly called by _draw(). 
+        """
         # Window is composed of border + scrollbar + canvas in each direction.
         # To compute the overall geometry, first calculate whether component.x
         # + the border fits in the x size of the window.
-        # If not, add sb, and decrease the y size of the window by the height of the scrollbar.
+        # If not, add sb, and decrease the y size of the window by the height of 
+        # the scrollbar.
         # Now, check whether component.y + the border is greater than the remaining
         # y size of the window.  If it is not, add a scrollbar and decrease the x size
         # of the window by the scrollbar width, and perform the first check again.
@@ -173,12 +188,12 @@ class Scrolled(Container):
         scrl_x_size, scrl_y_size = self.bounds
         cont_x_size, cont_y_size = self.component.bounds
 
-        #available_x and available_y are the currently available size for the
-        #Container
+        # available_x and available_y are the currently available size for the
+        # Container
         available_x = scrl_x_size - 2*padding - self.leftborder
         available_y = scrl_y_size - 2*padding
 
-        #Figure out which scrollbars we will need
+        # Figure out which scrollbars we will need
         need_x_scrollbar = False
         need_y_scrollbar = False
         if available_x < cont_x_size and self.horiz_scrollbar:
@@ -292,11 +307,15 @@ class Scrolled(Container):
         return None
 
     def _handle_horizontal_scroll( self, position ):
-        self.viewport_component.view_position[0] = position
+        if (position + self.viewport_component.view_bounds[0] <=
+            self.component.bounds[0]):
+            self.viewport_component.view_position[0] = position
         return
 
     def _handle_vertical_scroll(self, position):
-        self.viewport_component.view_position[1] = position
+        if (position + self.viewport_component.view_bounds[1] <=
+            self.component.bounds[1]):
+            self.viewport_component.view_position[1] = position
         return
 
     def _draw(self, gc, view_bounds=None, mode="default"):
