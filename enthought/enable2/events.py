@@ -58,7 +58,7 @@ class BasicEvent(HasTraits):
         if len(pos) == 0:
             return (0,0)
         else:
-            original_x, original_y = pos[-1]
+            original_x, original_y = pos[0]
             return (original_x - self.x, original_y - self.y)
         
         
