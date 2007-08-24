@@ -30,6 +30,7 @@ class Scrolled(Container):
 
     horiz_scrollbar = true
     vert_scrollbar = true
+    mousewheel_scroll = true # Should the mouse wheel scroll the viewport?
     alternate_vsb = Instance(Component)
     auto_size = False
     leftborder = Float(0) #The size of the left border space
@@ -379,7 +380,7 @@ class Scrolled(Container):
         events.  (Without this, our components would automatically get handed
         the event.)
         """
-        if suffix == "mouse_wheel":
+        if self.mousewheel_scroll and suffix == "mouse_wheel":
             if self.alternate_vsb:
                 self.alternate_vsb._mouse_wheel_changed(event)
             elif self._vsb:
