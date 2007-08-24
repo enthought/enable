@@ -36,11 +36,6 @@ class Viewport(Component):
     # TODO: Implement this
     stay_inside = false
 
-    # Our default background to render if component is None or if we
-    # are viewing outside the component
-    bg_color = RGBAColor( (1.0, 1.0, 1.0, 1.0) )
-
-
     #------------------------------------------------------------------------
     # Public methods
     #------------------------------------------------------------------------
@@ -82,7 +77,7 @@ class Viewport(Component):
     # Component interface
     #------------------------------------------------------------------------
 
-    def _draw(self, gc, view_bounds=None, mode="default"):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         # For now, ViewPort ignores the view_bounds that are passed in...
         # Long term, it should be intersected with the view_position to
         # compute a new view_bounds to pass in to our component.
