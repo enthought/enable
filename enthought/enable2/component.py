@@ -667,7 +667,8 @@ class Component(CoordinateBox, Interactor):
             handler(gc, view_bounds, mode)
         return    
 
-    def _draw_border(self, gc, view_bounds=None, mode="default"):
+    def _draw_border(self, gc, view_bounds=None, mode="default", 
+                     force_draw=False):
         """ Utility method to draw the borders around this component 
 
         The *force_draw* parameter forces the method to draw the border; if it 
