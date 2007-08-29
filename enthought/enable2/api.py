@@ -22,7 +22,9 @@ from colors import color_table, transparent_color, ColorTrait, black_color_trait
 from events import drag_event_trait, key_event_trait, mouse_event_trait, \
     BasicEvent, BlobEvent, DragEvent, KeyEvent, MouseEvent
 from interactor import Interactor
+from base_tool import BaseTool, KeySpec
 
+from canvas import Canvas
 from component import Component
 #from component_render_category import ComponentRenderCategory
 #from component_layout_category import ComponentLayoutCategory

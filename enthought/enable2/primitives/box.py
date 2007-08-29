@@ -14,7 +14,7 @@ class Box(Component):
     border_color = RGBAColor("black")
     border_size  = border_size_trait
 
-    def _draw (self, gc):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         "Draw the box background in a specified graphics context"
 
         gc.save_state()

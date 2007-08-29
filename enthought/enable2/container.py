@@ -4,9 +4,8 @@
 import warnings
 
 # Enthought library imports
-from enthought.traits.api \
-        import Any, Enum, false, HasTraits, Instance, List, Property, \
-               Trait, true, Tuple
+from enthought.traits.api import Any, Bool, Enum, HasTraits, Instance, List, \
+        Property, Trait, Tuple
 
 # Local, relative imports
 from base import empty_rectangle, intersect_bounds
@@ -62,7 +61,7 @@ class Container(Component):
 
     # Whether or not the container should auto-size itself to fit all of its
     # components.
-    auto_size = true
+    auto_size = Bool(False)
 
     # Whether or not the container should automatically maximize itself to
     # fit inside the Window, if this is a top-level container.
@@ -70,11 +69,11 @@ class Container(Component):
     #       window is that someone has explicitly set its .window attribute.
     #       If you need to do this for some other reason, you may want to
     #       turn fit_window off.
-    fit_window = true
+    fit_window = Bool(True)
 
     # If true, the container get events before its children.  Otherwise, it
     # gets them afterwards.
-    intercept_events = true
+    intercept_events = Bool(True)
 
     # Dimensions in which this container can resize to fit its components.
     # This is similar to the **resizable** trait on PlotComponent. Chaco
@@ -135,7 +134,7 @@ class Container(Component):
         Component.__init__(self, **traits)
         for component in components:
             self.add(component)
-        if "bounds" in traits.keys() or "auto_size" not in traits.keys():
+        if "bounds" in traits.keys() and "auto_size" not in traits.keys():
             self.auto_size = False
 
         if 'intercept_events' in traits:
@@ -152,16 +151,8 @@ class Container(Component):
         self._components.extend(components)
 
         # Expand our bounds if necessary
-        if self.auto_size:
-            for component in components:
-                if (component.outer_x2 >= self.width) or \
-                   (component.outer_y2 >= self.height) or \
-                   (component.outer_x < 0) or (component.outer_y < 0):
-                    self.compact()
-                    # We only need to do a compact() once.
-                    return
-        else:
-            pass
+        if self._should_compact():
+            self.compact()
 
         self.invalidate_draw()
 
@@ -169,18 +160,6 @@ class Container(Component):
 
     def remove(self, *components):
         """ Removes components from this container """
-
-        # Determine if we need to contract our bounds after removing components
-        for component in self.components:
-            if self.auto_size and \
-                ((component.outer_x <= 0) or (component.outer_y <= 0) or \
-                 (component.outer_x2 >= self.width) or \
-                 (component.outer_y2 >= self.height)):
-                    need_compact = True
-                    break
-        else:
-            need_compact = False
-
         for component in components:
             if component in self._components:
                 component.container = None
@@ -188,13 +167,9 @@ class Container(Component):
             else:
                 raise RuntimeError, "Unable to remove component from container."
 
-        # Contract our bounds
-        if self.auto_size and need_compact:
-            self.compact()
-
         self.invalidate_draw()
-
         return
+
 
     def insert(self, index, component):
         "Inserts a component into a specific position in the components list"
@@ -383,6 +358,19 @@ class Container(Component):
         else:
             return True
 
+    def _should_compact(self):
+        """ Returns True if the container needs to call compact().  Subclasses
+        can overload this method as needed.
+        """
+        if self.auto_size:
+            for component in self.components:
+                if (component.outer_x2 >= self.width) or \
+                   (component.outer_y2 >= self.height) or \
+                   (component.outer_x < 0) or (component.outer_y < 0):
+                    return True
+        else:
+            return False
+
     def _transform_view_bounds(self, view_bounds):
         """
         Transforms the given view bounds into our local space and computes a new
@@ -425,7 +413,6 @@ class Container(Component):
     def _draw_overlays(self, gc, view_bounds=None, mode="normal"):
         """ Method for backward compatability with old drawing scheme.
         """
-        import warnings
         warnings.warn("Containter._draw_overlays is deprecated.")
         for component in self.overlays:
             component.overlay(component, gc, view_bounds, mode)

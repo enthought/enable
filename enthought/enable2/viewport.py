@@ -13,7 +13,7 @@ from enable_traits import bounds_trait, coordinate_trait
 from base import empty_rectangle, intersect_bounds
 from component import Component
 from container import Container
-
+from canvas import Canvas
 
 
 class Viewport(Component):
@@ -43,6 +43,7 @@ class Viewport(Component):
     def __init__(self, **traits):
         Component.__init__(self, **traits)
         _prev_event_handlers = Set()
+        self._update_component_view_bounds()
         return
 
     def components_at(self, x, y, add_containers = False):
@@ -117,17 +118,31 @@ class Viewport(Component):
     # Event handlers
     #------------------------------------------------------------------------
 
+    def _update_component_view_bounds(self):
+        """ Updates the optional .view_bounds trait on our component;
+        mostly used for Canvas objects.
+        """
+        if isinstance(self.component, Canvas):
+            llx, lly = self.view_position
+            self.component.view_bounds = (llx, lly, 
+                                          llx + self.view_bounds[0] + 1,
+                                          lly + self.view_bounds[1] + 1)
+        return
+
+
     def _component_changed(self, old, new):
         if (old is not None) and (self in old.viewports):
             old.viewports.remove(self)
 
         if (new is not None) and (self not in new.viewports):
             new.viewports.append(self)
+            self._update_component_view_bounds()
         return
 
     def _bounds_changed(self, old, new):
         Component._bounds_changed(self, old, new)
         self.set(view_bounds = new, trait_change_notify=False)
+        self._update_component_view_bounds()
         return
 
     def _bounds_items_changed(self, event):
@@ -139,6 +154,12 @@ class Viewport(Component):
 
     def _view_bounds_items_changed(self, event):
         return self._view_bounds_changed(None, self.bounds)
+
+    def _view_position_changed(self):
+        self._update_component_view_bounds()
+
+    def _view_position_items_changed(self):
+        self._view_position_changed()
 
     def _dispatch_stateful_event(self, event, suffix):
         if isinstance(self.component, Component):
