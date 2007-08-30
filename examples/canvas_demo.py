@@ -8,7 +8,8 @@ class MyFrame(DemoFrame):
 
     def _create_window(self):
 
-        canvas = Canvas()
+        canvas = Canvas(bgcolor="lightsteelblue")
+        from basic_move import Box
         box = Box(color="red", bounds=[50,50], resizable="")
         box.position= [75,75]
         canvas.add(box)

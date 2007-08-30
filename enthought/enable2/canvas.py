@@ -3,6 +3,7 @@
 
 # Enthought library imports
 from enthought.traits.api import Trait, Tuple
+from enthought.kiva import FILL
 
 
 # Local relative imports
@@ -45,6 +46,7 @@ class Canvas(Container):
     #------------------------------------------------------------------------
 
     # The (x, y, x2, y2) coordinates of the bounding box of the components
+    # in our inner coordinate space
     _bounding_box = Tuple((0,0,100,100))
 
     def compact(self):
@@ -58,20 +60,29 @@ class Canvas(Container):
     def is_in(self, x, y):
         return True
     
-    def add(self, *components):
-        """ Adds components to this container """
+    def remove(self, *components):
+        """ Removes components from this container """
         for component in components:
-            if component.container is not None:
-                component.container.remove(component)
-            component.container = self
-        self._components.extend(components)
+            if component in self._components:
+                component.container = None
+                self._components.remove(component)
+            else:
+                raise RuntimeError, "Unable to remove component from container."
 
-        # Expand our bounds if necessary
-        if self._should_compact():
+        # Check to see if we need to compact.
+        x, y, x2, y2 = self._bounding_box
+        if (component.outer_x2 == x2-x) or \
+                (component.outer_y2 == y2-y) or \
+                (component.x == 0) or (component.y == 0):
             self.compact()
 
         self.invalidate_draw()
         return
+
+    def draw(self, gc, view_bounds=None, mode="normal"):
+        if self.view_bounds is None:
+            self.view_bounds = view_bounds
+        super(Canvas, self).draw(gc, view_bounds, mode)
 
 
     #------------------------------------------------------------------------
@@ -92,6 +103,30 @@ class Canvas(Container):
         else:
             return False
             
+    def _draw_background(self, gc, view_bounds=None, mode="default"):
+        if self.bgcolor not in ("clear", "transparent", "none"):
+            if self.view_bounds is not None:
+                x, y, x2, y2 = self.view_bounds
+            else:
+                x, y, x2, y2 = self._bounding_box
+            r = (x, y, x2-x+1, y2-y+1)
+            
+            gc.save_state()
+            gc.set_antialias(False)
+            try:
+                gc.set_fill_color(self.bgcolor_)
+                gc.draw_rect(r, FILL)
+                
+            finally:
+                gc.restore_state()
+        
+        # Call the enable _draw_border routine
+        if not self.overlay_border and self.border_visible:
+            # Tell _draw_border to ignore the self.overlay_border
+            self._draw_border(gc, view_bounds, mode, force_draw=True)
+        
+        return
+
 
     #------------------------------------------------------------------------
     # Event handlers

@@ -22,7 +22,7 @@ class Box(Component):
     
     resizable = ""
 
-    def _draw(self, gc, view_bounds=None, mode="default"):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         gc.save_state()
         if self.event_state == "moving":
             gc.set_fill_color(self.moving_color)
