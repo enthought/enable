@@ -167,11 +167,11 @@ class Container(Component):
             else:
                 raise RuntimeError, "Unable to remove component from container."
 
-        # Check to see if we need to compact.
-        if (component.outer_x2 == self.width) or \
-                (component.outer_y2 == self.height) or \
-                (component.x == 0) or (component.y == 0):
-            self.compact()
+            # Check to see if we need to compact.
+            if (component.outer_x2 == self.width) or \
+                    (component.outer_y2 == self.height) or \
+                    (component.x == 0) or (component.y == 0):
+                self.compact()
 
         self.invalidate_draw()
         return
@@ -371,10 +371,10 @@ class Container(Component):
         if self.auto_size:
             width = self.width
             height = self.height
-            x, y = component.outer_position
-            x2 = component.outer_x2
-            y2 = component.outer_y2
             for component in self.components:
+                x, y = component.outer_position
+                x2 = component.outer_x2
+                y2 = component.outer_y2
                 if (x2 >= width) or (y2 >= height) or (x < 0) or (y < 0):
                     return True
         else:
