@@ -126,7 +126,6 @@ class ViewportPanTool(BaseTool):
         """ Handles the mouse being moved when the tool is in the 'panning' 
         state.
         """
-        plot = self.component
         
         if self._auto_constrain and self.constrain_direction is None:
             # Determine the constraint direction
@@ -135,32 +134,19 @@ class ViewportPanTool(BaseTool):
             else:
                 self.constrain_direction = "y"
 
-        xrange = plot.x_mapper.range
-        yrange = plot.y_mapper.range
+        for direction, ndx in [("x", 0), ("y", 1)]:
+            if self.constrain and self.constrain_direction != direction:
+                continue
 
-        for direction, bound_name, ndx in [("x","width",0), ("y","height",1)]:
-            mapper = getattr(plot, direction + "_mapper")
-            range = mapper.range
-            eventpos = getattr(event, direction)
             origpos = self._original_xy[ndx]
-
-            if not self.constrain or self.constrain_direction == direction:
-                clicked = mapper.map_data(eventpos)
-                high = range.high
-                low = range.low
-                if high == low:
-                    high = low + 1.0
-
-                scale = getattr(plot, bound_name) / (high - low)
-                delta = self.speed * (eventpos - origpos) / scale
-                if getattr(plot, direction + "_direction", None) == "flipped":
-                    delta = -delta
-                range.set_bounds(range.low - delta, range.high - delta)
+            eventpos = getattr(event, direction)
+            delta = self.speed * (eventpos - origpos)
+            self.component.view_position[ndx] -= delta
         
         event.handled = True
         
         self._original_xy = (event.x, event.y)
-        plot.request_redraw()
+        self.component.request_redraw()
         return
 
     def panning_mouse_leave(self, event):
@@ -170,7 +156,7 @@ class ViewportPanTool(BaseTool):
         Ends panning.
         """
         return self._end_pan(event)
-    
+
     def _start_pan(self, event, capture_mouse=True):
         self._original_xy = (event.x, event.y)
         if self.constrain_key is not None:

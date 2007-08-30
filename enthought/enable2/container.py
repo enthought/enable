@@ -297,6 +297,51 @@ class Container(Component):
             gc.restore_state()
         return
 
+    def _dispatch_draw(self, layer, gc, view_bounds, mode):
+        """ Renders the named *layer* of this component. 
+        """
+        new_bounds = self._transform_view_bounds(view_bounds)
+        if new_bounds == empty_rectangle:
+            return
+        
+        if self._layout_needed:
+            self.do_layout()
+
+        # Give the container a chance to draw first for the layers that are
+        # considered "under" or "at" the main layer level
+        if layer in self.container_under_layers:
+            my_handler = getattr(self, "_draw_container_" + layer, None)
+            if my_handler:
+                my_handler(gc, view_bounds, mode)
+        
+        # Now transform coordinates and draw the children
+        visible_components = self._get_visible_components(new_bounds)
+        if visible_components:
+            gc.save_state()
+            try:
+                gc.translate_ctm(*self.position)
+                for component in visible_components:
+                    if component.unified_draw:
+                        # Plot containers that want unified_draw only get 
+                        # called if their draw_layer matches the current layer 
+                        # we're rendering
+                        if component.draw_layer == layer:
+                            component._draw(gc, new_bounds, mode)
+                    else:
+                        component._dispatch_draw(layer, gc, new_bounds, mode)
+            finally:
+                gc.restore_state()
+        
+        # The container's annotation and overlay layers draw over those of 
+        # its components.
+        if layer in ("annotation", "overlay"):
+            my_handler = getattr(self, "_draw_container_" + layer, None)
+            if my_handler:
+                my_handler(gc, view_bounds, mode)
+        
+        return
+
+
     def _draw_component(self, gc, view_bounds=None, mode="normal"):
         """ Draws the component.
 
@@ -426,54 +471,6 @@ class Container(Component):
         for component in self.overlays:
             component.overlay(component, gc, view_bounds, mode)
         return
-
-    #------------------------------------------------------------------------
-    # Component interface
-    #------------------------------------------------------------------------
-    def _dispatch_draw(self, layer, gc, view_bounds, mode):
-        """ Renders the named *layer* of this component. 
-        """
-        new_bounds = self._transform_view_bounds(view_bounds)
-        if new_bounds == empty_rectangle:
-            return
-        
-        if self._layout_needed:
-            self.do_layout()
-
-        # Give the container a chance to draw first for the layers that are
-        # considered "under" or "at" the main layer level
-        if layer in self.container_under_layers:
-            my_handler = getattr(self, "_draw_container_" + layer, None)
-            if my_handler:
-                my_handler(gc, view_bounds, mode)
-        
-        # Now transform coordinates and draw the children
-        visible_components = self._get_visible_components(new_bounds)
-        if visible_components:
-            gc.save_state()
-            try:
-                gc.translate_ctm(*self.position)
-                for component in visible_components:
-                    if component.unified_draw:
-                        # Plot containers that want unified_draw only get 
-                        # called if their draw_layer matches the current layer 
-                        # we're rendering
-                        if component.draw_layer == layer:
-                            component._draw(gc, new_bounds, mode)
-                    else:
-                        component._dispatch_draw(layer, gc, new_bounds, mode)
-            finally:
-                gc.restore_state()
-        
-        # The container's annotation and overlay layers draw over those of 
-        # its components.
-        if layer in ("annotation", "overlay"):
-            my_handler = getattr(self, "_draw_container_" + layer, None)
-            if my_handler:
-                my_handler(gc, view_bounds, mode)
-        
-        return
-
 
     #------------------------------------------------------------------------
     # Property setters & getters

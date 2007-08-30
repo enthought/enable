@@ -78,7 +78,7 @@ class Viewport(Component):
     # Component interface
     #------------------------------------------------------------------------
 
-    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="normal"):
         # For now, ViewPort ignores the view_bounds that are passed in...
         # Long term, it should be intersected with the view_position to
         # compute a new view_bounds to pass in to our component.
@@ -97,7 +97,7 @@ class Viewport(Component):
                 clipped_view = intersect_bounds(self.position + self.bounds, view_bounds)
                 if clipped_view != empty_rectangle:
                     # clipped_view and self.position are in the space of our parent
-                    # containers.  we know that self.position -> view_x,view_y
+                    # container.  we know that self.position -> view_x,view_y
                     # in the coordinate space of our component.  So, find the
                     # vector from self.position to clipped_view, then add this to
                     # view_x and view_y to generate the transformed coordinates

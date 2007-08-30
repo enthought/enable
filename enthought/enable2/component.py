@@ -16,7 +16,7 @@ from interactor import Interactor
 coordinate_delegate = Delegate("inner", modify=True)
 
 
-DEFAULT_DRAWING_ORDER = ["background", "mainlayer", "border", "overlay"]
+DEFAULT_DRAWING_ORDER = ["background", "underlay", "mainlayer", "border", "overlay"]
 
 class Component(CoordinateBox, Interactor):
     """
@@ -98,13 +98,11 @@ class Component(CoordinateBox, Interactor):
     # resizes itself.
     resizable = Enum("hv", "h", "v", "a", "")
 
-    max_width = Any
-
-    min_width = Any
-
-    max_height = Any
-
-    min_height = Any
+    # These will be used by the new layout system, but are currently unused.
+    #max_width = Any
+    #min_width = Any
+    #max_height = Any
+    #min_height = Any
 
     #------------------------------------------------------------------------
     # Overlays and underlays
@@ -130,12 +128,6 @@ class Component(CoordinateBox, Interactor):
     # An Enable Interactor that all events are deferred to.
     controller = Any
 
-    # The tools that are registered as listeners.
-    tools = List
-
-    # The tool that is currently active.
-    active_tool = Property
-    
     # Events are *not* automatically considered "handled" if there is a handler 
     # defined. Overrides an inherited trait from Enable's Interactor class.
     auto_handle_event = False
@@ -305,10 +297,6 @@ class Component(CoordinateBox, Interactor):
     # Does the component need to do a layout call?
     _layout_needed = Bool(True)
 
-    # Shadow trait for the **active_tool** property.  Must be an instance of
-    # BaseTool or one of its subclasses.
-    _active_tool = Any
-    
     #------------------------------------------------------------------------
     # Abstract methods
     #------------------------------------------------------------------------

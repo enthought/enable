@@ -50,10 +50,12 @@ class Box(Component):
         event.window.set_mouse_owner(self, event.net_transform())
         self.offset_x = event.x - self.x
         self.offset_y = event.y - self.y
+        event.handled = True
         return
 
     def moving_mouse_move(self, event):
         self.position = [event.x-self.offset_x, event.y-self.offset_y]
+        event.handled = True
         self.request_redraw()
         return
 
@@ -61,11 +63,13 @@ class Box(Component):
         self.event_state = "normal"
         event.window.set_pointer(self.normal_pointer)
         event.window.set_mouse_owner(None)
+        event.handled = True
         self.request_redraw()
         return
     
     def moving_mouse_leave(self, event):
         self.moving_left_up(event)
+        event.handled = True
         return
 
 class MyFrame(DemoFrame):

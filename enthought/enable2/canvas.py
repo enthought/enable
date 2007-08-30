@@ -2,7 +2,7 @@
 
 
 # Enthought library imports
-from enthought.traits.api import Trait, Tuple
+from enthought.traits.api import Bool, Trait, Tuple
 from enthought.kiva import FILL
 
 
@@ -27,6 +27,7 @@ class Canvas(Container):
     # then the canvas really does behave as if it has no bounds.
     view_bounds = Trait(None, None, Tuple)
 
+    draw_axes = Bool(False)
 
     #------------------------------------------------------------------------
     # Inherited traits
@@ -126,6 +127,31 @@ class Canvas(Container):
             self._draw_border(gc, view_bounds, mode, force_draw=True)
         
         return
+
+    def _draw_underlay(self, gc, view_bounds=None, mode="default"):
+        if self.draw_axes:
+            gc.save_state()
+            try:
+                x, y, x2, y2 = self.view_bounds
+                if (x <= 0 <= x2) or (y <= 0 <= y2):
+                    gc.set_stroke_color((0,0,0,1))
+                    gc.set_line_width(1.0)
+                    gc.move_to(0, y)
+                    gc.line_to(0, y2)
+                    gc.move_to(x, 0)
+                    gc.line_to(x2, 0)
+                    gc.stroke_path()
+            finally:
+                gc.restore_state()
+
+    def _transform_view_bounds(self, view_bounds):
+        # Overload the parent class's implementation to skip visibility test
+        if view_bounds:
+            v = view_bounds
+            new_bounds = (v[0]-self.x, v[1]-self.y, v[2], v[3])
+        else:
+            new_bounds = None
+        return new_bounds
 
 
     #------------------------------------------------------------------------
