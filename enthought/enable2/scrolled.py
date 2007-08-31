@@ -59,18 +59,6 @@ class Scrolled(Container):
         self._layout_needed = True
         return
 
-    def update_from_viewport(self):
-        """ Repositions the scrollbars based on the current position/bounds of
-            viewport_component. 
-        """
-        x, y = self.viewport_component.view_position
-        w, h = self.viewport_component.view_bounds
-        if self._hsb:
-            self._hsb.set_position((x + w/2.0)/self.component.bounds[0])
-        if self._vsb:
-            self._vsb.set_position((y + h/2.0)/self.component.bounds[1])
-        return
-
     def sb_height(self):
         """ Returns the standard scroll bar height
         """
@@ -88,6 +76,20 @@ class Scrolled(Container):
     # Trait event handlers
     #---------------------------------------------------------------------------
 
+    def update_from_viewport(self):
+        """ Repositions the scrollbars based on the current position/bounds of
+            viewport_component. 
+        """
+#        from enthought.debug.fbi import bp; bp()
+        x, y = self.viewport_component.view_position
+        w, h = self.viewport_component.view_bounds
+        if self._hsb:
+            self._hsb.set_position((x + w/2.0)/self.component.bounds[0])
+        if self._vsb:
+            self._vsb.set_position((y + h/2.0)/self.component.bounds[1])
+        return
+
+
     def _layout_and_draw(self):
         self._layout_needed = True
         self.request_redraw()
@@ -102,6 +104,39 @@ class Scrolled(Container):
         self._layout_needed = True
         self.request_redraw()
 
+    def _bounds_items_changed_for_component(self):
+        self.update_from_viewport()
+        return
+
+    def _bounds_changed_for_component(self):
+        self.update_from_viewport()
+        return
+
+    def _position_changed_for_component(self):
+        self.update_from_viewport()
+        return
+
+    def _position_items_changed_for_component(self):
+        self.update_from_viewport()
+        return
+
+    def _view_bounds_changed_for_viewport_component(self):
+        self.update_from_viewport()
+        return
+
+    def _view_bounds_items_changed_for_viewport_component(self):
+        self.update_from_viewport()
+        return
+
+    def _view_position_changed_for_viewport_component(self):
+        self.update_from_viewport()
+        return
+
+    def _view_position_items_changed_for_viewport_component(self):
+        self.update_from_viewport()
+        return
+        
+        
 
     def _component_bounds_items_handler(self, object, new):
         if new.added != new.removed:
