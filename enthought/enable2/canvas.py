@@ -63,6 +63,7 @@ class Canvas(Container):
     
     def remove(self, *components):
         """ Removes components from this container """
+        needs_compact = False
         for component in components:
             if component in self._components:
                 component.container = None
@@ -70,11 +71,14 @@ class Canvas(Container):
             else:
                 raise RuntimeError, "Unable to remove component from container."
 
-        # Check to see if we need to compact.
-        x, y, x2, y2 = self._bounding_box
-        if (component.outer_x2 == x2-x) or \
-                (component.outer_y2 == y2-y) or \
-                (component.x == 0) or (component.y == 0):
+            # Check to see if we need to compact.
+            x, y, x2, y2 = self._bounding_box
+            if (component.outer_x2 == x2-x) or \
+                    (component.outer_y2 == y2-y) or \
+                    (component.x == 0) or (component.y == 0):
+                needs_compact = True
+
+        if needs_compact:
             self.compact()
 
         self.invalidate_draw()
