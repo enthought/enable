@@ -12,29 +12,53 @@ from native_scrollbar import NativeScrollBar
 
 
 class Scrolled(Container):
+    """
+    A Scrolled acts like a viewport with scrollbars for positioning the view
+    position.  Rather than subclassing from viewport, it delegates to one.
+    """
 
-    #---------------------------------------------------------------------------
-    #  Trait definitions:
-    #---------------------------------------------------------------------------
+    # The component that we are viewing
+    component = Instance(Component)
 
-    component      = Instance(Container)
+    # The actual viewport onto our component
     viewport_component = Instance(Viewport)
-    bgcolor       = RGBAColor("white")
+
     # Inside padding is a background drawn area between the edges or scrollbars
     # and the scrolled area/left component.
     inside_padding_width = Int(5)
+    
     # The inside border is a border drawn on the inner edge of the inside 
-    # padding area to highlight the
+    # padding area to highlight the viewport.
     inside_border_color = RGBAColor("black")
     inside_border_width = Int(0)
 
+    # The background color to use for filling in the padding area.
+    bgcolor = RGBAColor("white")
+    
+    # Should the horizontal scrollbar be shown?
     horiz_scrollbar = true
+    
+    # Should the vertical scrollbar be shown?
     vert_scrollbar = true
-    mousewheel_scroll = true # Should the mouse wheel scroll the viewport?
-    alternate_vsb = Instance(Component)
+
+    # Should the mouse wheel scroll the viewport?
+    mousewheel_scroll = true 
+
+    # Override the default value of this inherited trait
     auto_size = False
-    leftborder = Float(0) #The size of the left border space
-    leftcomponent = Any(None) # None or a component
+    
+    #---------------------------------------------------------------------------
+    # Traits for support of geophysics plotting
+    #---------------------------------------------------------------------------
+    
+    alternate_vsb = Instance(Component)
+    
+    # The size of the left border space
+    leftborder = Float(0) 
+    
+    # A component to lay out to the left of the viewport area (e.g. a depth
+    # scale track)
+    leftcomponent = Any
 
     #---------------------------------------------------------------------------
     # Private traits
@@ -136,8 +160,6 @@ class Scrolled(Container):
     def _view_position_items_changed_for_viewport_component(self):
         self.update_from_viewport()
         return
-        
-        
 
     def _component_bounds_items_handler(self, object, new):
         if new.added != new.removed:
@@ -282,11 +304,8 @@ class Scrolled(Container):
         else:
             if self._hsb:
                 self._hsb = self._release_sb(self._hsb)
-                if hasattr(self.component, "bounds_offset"):
-                    pos = self.component.bounds_offset[0]
-                else:
-                    pos = 0
-                self.viewport_component.view_position[0] = pos
+                if not hasattr(self.component, "bounds_offset"):
+                    self.viewport_component.view_position[0] = 0
 
         #Create, destroy, or set the attributes of the vertical scrollbar, as necessary
         if self.alternate_vsb:
@@ -327,11 +346,8 @@ class Scrolled(Container):
         else:
             if self._vsb:
                 self._vsb = self._release_sb(self._vsb)
-                if hasattr(self.component, "bounds_offset"):
-                    pos = self.component.bounds_offset[1]
-                else:
-                    pos = 0
-                self.viewport_component.view_position[1] = pos
+                if not hasattr(self.component, "bounds_offset"):
+                    self.viewport_component.view_position[1] = 0
 
         self._layout_needed = False
         return
