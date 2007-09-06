@@ -2,7 +2,7 @@
 
 
 # Enthought library imports
-from enthought.traits.api import Bool, Trait, Tuple
+from enthought.traits.api import Bool, Trait, Tuple, List
 from enthought.kiva import FILL
 
 
@@ -18,14 +18,24 @@ class Canvas(Container):
 
     A Canvas can be nested inside another container, but usually a
     viewport is more appropriate.
+
+    Note: A Canvas has infinite bounds, but its .bounds attribute is
+    overloaded to be something more meaningful, namely, the bounding
+    box of its child components and the optional view area of the 
+    viewport that is looking at it.  (TODO: add support for multiple
+    viewports.)
     """
-    
 
     # This optional tuple of (x,y,x2,y2) allows viewports to inform the canvas of
     # the "region of interest" that it should use when computing its notional
     # bounds for clipping and event handling purposes.  If this trait is None,
     # then the canvas really does behave as if it has no bounds.
     view_bounds = Trait(None, None, Tuple)
+
+    # The (x,y) position of the lower-left corner of the rectangle corresponding
+    # to the dimensions in self.bounds.  Unlike self.position, this position is 
+    # in the canvas's space, and not in the coordinate space of the parent.
+    bounds_offset = List
 
     draw_axes = Bool(False)
 
@@ -161,6 +171,9 @@ class Canvas(Container):
     #------------------------------------------------------------------------
     # Event handlers
     #------------------------------------------------------------------------
+    
+    def _bounds_offset_default(self):
+        return [0,0]
 
     def _view_bounds_changed(self):
         llx, lly, urx, ury = self._bounding_box
@@ -171,4 +184,6 @@ class Canvas(Container):
             urx = max(urx, x2)
             ury = max(ury, y2)
         self.bounds = [urx - llx + 1, ury - lly + 1]
+        self.bounds_offset = [llx, lly]
+
 

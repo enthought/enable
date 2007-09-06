@@ -80,13 +80,14 @@ class Scrolled(Container):
         """ Repositions the scrollbars based on the current position/bounds of
             viewport_component. 
         """
-#        from enthought.debug.fbi import bp; bp()
+
         x, y = self.viewport_component.view_position
         w, h = self.viewport_component.view_bounds
+        offsetx, offsety = getattr(self.component, "bounds_offset", (0,0))
         if self._hsb:
-            self._hsb.set_position((x + w/2.0)/self.component.bounds[0])
+            self._hsb.set_position((x + w/2.0 - offsetx)/self.component.bounds[0])
         if self._vsb:
-            self._vsb.set_position((y + h/2.0)/self.component.bounds[1])
+            self._vsb.set_position((y + h/2.0 - offsety)/self.component.bounds[1])
         return
 
 
@@ -281,7 +282,11 @@ class Scrolled(Container):
         else:
             if self._hsb:
                 self._hsb = self._release_sb(self._hsb)
-                self.viewport_component.view_position[0] = 0
+                if hasattr(self.component, "bounds_offset"):
+                    pos = self.component.bounds_offset[0]
+                else:
+                    pos = 0
+                self.viewport_component.view_position[0] = pos
 
         #Create, destroy, or set the attributes of the vertical scrollbar, as necessary
         if self.alternate_vsb:
@@ -322,7 +327,11 @@ class Scrolled(Container):
         else:
             if self._vsb:
                 self._vsb = self._release_sb(self._vsb)
-                self.viewport_component.view_position[1] = 0
+                if hasattr(self.component, "bounds_offset"):
+                    pos = self.component.bounds_offset[1]
+                else:
+                    pos = 0
+                self.viewport_component.view_position[1] = pos
 
         self._layout_needed = False
         return
