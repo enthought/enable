@@ -5,8 +5,8 @@ from numpy import array
 from sets import Set
 
 # Enthought library traits
-from enthought.enable2.traits.rgba_color_trait import RGBAColor
-from enthought.traits.api import false, Instance
+from enthought.enable2.tools.api import ViewportZoomTool
+from enthought.traits.api import Bool, false, Float, Instance
 
 # Local relative imports
 from enable_traits import bounds_trait, coordinate_trait
@@ -36,6 +36,13 @@ class Viewport(Component):
     # TODO: Implement this
     stay_inside = false
 
+
+    # Enable Zoom interaction
+    enable_zoom = Bool(False)
+
+    # Zoom scaling factor for this viewport - Ratio of old bounds to new bounds
+    zoom = Float(1.0)
+
     #------------------------------------------------------------------------
     # Public methods
     #------------------------------------------------------------------------
@@ -44,6 +51,8 @@ class Viewport(Component):
         Component.__init__(self, **traits)
         _prev_event_handlers = Set()
         self._update_component_view_bounds()
+        if self.enable_zoom:
+            self._add_zoomtool()
         return
 
     def components_at(self, x, y, add_containers = False):
@@ -79,6 +88,11 @@ class Viewport(Component):
     #------------------------------------------------------------------------
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="normal"):
+        
+        # Before drawing, scale the ctm if we are zooming
+        if self.enable_zoom:
+            gc.scale_ctm(self.zoom, self.zoom)
+
         # For now, ViewPort ignores the view_bounds that are passed in...
         # Long term, it should be intersected with the view_position to
         # compute a new view_bounds to pass in to our component.
@@ -117,6 +131,25 @@ class Viewport(Component):
     #------------------------------------------------------------------------
     # Event handlers
     #------------------------------------------------------------------------
+
+
+    def _enable_zoom_changed(self, old, new):
+        """
+            Add or remove the zoom tool overlay depending whether
+            or not zoom is enabled.
+        """
+        if self.enable_zoom:
+            self._add_zoomtool()
+        else:
+            self._remove_zoomtool()
+
+    def _add_zoomtool(self):
+        self.overlays.append(ViewportZoomTool(self))
+    
+    def _remove_zoomtool(self):
+        for overlay in self.overlays:
+            if isinstance(overlay, ViewportZoomTool):
+                self.overlays.remove(overlay)
 
     def _update_component_view_bounds(self):
         """ Updates the optional .view_bounds trait on our component;

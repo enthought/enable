@@ -24,6 +24,7 @@ from events import drag_event_trait, key_event_trait, mouse_event_trait, \
 from interactor import Interactor
 from base_tool import BaseTool, KeySpec
 
+from abstract_overlay import AbstractOverlay
 from canvas import Canvas
 from component import Component
 #from component_render_category import ComponentRenderCategory
@@ -40,7 +41,6 @@ from viewport import Viewport
 from graphics_context import GraphicsContextEnable
 
 # Old Enable classes and widgets
-
 from abstract_window import AbstractWindow
 #from controls import LabelTraits, Label, CheckBox, Radio
 

@@ -1,3 +1,4 @@
 from drag_tool import DragTool
 from traits_tool import TraitsTool
 from viewport_pan_tool import ViewportPanTool
+from viewport_zoom_tool import ViewportZoomTool
