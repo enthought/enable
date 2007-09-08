@@ -9,10 +9,10 @@ from types import ListType, TupleType
 
 # Enthought Imports
 from enthought.traits.api import Event, Property, Trait, TraitError, \
-     Any, Str, Bool, Float, false, Int
-from enthought.traits.ui.api import Group, View, Include
+     Any, Enum, Str, Bool, Float, Int
 
 from enthought.enable2.component import Component
+
 
 def valid_range(object, name, value):
     "Verify that a set of range values for a scrollbar is valid"
@@ -35,11 +35,14 @@ def valid_scroll_position(object, name, value):
     "Verify that a specified scroll bar position is valid"
     try:
         low, high, page_size, line_size = object.range
-        return max(min(float(value), high - page_size), low)
+        if value > high - page_size:
+            value = high - page_size
+        elif value < low:
+            value = low
+        return value
     except:
         raise
     raise TraitError
-
 
 
 class NativeScrollBar(Component):
@@ -54,13 +57,16 @@ class NativeScrollBar(Component):
     scroll_position = Trait( 0.0, valid_scroll_position )
     
     # A tuple (low, high, page_size, line_size).  Can be accessed using
-    # convenience properties (see below).
+    # convenience properties (see below).  Low and High refer to the conceptual
+    # bounds of the region represented by the full scroll bar.  Note that 
+    # the maximum value of scroll_position is actually (high - page_size), and
+    # not just the value of high.
     range = Trait( ( 0.0, 100.0, 10.0, 1.0 ), valid_range )
     
     # The orientation of the scrollbar
     orientation = Trait("horizontal", "vertical")
 
-    # Is y=0 at the top or bottom?
+    # The location of y=0
     origin = Trait('bottom', 'top')
     
     # Determines if the scroll bar should be visible and respond to events
@@ -74,32 +80,35 @@ class NativeScrollBar(Component):
     high = Property
     page_size = Property
     line_size = Property
+    
+    # This represents the state of the mouse button on the scrollbar thumb.
+    # External classes can monitor this to detect when the user starts and
+    # finishes interacting with this scrollbar via the scrollbar thumb.
+    mouse_thumb = Enum("up", "down")
 
     #------------------------------------------------------------------------
     # Private Traits
     #------------------------------------------------------------------------
     _control = Any(None)
-    _clean = false
-    _last_widget_x = Float(0)
-    _last_widget_y = Float(0)
-    _last_widget_height = Float(0)
-    _list_widget_width = Float(0)
-
+    _last_widget_x = Int(0)
+    _last_widget_y = Int(0)
+    _last_widget_height = Int(0)
+    _last_widget_width = Int(0)
+    
+    # Indicates whether or not the widget needs to be re-drawn after being
+    # repositioned and resized
+    _widget_moved = Bool(True)
+    
+    # Set to True if something else has updated the scroll position and
+    # the widget needs to redraw.  This is not set to True if the widget
+    # gets updated via user mouse interaction, since WX is then responsible
+    # for updating the scrollbar.
+    _scroll_updated = Bool(True)
+    
     #------------------------------------------------------------------------
     # Public Methods
     #------------------------------------------------------------------------
 
-    def set_position(self, pos):
-        """ Given a floating point number between 0.0 and 1.0 (inclusive),
-            set the position of the scrollbar so that is scrolled approximately
-            that percent.
-        """
-        if pos < 0 or pos > 1:
-            raise ValueError, "pos must be between 0 and 1"
-        if self._control:
-            range = float(self._control.GetRange()-self._control.GetThumbSize())
-            self._control.SetThumbPosition(int(round(pos*range)))
-        return
     
     def destroy(self):
         """ Destroy the native widget associated with this component.
@@ -117,13 +126,6 @@ class NativeScrollBar(Component):
         return
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
-        """Draw the component."""
-        # To determine whether to actually redraw the component, we first check whether
-        # we're clean or not.  If we are clean, we must additionally check whether we
-        # have moved in wx coordinate space.  There's no easy way to get trait notification
-        # on this because it depends on the entire position stack above us.  Therefore, we
-        # compute this each time and redraw if it has changed.
-        
         x_pos, y_pos = self.position
         x_size, y_size = self.bounds
 
@@ -137,66 +139,107 @@ class NativeScrollBar(Component):
             return
         wx_ypos = window._flip_y(wx_ypos)
 
-        if self._clean and \
-               self._last_widget_x == wx_xpos and \
-               self._last_widget_y == wx_ypos and \
-               self._last_widget_width == x_size and \
-               self._last_widget_height == y_size:
-            return
+        low, high, page_size, line_size = self.range
+        wxpos, wxthumbsize, wxrange = \
+                self._enable_to_wx_spec(self.range + (self.scroll_position,))
+
+        if not self._control:
+            self._create_control(window, wxpos, wxthumbsize, wxrange)
+
+        if self._widget_moved:
+            if (self._last_widget_x != wx_xpos) or (self._last_widget_y != wx_ypos):
+                self._control.SetPosition(wx.Point(wx_xpos, wx_ypos))
+            controlsize = self._control.GetSize()
+            if x_size != controlsize[0] or y_size != controlsize[1]:
+                self._control.SetSize(wx.Size(x_size, y_size))
+        
+        if self._scroll_updated:
+            self._control.SetScrollbar(wxpos, wxthumbsize, wxrange, wxthumbsize, True)
 
         self._last_widget_x = wx_xpos
         self._last_widget_y = wx_ypos
         self._last_widget_width = x_size
         self._last_widget_height = y_size
-        
-        
-        low, high, page_size, line_size = self.range
+        self._scroll_updated = False
+        self._widget_moved = False
+        return
+    
+    def _create_control(self, window, wxpos, wxthumbsize, wxrange):
         if self.orientation == 'horizontal':
             wxstyle = wx.HORIZONTAL
         else:
             wxstyle = wx.VERTICAL
-        tmp = self._enable_to_wx_spec(self.range + (self.scroll_position,))
-        (wxpos, wxthumbsize, wxrange)  = tmp
-        
-        if not self._control:
-            self._control = wx.ScrollBar(window.control, style=wxstyle)
-            self._control.SetScrollbar(wxpos, wxthumbsize, wxrange, wxthumbsize, True)
-            wx.EVT_SCROLL(self._control, self._wx_scroll_handler)
-            wx.EVT_SET_FOCUS(self._control, self._yield_focus)
-        
-        # Ideally we would only SetPosition if the position change came from the
-        # program rather than from the user.  Perhaps we should have a position_dirty
-        # variable which is set by _scroll_position_changed or something like that.
-        self._control.SetPosition(wx.Point(wx_xpos, wx_ypos))
-        controlsize = self._control.GetSize()
-        if x_size != controlsize[0] or y_size != controlsize[1]:
-            self._control.SetSize(wx.Size(x_size, y_size))
+        self._control = wx.ScrollBar(window.control, style=wxstyle)
         self._control.SetScrollbar(wxpos, wxthumbsize, wxrange, wxthumbsize, True)
+        wx.EVT_SCROLL(self._control, self._wx_scroll_handler)
+        wx.EVT_SET_FOCUS(self._control, self._yield_focus)
+        wx.EVT_SCROLL_THUMBTRACK(self._control, self._thumbtrack)
+        wx.EVT_SCROLL_THUMBRELEASE(self._control, self._thumbreleased)
 
-        self._clean = True
-        return
+    #------------------------------------------------------------------------
+    # WX Event handlers
+    #------------------------------------------------------------------------
+
+    def _thumbtrack(self, event):
+        self.mouse_thumb = "down"
+        self._wx_scroll_handler(event)
     
+    def _thumbreleased(self, event):
+        self.mouse_thumb = "up"
+        self._wx_scroll_handler(event)
+
     def _yield_focus(self, event):
-        """ Yields focus to our window, when we acquire focus via user interaction. """
+        """ 
+        Yields focus to our window, when we acquire focus via user interaction.
+        """
         window = event.GetWindow()
         if window:
             window.SetFocus()
         return
     
-    def _mouse_wheel_changed(self, event):
-        event.handled  = True
-        self.scroll_position -= (event.mouse_wheel * self.range[3] * self.mouse_wheel_speed)
+    def _wx_scroll_handler(self, event):
+        """Handle wx scroll events"""
+        # If the user moved the scrollbar, set the scroll position, but don't
+        # tell wx to move the scrollbar.  Doing so causes jerkiness
+        self.scroll_position = self._wx_to_enable_pos(self._control.GetThumbPosition())
         return
+        
+    def _enable_to_wx_spec(self, enable_spec):
+        """
+        Return the WX equivalent of an enable scroll bar specification from 
+        a tuple of (low, high, page_size, line_size, position).
+        Returns (position, thumbsize, range)
+        """
+        low, high, page_size, line_size, position = enable_spec
+        if self.origin == 'bottom' and self.orientation == 'vertical':
+            position = (high-page_size) - position + 1
+        if line_size == 0.0:
+            return (0, high-low, high-low)
+        else:
+            return [int(round(x)) for x in ((position-low)/line_size, page_size/line_size, (high-low)/line_size)]
 
-    def _scroll_position_changed(self):
-        self._clean = False
-        self.request_redraw()
-        return
-    
+    def _wx_to_enable_pos(self, pos):
+        """
+        Translate the position that the Wx scrollbar returns into the position
+        we store internally.  The difference is that we have a high and a low
+        and a line size, while wx assumes low is 0 and line size is 1.
+        """
+        low, high, page_size, line_size = self.range
+        enablepos = pos*line_size+low
+        # If we're a veritcal scrollbar with a bottom origin, flip
+        # the coordinates, since in WX the origin is always the top.
+        if self.origin == 'bottom' and self.orientation == 'vertical':
+            enablepos = (high-page_size)-enablepos
+        return enablepos
+
+    #------------------------------------------------------------------------
+    # Basic trait event handlers
+    #------------------------------------------------------------------------
+
     def _range_changed(self):
         low, high, page_size, line_size = self.range
         self.scroll_position = max(min(self.scroll_position, high-page_size), low)
-        self._clean = False
+        self._scroll_updated = True
         self.request_redraw()
         return
 
@@ -204,38 +247,29 @@ class NativeScrollBar(Component):
         self._range_changed()
         return
 
-    def _wx_scroll_handler(self, event):
-        """Handle wx scroll events"""
-        #If the user moved the scrollbar, set the scroll position, but don't
-        #tell wx to move the scrollbar.  Doing so causes jerkiness
-        self.scroll_position = self._wx_to_enable_pos(self._control.GetThumbPosition())
-        self._clean = True
+    def _mouse_wheel_changed(self, event):
+        event.handled  = True
+        self.scroll_position -= (event.mouse_wheel * self.range[3] * self.mouse_wheel_speed)
         return
-        
-    def _enable_to_wx_spec(self, enable_spec):
-        """Return the WX equivalent of an enable scroll bar specification
-        From a tuple of (low, high, page_size, line_size, position),
-        return (position, thumbsize, range)"""
-        low, high, page_size, line_size, position = enable_spec
-        if self.origin == 'bottom' and self.orientation == 'vertical':
-            position = (high-page_size)-position
-        if line_size == 0.0:
-            return (0,high-low,high-low)
-        else:
-            return map(int, ((position-low)/line_size, page_size/line_size, (high-low)/line_size))
 
-    def _wx_to_enable_pos(self, pos):
-        """Translate the position that the Wx scrollbar returns into the position we store
-        internally.  The difference is that we have a high and a low and a line size, while
-        wx assumes low is 0 and line size is 1."""
-        low, high, page_size, line_size = self.range
-        enablepos = pos*line_size+low
-        #If we're a veritcal scrollbar with a bottom origin, flip
-        #the coordinates, since in WX the origin is always the top.
-        if self.origin == 'bottom' and self.orientation == 'vertical':
-            enablepos = (high-page_size)-enablepos
-        return enablepos
-
+    def _scroll_position_changed(self):
+        self._scroll_updated = True
+        self.request_redraw()
+        return
+    
+    def _bounds_changed(self):
+        self._widget_moved = True
+        self.request_redraw()
+    
+    def _bounds_items_changed(self):
+        self._bounds_changed()
+    
+    def _position_changed(self):
+        self._widget_moved = True
+        self.request_redraw()
+    
+    def _position_items_changed(self):
+        self._position_changed()
 
     #------------------------------------------------------------------------
     # Property getters and setters
@@ -246,32 +280,32 @@ class NativeScrollBar(Component):
         
     def _set_low(self, low):
         ignore, high, page_size, line_size = self.range
-        self._clean = False
-        self.range =(low, high, page_size, line_size)
+        self._scroll_updated = True
+        self.range = (low, high, page_size, line_size)
         
     def _get_high(self):
         return self.range[1]
         
     def _set_high(self, high):
         low, ignore, page_size, line_size = self.range
-        self._clean = False
-        self.range =(low, high, page_size, line_size)
+        self._scroll_updated = True
+        self.range = (low, high, page_size, line_size)
         
     def _get_page_size(self):
         return self.range[2]
         
     def _set_page_size(self, page_size):
         low, high, ignore, line_size = self.range
-        self._clean = False
-        self.range =(low, high, page_size, line_size)
+        self._scroll_updated = True
+        self.range = (low, high, page_size, line_size)
         
     def _get_line_size(self):
         return self.range[3]
         
     def _set_line_size(self, line_size):
         low, high, page_size, ignore = self.range
-        self._clean = False
-        self.range =(low, high, page_size, line_size)
+        self._scroll_updated = True
+        self.range = (low, high, page_size, line_size)
 
 
 # EOF
