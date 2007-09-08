@@ -183,7 +183,7 @@ class Canvas(Container):
             lly = min(lly, y)
             urx = max(urx, x2)
             ury = max(ury, y2)
+        self.set(bounds_offset = [llx, lly], trait_change_notify=False)
         self.bounds = [urx - llx + 1, ury - lly + 1]
-        self.bounds_offset = [llx, lly]
 
 

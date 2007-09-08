@@ -126,7 +126,6 @@ class ViewportPanTool(BaseTool):
         """ Handles the mouse being moved when the tool is in the 'panning' 
         state.
         """
-        
         if self._auto_constrain and self.constrain_direction is None:
             # Determine the constraint direction
             if abs(event.x - self._original_xy[0]) > abs(event.y - self._original_xy[1]):
@@ -134,6 +133,7 @@ class ViewportPanTool(BaseTool):
             else:
                 self.constrain_direction = "y"
 
+        new_position = self.component.view_position[:]
         for direction, ndx in [("x", 0), ("y", 1)]:
             if self.constrain and self.constrain_direction != direction:
                 continue
@@ -141,8 +141,13 @@ class ViewportPanTool(BaseTool):
             origpos = self._original_xy[ndx]
             eventpos = getattr(event, direction)
             delta = self.speed * (eventpos - origpos)
-            self.component.view_position[ndx] -= delta
+            new_position[ndx] -= delta
         
+        if self.constrain:
+            self.component.view_position[self.constrain_direction] = \
+                        new_position[self.constrain_direction]
+        else:
+            self.component.view_position = new_position
         event.handled = True
         
         self._original_xy = (event.x, event.y)
