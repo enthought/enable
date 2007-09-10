@@ -37,6 +37,7 @@ from coordinate_box import CoordinateBox
 # Breaks code that does not use numpy
 from text_grid import TextGrid
 from viewport import Viewport
+from label import Label
 
 from graphics_context import GraphicsContextEnable
 
