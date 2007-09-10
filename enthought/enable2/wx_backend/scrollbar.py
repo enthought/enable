@@ -175,6 +175,7 @@ class NativeScrollBar(Component):
         wx.EVT_SET_FOCUS(self._control, self._yield_focus)
         wx.EVT_SCROLL_THUMBTRACK(self._control, self._thumbtrack)
         wx.EVT_SCROLL_THUMBRELEASE(self._control, self._thumbreleased)
+        wx.EVT_SIZE(self._control, self._control_resized)
 
     #------------------------------------------------------------------------
     # WX Event handlers
@@ -187,6 +188,10 @@ class NativeScrollBar(Component):
     def _thumbreleased(self, event):
         self.mouse_thumb = "up"
         self._wx_scroll_handler(event)
+
+    def _control_resized(self, event):
+        self._widget_moved = True
+        self.request_redraw()
 
     def _yield_focus(self, event):
         """ 

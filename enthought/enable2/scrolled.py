@@ -106,6 +106,10 @@ class Scrolled(Container):
 
     def update_bounds(self):
         self._layout_needed = True
+        if self._hsb is not None:
+            self._hsb._widget_moved = True
+        if self._vsb is not None:
+            self._vsb._widget_moved = True
         return
 
     def sb_height(self):
