@@ -56,8 +56,10 @@ class Label(Component):
     _position_cache_valid = false
 
 
-    def __init__(self, **traits):
-        HasTraits.__init__(self, **traits)
+    def __init__(self, text = "", **kwtraits):
+        if 'text' not in kwtraits:
+            kwtraits['text'] = text
+        HasTraits.__init__(self, **kwtraits)
         self._bounding_box = [0,0]
         return
 
