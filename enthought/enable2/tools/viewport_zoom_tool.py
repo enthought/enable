@@ -459,12 +459,12 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
 
         """
         if self.enable_wheel and event.mouse_wheel != 0:
+
             position = self.component.view_position
-            bounds = self.component.view_bounds
- 
-            transformed_x = (event.x - position[0]) * self.component.zoom + position[0]
-            transformed_y = (event.y - position[1]) * self.component.zoom + position[1]
- 
+            scale = self.component.zoom
+            transformed_x = (event.x - position[0]) * scale + position[0]
+            transformed_y = (event.y - position[1]) * scale + position[1]
+
             # Calculate zoom
             if event.mouse_wheel > 0:
                 zoom = 1.0 / (1.0 + 0.5 * self.wheel_zoom_step)
@@ -473,11 +473,15 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
                 zoom = 1.0 + 0.5 * self.wheel_zoom_step
                 self.component.zoom *= zoom
             
-            # Move view to correct position relative to mouse location
-            position[0] = transformed_x - (transformed_x - position[0]) / zoom
-            position[1] = transformed_y - (transformed_y - position[1]) / zoom
-            bounds[0] /= zoom
-            bounds[1] /= zoom
+            # Adjust view_bounds and view_position on viewport
+            x_pos = transformed_x - (transformed_x - position[0]) / zoom
+            y_pos = transformed_y - (transformed_y - position[1]) / zoom
+            new_position = [x_pos, y_pos]
+            self.component.view_position = new_position
+    
+            bounds = self.component.view_bounds
+            new_bounds = [bounds[0] / zoom , bounds[1] / zoom]
+            self.component.view_bounds = new_bounds
 
             event.handled = True
             self.component.request_redraw()
