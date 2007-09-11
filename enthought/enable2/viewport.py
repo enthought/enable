@@ -182,7 +182,7 @@ class Viewport(Component):
         return self._bounds_changed(None, self.bounds)
 
     def _view_bounds_changed(self, old, new):
-        self.set(bounds = new, trait_change_notify=False)
+        self._update_component_view_bounds()
         return
 
     def _view_bounds_items_changed(self, event):
