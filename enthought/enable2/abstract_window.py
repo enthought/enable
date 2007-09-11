@@ -33,8 +33,7 @@ class AbstractWindow ( HasTraits ):
     mouse_owner   = Instance(Interactor)
 
     # The transform to apply to mouse event positions to put them into the
-    # relative coordinates of the mouse_owner component.  Eventually this
-    # should be a full transform; for now, it's just a tuple (dx,dy).
+    # relative coordinates of the mouse_owner component.
     mouse_owner_transform = Any
 
     bg_color      = ColorTrait("lightgray")
@@ -204,7 +203,9 @@ class AbstractWindow ( HasTraits ):
         if mouse_owner is not None:
             # A mouse_owner has grabbed the mouse
             if self.mouse_owner_transform is not None:
-                mouse_event.offset_xy(*self.mouse_owner_transform)
+                #mouse_event.offset_xy(*self.mouse_owner_transform)
+                mouse_event.apply_owner_transform(self.mouse_owner_transform)
+
             mouse_owner.dispatch(mouse_event, event_name)
             self._pointer_owner = mouse_owner
         else:

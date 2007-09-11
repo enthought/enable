@@ -83,10 +83,9 @@ class BasicEvent(HasTraits):
         """
         pos = self._pos_stack
         if len(pos) == 0:
-            return (0,0)
+            return self.identity_transform()
         else:
-            original_x, original_y = pos[0]
-            return (original_x - self.x, original_y - self.y)
+            return self.current_transform()
 
     def current_transform(self):
         """
@@ -96,6 +95,13 @@ class BasicEvent(HasTraits):
         for m in self._transform_stack:
             transform = m * transform
         return transform
+
+    def apply_owner_transform(self, transform):
+        """
+        Applies the transform passed in.  This is primarily used when the mouse_owner is
+        set on the window.
+        """
+        self.push_xy(self.x, self.y, transform)
 
     def get_xy_position(self, transform):
         return (transform[0,0], transform[1,0])
