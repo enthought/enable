@@ -141,6 +141,8 @@ class ViewportPanTool(BaseTool):
             origpos = self._original_xy[ndx]
             eventpos = getattr(event, direction)
             delta = self.speed * (eventpos - origpos)
+            if self.component.enable_zoom:
+                delta *= self.component.zoom
             new_position[ndx] -= delta
         
         if self.constrain:

@@ -197,8 +197,8 @@ class Viewport(Component):
     def _dispatch_stateful_event(self, event, suffix):
 
         if isinstance(self.component, Component):
-            x_offset = -self.view_position[0] + self.position[0]
-            y_offset = -self.view_position[1] + self.position[1]
+            x_offset = (-self.view_position[0] + self.position[0]) * self.zoom
+            y_offset = (-self.view_position[1] + self.position[1]) * self.zoom
             event.offset_xy(x_offset, y_offset)
             if self.enable_zoom:
                 # If we have zoom enabled, scale events

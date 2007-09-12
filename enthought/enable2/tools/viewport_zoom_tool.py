@@ -474,10 +474,10 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
                 self.component.zoom *= zoom
             
             # Adjust view_bounds and view_position on viewport
-            x_pos = transformed_x - (transformed_x - position[0]) / zoom
-            y_pos = transformed_y - (transformed_y - position[1]) / zoom
-            new_position = [x_pos, y_pos]
-            self.component.view_position = new_position
+            #x_pos = transformed_x - (transformed_x - position[0]) / zoom
+            #y_pos = transformed_y - (transformed_y - position[1]) / zoom
+            #new_position = [x_pos, y_pos]
+            #self.component.view_position = new_position
     
             bounds = self.component.view_bounds
             new_bounds = [bounds[0] / zoom , bounds[1] / zoom]
