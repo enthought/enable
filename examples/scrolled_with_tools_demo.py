@@ -10,7 +10,6 @@ class MyFrame(DemoFrame):
     def _create_window(self):
 
         canvas = Canvas(bgcolor="lightsteelblue", draw_axes=True)
-        from basic_move import Box
         box = Box(color="red", bounds=[50,50], resizable="")
         box.position= [75,75]
         canvas.add(box)
@@ -23,6 +22,8 @@ class MyFrame(DemoFrame):
         scrolled = Scrolled(canvas, fit_window = True,
                             inside_padding_width = 0,
                             mousewheel_scroll = False,
+                            always_show_sb = True,
+                            continuous_drag_update = True,
                             viewport_component = viewport)
 
         return Window(self, -1, component=scrolled)

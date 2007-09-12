@@ -230,11 +230,12 @@ class NativeScrollBar(Component):
         and a line size, while wx assumes low is 0 and line size is 1.
         """
         low, high, page_size, line_size = self.range
-        enablepos = pos*line_size+low
+        enablepos = pos * line_size
         # If we're a veritcal scrollbar with a bottom origin, flip
         # the coordinates, since in WX the origin is always the top.
         if self.origin == 'bottom' and self.orientation == 'vertical':
-            enablepos = (high-page_size)-enablepos
+            enablepos = (high - low - page_size) - enablepos
+        enablepos += low
         return enablepos
 
     #------------------------------------------------------------------------

@@ -41,7 +41,7 @@ class MyFrame(DemoFrame):
                             mousewheel_scroll = False,
                             viewport_component = viewport,
                             always_show_sb = True,
-                            continuous_drag_update = False)
+                            continuous_drag_update = True)
 
         return Window(self, -1, component=scrolled)
 
