@@ -4,7 +4,7 @@ from types import ListType
 
 # Enthought library imports
 from enthought.traits.api import Any, Enum, Event, false, HasTraits, Instance, ReadOnly,\
-                             Str, Trait, Tuple
+                             Str, Trait, Tuple, List, Bool
 
 
 # Local relative imports
@@ -12,7 +12,7 @@ from base import bounds_to_coordinates, coordinates_to_bounds, intersect_coordin
                  union_coordinates, does_disjoint_intersect_coordinates, \
                  disjoint_union_coordinates, transparent_color, coordinates_to_size, \
                  empty_rectangle, bounding_box, bounding_coordinates, add_rectangles, \
-                 xy_in_bounds, BOTTOM_LEFT, TOP, BOTTOM, LEFT, RIGHT
+                 xy_in_bounds, BOTTOM_LEFT, TOP, BOTTOM, LEFT, RIGHT, union_bounds
 from component import Component
 from interactor import Interactor
 from container import Container
@@ -46,6 +46,9 @@ class AbstractWindow ( HasTraits ):
     # which receives events first.
     overlay = Instance(Container)
 
+    # Whether to enable damaged region handling
+    use_damaged_region = Bool(False)
+    
     # When the underlying toolkit control gets resized, this event gets set
     # to the new size of the window, expressed as a tuple (dx, dy).
     resized = Event
@@ -57,6 +60,10 @@ class AbstractWindow ( HasTraits ):
 
     # (dx, dy) integer size of the Window.
     _size = Trait(None, Tuple)
+    
+    # The regions to update upon redraw
+    _update_region = Any
+    
 
 
     #---------------------------------------------------------------------------
@@ -103,10 +110,6 @@ class AbstractWindow ( HasTraits ):
 
     def set_pointer(self, pointer):
         "Sets the current cursor shape"
-        raise NotImplementedError
-
-    def set_tooltip(self, tooltip):
-        "Sets the current tooltip for the window"
         raise NotImplementedError
 
     def _set_timer_interval(self, component, interval):
@@ -165,6 +168,7 @@ class AbstractWindow ( HasTraits ):
                 if "v" in self.component.resizable:
                     self.component.outer_y = 0
                     self.component.outer_height = size[1]
+        self._update_region = None
         self.redraw()
         return
 
@@ -173,6 +177,7 @@ class AbstractWindow ( HasTraits ):
         Dynamic trait listener that handles our component changing its size;
         bounds is a length-2 list of [width, height].
         """
+        self.invalidate_draw()
         pass
 
     def set_mouse_owner(self, mouse_owner, transform=None):
@@ -184,6 +189,13 @@ class AbstractWindow ( HasTraits ):
         self.mouse_owner = mouse_owner
         self.mouse_owner_transform = transform
         return
+    
+    def invalidate_draw(self, damaged_regions=None, self_relative=False):
+        if damaged_regions is not None and self._update_region is not None:
+            self._update_region += damaged_regions
+        else:
+            self._update_region = None
+#        print damaged_regions
 
     #---------------------------------------------------------------------------
     #  Generic mouse event handler:
@@ -275,7 +287,7 @@ class AbstractWindow ( HasTraits ):
     def _needs_redraw(self, bounds):
         "Determine if a specified region intersects the update region"
         return does_disjoint_intersect_coordinates( self._update_region,
-                                               bounds_to_coordinates( bounds ) )
+                                                    bounds_to_coordinates( bounds ) )
 
     def _paint(self, event=None):
         size = self._get_control_size()
@@ -283,11 +295,24 @@ class AbstractWindow ( HasTraits ):
             self._gc = self._create_gc(size)
             self._size = tuple(size)
         gc = self._gc
-        gc.clear(self.bg_color_)
         if hasattr(self.component, "do_layout"):
             self.component.do_layout()
+        if self._update_region == [] or not self.use_damaged_region:
+            self._update_region = None
+        if self._update_region is None:
+            gc.clear(self.bg_color_)
+        else:
+            # Fixme: should use clip_to_rects
+            update_union = reduce(union_bounds, self._update_region)
+            gc.clip_to_rect(*update_union)
+            
         self.component.draw(gc, view_bounds=(0, 0, size[0], size[1]))
+#        damaged_regions = draw_result['damaged_regions']
+        # FIXME: consolidate damaged regions if necessary
+        if not self.use_damaged_region:
+            self._update_region = None
         self._window_paint(event)
+        self._update_region = []
         return
 
     def __getstate__(self):

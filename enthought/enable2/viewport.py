@@ -76,6 +76,16 @@ class Viewport(Component):
         else:
             return []
 
+    def invalidate_draw(self, damaged_regions=None, self_relative=False,
+                        view_relative=False):
+        if view_relative and damaged_regions:
+            damaged_regions = [[region[0] - self.view_position[0],
+                                region[1] - self.view_position[1],
+                                region[2], region[3]] for region in damaged_regions]
+        super(Viewport, self).invalidate_draw(damaged_regions=damaged_regions,
+                                              self_relative=self_relative)
+        return
+    
     def cleanup(self, window):
         """When a window viewing or containing a component is destroyed,
         cleanup is called on the component to give it the opportunity to

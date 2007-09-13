@@ -282,6 +282,14 @@ class Component(CoordinateBox, Interactor):
     # backbuffer.
     draw_valid = false
 
+    # drawn_outer_position specifies the outer position this component was drawn to
+    # on the last draw cycle.  This is used to determine what areas of the screen
+    # are damaged.
+    drawn_outer_position = coordinate_trait
+    # drawn_outer_bounds specifies the bounds of this component on the last draw
+    # cycle.  Used in conjunction with outer_position_last_draw
+    drawn_outer_bounds = bounds_trait
+    
     # The backbuffer of this component.  In most cases, this is an
     # instance of GraphicsContext, but this requirement is not enforced.
     _backbuffer = Any
@@ -467,19 +475,39 @@ class Component(CoordinateBox, Interactor):
         """
         for view in self.viewports:
             view.request_redraw()
+
         self._request_redraw()
         return
 
-    def invalidate_draw(self):
-        """ Invalidates any backbuffer that may exist.
+    def invalidate_draw(self, damaged_regions=None, self_relative=False):
+        """ Invalidates any backbuffer that may exist, and notifies our parents
+        and viewports of any damaged regions.
         
         Call this method whenever a component's internal state
         changes such that it must be redrawn on the next draw() call."""
         self.draw_valid = False
-        if hasattr(self.container, "invalidate_draw"):
-            self.container.invalidate_draw()
+        
+        if damaged_regions is None:
+            damaged_regions = self._default_damaged_regions()
+
+        if self_relative:
+            damaged_regions = [[region[0] + self.x, region[1] + self.y,
+                                region[2], region[3]] for region in damaged_regions]
+        for view in self.viewports:
+            view.invalidate_draw(damaged_regions=damaged_regions, self_relative=True,
+                                 view_relative=True)
+
+        if self.container is not None:
+            self.container.invalidate_draw(damaged_regions=damaged_regions, self_relative=True)
+
+        if self._window is not None:
+            self._window.invalidate_draw(damaged_regions=damaged_regions, self_relative=True)
         return
 
+    def invalidate_and_redraw(self):
+        """Convenience method to invalidate our contents and request redraw"""
+        self.invalidate_draw()
+        self.request_redraw()
 
     def is_in(self, x, y):
         # A basic implementation of is_in(); subclasses should provide their
@@ -587,6 +615,12 @@ class Component(CoordinateBox, Interactor):
             self._window.redraw()
         return
 
+    def _default_damaged_regions(self):
+        """Returns the default damaged regions for this Component.  This consists
+        of the current position/bounds, and the last drawn position/bounds"""
+        return [list(self.outer_position) + list(self.outer_bounds),
+                list(self.drawn_outer_position) + list(self.drawn_outer_bounds)]
+
     def _draw(self, gc, view_bounds=None, mode="default"):
         """ Draws the component, paying attention to **draw_order**, including
         overlays, underlays, and the like.
@@ -602,6 +636,9 @@ class Component(CoordinateBox, Interactor):
         
         if self._layout_needed:
             self.do_layout()
+
+        self.drawn_outer_position = list(self.outer_position[:])
+        self.drawn_outer_bounds = list(self.outer_bounds[:])
         
         if self.use_backbuffer:
             if self.backbuffer_padding:
@@ -891,11 +928,11 @@ class Component(CoordinateBox, Interactor):
         if tool is not None and hasattr(tool, "_activate"):
             tool._activate()
         
-        self.request_redraw()
+        self.invalidate_and_redraw()
         return
 
     def _tools_items_changed(self):
-        self.request_redraw()
+        self.invalidate_and_redraw()
         return
     
     #------------------------------------------------------------------------

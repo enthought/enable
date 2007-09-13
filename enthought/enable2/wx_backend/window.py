@@ -13,7 +13,7 @@ from enthought.traits.api import Any, Float, Instance, Trait
 from enthought.traits.ui.wx.menu import MakeMenu
 
 # Relative imports
-from enthought.enable2.base import send_event_to
+from enthought.enable2.base import send_event_to, union_bounds
 from enthought.enable2.component  import Component
 from enthought.enable2.events import MouseEvent, KeyEvent, DragEvent
 from enthought.enable2.graphics_context import GraphicsContextEnable
@@ -526,14 +526,19 @@ class Window ( AbstractWindow ):
             result = self.control.GetSizeTuple()
         return result
 
-    def _window_paint ( self, event ):
+    def _window_paint ( self, event):
         "Do a GUI toolkit specific screen update"
-        # NOTE: This should do an optimal update based on the value of the 
-        # self._update_region, but Kiva does not currently support this:
         control = self.control
         wdc     = control._dc = wx.PaintDC( control )
 
-        self._gc.pixel_map.draw_to_wxwindow( control, 0, 0 )
+        self._update_region = None
+        if self._update_region is not None:
+            update_bounds = reduce(union_bounds, self._update_region)
+            print "doing partial draw", update_bounds
+            self._gc.pixel_map.draw_to_wxwindow( control, int(update_bounds[0]), int(update_bounds[1]),
+                                                 width=int(update_bounds[2]), height=int(update_bounds[3]))
+        else:
+            self._gc.pixel_map.draw_to_wxwindow( control, 0, 0 )
 
         control._dc = None
         return
