@@ -184,6 +184,7 @@ class Scrolled(Container):
                 ticksize = 1
             range = (offsety, offsety + c_height, h, ticksize)
             if y != self._last_vsb_pos:
+                self._vsb.range = range
                 self._vsb.scroll_position = y
                 self._last_vsb_pos = y
         return
