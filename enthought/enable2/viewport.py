@@ -127,8 +127,8 @@ class Viewport(Component):
                     # view_x and view_y to generate the transformed coordinates
                     # of clipped_view in our component's space.
                     offset = array(clipped_view[:2]) - array(self.position)
-                    new_bounds = (offset[0]+view_x, offset[1]+view_y,
-                                  clipped_view[2], clipped_view[3])
+                    new_bounds = ((offset[0]+view_x) / self.zoom, (offset[1]+view_y) / self.zoom,
+                                  clipped_view[2] / self.zoom, clipped_view[3] / self.zoom)
                     self.component.draw(gc, new_bounds, mode=mode)
                 else:
                     pass
