@@ -47,6 +47,8 @@ from abstract_window import AbstractWindow
 
 from native_scrollbar import NativeScrollBar
 from scrolled import Scrolled
+from text_field_style import TextFieldStyle
+from text_field import TextField
 from window import Window
 
 #from key_bindings import KeyBinding, KeyBindings
