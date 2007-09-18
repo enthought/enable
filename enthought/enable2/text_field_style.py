@@ -2,6 +2,7 @@
 from enthought.traits.api import HasTraits, Int, Bool
 from enthought.kiva.traits.api import KivaFont
 from enthought.enable2.traits.api import RGBAColor
+from enthought.enable2.colors import ColorTrait
 
 
 class TextFieldStyle(HasTraits):
@@ -11,6 +12,12 @@ class TextFieldStyle(HasTraits):
 
     # The color of the text
     text_color = RGBAColor((0,0,0,1))
+
+    # The color of highlighted text
+    highlight_color = ColorTrait("red")
+
+    # The background color of highlighted items
+    highlight_bgcolor = ColorTrait("lightgray")
     
     # The font for the text (must be monospaced!)
     font = KivaFont("Andale Mono 15")
