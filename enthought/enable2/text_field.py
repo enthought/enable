@@ -252,7 +252,7 @@ class TextField(Component):
         for i, line in enumerate(lines):
             x = self.x + self._style.text_offset
             if i > 0:
-                y_offset = (i+1) * char_h 
+                y_offset = (i+1) * char_h - self._style.line_spacing
             else:
                 y_offset = char_h - self._style.line_spacing
             y = self.y2 - y_offset - self._style.text_offset
@@ -269,19 +269,21 @@ class TextField(Component):
             y *= scale
             gc.show_text_at_point(line, x, y)
 
-        # Draw the cursor
+
         if self._draw_cursor:
-            gc.set_line_width(self._style.cursor_width)
-            gc.set_stroke_color(self._style.cursor_color)
-            x_offset = char_w * (self._cursor_pos[1]-self.__draw_text_xstart+.5)
+            x_offset = self._metrics.get_text_extent(lines[-1])[2:3][0]
             y_offset = char_h * (self._cursor_pos[0]-self.__draw_text_ystart)
-            x = self.x + x_offset + self._style.text_offset
             y = self.y2 - y_offset - self._style.text_offset
             if not self.multiline:
                 char_h -= float(self._style.line_spacing)*.5
+
+            gc.set_line_width(self._style.cursor_width)
+            gc.set_stroke_color(self._style.cursor_color)
             gc.begin_path()
-            gc.move_to(self.x + x_offset, y)
-            gc.line_to(self.x + x_offset, y - char_h)
+            x_position = self.x + x_offset + (char_w * .5)
+            gc.move_to(x_position, y)
+            gc.line_to(x_position, y - char_h)
+
             gc.stroke_path()
 
         gc.restore_state()
