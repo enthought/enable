@@ -40,7 +40,9 @@ class Viewport(Component):
     # Enable Zoom interaction
     enable_zoom = Bool(False)
 
-    # Zoom scaling factor for this viewport - Ratio of old bounds to new bounds
+    # Zoom scaling factor for this viewport - Ratio of old bounds to new bounds.
+    # Zoom less than 1.0 means we are zoomed out, and more than 1.0 means
+    # we are zoomed in.
     zoom = Float(1.0)
 
     #------------------------------------------------------------------------
