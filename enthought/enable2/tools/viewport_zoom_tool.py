@@ -223,10 +223,10 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
             transformed_y = (event.y - position[1]) * scale + position[1]
 
             # Calculate zoom
-            if event.mouse_wheel > 0:
+            if event.mouse_wheel < 0:
                 zoom = 1.0 / (1.0 + 0.5 * self.wheel_zoom_step)
                 self.component.zoom *= zoom
-            elif event.mouse_wheel < 0:
+            elif event.mouse_wheel > 0:
                 zoom = 1.0 + 0.5 * self.wheel_zoom_step
                 self.component.zoom *= zoom
             

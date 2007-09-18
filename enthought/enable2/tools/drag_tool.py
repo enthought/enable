@@ -1,7 +1,7 @@
 """ Defines the base DragTool class.
 """
 # Enthought library imports
-from enthought.traits.api import Enum, false, true, Tuple
+from enthought.traits.api import Bool, Enum, false, true, Tuple
 from enthought.enable2.api import BaseTool
 
 
@@ -28,6 +28,10 @@ class DragTool(BaseTool):
 
     # The modifier key that must be used to activate the tool.
     modifier_key = Enum("none", "shift", "alt", "control")
+
+    # Whether or not to capture the mouse during the drag operation.  In
+    # general this is a good idea.
+    capture_mouse = Bool(True)
 
     #------------------------------------------------------------------------
     # Private traits used by DragTool
@@ -122,6 +126,8 @@ class DragTool(BaseTool):
         if old_state == "dragging":
             self.drag_cancel(event)
         self._mouse_down_received = False
+        if event.window.mouse_owner == self:
+            event.window.set_mouse_owner(None)
         return
 
     def _drag_cancel_keypressed(self, event):
@@ -138,6 +144,8 @@ class DragTool(BaseTool):
             if button_down and self._mouse_down_received and \
                    self.is_draggable(*self.mouse_down_position):
                 self._drag_state = "dragging"
+                if self.capture_mouse:
+                    event.window.set_mouse_owner(self, event.net_transform())
                 self.drag_start(event)
                 return self._drag_mouse_move(event)
             return False

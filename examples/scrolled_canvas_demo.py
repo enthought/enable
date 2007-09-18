@@ -32,7 +32,7 @@ class MyFrame(DemoFrame):
                                j*spacing + offset - boxsize/2 + 0.5]
                 canvas.add(box)
 
-        viewport = Viewport(component=canvas)
+        viewport = Viewport(component=canvas, enable_zoom=True)
         viewport.view_position = [0,0]
         viewport.tools.append(ViewportPanTool(viewport))
 
