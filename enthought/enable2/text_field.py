@@ -234,6 +234,8 @@ class TextField(Component):
         elif event.character == "Escape":
             self.cancel = event
 
+        event.handled = True
+        self.invalidate_draw()
         self.request_redraw()
 
     #########################################################################

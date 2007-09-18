@@ -116,8 +116,8 @@ class TextFieldGrid(Container):
         for i in range(self.columns):
             tfield = TextField(position=[0,0], width=self.cell_width,
                         height = self.cell_height, multiline=False)
-	    self.components.append(tfield)
-	    row.append(tfield)
+            self.add(tfield)
+            row.append(tfield)
         self.cells.insert(index, row)
         self.bounds[1] = self.bounds[1] + self.cell_padding + self.cell_height
 
@@ -125,20 +125,20 @@ class TextFieldGrid(Container):
         for row in self.cells:
             tfield = TextField(position=[0,0], width=self.cell_width,
                         height = self.cell_height, multiline=False)
-	    self.components.append(tfield)
-	    row.insert(index, tfield)
+            self.add(tfield)
+            row.insert(index, tfield)
         self.bounds[0] = self.bounds[0] + self.cell_padding + self.cell_width
             
     def _remove_row(self, index):
         removed = self.cells[index]
-	self.components.remove(removed)
+        self.remove(removed)
         self.cells.remove(removed)
         self.bounds[1] = self.bounds[1] - self.cell_padding - self.cell_height
 
     def _remove_column(self, index):
         for row in self.cells:
             removed = row[index]
-	    self.components.remove(removed)
+            self.remove(removed)
             row.remove(removed)
         self.bounds[0] = self.bounds[0] - self.cell_padding - self.cell_width
 
@@ -177,13 +177,12 @@ if __name__ == '__main__':
 
     class MyFrame(DemoFrame):
         def _create_window(self):
-            box1 = TextFieldGrid(4, 2, label="TextGrid",
-                                     position=[50, 300])
+            box1 = TextFieldGrid(4, 2, position=[50, 300])
 
             box1.set_cell(1,1,"apple")
             box1.set_cell(0,3,"pear")
 
-            container = Container(bounds=[800,600])
+            container = Container(bounds=[800,600], use_backbuffer=False)
             container.add(box1)
             return Window(self, -1, size=[800, 600], component=container)
 
