@@ -1,8 +1,10 @@
 # Enthought library imports
 from enthought.enable2.api import Container, TextField
-from enthought.enable2.enable_traits import LineStyle
 from enthought.traits.api import Float, Int, List
 
+# Local imports
+from enable_traits import LineStyle
+from colors import black_color_trait
 
 
 class TextFieldGrid(Container):
@@ -34,6 +36,9 @@ class TextFieldGrid(Container):
     # The thickness of the border between cells
     cell_border_width = Int(1)
 
+    # The color of the border between cells
+    cell_border_color = black_color_trait
+
     # The dash style of the border between cells
     cell_border_style = LineStyle("solid")
 
@@ -56,7 +61,7 @@ class TextFieldGrid(Container):
         """
         self.rows = rows
         self.columns = columns
-	self.selected_box = []
+    	self.selected_box = []
         super(TextFieldGrid, self).__init__(**traits)
 
     def set_cell(self, row, column, text):
@@ -69,10 +74,31 @@ class TextFieldGrid(Container):
     #########################################################################
 
     def _dispatch_draw(self, layer, gc, view_bounds, mode):
-	self._position_cells()
-	Container._dispatch_draw(self, layer, gc, view_bounds, mode)
+        self._position_cells()
+        Container._dispatch_draw(self, layer, gc, view_bounds, mode)
+        self._draw_grid(gc, view_bounds, mode)
 
     #### Private drawing methods ############################################
+
+    def _draw_grid(self, gc, view_bounds, mode):
+        gc.set_stroke_color(self.cell_border_color_)
+        gc.set_line_dash(self.cell_border_style_)
+        gc.set_antialias(0)
+
+        y = self.y
+        for row in range(self.rows + 1):
+            gc.move_to(self.x, y)
+            gc.line_to(self.x+self.width, y)
+            gc.stroke_path()
+            y = y + self.cell_padding + self.cell_height
+
+        x = self.x
+        for cell in range(self.columns + 1):
+            gc.move_to(x, self.y)
+            gc.line_to(x, self.y + self.height)
+            gc.stroke_path()
+            x = x + self.cell_padding + self.cell_width
+        return
 
     def _position_cells(self):
         y = 0
@@ -80,14 +106,16 @@ class TextFieldGrid(Container):
             x = 0
             for cell in row:
                 cell.position = [x,y]
-                x = x + self.cell_padding + cell.width
-            y = y + self.cell_padding + cell.height
+                x = x + self.cell_padding + self.cell_width
+            y = y + self.cell_padding + self.cell_height
+        self.total_width = x
+        self.total_height = y
 
     def _add_row(self, index):
         row = []
         for i in range(self.columns):
             tfield = TextField(position=[0,0], width=self.cell_width,
-                        height = self.cell_height, multiline=False, border_visible=True)
+                        height = self.cell_height, multiline=False)
 	    self.components.append(tfield)
 	    row.append(tfield)
         self.cells.insert(index, row)
@@ -96,7 +124,7 @@ class TextFieldGrid(Container):
     def _add_column(self, index):
         for row in self.cells:
             tfield = TextField(position=[0,0], width=self.cell_width,
-                        height = self.cell_height, multiline=False, border_visible=True)
+                        height = self.cell_height, multiline=False)
 	    self.components.append(tfield)
 	    row.insert(index, tfield)
         self.bounds[0] = self.bounds[0] + self.cell_padding + self.cell_width

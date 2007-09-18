@@ -33,6 +33,6 @@ class TextFieldStyle(HasTraits):
     cursor_width = Int(2)
 
     # Drawing properties
-    border_visible = Bool(True)
+    border_visible = Bool(False)
     border_color = RGBAColor((0,0,0,1))
     bgcolor = RGBAColor((1,1,1,1))
