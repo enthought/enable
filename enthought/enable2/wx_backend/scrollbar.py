@@ -156,10 +156,10 @@ class NativeScrollBar(Component):
         if self._scroll_updated:
             self._control.SetScrollbar(wxpos, wxthumbsize, wxrange, wxthumbsize, True)
 
-        self._last_widget_x = wx_xpos
-        self._last_widget_y = wx_ypos
-        self._last_widget_width = x_size
-        self._last_widget_height = y_size
+        self._last_widget_x = int(wx_xpos)
+        self._last_widget_y = int(wx_ypos)
+        self._last_widget_width = int(x_size)
+        self._last_widget_height = int(y_size)
         self._scroll_updated = False
         self._widget_moved = False
         return
