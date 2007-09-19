@@ -788,7 +788,7 @@ class Component(CoordinateBox, Interactor):
         for underlay in self.underlays:
             # This method call looks funny but it's correct - underlays are
             # just overlays drawn at a different time in the rendering loop.
-            if overlay.visible:
+            if underlay.visible:
                 underlay.overlay(self, gc, view_bounds, mode)
         return
 
