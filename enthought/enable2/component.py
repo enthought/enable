@@ -582,9 +582,11 @@ class Component(CoordinateBox, Interactor):
             self._do_layout()
             self._layout_needed = False
         for underlay in self.underlays:
-            underlay.do_layout()
+            if underlay.visible or underlay.invisible_layout:
+                underlay.do_layout()
         for overlay in self.overlays:
-            overlay.do_layout()
+            if overlay.visible or overlay.invisible_layout:
+                overlay.do_layout()
         return
 
     def get_preferred_size(self):
@@ -776,7 +778,8 @@ class Component(CoordinateBox, Interactor):
         """ Draws the overlay layer of a component.
         """
         for overlay in self.overlays:
-            overlay.overlay(self, gc, view_bounds, mode)
+            if overlay.visible:
+                overlay.overlay(self, gc, view_bounds, mode)
         return
 
     def _draw_underlay(self, gc, view_bounds=None, mode="normal"):
@@ -785,7 +788,8 @@ class Component(CoordinateBox, Interactor):
         for underlay in self.underlays:
             # This method call looks funny but it's correct - underlays are
             # just overlays drawn at a different time in the rendering loop.
-            underlay.overlay(self, gc, view_bounds, mode)
+            if overlay.visible:
+                underlay.overlay(self, gc, view_bounds, mode)
         return
 
     def _get_visible_border(self):
