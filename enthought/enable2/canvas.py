@@ -7,6 +7,7 @@ from enthought.kiva import FILL
 
 
 # Local relative imports
+from component import Component
 from container import Container
 
 
@@ -183,6 +184,20 @@ class Canvas(Container):
             lly = min(lly, y)
             urx = max(urx, x2)
             ury = max(ury, y2)
-        self.set(bounds_offset = [llx, lly], trait_change_notify=False)
-        self.set(bounds = [urx - llx + 1, ury - lly + 1], trait_change_notify=False)
+        self.bounds_offset = [llx, lly]
+        self.bounds = [urx - llx + 1, ury - lly + 1]
+
+    # Override Container.bounds_changed so that _layout_needed is not
+    # set.  Containers need to invalidate layout because they act as 
+    # sizers, but the Canvas is unbounded and thus does not need to
+    # invalidate layout.
+    def _bounds_changed(self, old, new):
+        Component._bounds_changed(self, old, new)
+        self.invalidate_draw()
+        return
+
+    def _bounds_items_changed(self, event):
+        Component._bounds_items_changed(self, event)
+        self.invalidate_draw()
+        return
 
