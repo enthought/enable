@@ -346,10 +346,21 @@ class TextField(Component):
         """ Return 'text' clipped beginning at 'index' if 'start' is True or
             ending at 'index' if 'start' is False.
         """
+        box_width = self.width - self._style.text_offset
+        total_width = 0.
+        end_index = 1
+        for t in text:
+            w, h = self._metrics.get_text_extent(t)[2:4]
+            total_width = total_width + w
+            if total_width <= box_width:
+                end_index = end_index + 1
+            else:
+                break
+            
         if start:
-            return text[index:min(index+self._text_width-1, len(text))]
+            return text[index:min(index+end_index-1, len(text))]
         else:
-            return text[max(0, index-self._text_width):index]
+            return text[max(0, index-end_index):index]
 
     def _refresh_viewed_line(self, line):
         """ Updates the appropriate line in __draw_text with the text at 'line'.
