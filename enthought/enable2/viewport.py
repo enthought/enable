@@ -187,8 +187,8 @@ class Viewport(Component):
         if isinstance(self.component, Canvas):
             llx, lly = self.view_position
             self.component.view_bounds = (llx, lly, 
-                                          llx + self.view_bounds[0] + 1,
-                                          lly + self.view_bounds[1] + 1)
+                                          llx + self.view_bounds[0]-1,
+                                          lly + self.view_bounds[1]-1)
         return
 
 
@@ -203,7 +203,8 @@ class Viewport(Component):
 
     def _bounds_changed(self, old, new):
         Component._bounds_changed(self, old, new)
-        self.set(view_bounds = new, trait_change_notify=False)
+        self.set(view_bounds = [new[0]/self.zoom, new[1]/self.zoom],
+                 trait_change_notify=False)
         self._update_component_view_bounds()
         return
 

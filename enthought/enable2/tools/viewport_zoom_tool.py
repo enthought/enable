@@ -233,7 +233,7 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
             x_pos = transformed_x - (transformed_x - position[0]) / zoom
             y_pos = transformed_y - (transformed_y - position[1]) / zoom
 
-            self.component.view_position = [x_pos, y_pos]
+            self.component.set(view_position=[x_pos, y_pos], trait_change_notify=False)
             bounds = self.component.view_bounds
             self.component.view_bounds = [bounds[0] / zoom , bounds[1] / zoom]
     
