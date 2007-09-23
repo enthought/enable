@@ -6,7 +6,7 @@ from sets import Set
 
 # Enthought library traits
 from enthought.enable2.tools.api import ViewportZoomTool
-from enthought.traits.api import Bool, false, Float, Instance
+from enthought.traits.api import Bool, Delegate, Float, Instance
 
 # Local relative imports
 from enable_traits import bounds_trait, coordinate_trait
@@ -34,16 +34,21 @@ class Viewport(Component):
     # Whether or not this viewport should stay constrained to the bounds
     # of the viewed component
     # TODO: Implement this
-    stay_inside = false
-
+    stay_inside = Bool(False)
 
     # Enable Zoom interaction
     enable_zoom = Bool(False)
+
+    # The zoom tool
+    zoom_tool = Instance(ViewportZoomTool)
 
     # Zoom scaling factor for this viewport - Ratio of old bounds to new bounds.
     # Zoom less than 1.0 means we are zoomed out, and more than 1.0 means
     # we are zoomed in.
     zoom = Float(1.0)
+
+    min_zoom = Delegate('zoom_tool', modify=True)
+    max_zoom = Delegate('zoom_tool', modify=True)
 
     #------------------------------------------------------------------------
     # Public methods
@@ -51,10 +56,11 @@ class Viewport(Component):
 
     def __init__(self, **traits):
         Component.__init__(self, **traits)
-        _prev_event_handlers = Set()
         self._update_component_view_bounds()
+        if 'zoom_tool' not in traits:
+            self.zoom_tool = ViewportZoomTool(self)
         if self.enable_zoom:
-            self._add_zoomtool()
+            self._enable_zoom_changed(False, True)
         return
 
     def components_at(self, x, y, add_containers = False):
@@ -167,18 +173,15 @@ class Viewport(Component):
             Add or remove the zoom tool overlay depending whether
             or not zoom is enabled.
         """
-        if self.enable_zoom:
-            self._add_zoomtool()
-        else:
-            self._remove_zoomtool()
+        if self.zoom_tool is None:
+            return
 
-    def _add_zoomtool(self):
-        self.overlays.append(ViewportZoomTool(self))
-    
-    def _remove_zoomtool(self):
-        for overlay in self.overlays:
-            if isinstance(overlay, ViewportZoomTool):
-                self.overlays.remove(overlay)
+        if self.enable_zoom:
+            if not self.zoom_tool in self.tools:
+                self.tools.append(self.zoom_tool)
+        else:
+            if self.zoom_tool in self.tools:
+                self.tools.remove(self.zoom_tool)
 
     def _update_component_view_bounds(self):
         """ Updates the optional .view_bounds trait on our component;
@@ -190,7 +193,6 @@ class Viewport(Component):
                                           llx + self.view_bounds[0]-1,
                                           lly + self.view_bounds[1]-1)
         return
-
 
     def _component_changed(self, old, new):
         if (old is not None) and (self in old.viewports):

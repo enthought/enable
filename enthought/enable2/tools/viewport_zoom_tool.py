@@ -1,6 +1,6 @@
 """ Defines the SimpleZoom class.
 """
-from numpy import array 
+from numpy import array, inf
 
 # Enthought library imports
 from enthought.enable2.api import ColorTrait, KeySpec
@@ -69,6 +69,17 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
     # The minimum amount of screen space the user must select in order for
     # the tool to actually take effect.
     minimum_screen_delta = Int(10)
+
+    # The most that this tool will zoom in on the target.  Since zoom is the
+    # ratio of the original bounds to the new bounds, a max_zoom value of 2.0
+    # would make the tool stop once it had zoomed into a region half the size
+    # of the original bounds.
+    max_zoom = Float(inf)
+
+    # The most that this tool will zoom out from the target.  For example,
+    # a min_zoom of 0.2 would prevent the tool from showing a view zoomed
+    # out more than 5 times from the original bounds.
+    min_zoom = Float(-inf)
     
     #-------------------------------------------------------------------------
     # Appearance properties (for Box mode)
@@ -225,10 +236,18 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
             # Calculate zoom
             if event.mouse_wheel < 0:
                 zoom = 1.0 / (1.0 + 0.5 * self.wheel_zoom_step)
-                self.component.zoom *= zoom
+                new_zoom = self.component.zoom * zoom
             elif event.mouse_wheel > 0:
                 zoom = 1.0 + 0.5 * self.wheel_zoom_step
-                self.component.zoom *= zoom
+                new_zoom = self.component.zoom * zoom
+
+            if new_zoom < self.min_zoom:
+                new_zoom = self.min_zoom
+                zoom = new_zoom / self.component.zoom
+            elif new_zoom > self.max_zoom:
+                new_zoom = self.max_zoom
+                zoom = new_zoom / self.component.zoom
+            self.component.zoom = new_zoom
 
             x_pos = transformed_x - (transformed_x - position[0]) / zoom
             y_pos = transformed_y - (transformed_y - position[1]) / zoom

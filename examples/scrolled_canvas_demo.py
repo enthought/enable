@@ -36,6 +36,10 @@ class MyFrame(DemoFrame):
         viewport.view_position = [0,0]
         viewport.tools.append(ViewportPanTool(viewport))
 
+        # Uncomment the following to enforce limits on the zoom
+        #viewport.min_zoom = 0.1
+        #viewport.max_zoom = 3.0
+
         scrolled = Scrolled(canvas, fit_window = True,
                             inside_padding_width = 0,
                             mousewheel_scroll = False,
