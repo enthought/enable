@@ -27,6 +27,8 @@ class TextField(Component):
     # Are multiple lines of text allowed?
     multiline = Bool(False)
 
+    # The object to use to measure text extents
+    metrics = Any
 
     #########################################################################
     # Protected traits
@@ -35,8 +37,6 @@ class TextField(Component):
     # The style information used in drawing
     _style = Instance(TextFieldStyle, ())
 
-    # The object used to determine the size of text rendered by Kiva
-    _metrics = Any
 
     # The max width/height of the displayed text in characters
     _text_width = Property(depends_on=['_style', 'height'], 
@@ -80,6 +80,9 @@ class TextField(Component):
 
         super(TextField, self).__init__(**traits)
 
+        if self.metrics is None:
+            self.metrics = font_metrics_provider()
+
         # Initialize border/bg colors
         self.__style_changed()
 
@@ -106,7 +109,7 @@ class TextField(Component):
 
     def cursor_left_up(self, event):
         # Transform pixel coordinates to text coordinates
-        char_width, char_height = self._metrics.get_text_extent("T")[2:]
+        char_width, char_height = self.metrics.get_text_extent("T")[2:]
         char_height += self._style.line_spacing
         event_x = event.x - self.x + self._style.text_offset
         event_y = self.y2 - event.y + self._style.text_offset
@@ -248,7 +251,7 @@ class TextField(Component):
         # Draw the text
         gc.set_font(self._style.font)
         gc.set_fill_color(self._style.text_color)
-        char_w, char_h = self._metrics.get_text_extent("T")[2:4]
+        char_w, char_h = self.metrics.get_text_extent("T")[2:4]
         char_h += self._style.line_spacing
         lines = [ "".join(ln) for ln in self._draw_text ]
         for i, line in enumerate(lines):
@@ -273,7 +276,7 @@ class TextField(Component):
 
 
         if self._draw_cursor:
-            x_offset = self._metrics.get_text_extent(lines[-1])[2:3][0]
+            x_offset = self.metrics.get_text_extent(lines[-1])[2:3][0]
             y_offset = char_h * (self._cursor_pos[0]-self.__draw_text_ystart)
             y = self.y2 - y_offset - self._style.text_offset
             if not self.multiline:
@@ -350,7 +353,7 @@ class TextField(Component):
         total_width = 0.
         end_index = 1
         for t in text:
-            w, h = self._metrics.get_text_extent(t)[2:4]
+            w, h = self.metrics.get_text_extent(t)[2:4]
             total_width = total_width + w
             if total_width <= box_width:
                 end_index = end_index + 1
@@ -439,14 +442,14 @@ class TextField(Component):
 
     def _get__text_width(self):
         if self._width_cache is None:
-            char_width = self._metrics.get_text_extent("T")[2]
+            char_width = self.metrics.get_text_extent("T")[2]
             self._width_cache = int(floor(self.width/char_width))
         return self._width_cache
 
     def _get__text_height(self):
         if self.multiline:
             if self._height_cache is None:
-                char_height = self._metrics.get_text_extent("T")[3]
+                char_height = self.metrics.get_text_extent("T")[3]
                 height = self.height - 2*self._style.text_offset
                 line_height = char_height + self._style.line_spacing
                 self._height_cache = int(floor(height / line_height))
@@ -464,10 +467,9 @@ class TextField(Component):
         self.border_visible = self._style.border_visible
         self.border_color = self._style.border_color
         
-        self._metrics = font_metrics_provider()
-        self._metrics.set_font(self._style.font)
+        self.metrics.set_font(self._style.font)
         if not self.multiline:
-            self.height = (self._metrics.get_text_extent("T")[3] + 
+            self.height = (self.metrics.get_text_extent("T")[3] + 
                            self._style.text_offset*2)
 
         self.request_redraw()
