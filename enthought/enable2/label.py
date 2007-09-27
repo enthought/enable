@@ -2,11 +2,12 @@
 """
 # Major library imports
 from math import pi
+from numpy import asarray
 
 # Enthought library imports
 from enthought.kiva.traits.kiva_font_trait import KivaFont
-from enthought.traits.api import Any, false, Float, HasTraits, Int, \
-                                 List, Str, Instance
+from enthought.traits.api import Bool, Enum, Float, HasTraits, Int, \
+                                 List, Str
 
 # Local, relative imports
 from colors import black_color_trait, transparent_color_trait
@@ -44,6 +45,12 @@ class Label(Component):
     # Number of pixels of spacing between lines of text.
     line_spacing = Int(5)
 
+    # The horizontal placement of text within the bounds of the label
+    hjustify = Enum("left", "center", "right")
+
+    # The vertical placement of text within the bounds of the label
+    vjustify = Enum("bottom", "center", "top")
+
     # By default, labels are not resizable
     resizable = ""
 
@@ -53,7 +60,7 @@ class Label(Component):
     #------------------------------------------------------------------------
 
     _bounding_box = List()
-    _position_cache_valid = false
+    _position_cache_valid = Bool(False)
 
 
     def __init__(self, text = "", **kwtraits):
@@ -97,10 +104,31 @@ class Label(Component):
                 prev_y_height = height
             gc.restore_state()
 
-            self._line_xpos = x_pos[::-1]
-            self._line_ypos = y_pos[::-1]
-            self._bounding_box[0] = max_width + 2*margin + 2*self.border_width
-            self._bounding_box[1] = prev_y_pos + prev_y_height + margin + 2*self.border_width
+
+            width = max_width + 2*margin + 2*self.border_width
+            height = prev_y_pos + prev_y_height + margin + 2*self.border_width
+            self._bounding_box = [width, height]
+            
+            if self.hjustify == "left":
+                x_pos = x_pos[::-1]
+            else:
+                x_pos = asarray(x_pos[::-1], dtype=float)
+                if self.hjustify == "center":
+                    x_pos += (self.width - width) / 2.0
+                elif self.hjustify == "right":
+                    x_pos += self.width - width
+            self._line_xpos = x_pos
+
+            if self.vjustify == "bottom":
+                y_pos = y_pos[::-1]
+            else:
+                y_pos = asarray(y_pos[::-1], dtype=float)
+                if self.vjustify == "center":
+                    y_pos += (self.height - height) / 2.0
+                elif self.vjustify == "top":
+                    y_pos += self.height - height
+            self._line_ypos = y_pos
+            
             self._position_cache_valid = True
         return
 
