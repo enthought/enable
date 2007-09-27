@@ -29,10 +29,10 @@ class BasicEvent(HasTraits):
     _transform_stack = List( () )
 
     
-    def push_xy(self, x, y, transform):
+    def push_transform(self, transform):
         """
-        Saves the current position in a stack and sets self.x and self.y to
-        a new value.
+        Saves the current transform in a stack and sets the given transform
+        to be the active one.
         """
         xy_matrix = self.make_xy_matrix(self.x, self.y)
         transformed = transform * xy_matrix
@@ -44,8 +44,14 @@ class BasicEvent(HasTraits):
         self.cur_transform = transform
         return
     
-    def pop(self):
-        "Restores the previous position of the event."
+    def pop(self, count=1):
+        """
+        Restores a previous position of the event.  If **count** is provided,
+        then pops **count** elements off of the event stack.
+        """
+        for i in range(count-1):
+            self._pos_stack.pop()
+            self._transform_stack.pop()
         self.x, self.y = self._pos_stack.pop()
         self.cur_transform = self._transform_stack.pop()
         return
@@ -59,7 +65,7 @@ class BasicEvent(HasTraits):
         the event into its own coordinate frame.
         """
         translation_matrix = self._translate(-origin_x, -origin_y)
-        self.push_xy(self.x, self.y, translation_matrix)
+        self.push_transform(translation_matrix)
         return
 
     def scale_xy(self, scale_x, scale_y):
@@ -71,7 +77,7 @@ class BasicEvent(HasTraits):
         is used for zooming.
         """
         scale_matrix = self._scale(scale_x, scale_y)
-        self.push_xy(self.x, self.y, scale_matrix)
+        self.push_transform(scale_matrix)
         return
         
 
@@ -101,7 +107,7 @@ class BasicEvent(HasTraits):
         Applies the transform passed in.  This is primarily used when the mouse_owner is
         set on the window.
         """
-        self.push_xy(self.x, self.y, transform)
+        self.push_transform(transform)
 
     def get_xy_position(self, transform):
         return (transform[0,0], transform[1,0])

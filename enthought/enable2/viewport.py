@@ -229,20 +229,26 @@ class Viewport(Component):
     def _dispatch_stateful_event(self, event, suffix):
 
         if isinstance(self.component, Component):
-            x_offset = (-self.view_position[0] + self.position[0]) * self.zoom
-            y_offset = (-self.view_position[1] + self.position[1]) * self.zoom
-            event.offset_xy(x_offset, y_offset)
-            if self.enable_zoom:
-                # If we have zoom enabled, scale events
+            x_offset = -self.view_position[0] + self.position[0]
+            y_offset = -self.view_position[1] + self.position[1]
+            
+            # If we have zoom enabled, scale events
+            if self.enable_zoom and self.zoom != 1.0:
+                event.offset_xy(*self.outer_position)
                 event.scale_xy(self.zoom, self.zoom)
+                event.offset_xy(-self.view_position[0], -self.view_position[1])
+                popcount = 3
+            else:
+                x_offset = -self.view_position[0] + self.outer_position[0]
+                y_offset = -self.view_position[1] + self.outer_position[1]
+                event.offset_xy(x_offset, y_offset)
+                popcount = 1
+
             try:
                 self.component.dispatch(event, suffix)
             finally:
-                event.pop()
-                if self.enable_zoom:
-                    # Call pop() a second time since translation and scaling
-                    # are autonomous actions
-                    event.pop()
+                event.pop(popcount)
+
         return
 
 

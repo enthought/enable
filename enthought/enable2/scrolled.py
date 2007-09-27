@@ -355,6 +355,7 @@ class Scrolled(Container):
         available_y = scrl_y_size - 2*padding
 
         # Figure out which scrollbars we will need
+
         need_x_scrollbar = self.horiz_scrollbar and \
                     ((available_x < cont_x_size) or self.always_show_sb)
         need_y_scrollbar = (self.vert_scrollbar and \
@@ -371,12 +372,12 @@ class Scrolled(Container):
             need_x_scrollbar = True
 
         # Put the viewport in the right position
-        self.viewport_component.bounds = [available_x, available_y]
+        self.viewport_component.outer_bounds = [available_x, available_y]
         container_y_pos = padding
 
         if need_x_scrollbar:
             container_y_pos += self.sb_height()
-        self.viewport_component.position = [padding + self.leftborder,
+        self.viewport_component.outer_position = [padding + self.leftborder,
                                             container_y_pos]
 
         range_x, range_y = self._compute_ranges()
@@ -486,12 +487,12 @@ class Scrolled(Container):
         
         c = self.component
         viewport = self.viewport_component
-        offsety = getattr(self.component, "bounds_offset", [0,0])[1]
+        offsety = getattr(c, "bounds_offset", [0,0])[1]
         if (position + viewport.view_bounds[1] <= c.bounds[1] + offsety):
             if self._vsb_generates_events:
                 viewport.view_position[1] = position
             else:
-                viewport.set(view_position=[position, viewport.view_position[1]],
+                viewport.set(view_position=[viewport.view_position[0], position],
                              trait_change_notify=False)
         return
 
