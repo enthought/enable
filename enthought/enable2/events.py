@@ -80,7 +80,6 @@ class BasicEvent(HasTraits):
         self.push_transform(scale_matrix)
         return
         
-
     def net_transform(self):
         """
         Returns a single transformation (currently only (dx,dy)) that reflects
@@ -101,13 +100,6 @@ class BasicEvent(HasTraits):
         for m in self._transform_stack:
             transform = m * transform
         return transform
-
-    def apply_owner_transform(self, transform):
-        """
-        Applies the transform passed in.  This is primarily used when the mouse_owner is
-        set on the window.
-        """
-        self.push_transform(transform)
 
     def get_xy_position(self, transform):
         return (transform[0,0], transform[1,0])

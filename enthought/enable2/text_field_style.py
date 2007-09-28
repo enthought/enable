@@ -20,7 +20,7 @@ class TextFieldStyle(HasTraits):
     highlight_bgcolor = ColorTrait("lightgray")
     
     # The font for the text (must be monospaced!)
-    font = KivaFont("Andale Mono 15")
+    font = KivaFont("Courier 15")
 
     # The number of pixels between each line
     line_spacing = Int(3)

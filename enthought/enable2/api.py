@@ -35,6 +35,8 @@ from coordinate_box import CoordinateBox
 #from drag_resize import DragResizeHandler
 
 # Breaks code that does not use numpy
+from text_field import TextField
+from text_field_style import TextFieldStyle
 from text_grid import TextGrid
 from viewport import Viewport
 from label import Label

@@ -3,19 +3,24 @@ from math import floor
 
 # Enthought library imports
 from enthought.traits.api import (Str, Bool, Int, Event, Instance, Any, Property,
-                                  List)
+                                  List, Delegate)
 from enthought.kiva import font_metrics_provider
-from enthought.enable2.api import Component, TextFieldStyle
 
+# Local, relative imports
+from component import Component
+from text_field_style import TextFieldStyle
+
+
+StyleDelegate = Delegate("_style", modify=True)
 
 class TextField(Component):
     """ A basic text entry field for Enable.
         fixme: Requires monospaced fonts.
     """
 
-    #########################################################################
+    #------------------------------------------------------------------------
     # Public traits
-    #########################################################################
+    #------------------------------------------------------------------------
 
     # The text to be edited
     text = Property(depends_on=['_text_changed'])
@@ -30,9 +35,26 @@ class TextField(Component):
     # The object to use to measure text extents
     metrics = Any
 
-    #########################################################################
+    #------------------------------------------------------------------------
+    # Delegates for style
+    #------------------------------------------------------------------------
+    
+    text_color = StyleDelegate
+    highlight_color = StyleDelegate
+    highlight_bgcolor = StyleDelegate
+    font = StyleDelegate
+    line_spacing = StyleDelegate
+    text_offset = StyleDelegate
+    cursor_color = StyleDelegate
+    cursor_width = StyleDelegate
+    border_visible = StyleDelegate
+    border_color = StyleDelegate
+    bgcolor = StyleDelegate
+
+
+    #------------------------------------------------------------------------
     # Protected traits
-    #########################################################################
+    #------------------------------------------------------------------------
 
     # The style information used in drawing
     _style = Instance(TextFieldStyle, ())
@@ -63,9 +85,9 @@ class TextField(Component):
     _draw_cursor = Bool(False)
 
 
-    #########################################################################
-    # object interface
-    #########################################################################
+    #------------------------------------------------------------------------
+    # Public methods
+    #------------------------------------------------------------------------
 
     def __init__(self, **traits):
         # This will be overriden if 'text' is provided as a trait, but it
@@ -87,34 +109,35 @@ class TextField(Component):
         self.__style_changed()
 
 
-    #########################################################################
+    #------------------------------------------------------------------------
     # Interactor interface
-    #########################################################################
+    #------------------------------------------------------------------------
 
     def normal_mouse_enter(self, event):
         event.window.set_pointer('ibeam')
-        self._draw_cursor = True
         self.request_redraw()
         event.handled = True
 
     def normal_mouse_leave(self, event):
         event.window.set_pointer('arrow')
-        self._draw_cursor = False
         self.request_redraw()
         event.handled = True
 
     def normal_left_down(self, event):
         self.event_state = "cursor"
+        self._acquire_focus(event.window)
         event.handled = True
 
-    def cursor_left_up(self, event):
         # Transform pixel coordinates to text coordinates
         char_width, char_height = self.metrics.get_text_extent("T")[2:]
         char_height += self._style.line_spacing
         event_x = event.x - self.x + self._style.text_offset
         event_y = self.y2 - event.y + self._style.text_offset
-        x = int(floor(event_x / char_width)) - 1
-        y = int(floor(event_y / char_height)) - 1 if self.multiline else 0
+        x = int(round(event_x / char_width)) - 1
+        if self.multiline:
+            y = int(round(event_y / char_height)) - 1 
+        else:
+            y = 0
 
         # Clip x and y so that they are with text bounds, then place the cursor
         y = min(max(y, 0), len(self.__draw_text)-1)
@@ -123,6 +146,7 @@ class TextField(Component):
         self._cursor_pos = [ self.__draw_text_ystart + y,
                              self.__draw_text_xstart + x ]
         
+    def cursor_left_up(self, event):
         # Reset event state
         self.event_state = "normal"
         event.handled = True
@@ -241,9 +265,9 @@ class TextField(Component):
         self.invalidate_draw()
         self.request_redraw()
 
-    #########################################################################
+    #------------------------------------------------------------------------
     # Component interface
-    #########################################################################
+    #------------------------------------------------------------------------
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         gc.save_state()
@@ -276,8 +300,12 @@ class TextField(Component):
 
 
         if self._draw_cursor:
-            x_offset = self.metrics.get_text_extent(lines[-1])[2:3][0]
-            y_offset = char_h * (self._cursor_pos[0]-self.__draw_text_ystart)
+            j, i = self._cursor_pos
+            j -= self.__draw_text_ystart
+            i -= self.__draw_text_xstart
+            #print "text:", self.text[j][:i]
+            x_offset = self.metrics.get_text_extent(lines[j][:i])[2]
+            y_offset = char_h * j
             y = self.y2 - y_offset - self._style.text_offset
             if not self.multiline:
                 char_h -= float(self._style.line_spacing)*.5
@@ -293,17 +321,10 @@ class TextField(Component):
 
         gc.restore_state()
 
-    ##### Trait change handles #############################################
 
-    def _container_changed(self, old, new):
-        super(TextField, self)._container_changed(old, new)
-        if hasattr(self.container, 'style_manager'):
-            self._style = self.container.style_manager.text_field_style
-
-
-    #########################################################################
+    #------------------------------------------------------------------------
     # TextField interface
-    #########################################################################
+    #------------------------------------------------------------------------
 
     def reset(self):
         """ Resets the text field. This involes reseting cursor position, text
@@ -375,7 +396,22 @@ class TextField(Component):
         else:
             self.__draw_text[index] = new_text
 
-    ##### Trait property getters/setters ####################################
+    def _acquire_focus(self, window):
+        self._draw_cursor = True
+        window.focus_owner = self
+        window.on_trait_change(self._focus_owner_changed, "focus_owner")
+        self.request_redraw()
+
+    def _focus_owner_changed(self, obj, name, old, new):
+        if old == self and new != self:
+            obj.on_trait_change(self._focus_owner_changed, "focus_owner",
+                                   remove=True)
+        self._draw_cursor = False
+        self.request_redraw()
+
+    #------------------------------------------------------------------------
+    # Property getters/setters and trait event handlers
+    #------------------------------------------------------------------------
 
     def _get_text(self):
         return "\n".join([ "".join(line) for line in self._text ])
@@ -457,7 +493,10 @@ class TextField(Component):
         else:
             return 1
 
-    ##### Trait change handles #############################################
+    def _container_changed(self, old, new):
+        super(TextField, self)._container_changed(old, new)
+        if hasattr(self.container, 'style_manager'):
+            self._style = self.container.style_manager.text_field_style
 
     def __style_changed(self):
         """ Bg/border color is inherited from the style, so update it when the
@@ -474,27 +513,3 @@ class TextField(Component):
 
         self.request_redraw()
 
-
-# Test
-if __name__ == '__main__':
-    from enthought.enable2.wx_backend.api import Window
-    from enthought.enable2.api import Container
-    from enthought.enable2.example_support import DemoFrame, demo_main
-
-    class MyFrame(DemoFrame):
-        def _create_window(self):
-            text_field = TextField(position=[25,100], width=200)
-
-            text = "This a test with a text field\nthat has more text than\n"
-            text += "can fit in it."
-            text_field2 = TextField(position=[25,200], width=200,
-                                          height=50, multiline=True, text=text)
-
-            text_field3 = TextField(position=[250,50], height=300, 
-                                          width=200, multiline=True)
-
-            container = Container(bounds=[800, 600], bgcolor='grey')
-            container.add(text_field, text_field2, text_field3)
-            return Window(self, -1, component=container)
-
-    demo_main(MyFrame)

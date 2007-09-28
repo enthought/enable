@@ -215,7 +215,7 @@ class AbstractWindow ( HasTraits ):
         if mouse_owner is not None:
             # A mouse_owner has grabbed the mouse
             if self.mouse_owner_transform is not None:
-                mouse_event.apply_owner_transform(self.mouse_owner_transform)
+                mouse_event.push_transform(self.mouse_owner_transform)
 
             mouse_owner.dispatch(mouse_event, event_name)
             self._pointer_owner = mouse_owner
@@ -251,23 +251,18 @@ class AbstractWindow ( HasTraits ):
         # component under the mouse pointer that accepts focus as the new focus
         # owner (otherwise, nobody owns the focus):
         if set_focus:
-            # If the mouse event was a click, then we set focus to ourselves
-            if (self.component is not None) and (self.component.accepts_focus) and \
-                    (mouse_event.left_down or mouse_event.middle_down or \
-                    mouse_event.right_down or mouse_event.mouse_wheel != 0):
-                new_focus_owner = self.component
+            # If the mouse event was a click, then we set the toolkit's 
+            # focus to ourselves
+            if mouse_event.left_down or mouse_event.middle_down or \
+                    mouse_event.right_down or mouse_event.mouse_wheel != 0:
                 self._set_focus()
-            else:
-                new_focus_owner = None
 
-            old_focus_owner  = self.focus_owner
-            self.focus_owner = new_focus_owner
-            if ((old_focus_owner is not None) and
-                (old_focus_owner is not new_focus_owner)):
-                old_focus_owner.has_kdb_focus = False
-            if new_focus_owner is not None:
-                new_focus_owner.has_kbd_focus = True
-                self._set_focus()
+            if (self.component is not None) and (self.component.accepts_focus):
+                if self.focus_owner is None:
+                    self.focus_owner = self.component
+                else:
+                    pass
+
         return
 
     def set_tooltip(self, components):

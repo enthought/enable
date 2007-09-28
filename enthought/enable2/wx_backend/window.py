@@ -377,10 +377,11 @@ class Window ( AbstractWindow ):
 
     def _on_char ( self, event ):
         "Handle keyboard keys being pressed"
-        focus_owner = self.focus_owner
 
-        if focus_owner is None:
+        if self.focus_owner is None:
             focus_owner = self.component
+        else:
+            focus_owner = self.focus_owner
         
         if focus_owner is not None:
             control_down = event.ControlDown()
