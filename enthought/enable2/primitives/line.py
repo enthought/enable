@@ -4,7 +4,7 @@ from numpy import array, resize
 
 # Enthought library imports.
 from enthought.kiva import FILL_STROKE, STROKE
-from enthought.traits.api import Any, Event, Float, List, Trait, Tuple
+from enthought.traits.api import Any, Event, Float, List, Trait, Bool
 
 # Local imports.
 from enthought.enable2.api import border_size_trait, Component
@@ -38,6 +38,9 @@ class Line(Component):
     # The size of each vertex.
     vertex_size = Float(3.0)
 
+    # Whether to draw the path closed, with a line back to the first point
+    close_path = Bool(True)
+    
     #--------------------------------------------------------------------------
     # 'Line' interface
     #--------------------------------------------------------------------------
@@ -69,7 +72,8 @@ class Line(Component):
             offset_points = [(x, y) for x, y in self.points ]
             offset_points = resize(array(offset_points), (len(self.points),2))
             gc.lines(offset_points)
-            gc.close_path()
+            if self.close_path:
+                gc.close_path()
             gc.draw_path(STROKE)
 
             # Draw the vertices.
