@@ -95,31 +95,35 @@ def str_to_font ( object, name, value ):
     "Converts a (somewhat) free-form string into a valid Font object."
     # FIXME: Make this less free-form and more well-defined.
     try:
-       point_size = 10
-       family     = SWISS
-       style      = NORMAL
-       weight     = NORMAL
-       underline  = 0
-       face_name  = []
-       for word in value.split():
-           lword = word.lower()
-           if font_families.has_key( lword ):
-              family = font_families[ lword ]
-           elif font_styles.has_key( lword ):
-              style = font_styles[ lword ]
-           elif font_weights.has_key( lword ):
-              weight = font_weights[ lword ]
-           elif lword == 'underline':
-              underline = 1
-           elif lword not in font_noise:
-              try:
-                 point_size = int( lword )
-              except:
-                 face_name.append( word )
-       return Font( point_size, family, weight, style, underline,
-                    ' '.join( face_name ) )
+        point_size = 10
+        family     = SWISS
+        style      = NORMAL
+        weight     = NORMAL
+        underline  = 0
+        face_name  = []
+        for word in value.split():
+            lword = word.lower()
+            if font_families.has_key( lword ):
+               family = font_families[ lword ]
+            elif font_styles.has_key( lword ):
+               style = font_styles[ lword ]
+            elif font_weights.has_key( lword ):
+               weight = font_weights[ lword ]
+            elif lword == 'underline':
+               underline = 1
+            elif lword not in font_noise:
+               try:
+                  point_size = int( lword )
+               except:
+                  face_name.append( word )
+        return Font(face_name = " ".join(face_name),
+                    size = point_size,
+                    family = family,
+                    weight = weight,
+                    style = style,
+                    underline = underline)
     except:
-       pass
+        pass
     raise TraitError, ( object, name, 'a font descriptor string',
                         repr( value ) )
 
