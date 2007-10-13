@@ -7,6 +7,7 @@ from sets import Set
 # Enthought library traits
 from enthought.enable2.tools.api import ViewportZoomTool
 from enthought.traits.api import Bool, Delegate, Float, Instance
+from enthought.kiva import affine
 
 # Local relative imports
 from enable_traits import bounds_trait, coordinate_trait
@@ -15,6 +16,7 @@ from component import Component
 from container import Container
 from canvas import Canvas
 
+from enthought.kiva import Font
 
 class Viewport(Component):
     """
@@ -44,7 +46,7 @@ class Viewport(Component):
 
     # Zoom scaling factor for this viewport - Ratio of old bounds to new bounds.
     # Zoom less than 1.0 means we are zoomed out, and more than 1.0 means
-    # we are zoomed in.
+    # we are zoomed in.  Zoom should always be positive and nonzero.
     zoom = Float(1.0)
 
     min_zoom = Delegate('zoom_tool', modify=True)
@@ -159,6 +161,7 @@ class Viewport(Component):
                     pass
 
             gc.restore_state()
+
         else:
             pass
         return
@@ -226,28 +229,33 @@ class Viewport(Component):
     def _view_position_items_changed(self):
         self._view_position_changed()
 
-    def _dispatch_stateful_event(self, event, suffix):
+    def get_event_transform(self, event=None, suffix=""):
+        transform = affine.affine_identity()
 
         if isinstance(self.component, Component):
-            x_offset = -self.view_position[0] + self.position[0]
-            y_offset = -self.view_position[1] + self.position[1]
-            
-            # If we have zoom enabled, scale events
+            # If we have zoom enabled, scale events.  Since affine transforms
+            # multiply from the left, we build up the transform from the
+            # inside of the viewport outwards.
             if self.enable_zoom and self.zoom != 1.0:
-                event.offset_xy(*self.outer_position)
-                event.scale_xy(self.zoom, self.zoom)
-                event.offset_xy(-self.view_position[0], -self.view_position[1])
-                popcount = 3
+                transform = affine.translate(transform, *self.view_position)
+                transform = affine.scale(transform, 1.0/self.zoom, 1.0/self.zoom)
+                transform = affine.translate(transform, -self.outer_position[0],
+                                                        -self.outer_position[1])
             else:
-                x_offset = -self.view_position[0] + self.outer_position[0]
-                y_offset = -self.view_position[1] + self.outer_position[1]
-                event.offset_xy(x_offset, y_offset)
-                popcount = 1
+                x_offset = self.view_position[0] - self.outer_position[0]
+                y_offset = self.view_position[1] - self.outer_position[1]
+                transform = affine.translate(transform, x_offset, y_offset)
+            
+        return transform
 
+    def _dispatch_stateful_event(self, event, suffix):
+        if isinstance(self.component, Component):
+            transform = self.get_event_transform(event, suffix)
+            event.push_transform(transform, caller=self)
             try:
                 self.component.dispatch(event, suffix)
             finally:
-                event.pop(popcount)
+                event.pop(caller=self)
 
         return
 

@@ -3,8 +3,14 @@ Define the event objects and traits used by Enable components.
 
 For a list of all the possible event suffixes, see interactor.py.
 """
-from numpy import matrix, float64 
-from enthought.traits.api import Any, false, Float, HasTraits, Int, Event, List, ReadOnly
+
+# Major library imports
+from numpy import array, dot, eye, matrix, float64 
+
+# Enthought imports
+from enthought.kiva import affine
+from enthought.traits.api import Any, Bool, Float, HasTraits, Int, Event, \
+        List, ReadOnly
 
 
 class BasicEvent(HasTraits):
@@ -12,11 +18,8 @@ class BasicEvent(HasTraits):
     x = Float
     y = Float
     
-    # The current transformation matrix
-    cur_transform = Any 
-    
     # True if the event has been handled.
-    handled = false
+    handled = Bool(False)
 
     # The AbstractWindow instance through/from which this event was fired.
     # Can be None.
@@ -28,23 +31,26 @@ class BasicEvent(HasTraits):
     # Affine transform stack; initialized to an empty list
     _transform_stack = List( () )
 
-    
-    def push_transform(self, transform):
+    # This is a list of objects that have transformed the event's
+    # coordinates.  This can be used to recreate the dispatch path
+    # that the event took.
+    dispatch_history = List()
+
+    def push_transform(self, transform, caller=None):
         """
         Saves the current transform in a stack and sets the given transform
         to be the active one.
         """
-        xy_matrix = self.make_xy_matrix(self.x, self.y)
-        transformed = transform * xy_matrix
-        x, y = self.get_xy_position(transformed)
+        x, y = dot(array((self.x, self.y, 1)), transform)[:2]
         self._pos_stack.append((self.x, self.y))
         self._transform_stack.append(transform)
         self.x = x
         self.y = y
-        self.cur_transform = transform
+        if caller is not None:
+            self.dispatch_history.append(caller)
         return
     
-    def pop(self, count=1):
+    def pop(self, count=1, caller=None):
         """
         Restores a previous position of the event.  If **count** is provided,
         then pops **count** elements off of the event stack.
@@ -53,10 +59,13 @@ class BasicEvent(HasTraits):
             self._pos_stack.pop()
             self._transform_stack.pop()
         self.x, self.y = self._pos_stack.pop()
-        self.cur_transform = self._transform_stack.pop()
+        self._transform_stack.pop()
+        if caller is not None:
+            if caller == self.dispatch_history[-1]:
+                self.dispatch_history.pop()
         return
     
-    def offset_xy(self, origin_x, origin_y):
+    def offset_xy(self, origin_x, origin_y, caller=None):
         """
         Shifts this event to be in the coordinate frame whose origin, specified
         in the event's coordinate frame, is (origin_x, origin_y).
@@ -64,20 +73,25 @@ class BasicEvent(HasTraits):
         Basically, a component calls event.offset_xy(*self.position) to shift
         the event into its own coordinate frame.
         """
-        translation_matrix = self._translate(-origin_x, -origin_y)
-        self.push_transform(translation_matrix)
+        self.push_transform(affine.affine_from_translation(-origin_x, -origin_y))
+        if caller is not None:
+            self.dispatch_history.append(caller)
         return
 
-    def scale_xy(self, scale_x, scale_y):
+    def scale_xy(self, scale_x, scale_y, caller=None):
         """
         Scales the event to be in the scale specified.
     
-        A component calls event.scale_xy(scale) to scale the event
-        into its own coordinate frame when the ctm has been scaled.  This operation
-        is used for zooming.
+        A component calls event.scale_xy(scale) to scale the event into its own
+        coordinate frame when the ctm has been scaled.  This operation is used
+        for zooming.
         """
-        scale_matrix = self._scale(scale_x, scale_y)
-        self.push_transform(scale_matrix)
+        # Note that the meaning of scale_x and scale_y for Enable
+        # is the inverted from the meaning for Kiva.affine. 
+        # TODO: Fix this discrepancy.
+        self.push_transform(affine.affine_from_scale(1/scale_x, 1/scale_y))
+        if caller is not None:
+            self.dispatch_history.append(caller)
         return
         
     def net_transform(self):
@@ -86,62 +100,10 @@ class BasicEvent(HasTraits):
         the total amount of change from the original coordinates to the current
         offset coordinates stored in self.x and self.y.
         """
-        pos = self._pos_stack
-        if len(pos) == 0:
-            return self.identity_transform()
-        else:
-            return self.current_transform()
-
-    def current_transform(self):
-        """
-        Returns a copy of the current transformation matrix.
-        """
-        transform = self.identity_transform()
+        transform = affine.affine_identity()
         for m in self._transform_stack:
-            transform = m * transform
+            transform = dot(m, transform)
         return transform
-
-    def get_xy_position(self, transform):
-        return (transform[0,0], transform[1,0])
-
-    def make_xy_matrix(self, x, y):
-        return matrix( [[x], [y], [1]], float64)
-
-    def identity_transform(self):
-        """
-        Returns a new identity affine_transform
-        """
-        return matrix( [[1,0,0],[0,1,0],[0,0,1]], float64)
-
-    def _scale( self, sx, sy ):
-        """ Returns the matrix that must be multiplied in order to scale.
-        """
-        scaled = self.identity_transform()
-        scaled[0] /= sx
-        scaled[1] /= sy
-        return scaled
-
-    def _rotate( self, angle ):
-        """ Returns the matrix that must be multiplied in order to rotate
-            by angle in radians.
-        """
-        pass
-
-    def _translate( self, x, y ):
-        """ Returns the matrix that must be multiplied to translate 
-            by (x,y).  
-        """
-        r = self.identity_transform()
-        r[0,2] = x
-        r[1,2] = y
-        return r
-
-    
-    #~ def xy(self, component):
-    #~ "Return the mouse coordinates relative to a specified component"
-    #~ cx, cy = component.location()
-    #~ return(self.x - cx, self.y - cy)
-
 
 
 class MouseEvent(BasicEvent):

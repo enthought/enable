@@ -4,6 +4,7 @@
 import warnings
 
 # Enthought library imports
+from enthought.kiva import affine
 from enthought.traits.api import Any, Bool, Enum, HasTraits, Instance, List, \
         Property, Trait, Tuple
 
@@ -485,11 +486,11 @@ class Container(Component):
     #------------------------------------------------------------------------
 
     def normal_mouse_leave(self, event):
-        event.offset_xy(*self.position)
+        event.push_transform(self.get_event_transform(event), caller=self)
         for component in self._prev_event_handlers:
             component.dispatch(event, "mouse_leave")
         self._prev_event_handlers = set()
-        event.pop()
+        event.pop(caller=self)
         return
 
     def _container_handle_mouse_event(self, event, suffix):
@@ -500,6 +501,9 @@ class Container(Component):
         with the event.
         """
         super(Container, self)._dispatch_stateful_event(event, suffix)
+
+    def get_event_transform(self, event=None, suffix=""):
+        return affine.affine_from_translation(-self.x, -self.y)
 
     def _dispatch_stateful_event(self, event, suffix):
         """
@@ -515,7 +519,8 @@ class Container(Component):
             components = self.components_at(event.x, event.y)
 
             # Translate the event's location to be relative to this container
-            event.offset_xy(*self.position)
+            event.push_transform(self.get_event_transform(event, suffix),
+                                 caller=self)
 
             try:
                 new_component_set = set(components)
@@ -581,7 +586,7 @@ class Container(Component):
                     if event.handled:
                         break
             finally:
-                event.pop()
+                event.pop(caller=self)
 
             if not event.handled:
                 self._container_handle_mouse_event(event, suffix)

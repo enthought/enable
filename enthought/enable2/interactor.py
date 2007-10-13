@@ -1,6 +1,10 @@
 """ Defines the Interactor class """
 
+# Major library imports
+from numpy import eye
+
 # Enthought library imports
+from enthought.kiva.affine import affine_identity
 from enthought.traits.api import Any, Bool, HasTraits, List, Property, Str, Trait
 
 # Local relative imports
@@ -78,6 +82,12 @@ class Interactor(HasTraits):
         Subclasses may override this to customize the public dispatch behavior.
         """
         self._dispatch_stateful_event(event, suffix)
+
+    def get_event_transform(self, event=None, suffix=""):
+        """ Returns the 3x3 transformation matrix that this interactor will
+        apply to the event (if any).
+        """
+        return affine_identity()
 
     def _dispatch_stateful_event(self, event, suffix):
         """
