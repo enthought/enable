@@ -1,10 +1,10 @@
 
 # Major library imports
-from types import ListType
+from numpy import dot
 
 # Enthought library imports
-from enthought.traits.api import Any, Enum, Event, false, HasTraits, Instance, ReadOnly,\
-                             Str, Trait, Tuple, List, Bool
+from enthought.traits.api import Any, Bool, Enum, Event, HasTraits, Instance, \
+        ReadOnly, Str, Trait, Tuple, List
 
 
 # Local relative imports
@@ -34,13 +34,17 @@ class AbstractWindow ( HasTraits ):
 
     # The transform to apply to mouse event positions to put them into the
     # relative coordinates of the mouse_owner component.
-    mouse_owner_transform = Any
+    mouse_owner_transform = Any()
+
+    # When a component captures the mouse, it can optionally store a
+    # dispatch order for events (until it releases the mouse).
+    mouse_owner_dispatch_history = Trait(None, None, List)
 
     bg_color      = ColorTrait("lightgray")
     window        = ReadOnly
-    alt_pressed   = false
-    ctrl_pressed  = false
-    shift_pressed = false
+    alt_pressed   = Bool(False)
+    ctrl_pressed  = Bool(False)
+    shift_pressed = Bool(False)
 
     # A container that gets drawn after & on top of the main component, and
     # which receives events first.
@@ -180,7 +184,7 @@ class AbstractWindow ( HasTraits ):
         self.invalidate_draw()
         pass
 
-    def set_mouse_owner(self, mouse_owner, transform=None):
+    def set_mouse_owner(self, mouse_owner, transform=None, history=None):
         "Handle the 'mouse_owner' being changed"
         if mouse_owner is None:
             self._release_mouse()
@@ -188,6 +192,7 @@ class AbstractWindow ( HasTraits ):
             self._capture_mouse()
         self.mouse_owner = mouse_owner
         self.mouse_owner_transform = transform
+        self.mouse_owner_dispatch_history = history
         return
     
     def invalidate_draw(self, damaged_regions=None, self_relative=False):
@@ -213,7 +218,16 @@ class AbstractWindow ( HasTraits ):
         mouse_owner = self.mouse_owner
 
         if mouse_owner is not None:
-            # A mouse_owner has grabbed the mouse
+            # A mouse_owner has grabbed the mouse.  Check to see if we need to
+            # compose a net transform by querying each of the objects in the
+            # dispatch history in turn, or if we can just apply a saved top-level
+            # transform.
+            history = self.mouse_owner_dispatch_history
+            if history is not None and len(history) > 0:
+                # Assemble all the transforms
+                transforms = [c.get_event_transform() for c in history]
+                total_transform = reduce(dot, transforms[::-1])
+                mouse_event.push_transform(total_transform)
             if self.mouse_owner_transform is not None:
                 mouse_event.push_transform(self.mouse_owner_transform)
 

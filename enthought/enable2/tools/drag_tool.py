@@ -145,7 +145,8 @@ class DragTool(BaseTool):
                    self.is_draggable(*self.mouse_down_position):
                 self._drag_state = "dragging"
                 if self.capture_mouse:
-                    event.window.set_mouse_owner(self, event.net_transform())
+                    event.window.set_mouse_owner(self, transform=event.net_transform(),
+                                                 history=event.dispatch_history)
                 self.drag_start(event)
                 return self._drag_mouse_move(event)
             return False

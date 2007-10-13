@@ -100,10 +100,10 @@ class BasicEvent(HasTraits):
         the total amount of change from the original coordinates to the current
         offset coordinates stored in self.x and self.y.
         """
-        transform = affine.affine_identity()
-        for m in self._transform_stack:
-            transform = dot(m, transform)
-        return transform
+        if len(self._transform_stack) == 0:
+            return affine.affine_identity()
+        else:
+            return reduce(dot, self._transform_stack[::-1])
 
 
 class MouseEvent(BasicEvent):
