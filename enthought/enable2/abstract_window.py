@@ -188,11 +188,14 @@ class AbstractWindow ( HasTraits ):
         "Handle the 'mouse_owner' being changed"
         if mouse_owner is None:
             self._release_mouse()
+            self.mouse_owner = None
+            self.mouse_owner_transform = None
+            self.mouse_owner_dispatch_history = None
         else:
             self._capture_mouse()
-        self.mouse_owner = mouse_owner
-        self.mouse_owner_transform = transform
-        self.mouse_owner_dispatch_history = history
+            self.mouse_owner = mouse_owner
+            self.mouse_owner_transform = transform
+            self.mouse_owner_dispatch_history = history
         return
     
     def invalidate_draw(self, damaged_regions=None, self_relative=False):
