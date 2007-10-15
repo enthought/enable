@@ -34,6 +34,8 @@ class TextField(Component):
 
     # The object to use to measure text extents
     metrics = Any
+    char_w = Any
+    char_h = Any
 
     #------------------------------------------------------------------------
     # Delegates for style
@@ -492,11 +494,6 @@ class TextField(Component):
             return self._height_cache
         else:
             return 1
-
-    def _container_changed(self, old, new):
-        super(TextField, self)._container_changed(old, new)
-        if hasattr(self.container, 'style_manager'):
-            self._style = self.container.style_manager.text_field_style
 
     def __style_changed(self):
         """ Bg/border color is inherited from the style, so update it when the

@@ -35,10 +35,6 @@ from coordinate_box import CoordinateBox
 #from drag_resize import DragResizeHandler
 
 # Breaks code that does not use numpy
-from text_field import TextField
-from text_field_style import TextFieldStyle
-from text_grid import TextGrid
-from viewport import Viewport
 from label import Label
 
 from graphics_context import GraphicsContextEnable
@@ -52,6 +48,7 @@ from scrolled import Scrolled
 from text_field_style import TextFieldStyle
 from text_field import TextField
 from text_field_grid import TextFieldGrid
+from viewport import Viewport
 from window import Window
 
 #from key_bindings import KeyBinding, KeyBindings

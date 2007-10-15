@@ -152,8 +152,6 @@ class DrawingCanvasToolbar(Container):
         return
 
 
-import pdb
-
 
 class DrawingCanvas(Container):
     """
