@@ -231,7 +231,7 @@ class AbstractWindow ( HasTraits ):
                 transforms = [c.get_event_transform() for c in history]
                 total_transform = reduce(dot, transforms[::-1])
                 mouse_event.push_transform(total_transform)
-            if self.mouse_owner_transform is not None:
+            elif self.mouse_owner_transform is not None:
                 mouse_event.push_transform(self.mouse_owner_transform)
 
             mouse_owner.dispatch(mouse_event, event_name)
