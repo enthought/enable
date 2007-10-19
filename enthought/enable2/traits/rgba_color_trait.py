@@ -30,7 +30,7 @@ elif ETSConfig.toolkit == 'qt4':
     #from enthought.traits.ui.qt4.color_trait import standard_colors
     standard_colors = {}
 else:
-    raise ImportError, "no TraitsUI implementation for the '%s' toolkit" % ETSConfig.toolkit
+    standard_colors = {}
 
 
 #-------------------------------------------------------------------------------

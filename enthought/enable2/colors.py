@@ -1,6 +1,7 @@
 # This is a redirection file that determines what constitutes a color trait
 # in Chaco, and what constitutes the standard colors.
 
+from enthought.etsconfig.api import ETSConfig
 from enthought.traits.api import List, Str, Trait, Tuple, TraitError
 
 
@@ -159,7 +160,7 @@ color_table = {"aliceblue": (0.941, 0.973, 1.000, 1.0),
     "none": transparent_color
 }
 
-try:
+if ETSConfig.toolkit == 'wx':
     import wx
     from enthought.traits.ui.wx.color_editor import ToolkitEditorFactory as StandardColorEditorFactory
 
@@ -215,7 +216,7 @@ try:
     ColorTrait = Trait("black", Tuple, List, Str, color_table,
                        convert_from_wx_color, editor=ColorEditorFactory)
 
-except ImportError:
+else:
     ColorTrait = Trait("black", Tuple, List, Str, color_table)
     ColorEditorFactory = None
 
