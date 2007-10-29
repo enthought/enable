@@ -125,11 +125,14 @@ class NativeScrollBar(Component):
         self.destroy()
         return
 
+    def _get_abs_coords(self, x, y):
+        return self.container.get_absolute_coords(x, y)
+
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         x_pos, y_pos = self.position
         x_size, y_size = self.bounds
 
-        wx_xpos, wx_ypos = self.container.get_absolute_coords(x_pos, y_pos+y_size-1)
+        wx_xpos, wx_ypos = self._get_abs_coords(x_pos, y_pos+y_size-1)
         
         # We have to do this flip_y business because wx and enable use opposite
         # coordinate systems, and enable defines the component's position as its
