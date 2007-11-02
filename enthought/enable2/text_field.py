@@ -110,7 +110,6 @@ class TextField(Component):
         # Initialize border/bg colors
         self.__style_changed()
 
-
     #------------------------------------------------------------------------
     # Interactor interface
     #------------------------------------------------------------------------
@@ -480,17 +479,19 @@ class TextField(Component):
 
     def _get__text_width(self):
         if self._width_cache is None:
-            char_width = self.metrics.get_text_extent("T")[2]
-            self._width_cache = int(floor(self.width/char_width))
+            if self.metrics is not None:
+                char_width = self.metrics.get_text_extent("T")[2]
+                self._width_cache = int(floor(self.width/char_width))
         return self._width_cache
 
     def _get__text_height(self):
         if self.multiline:
             if self._height_cache is None:
-                char_height = self.metrics.get_text_extent("T")[3]
-                height = self.height - 2*self._style.text_offset
-                line_height = char_height + self._style.line_spacing
-                self._height_cache = int(floor(height / line_height))
+                if self.metrics is not None:
+                    char_height = self.metrics.get_text_extent("T")[3]
+                    height = self.height - 2*self._style.text_offset
+                    line_height = char_height + self._style.line_spacing
+                    self._height_cache = int(floor(height / line_height))
             return self._height_cache
         else:
             return 1
