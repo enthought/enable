@@ -742,7 +742,6 @@ class Component(CoordinateBox, Interactor):
 
         gc.stroke_path()
         gc.restore_state()
-        return
 
     #------------------------------------------------------------------------
     # Protected methods for subclasses to implement
@@ -937,20 +936,17 @@ class Component(CoordinateBox, Interactor):
 
     def _tools_items_changed(self):
         self.invalidate_and_redraw()
-        return
     
     #------------------------------------------------------------------------
     # Event handlers
     #------------------------------------------------------------------------
 
     def _bounds_changed(self, old, new):
-        self.cursor_bounds = new
         if self.container is not None:
             self.container._component_bounds_changed(self)
         return
 
     def _bounds_items_changed(self, event):
-        self.cursor_bounds = self.bounds[:]
         if self.container is not None:
             self.container._component_bounds_changed(self)
         return
@@ -960,12 +956,14 @@ class Component(CoordinateBox, Interactor):
         # caller who changed our .container should take care of that.
         if new is None:
             self.position = [0,0]
-        return
 
     def _position_changed(self):
         if self.container is not None:
             self.container._component_position_changed(self)
-        return
+
+    def _position_items_changed(self):
+        if self.container is not None:
+            self.container._component_position_changed(self)
 
     #------------------------------------------------------------------------
     # Position and padding setters and getters
@@ -976,21 +974,18 @@ class Component(CoordinateBox, Interactor):
 
     def _set_window(self, win):
         self._window = win
-        return
 
     def _get_x(self):
         return self.position[0]
 
     def _set_x(self, val):
         self.position[0] = val
-        return
 
     def _get_y(self):
         return self.position[1]
 
     def _set_y(self, val):
         self.position[1] = val
-        return
 
     def _get_padding(self):
         return [self.padding_left, self.padding_right, 
@@ -1037,21 +1032,18 @@ class Component(CoordinateBox, Interactor):
         border = self._get_visible_border()
         self.position = [new_pos[0] + self.padding_left + border,
                          new_pos[1] + self.padding_bottom + border]
-        return
 
     def _get_outer_x(self):
         return self.x - self.padding_left - self._get_visible_border()
 
     def _set_outer_x(self, val):
         self.position[0] = val + self.padding_left + self._get_visible_border()
-        return
 
     def _get_outer_x2(self):
         return self.x2 + self.padding_right + self._get_visible_border()
 
     def _set_outer_x2(self, val):
         self.x2 = val - self.hpadding
-        return
 
     def _get_outer_y(self):
         return self.y - self.padding_bottom - self._get_visible_border()
@@ -1059,14 +1051,12 @@ class Component(CoordinateBox, Interactor):
     def _set_outer_y(self, val):
         self.position[1] = val + self.padding_bottom + \
                 self._get_visible_border()
-        return
 
     def _get_outer_y2(self):
         return self.y2 + self.padding_top + self._get_visible_border()
 
     def _set_outer_y2(self, val):
         self.y2 = val - self.vpadding
-        return
 
     #------------------------------------------------------------------------
     # Outer bounds setters and getters
@@ -1079,21 +1069,18 @@ class Component(CoordinateBox, Interactor):
 
     def _set_outer_bounds(self, bounds):
         self.bounds = [bounds[0] - self.hpadding, bounds[1] - self.vpadding]
-        return
 
     def _get_outer_width(self):
         return self.outer_bounds[0]
 
     def _set_outer_width(self, width):
         self.bounds[0] = width - self.hpadding
-        return
 
     def _get_outer_height(self):
         return self.outer_bounds[1]
 
     def _set_outer_height(self, height):
         self.bounds[1] = height - self.vpadding
-        return
 
 
 # EOF

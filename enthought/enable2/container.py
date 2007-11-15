@@ -157,8 +157,6 @@ class Container(Component):
 
         self.invalidate_draw()
 
-        return
-
     def remove(self, *components):
         """ Removes components from this container """
         for component in components:
@@ -176,7 +174,6 @@ class Container(Component):
                     self.compact()
 
         self.invalidate_draw()
-        return
 
 
     def insert(self, index, component):
@@ -187,8 +184,6 @@ class Container(Component):
         self._components.insert(index, component)
 
         self.invalidate_draw()
-
-        return
 
     def components_at(self, x, y):
         """
@@ -376,15 +371,12 @@ class Container(Component):
         
     def _draw_container_background(self, gc, view_bounds=None, mode="normal"):
         self._draw_background(gc, view_bounds, mode)
-        return
         
     def _draw_container_overlay(self, gc, view_bounds=None, mode="normal"):
         self._draw_overlay(gc, view_bounds, mode)
-        return
 
     def _draw_container_underlay(self, gc, view_bounds=None, mode="normal"):
         self._draw_underlay(gc, view_bounds, mode)
-        return
 
     def _get_visible_components(self, bounds):
         """ Returns a list of this plot's children that are in the bounds. """
@@ -453,14 +445,12 @@ class Container(Component):
         # For now, just punt and call compact()
         if self.auto_size:
             self.compact()
-        return 
     
     def _component_position_changed(self, component):
         "Called by contained objects when their position changes"
         # For now, just punt and call compact()
         if self.auto_size:
             self.compact()
-        return
 
     #------------------------------------------------------------------------
     # Deprecated interface
@@ -491,7 +481,6 @@ class Container(Component):
             component.dispatch(event, "mouse_leave")
         self._prev_event_handlers = set()
         event.pop(caller=self)
-        return
 
     def _container_handle_mouse_event(self, event, suffix):
         """
@@ -610,7 +599,6 @@ class Container(Component):
     def _window_resized(self, newsize):
         if newsize is not None:
             self.bounds = [newsize[0]-self.x, newsize[1]-self.y]
-        return
 
 
     #FIXME: Need a _window_changed to remove this handler if the window changes
@@ -630,25 +618,21 @@ class Container(Component):
         super(Container, self)._bounds_changed(old, new)
         self._layout_needed = True
         self.invalidate_draw()
-        return
 
     def _bounds_items_changed(self, event):
         super(Container, self)._bounds_items_changed(event)
         self._layout_needed = True
         self.invalidate_draw()
-        return
 
     def _bgcolor_changed(self):
         self.invalidate_draw()
         self.request_redraw()
-        return
+
     def __components_items_changed(self, event):
         self._layout_needed = True
-        return
 
     def __components_changed(self, event):
         self._layout_needed = True
         self.invalidate_draw()
-        return
 
 ### EOF

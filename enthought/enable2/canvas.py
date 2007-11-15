@@ -91,9 +91,7 @@ class Canvas(Container):
 
         if needs_compact:
             self.compact()
-
         self.invalidate_draw()
-        return
 
     def draw(self, gc, view_bounds=None, mode="normal"):
         if self.view_bounds is None:
@@ -140,7 +138,6 @@ class Canvas(Container):
         if not self.overlay_border and self.border_visible:
             # Tell _draw_border to ignore the self.overlay_border
             self._draw_border(gc, view_bounds, mode, force_draw=True)
-        
         return
 
     def _draw_underlay(self, gc, view_bounds=None, mode="default"):
@@ -194,10 +191,8 @@ class Canvas(Container):
     def _bounds_changed(self, old, new):
         Component._bounds_changed(self, old, new)
         self.invalidate_draw()
-        return
 
     def _bounds_items_changed(self, event):
         Component._bounds_items_changed(self, event)
         self.invalidate_draw()
-        return
 
