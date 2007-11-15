@@ -177,7 +177,7 @@ class EnableTimer ( wx.Timer ):
         "Schedule a timer event for a specified component"
         work_list = self._work_list
         if len( work_list ) == 0:
-            self.Start( 5 )
+            self.Start( 5, oneShot=False )
         for i, item in enumerate( work_list ):
             if component is item[0]:
                 del work_list[i]
@@ -559,8 +559,9 @@ class Window ( AbstractWindow ):
         wx.ToolTip_Enable( True )
         return
 
-    def _set_timer_interval ( self, component, interval ):
-        "Set up or cancel a timer for a specified component"
+    def set_timer_interval ( self, component, interval ):
+        """ Set up or cancel a timer for a specified component.  To cancel the
+        timer, set interval=None """
         global system_timer
         if interval is None:
             if ((system_timer is not None) and 

@@ -116,7 +116,7 @@ class AbstractWindow ( HasTraits ):
         "Sets the current cursor shape"
         raise NotImplementedError
 
-    def _set_timer_interval(self, component, interval):
+    def set_timer_interval(self, component, interval):
         "Set up or cancel a timer for a specified component"
         raise NotImplementedError
 
