@@ -37,13 +37,14 @@ class TextField(Component):
     char_w = Any
     char_h = Any
 
+    # Is this text field editable?
+    can_edit = Bool(True)
+
     #------------------------------------------------------------------------
     # Delegates for style
     #------------------------------------------------------------------------
     
     text_color = StyleDelegate
-    highlight_color = StyleDelegate
-    highlight_bgcolor = StyleDelegate
     font = StyleDelegate
     line_spacing = StyleDelegate
     text_offset = StyleDelegate
@@ -109,22 +110,38 @@ class TextField(Component):
 
         # Initialize border/bg colors
         self.__style_changed()
+    
+        # If this can't be editted and no width has been set, make sure
+        # that is wide enough to display the text.
+        if not self.can_edit and self.width == 0:
+            x, y, width, height = self.metrics.get_text_extent(self.text)
+            offset = 2*self._style.text_offset
+            self.width = width + offset
 
     #------------------------------------------------------------------------
     # Interactor interface
     #------------------------------------------------------------------------
 
     def normal_mouse_enter(self, event):
+        if not self.can_edit:
+            return
+
         event.window.set_pointer('ibeam')
         self.request_redraw()
         event.handled = True
 
     def normal_mouse_leave(self, event):
+        if not self.can_edit:
+            return
+
         event.window.set_pointer('arrow')
         self.request_redraw()
         event.handled = True
 
     def normal_left_down(self, event):
+        if not self.can_edit:
+            return
+
         self.event_state = "cursor"
         self._acquire_focus(event.window)
         event.handled = True
@@ -148,12 +165,18 @@ class TextField(Component):
                              self.__draw_text_xstart + x ]
         
     def cursor_left_up(self, event):
+        if not self.can_edit:
+            return
+
         # Reset event state
         self.event_state = "normal"
         event.handled = True
         self.request_redraw()
 
     def normal_key_pressed(self, event):
+        if not self.can_edit:
+            return
+
         # Save for bookkeeping purposes
         self._old_cursor_pos = self._cursor_pos
 
@@ -269,6 +292,7 @@ class TextField(Component):
     #------------------------------------------------------------------------
     # Component interface
     #------------------------------------------------------------------------
+
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         gc.save_state()
