@@ -237,7 +237,12 @@ class Window(AbstractWindow):
     #def _create_gc(self, size, pix_format="bgr24"):
     def _create_gc(self, size, pix_format="bgra32"):
         gc = GraphicsContextEnable((size[0]+1, size[1]+1),
-                pix_format=pix_format, window=self)
+                pix_format=pix_format, window=self,
+
+                # We have to set bottom_up=0 or otherwise the PixelMap will
+                # appear upside down in the QImage.
+                bottom_up = 0)
+
         gc.translate_ctm(0.5, 0.5)
 
         return gc

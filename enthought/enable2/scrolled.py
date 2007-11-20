@@ -1,10 +1,10 @@
 
 # Enthought library imports
-from enthought.enable2.traits.rgba_color_trait import RGBAColor
 from enthought.traits.api import Bool, Instance, Int, Any, Float, Property
 
 # Local, relative imports
 from base import transparent_color, add_rectangles, intersect_bounds, empty_rectangle
+from colors import ColorTrait
 from component import Component
 from container import Container
 from viewport import Viewport
@@ -29,11 +29,11 @@ class Scrolled(Container):
     
     # The inside border is a border drawn on the inner edge of the inside 
     # padding area to highlight the viewport.
-    inside_border_color = RGBAColor("black")
+    inside_border_color = ColorTrait("black")
     inside_border_width = Int(0)
 
     # The background color to use for filling in the padding area.
-    bgcolor = RGBAColor("white")
+    bgcolor = ColorTrait("white")
     
     # Should the horizontal scrollbar be shown?
     horiz_scrollbar = Bool(True)
