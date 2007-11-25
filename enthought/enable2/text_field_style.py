@@ -11,16 +11,19 @@ class TextFieldStyle(HasTraits):
     """
 
     # The color of the text
-    text_color = RGBAColor((0,0,0,1))
+    text_color = RGBAColor((0,0,0,1.0))
+
+    # The font for the text (must be monospaced!)
+    font = KivaFont("monospaced 12")
 
     # The color of highlighted text
-    highlight_color = ColorTrait("red")
+    highlight_color = RGBAColor((.65,0,0,1.0))
 
     # The background color of highlighted items
     highlight_bgcolor = ColorTrait("lightgray")
     
-    # The font for the text (must be monospaced!)
-    font = KivaFont("Courier 12")
+    # The font for flagged text (must be monospaced!)
+    highlight_font = KivaFont("monospaced 14 bold")
 
     # The number of pixels between each line
     line_spacing = Int(3)

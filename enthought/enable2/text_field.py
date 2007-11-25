@@ -81,8 +81,8 @@ class TextField(Component):
     # The text that is actually displayed in the editor, and its shadow values
     _draw_text = Property
     __draw_text = List(List)
-    __draw_text_xstart = Int
-    __draw_text_ystart = Int
+    _draw_text_xstart = Int
+    _draw_text_ystart = Int
 
     # Whether or not to draw the cursor (is mouse over box?)
     _draw_cursor = Bool(False)
@@ -161,8 +161,8 @@ class TextField(Component):
         y = min(max(y, 0), len(self.__draw_text)-1)
         x = min(max(x, 0), len(self.__draw_text[y]))
         self._old_cursor_pos = self._cursor_pos
-        self._cursor_pos = [ self.__draw_text_ystart + y,
-                             self.__draw_text_xstart + x ]
+        self._cursor_pos = [ self._draw_text_ystart + y,
+                             self._draw_text_xstart + x ]
 
     def cursor_left_up(self, event):
         if not self.can_edit:
@@ -202,7 +202,7 @@ class TextField(Component):
                 old_line_len = len(self._text[index])
                 self._text[index] += self._text[index+1]
                 del self._text[index+1]
-                del self.__draw_text[index+1-self.__draw_text_xstart]
+                del self.__draw_text[index+1-self._draw_text_xstart]
                 self._cursor_pos[0] -= 1
                 self._cursor_pos[1] = old_line_len
                 self._desired_cursor_x = self._cursor_pos[1]
@@ -219,7 +219,7 @@ class TextField(Component):
                 old_line_len = len(self._text[index])
                 self._text[index] += self._text[index+1]
                 del self._text[index+1]
-                del self.__draw_text[index+1-self.__draw_text_xstart]
+                del self.__draw_text[index+1-self._draw_text_xstart]
                 self._desired_cursor_x = self._cursor_pos[1]
                 self._text_changed = True
                 
@@ -326,9 +326,8 @@ class TextField(Component):
 
         if self._draw_cursor:
             j, i = self._cursor_pos
-            j -= self.__draw_text_ystart
-            i -= self.__draw_text_xstart
-            #print "text:", self.text[j][:i]
+            j -= self._draw_text_ystart
+            i -= self._draw_text_xstart
             x_offset = self.metrics.get_text_extent(lines[j][:i])[2]
             y_offset = char_h * j
             y = self.y2 - y_offset - self._style.text_offset
@@ -364,22 +363,22 @@ class TextField(Component):
             characters. If num is negative, scrolls left. If num is positive,
             scrolls right.
         """
-        self.__draw_text_xstart += num
+        self._draw_text_xstart += num
         self._realign_horz()
 
     def _realign_horz(self):
         """ Realign all the text being drawn such that the first character being
-            drawn in each line is the one at index '__draw_text_xstart.'
+            drawn in each line is the one at index '_draw_text_xstart.'
         """
         for i in xrange(len(self.__draw_text)):
-            line = self._text[self.__draw_text_ystart + i]
-            self.__draw_text[i] = self._clip_line(line, self.__draw_text_xstart)
+            line = self._text[self._draw_text_ystart + i]
+            self.__draw_text[i] = self._clip_line(line, self._draw_text_xstart)
 
     def _scroll_vert(self, num):
         """ Vertically scrolls all the text that is being drawn by 'num' lines.
             If num is negative, scrolls up. If num is positive, scrolls down.
         """
-        x, y = self.__draw_text_xstart, self.__draw_text_ystart
+        x, y = self._draw_text_xstart, self._draw_text_ystart
         if num < 0:
             self.__draw_text = self.__draw_text[:num]
             lines = [ self._clip_line(line, x) for line in self._text[y+num:y] ]
@@ -389,7 +388,7 @@ class TextField(Component):
             y += self._text_height
             lines = [ self._clip_line(line, x) for line in self._text[y:y+num] ]
             self.__draw_text.extend(lines)
-        self.__draw_text_ystart += num
+        self._draw_text_ystart += num
 
     def _clip_line(self, text, index, start=True):
         """ Return 'text' clipped beginning at 'index' if 'start' is True or
@@ -414,8 +413,8 @@ class TextField(Component):
     def _refresh_viewed_line(self, line):
         """ Updates the appropriate line in __draw_text with the text at 'line'.
         """
-        new_text = self._clip_line(self._text[line], self.__draw_text_xstart)
-        index = line - self.__draw_text_ystart
+        new_text = self._clip_line(self._text[line], self._draw_text_xstart)
+        index = line - self._draw_text_ystart
         if index == len(self.__draw_text):
             self.__draw_text.append(new_text)
         else:
@@ -454,9 +453,9 @@ class TextField(Component):
         if self.__draw_text == [ [] ]:
             if self.multiline:
                 self.__draw_text = []
-                self.__draw_text_xstart, self.__draw_text_ystart = 0, 0
+                self._draw_text_xstart, self._draw_text_ystart = 0, 0
                 end = min(len(self._text), self._text_height)
-                for i in xrange(self.__draw_text_ystart, end):
+                for i in xrange(self._draw_text_ystart, end):
                     line = self._clip_line(self._text[i], 0)
                     self.__draw_text.append(line)
             else:
@@ -466,30 +465,30 @@ class TextField(Component):
         else:
             # Scroll if necessary depending on where cursor moved
             # Adjust up
-            if self._cursor_pos[0] < self.__draw_text_ystart:
+            if self._cursor_pos[0] < self._draw_text_ystart:
                 self._scroll_vert(-1)
             
             # Adjust down
-            elif (self._cursor_pos[0] - self.__draw_text_ystart >= 
+            elif (self._cursor_pos[0] - self._draw_text_ystart >= 
                   self._text_height):
                 self._scroll_vert(1)
 
             # Adjust left
             line = self._text[self._cursor_pos[0]]
-            chars_before_start = len(line[:self.__draw_text_xstart])
-            chars_after_start = len(line[self.__draw_text_xstart:])
-            if self._cursor_pos[1] < self.__draw_text_xstart:
+            chars_before_start = len(line[:self._draw_text_xstart])
+            chars_after_start = len(line[self._draw_text_xstart:])
+            if self._cursor_pos[1] < self._draw_text_xstart:
                 if chars_before_start <= self._text_width:
-                    self.__draw_text_xstart = 0
+                    self._draw_text_xstart = 0
                     self._realign_horz()
                 else:
                     self._scroll_horz(-self._text_width)
-            if (self.__draw_text_xstart > 0 and 
+            if (self._draw_text_xstart > 0 and 
                 chars_after_start+1 < self._text_width):
                 self._scroll_horz(-1)
                 
             # Adjust right
-            num_chars = self._cursor_pos[1] - self.__draw_text_xstart
+            num_chars = self._cursor_pos[1] - self._draw_text_xstart
             if num_chars >= self._text_width:
                 self._scroll_horz(num_chars - self._text_width + 1)
             
