@@ -155,6 +155,7 @@ class Canvas(Container):
                     gc.stroke_path()
             finally:
                 gc.restore_state()
+        super(Container, self)._draw_underlay(gc, view_bounds, mode)
 
     def _transform_view_bounds(self, view_bounds):
         # Overload the parent class's implementation to skip visibility test
