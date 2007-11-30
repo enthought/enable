@@ -33,7 +33,7 @@ class ComponentRenderCategory(Category, AbstractComponent):
     
     # The controller that determines how this component renders.  By default,
     # this is the singleton 
-    render_controller = Trait(DefaultRenderController, Instance(AbstractRenderController))
+    render_controller = Instance(AbstractRenderController, factory = DefaultRenderController)
     
     # Is the component visible?
     visible = true
