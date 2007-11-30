@@ -7,7 +7,6 @@ from numpy import arange, array
 from types import ListType, TupleType
 
 # Enthought library imports
-from enthought.kiva.fonttools import Font
 from enthought.kiva.traits.kiva_font_trait import KivaFont
 from enthought.traits.api import HasTraits, Trait, TraitError, Range, Undefined,\
                              TraitPrefixList, TraitPrefixMap, TraitHandler, \
@@ -18,7 +17,7 @@ from enthought.traits.ui.api import ImageEnumEditor, EnumEditor, FileEditor, Tup
 
 # Relative imports
 import base
-from base import default_font_name, str_to_font, engraving_style, gc_image_for
+from base import default_font_name, engraving_style, gc_image_for
 
 #------------------------------------------------------------------------------
 #  Constants:
