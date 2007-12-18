@@ -60,10 +60,6 @@ class Container(Component):
     # The list of components within this frame
     components = Property    # List(Component)
 
-    # Whether or not the container should auto-size itself to fit all of its
-    # components.
-    auto_size = Bool(False)
-
     # Whether or not the container should automatically maximize itself to
     # fit inside the Window, if this is a top-level container.
     # Note: the way that a Container determines that it's a top-level
@@ -77,11 +73,18 @@ class Container(Component):
     intercept_events = Bool(True)
 
     # Dimensions in which this container can resize to fit its components.
-    # This is similar to the **resizable** trait on PlotComponent. Chaco
-    # plot containers use this attribute in preference to the Enable
-    # **auto_size** attribute (which is overridden to be False by default).
-    fit_components = Enum("", "h", "v", "hv") # TODO: remove the auto_size
-                                              # trait from enable's Container
+    # This is similar to the **resizable** trait on PlotComponent. 
+    #
+    # TODO: This trait is used in layout methods of various Container
+    # subclasses in Chaco.  We need to move those containers into
+    # Enable.
+    fit_components = Enum("", "h", "v", "hv")
+
+    # Whether or not the container should auto-size itself to fit all of its
+    # components.
+    # Note: This trait is still used, but will be eventually removed in favor
+    # of **fit_components**.
+    auto_size = Bool(False)
 
     # The default size of this container if it is empty.
     default_size = Tuple(0, 0)

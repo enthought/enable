@@ -89,14 +89,22 @@ class Component(CoordinateBox, Interactor):
     # * 'v': resizable vertically
     # * 'h': resizable horizontally
     # * 'hv': resizable horizontally and vertically
-    # * 'a': fixed aspect ratio; resizable, but only if maintaining the
-    #        current aspect ratio of the component
     # * '': not resizable
     #
     # Note that this setting means only that the *parent* can and should resize
     # this component; it does *not* mean that the component automatically
     # resizes itself.
-    resizable = Enum("hv", "h", "v", "a", "")
+    resizable = Enum("hv", "h", "v", "")
+
+    # The ratio of the component's width to its height.  This is used by
+    # the component itself to maintain bounds when the bounds are changed
+    # independently, and is also used by the layout system.
+    aspect_ratio = Trait(None, None, Float)
+
+    # When the component's bounds are set to a (width,height) tuple that does
+    # not conform to the set aspect ratio, does the component center itself
+    # in the free space?
+    auto_center = Bool(True)
 
     # These will be used by the new layout system, but are currently unused.
     #max_width = Any
@@ -215,7 +223,6 @@ class Component(CoordinateBox, Interactor):
     #     elements
     draw_order = Instance(list, args=(DEFAULT_DRAWING_ORDER,))
     
-    # Does this container try to draw all of its components in one pass? 
     # If True, then this component draws as a unified whole,
     # and its parent container calls this component's _draw() method when 
     # drawing the layer indicated  by **draw_layer**.
@@ -528,7 +535,6 @@ class Component(CoordinateBox, Interactor):
         cleanup is called on the component to give it the opportunity to
         delete any transient state it may have (such as backbuffers)."""
         return
-
 
     def set_outer_position(self, ndx, val):
         """
@@ -941,12 +947,62 @@ class Component(CoordinateBox, Interactor):
     # Event handlers
     #------------------------------------------------------------------------
 
+    def _aspect_ratio_changed(self, old, new):
+        if new is not None:
+            self._enforce_aspect_ratio()
+    
+    def _enforce_aspect_ratio(self, notify=True):
+        """ This method adjusts the width and/or height of the component so
+        that the new width and height match the aspect ratio.  It uses the
+        current width and height as a bounding box and finds the largest
+        rectangle of the desired aspect ratio that will fit.
+
+        If **notify** is True, then fires trait events for bounds and
+        position changing.
+        """
+        ratio = self.aspect_ratio
+        old_w, old_h = self.bounds
+        if ratio is None:
+            return
+        elif ratio == 0:
+            self.width = 0
+            return
+        elif int(old_w) == int(ratio * old_h):
+            return
+
+        old_aspect = old_w / float(old_h)
+        new_pos = None
+        if ratio > old_aspect:
+            # desired rectangle is wider than bounding box, so use the width
+            # and compute a smaller height
+            new_w = old_w
+            new_h = new_w / ratio
+            if self.auto_center:
+                new_pos = self.position[:]
+                new_pos[1] += (old_h - new_h) / 2.0
+
+        else:
+            # desired rectangle is taller than bounding box, so use the height
+            # and compute a smaller width
+            new_h = old_h
+            new_w = new_h * ratio
+            if self.auto_center:
+                new_pos = self.position[:]
+                new_pos[0] += (old_w - new_w) / 2.0
+        
+        self.set(bounds=[new_w, new_h], trait_change_notify=notify)
+        if new_pos:
+            self.set(position=new_pos, trait_change_notify=notify)
+        return
+
     def _bounds_changed(self, old, new):
+        self._enforce_aspect_ratio(notify=True)
         if self.container is not None:
             self.container._component_bounds_changed(self)
         return
 
     def _bounds_items_changed(self, event):
+        self._enforce_aspect_ratio(notify=True)
         if self.container is not None:
             self.container._component_bounds_changed(self)
         return
