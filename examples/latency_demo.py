@@ -19,7 +19,7 @@ class Box(Component):
 
     delay = Float(0.50)
     
-    def _draw(self, gc, view=None, mode="default"):
+    def _draw_mainlayer(self, gc, view=None, mode="default"):
         if self.event_state == "clicked":
             print "waiting %0.4f seconds... " % self.delay,
             time.sleep(self.delay)
@@ -60,7 +60,7 @@ class Box(Component):
 class MyContainer(Container):
     text_color = black_color_trait
     
-    def _draw_container(self, gc, mode="default"):
+    def _draw_container_mainlayer(self, gc, view_bounds=None, mode="default"):
         s = "Hold down the mouse button on the boxes."
         gc.save_state()
         gc.set_font(font)

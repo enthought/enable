@@ -57,8 +57,8 @@ class Circle(Component):
     normal_pointer = Pointer("arrow")
     moving_pointer = Pointer("hand")
 
-    offset_x = Float
-    offset_y = Float
+    prev_x = Float
+    prev_y = Float
 
     shadow_type = Enum("light", "dashed")
     shadow = Instance(Component)
@@ -95,12 +95,15 @@ class Circle(Component):
                             color=(1.0, 1.0, 1.0, 1.0))
         self.container.insert(0, self.shadow)
         x, y = self.position
-        self.offset_x = event.x - x
-        self.offset_y = event.y - y
+        self.prev_x = event.x
+        self.prev_y = event.y
         return
 
     def moving_mouse_move(self, event):
-        self.position = [event.x-self.offset_x, event.y-self.offset_y]
+        self.position = [self.x + (event.x - self.prev_x), 
+                         self.y + (event.y - self.prev_y)]
+        self.prev_x = event.x
+        self.prev_y = event.y
         self.request_redraw()
         return
 
@@ -160,8 +163,8 @@ class DashedCircle(Component):
 
 class MyFrame(DemoFrame):
     def _create_window(self):
-        circle1 = Circle(bounds=[75,75], position=[50,50], shadow_type="dashed")
-        circle2 = Circle(bounds=[75,75], position=[200,50], shadow_type="light")
+        circle1 = Circle(bounds=[75,75], position=[50, 50], shadow_type="dashed")
+        circle2 = Circle(bounds=[75,75], position=[200, 50], shadow_type="light")
         container = MyFilledContainer(bounds=[500,500], bgcolor=(0.2, 0.4, 0.3, 1.0))
         container.auto_size = True
         container.add(circle1)
