@@ -7,6 +7,7 @@ from enthought.traits.api import Instance
 from abstract_window import AbstractWindow
 from base import bounding_coordinates, coordinates_to_bounds, default_font
 
+print "[Enable] Graphics Context:", GraphicsContext
 
 class GraphicsContextEnable(GraphicsContext):
     """
@@ -32,7 +33,10 @@ class GraphicsContextEnable(GraphicsContext):
         return
 
     def clip_to_rect(self, x, y, width, height):
-        GraphicsContext.clip_to_rect(self, x-0.5, y-0.5, width+1, height+1)
+        if getattr(self, "corner_pixel_origin", True):
+            GraphicsContext.clip_to_rect(self, x-0.5, y-0.5, width+1, height+1)
+        else:
+            GraphicsContext.clip_to_rect(self, x, y, width, height)
 
     def clear_clip(self, color, coordinates):
         "Clip and clear a Kiva graphics context to a specified area and color"

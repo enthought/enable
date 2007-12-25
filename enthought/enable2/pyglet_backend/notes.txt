@@ -1,0 +1,31 @@
+
+- The pyglet backend should provide its own equivalent for wx.SimpleApp,
+  i.e. opens a frame and runs the main loop.  The pyglet backend's Window
+  should work like any other backend's Window class, and expect a main loop
+  to be running.
+
+- Small error in Pyglet Programming guide windowing.txt:
+        window.Window(fullscreen=True, screens[1])
+  should be:
+        window.Window(fullscreen=True, screen=screens[1])
+
+- Another error in Pyglet Programming guide mouse.txt: the mouse capture
+  method should be named set_exclusive_mouse(), instead of
+  set_mouse_exclusive()
+
+- Integration with WX/qt?  (e.g. TraitsPygletWindow)
+
+- Use pyglet.clock to implement EnableTimer on it
+
+- Need to figure out how to handle double clicks since we don't natively
+  get those from Pyglet
+
+- Extend Enable to support horizontal scrolling
+
+- We should support on_text_motion and on_text_motion_select, but only text
+  widgets and components would care.  Right now Enable doesn't have any
+  concept of distinguishing different kinds of components.  It would be a
+  good thing to add.
+
+
+

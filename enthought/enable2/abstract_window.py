@@ -209,7 +209,11 @@ class AbstractWindow ( HasTraits ):
     #  Generic mouse event handler:
     #---------------------------------------------------------------------------
 
-    def _handle_mouse_event(self, event_name, event, cursor_check=0, set_focus=False):
+    def _handle_mouse_event(self, event_name, event, set_focus=False):
+        """ **event** should be a toolkit-specific opaque object that will
+        be passed in to the backend's _create_mouse_event() method.  It can
+        be None if the the toolkit lacks a native "mouse event" object.
+        """
         if self._size is None:
             # PZW: Hack!
             # We need to handle the cases when the window hasn't been painted yet, but
@@ -302,6 +306,9 @@ class AbstractWindow ( HasTraits ):
                                                     bounds_to_coordinates( bounds ) )
 
     def _paint(self, event=None):
+        """ This method is called directly by the UI toolkit's callback
+        mechanism on the paint event.
+        """
         size = self._get_control_size()
         if (self._size != tuple(size)) or (self._gc is None):
             self._gc = self._create_gc(size)
