@@ -7,8 +7,6 @@ from enthought.traits.api import Instance
 from abstract_window import AbstractWindow
 from base import bounding_coordinates, coordinates_to_bounds, default_font
 
-print "[Enable] Graphics Context:", GraphicsContext
-
 class GraphicsContextEnable(GraphicsContext):
     """
     Subclass of Kiva GraphicsContext that provides a few more utility methods.

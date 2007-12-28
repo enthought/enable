@@ -27,7 +27,8 @@ class _QtWindow(QtGui.QWidget):
     """ The Qt widget that implements the enable control. """
 
     def __init__(self, enable_window, parent):
-        QtGui.QWidget.__init__(self, parent)
+        #QtGui.QWidget.__init__(self, parent)
+        super(_QtWindow, self).__init__(parent)
 
         self._enable_window = enable_window
 

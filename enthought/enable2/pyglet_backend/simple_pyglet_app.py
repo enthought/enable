@@ -11,15 +11,43 @@ EnablePygletApp; the App is very basic and is meant to be easy to subclass
 or replace.
 """
 
+from pyglet.window import Window
 
+__all__ = ["get_app", "PygletApp", "PygletAppWindow"]
 
-class SimplePygletApp(object):
+_CurrentApp = None
+
+def get_app():
+    """ Returns a reference to the current running Pyglet App, if one exists """
+    global _CurrentApp
+    return _CurrentApp
+
+class _PygletApp(object):
+
+    def __init__(self, *windows):
+        self.windows = windows
+        if len(windows) > 0:
+            self.main_window = windows[0]
+        else:
+            self.main_window = None
+            self.windows = []
 
     def set_main_window(self, window):
         """ Sets the main window to use and interact with.  **window**
         should be an instance of enable.pyglet_backend.PygletWindow
         """
-        self.window = window
+        self.main_window = window
+        if window not in self.windows:
+            self.windows.append(window)
+        return
+
+    def add_window(self, window):
+        self.windows.append(window)
+
+    def del_window(self, window):
+        if window in self.windows:
+            self.windows.remove(window)
+        return
 
     def run(self):
         # This is the default implementation from the Pyglet documenation;
@@ -32,12 +60,21 @@ class SimplePygletApp(object):
         # TODO: initialize the timer
 
         # Run the mainloop
-        while not self.window.has_exit:
-            self.window.dispatch_events()
-            self.window.clear()
-            self.window.draw()
-            self.window.flip()
+        exit = False
+        while not exit:
+            for window in self.windows:
+                window.dispatch_events()
+                window.clear()
+                window.draw()
+                window.flip()
+                if window.has_exit:
+                    exit = True
         return
 
+def PygletApp(*args, **kw):
+    global _CurrentApp
+    if _CurrentApp is None:
+        _CurrentApp = _PygletApp(*args, **kw)
+    return _CurrentApp
 
 

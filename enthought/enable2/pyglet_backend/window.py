@@ -46,6 +46,8 @@ class PygletMouseEvent(object):
             self.shift_pressed = (modifiers & key.MOD_SHIFT)
             self.ctrl_pressed = (modifiers & key.MOD_CTRL)
             self.alt_pressed = (modifiers & key.MOD_ALT)
+        else:
+            self.shift_pressed = self.ctrl_pressed = self.alt_pressed = False
         return 
 
 
@@ -62,8 +64,6 @@ class PygletWindow(window.Window):
         """
         self.enable_window = enable_window
 
-        # Whether or not the 
-
         # Whether or not the Enable component stack has requested a redraw
         self._redraw_requested = False
 
@@ -74,7 +74,7 @@ class PygletWindow(window.Window):
         # and character events, and we need to access keyboard state
         # from the on_text handler method.
         self.key_state = key.KeyStateHandler()
-        self.push_handler(self.key_state)
+        self.push_handlers(self.key_state)
 
     #-------------------------------------------------------------------------
     # Public methods
@@ -105,9 +105,10 @@ class PygletWindow(window.Window):
 
     def _on_key_updown(self, symbol, modifiers, down=True):
         event = PygletMouseEvent(0, 0, modifiers=modifiers)
-        self.shift_pressed = down & event.shift_pressed
-        self.ctrl_pressed = down & event.ctrl_pressed
-        self.alt_pressed = down & event.alt_pressed
+        enable_win = self.enable_window
+        enable_win.shift_pressed = bool(down & event.shift_pressed)
+        enable_win.ctrl_pressed = bool(down & event.ctrl_pressed)
+        enable_win.alt_pressed = bool(down & event.alt_pressed)
         # It's important to return False so that the KeyStateHandler
         # can also get this event.
         return False
@@ -146,13 +147,13 @@ class PygletWindow(window.Window):
 
     def on_mouse_motion(self, x, y, dx, dy):
         event = PygletMouseEvent(x, y, dx, dy)
-        self._handle_mouse_event("mouse_move", event, set_focus=False)
+        self.enable_window._handle_mouse_event("mouse_move", event, set_focus=False)
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         # TODO: Determine the difference between this and on_mouse_motion;
         # confirm that the correct buttons in **buttons** are down.
         event = PygletMouseEvent(x, y, dx, dy, buttons, modifiers)
-        self._handle_mouse_event("mouse_move", event, set_focus=False)
+        self.enable_window._handle_mouse_event("mouse_move", event, set_focus=False)
 
     def on_mouse_press(self, x, y, button, modifiers):
         return self._on_mouse_updown(x, y, button, modifiers, "up")
@@ -169,22 +170,22 @@ class PygletWindow(window.Window):
             name = "middle"
         elif button == mouse.RIGHT:
             name = "right"
-        self._handle_mouse_event(name+"_"+which, event, set_focus=False)
+        self.enable_window._handle_mouse_event(name+"_"+which, event, set_focus=False)
         # TODO: Confirm that we should consume mouse press/release events
         return True
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         # TODO: Handle scroll_x
         event = PygletMouseEvent(x, y, scroll_x=scroll_x, scroll_y=scroll_y)
-        self._handle_mouse_event("mouse_wheel", event, set_focus=False)
+        self.enable_window._handle_mouse_event("mouse_wheel", event, set_focus=False)
 
     def on_mouse_enter(self, x, y):
         event = PygletMouseEvent(x, y)
-        self._handle_mouse_event("mouse_enter", event, set_focus=False)
+        self.enable_window._handle_mouse_event("mouse_enter", event, set_focus=False)
 
     def on_mouse_leave(self, x, y):
         event = PygletMouseEvent(x, y)
-        self._handle_mouse_event("mouse_leave", event, set_focus=False)
+        self.enable_window._handle_mouse_event("mouse_leave", event, set_focus=False)
 
     #-------------------------------------------------------------------------
     # Window
@@ -255,8 +256,16 @@ class Window(AbstractWindow):
     # the current drag operation should return DragCopy, DragMove, or DragNone.
     _drag_result = Any
     
-    def __init__(self, **traits ):
-        AbstractWindow.__init__( self, **traits )
+    def __init__(self, parent=None, id=-1, **traits ):
+        """ **parent** is an unneeded argument with the pyface backend, but
+        we need to preserve compatibility with other AbstractWindow 
+        subclasses.
+        """
+        # TODO: Fix fact that other backends' Window classes use positional
+        # arguments
+
+        self.control = None
+        AbstractWindow.__init__(self, **traits)
         self._mouse_captured = False
 
         # Due to wx wonkiness, we don't reliably get cursor position from
@@ -265,44 +274,9 @@ class Window(AbstractWindow):
         # in the wx coordinate space, i.e. pre-self._flip_y().
         self._last_mouse_pos = (0, 0)
         
-        # Create the underlying control
-        # XXX
-        #self.control = control = WidgetClass( parent, wid, pos, size,
-        #                                      style = wx.CLIP_CHILDREN |
-        #                                              wx.WANTS_CHARS )
-        self.win = PygletWindow(enable_window=self)
-
-        # Set up the 'erase background' event handler:
-        wx.EVT_ERASE_BACKGROUND( control, self._on_erase_background )
- 
-        # Set up the 'paint' event handler:
-        #wx.EVT_PAINT( control, self._paint )
-        #wx.EVT_SIZE(  control, self._on_size )
-
+        # Create the underlying control.  
+        self.control = PygletWindow(enable_window=self)
         
-        # Handle key up/down events:
-
-        # Handle window close and cleanup
-        wx.EVT_WINDOW_DESTROY(control, self._on_close)
-        
-        if PythonDropTarget is not None:
-            control.SetDropTarget( LessSuckyDropTarget( self ) ) 
-            self._drag_over = []
-        return
-    
-    def _on_key_updown ( self, event ):
-        "Handle keyboard keys changing their up/down state"
-        k = event.GetKeyCode()
-        t = event.GetEventType()
-
-        if k == wx.WXK_SHIFT:
-            self.shift_pressed = (t == wx.wxEVT_KEY_DOWN)
-        elif k == wx.WXK_ALT:
-            self.alt_pressed   = (t == wx.wxEVT_KEY_DOWN)
-        elif k == wx.WXK_CONTROL:
-            self.ctrl_pressed  = (t == wx.wxEVT_KEY_DOWN)
-
-        event.Skip()
         return
 
     def _flip_y(self, y):
@@ -351,13 +325,15 @@ class Window(AbstractWindow):
             self._last_mouse_pos = (x, y)
             mouse = pyglet.window.mouse
             buttons = event.buttons
+            if buttons is None:
+                buttons = 0
             return MouseEvent( x = x, y = y,
                                alt_down     = event.alt_pressed,
                                control_down = event.ctrl_pressed,
                                shift_down   = event.shift_pressed,
-                               left_down    = mouse.LEFT in buttons,
-                               middle_down  = mouse.MIDDLE in buttons,
-                               right_down   = mouse.RIGHT in buttons,
+                               left_down    = bool(mouse.LEFT & buttons),
+                               middle_down  = bool(mouse.MIDDLE & buttons),
+                               right_down   = bool(mouse.RIGHT & buttons),
                                mouse_wheel  = event.scroll_y,
                                window = self)
         else:                               
@@ -380,15 +356,19 @@ class Window(AbstractWindow):
         # Unlike the vector-based Agg and Quartz GraphicsContexts which place
         # pixel coordinates at the lower-left corner, the Pyglet backend is
         # raster-based and places coordinates at the center of pixels.
-        return GraphicsContextEnable(size, pix_format=pix_format, window=self)
+        return GraphicsContextEnable(size, window=self)
     
     def _redraw(self, coordinates=None):
         "Request a redraw of the window"
-        self.control.request_redraw(coordinates)
+        if self.control is not None:
+            self.control.request_redraw(coordinates)
     
     def _get_control_size(self):
         "Get the size of the underlying toolkit control"
-        return self.control.get_size()
+        if self.control is not None:
+            return self.control.get_size()
+        else:
+            return None
 
     def set_pointer(self, pointer):
         "Set the current pointer (i.e. cursor) shape"

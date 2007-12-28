@@ -106,7 +106,7 @@ def RGBAColorFunc(*args, **metadata):
         #from enthought.enable2.traits.ui.qt4.rgba_color_editor import RGBAColorEditor
         RGBAColorEditor = None
     else:
-        raise ImportError, "no enable2 implementation for the '%s' toolkit" % ETSConfig.toolkit
+        RGBAColorEditor = None
     
     tmp_trait = Trait( 'white', convert_to_color, rgba_standard_colors, 
            editor = RGBAColorEditor )
