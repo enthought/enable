@@ -1,0 +1,145 @@
+
+#include <string.h>
+#include <stdio.h>
+#include <X11/Xutil.h>
+#include "gtk1/agg_bmp.h"
+#include "gtk1/agg_platform_specific.h"
+//#include <agg_pixfmt_rgba32.h>
+#include "agg_pixfmt_rgba.h"
+#include "agg_color_rgba.h"
+
+#ifdef NUMPY
+#include "numpy/arrayobject.h"
+# ifndef PyArray_SBYTE
+#  include "numpy/noprefix.h"
+#  include "numpy/oldnumeric.h"
+#  include "numpy/old_defines.h"
+# endif
+#else
+#include "Numeric/arrayobject.h"
+#define PyArray_UBYTELTR 'b'
+#endif
+
+#if 0
+#define DEBUG_MTH(NAME) fprintf(stderr, NAME "\n");
+#define DEBUG_MTH2(STR,ARG1,ARG2) fprintf(stderr, STR "\n",(ARG1),(ARG2));
+#define DEBUG_MTH5(STR,ARG1,ARG2,ARG3,ARG4,ARG5) fprintf(stderr, STR "\n",(ARG1),(ARG2),(ARG3),(ARG4),(ARG5));
+#else
+#define DEBUG_MTH(NAME)
+#define DEBUG_MTH2(STR,ARG1,ARG2)
+#define DEBUG_MTH5(STR,ARG1,ARG2,ARG3,ARG4,ARG5)
+#endif
+
+namespace agg
+{
+
+  //------------------------------------------------------------------------
+  pixel_map::pixel_map(unsigned width, unsigned height, pix_format_e format,
+		       unsigned clear_val, bool bottom_up):
+    m_bmp(0),
+    m_buf(0),
+    m_specific(new platform_specific(format, bottom_up))
+  {
+    DEBUG_MTH5("pixel_map::pixel_map(%d,%d,%d,%d,%d)",width,height,format,clear_val,bottom_up);
+    m_bpp = m_specific->m_bpp;
+    create(width, height, clear_val);
+  }
+
+  //------------------------------------------------------------------------
+  pixel_map::~pixel_map()
+  {
+    DEBUG_MTH("pixel_map::~pixel_map");
+    destroy();
+  }
+
+  //------------------------------------------------------------------------
+  void pixel_map::destroy()
+  {
+    if (m_specific->m_ximage != 0) {
+      m_specific->destroy();
+    } else if(m_bmp) delete [] (unsigned char*)m_bmp;
+    m_bmp  = 0;
+    m_buf = 0;
+  }
+
+  //------------------------------------------------------------------------
+  void pixel_map::create(unsigned width, 
+			 unsigned height, 
+			 unsigned clear_val)
+  {
+    destroy();
+    if(width == 0)  width = 1;
+    if(height == 0) height = 1;
+
+    unsigned row_len = platform_specific::calc_row_len(width, m_bpp);
+    unsigned img_size = row_len * height;
+
+    m_bmp = (Pixmap*) new unsigned char[img_size];
+    m_buf = (unsigned char*)m_bmp;
+
+    if(clear_val <= 255) {
+      memset(m_buf, clear_val, img_size);
+    }
+    
+    m_rbuf_window.attach(m_buf, width, height,
+			 (m_specific->m_flip_y ? -row_len : row_len));
+    
+  }
+
+  //------------------------------------------------------------------------
+  void pixel_map::draw(Window dc, int x, int y, double scale) const
+  {
+    DEBUG_MTH("pixel_map::draw");
+    if(m_bmp == 0 || m_buf == 0) return;
+    m_specific->display_pmap(dc, &m_rbuf_window);
+  }
+
+  pix_format_e pixel_map::get_pix_format() const {
+    return m_specific->m_format;
+  }
+
+  unsigned char* pixel_map::buf() { return m_buf; }
+  unsigned       pixel_map::width() const { return m_rbuf_window.width(); }
+  unsigned       pixel_map::height() const { return m_rbuf_window.height(); }
+  unsigned       pixel_map::stride() const { return platform_specific::calc_row_len(width(),m_bpp); }
+
+  PyObject* pixel_map::convert_to_rgbarray() const {
+    unsigned w = width();
+    unsigned h = height();
+    pix_format_e format = get_pix_format();
+    rgba8 c;
+    unsigned i,j;
+    int dims[3];
+    PyObject* arr = NULL;
+    char* data = NULL;
+    dims[0] = w;
+    dims[1] = h;
+    dims[2] = 3;
+    import_array();
+    arr = PyArray_FromDims(3,dims,PyArray_CHAR);
+    if (arr==NULL)
+      return NULL;
+    data = ((PyArrayObject *)arr)->data;
+
+    switch (format) {
+    case pix_format_bgra32:
+      {
+	pixfmt_bgra32 r((rendering_buffer&)m_rbuf_window);
+
+	for (j=0;j<h;++j)
+	  for (i=0;i<w;++i)
+	    {
+	      c = r.pixel(i,h-j-1);
+	      *(data++) = (char)c.r;
+	      *(data++) = (char)c.g;
+	      *(data++) = (char)c.b;
+	    }
+      }
+      break;
+    default:
+      fprintf(stderr,"pix_format %d not handled!\n",format);
+    }
+    return arr;
+  }
+
+}

@@ -1,0 +1,2 @@
+* Clean-up the failing import of enthought.freetype in
+  enthought.kiva.traits.ui.wx.kiva_font_editor.

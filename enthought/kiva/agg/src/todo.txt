@@ -1,0 +1,299 @@
+
+Kiva Demo:
+
+*. Add tool for sticking these all in a single notebook example.
+DONE (wx_demo.py)* set up simple example
+    *. fix flicker.
+    
+DONE*. Lion example
+DONE    *. add use/don't use image.
+
+*. VLSI circuit with multiple layers example
+    *. Ask Chris for a file.
+
+*. Laplace's equation or FDTD example.
+
+*. Medical image registration.
+DONE*. Get an example running.
+    *. Ask dad if he has access to better images?
+    *. Work on scaling methodolgy so that it is centered around the image.
+    *. Force image to keep the dimensions we want.
+
+*. moving objects around with tied points.
+    *. How does Dave do hit testing for polygons?
+
+*. Satellite overlay example.
+    *. Ask someone as NOAA for a good 
+        *. Andrew loop
+        *. US ground image
+        *. State border outlines.
+      
+*. Slides    
+    *. add image example.
+    *. 
+    
+DONE *. fix lion path so that it is centered at 0,0
+
+DONE*. Clean up text positioning
+DONE*. get text to draw right-side up
+DONE*. Fix text positioning with respect to bottom_up
+DONE*. show_text should accept x,y position coordinates.
+
+DONE*. Handle image positioning correctly.
+    
+*. get_current_position() isn't currently defined.
+
+*. update to newest agg.
+*. add load method.
+*. Fix ImageFromFile
+*. Work on fancy examples based on wxcore2d examples.
+
+DONE * fix convert_pix_format.
+DONE (although doesn't work for RGBA) * add save method.
+DONE * It looks to me like some memory is not being kept correctly on image
+       conversions.  We need to look into this...
+
+DONE (1) Move GraphicsContextBitmap to GraphicsContextArray
+DONE        graphics_context_bitmap -> graphics_context
+DONE        GraphicsContextBitmap -> GraphicsContextArray
+DONE        GraphicsContextBitmap.bitmap -> GraphicsContextArray.bmp_array
+        
+     (2) Rework Image
+DONE    *. derive Image from _GraphicsContextArray
+DONE    *. add ImageFromFile method
+DONE    *. outline_path -> boundary_path
+        *. need to check that strides match on images when checking for
+           conversion.?
+        *. Unify pixel_map constants and agg constants
+                   
+DONE (3) Add GraphicsContextSystem method that builds a GraphicsContextArray
+         using a PixelMap
+DONE        *. Fix GraphicsContextArray to allow for a bottom_up parameter.
+
+     (5) Move from factory to using a constructor for GraphicsContextArray
+     (6) Add convert_pix_format(new_format) function to GraphicsContextArray
+     
+cleaning up agg:
+
+DONE* is fast text used at all?  
+DONE   * If not, delete it.
+DONE   * take it out of setup.py
+DONE* clean up enumeration typemaps.
+       * can we get McSeem to move agg typemaps into a single file?    
+DONE* track down memory leak in the library initializer in _ft.
+DONE* track down memory leak in the transform initializers.   
+DONE* fix errors in test_image suite.
+    * re-factor test functions like test_name() and save()
+DONE* change "interpolation_scheme" to "interpolation"
+DONE* change "simple" to "nearest"
+    
+gotcha:
+    *. Clicking on a bar in the far right column should move to the first 
+       point in the calling function where this routine is called. F3 should
+       find the next call, etc.
+       !! Gotcha says that a function call is happening in a particular 
+       !! enclosing function, but I am not able to find the call to the 
+       !! function in the source code for the enclosing function.  It 
+       !! appears that it is missing at least one level of nesting here.
+    *. Try getting rid of bar outlines and see if that helps make the text
+       more readable.
+    *. Make text at least one font size smaller and see if that also helps.
+       Perhaps there should be a user preference setting for the font size.
+       Changing this would also make the bars wider or thinner as
+       appropriate.
+
+agg:
+    *. add is_identity to affine_transform class
+    *. add only_translation to affine_transform class
+    *. Get all enum types to have an xxx_end value to make it 
+       easy to check for correct values in typemaps.
+        *. Fix typemaps to use these values.
+                  
+priority:
+    *. The y-axis on the middle graph is offset to the left of the actual
+       graph.  It should be on top of the graph edge just like the other
+       graphs.
+    *. distributions should remember there values when you switch between 
+       them.
+    *. Make Oil Expelled the default graph shown in the middle 
+       graph -- not GOR.   
+    *. Text labels at the top-right of P10, P50 marker lines -- still inside
+       the bounds of the graph with a small font. (figure out how to do this)
+    *. fix clipping on upper and left of plot.  The clip box appears to be 
+       2-3 pixels to large currently.  Or maybe it has to do with the lines
+       being drawn to long.?  Well, markers also overshoot the boundary, so 
+       I do think it is the clop box.
+    *. track down why min_size is always called when rendering.  It accounts
+       for about 20% of the time.       
+    *. Are line widths scaling correctly.
+    *. color choices reviewed.
+DONE*. fix line dash bug. (!Woohoo!)
+    *. Check index test -- set joining type to miter causes problems.
+    *. Fix the lookup table to be a lot faster -- search sorted is 
+       called way to many times, and it is the source of most of the
+       overhead.
+    *. Look into whether we can speed draw_path_at_points any faster.
+    *. document the API.
+DONE*. speed up scatter plot rendering.
+    *. Test clipping for images and text.
+    *. write fast version of blit to window fo wxPython.
+    *. Add get/set functions for all the set_*** and get_*** methods.
+    *. sub-class image from gc.
+    *. add save/load functions to image.
+    *. search down memory leaks in freetype wrappers.  These appear in
+       the init_ft call which is strange to me.
+       
+DONE*. Fix rendering of text images.
+DONE    1. Images without a gc_alpha value are rendered as colored squares.
+DONE    2. Fill color alpha is being ignored in image rendering.
+
+DONE*. Add test suite for image rendering
+    *. Add test suite for text rendering
+        
+DONE*. Start weeding out potential problems with dashed lines.
+DONE    *. Walk through and stub calls in gc to see if that fixes it
+DONE    *. Look at the path output for the dashed line and see what
+DONE       its problem might be.
+        !! The problems was in the SWIG wrapper.
+    
+DONE*. See if bypassing the rgb_as_array typemap fixes our troubles
+DONE   even with the rendering of dashed lines...
+        *. rename this to rgb_from_array
+        
+    *. clean up array typemaps.    
+DONE    *. Mostly Done.  They live in agg_typemaps.i now.
+DONE        *. Alter image typemaps to allow non-contiguous arrays that
+           are only non-contiguous in in the first dimension to
+           handle window bitmaps correctly.
+DONE            *. Do this in combinations with building method to 
+               wrap windows bitmaps with arrays.
+               
+DONE*. find problem in render method return PyObject_NULL sometimes
+       in freetype wrappers
+DONE*. chase down problem in color_from_array code...
+DONE   This exhibits itself on the first run of test_image.main()
+DONE   after a build of the library.
+DONE   !! It isn't appearin any more after I've cleaned up the 
+DONE   !! typemaps above.  I thought there was a problem with the
+DONE   !! color typemaps though, so it may resurface...
+    
+DONE*. set_text_position doesn't exist
+DONE*. set_text_matrix needs to work with whatever kind of matrix it is
+DONE   handed.
+    *. Look at how we handle the set_font issues in the standard agg
+    *. Review and clean it all up.
+           
+DONE*. handle pixel formats intelligently.
+       User must specify the format now.  It is never assumed accept
+       for on a gc (bgra32).  We will need to make this a platform specific
+       value in the future.
+BUT...  needs testing...
+
+DONE *. speed up text rendering
+        I'm sure this can be sped up by moving more and more into agg,
+        but this is "fast enough" for our purpose.  It takes about 
+        1.5 milleseconds to render a 10 character string in a "normal" font 
+        size.  That is *way* to slow for a general drawing engine, but will
+        work fine for drawing 20 or so labels, etc. on a graph.
+        
+DONE    *. Move image array creation code to weave.
+DONE    *. Move to standard module so that it can be built without weave.
+        
+    *. allow images to be created from a file (use PIL)
+DONE    *. add a convert() method to convert to a new image format.    
+       This will require some coordination between python and C++.  
+       Create the array in Python, and hand it into the array so
+       that we can keep the bitmap array pointing to the correct
+       data. 
+ 
+DONE*. try intel compiler and see if it is any better.
+       add these around line 240 of distutils msvccompiler.py file
+        self.cc = "icl.exe"
+        self.linker = "xilink.exe"
+        self.compile_options = [ '/nologo', '/O3', '/QxW', '/Qipo', '/Fe_ipo_file', '/Qvec_reportN','/MD', '/W3' ]
+       !!I was rewarded with a slight slow down compared to the microsoft compiler.
+       !!That doesn't sound promising...
+       
+DONE*. Fix clipping on image insertion.
+BUT...  No attempt to reconcile this with the actual clipping path is made.
+    7. Add an Image class to kiva to pass into draw_image
+        a. work on format conversions.
+DONE    b. fix clipping boundaries
+        c. handle scaling to rect.
+DONE    d. fix text to use new algorithm.      
+DONE    e. templatize routines so that we can use faster 
+           null_alpha_color class when alpha = 1.0
+DONE        f. The only thing different about the image and 
+           graphics_context_bitmap is that the image has a 
+           interpolation_scheme and the gc does not.  This could
+           lead to a bit of confusion, but I don't think much.  We should
+           unify the two.
+DONE            *. This brings up the point... Should we attach the interpolation
+               flag to the image or to the gc?? PDF doesn't so the answer
+               is probably no...
+DONE    11. Create an image with the correct strides for a 
+        windows bitmap.
+
+DONE*. check gc.set_alpha() transparency for rendering images.
+DONE    *. Add a clear method to GraphicsContextBitmap
+        agg::renderer_util<agg::util_bgr24> ru(rbuf_img(0));
+        ru.clear(agg::rgba(1.0, 1.0, 1.0));
+        
+    *. Clipping support    
+DONE    *. Test with chaco.
+DONE    *. Make available to the world.
+        
+other:
+DONE1. split dash_type and font_type into their own files.
+DONE3. add freetype stuff to GraphicsContextBitmap
+       I added this stuff through the graphics_context.i file.
+       It is getting a little hairy...
+DONE4. Fix FreeType engine to use "unic" if encoding is empty.
+DONE5. Test it out with a real image... -- see test_image.py
+!!!!     5a. Figure out why PIL isn't installed correctly.
+
+    2. set_line_dash should accept a dash_type object. ??        
+    9. Test as replacement for current gc wrappers.  
+    *. Make the text handling for kiva robust.
+DONE    a. Get rotation working correctly.        
+DONE    b. Test all transformation modes.
+ BUT...    test_image.py requires visual inspection.
+        c. Should font_type size be a double?
+        d. We need better diagnostics to calculate bounding region
+           of text.
+DONE       1. add bbox_as_rect() to freetype
+               a. use this in all kiva implementations
+        e. drawing is slow.  All the time is in draw_glyphs.  Figure
+           out what is eating all the time in the agg C++ code.       
+           
+DONE*. Add type conversions from sequences to colors.
+ BUT... Need more testing.
+    
+    *. Move from using get_xxx() to python's new property mechanism.
+            
+    12. Add curve support for path rendering
+    13. Fix filling rules for thick lines (use presentation examples
+        as guide)
+        
+PART10. Make typemaps for image arrays in safe...    
+        I've elected to do most typechecking in Python because it
+        is less error prone.  I handle this by just overriding the
+        affected class methods/functions in the %pythoncode section
+    
+WAIT6. Figure out how to create a agg_a8_image that allows me to
+       set the color and only use an alpha channel in the image.
+       Should be fairly easy...
+       !! Wait until McSeem is back and ask him about this.
+
+    8. Get the box scaling for images working correctly.
+        8a. Look at how this is done on the Mac.
+       
+        
+    *. Should the graphics state store the current point?    
+    *. font_type should be shared between kiva and freetype...
+
+FUTURE VERSIONS:    
+    *. Look into shading???
+    *. Color spaces for grayscale images.
+
+Tests:    

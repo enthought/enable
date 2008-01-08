@@ -1,0 +1,126 @@
+notes:
+
+* rename _kiva to _agg
+
+* cvs rm freetype/setup.py
+
+* build aggcore2d.py
+
+* Test graphics_state setting variables.
+
+* figure out method for a fast blit to wxPython.
+
+* figure out how we are going to (mix in) font stuff
+    def select_font(self,face_name,size=12,style="regular",encoding=None):
+    def set_font(self,font):   
+    def set_font_size(self,size):
+    def set_character_spacing(self,spacing):    WRAPPER DONE 
+    def set_text_drawing_mode(self, mode):      WRAPPER DONE 
+    def set_text_position(self,x,y):        
+    def get_text_position(self):
+    def set_text_matrix(self,ttm):              WRAPPER DONE
+    def get_text_matrix(self):
+    def show_text(self,text):
+    def device_show_text(self,text):
+    def show_glyphs(self):
+    def show_text_at_point(self):    
+    def show_glyphs_at_point(self):
+
+* implement these extra methods
+    def stroke_rect(self,x,y,sx,sy):
+    def stroke_rects(self,rects):
+    def stroke_rect_with_width(self, x,y,sx, sy, width):
+    def fill_rect(self,x,y,sx,sy):
+    def fill_rects(self,rects):    
+    def clear_rect(self,x,y,sx,sy):
+    
+* Should I add this one?
+    def draw_rect(self, x,y,sx,sy, draw_mode)     
+    def draw_rects(self, rects, draw_mode)     
+  It would be very useful for drawing bar charts. 
+  Hmm. Probably a call to fill_rects followed by a
+  draw_rects call would work here because they do not overlap.
+  
+* Should we put the ptm_stack into another path if
+   it is added with add_path?
+* expose the enum values.   
+* setting the line_dash is probably more expensive than it should be
+   because it always creates a new vector.  We might work on having a
+   way to pass in standard line dash types that have been cached.  This
+   is probably not worth the effort now.
+
+
+DONE * Support clipping to a rect.
+
+DONE * implement draw_path()
+
+DONE * figure why add_path doesn't appear to work correctly
+       (I needed to fix add_path not transform the points
+        in the passed in path_storage)
+DONE * why am I getting seg faults in some cases.
+DONE * why do rotations appear to be going the wrong direction?
+       (The lion is just drawn upside down and this was an artifact
+        of me flipping it)
+
+DONE 1. implement __del__
+        shouldn't agg declare destructors as virtual??
+
+DONE 2. implement path additions to paths.
+
+DONE 3. Change compiled_path ptm methods to ctm.
+   
+DONE 6. Clean up file structure
+
+        kiva
+            aggcore2d.py 
+            agg
+                <python files>
+                __init__.py
+                compiled_path.py
+                affine_matrix.py
+                graphics_context_bitmap.py
+        
+                src
+                    <C++ code>
+                    compiled_path.h
+                    affine_matrix.h
+                    graphics_context_bitmap.h
+                    
+                    <extension function wrappers>
+                    compiled_path_weave.py
+                    affine_matrix_weave.py
+                    graphics_context_bitmap_weave.py
+                    build_wrapper.py
+        
+
+Notes on weave and boost:
+
+weave:
+1. There are to many places that you have to edit code when making wrappers.
+   They are:
+
+    a. Actual C++ code (classes you are wrapping)
+    b. weave wrapper function definitions
+    c. the shadow class definitions
+
+2. You still have to write way to much boiler plate code.  We can fix some
+   of this by refactoring the code, but without a C++ parser and at least
+   a week of work, there isn't a real solution for this.
+   
+3. Shadow classes are nice because they allow you to insert code on the
+   Python side of things, but they add quite a bit of call overhead.  It
+   would be nice to be able to set up methods that are bound directly to
+   the class and work with the self pointer directly instead of the 
+   self.this pointer.  This would get rid of the extra call overhead and
+   get us back down to the call speed of boost.  Allowing both approaches
+   is nice.   
+
+4. You have to work some to make the classes you create safe as far as
+   accepting the correct numeric array sizes etc.  This could be fixed
+   by defining an extra class that was recognized by weave that said
+   what needed to be checked:
+    
+        array_check(nothing|typecode|rank|dim0...dimN|exact)
+
+5. There needs to be an easier way to expose enumerated types through
+   weave.

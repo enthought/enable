@@ -1,4 +1,52 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages
+from numpy.distutils.core import setup
+
+
+def configuration(parent_package='', top_path=None):
+    from numpy.distutils.misc_util import Configuration
+    config = Configuration(None, parent_package, top_path)
+    config.set_options(
+        ignore_setup_xxx_py=True,
+        assume_default_configuration=True,
+        delegate_options_to_subpackages=True,
+        quiet=True,
+    )
+
+    config.add_subpackage('enthought.kiva')
+    config.add_data_files('enthought/__init__.py')
+
+    return config
+
+
+# The following monkeypatching code comes from Numpy distutils.
+import numpy
+
+if 1:  # numpy.__version__[:5] < '1.0.3':
+    # numpy 1.0.3 provides a fix to distutils to make sure that build_clib is
+    # run before build_ext. This is critical for semi-automatic building of
+    # many extension modules using numpy. Here, we monkey-patch the run method
+    # of the build_ext command to provide the fix in 1.0.3.
+
+    from numpy.distutils.command import build_ext
+    old_run = build_ext.build_ext.run
+
+    def new_run(self):
+        if not self.extensions:
+            return
+
+        # Make sure that extension sources are complete.
+        self.run_command('build_src')
+
+        if self.distribution.has_c_libraries():
+            self.run_command('build_clib')
+            build_clib = self.get_finalized_command('build_clib')
+            self.library_dirs.append(build_clib.build_clib)
+        else:
+            build_clib = None
+
+        old_run(self)
+
+    build_ext.build_ext.run = new_run
 
 
 # Function to convert simple ETS project names and versions to a requirements
@@ -17,40 +65,50 @@ def etsdep(p, min, max=None, literal=False):
 
 
 # Declare our ETS project dependencies.
-ETSCONFIG = etsdep('enthought.etsconfig', '2.0.0b1')
-KIVA_TRAITS = etsdep('enthought.kiva[traits]', '2.0.0b1')
-TRAITS_UI = etsdep('enthought.traits[ui]', '2.0.0b1')
-TRAITSUIWX = etsdep('enthought.traits.ui.wx', '2.0.0b1')
-UTIL = etsdep('enthought.util', '2.0.0b1')
+ENTHOUGHTBASE = etsdep('EnthoughtBase', '3.0.0b1')
+TRAITSBACKENDWX = etsdep('TraitsBackendWX', '3.0.0b1')
+TRAITSBACKENDQT = etsdep('TraitsBackendQt', '3.0.0b1')
+TRAITS_UI = etsdep('Traits[ui]', '3.0.0b1')
 
 
 setup(
     author = 'Enthought, Inc',
     author_email = 'info@enthought.com',
+    cmdclass = {
+        # Work around a numpy distutils bug by forcing the use of the
+        # setuptools' sdist command.
+        'sdist': setuptools.command.sdist.sdist,
+        },
     dependency_links = [
         'http://code.enthought.com/enstaller/eggs/source',
-        'http://code.enthought.com/enstaller/eggs/source/unstable',
         ],
-    description = 'Kiva-based GUI Window and Component package',
+    description = ('Multi-platform vector drawing engine that supports '
+        'multiple output backends'),
     extras_require = {
-        "wx": [
-            TRAITSUIWX,
-            UTIL,
+        'ps': [],
+        'svg': [],
+        'traits': [
             ],
+        'qt': [
+            TRAITSBACKENDQT,
+            ],
+        "wx": [
+            TRAITSBACKENDWX,
+            ],
+
         # All non-ets dependencies should be in this extra to ensure users can
         # decide whether to require them or not.
         'nonets': [
-            'numpy >=1.0.2',
+            "numpy >=1.0.2",
             ],
         },
     include_package_data = True,
     install_requires = [
-        ETSCONFIG,
-        KIVA_TRAITS,
+        ENTHOUGHTBASE,
         TRAITS_UI,
         ],
     license = 'BSD',
-    name = 'enthought.enable2',
+    name = 'Enable',
     namespace_packages = [
         "enthought",
         ],
@@ -62,7 +120,8 @@ setup(
         ],
     test_suite = 'nose.collector',
     url = 'http://code.enthought.com/ets',
-    version = '3.0.0a1',
+    version = '3.0.0b1',
     zip_safe = False,
+    **configuration().todict()
     )
 

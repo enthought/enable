@@ -1,0 +1,13 @@
+# Note: This mechanism won't work well since people don't generally import
+# directly from backends, but instead, let the system pick them for them.
+
+[ps]
+enthought.kiva.backend_ps = *
+
+[svg]
+enthought.kiva.backend_svg = *
+
+[traits]
+enthought.kiva.traits = *
+
+
