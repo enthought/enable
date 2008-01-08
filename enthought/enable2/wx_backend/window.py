@@ -321,7 +321,7 @@ class Window ( AbstractWindow ):
         
         # Handle window close and cleanup
         wx.EVT_WINDOW_DESTROY(control, self._on_close)
-        
+
         if PythonDropTarget is not None:
             control.SetDropTarget( LessSuckyDropTarget( self ) ) 
             self._drag_over = []
@@ -359,7 +359,7 @@ class Window ( AbstractWindow ):
             self.component.window = None
             self.component = None
         return
-    
+        
     def _on_key_updown ( self, event ):
         "Handle keyboard keys changing their up/down state"
         k = event.GetKeyCode()
@@ -426,7 +426,13 @@ class Window ( AbstractWindow ):
 
     def _on_size ( self, event ):
         dx, dy = self.control.GetSizeTuple()
+
+        # do nothing if the new and old sizes are the same
+        if (self.component.outer_width, self.component.outer_height) ==  (dx, dy):
+            return
+        
         self.resized = (dx, dy)
+        
         if hasattr(self.component, "fit_window") and self.component.fit_window:
             self.component.outer_position = [0,0]
             self.component.outer_bounds = [dx, dy]
@@ -439,7 +445,6 @@ class Window ( AbstractWindow ):
                 self.component.outer_height = dy
         
         self.control.Refresh()
-        self.control.Update()
         return
     
     def _capture_mouse ( self ):
