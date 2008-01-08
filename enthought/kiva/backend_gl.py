@@ -65,7 +65,7 @@ def mycombine ( coord, vertex, weight ):
     return ( coord[0], coord[1], coord[2] )
 
 def myvertex ( x ):
-    if x:
+    if alltrue(x):
        glVertex( x[0], x[1] )
 
 #-------------------------------------------------------------------------------
@@ -563,6 +563,13 @@ class GraphicsContext ( basecore2d.GraphicsContextBase ):
         #glutSwapBuffers()
         pass
 
+    #----------------------------------------------------------
+    # Misc methods
+    # TODO: Fix these / figure these out
+    #----------------------------------------------------------
+
+    def clear(self, *args, **kw):
+        pass
 
 class Canvas(object):
     pass

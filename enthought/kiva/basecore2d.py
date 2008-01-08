@@ -1249,7 +1249,6 @@ class GraphicsContextBase(object):
         self.device_update_line_state()        
         self.device_update_fill_state()        
 
-#        pdb.set_trace()
         for subpath in self.path:
             # reset the current point for drawing.
             #self.current_point = array((0.,0.))
