@@ -1,5 +1,6 @@
-from setuptools import find_packages
+import setuptools
 from numpy.distutils.core import setup
+from setup_data import INFO
 
 
 def configuration(parent_package='', top_path=None):
@@ -16,6 +17,14 @@ def configuration(parent_package='', top_path=None):
     config.add_data_files('enthought/__init__.py')
 
     return config
+
+
+# Build the full set of packages by appending any found by setuptools'
+# find_packages to those discovered by numpy.distutils.
+config = configuration().todict()
+packages = setuptools.find_packages(exclude=config['packages'] +
+    ['docs', 'examples'])
+config['packages'] += packages
 
 
 # The following monkeypatching code comes from Numpy distutils.
@@ -49,28 +58,6 @@ if 1:  # numpy.__version__[:5] < '1.0.3':
     build_ext.build_ext.run = new_run
 
 
-# Function to convert simple ETS project names and versions to a requirements
-# spec that works for both development builds and stable builds.  Allows
-# a caller to specify a max version, which is intended to work along with
-# Enthought's standard versioning scheme -- see the following write up:
-#    https://svn.enthought.com/enthought/wiki/EnthoughtVersionNumbers
-def etsdep(p, min, max=None, literal=False):
-    require = '%s >=%s.dev' % (p, min)
-    if max is not None:
-        if literal is False:
-            require = '%s, <%s.a' % (require, max)
-        else:
-            require = '%s, <%s' % (require, max)
-    return require
-
-
-# Declare our ETS project dependencies.
-ENTHOUGHTBASE = etsdep('EnthoughtBase', '3.0.0b1')
-TRAITSBACKENDWX = etsdep('TraitsBackendWX', '3.0.0b1')
-TRAITSBACKENDQT = etsdep('TraitsBackendQt', '3.0.0b1')
-TRAITS_UI = etsdep('Traits[ui]', '3.0.0b1')
-
-
 setup(
     author = 'Enthought, Inc',
     author_email = 'info@enthought.com',
@@ -84,44 +71,21 @@ setup(
         ],
     description = ('Multi-platform vector drawing engine that supports '
         'multiple output backends'),
-    extras_require = {
-        'ps': [],
-        'svg': [],
-        'traits': [
-            ],
-        'qt': [
-            TRAITSBACKENDQT,
-            ],
-        "wx": [
-            TRAITSBACKENDWX,
-            ],
-
-        # All non-ets dependencies should be in this extra to ensure users can
-        # decide whether to require them or not.
-        'nonets': [
-            "numpy >=1.0.2",
-            ],
-        },
+    extras_require = INFO['extras_require'],
     include_package_data = True,
-    install_requires = [
-        ENTHOUGHTBASE,
-        TRAITS_UI,
-        ],
+    install_requires = INFO['install_requires'],
     license = 'BSD',
-    name = 'Enable',
+    name = INFO['name'],
     namespace_packages = [
         "enthought",
         ],
-    packages = find_packages(
-        exclude=['examples'],
-        ),
     tests_require = [
         'nose >= 0.9',
         ],
     test_suite = 'nose.collector',
     url = 'http://code.enthought.com/ets',
-    version = '3.0.0b1',
+    version = INFO['version'],
     zip_safe = False,
-    **configuration().todict()
+    **config
     )
 
