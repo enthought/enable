@@ -2,6 +2,7 @@
 # :Copyright: 2004, Enthought, Inc.
 # :License:   BSD Style
 
+ctypedef void (*cobject_destr)(void *)
 
 cdef extern from "Python.h":
     ctypedef int size_t
@@ -32,7 +33,6 @@ cdef extern from "Python.h":
     int PyUnicode_GET_SIZE(ob)
     char *PyString_AS_STRING(ob)
 
-    ctypedef void (*cobject_destr)(void *)
 
     object PyCObject_FromVoidPtr(void* cobj, cobject_destr destr)
     void* PyCObject_AsVoidPtr(object self)
