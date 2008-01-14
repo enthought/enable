@@ -30,11 +30,11 @@ config['packages'] += packages
 # The following monkeypatching code comes from Numpy distutils.
 import numpy
 
-if 1:  # numpy.__version__[:5] < '1.0.3':
-    # numpy 1.0.3 provides a fix to distutils to make sure that build_clib is
-    # run before build_ext. This is critical for semi-automatic building of
-    # many extension modules using numpy. Here, we monkey-patch the run method
-    # of the build_ext command to provide the fix in 1.0.3.
+# numpy 1.0.3 provides a fix to distutils to make sure that build_clib is
+# run before build_ext. This is critical for semi-automatic building of
+# many extension modules using numpy. Here, we monkey-patch the run method
+# of the build_ext command to provide the fix in 1.0.3.
+if numpy.__version__[:5] < '1.0.3':
 
     from numpy.distutils.command import build_ext
     old_run = build_ext.build_ext.run
@@ -56,6 +56,24 @@ if 1:  # numpy.__version__[:5] < '1.0.3':
         old_run(self)
 
     build_ext.build_ext.run = new_run
+
+# Monkeypatch the 'develop' command so that we build_src will execute
+# inplace.  This is fixed in numpy 1.0.5 (svn r4569).
+if numpy.__version__[:5] < '1.0.5':
+
+    # Replace setuptools's develop command with our own
+    from setuptools.command import develop
+    old_develop = develop.develop
+    class develop(old_develop):
+        __doc__ = old_develop.__doc__
+        def install_for_development(self):
+            self.reinitialize_command('build_src', inplace=1)
+            old_develop.install_for_development(self)
+    develop.develop = develop
+
+    # Make numpy distutils use this develop.
+    from numpy.distutils import core
+    core.numpy_cmdclass['develop'] = develop
 
 
 setup(
