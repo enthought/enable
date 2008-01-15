@@ -9,13 +9,18 @@ from enthought.etsconfig.api import ETSConfig
 # PyQt/traits problem (see below) we can't because it would drag in traits too
 # early.  Until it is fixed we just assume wx if we can import it.
 # Force the selection of a valid toolkit.
-#import enthought.enable2.toolkit
+#import enthought.enable2.toolkit 
 if not ETSConfig.toolkit:
-    try:
-        import wx
-        ETSConfig.toolkit = 'wx'
-    except ImportError:
-        ETSConfig.toolkit = 'qt4'
+    for toolkit in ('wx', 'qt4'):
+        try:
+            exec "import " + toolkit
+            ETSConfig.toolkit = toolkit
+            break
+        except ImportError:
+            pass
+    else:
+        raise RuntimeError("Can't load wx or qt4 backend for Chaco.")
+
 
 if ETSConfig.toolkit == 'wx':
     import wx
