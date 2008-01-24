@@ -157,10 +157,10 @@ class PygletWindow(window.Window):
         self.enable_window._handle_mouse_event("mouse_move", event, set_focus=False)
 
     def on_mouse_press(self, x, y, button, modifiers):
-        return self._on_mouse_updown(x, y, button, modifiers, "up")
+        return self._on_mouse_updown(x, y, button, modifiers, "down")
 
     def on_mouse_release(self, x, y, button, modifiers):
-        return self._on_mouse_updown(x, y, button, modifiers, "down")
+        return self._on_mouse_updown(x, y, button, modifiers, "up")
 
     def _on_mouse_updown(self, x, y, button, modifiers, which="down"):
         event = PygletMouseEvent(x, y, [button], modifiers)
