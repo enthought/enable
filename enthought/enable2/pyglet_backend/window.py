@@ -84,6 +84,7 @@ class PygletWindow(window.Window):
     def draw(self):
         "Called by the mainloop to perform the actual draw"
         self.enable_window._paint()
+        
 
     def request_redraw(self, coordinates=None):
         """ Called by **self.enable_window** to request a redraw
@@ -356,7 +357,9 @@ class Window(AbstractWindow):
         # Unlike the vector-based Agg and Quartz GraphicsContexts which place
         # pixel coordinates at the lower-left corner, the Pyglet backend is
         # raster-based and places coordinates at the center of pixels.
-        return GraphicsContextEnable(size, window=self)
+        gc = GraphicsContextEnable(size, window=self)
+        gc.init_gl_viewport()
+        return gc
     
     def _redraw(self, coordinates=None):
         "Request a redraw of the window"
@@ -376,11 +379,13 @@ class Window(AbstractWindow):
             self.control.set_mouse_visible(False)
         elif pointer in POINTER_MAP:
             self.control.set_mouse_visible(True)
-            self.control.set_mouse_cursor(POINTER_MAP[pointer])
+            cursor = self.control.get_system_mouse_cursor(POINTER_MAP[pointer])
+            self.control.set_mouse_cursor(cursor)
         else:
             warnings.warn("Unable to set mouse pointer '%s' in"
                           "Enable's Pyglet backend." % pointer)
-            self.control.set_mouse_cursor(POINTER_MAP["arrow"])
+            cursor = self.control.get_system_mouse_cursor(POINTER_MAP["arrow"])
+            self.control.set_mouse_cursor(cursor)
         return
         
     def set_timer_interval(self, component, interval):
