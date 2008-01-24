@@ -15,6 +15,7 @@ import pdb
 
 import affine       # needed for concat_ctm and get_ctm
 import basecore2d   
+from basecore2d import GraphicsContextBase
 
 from numpy  import alltrue, any, array, asarray, concatenate, float32, float64, int8, ones, pi, zeros
 from OpenGL.GL   import *
@@ -72,14 +73,47 @@ def myvertex ( x ):
 #  'GraphicsContext' class:
 #-------------------------------------------------------------------------------
 
-class GraphicsContext ( basecore2d.GraphicsContextBase ):
+class GraphicsContext(GraphicsContextBase):
+    """
+    The general call order for a GL graphicscontext is:
+
+    gc = GraphicsContext(size)
+    gc.save_state()
+    gc.init_gl_viewport()
+    ... make drawing calls ...
+    gc.restore_state()
+    """
     
     def __init__( self, size = ( 500,500 ), dc = None ):
-        """ I don't know if we need a dc anywhere in the OpenGL version...
-        """
         self._glu_tess_set = 0
         self.size          = size
-        basecore2d.GraphicsContextBase.__init__( self )
+        GraphicsContextBase.__init__( self )
+
+    def init_gl_viewport(self):
+        """ Sets up the viewport and projection matrices. """
+        # XXX: This should only be called by Enable when the window resizes 
+        glViewport(0, 0, *self.size)
+        glMatrixMode(GL_PROJECTION)
+        glPushMatrix()
+        glLoadIdentity()
+        glOrtho(0, self.size[0], 0, self.size[1], 1, -1)
+        glMatrixMode(GL_MODELVIEW)
+        glPushMatrix()
+        glLoadIdentity()
+
+    def save_state(self):
+        GraphicsContextBase.save_state(self)
+        glMatrixMode(GL_PROJECTION)
+        glPushMatrix()
+        glMatrixMode(GL_MODELVIEW)
+        glPushMatrix()
+
+    def restore_state(self):
+        glMatrixMode(GL_PROJECTION)
+        glPopMatrix()
+        glMatrixMode(GL_MODELVIEW)
+        glPopMatrix()
+        GraphicsContextBase.restore_state(self)
                 
     def begin_page ( self ):
         glClearColor( 1.0, 1.0, 1.0, 0.0 )
@@ -311,8 +345,8 @@ class GraphicsContext ( basecore2d.GraphicsContextBase ):
 
         # Needed to correctly fill non-convex polygons:
         if polygon and fill and not convex:  
-           self.gl_tesselate_polygon( pts, mode )
-           return
+            self.gl_tesselate_polygon( pts, mode )
+            return
             
         if polygon:
            poly_mode = GL_POLYGON
@@ -568,8 +602,31 @@ class GraphicsContext ( basecore2d.GraphicsContextBase ):
     # TODO: Fix these / figure these out
     #----------------------------------------------------------
 
-    def clear(self, *args, **kw):
-        pass
+    def clear(self, *args):
+        """ Clears the screen to the given RGB or RGBA colors:
+
+            clear(r, g, b)
+            clear(r, g, b, a)
+            clear( (r,g,b) )
+            clear( (r,g,b,a) )
+
+            If no color is given, then clears to the current graphics
+            state's fill_color.
+        """
+        if len(args) == 0:
+            color = self.state.fill_color
+        elif len(args) == 1:
+            args = args[0]
+
+        if len(args) == 3:
+            color = args + (1,)
+        else:
+            color = args
+
+        glClearColor(*color)
+        glClear(GL_COLOR_BUFFER_BIT)
+        
+
 
 class Canvas(object):
     pass
