@@ -8,7 +8,7 @@ import warnings
 
 # Pyglet imports
 import pyglet
-from pyglet import window
+from pyglet import gl, window
 from pyglet.window import key
 
 # Enthought library imports
@@ -275,8 +275,22 @@ class Window(AbstractWindow):
         # in the wx coordinate space, i.e. pre-self._flip_y().
         self._last_mouse_pos = (0, 0)
         
-        # Create the underlying control.  
-        self.control = PygletWindow(enable_window=self)
+        # Try to get antialiasing, both for quality rendering and for
+        # reproducible results. For example, line widths are measured in the
+        # X or Y directions rather than perpendicular to the line unless if
+        # antialiasing is enabled.
+        display = window.get_platform().get_default_display()
+        screen = display.get_default_screen()
+        template_config = gl.Config(double_buffer=True, sample_buffers=True,
+            samples=4)
+        try:
+            config = screen.get_best_config(template_config)
+        except window.NoSuchConfigException:
+            # Rats. No antialiasing.
+            config = screen.get_best_config(gl.Config(double_buffer=True))
+        # Create the underlying control.
+        self.control = PygletWindow(enable_window=self, config=config,
+            resizable=True)
         
         return
 
