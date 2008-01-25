@@ -12,8 +12,9 @@ or replace.
 """
 
 from pyglet.window import Window
+from pyglet import clock
 
-__all__ = ["get_app", "PygletApp", "PygletAppWindow"]
+__all__ = ["get_app", "PygletApp"]
 
 _CurrentApp = None
 
@@ -63,9 +64,11 @@ class _PygletApp(object):
         exit = False
         while not exit:
             for window in self.windows:
+                window.switch_to()
                 window.dispatch_events()
                 window.clear()
                 window.draw()
+                clock.tick()
                 window.flip()
                 if window.has_exit:
                     exit = True
