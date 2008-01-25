@@ -1,5 +1,5 @@
-import wx
-from enthought.kiva import Canvas, CanvasWindow
+import os, wx
+from enthought.kiva import Canvas
 from enthought.kiva.fonttools import Font, str_to_font
 from enthought.kiva.backend_image import Image
 from enthought.traits.api import Enum, HasTraits, Range
@@ -20,8 +20,11 @@ class BrainCanvas(Canvas):
     def __init__(self, parent, id = -1, size = wx.DefaultSize):
         Canvas.__init__(self,parent,id,size)
 
-        self.brain1 = Image("brain1.gif", interpolation="nearest")                                           
-        self.brain2 = Image("brain2.gif", interpolation="nearest")                                           
+        dirname = os.path.dirname(os.path.abspath(__file__))
+        self.brain1 = Image(os.path.join(dirname, "brain1.gif"),
+                            interpolation="nearest")                                           
+        self.brain2 = Image(os.path.join(dirname, "brain2.gif"),
+                            interpolation="nearest")                                           
         # set the alpha channel to the same as the "blue" channel
         self.brain2.bmp_array[:,:,3] = self.brain2.bmp_array[:,:,0]
         

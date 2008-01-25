@@ -5,7 +5,10 @@ ETSConfig.toolkit = 'qt4'
 
 import sys
 
-from PyQt4 import QtGui
+try:
+    from PyQt4 import QtGui
+except ImportError:
+    raise Exception('PyQt4 needs to be installed to run this example')
 
 from enthought.kiva import Canvas
 

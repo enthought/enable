@@ -24,7 +24,7 @@ from enthought.kiva import constants, Font
 # This uses the best-fit backend based on the KIVA_WISHLIST environment variable
 # or the default list in kiva's top-leve __init__.  To test a specific backend,
 # import Canvas and CanvasWindow from backend_NNN.
-from enthought.kiva import Canvas, CanvasWindow
+from enthought.kiva.backend_wx import Canvas, CanvasWindow
 
 
 #-----------------------------------------------------------------------------

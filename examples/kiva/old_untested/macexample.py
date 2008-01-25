@@ -13,7 +13,10 @@
 #------------------------------------------------------------------------------
 # macexample.py
 
-import W
+try:
+    import W
+except ImportError:
+    raise Exception('This example works only on Mac')
 
 class TestCanvas(W.Widget):
     def __init__(self, parent=None, id=-1,position = None, size = None):

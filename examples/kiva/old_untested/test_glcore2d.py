@@ -23,9 +23,13 @@ from numpy     import array, arange, concatenate, newaxis, pi
 from numpy import random
 #from numpy.random import *
 #from RandomArray import *
-from OpenGL.GL   import *
-from OpenGL.GLU  import *
-from OpenGL.GLUT import *
+try:
+    from OpenGL.GL   import *
+    from OpenGL.GLU  import *
+    from OpenGL.GLUT import *
+except ImportError:
+    raise Exception('OpenGL package needs to be installed to run this example.')
+
 #from scipy_test.testing import *
 #set_local_path('..')
 #from constants   import *

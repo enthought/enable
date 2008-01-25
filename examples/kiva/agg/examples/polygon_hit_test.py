@@ -1,5 +1,6 @@
-from enthought.util.randomx import random
-def rand(*args): return random(args)
+def rand(*args):
+    from enthought.util.randomx import random
+    return random(args)
 from enthought.util.numerix import *
 from enthought.kiva import agg
 

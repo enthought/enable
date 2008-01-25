@@ -1,5 +1,5 @@
 from enthought.kiva import constants, Font
-from enthought.kiva import Canvas, CanvasWindow
+from enthought.kiva import Canvas
 from enthought.kiva.backend_image import GraphicsContext
 from enthought.kiva import constants
 from enthought.kiva import affine

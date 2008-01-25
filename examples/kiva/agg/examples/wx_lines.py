@@ -1,4 +1,4 @@
-import wx
+import os, wx
 from enthought.kiva import *
 from enthought.kiva.backend_image import Image
 from enthought.traits.api import Trait, HasTraits, TraitRange, Bool
@@ -33,7 +33,10 @@ class LionCanvas(Canvas):
         Canvas.__init__(self, parent,id,size=size)
         path_and_color, size, center = lion_data.get_lion()
         self.path_and_color = path_and_color
-        self.raw_serengeti = Image("serengeti.jpg", interpolation="nearest")
+
+        dir_name = os.path.dirname(os.path.abspath(__file__))
+        self.raw_serengeti = Image(os.path.join(dir_name, "serengeti.jpg"),
+                                   interpolation="nearest")
         self._create_image(size)
         
         self.model = LionModel()

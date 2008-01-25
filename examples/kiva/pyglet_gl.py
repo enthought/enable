@@ -4,6 +4,11 @@ from numpy import array
 
 import pyglet
 from pyglet.window import key, Window
+try:
+    import OpenGL
+except ImportError:
+    raise Exception('OpenGL pacakge needs to be isntalled to run this example')
+
 from enthought.kiva.backend_gl import GraphicsContext
 from enthought.kiva.constants import FILL, STROKE, FILL_STROKE
 
