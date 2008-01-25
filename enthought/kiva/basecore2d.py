@@ -30,7 +30,6 @@
 
 import affine
 import copy
-import pdb
 from numpy import alltrue, array, asarray, float64, sometrue, shape,\
      take, concatenate, equal
 from enthought.kiva import agg
@@ -1133,57 +1132,58 @@ class GraphicsContextBase(object):
             !! of images figured out.
         """
 
+        # This is not currently implemented in a device-independent way.
         print "showing text:", text
         return
-    
-        #---------------------------------------------------------------------
-        # The fill_color is used to specify text color in wxPython. 
-        # If it is transparent, we don't do any painting.  
-        #---------------------------------------------------------------------
-        if is_fully_transparent( self.state.fill_color ):
-           return
-        
-        #---------------------------------------------------------------------
-        # Set the text transformation matrix
-        # 
-        # This requires the concatenation of the text and coordinate
-        # transform matrices
-        #---------------------------------------------------------------------
-        ttm = self.get_text_matrix()
-        ctm = self.get_ctm()  # not device_ctm!!
-        m   = affine.concat( ctm, ttm )
-        a, b, c, d, tx, ty = affine.affine_params( m )
-        ft_engine.transform( ( a, b, c, d ) )
-        
-        # Select the correct font into the freetype engine:
-        f = self.state.font
-        ft_engine.select_font( f.name, f.size, f.style, f.encoding )
-        ft_engine.select_font( 'Arial', 10 )   ### TEMPORARY ###
-        
-        # Set antialiasing flag for freetype engine:
-        ft_engine.antialias( self.state.antialias )
-        
-        # Render the text:  
+
+        ##---------------------------------------------------------------------
+        ## The fill_color is used to specify text color in wxPython. 
+        ## If it is transparent, we don't do any painting.  
+        ##---------------------------------------------------------------------
+        #if is_fully_transparent( self.state.fill_color ):
+        #   return
         #
-        # The returned object is a freetype.Glyphs object that contains an 
-        # array with the gray scale image, the bbox and some other info.
-        rendered_glyphs = ft_engine.render( text )
-                
-        # Render the glyphs in a device specific manner:
-        self.device_draw_glyphs( rendered_glyphs, tx, ty )
-    
-        # Advance the current text position by the width of the glyph string:
-        ttm = self.get_text_matrix()
-        a, b, c, d, tx, ty = affine.affine_params( ttm )
-        tx += rendered_glyphs.width
-        self.state.text_matrix = affine.affine_from_values( a, b, c, d, tx, ty )        
+        ##---------------------------------------------------------------------
+        ## Set the text transformation matrix
+        ## 
+        ## This requires the concatenation of the text and coordinate
+        ## transform matrices
+        ##---------------------------------------------------------------------
+        #ttm = self.get_text_matrix()
+        #ctm = self.get_ctm()  # not device_ctm!!
+        #m   = affine.concat( ctm, ttm )
+        #a, b, c, d, tx, ty = affine.affine_params( m )
+        #ft_engine.transform( ( a, b, c, d ) )
+        #
+        ## Select the correct font into the freetype engine:
+        #f = self.state.font
+        #ft_engine.select_font( f.name, f.size, f.style, f.encoding )
+        #ft_engine.select_font( 'Arial', 10 )   ### TEMPORARY ###
+        #
+        ## Set antialiasing flag for freetype engine:
+        #ft_engine.antialias( self.state.antialias )
+        #
+        ## Render the text:  
+        ##
+        ## The returned object is a freetype.Glyphs object that contains an 
+        ## array with the gray scale image, the bbox and some other info.
+        #rendered_glyphs = ft_engine.render( text )
+        #        
+        ## Render the glyphs in a device specific manner:
+        #self.device_draw_glyphs( rendered_glyphs, tx, ty )
+        #
+        ## Advance the current text position by the width of the glyph string:
+        #ttm = self.get_text_matrix()
+        #a, b, c, d, tx, ty = affine.affine_params( ttm )
+        #tx += rendered_glyphs.width
+        #self.state.text_matrix = affine.affine_from_values( a, b, c, d, tx, ty )        
     
     def show_glyphs(self):
         """
         """
         pass
         
-    def show_text_at_point(self):
+    def show_text_at_point(self, text, x, y):
         """
         """
         pass
@@ -1439,7 +1439,7 @@ class GraphicsContextBase(object):
         return self.device_get_text_extent(textstring)
 
     def device_get_text_extent(self,textstring):
-        return self.device_get_full_text_extent(textstring)[0:2]
+        return self.device_get_full_text_extent(textstring)
 
     def get_full_text_extent(self,textstring):
         """
@@ -1448,17 +1448,19 @@ class GraphicsContextBase(object):
         return self.device_get_full_text_extent(textstring)
 
     def device_get_full_text_extent(self,textstring):
-        ttm = self.get_text_matrix()
-        ctm = self.get_ctm()  # not device_ctm!!
-        m   = affine.concat( ctm, ttm )
-        ft_engine.transform( affine.affine_params( m )[0:4] )
-        f = self.state.font   ### TEMPORARY ###
-        ft_engine.select_font( f.name, f.size, f.style, f.encoding )   ### TEMPORARY ###
-        #ft_engine.select_font( 'Arial', 10 )   ### TEMPORARY ###
-        ft_engine.antialias( self.state.antialias )
-        glyphs = ft_engine.render( textstring )
-        dy, dx = shape( glyphs.img )
-        return ( dx, dy, -glyphs.bbox[1], 0 )
+        return (0.0, 0.0, 0.0, 0.0)
+        #raise NotImplementedError("device_get_full_text_extent() is not implemented")
+        #ttm = self.get_text_matrix()
+        #ctm = self.get_ctm()  # not device_ctm!!
+        #m   = affine.concat( ctm, ttm )
+        #ft_engine.transform( affine.affine_params( m )[0:4] )
+        #f = self.state.font   ### TEMPORARY ###
+        #ft_engine.select_font( f.name, f.size, f.style, f.encoding )   ### TEMPORARY ###
+        ##ft_engine.select_font( 'Arial', 10 )   ### TEMPORARY ###
+        #ft_engine.antialias( self.state.antialias )
+        #glyphs = ft_engine.render( textstring )
+        #dy, dx = shape( glyphs.img )
+        #return ( dx, dy, -glyphs.bbox[1], 0 )
 
     
     #----------------------------------------------------------------

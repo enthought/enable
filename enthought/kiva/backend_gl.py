@@ -11,23 +11,22 @@
 #------------------------------------------------------------------------------
 
 import copy
-import pdb
 
-import affine       # needed for concat_ctm and get_ctm
-import basecore2d   
-from basecore2d import GraphicsContextBase
-
-from numpy  import alltrue, any, array, asarray, concatenate, float32, float64, int8, ones, pi, zeros
+from numpy  import alltrue, any, array, asarray, concatenate, float32, uint8, ones, pi, zeros
 from OpenGL.GL   import *
 from OpenGL.GLU  import *
-#from OpenGL.GLUT import *
+from pyglet import font, image
+
+import affine
+import basecore2d   
+from basecore2d import GraphicsContextBase
 from constants   import *
 
 #-------------------------------------------------------------------------------
 #  Constants:
 #-------------------------------------------------------------------------------
 
-DEBUG = 0
+DEBUG = False
 
 # There is no implementation of compiled paths for this backend.
 CompiledPath = None
@@ -64,10 +63,6 @@ def lcm ( n, m ):
     
 def mycombine ( coord, vertex, weight ):
     return ( coord[0], coord[1], coord[2] )
-
-def myvertex ( x ):
-    if alltrue(x):
-       glVertex( x[0], x[1] )
 
 #-------------------------------------------------------------------------------
 #  'GraphicsContext' class:
@@ -358,7 +353,7 @@ class GraphicsContext(GraphicsContextBase):
         else:   
            fill_mode = GL_LINE            
         
-        if a == 1.:    
+        if a == 1.:
            glDisable(GL_BLEND)
         else:
            glEnable( GL_BLEND )
@@ -400,13 +395,13 @@ class GraphicsContext(GraphicsContextBase):
 
     def gl_tesselate_polygon ( self, pts, mode ):
         if not self._glu_tess_set:
-           self.setup_glu_tess()
+            self.setup_glu_tess()
 
         if mode in [EOF_FILL, EOF_FILL_STROKE]:
-           gluTessProperty( self._glu_tess, GLU_TESS_WINDING_RULE, 
+            gluTessProperty( self._glu_tess, GLU_TESS_WINDING_RULE, 
                             GLU_TESS_WINDING_ODD )
         else:
-           gluTessProperty( self._glu_tess, GLU_TESS_WINDING_RULE, 
+            gluTessProperty( self._glu_tess, GLU_TESS_WINDING_RULE, 
                             GLU_TESS_WINDING_NONZERO )
 
         # Draw the points (need only a single contour)
@@ -429,7 +424,7 @@ class GraphicsContext(GraphicsContextBase):
         self._glu_tess = gluNewTess()
         gluTessCallback( self._glu_tess, GLU_TESS_BEGIN,  glBegin )
         gluTessCallback( self._glu_tess, GLU_TESS_END,    glEnd )
-        gluTessCallback( self._glu_tess, GLU_TESS_VERTEX, myvertex )
+        gluTessCallback( self._glu_tess, GLU_TESS_VERTEX, glVertex )
                         
         gluTessCallback( self._glu_tess, GLU_TESS_COMBINE, mycombine )
         gluTessProperty( self._glu_tess, GLU_TESS_BOUNDARY_ONLY, GL_FALSE )
@@ -558,12 +553,12 @@ class GraphicsContext(GraphicsContextBase):
 
     def device_draw_glyphs ( self, glyphs, tx, ty ):
         dy, dx      = glyphs.image.shape
-        img         = zeros( ( dy, dx, 4 ), int8 )
+        img         = zeros( ( dy, dx, 4 ), uint8 )
         r, g, b, a  = self.state.fill_color
         img[:,:,:3] = array( ( int( 255.0 * r ), 
                                int( 255.0 * g ), 
-                               int( 255.0 * b ) ), int8 )
-        img[:,:,3]  = glyphs.image.astype( Int8 )[::-1]
+                               int( 255.0 * b ) ), uint8 )
+        img[:,:,3]  = glyphs.image.astype( uint8 )[::-1]
         glRasterPos( tx + glyphs.bbox[0], ty + glyphs.bbox[1] )
         glEnable( GL_BLEND )
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA )
