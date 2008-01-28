@@ -39,6 +39,7 @@
 %apply(kiva_enum_typemap) { kiva::draw_mode_e mode, kiva::text_draw_mode_e,
                             kiva::line_join_e, kiva::line_cap_e, kiva::blend_mode_e };
 %apply(kiva_enum_typemap) { kiva::pix_format_e, kiva::interpolation_e };
+%apply(kiva_enum_typemap) { kiva::blend_mode_e mode};
 
 unsigned path_cmd(unsigned c);
 unsigned path_flags(unsigned c);

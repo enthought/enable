@@ -136,7 +136,6 @@ void graphics_context_base::set_line_cap(kiva::line_cap_e value)
     this->state.line_cap = value; 
 }
 
-
 void graphics_context_base::set_line_dash(double* pattern, int n, double phase)
 {
     this->state.line_dash = kiva::dash_type(phase, pattern, n);
@@ -145,6 +144,11 @@ void graphics_context_base::set_line_dash(double* pattern, int n, double phase)
 void graphics_context_base::set_blend_mode(kiva::blend_mode_e value) 
 { 
     this->state.blend_mode = value; 
+}
+
+kiva::blend_mode_e graphics_context_base::get_blend_mode()
+{
+    return this->state.blend_mode;
 }
 
 void graphics_context_base::set_fill_color(agg::rgba& value)

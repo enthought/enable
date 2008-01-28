@@ -105,6 +105,7 @@ namespace kiva
         // fix me: Blend mode is *barely* supported and 
         //         probably abused (my copy setting).
         void set_blend_mode(blend_mode_e value);
+        kiva::blend_mode_e get_blend_mode();
 
         void set_fill_color(agg::rgba& value);
 

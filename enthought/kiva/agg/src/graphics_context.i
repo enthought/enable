@@ -354,6 +354,7 @@ namespace kiva {
             void set_line_cap(kiva::line_cap_e value);
             void set_line_dash(double* pattern, int n, double phase=0);
             void set_blend_mode(kiva::blend_mode_e value);
+            kiva::blend_mode_e get_blend_mode();
             
             %feature("shadow") set_fill_color(agg::rgba& rgba_in)
             %{
