@@ -25,7 +25,7 @@ agginclude_HEADERS = \
 	agg_conv_contour.h           agg_rasterizer_scanline_aa.h    agg_trans_affine.h \
 	agg_conv_curve.h             agg_rasterizer_sl_clip.h        agg_trans_bilinear.h \
 	agg_conv_dash.h              agg_renderer_base.h             agg_trans_double_path.h \
-	agg_conv_gpc.h               agg_renderer_markers.h          agg_trans_lens.h \
+	agg_renderer_markers.h          agg_trans_lens.h \
 	agg_conv_marker.h            agg_renderer_mclip.h            agg_trans_perspective.h \
 	agg_conv_marker_adaptor.h    agg_renderer_outline_aa.h       agg_trans_single_path.h \
 	agg_conv_segmentator.h       agg_renderer_outline_image.h    agg_trans_viewport.h \
