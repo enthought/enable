@@ -1013,11 +1013,11 @@ class Component(CoordinateBox, Interactor):
         if new is None:
             self.position = [0,0]
 
-    def _position_changed(self):
+    def _position_changed(self, *args):
         if self.container is not None:
             self.container._component_position_changed(self)
 
-    def _position_items_changed(self):
+    def _position_items_changed(self, *args):
         if self.container is not None:
             self.container._component_position_changed(self)
 
