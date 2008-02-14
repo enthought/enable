@@ -110,8 +110,11 @@ elif ETSConfig.toolkit == 'pyglet':
             app = get_app()
             if app:
                 window = self._create_window()
-                self.enable_win = window
-                app.add_window(window.control)
+                if window:
+                    self.enable_win = window
+                    app.add_window(window.control)
+                else:
+                    self.enable_win = None
             return
 
         def _create_window(self):
@@ -127,12 +130,17 @@ elif ETSConfig.toolkit == 'pyglet':
         app = PygletApp()
         if issubclass(demo_class, DemoFrame):
             frame = demo_class()
-            window = frame.enable_win.control
+            if frame.enable_win is not None:
+                window = frame.enable_win.control
+            else:
+                window = None
         else:
             window = demo_class().control
-        window.set_size(*size)
-        window.set_caption(title)
-        app.set_main_window(window)
+
+        if window is not None:
+            window.set_size(*size)
+            window.set_caption(title)
+            app.set_main_window(window)
         app.run()
         
 
