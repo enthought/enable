@@ -13,6 +13,8 @@ from enthought.kiva.backend_gl import GraphicsContext
 from enthought.kiva.constants import FILL, STROKE, FILL_STROKE
 
 class TestWindow(Window):
+    """ Press Q or Escape to exit
+    """
     def __init__(self, *args, **kw):
         Window.__init__(self, *args, **kw)
         self.init_window()
