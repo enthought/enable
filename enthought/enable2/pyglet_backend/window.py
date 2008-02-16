@@ -171,6 +171,8 @@ class PygletWindow(window.Window):
             name = "middle"
         elif button == mouse.RIGHT:
             name = "right"
+        else:
+            raise RuntimeError("Unknown mouse button state in _on_mouse_updown()")
         self.enable_window._handle_mouse_event(name+"_"+which, event, set_focus=False)
         # TODO: Confirm that we should consume mouse press/release events
         return True
@@ -194,18 +196,6 @@ class PygletWindow(window.Window):
 
     def on_resize(self, width, height):
         self.enable_window.resized = (width, height)
-        component = self.enable_window.component
-        if hasattr(component, "fit_window") and component.fit_window:
-            component.outer_position = [0,0]
-            component.outer_bounds = [width, height]
-        elif hasattr(component, "resizable"):
-            if "h" in component.resizable:
-                component.outer_x = 0
-                component.outer_width = width
-            if "v" in component.resizable:
-                component.outer_y = 0
-                component.outer_height = height
-        return
 
     def on_close(self):
         pass
@@ -302,6 +292,22 @@ class Window(AbstractWindow):
    
     def _on_erase_background(self, event):
         pass
+
+    def _resized_changed(self, event):
+        self._size = (self.control.width, self.control.height)
+        width, height = self._size
+        component = self.component
+        if hasattr(component, "fit_window") and component.fit_window:
+            component.outer_position = [0,0]
+            component.outer_bounds = [width, height]
+        elif hasattr(component, "resizable"):
+            if "h" in component.resizable:
+                component.outer_x = 0
+                component.outer_width = width
+            if "v" in component.resizable:
+                component.outer_y = 0
+                component.outer_height = height
+        return
     
     def _capture_mouse(self):
         "Capture all future mouse events"
@@ -366,13 +372,13 @@ class Window(AbstractWindow):
                                mouse_wheel  = 0,
                                window = self)
     
-    def _create_gc ( self, size, pix_format = "bgra32" ):
+    def _create_gc(self, size, pix_format = "rgba32"):
         "Create a Kiva graphics context of a specified size."
         # Unlike the vector-based Agg and Quartz GraphicsContexts which place
         # pixel coordinates at the lower-left corner, the Pyglet backend is
         # raster-based and places coordinates at the center of pixels.
         gc = GraphicsContextEnable(size, window=self)
-        gc.init_gl_viewport()
+        gc.gl_init()
         return gc
     
     def _redraw(self, coordinates=None):
@@ -383,7 +389,7 @@ class Window(AbstractWindow):
     def _get_control_size(self):
         "Get the size of the underlying toolkit control"
         if self.control is not None:
-            return self.control.get_size()
+            return (self.control.width, self.control.height)
         else:
             return None
 
@@ -427,9 +433,9 @@ class Window(AbstractWindow):
         # where the self.component.draw(gc) call just renders onto an
         # in-screen GraphicsContext, this method is used to do a platform-
         # specific blit.  In the case of Pyglet, the component.draw()
-        # method executes immediates on the current OpenGL context, so
+        # method executes immediately on the current OpenGL context, so
         # there is no additional step needed here.
-        pass
+        self._create_gc(self._size)
 
     def screen_to_window(self, x, y, warn=True):
         """ This method is really not needed for Pyglet, since mouse coords
