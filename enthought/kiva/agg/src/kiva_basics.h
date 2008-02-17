@@ -15,6 +15,13 @@ namespace kiva
 #define INT64 long long
 #endif
 
+#ifdef max
+    #undef max
+#endif
+#ifdef min
+    #undef min
+#endif
+
 
     inline double max(double a, double b)
     {
