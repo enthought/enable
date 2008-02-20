@@ -426,16 +426,32 @@ class Window(AbstractWindow):
     #-------------------------------------------------------------------------
     # Unnecessary methods but provided for compatibility
     #-------------------------------------------------------------------------
+    def _paint(self, event=None):
+        # Override the base class _paint() method because we need to call
+        # _create_gc() each time *before* self.component draws.
+
+        size = self._get_control_size()
+        self._size = tuple(size)
+        self._gc = self._create_gc(size)
+        gc = self._gc
+        if hasattr(self.component, "do_layout"):
+            self.component.do_layout()
+        gc.clear(self.bg_color_)
+        self.component.draw(gc, view_bounds=(0, 0, size[0], size[1]))
+        self._update_region = []
+        return
 
     def _window_paint(self, event):
         "Do a backend-specific screen update"
-        # We don't actually have to do anything here.  In other backends
-        # where the self.component.draw(gc) call just renders onto an
-        # in-screen GraphicsContext, this method is used to do a platform-
-        # specific blit.  In the case of Pyglet, the component.draw()
-        # method executes immediately on the current OpenGL context, so
-        # there is no additional step needed here.
-        self._create_gc(self._size)
+        # We don't actually have to do anything here, and our implementation
+        # of _paint() doesn't even call this method.
+        #
+        # In other backends where the self.component.draw(gc) call just renders
+        # onto an in-screen GraphicsContext, this method is used to do a
+        # platform-specific blit.  In the case of Pyglet, the component.draw()
+        # method executes immediately on the current OpenGL context, so there
+        # is no additional step needed here.
+        pass
 
     def screen_to_window(self, x, y, warn=True):
         """ This method is really not needed for Pyglet, since mouse coords

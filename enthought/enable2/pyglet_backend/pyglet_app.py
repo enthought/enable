@@ -11,7 +11,6 @@ EnablePygletApp; the App is very basic and is meant to be easy to subclass
 or replace.
 """
 
-from pyglet.window import Window
 from pyglet import clock
 
 __all__ = ["get_app", "PygletApp"]
