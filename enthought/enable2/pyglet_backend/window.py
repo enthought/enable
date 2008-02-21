@@ -12,7 +12,7 @@ from pyglet import gl, window
 from pyglet.window import key
 
 # Enthought library imports
-from enthought.traits.api import Any, Float, Instance, Trait
+from enthought.traits.api import Any, Bool, Float, Instance, Trait
 
 # Enable imports
 from enthought.enable2.base import send_event_to, union_bounds
@@ -86,6 +86,7 @@ class PygletWindow(window.Window):
         "Called by the mainloop to perform the actual draw"
         if self._dirty:
             self.enable_window._paint()
+            gl.glFlush()
             self._dirty = False
         
 
@@ -246,6 +247,10 @@ class PygletWindow(window.Window):
 
 class Window(AbstractWindow):
 
+    # If this is True, then the screen is configured for full-screen
+    # antialiasing.  This can be noticeably slower, however.
+    enable_antialias = Bool(True)
+
     _cursor_color = Any  # PZW: figure out the correct type for this...
 
     # This is set by downstream components to notify us of whether or not
@@ -276,8 +281,11 @@ class Window(AbstractWindow):
         # antialiasing is enabled.
         display = window.get_platform().get_default_display()
         screen = display.get_default_screen()
-        template_config = gl.Config(double_buffer=True, sample_buffers=True,
-            samples=4)
+        if self.enable_antialias:
+            template_config = gl.Config(double_buffer=True, sample_buffers=True,
+                samples=4)
+        else:
+            template_config = gl.Config(double_buffer=False)
         try:
             config = screen.get_best_config(template_config)
         except window.NoSuchConfigException:
@@ -285,7 +293,7 @@ class Window(AbstractWindow):
             config = screen.get_best_config(gl.Config(double_buffer=True))
         # Create the underlying control.
         self.control = PygletWindow(enable_window=self, config=config,
-            resizable=True)
+            resizable=True, vsync=False)
         
         return
 
@@ -383,8 +391,10 @@ class Window(AbstractWindow):
         # pixel coordinates at the lower-left corner, the Pyglet backend is
         # raster-based and places coordinates at the center of pixels.
         gc = GraphicsContextEnable(size, window=self)
-        gc.gl_init()
         return gc
+
+    def _init_gc(self):
+        gc.gl_init()
     
     def _redraw(self, coordinates=None):
         "Request a redraw of the window"

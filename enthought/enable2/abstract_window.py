@@ -19,7 +19,7 @@ from container import Container
 from enable_traits import CURSOR_X, CURSOR_Y
 from colors import ColorTrait
 
-class AbstractWindow ( HasTraits ):
+class AbstractWindow(HasTraits):
 
     # The top-level component that this window houses
     component     = Instance(Component)
@@ -49,13 +49,13 @@ class AbstractWindow ( HasTraits ):
     # A container that gets drawn after & on top of the main component, and
     # which receives events first.
     overlay = Instance(Container)
-
-    # Whether to enable damaged region handling
-    use_damaged_region = Bool(False)
     
     # When the underlying toolkit control gets resized, this event gets set
     # to the new size of the window, expressed as a tuple (dx, dy).
     resized = Event
+
+    # Whether to enable damaged region handling
+    use_damaged_region = Bool(False)
 
     # The previous component that handled an event.  Used to generate
     # mouse_enter and mouse_leave events.  Right now this can only be
@@ -105,8 +105,27 @@ class AbstractWindow ( HasTraits ):
         raise NotImplementedError
 
     def _create_gc(self, size, pix_format = "bgr24"):
-        "Create a Kiva graphics context of a specified size"
+        """ Create a Kiva graphics context of a specified size.  This method
+        only gets called when the size of the window itself has changed.  To
+        perform pre-draw initialization every time in the paint loop, use
+        _init_gc().
+        """
         raise NotImplementedError
+
+    def _init_gc(self):
+        """ Gives a GC a chance to initialize itself before components perform
+        layout and draw.  This is called every time through the paint loop.
+        """
+        gc = self._gc
+        if self._update_region == [] or not self.use_damaged_region:
+            self._update_region = None
+        if self._update_region is None:
+            gc.clear(self.bg_color_)
+        else:
+            # Fixme: should use clip_to_rects
+            update_union = reduce(union_bounds, self._update_region)
+            gc.clip_to_rect(*update_union)
+        return
 
     def _window_paint(self, event):
         "Do a GUI toolkit specific screen update"
@@ -309,28 +328,30 @@ class AbstractWindow ( HasTraits ):
         """ This method is called directly by the UI toolkit's callback
         mechanism on the paint event.
         """
+        # Create a new GC if necessary
         size = self._get_control_size()
         if (self._size != tuple(size)) or (self._gc is None):
             self._gc = self._create_gc(size)
             self._size = tuple(size)
-        gc = self._gc
+        
+        # Always give the GC a chance to initialize
+        self._init_gc()
+
+        # Layout components and draw
         if hasattr(self.component, "do_layout"):
             self.component.do_layout()
-        if self._update_region == [] or not self.use_damaged_region:
-            self._update_region = None
-        if self._update_region is None:
-            gc.clear(self.bg_color_)
-        else:
-            # Fixme: should use clip_to_rects
-            update_union = reduce(union_bounds, self._update_region)
-            gc.clip_to_rect(*update_union)
-            
+        gc = self._gc
         self.component.draw(gc, view_bounds=(0, 0, size[0], size[1]))
+
 #        damaged_regions = draw_result['damaged_regions']
         # FIXME: consolidate damaged regions if necessary
         if not self.use_damaged_region:
             self._update_region = None
+
+        # Perform a paint of the GC to the window (only necessary on backends
+        # that render to an off-screen buffer)
         self._window_paint(event)
+
         self._update_region = []
         return
 

@@ -68,8 +68,8 @@ class _PygletApp(object):
                 window.dispatch_events()
                 #window.clear()
                 window.draw()
-                clock.tick()
                 window.flip()
+                clock.tick()
                 if window.has_exit:
                     exit = True
         return
