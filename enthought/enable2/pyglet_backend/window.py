@@ -64,8 +64,9 @@ class PygletWindow(window.Window):
         """
         self.enable_window = enable_window
 
-        # Whether or not the Enable component stack has requested a redraw
-        self._redraw_requested = False
+        # This indicates whether or not we should call the Enable window to
+        # draw.  If this flag is False, then the draw() method just passes.
+        self._dirty = True
 
         super(PygletWindow, self).__init__(**kwargs)
 
@@ -83,7 +84,9 @@ class PygletWindow(window.Window):
 
     def draw(self):
         "Called by the mainloop to perform the actual draw"
-        self.enable_window._paint()
+        if self._dirty:
+            self.enable_window._paint()
+            self._dirty = False
         
 
     def request_redraw(self, coordinates=None):
@@ -91,8 +94,9 @@ class PygletWindow(window.Window):
         **coordinates** is a tuple (x,y,w,h) of a specific sub-region to
         redraw.
         """
-        # TODO: Support the **coordinates** argument
-        self._redraw_requested = True
+        # TODO: Support the **coordinates** argument, perhaps using a direct
+        # call to glScissor()
+        self._dirty = True
 
     #-------------------------------------------------------------------------
     # Key/text handling
@@ -195,6 +199,7 @@ class PygletWindow(window.Window):
     #-------------------------------------------------------------------------
 
     def on_resize(self, width, height):
+        self._dirty = True
         self.enable_window.resized = (width, height)
 
     def on_close(self):
@@ -212,7 +217,7 @@ class PygletWindow(window.Window):
 
     def on_activate(self):
         """ The window was activated. """
-        pass
+        self._dirty = True
 
     def on_deactivate(self):
         """ The window lost focus. """
@@ -220,7 +225,7 @@ class PygletWindow(window.Window):
 
     def on_show(self):
         """ The window was shown. """
-        pass
+        self._dirty = True
 
     def on_hide(self):
         """ The window was minimized or hidden. """

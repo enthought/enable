@@ -58,6 +58,7 @@ class _PygletApp(object):
         # Initialization/setup
         # TODO: initialize some fonts
         # TODO: initialize the timer
+        clock.set_fps_limit(60)
 
         # Run the mainloop
         exit = False
