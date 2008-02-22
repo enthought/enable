@@ -86,7 +86,6 @@ class PygletWindow(window.Window):
         "Called by the mainloop to perform the actual draw"
         if self._dirty:
             self.enable_window._paint()
-            gl.glFlush()
             self._dirty = False
         
 
@@ -391,10 +390,13 @@ class Window(AbstractWindow):
         # pixel coordinates at the lower-left corner, the Pyglet backend is
         # raster-based and places coordinates at the center of pixels.
         gc = GraphicsContextEnable(size, window=self)
+        gc.gl_init()
         return gc
 
     def _init_gc(self):
-        gc.gl_init()
+        #gc = self._gc
+        #gc.gl_init()
+        pass
     
     def _redraw(self, coordinates=None):
         "Request a redraw of the window"
