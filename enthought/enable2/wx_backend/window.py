@@ -7,7 +7,6 @@ import sys
 import time
 import wx
 
-WidgetClass = wx.Window
 
 from enthought.traits.api import Any, Float, Instance, Trait
 from enthought.traits.ui.wx.menu import MakeMenu
@@ -18,7 +17,13 @@ from enthought.enable2.component  import Component
 from enthought.enable2.events import MouseEvent, KeyEvent, DragEvent
 from enthought.enable2.graphics_context import GraphicsContextEnable
 from enthought.enable2.abstract_window import AbstractWindow
+from enthought.kiva import backend
 
+if backend() == "gl":
+    from wx.glcanvas import GLCanvas
+    WidgetClass = GLCanvas
+else:
+    WidgetClass = wx.Window
 
 try:
     from enthought.util.wx.drag_and_drop import clipboard, PythonDropTarget
@@ -278,6 +283,10 @@ class Window ( AbstractWindow ):
         self._timer          = None
         self._mouse_captured = False
 
+        # If we are using the GL backend, we will need to have a pyglet
+        # GL context
+        self._pyglet_gl_context = None
+
         # Due to wx wonkiness, we don't reliably get cursor position from
         # a wx KeyEvent.  Thus, we manually keep track of when we last saw
         # the mouse and use that information instead.  These coordinates are
@@ -288,7 +297,7 @@ class Window ( AbstractWindow ):
         self.control = control = WidgetClass( parent, wid, pos, size,
                                               style = wx.CLIP_CHILDREN |
                                                       wx.WANTS_CHARS )
-
+        
         # Set up the 'erase background' event handler:
         wx.EVT_ERASE_BACKGROUND( control, self._on_erase_background )
  
@@ -505,8 +514,11 @@ class Window ( AbstractWindow ):
     
     def _create_gc ( self, size, pix_format = "bgra32" ):
         "Create a Kiva graphics context of a specified size"
-        gc = GraphicsContextEnable((size[0]+1, size[1]+1), pix_format = pix_format, window=self )
-        gc.translate_ctm(0.5, 0.5)
+        if backend() == "gl":
+            gc = GraphicsContextEnable(size, pix_format=pix_format, window=self)
+        else:
+            gc = GraphicsContextEnable((size[0]+1, size[1]+1), pix_format = pix_format, window=self )
+            gc.translate_ctm(0.5, 0.5)
         return gc
     
     def _redraw(self, coordinates=None):
@@ -532,21 +544,35 @@ class Window ( AbstractWindow ):
             result = self.control.GetSizeTuple()
         return result
 
+    def _init_gc(self):
+        if backend() == "gl":
+            gc = GraphicsContextEnable(self._size, window=self)
+            if self._pyglet_gl_context is None:
+                from pyglet.gl import Context
+                self._pyglet_gl_context = Context()
+            self._pyglet_gl_context.set_current()
+            self.control.SetCurrent()
+            gc.gl_init()
+            self._gc = gc
+        else:
+            gc = self._gc
+        gc.clear(self.bg_color_)
+
     def _window_paint ( self, event):
         "Do a GUI toolkit specific screen update"
-        control = self.control
-        wdc     = control._dc = wx.PaintDC( control )
-
-        self._update_region = None
-        if self._update_region is not None:
-            update_bounds = reduce(union_bounds, self._update_region)
-            print "doing partial draw", update_bounds
-            self._gc.pixel_map.draw_to_wxwindow( control, int(update_bounds[0]), int(update_bounds[1]),
-                                                 width=int(update_bounds[2]), height=int(update_bounds[3]))
+        if backend() == "gl":
+            self.control.SwapBuffers()
         else:
-            self._gc.pixel_map.draw_to_wxwindow( control, 0, 0 )
-
-        control._dc = None
+            control = self.control
+            wdc     = control._dc = wx.PaintDC( control )
+            self._update_region = None
+            if self._update_region is not None:
+                update_bounds = reduce(union_bounds, self._update_region)
+                self._gc.pixel_map.draw_to_wxwindow( control, int(update_bounds[0]), int(update_bounds[1]),
+                                                     width=int(update_bounds[2]), height=int(update_bounds[3]))
+            else:
+                self._gc.pixel_map.draw_to_wxwindow( control, 0, 0 )
+            control._dc = None
         return
         
     def set_pointer ( self, pointer ):

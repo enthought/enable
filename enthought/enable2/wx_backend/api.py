@@ -1,7 +1,9 @@
 
 import sys
 
-if sys.platform == 'darwin':
+from enthought.kiva import backend
+
+if sys.platform == 'darwin' and backend() != "gl":
     from mac_window import MacWindow as Window
 else:
     from window import Window
