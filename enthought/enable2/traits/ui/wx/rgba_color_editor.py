@@ -24,7 +24,7 @@ from enthought.traits.ui.api import View
 from enthought.traits.ui.wx.editor_factory import EditorFactory, SimpleEditor, \
         TextEditor, ReadonlyEditor
 from enthought.traits.ui.wx.editor import Editor
-from enthought.traits.ui.wx.helper import position_near
+from enthought.traits.ui.wx.helper import position_window
 from enthought.traits.ui.wx.color_editor import color_samples
 
 
@@ -179,7 +179,7 @@ class SimpleColorEditor ( Editor ):
             color_data.SetColour( self.factory.to_wx_color( self ) )
             color_data.SetChooseFull( True )
             dialog = wx.ColourDialog( self.control, color_data )
-            position_near( self.control, dialog )
+            position_window(dialog, parent=self.control)
             if dialog.ShowModal() == wx.ID_OK:
                 self.value = self.factory.from_wx_color(
                                   dialog.GetColourData().GetColour() )
@@ -423,7 +423,7 @@ class ColorDialog ( wx.Frame ):
         sizer = wx.BoxSizer( wx.VERTICAL )
         sizer.Add( panel )
         self.SetSizerAndFit( sizer )
-        position_near( editor.control, self )
+        position_window(self, parent=editor.control)
         self.Show()
 
     #---------------------------------------------------------------------------
