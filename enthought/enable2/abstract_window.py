@@ -331,8 +331,8 @@ class AbstractWindow(HasTraits):
         # Create a new GC if necessary
         size = self._get_control_size()
         if (self._size != tuple(size)) or (self._gc is None):
-            self._gc = self._create_gc(size)
             self._size = tuple(size)
+            self._gc = self._create_gc(size)
         
         # Always give the GC a chance to initialize
         self._init_gc()
