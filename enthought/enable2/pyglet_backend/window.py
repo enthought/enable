@@ -22,7 +22,8 @@ from enthought.enable2.graphics_context import GraphicsContextEnable
 from enthought.enable2.abstract_window import AbstractWindow
 
 # local, relative imports
-from constants import BUTTON_NAME_MAP, KEY_MAP, POINTER_MAP
+from constants import ASCII_CONTROL_KEYS, BUTTON_NAME_MAP, KEY_MAP, \
+        POINTER_MAP, TEXT_KEYS
 
 
 class PygletMouseEvent(object):
@@ -103,6 +104,7 @@ class PygletWindow(window.Window):
     #-------------------------------------------------------------------------
     
     def on_key_press(self, symbol, modifiers):
+        #print "symbol: %r" % symbol
         return self._on_key_updown(symbol, modifiers, down=False)
 
     def on_key_release(self, symbol, modifiers):
@@ -114,11 +116,24 @@ class PygletWindow(window.Window):
         enable_win.shift_pressed = bool(down & event.shift_pressed)
         enable_win.ctrl_pressed = bool(down & event.ctrl_pressed)
         enable_win.alt_pressed = bool(down & event.alt_pressed)
-        # It's important to return False so that the KeyStateHandler
-        # can also get this event.
-        return False
+
+        if symbol in KEY_MAP and symbol not in TEXT_KEYS:
+            if down:
+                event_name = "key_pressed"
+            else:
+                event_name = "key_released"
+            self._dispatch_key_event(KEY_MAP[symbol], event_name)
+            # Return True so that the KeyStateHandler doesn't get this event
+            return True
+        else:
+            # Let KeyStateHandler deal with this event
+            return False
 
     def on_text(self, text):
+        #print "Text: %r" % text
+        self._dispatch_key_event(text)
+
+    def _dispatch_key_event(self, char_or_keyname, event_name="key_pressed"):
         if self.enable_window.focus_owner is None:
             focus_owner = self.enable_window.component
         else:
@@ -126,16 +141,21 @@ class PygletWindow(window.Window):
 
         if focus_owner is None:
             return
+        
+        if len(char_or_keyname) == 1:
+            code = ord(char_or_keyname)
+            if code in ASCII_CONTROL_KEYS:
+                char_or_keyname = ASCII_CONTROL_KEYS[code]
 
         keys = self.key_state
-        enable_event = KeyEvent(character = key,
+        enable_event = KeyEvent(character = char_or_keyname,
                           alt_down = keys[key.LALT] | keys[key.RALT],
                           control_down = keys[key.LCTRL] | keys[key.RCTRL],
                           shift_down = keys[key.LSHIFT] | keys[key.RSHIFT],
                           x = self._mouse_x,
                           y = self._mouse_y,
                           window = self.enable_window)
-        focus_owner.dispatch(enable_event, "key_pressed")
+        focus_owner.dispatch(enable_event, event_name)
         return True
 
     def on_text_motion(self, motion):

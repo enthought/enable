@@ -51,6 +51,25 @@ POINTER_MAP = {
     "spray can" :  win.CURSOR_DEFAULT,
 }
 
+# Since Pyglet has both on_key_press and on_text events, and it's not
+# entirely clear if certain keys generate both events, we maintain an
+# empirical list of keys in the KEY_MAP that also generate on_text
+# events.  (Generally, entries in the KEY_MAP are used to map unprintable
+# or control characters, so by default we would expect them not to
+# generate on_text events.)
+TEXT_KEYS = (
+        key.RETURN, key.ENTER, key.NUM_0, key.NUM_1, key.NUM_2,
+        key.NUM_3, key.NUM_4, key.NUM_5, key.NUM_6, key.NUM_7,
+        key.NUM_8, key.NUM_9, key.NUM_DECIMAL, key.NUM_ADD,
+        key.NUM_MULTIPLY, key.NUM_SUBTRACT, key.NUM_DIVIDE,
+        )
+
+ASCII_CONTROL_KEYS = {
+        8: "Backspace",
+        9: "Tab",
+        13: "Enter",
+        27: "Esc",
+        }
 
 KEY_MAP = {
     key.BACKSPACE : "Backspace",
