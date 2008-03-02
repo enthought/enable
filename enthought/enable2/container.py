@@ -178,7 +178,6 @@ class Container(Component):
 
         self.invalidate_draw()
 
-
     def insert(self, index, component):
         "Inserts a component into a specific position in the components list"
         if component.container is not None:
@@ -271,31 +270,6 @@ class Container(Component):
                 ur_y = component.y2
         return (ll_x, ll_y, ur_x, ur_y)
 
-    def _draw_children(self, gc, view_bounds=None, mode="normal"):
-        
-        new_bounds = self._transform_view_bounds(view_bounds)
-        if new_bounds == empty_rectangle:
-            return
-        
-        gc.save_state()
-        try:
-            gc.set_antialias(False)
-            gc.translate_ctm(*self.position)
-            for component in self.components:
-                if new_bounds:
-                    tmp = intersect_bounds(component.outer_position + 
-                                           component.outer_bounds, new_bounds)
-                    if tmp == empty_rectangle:
-                        continue
-                
-                gc.save_state()
-                try:
-                    component.draw(gc, new_bounds, mode)
-                finally:
-                    gc.restore_state()
-        finally:
-            gc.restore_state()
-        return
 
     def _dispatch_draw(self, layer, gc, view_bounds, mode):
         """ Renders the named *layer* of this component. 
@@ -340,34 +314,6 @@ class Container(Component):
                 my_handler(gc, view_bounds, mode)
         
         return
-
-
-    def _draw_component(self, gc, view_bounds=None, mode="normal"):
-        """ Draws the component.
-
-        This method is preserved for backwards compatibility. Overrides 
-        the implementation in Component.
-        """
-        gc.save_state()
-        gc.set_antialias(False)
-
-        self._draw_container(gc, mode)
-        self._draw_background(gc, view_bounds, mode)
-        self._draw_underlay(gc, view_bounds, mode)
-        self._draw_children(gc, view_bounds, mode) #This was children_draw_mode
-        self._draw_overlays(gc, view_bounds, mode)
-        gc.restore_state()
-        return
-    
-        # The container's annotation and overlay layers draw over those of 
-        # its components.
-        if layer in ("annotation", "overlay"):
-            my_handler = getattr(self, "_draw_container_" + layer, None)
-            if my_handler:
-                my_handler(gc, view_bounds, mode)
-        
-        return
-
     def _draw_container(self, gc, mode="default"):
         "Draw the container background in a specified graphics context"
         pass
@@ -637,5 +583,62 @@ class Container(Component):
     def __components_changed(self, event):
         self._layout_needed = True
         self.invalidate_draw()
+
+    #-------------------------------------------------------------------------
+    # Old / deprecated draw methods; here for backwards compatibility
+    #-------------------------------------------------------------------------
+
+    def _draw_component(self, gc, view_bounds=None, mode="normal"):
+        """ Draws the component.
+
+        This method is preserved for backwards compatibility. Overrides 
+        the implementation in Component.
+        """
+        gc.save_state()
+        gc.set_antialias(False)
+
+        self._draw_container(gc, mode)
+        self._draw_background(gc, view_bounds, mode)
+        self._draw_underlay(gc, view_bounds, mode)
+        self._draw_children(gc, view_bounds, mode) #This was children_draw_mode
+        self._draw_overlays(gc, view_bounds, mode)
+        gc.restore_state()
+        return
+    
+        # The container's annotation and overlay layers draw over those of 
+        # its components.
+        if layer in ("annotation", "overlay"):
+            my_handler = getattr(self, "_draw_container_" + layer, None)
+            if my_handler:
+                my_handler(gc, view_bounds, mode)
+        
+        return
+
+    def _draw_children(self, gc, view_bounds=None, mode="normal"):
+        
+        new_bounds = self._transform_view_bounds(view_bounds)
+        if new_bounds == empty_rectangle:
+            return
+        
+        gc.save_state()
+        try:
+            gc.set_antialias(False)
+            gc.translate_ctm(*self.position)
+            for component in self.components:
+                if new_bounds:
+                    tmp = intersect_bounds(component.outer_position + 
+                                           component.outer_bounds, new_bounds)
+                    if tmp == empty_rectangle:
+                        continue
+                
+                gc.save_state()
+                try:
+                    component.draw(gc, new_bounds, mode)
+                finally:
+                    gc.restore_state()
+        finally:
+            gc.restore_state()
+        return
+
 
 ### EOF
