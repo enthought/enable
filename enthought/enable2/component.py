@@ -6,6 +6,12 @@ from enthought.traits.api \
            Property, Str, Trait, true
 from enthought.kiva import GraphicsContext, FILL
 
+try:
+    from enthought.kiva.backend_gl import GraphicsContext as GraphicsContextGL
+except ImportError:
+    class GraphicsContextGL(object):
+        pass
+
 # Local relative imports
 from colors import black_color_trait, white_color_trait
 from coordinate_box import CoordinateBox
@@ -648,7 +654,7 @@ class Component(CoordinateBox, Interactor):
         self.drawn_outer_position = list(self.outer_position[:])
         self.drawn_outer_bounds = list(self.outer_bounds[:])
         
-        if self.use_backbuffer:
+        if self.use_backbuffer and (not isinstance(gc, GraphicsContextGL)):
             if self.backbuffer_padding:
                 x, y = self.outer_position
                 width, height = self.outer_bounds
