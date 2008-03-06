@@ -21,7 +21,7 @@ class TestWindow(Window):
 
     def init_window(self):
         self.gc = GraphicsContext(size=(self.width, self.height))
-        self.gc.init_gl_viewport()
+        #self.gc.init_gl_viewport()
 
     def on_key_press(self, symbol, modifiers):
         if symbol in (key.ESCAPE, key.Q):
@@ -30,7 +30,7 @@ class TestWindow(Window):
     def draw(self):
         gc = self.gc
         gc.save_state()
-        gc.clear(0, 1, 0, 1)
+        gc.clear((0, 1, 0, 1))
         gc.set_stroke_color((1,1,1,1))
         gc.set_line_width(2)
         pts = array([[50, 50], [50,100], [100,100], [100,50]])
