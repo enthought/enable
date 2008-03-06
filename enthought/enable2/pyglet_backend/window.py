@@ -276,8 +276,9 @@ class Window(AbstractWindow):
     # the current drag operation should return DragCopy, DragMove, or DragNone.
     _drag_result = Any
     
-    def __init__(self, parent=None, id=-1, **traits ):
-        """ **parent** is an unneeded argument with the pyface backend, but
+    def __init__(self, parent=None, id=-1, pos=None, size=None, config=None,
+        fullscreen=False, resizable=True, vsync=False, **traits):
+        """ **parent** is an unneeded argument with the pyglet backend, but
         we need to preserve compatibility with other AbstractWindow 
         subclasses.
         """
@@ -300,19 +301,25 @@ class Window(AbstractWindow):
         # antialiasing is enabled.
         display = window.get_platform().get_default_display()
         screen = display.get_default_screen()
-        if self.enable_antialias:
-            template_config = gl.Config(double_buffer=True, sample_buffers=True,
-                samples=4)
-        else:
-            template_config = gl.Config(double_buffer=False)
-        try:
-            config = screen.get_best_config(template_config)
-        except window.NoSuchConfigException:
-            # Rats. No antialiasing.
-            config = screen.get_best_config(gl.Config(double_buffer=True))
+        if config is None:
+            if self.enable_antialias:
+                template_config = gl.Config(double_buffer=True, sample_buffers=True,
+                    samples=4)
+            else:
+                template_config = gl.Config(double_buffer=False)
+            try:
+                config = screen.get_best_config(template_config)
+            except window.NoSuchConfigException:
+                # Rats. No antialiasing.
+                config = screen.get_best_config(gl.Config(double_buffer=True))
         # Create the underlying control.
-        self.control = PygletWindow(enable_window=self, config=config,
-            resizable=True, vsync=False)
+        kwds = dict(config=config, fullscreen=fullscreen,
+            resizable=resizable, vsync=vsync)
+        if size is not None and not fullscreen:
+            kwds['width'], kwds['height'] = size
+        self.control = PygletWindow(self, **kwds)
+        if pos is not None:
+            self.control.set_location(*pos)
         
         return
 

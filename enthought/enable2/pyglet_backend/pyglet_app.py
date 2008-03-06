@@ -67,8 +67,14 @@ class _PygletApp(object):
                 #window.switch_to()
                 window.dispatch_events()
                 #window.clear()
-                window.draw()
-                window.flip()
+                # Since we only draw if something has changed, we must make sure
+                # that we also only flip the backbuffer when we do draw.
+                # Otherwise, we will be constantly flipping back and forth
+                # between an up-to-date buffer and an out-of-date buffer. This
+                # only appears to occur on fullscreen windows.
+                if window._dirty:
+                    window.draw()
+                    window.flip()
                 clock.tick()
                 if window.has_exit:
                     exit = True
