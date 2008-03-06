@@ -8,7 +8,7 @@ from enthought.traits.api import Any, Event, Float, List, Trait, Bool
 
 # Local imports.
 from enthought.enable2.api import border_size_trait, Component
-from enthought.enable2.traits.rgba_color_trait import RGBAColor
+from enthought.enable2.colors import ColorTrait
 
 
 class Line(Component):
@@ -21,7 +21,7 @@ class Line(Component):
     updated = Event
 
     # The color of the line.
-    line_color = RGBAColor("black")
+    line_color = ColorTrait("black")
 
     # The dash pattern for the line.
     line_dash = Any
@@ -33,7 +33,7 @@ class Line(Component):
     points = List  # List of Tuples
 
     # The color of each vertex.
-    vertex_color = RGBAColor("black")
+    vertex_color = ColorTrait("black")
 
     # The size of each vertex.
     vertex_size = Float(3.0)

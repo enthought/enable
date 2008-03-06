@@ -23,7 +23,7 @@ from enthought.traits.ui.api            import Group, View, Include
 from enthought.enable2.base          import IDroppedOnHandler, gc_image_for
 from enthought.enable2.component     import Component
 from enthought.enable2.enable_traits import string_image_trait, NoStretch
-from enthought.enable2.traits.rgba_color_trait import RGBAColor
+from enthought.enable2.colors import ColorTrait
 
 #-------------------------------------------------------------------------------
 #  'Image' class:
@@ -141,7 +141,7 @@ class ColorChip ( Component ):
     #  Trait definitions:
     #---------------------------------------------------------------------------
 
-    color = RGBAColor("yellow")
+    color = ColorTrait("yellow")
     item  = Trait( 'fg_color', TraitPrefixList(
                  [ 'fg_color',     'bg_color',
                    'shadow_color', 'alt_color' ] ) )

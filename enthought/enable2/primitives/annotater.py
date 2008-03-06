@@ -7,12 +7,12 @@ from enthought.traits.api import Event, Trait, TraitPrefixList
 from enthought.traits.ui.api import Group, View, Include
 
 from enthought.enable2.api import Component
-from enthought.enable2.traits.rgba_color_trait import RGBAColor
+from enthought.enable2.colors import ColorTrait
 
 
 class Annotater(Component):
 
-    color = Trait((0.0, 0.0, 0.0, 0.2 ), RGBAColor )
+    color = ColorTrait((0.0, 0.0, 0.0, 0.2 ))
     style = Trait("rectangular", TraitPrefixList(["rectangular", 'freehand']))
     annotation = Event
 

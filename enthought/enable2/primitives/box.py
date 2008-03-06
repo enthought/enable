@@ -5,13 +5,13 @@ from enthought.traits.ui.api import Group, View, Include
 
 # Parent package imports
 from enthought.enable2.api import border_size_trait, Component, transparent_color
-from enthought.enable2.traits.rgba_color_trait import RGBAColor
+from enthought.enable2.colors import ColorTrait
 
 
 class Box(Component):
 
-    color        = RGBAColor("white")
-    border_color = RGBAColor("black")
+    color        = ColorTrait("white")
+    border_color = ColorTrait("black")
     border_size  = border_size_trait
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):

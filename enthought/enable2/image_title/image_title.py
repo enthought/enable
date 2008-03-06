@@ -23,7 +23,7 @@ from enthought.enable2.component     import Component
 from enthought.enable2.enable_traits import alignment_trait, \
                                            font_trait, engraving_trait, \
                                            string_image_trait
-from enthought.enable2.traits.rgba_color_trait import RGBAColor
+from enthought.enable2.colors import ColorTrait
 
 
 #-------------------------------------------------------------------------------
@@ -51,8 +51,8 @@ class ImageTitle ( Component ):
     image        = Trait( '=blue_round_3d_hs4', string_image_trait )
     text         = Str
     font         = font_trait
-    color        = RGBAColor("black")
-    shadow_color = RGBAColor("white")
+    color        = ColorTrait("black")
+    shadow_color = ColorTrait("white")
     alignment    = alignment_trait
     style        = engraving_trait
 

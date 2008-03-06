@@ -19,7 +19,7 @@
 import os.path
 
 # Enthought library imports
-from enthought.enable2.traits.rgba_color_trait import RGBAColor
+from enthought.enable2.colors import ColorTrait
 from enthought.traits.api import Delegate, false, HasTraits, Str, Trait, \
                                  TraitPrefixList, true
 from enthought.traits.ui.api import View, Group, Include
@@ -51,8 +51,8 @@ class LabelTraits ( HasTraits ):
     text              = Str
     font              = font_trait
     text_position     = position_trait("left")
-    color             = RGBAColor("black")
-    shadow_color      = RGBAColor("white")
+    color             = ColorTrait("black")
+    shadow_color      = ColorTrait("white")
     style             = engraving_trait
 
     image             = image_trait
@@ -70,8 +70,8 @@ class LabelTraits ( HasTraits ):
     margin_top        = margin_trait
     margin_bottom     = margin_trait
     border_size       = border_size_trait
-    border_color      = RGBAColor("black")
-    bg_color          = RGBAColor("clear")
+    border_color      = ColorTrait("black")
+    bg_color          = ColorTrait("clear")
 
     enabled           = true
     selected          = false

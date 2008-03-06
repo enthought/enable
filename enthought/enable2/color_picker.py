@@ -18,7 +18,7 @@ from numpy import zeros, ones, floor, putmask, uint8, choose, concatenate, \
                   repeat, newaxis, arange
 
 # Enthought library imports
-from enthought.enable2.traits.rgba_color_trait import RGBAColor
+from enthought.enable2.colors import ColorTrait
 from enthought.kiva.traits.kiva_font_trait import KivaFont
 from enthought.traits.api import Enum, Event, Str, true
 
@@ -143,8 +143,8 @@ class ColorPicker ( Component ):
     #  Trait definitions:
     #---------------------------------------------------------------------------
 
-    color      = RGBAColor                    # Color being edited
-    bg_color   = RGBAColor( 'white' )         # Component background color
+    color      = ColorTrait                    # Color being edited
+    bg_color   = ColorTrait( 'white' )         # Component background color
     style      = Enum( 'simple', 'custom' )   # Editor style
     mode       = Enum( 'rgb', 'hsv', 'hsv2', 'hsv3' ) # Color space mode
     edit_alpha = true                         # Should alpha channel be edited?

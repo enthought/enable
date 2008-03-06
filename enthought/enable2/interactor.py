@@ -9,7 +9,7 @@ from enthought.traits.api import Any, Bool, HasTraits, List, Property, Str, Trai
 
 # Local relative imports
 from enable_traits import bounds_trait, cursor_style_trait, Pointer
-from enthought.enable2.traits.rgba_color_trait import RGBAColor
+from enthought.enable2.colors import ColorTrait
 
 class Interactor(HasTraits):
     """
@@ -56,7 +56,7 @@ class Interactor(HasTraits):
 
     # The color of the cursor...
     # PZW: Figure out the right type for this..
-    cursor_color = RGBAColor
+    cursor_color = ColorTrait
 
     # Whether or not the interactor accepts keyboard focus
     accepts_focus = Bool(True)

@@ -12,7 +12,7 @@ from enthought.traits.ui.api import Group, View
 
 # Local imports.
 from enthought.enable2.api import border_size_trait, Component, transparent_color
-from enthought.enable2.traits.rgba_color_trait import RGBAColor
+from enthought.enable2.colors import ColorTrait
 
 
 class PolygonModel(HasTraits):
@@ -34,10 +34,10 @@ class Polygon(Component):
     #--------------------------------------------------------------------------
 
     # The background color of this polygon.
-    background_color = RGBAColor("white")
+    background_color = ColorTrait("white")
 
     # The color of the border of this polygon.
-    border_color = RGBAColor("black")
+    border_color = ColorTrait("black")
 
     # The dash pattern to use for this polygon.
     border_dash = Any
@@ -59,7 +59,7 @@ class Polygon(Component):
     points = Property
 
     # The color of each vertex.
-    vertex_color = RGBAColor("black")
+    vertex_color = ColorTrait("black")
 
     # The size of each vertex.
     vertex_size = Float(3.0)
