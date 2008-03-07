@@ -498,12 +498,14 @@ class Window(AbstractWindow):
         # is no additional step needed here.
         pass
 
-    def screen_to_window(self, x, y, warn=True):
-        """ This method is really not needed for Pyglet, since mouse coords
-        are given relative to the window's lower-left corner anyways.
+    def screen_to_window(self, x, y):
+        """ Convert screen coordinates with the origin at the upper-left-hand
+        corner to local pyglet window coordinates.
         """
-        if warn:
-            warnings.warn("screen_to_window() is unnecessary when using Pyglet backend.")
+        x0, y0 = self.control.get_location()
+        x -= x0
+        y -= y0
+        y = self.control.height - y
         return (x,y)
     
     #-------------------------------------------------------------------------
