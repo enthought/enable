@@ -514,11 +514,8 @@ class Window ( AbstractWindow ):
     
     def _create_gc ( self, size, pix_format = "bgra32" ):
         "Create a Kiva graphics context of a specified size"
-        if backend() == "gl":
-            gc = GraphicsContextEnable(size, pix_format=pix_format, window=self)
-        else:
-            gc = GraphicsContextEnable((size[0]+1, size[1]+1), pix_format = pix_format, window=self )
-            gc.translate_ctm(0.5, 0.5)
+        gc = GraphicsContextEnable((size[0]+1, size[1]+1), pix_format = pix_format, window=self )
+        gc.translate_ctm(0.5, 0.5)
         return gc
     
     def _redraw(self, coordinates=None):

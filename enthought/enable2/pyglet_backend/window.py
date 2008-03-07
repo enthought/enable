@@ -416,7 +416,8 @@ class Window(AbstractWindow):
         # Unlike the vector-based Agg and Quartz GraphicsContexts which place
         # pixel coordinates at the lower-left corner, the Pyglet backend is
         # raster-based and places coordinates at the center of pixels.
-        gc = GraphicsContextEnable(size, window=self)
+        gc = GraphicsContextEnable((size[0]+1, size[1]+1), window=self)
+        gc.translate_ctm(0.5, 0.5)
         gc.gl_init()
         return gc
 
