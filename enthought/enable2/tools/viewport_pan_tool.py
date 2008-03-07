@@ -1,17 +1,15 @@
 """ Defines the PanTool class.
 """
 # Enthought library imports
-from enthought.enable2.api import BaseTool, Pointer
+from enthought.enable2.api import Pointer
 from enthought.traits.api import Enum, false, Float, Tuple
 
+from drag_tool import DragTool
 
-class ViewportPanTool(BaseTool):
+class ViewportPanTool(DragTool):
     """ A tool that enables the user to pan around a viewport by clicking a 
     mouse button and dragging.
     """
-    
-    # The mouse button that initiates the drag operation.
-    drag_button = Enum("left", "middle", "right")
     
     # The cursor to use when panning.
     drag_pointer = Pointer("hand")
@@ -51,78 +49,22 @@ class ViewportPanTool(BaseTool):
     # Inherited BaseTool traits
     #------------------------------------------------------------------------
 
-    # The tool does not have a visual representation (overrides
-    # BaseTool).
-    draw_mode = "none"
-
     # The tool is not visible (overrides BaseTool).
     visible = False
-    
-    # The possible event states of this tool (overrides enable2.Interactor).
-    event_state = Enum("normal", "panning")
 
-
-    def normal_left_down(self, event):
-        """ Handles the left mouse button being pressed when the tool is in
-        the 'normal' state.
-        
-        Starts panning if the left mouse button is the drag button.
-        """
-        if self.drag_button == "left":
-            self._start_pan(event)
-        return
-    
-    def normal_right_down(self, event):
-        """ Handles the right mouse button being pressed when the tool is in
-        the 'normal' state.
-        
-        Starts panning if the right mouse button is the drag button.
-        """
-        if self.drag_button == "right":
-            self._start_pan(event)
+    def drag_start(self, event):
+        self._original_xy = (event.x, event.y)
+        if self.constrain_key is not None:
+            if getattr(event, self.constrain_key + "_down"):
+                self.constrain = True
+                self._auto_constrain = True
+                self.constrain_direction = None
+        event.window.set_pointer(self.drag_pointer)
+        event.window.set_mouse_owner(self, event.net_transform())
+        event.handled = True
         return
 
-    def normal_middle_down(self, event):
-        """ Handles the middle mouse button being pressed when the tool is in
-        the 'normal' state.
-        
-        Starts panning if the middle mouse button is the drag button.
-        """
-        if self.drag_button == "middle":
-            self._start_pan(event)
-        return
-
-    def panning_left_up(self, event):
-        """ Handles the left mouse button coming up when the tool is in the 
-        'panning' state.
-        
-        Stops panning if the left mouse button is the drag button.
-        """
-        if self.drag_button == "left":
-            self._end_pan(event)
-        return
-    
-    def panning_right_up(self, event):
-        """ Handles the right mouse button coming up when the tool is in the
-        'panning' state.
-        
-        Stops panning if the right mouse button is the drag button.
-        """
-        if self.drag_button == "right":
-            self._end_pan(event)
-        return
-
-    def panning_middle_up(self, event):
-        """ Handles the middle mouse button coming up when the tool is in the 
-        'panning' state.
-        
-        Stops panning if the middle mouse button is the drag button.
-        """
-        if self.drag_button == "middle":
-            self._end_pan(event)
-        return
-
-    def panning_mouse_move(self, event):
+    def dragging(self, event):
         """ Handles the mouse being moved when the tool is in the 'panning' 
         state.
         """
@@ -156,33 +98,10 @@ class ViewportPanTool(BaseTool):
         self.component.request_redraw()
         return
 
-    def panning_mouse_leave(self, event):
-        """ Handles the mouse leaving the plot when the tool is in the 'panning'
-        state.
-        
-        Ends panning.
-        """
-        return self._end_pan(event)
-
-    def _start_pan(self, event, capture_mouse=True):
-        self._original_xy = (event.x, event.y)
-        if self.constrain_key is not None:
-            if getattr(event, self.constrain_key + "_down"):
-                self.constrain = True
-                self._auto_constrain = True
-                self.constrain_direction = None
-        self.event_state = "panning"
-        if capture_mouse:
-            event.window.set_pointer(self.drag_pointer)
-            event.window.set_mouse_owner(self, event.net_transform())
-        event.handled = True
-        return
-
-    def _end_pan(self, event):
+    def drag_end(self, event):
         if self._auto_constrain:
             self.constrain = False
             self.constrain_direction = None
-        self.event_state = "normal"
         event.window.set_pointer("arrow")
         if event.window.mouse_owner == self:
             event.window.set_mouse_owner(None)
