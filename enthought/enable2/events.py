@@ -141,14 +141,51 @@ key_event_trait = Event( KeyEvent )
 
 
 class BlobEvent(BasicEvent):
+    """ Represent a single pointer event from a multi-pointer event system.
 
+    Will be used with events:
+        blob_down
+        blob_move
+        blob_up
+    """
+
+    # The ID of the pointer.
     bid = Int(-1)
     
-    v_x = Float(0.0)
-    v_y = Float(0.0)
+    # If a blob_move event, then these will be the coordinates of the blob at
+    # the previous frame.
+    x0 = Float(0.0)
+    y0 = Float(0.0)
+
+blob_event_trait = Event(BlobEvent)
 
 
+class BlobFrameEvent(BasicEvent):
+    """ Represent the framing events for a multi-pointer event system.
 
+    Will be used with events:
+        blob_frame_begin
+        blob_frame_end
+
+    These can be used to synchronize the effects of multiple pointers.
+
+    The position traits are meaningless. These events will get passed down
+    through all components. Also, no component should mark it as handled. The
+    event must be dispatched through whether the component takes action based on
+    it or not.
+    """
+
+    # The ID number of the frame. This is generally implemented as a counter.
+    # Adjacent frames should have different frame IDs, but it is permitted for
+    # the counter to wrap around eventually or for the Enable application to
+    # disconnect and reconnect to a multi-pointer system and have the counter
+    # reset to 0.
+    fid = Int(-1)
+
+    # The timestamp of the frame in seconds from an unspecified origin.
+    t = Float(0.0)
+
+blob_frame_event_trait = Event(BlobFrameEvent)
 
 
 # EOF
