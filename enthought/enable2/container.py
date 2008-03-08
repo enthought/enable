@@ -12,7 +12,7 @@ from enthought.traits.api import Any, Bool, Enum, HasTraits, Instance, List, \
 from base import empty_rectangle, intersect_bounds
 from component import Component
 from enable_traits import border_size_trait
-from events import BlobEvent, DragEvent, MouseEvent
+from events import BlobEvent, BlobFrameEvent, DragEvent, MouseEvent
 from abstract_layout_controller import AbstractLayoutController
 
 
@@ -452,8 +452,14 @@ class Container(Component):
         "suffix" is the name of the mouse event as a suffix to the event state
         name, e.g. "_left_down" or "_window_enter".
         """
-
         if not event.handled:
+            if isinstance(event, BlobFrameEvent):
+                # This kind of event does not have a meaningful location. Just
+                # let all of the child components see it.
+                for component in self._components[::-1]:
+                    component.dispatch(event, suffix)
+                return
+
             components = self.components_at(event.x, event.y)
 
             # Translate the event's location to be relative to this container
@@ -469,25 +475,27 @@ class Container(Component):
                 if not suffix.startswith("pre_"):
                     components_left = self._prev_event_handlers - new_component_set
                     if components_left:
+                        leave_event = None
                         if isinstance(event, MouseEvent):
                             leave_event = event
                             leave_suffix = "mouse_leave"
                         elif isinstance(event, DragEvent):
                             leave_event = event
                             leave_suffix = "drag_leave"
-                        #elif isinstance(event, BlobEvent):
-                        #    leave_event = event
-                        #    leave_suffix = "blob_leave"
+                        elif isinstance(event, (BlobEvent, BlobFrameEvent)):
+                            # Do not generate a 'leave' event.
+                            pass
                         else:
                             # TODO: think of a better way to handle this rare case?
                             leave_event = MouseEvent(x=event.x, y=event.y,
                                                      window=event.window)
                             leave_suffix = "mouse_leave"
 
-                        for component in components_left:
-                            component.dispatch(leave_event, "pre_" + leave_suffix)
-                            component.dispatch(leave_event, leave_suffix)
-                        event.handled = False
+                        if leave_event is not None:
+                            for component in components_left:
+                                component.dispatch(leave_event, "pre_" + leave_suffix)
+                                component.dispatch(leave_event, leave_suffix)
+                                event.handled = False
 
                     # Notify new components of a mouse enter, if the event is
                     # not a mouse_leave or a drag_leave
@@ -502,9 +510,9 @@ class Container(Component):
                             elif isinstance(event, DragEvent):
                                 enter_event = event
                                 enter_suffix = "drag_enter"
-                            #elif isinstance(event, BlobEvent):
-                            #    enter_event = event
-                            #    enter_suffix = "blob_enter"
+                            elif isinstance(event, (BlobEvent, BlobFrameEvent)):
+                                # Do not generate an 'enter' event.
+                                pass
                             if enter_event:
                                 for component in components_entered:
                                     component.dispatch(enter_event, "pre_" + enter_suffix)

@@ -9,8 +9,8 @@ from numpy import array, dot, eye, matrix, float64
 
 # Enthought imports
 from enthought.kiva import affine
-from enthought.traits.api import Any, Bool, Float, HasTraits, Int, Event, \
-        List, ReadOnly
+from enthought.traits.api import (Any, Bool, Constant, Float, HasTraits, Int,
+    Event, List, ReadOnly)
 
 
 class BasicEvent(HasTraits):
@@ -105,6 +105,10 @@ class BasicEvent(HasTraits):
         else:
             return reduce(dot, self._transform_stack[::-1])
 
+    def __repr__(self):
+        s = '%s(x=%r, y=%r, handled=%r)' % (self.__class__.__name__, self.x,
+            self.y, self.handled)
+        return s
 
 class MouseEvent(BasicEvent):
     alt_down     = ReadOnly
@@ -125,6 +129,12 @@ class DragEvent(BasicEvent):
     obj  = ReadOnly 
     start_event = ReadOnly
 
+    def __repr__(self):
+        s = ('%s(x=%r, y=%r, x0=%r, y0=%r, handled=%r)' % 
+            (self.__class__.__name__, self.x, self.y, self.x0, self.y0,
+                self.handled))
+        return s
+
 drag_event_trait = Event(DragEvent)
 
 
@@ -136,6 +146,12 @@ class KeyEvent(BasicEvent):
     control_down = ReadOnly
     shift_down   = ReadOnly
     event        = ReadOnly    # what is this??
+
+    def __repr__(self):
+        s = ('%s(character=%r, alt_down=%r, control_down=%r, shift_down=%r, handled=%r)' % 
+            (self.__class__.__name__, self.character, self.alt_down,
+                self.control_down, self.shift_down, self.handled))
+        return s
 
 key_event_trait = Event( KeyEvent )
 
@@ -157,6 +173,28 @@ class BlobEvent(BasicEvent):
     x0 = Float(0.0)
     y0 = Float(0.0)
 
+    def push_transform(self, transform, caller=None):
+        """ Saves the current transform in a stack and sets the given transform
+        to be the active one.
+
+        This will also adjust x0 and y0.
+        """
+        x, y = dot(array((self.x, self.y, 1)), transform)[:2]
+        self._pos_stack.append((self.x, self.y))
+        self._transform_stack.append(transform)
+        self.x = x
+        self.y = y
+        x0, y0 = dot(array((self.x0, self.y0, 1)), transform)[:2]
+        self.x0 = x0
+        self.y0 = y0
+        if caller is not None:
+            self.dispatch_history.append(caller)
+
+    def __repr__(self):
+        s = '%s(bid=%r, x=%r, y=%r, x0=%r, y0=%r, handled=%r)' % (self.__class__.__name__,
+            self.bid, self.x, self.y, self.x0, self.y0, self.handled)
+        return s
+
 blob_event_trait = Event(BlobEvent)
 
 
@@ -173,6 +211,9 @@ class BlobFrameEvent(BasicEvent):
     through all components. Also, no component should mark it as handled. The
     event must be dispatched through whether the component takes action based on
     it or not.
+
+    NOTE: Frames without any blob events may or may not generate
+    BlobFrameEvents.
     """
 
     # The ID number of the frame. This is generally implemented as a counter.
@@ -184,6 +225,14 @@ class BlobFrameEvent(BasicEvent):
 
     # The timestamp of the frame in seconds from an unspecified origin.
     t = Float(0.0)
+
+    # Never mark this event as handled. Let every component respond to it.
+    #handled = ReadOnly(False)
+
+    def __repr__(self):
+        s = '%s(fid=%r, t=%r)' % (self.__class__.__name__,
+            self.fid, self.t)
+        return s
 
 blob_frame_event_trait = Event(BlobFrameEvent)
 
