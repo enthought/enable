@@ -44,9 +44,9 @@ class PygletMouseEvent(object):
         self.scroll_y = scroll_y
         
         if modifiers is not None:
-            self.shift_pressed = (modifiers & key.MOD_SHIFT)
-            self.ctrl_pressed = (modifiers & key.MOD_CTRL)
-            self.alt_pressed = (modifiers & key.MOD_ALT)
+            self.shift_pressed = bool(modifiers & key.MOD_SHIFT)
+            self.ctrl_pressed = bool(modifiers & key.MOD_CTRL)
+            self.alt_pressed = bool(modifiers & key.MOD_ALT)
         else:
             self.shift_pressed = self.ctrl_pressed = self.alt_pressed = False
         return 
@@ -402,9 +402,9 @@ class Window(AbstractWindow):
             y = self.control._mouse_y
             self._last_mouse_pos = (x, y)
             return MouseEvent( x = x, y = y,
-                               alt_down     = self.alt_pressed,    
-                               control_down = self.ctrl_pressed,
-                               shift_down   = self.shift_pressed,
+                               alt_down     = event.alt_pressed,
+                               control_down = event.ctrl_pressed,
+                               shift_down   = event.shift_pressed,
                                left_down    = False,
                                middle_down  = False,
                                right_down   = False,
