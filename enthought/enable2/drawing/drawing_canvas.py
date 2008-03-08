@@ -18,6 +18,8 @@ class Button(Component):
     label_font = KivaFont("modern 12")
 
     label_color = ColorTrait("white")
+    
+    down_label_color = ColorTrait("white")
 
     button_state = Enum("up", "down")
 
@@ -26,6 +28,9 @@ class Button(Component):
 
     # Default size of the button if no label is present
     bounds=[32,32]
+
+    # Generally, buttons are not resizable
+    resizable = ""
 
     _got_mousedown = false
 
@@ -60,18 +65,21 @@ class Button(Component):
             gc.set_fill_color(self.down_color_)
             gc.set_stroke_color(self.border_color_)
             gc.draw_rect((int(self.x), int(self.y), int(self.width)-1, int(self.height)-1), FILL_STROKE)
-            self._draw_label(gc)
+            self._draw_label(gc, color=self.down_label_color_)
         finally:
             gc.restore_state()
         return
 
-    def _draw_label(self, gc):
+    def _draw_label(self, gc, color=None):
         if self.label != "":
             gc.set_font(self.label_font)
             x,y,w,h = gc.get_text_extent(self.label)
-            gc.set_fill_color(self.label_color_)
-            gc.show_text_at_point(self.label, self.x+(self.width-w-x)/2,
-                                  self.y+(self.height-h-y)/2)
+            if color is None:
+                color = self.label_color_
+            gc.set_fill_color(color)
+            gc.set_stroke_color(color)
+            gc.show_text(self.label, (self.x+(self.width-w-x)/2,
+                                  self.y+(self.height-h-y)/2))
         return
 
     def normal_left_down(self, event):
@@ -122,13 +130,14 @@ class DrawingCanvasToolbar(Container):
 
     _last_button_position = Int(0)
 
-    def add_button(self, button):
-        self.add(button)
-        button.toolbar = self
-        # Compute the new position for the button
-        button.x = self.button_spacing + self._last_button_position
-        self._last_button_position += button.width + self.button_spacing * 2
-        button.y = int((self.height - button.height) / 2)
+    def add_button(self, *buttons):
+        for button in buttons:
+            self.add(button)
+            button.toolbar = self
+            # Compute the new position for the button
+            button.x = self.button_spacing + self._last_button_position
+            self._last_button_position += button.width + self.button_spacing * 2
+            button.y = int((self.height - button.height) / 2)
         return
 
     def _canvas_changed(self, old, new):
