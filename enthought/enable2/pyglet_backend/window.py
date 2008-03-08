@@ -277,7 +277,7 @@ class Window(AbstractWindow):
     _drag_result = Any
     
     def __init__(self, parent=None, id=-1, pos=None, size=None, config=None,
-        fullscreen=False, resizable=True, vsync=False, **traits):
+        fullscreen=False, resizable=True, vsync=True, **traits):
         """ **parent** is an unneeded argument with the pyglet backend, but
         we need to preserve compatibility with other AbstractWindow 
         subclasses.
