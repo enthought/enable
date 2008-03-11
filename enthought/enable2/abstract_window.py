@@ -181,7 +181,7 @@ class AbstractWindow(HasTraits):
         size = self._get_control_size()
         if (size is not None) and hasattr(self.component, "bounds"):
             new.on_trait_change(self.component_bounds_changed, 'bounds')
-            if hasattr(self.component, "fit_window") and self.component.fit_window:
+            if getattr(self.component, "fit_window", False):
                 self.component.outer_position = [0,0]
                 self.component.outer_bounds = list(size)
             elif hasattr(self.component, "resizable"):

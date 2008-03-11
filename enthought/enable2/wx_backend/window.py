@@ -437,12 +437,12 @@ class Window ( AbstractWindow ):
         dx, dy = self.control.GetSizeTuple()
 
         # do nothing if the new and old sizes are the same
-        if (self.component.outer_width, self.component.outer_height) ==  (dx, dy):
+        if (self.component.outer_width, self.component.outer_height) == (dx, dy):
             return
         
         self.resized = (dx, dy)
         
-        if hasattr(self.component, "fit_window") and self.component.fit_window:
+        if getattr(self.component, "fit_window", False):
             self.component.outer_position = [0,0]
             self.component.outer_bounds = [dx, dy]
         elif hasattr(self.component, "resizable"):

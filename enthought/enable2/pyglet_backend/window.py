@@ -31,7 +31,7 @@ class PygletMouseEvent(object):
     this to encapsulate all the possible state when we receive any mouse-
     related event.
     """
-    def __init__(self, x, y, dx=0, dy=0, buttons=None, modifiers=None,
+    def __init__(self, x, y, dx=0, dy=0, buttons=0, modifiers=None,
                  scroll_x=0, scroll_y=0):
         """ **buttons** is a list of buttons """
         self.x = x
@@ -104,18 +104,22 @@ class PygletWindow(window.Window):
     #-------------------------------------------------------------------------
     
     def on_key_press(self, symbol, modifiers):
-        #print "symbol: %r" % symbol
-        return self._on_key_updown(symbol, modifiers, down=False)
+        return self._on_key_updown(symbol, modifiers, down=True)
 
     def on_key_release(self, symbol, modifiers):
         return self._on_key_updown(symbol, modifiers)
 
     def _on_key_updown(self, symbol, modifiers, down=True):
-        event = PygletMouseEvent(0, 0, modifiers=modifiers)
         enable_win = self.enable_window
-        enable_win.shift_pressed = bool(down & event.shift_pressed)
-        enable_win.ctrl_pressed = bool(down & event.ctrl_pressed)
-        enable_win.alt_pressed = bool(down & event.alt_pressed)
+        # XXX: For some reason, modifiers doesn't seem to be set right on OS X
+        #event = PygletMouseEvent(0, 0, modifiers=modifiers)
+        #enable_win.shift_pressed = bool(down & event.shift_pressed)
+        #enable_win.ctrl_pressed = bool(down & event.ctrl_pressed)
+        #enable_win.alt_pressed = bool(down & event.alt_pressed)
+        keys = self.key_state
+        enable_win.alt_pressed = keys[key.LALT] | keys[key.RALT]
+        enable_win.control_pressed = keys[key.LCTRL] | keys[key.RCTRL]
+        enable_win.shift_pressed = keys[key.LSHIFT] | keys[key.RSHIFT]
 
         if symbol in KEY_MAP and symbol not in TEXT_KEYS:
             if down:
@@ -130,7 +134,6 @@ class PygletWindow(window.Window):
             return False
 
     def on_text(self, text):
-        #print "Text: %r" % text
         self._dispatch_key_event(text)
 
     def _dispatch_key_event(self, char_or_keyname, event_name="key_pressed"):
@@ -177,7 +180,7 @@ class PygletWindow(window.Window):
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         # TODO: Determine the difference between this and on_mouse_motion;
         # confirm that the correct buttons in **buttons** are down.
-        event = PygletMouseEvent(x, y, dx, dy, buttons, modifiers)
+        event = PygletMouseEvent(x, y, dx, dy, buttons=buttons, modifiers=modifiers)
         self.enable_window._handle_mouse_event("mouse_move", event, set_focus=False)
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -187,7 +190,7 @@ class PygletWindow(window.Window):
         return self._on_mouse_updown(x, y, button, modifiers, "up")
 
     def _on_mouse_updown(self, x, y, button, modifiers, which="down"):
-        event = PygletMouseEvent(x, y, [button], modifiers)
+        event = PygletMouseEvent(x, y, buttons=button, modifiers=modifiers)
         mouse = pyglet.window.mouse
         if button == mouse.LEFT:
             name = "left"
