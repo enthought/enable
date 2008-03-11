@@ -73,8 +73,17 @@ class Container(Component):
     intercept_events = Bool(True)
 
     # Dimensions in which this container can resize to fit its components.
-    # This is similar to the **resizable** trait on PlotComponent. 
+    # This trait only applies to dimensions that are also resizable; if the
+    # container is not resizable in a certain dimension, then fit_components
+    # has no effect.
+    # Also, note that the container does not *automatically* resize itself
+    # based on the value of this trait.  Rather, this trait determines
+    # what value is reported in get_preferred_size(); it is up to the parent
+    # of this container to make sure that it is allocated the size that it
+    # needs by setting its bounds appropriately.
     #
+    # TODO: Merge resizable and this into a single trait?  Or have a separate
+    #       "fit" flag for each dimension in the **resizable** trait?
     # TODO: This trait is used in layout methods of various Container
     # subclasses in Chaco.  We need to move those containers into
     # Enable.

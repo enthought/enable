@@ -65,17 +65,6 @@ class Component(CoordinateBox, Interactor):
     viewports = List(Instance("enthought.enable2.viewport.Viewport"))
 
 
-    # A list of strings defining the classes to which this component belongs.
-    # These classes will be used to determine how this component is styled,
-    # is rendered, is laid out, and receives events.  There is no automatic
-    # management of conflicting class names, so if a component is placed
-    # into more than one class and that class
-    classes = List
-
-    # The optional element ID of this component.
-    id = Str("")
-
-
     #------------------------------------------------------------------------
     # Layout traits
     #------------------------------------------------------------------------
@@ -111,12 +100,6 @@ class Component(CoordinateBox, Interactor):
     # not conform to the set aspect ratio, does the component center itself
     # in the free space?
     auto_center = Bool(True)
-
-    # These will be used by the new layout system, but are currently unused.
-    #max_width = Any
-    #min_width = Any
-    #max_height = Any
-    #min_height = Any
 
     #------------------------------------------------------------------------
     # Overlays and underlays
@@ -306,6 +289,28 @@ class Component(CoordinateBox, Interactor):
     # The backbuffer of this component.  In most cases, this is an
     # instance of GraphicsContext, but this requirement is not enforced.
     _backbuffer = Any
+
+    #------------------------------------------------------------------------
+    # New layout/object containment hierarchy traits
+    # These are not used yet.
+    #------------------------------------------------------------------------
+
+    # A list of strings defining the classes to which this component belongs.
+    # These classes will be used to determine how this component is styled,
+    # is rendered, is laid out, and receives events.  There is no automatic
+    # management of conflicting class names, so if a component is placed
+    # into more than one class and that class
+    classes = List
+
+    # The optional element ID of this component.
+    id = Str("")
+
+    # These will be used by the new layout system, but are currently unused.
+    #max_width = Any
+    #min_width = Any
+    #max_height = Any
+    #min_height = Any
+
 
     #------------------------------------------------------------------------
     # Private traits

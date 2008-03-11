@@ -10,8 +10,7 @@ from types import ListType, TupleType
 from enthought.kiva.traits.kiva_font_trait import KivaFont
 from enthought.traits.api import HasTraits, Trait, TraitError, Range, Undefined,\
                              TraitPrefixList, TraitPrefixMap, TraitHandler, \
-                             Delegate, Str, Float, List, \
-                             TraitFactory
+                             Delegate, Str, Float, List, CList, TraitFactory
 from enthought.traits.ui.api import ImageEnumEditor, EnumEditor, FileEditor, TupleEditor, \
                                 TextEditor, Handler
 
@@ -120,8 +119,8 @@ LineStyle = TraitFactory( __line_style_trait )
 font_trait = KivaFont(default_font_name)
 
 # Bounds trait
-bounds_trait = List( [0.0, 0.0] )      # (w,h)
-coordinate_trait = List( [0.0, 0.0] )  # (x,y)
+bounds_trait = CList( [0.0, 0.0] )      # (w,h)
+coordinate_trait = CList( [0.0, 0.0] )  # (x,y)
 
 #bounds_trait = Trait((0.0, 0.0, 20.0, 20.0), valid_bounds, editor=bounds_editor)
 
