@@ -10,9 +10,16 @@ from types import ListType, TupleType
 from enthought.kiva.traits.kiva_font_trait import KivaFont
 from enthought.traits.api import HasTraits, Trait, TraitError, Range, Undefined,\
                              TraitPrefixList, TraitPrefixMap, TraitHandler, \
-                             Delegate, Str, Float, List, CList, TraitFactory
+                             Delegate, Str, Float, List, TraitFactory
 from enthought.traits.ui.api import ImageEnumEditor, EnumEditor, FileEditor, TupleEditor, \
                                 TextEditor, Handler
+# Try to get the CList trait; for traits 2 backwards compatibility, fall back
+# to a normal List trait if we can't import it
+try:
+    from enthought.traits.api import CList
+except ImportError:
+    CList = List
+
 
 # Relative imports
 import base
