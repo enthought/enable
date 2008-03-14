@@ -1,5 +1,5 @@
 
-from enthought.traits.api import Enum, Tuple
+from enthought.traits.api import Bool, Enum, Tuple
 
 from drag_tool import DragTool
 
@@ -9,6 +9,12 @@ class MoveTool(DragTool):
     """
 
     drag_button = Enum("left", "right")
+
+    # Should the moved component be raised to the top of its container's 
+    # list of components?  This is only recommended for overlaying containers
+    # and canvases, but generally those are the only ones in which the
+    # MoveTool will be useful.
+    auto_raise = Bool(True)
 
     # The last cursor position we saw; used during drag to compute deltas
     _prev_pos = Tuple(0, 0)
@@ -24,6 +30,9 @@ class MoveTool(DragTool):
         if self.component:
             self._prev_pos = (event.x, event.y)
             self.component._layout_needed = True
+            if self.auto_raise:
+                # Push the component to the top of its container's list
+                self.component.container.raise_component(self.component)
             event.window.set_mouse_owner(self, event.net_transform())
             event.handled = True
         return
