@@ -210,6 +210,18 @@ class Container(Component):
                     result.append(component)
         return result
 
+    def raise_component(self, component):
+        """ Raises the indicated component to the top of the Z-order """
+        c = self._components
+        ndx = c.index(component)
+        if len(c) > 1 and ndx != len(c) - 1:
+            self._components = c[:ndx] + c[ndx+1:] + [component]
+        return
+
+    def lower_component(self, component):
+        """ Puts the indicated component to the very bottom of the Z-order """
+        raise NotImplementedError
+
     def get(self, **kw):
         """
         Allows for querying of this container's components.
@@ -447,7 +459,8 @@ class Container(Component):
         should be set to True, and contained components will not be called
         with the event.
         """
-        super(Container, self)._dispatch_stateful_event(event, suffix)
+        #super(Container, self)._dispatch_stateful_event(event, suffix)
+        Component._dispatch_stateful_event(self, event, suffix)
 
     def get_event_transform(self, event=None, suffix=""):
         return affine.affine_from_translation(-self.x, -self.y)
