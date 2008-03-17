@@ -503,6 +503,13 @@ namespace kiva {
             void concat_ctm(agg::trans_affine& m);
             void set_ctm(agg::trans_affine& m);
             void get_freetype_text_matrix(double* out);
+
+            %feature("shadow") get_ctm()
+            %{
+            def get_ctm(self):
+                tmp = _agg.GraphicsContextArray_get_ctm(self)
+                return (tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5])
+            %}
             agg::trans_affine get_ctm();
 
             void flush();
