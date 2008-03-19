@@ -8,7 +8,7 @@ from enthought.kiva import GraphicsContext, FILL
 
 try:
     from enthought.kiva.backend_gl import GraphicsContext as GraphicsContextGL
-except ImportError:
+except (ImportError, TypeError):
     class GraphicsContextGL(object):
         pass
 
