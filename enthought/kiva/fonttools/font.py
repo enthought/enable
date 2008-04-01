@@ -54,7 +54,7 @@ def str_to_font(fontspec):
 
 
 
-class Font:
+class Font(object):
     """ Font class for device independent font specification.
     
         It is primarily based on wxPython, but looks to be similar to
@@ -95,6 +95,24 @@ class Font:
         self.encoding  = encoding
     
     def findfont(self):
+        """ Returns the file name containing the font that most closely matches
+        our font properties.
+        """
+        fp = self._make_font_props()
+        return str(fontManager.findfont(fp))
+
+    def findfontname(self):
+        """ Returns the name of the font that most closely matches our font 
+        properties
+        """
+        fp = self._make_font_props()
+        return fp.get_name()
+
+    def _make_font_props(self):
+        """ Returns a font_manager.FontProperties object that encapsulates our
+        font properties
+        """
+        # XXX: change the weight to a numerical value
         if self.style == BOLD or self.style == BOLD_ITALIC:
             weight = "bold"
         else:
@@ -103,10 +121,17 @@ class Font:
             style = "italic"
         else:
             style = "normal"
-        fp = FontProperties(family = self.familymap[self.family], style=style, weight=weight)
+        fp = FontProperties(family = self.familymap[self.family], style=style, weight=weight,
+                            size = self.size)
         if self.face_name != "":
             fp.set_name(self.face_name)
-        return str(fontManager.findfont(fp))
+        return fp
+
+    def _get_name(self):
+        return self.face_name
+    def _set_name(self, val):
+        self.face_name = val
+    name = property(_get_name, _set_name)
 
     def copy(self):
         """ Returns a copy of the font object.

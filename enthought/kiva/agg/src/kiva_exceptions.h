@@ -4,11 +4,13 @@
 namespace kiva
 {
     // exception codes used in graphics_context
-    int not_implemented_error = 0;
-    int ctm_rotation_error = 1;
-    int bad_clip_state_error = 2;
-    int even_odd_clip_error = 3;
-    int clipping_path_unsupported = 4;
+	enum {
+		not_implemented_error = 0,
+		ctm_rotation_error,
+		bad_clip_state_error,
+		even_odd_clip_error,
+		clipping_path_unsupported
+	};
 }
 
 #endif

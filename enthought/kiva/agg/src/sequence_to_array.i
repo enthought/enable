@@ -2,7 +2,9 @@
 // This handles arrays and sequences with non-float values correctly.
 // !! Optimize for array conversion??
 
-%typemap(python,in) double[ANY](double temp[$1_dim0]) {
+#ifdef SWIGPYTHON
+
+%typemap(in) double[ANY](double temp[$1_dim0]) {
   int i;
   if (!PySequence_Check($input)) {
       PyErr_SetString(PyExc_TypeError,"Expecting a sequence");
@@ -29,3 +31,5 @@
   }
   $1 = &temp[0];
 }
+
+#endif

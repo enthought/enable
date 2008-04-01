@@ -50,8 +50,6 @@ EOF_FILL_STROKE = 6
 
 #-----------------------------------------------------------------------------
 # Font Constants
-#
-# These are pretty much taken from wxPython.  Not sure if they are needed.
 #-----------------------------------------------------------------------------
 
 NORMAL = 0
@@ -59,12 +57,13 @@ BOLD   = 1
 ITALIC = 2
 BOLD_ITALIC = 3
 
+# Font families, as defined by the Windows API, and their CSS equivalents
 DEFAULT     = 0
-SWISS       = 1
-ROMAN       = 2
-MODERN      = 3
-DECORATIVE  = 4
-SCRIPT      = 5
+SWISS       = 1     # Sans-serif
+ROMAN       = 2     # Serif
+MODERN      = 3     # Monospace
+DECORATIVE  = 4     # Fantasy
+SCRIPT      = 5     # Cursive
 TELETYPE    = 6
 
 #-----------------------------------------------------------------------------

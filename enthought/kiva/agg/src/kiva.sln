@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kiva", "kiva.vcproj", "{4B72DC63-F35B-45EE-B100-A50A2C79A432}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gl_test", "gl_test\gl_test.vcproj", "{FB096497-AD67-49E8-9C91-790B5C59B5F8}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{4B72DC63-F35B-45EE-B100-A50A2C79A432}.Debug.ActiveCfg = Debug|Win32
+		{4B72DC63-F35B-45EE-B100-A50A2C79A432}.Debug.Build.0 = Debug|Win32
+		{4B72DC63-F35B-45EE-B100-A50A2C79A432}.Release.ActiveCfg = Release|Win32
+		{4B72DC63-F35B-45EE-B100-A50A2C79A432}.Release.Build.0 = Release|Win32
+		{FB096497-AD67-49E8-9C91-790B5C59B5F8}.Debug.ActiveCfg = Debug|Win32
+		{FB096497-AD67-49E8-9C91-790B5C59B5F8}.Debug.Build.0 = Debug|Win32
+		{FB096497-AD67-49E8-9C91-790B5C59B5F8}.Release.ActiveCfg = Release|Win32
+		{FB096497-AD67-49E8-9C91-790B5C59B5F8}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

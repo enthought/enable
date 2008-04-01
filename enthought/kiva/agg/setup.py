@@ -53,6 +53,10 @@ def configuration(parent_package='',top_path=None):
                     define_macros = [('PY_ARRAY_TYPES_PREFIX','NUMPY_CXX'),
                                      ('OWN_DIMENSIONS','0'),
                                      ('OWN_STRIDES','0')])
+
+    #-------------------------------------------------------------------------
+    # Configure the Agg backend to use on ecah platform
+    #-------------------------------------------------------------------------
     if sys.platform=='win32':
         plat = 'win32'
     elif sys.platform == 'darwin':
@@ -62,8 +66,13 @@ def configuration(parent_package='',top_path=None):
         plat = 'x11'  # use with gtk2, it's slow but reliable
         #plat = 'gdkpixbuf2'
 
-    # freetype2_src library:
+    
+    #-------------------------------------------------------------------------
+    # Add the freetype library (agg 2.4 links against this)
+    #-------------------------------------------------------------------------
+
     prefix = config.paths('freetype2/src')[0]
+    freetype_lib = 'freetype2_src'
 
     def get_ft2_sources((lib_name, build_info), build_dir):
         sources = [prefix + "/" + s for s in freetype2_sources]
@@ -77,17 +86,17 @@ def configuration(parent_package='',top_path=None):
     if sys.platform == 'darwin':
         ft2_incl_dirs.append("/Developer/Headers/FlatCarbon")
 
-    config.add_library('freetype2_src',
+    config.add_library(freetype_lib,
                        sources = [get_ft2_sources],
                        include_dirs = ft2_incl_dirs,
                        depends = ['freetype2']
                        )
 
+    #-------------------------------------------------------------------------
+    # Add the Agg sources
+    #-------------------------------------------------------------------------
 
     agg_include_dirs = [agg_dir+'/include',agg_dir+'/font_freetype'] + ft2_incl_dirs
-    freetype_lib = 'freetype2_src'
-
-
     agg_sources = [agg_dir+'/src/*.cpp',
                     agg_dir+'/font_freetype/*.cpp']
     config.add_library(agg_lib,
@@ -95,18 +104,27 @@ def configuration(parent_package='',top_path=None):
                        include_dirs = agg_include_dirs,
                        depends = [agg_dir])
 
-    kiva_include_dirs = ['src'] + agg_include_dirs
-    config.add_library('kiva_src',
-                       ['src/kiva_*.cpp'],
-                       include_dirs = kiva_include_dirs,
-                       )
-
+    #-------------------------------------------------------------------------
+    # Add the Kiva sources
+    #-------------------------------------------------------------------------
     if sys.platform == 'darwin':
         define_macros = [('__DARWIN__', None)]
+        macros = [('__DARWIN__', None)]
         extra_link_args = ['-framework', 'Carbon']
     else:
         define_macros = []
+        macros = []
         extra_link_args = []
+
+    kiva_include_dirs = ['src'] + agg_include_dirs
+    config.add_library('kiva_src',
+                       ['src/kiva_*.cpp', 'src/gl_graphics_context.cpp'],
+                       include_dirs = kiva_include_dirs,
+                       # Use "macros" instead of "define_macros" because the latter
+                       # is only used for extensions, and not clibs
+                       macros = macros,
+                       )
+
 
     # MSVC6.0: uncomment to handle template parameters:
     #extra_compile_args = ['/Zm1000']
@@ -114,12 +132,32 @@ def configuration(parent_package='',top_path=None):
 
     # XXX: test whether numpy has weakref support
 
-    build_info = {}
+    #-------------------------------------------------------------------------
+    # Build the extension itself
+    #-------------------------------------------------------------------------
 
+    # Options to make OS X link OpenGL
+    darwin_opengl_opts = dict(
+            include_dirs = \
+                ['/System/Library/Frameworks/%s.framework/Versions/A/Headers'%x
+                 for x in ['Carbon', 'ApplicationServices', 'OpenGL']],
+            define_macros = [('__DARWIN__',None)],
+            extra_link_args = \
+                ['-framework %s' % x
+                 for x in ['Carbon', 'ApplicationServices', 'OpenGL']]
+            )
+
+    build_info = {}
+    kiva_lib = 'kiva_src'
+    build_libraries = [kiva_lib, agg_lib, freetype_lib]
+    if sys.platform == "win32":
+        build_libraries += ["opengl32", "glu32"]
+    elif sys.platform == "darwin":
+        dict_append(build_info, **darwin_opengl_opts)
     dict_append(build_info,
                 sources = ['agg.i'],
                 include_dirs = kiva_include_dirs,
-                libraries = ['kiva_src', agg_lib, freetype_lib],
+                libraries = build_libraries,
                 depends = ['src/*.[ih]'],
                 extra_compile_args = extra_compile_args,
                 extra_link_args = extra_link_args,
@@ -143,11 +181,11 @@ def configuration(parent_package='',top_path=None):
 
     if plat=='win32':
         dict_append(plat_info, libraries = ['gdi32','user32'])
+
     elif plat in ['x11','gtk1']:
         x11_info = get_info('x11',notfound_action=1)
-        print 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-        print x11_info
         dict_append(plat_info,**x11_info)
+
     elif plat=='gdkpixbuf2':
         #gdk_pixbuf_xlib_2 = get_info('gdk_pixbuf_xlib_2',notfound_action=1)
         #dict_append(plat_info,**gdk_pixbuf_xlib_2)
@@ -155,18 +193,12 @@ def configuration(parent_package='',top_path=None):
         dict_append(plat_info,**gtk_info)
         #x11_info = get_info('x11',notfound_action=1)
         #dict_append(plat_info,**x11_info)
+
     elif plat == 'gl':
         if sys.platform == 'darwin':
-            dict_append(plat_info, include_dirs = \
-                        ['/System/Library/Frameworks/%s.framework/Versions/A/Headers'%x
-                         for x in ['Carbon', 'ApplicationServices', 'OpenGL']],
-                        define_macros = [('__DARWIN__',None)],
-                        extra_link_args = \
-                        ['-framework %s' % x
-                         for x in ['Carbon', 'ApplicationServices', 'OpenGL']]
-                        )
+            dict_append(plat_info, **darwin_opengl_opts)
         else:
-            msg = "OpenGL build support only on MacOSX right now. Help me!"
+            msg = "OpenGL build support only on MacOSX right now."
             raise NotImplementedError, msg
 
 

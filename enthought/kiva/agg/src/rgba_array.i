@@ -16,7 +16,9 @@
 
 %include "numeric.i"
 
-%typemap(python,in) rgba_as_array (int must_free=0)
+#ifdef SWIGPYTHON
+
+%typemap(in) rgba_as_array (int must_free=0)
 {
   must_free = 0;  
   if ((SWIG_ConvertPtr($input,(void **) &$1, SWIGTYPE_p_agg__rgba,
@@ -74,7 +76,7 @@
     delete $1;
 }
 
-%typemap(python,out) rgba_as_array 
+%typemap(out) rgba_as_array 
 {
     int size = 4;
     $result = PyArray_FromDims(1, &size, PyArray_DOUBLE);        
@@ -84,3 +86,5 @@
     data[2] = $1->b;
     data[3] = $1->a;
 }
+
+#endif

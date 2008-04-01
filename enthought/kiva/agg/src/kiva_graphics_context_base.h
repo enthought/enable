@@ -266,6 +266,9 @@ namespace kiva
         virtual void clip_to_rects(double* new_rects, int Nrects) = 0;
         virtual void clip_to_rects(kiva::rect_list_type &rects) = 0;
         virtual void clear_clip_path() = 0;
+
+		// The following two are meant for debugging purposes, and are not part
+		// of the formal interface for GraphicsContexts.
         virtual int get_num_clip_regions() = 0;
         virtual kiva::rect_type get_clip_region(unsigned int i) = 0;
 

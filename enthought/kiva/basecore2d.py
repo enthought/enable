@@ -31,8 +31,8 @@
 import affine
 import copy
 from numpy import alltrue, array, asarray, float64, sometrue, shape,\
-     take, concatenate, equal
-from enthought.kiva import agg
+     pi, concatenate
+import numpy as np
 
 from constants import *
 
@@ -701,20 +701,95 @@ class GraphicsContextBase(object):
         self._new_subpath()
 
     def curve_to(self, x_ctrl1, y_ctrl1, x_ctrl2, y_ctrl2, x_to, y_to):
-        """ 
+        """ Draw a cubic bezier curve from the current point.
+
+        Parameters
+        ----------
+        x_ctrl1 : float
+        y_ctrl1 : float
+            The first control point.
+        x_ctrl2 : float
+        y_ctrl2 : float
+            The second control point.
+        x_to : float
+        y_to : float
+            The ending point of the curve.
         """
-        raise NotImplementedError, "curve is not implemented"
+        # XXX: figure out a reasonable number of points from the current scale
+        # and arc length. Since the arc length is expensive to calculate, the
+        # sum of the lengths of the line segments from (xy0, xy_ctrl1),
+        # (xy_ctrl1, xy_ctrl2), and (xy_ctrl2, xy_to) would be a reasonable
+        # approximation.
+        n = 100
+        t = np.arange(1, n+1) / float(n)
+        t2 = t*t
+        t3 = t2*t
+        u = 1 - t
+        u2 = u*u
+        u3 = u2*u
+        x0, y0 = self.state.current_point
+        pts = np.column_stack([
+            x0*u3 + 3*(x_ctrl1*t*u2 + x_ctrl2*t2*u) + x_to*t3,
+            y0*u3 + 3*(y_ctrl1*t*u2 + y_ctrl2*t2*u) + y_to*t3,
+        ])
+        self.active_subpath.append( (LINES,pts) )
+        self.state.current_point = pts[-1]
     
     def quad_curve_to(self, x_ctrl, y_ctrl, x_to, y_to):
+        """ Draw a quadratic bezier curve from the current point.
+
+        Parameters
+        ----------
+        x_ctrl : float
+        y_ctrl : float
+            The control point.
+        x_to : float
+        y_to : float
+            The ending point of the curve.
         """
-        """
-        raise NotImplementedError, "quad_curve is not implemented"        
+        # A quadratic Bezier curve is just a special case of the cubic. Reuse
+        # its implementation in case it has been implemented for the specific
+        # backend.
+        x0, y0 = self.state.current_point
+        xc1 = (x0 + x_ctrl + x_ctrl) / 3.0
+        yc1 = (y0 + y_ctrl + y_ctrl) / 3.0
+        xc2 = (x_to + x_ctrl + x_ctrl) / 3.0
+        yc2 = (y_to + y_ctrl + y_ctrl) / 3.0
+        self.curve_to(xc1, yc1, xc2, yc2, x_to, y_to)
     
-    # need to look at the difference between the following two.               
     def arc(self, x, y, radius, start_angle, end_angle, cw=False):
+        """ Draw a circular arc.
+
+        If there is a current path and the current point is not the initial
+        point of the arc, a line will be drawn to the start of the arc. If there
+        is no current path, then no line will be drawn.
+
+        Parameters
+        ----------
+        x : float
+        y : float
+            The center of the arc.
+        radius : float
+            The radius of the arc.
+        start_angle : float
+        end_angle : float
+            The angles, in radians, that the starting and final points make with
+            respect to the positive X-axis from the center point.
+        cw : bool, optional
+            Whether the arc should be drawn clockwise or not.
         """
-        """
-        raise NotImplementedError, "arc is not implemented"        
+        # XXX: pick the number of line segments based on the current scale and
+        # the radius.
+        n = 100
+        if end_angle < start_angle and not cw:
+            end_angle += 2*pi
+        elif start_angle < end_angle and cw:
+            start_angle += 2*pi
+        theta = np.linspace(start_angle, end_angle, n)
+        pts = radius * np.column_stack([np.cos(theta), np.sin(theta)])
+        pts += np.array([x, y])
+        self.active_subpath.append( (LINES,pts) )
+        self.state.current_point = pts[-1]
     
     def arc_to(self, x1, y1, x2, y2, radius):
         """
@@ -768,7 +843,7 @@ class GraphicsContextBase(object):
         pass
 
     def from_agg_affine(self, aff):
-        """Convert an agg.AffineTransform to a Numeric matrix
+        """Convert an agg.AffineTransform to a numpy matrix
         representing the affine transform usable by kiva.affine
         and other non-agg parts of kiva"""
         return array([[aff[0], aff[1], 0],
@@ -779,6 +854,9 @@ class GraphicsContextBase(object):
         """Draw a compiled path into this gc.  Note: if the CTM is
         changed and not restored to the identity in the compiled path,
         the CTM change will continue in this GC."""
+        # Local import to avoid a dependency if we can avoid it.
+        from enthought.kiva import agg
+
         multi_state = 0 #For multi-element path commands we keep the previous
         x_ctrl1 = 0     #information in these variables.
         y_ctrl1 = 0
@@ -1133,7 +1211,6 @@ class GraphicsContextBase(object):
         """
 
         # This is not currently implemented in a device-independent way.
-        print "showing text:", text
         return
 
         ##---------------------------------------------------------------------

@@ -1,634 +1,383 @@
-#------------------------------------------------------------------------------
-# Copyright (c) 2005, Enthought, Inc.
-# some parts copyright 2002 by Space Telescope Science Institute
-# All rights reserved.
-# 
-# This software is provided without warranty under the terms of the BSD
-# license included in enthought/LICENSE.txt and may be redistributed only
-# under the conditions described in the aforementioned license.  The license
-# is also available online at http://www.enthought.com/licenses/BSD.txt
-# Thanks for using Enthought open source!
-#------------------------------------------------------------------------------
 
-import copy
+# Major library imports
+import ctypes
+from math import floor
+from numpy import array, ndarray
 
-from numpy  import alltrue, any, array, asarray, concatenate, float32, uint8, ones, pi, zeros
-from OpenGL.GL   import *
-from OpenGL.GLU  import *
-from pyglet import font, image
+# Pyglet and pyglet-related imports
+from pyglet.font import Text
+from pyglet.font import load as load_font
+from pyglet.font.base import Font as PygletFont
+from pyglet import gl
+from pygarrayimage.arrayimage import ArrayInterfaceImage
 
-import affine
-import basecore2d   
-from basecore2d import GraphicsContextBase
-from constants   import *
+# Local kiva imports
+from affine import affine_from_values, transform_points
+from agg import GraphicsContextGL as _GCL
+from agg import GraphicsContextArray
+from agg import AggFontType
+from agg import Image
+from agg import CompiledPath
+from constants import BOLD, BOLD_ITALIC, ITALIC
+from fonttools import Font
 
-#-------------------------------------------------------------------------------
-#  Constants:
-#-------------------------------------------------------------------------------
 
-DEBUG = False
+class ArrayImage(ArrayInterfaceImage):
+    """ pyglet ImageData made from numpy arrays.
 
-# There is no implementation of compiled paths for this backend.
-CompiledPath = None
-
-#-------------------------------------------------------------------------------
-#  Helper functions:
-#-------------------------------------------------------------------------------
-
-def gcd ( n, m ):
-    """Find the greatest common divisor of integers n and m.
+    Customized from pygarrayimage's ArrayInterfaceImage to override the texture
+    creation.
     """
-    
-    if n == 0: 
-       return m
-    if m == 0: 
-       return n
-    return n * m / lcm ( n, m )
 
-def lcm ( n, m ):
-    """Return the least common multiple of integers n and m.
-    """
-    
-    # Keep adding to an accumulator until both accumulators are the same:
-    an = n
-    am = m
-    if (an == 0) or (am == 0): 
-       return 0
-    while an != am:
-       if an < am:
-          an += n
-       else:
-          am += m
-    return an
-    
-def mycombine ( coord, vertex, weight ):
-    return ( coord[0], coord[1], coord[2] )
+    def create_texture(self, cls):
+        '''Create a texture containing this image.
 
-#-------------------------------------------------------------------------------
-#  'GraphicsContext' class:
-#-------------------------------------------------------------------------------
+        If the image's dimensions are not powers of 2, a TextureRegion of
+        a larger Texture will be returned that matches the dimensions of this
+        image.
 
-class GraphicsContext(GraphicsContextBase):
-    """
-    The general call order for a GL graphicscontext is:
+        :Parameters:
+            `cls` : class (subclass of Texture)
+                Class to construct.
 
-    gc = GraphicsContext(size)
-    gc.save_state()
-    gc.init_gl_viewport()
-    ... make drawing calls ...
-    gc.restore_state()
-    """
-    
-    def __init__( self, size = ( 500,500 ), dc = None ):
-        self._glu_tess_set = 0
-        self.size          = size
-        GraphicsContextBase.__init__( self )
+        :rtype: cls or cls.region_class
+        '''
 
-    def init_gl_viewport(self):
-        """ Sets up the viewport and projection matrices. """
-        # XXX: This should only be called by Enable when the window resizes 
-        glViewport(0, 0, *self.size)
-        glMatrixMode(GL_PROJECTION)
-        glPushMatrix()
-        glLoadIdentity()
-        glOrtho(0, self.size[0], 0, self.size[1], 1, -1)
-        glMatrixMode(GL_MODELVIEW)
-        glPushMatrix()
-        glLoadIdentity()
+        texture = cls.create_for_size(
+            gl.GL_TEXTURE_2D, self.width, self.height)
+        subimage = False
+        if texture.width != self.width or texture.height != self.height:
+            texture = texture.get_region(0, 0, self.width, self.height)
+            subimage = True
 
-    def save_state(self):
-        GraphicsContextBase.save_state(self)
-        glMatrixMode(GL_PROJECTION)
-        glPushMatrix()
-        glMatrixMode(GL_MODELVIEW)
-        glPushMatrix()
+        internalformat = self._get_internalformat(self.format)
 
-    def restore_state(self):
-        glMatrixMode(GL_PROJECTION)
-        glPopMatrix()
-        glMatrixMode(GL_MODELVIEW)
-        glPopMatrix()
-        GraphicsContextBase.restore_state(self)
-                
-    def begin_page ( self ):
-        glClearColor( 1.0, 1.0, 1.0, 0.0 )
-        glClear( GL_COLOR_BUFFER_BIT )
+        gl.glBindTexture(texture.target, texture.id)
+        gl.glTexParameteri(texture.target, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE)
+        gl.glTexParameteri(texture.target, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE)
+        gl.glTexParameteri(texture.target, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
+        gl.glTexParameteri(texture.target, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
 
-    #-------------------------------------------------------------------------
-    # Coordinate Transform Matrix Manipulation:
-    #-------------------------------------------------------------------------
-    
-    def get_ctm ( self ):
-        """ Return the current coordinate transform matrix.  
+        if subimage:
+            width = texture.owner.width
+            height = texture.owner.height
+            blank = (ctypes.c_ubyte * (width * height * 4))()
+            gl.glTexImage2D(texture.target, texture.level,
+                         internalformat,
+                         width, height,
+                         1,
+                         gl.GL_RGBA, gl.GL_UNSIGNED_BYTE,
+                         blank) 
+            internalformat = None
+
+        self.blit_to_texture(texture.target, texture.level, 
+            0, 0, 0, internalformat)
         
-            Note: untested                                   
-        """ 
-        glm = glGetDouble( GL_MODELVIEW_MATRIX )
-        a   = glm[0,0];  d = glm[1,1]      # x, y diagonal elements
-        b   = glm[1,0];  c = glm[0,1]      # x, y rotation
-        tx  = glm[0,3]; ty = glm[1,3]      # x, y translation
-        return affine.affine_from_values( a, b, c, d, tx, ty )
+        return texture 
 
-    #-------------------------------------------------------------------------
-    # Handle setting pens and brushes.
-    #-------------------------------------------------------------------------
+    def blit_to_texture(self, target, level, x, y, z, internalformat=None):
+        '''Draw this image to to the currently bound texture at `target`.
 
-    def device_update_line_state ( self ):
-        """ Set the line drawing properties for the graphics context.
-        """
-        
-        #----------------------------------------------------------------
-        # Only update if the style has changed.  This and saving a copy
-        # of the state (end of if block) may be more costly than just
-        # going ahead and setting the line stuff every time...
-        #----------------------------------------------------------------
-        
-        if not basecore2d.line_state_equal( self.last_drawn_line_state,
-                                            self.state ):
-                                    
-            #----------------------------------------------------------------
-            # Create a color object based on the current line color            
-            #
-            # I think this should be moved into each line drawing routine
-            # because glColor is used to define both line and fill color.
-            # This is unlikely to affect speed.
-            #----------------------------------------------------------------
-            
-            r, g, b, a = self.state.line_color
-            glColor( r, g, b, a )
-            glLineWidth( self.state.line_width )
-            
-            #----------------------------------------------------------------
-            # ignore cap and join style.  OpenGL doesn't support them as far
-            # as I can tell.  The capping can probably be simulated, at least
-            # for line ends, by drawing circles or squares on line ends. 
-            # I don't see supporting caps on the ends of line dashes.  Also,
-            # miters don't appear to have an obvious implementation.
-            #----------------------------------------------------------------
-            
-            #----------------------------------------------------------------
-            # dashing
-            # not implemented
-            #----------------------------------------------------------------
-            
-            if self.state.is_dashed():
-                # line_dash is a (phase,pattern) tuple.
-                # phase is ignored by OpenGL.
-                factor, pattern = self.line_dash_to_gl()
-                glEnable( GL_LINE_STIPPLE )
-                glLineStipple( factor, pattern & 0xFFFF ) # <--- TBD: HACK!
+        If `internalformat` is specified, glTexImage is used to initialise
+        the texture; otherwise, glTexSubImage is used to update a region.
+        '''
+
+        data_format = self.format
+        data_pitch = abs(self._current_pitch)
+
+        # Determine pixel format from format string
+        matrix = None
+        format, type = self._get_gl_format_and_type(data_format)
+        if format is None:
+            if (len(data_format) in (3, 4) and 
+                gl.gl_info.have_extension('GL_ARB_imaging')):
+                # Construct a color matrix to convert to GL_RGBA
+                def component_column(component):
+                    try:
+                        pos = 'RGBA'.index(component)
+                        return [0] * pos + [1] + [0] * (3 - pos)
+                    except ValueError:
+                        return [0, 0, 0, 0]
+                # pad to avoid index exceptions
+                lookup_format = data_format + 'XXX'
+                matrix = (component_column(lookup_format[0]) +
+                          component_column(lookup_format[1]) +
+                          component_column(lookup_format[2]) + 
+                          component_column(lookup_format[3]))
+                format = {
+                    3: gl.GL_RGB,
+                    4: gl.GL_RGBA}.get(len(data_format))
+                type = gl.GL_UNSIGNED_BYTE
+
+                gl.glMatrixMode(gl.GL_COLOR)
+                gl.glPushMatrix()
+                gl.glLoadMatrixf((gl.GLfloat * 16)(*matrix))
             else:
-                glDisable( GL_LINE_STIPPLE )
-                                        
-            #----------------------------------------------------------------
-            # update the last_draw_line_state to reflect the new drawing 
-            # style.  This may well be more costly than just setting all the
-            # styles every time in OpenGL.
-            #----------------------------------------------------------------
-            
-            self.last_drawn_line_state = self.state.copy()
-            
-    def device_update_fill_state ( self ):
-        """ Set the shape filling properties for the graphics context.
-            
-            This only needs to be drawn before filling a path. 
-            See update_line_state for comments.
-            
-            This uses wxBrush for wxPython.
-        """
-        
-        #----------------------------------------------------------------
-        # Test if the last color is the same as the current.  If so, we
-        # don't need to mess with the brush.
-        #----------------------------------------------------------------
+                # Need to convert data to a standard form
+                data_format = {
+                    1: 'L',
+                    2: 'LA',
+                    3: 'RGB',
+                    4: 'RGBA'}.get(len(data_format))
+                format, type = self._get_gl_format_and_type(data_format)
 
-        if any(self.last_drawn_fill_state != self.state.fill_color):
-            r, g, b, a = self.state.fill_color
-            glColor( r, g, b, a )
-            
-            #----------------------------------------------------------------
-            # Update the last_draw_line_state to reflect this new pen style.
-            # A copy is made so that last_drawn_fill_state is independent
-            # of changes made to fill_color.
-            #----------------------------------------------------------------
-            
-            self.last_drawn_fill_state = copy.copy( self.state.fill_color )
-                        
-    def device_update_font_state ( self ):
-        """ 
-        """
-        try:
-           font = self.state.font
-        except AttributeError:
-           self.select_font( SWISS, 18 )
-           font = self.state.font
-        return ### TBD
-        if font.family == ROMAN:
-           if font.size <= 17:
-              self._glut_font = GLUT_BITMAP_TIMES_ROMAN_10
-           else:
-              self._glut_font = GLUT_BITMAP_TIMES_ROMAN_24
-        else:  # use Helvetica
-           if font.size <= 11:
-              self._glut_font = GLUT_BITMAP_HELVETICA_10
-           elif font.size <= 15:
-              self._glut_font = GLUT_BITMAP_HELVETICA_12
-           else:
-              self._glut_font = GLUT_BITMAP_HELVETICA_18 
-        
-    def device_fill_points ( self, pts, mode ):
-        """
-            Needs much work for handling WINDING and ODD EVEN fill rules.
-            
-            mode 
-                Specifies how the subpaths are drawn.  The default is 
-                FILL_STROKE.  The following are valid values.  
-            
-                FILL
-                    Paint the path using the nonzero winding rule
-                    to determine the regions for painting.
-                EOF_FILL 
-                    Paint the path using the even-odd fill rule.
-                STROKE 
-                    Draw the outline of the path with the 
-                    current width, end caps, etc settings.
-                FILL_STROKE 
-                    First fill the path using the nonzero 
-                    winding rule, then stroke the path.
-                EOF_FILL_STROKE 
-                    First fill the path using the even-odd
-                    fill method, then stroke the path.                               
-        """
-        
-        if DEBUG: 
-           print 'in fill'
-        
-        if not basecore2d.is_fully_transparent( self.state.fill_color ):          
-            #print 'fill:'
-            #glm = glGetInteger(GL_MODELVIEW_MATRIX)
-            #print glm
-            self.gl_render_points( pts, self.state.fill_color, 
-                                   polygon = 1, fill = 1, mode = mode )
+        # Workaround: don't use GL_UNPACK_ROW_LENGTH
+        if gl._current_context._workaround_unpack_row_length:
+            data_pitch = self.width * len(data_format)
 
-    def device_stroke_points ( self, pts, mode ):
-        """ Draw a set of connected points using the current stroke settings.
-        
-            mode 
-                Specifies how the subpaths are drawn.  The default is 
-                FILL_STROKE.  The following are valid values.  
-            
-                FILL
-                    Paint the path using the nonzero winding rule
-                    to determine the regions for painting.
-                EOF_FILL 
-                    Paint the path using the even-odd fill rule.
-                STROKE 
-                    Draw the outline of the path with the 
-                    current width, end caps, etc settings.
-                FILL_STROKE 
-                    First fill the path using the nonzero 
-                    winding rule, then stroke the path.
-                EOF_FILL_STROKE 
-                    First fill the path using the even-odd
-                    fill method, then stroke the path.                               
-            
-        """
+        # Get data in required format (hopefully will be the same format it's
+        # already in, unless that's an obscure format, upside-down or the
+        # driver is old).
+        data = self._convert(data_format, data_pitch)
 
-        #--------------------------------------------------------------------
-        # Only draw lines if the current settings are not fully transparent.
-        # and the drawing mode is a "stroke" mode
-        #-------------------------------------------------------------------- 
-              
-        if not basecore2d.is_fully_transparent( self.state.line_color ):
-
-           #----------------------------------------------------------------
-           # We do not try to deal with scaled line width yet:
-           #----------------------------------------------------------------
-           
-           pass            
-
-           #----------------------------------------------------------------
-           # This if/then solves line ending problems in wxPython so that
-           # the last two points are connected in the drawing.  I think
-           # it may do the same here, but I'm not entirely sure.
-           #----------------------------------------------------------------
-           
-           if alltrue( pts[0] == pts[-1] ):
-              self.gl_render_points( pts, self.state.line_color, 
-                                     polygon = 1, fill = 0, mode = mode ) 
-           else:
-              self.gl_render_points( pts, self.state.line_color, 
-                                     polygon = 0, fill = 0, mode = mode )
-                
-    def device_draw_rect ( self, x, y, sx, sy, mode = FILL ):
-        """ Not often used -- calls generally go through draw_points.
-            Is mode needed?
-            
-            Dead code -- at least for now.
-        """
-        
-        pts = array( ( (x,y), (x,y + sy), (x + sx, y + sy),(x + sx, y) ), float)
-        self.gl_render_points( pts, self.state.fill_color, # Fill 
-                               polygon = 1, fill = 1, mode = mode, convex = 1 )
-        self.gl_render_points( pts, self.state. line_color, # Outline  
-                               polygon = 1, fill = 0, mode = mode, convex = 1 )
-
-    def gl_render_points ( self, pts, color, polygon = 0, fill = 0, mode = FILL,
-                           convex = 0 ):
-        r, g, b, a = color
-        glColor( r, g, b, a )
-
-        # Needed to correctly fill non-convex polygons:
-        if polygon and fill and not convex:  
-            self.gl_tesselate_polygon( pts, mode )
-            return
-            
-        if polygon:
-           poly_mode = GL_POLYGON
+        if data_pitch & 0x1:
+            alignment = 1
+        elif data_pitch & 0x2:
+            alignment = 2
         else:
-           poly_mode = GL_LINE_STRIP
+            alignment = 4
+        row_length = data_pitch / len(data_format)
+        gl.glPushClientAttrib(gl.GL_CLIENT_PIXEL_STORE_BIT)
+        gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, alignment)
+        gl.glPixelStorei(gl.GL_UNPACK_ROW_LENGTH, row_length)
+        self._apply_region_unpack()
+        gl.glTexParameteri(target, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE)
+        gl.glTexParameteri(target, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE)
+        gl.glTexParameteri(target, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
+        gl.glTexParameteri(target, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
         
-        if fill:
-           fill_mode = GL_FILL
-        else:   
-           fill_mode = GL_LINE            
-        
-        if a == 1.:
-           glDisable(GL_BLEND)
+
+        if target == gl.GL_TEXTURE_3D:
+            assert not internalformat
+            gl.glTexSubImage3D(target, level,
+                            x, y, z,
+                            self.width, self.height, 1,
+                            format, type,
+                            data)
+        elif internalformat:
+            gl.glTexImage2D(target, level,
+                         internalformat,
+                         self.width, self.height,
+                         0,
+                         format, type,
+                         data)
         else:
-           glEnable( GL_BLEND )
-           glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA )
+            gl.glTexSubImage2D(target, level,
+                            x, y,
+                            self.width, self.height,
+                            format, type,
+                            data)
+        gl.glPopClientAttrib()
 
-        glPolygonMode( GL_FRONT_AND_BACK, fill_mode )
-        glVertexPointerd( pts )
-        glEnableClientState( GL_VERTEX_ARRAY )
-        glDrawArrays( poly_mode, 0, len( pts ) )
-        glDisableClientState( GL_VERTEX_ARRAY )
-
-        # Shouldn't be necessary:
-        glDisable( GL_BLEND )
-
-    def gl_render_points_set( self, pts_set, fill_color, stroke_color, 
-                              polygon = 0, fill = 1, stroke = 1 ):        
-        fr, fg, fb, fa = fill_color
-        sr, sg, sb, sa = stroke_color
-        pts_set        = asarray( pts_set )
-        len_pts        = pts_set.shape[1]
-
-        if polygon:
-           poly_mode = GL_POLYGON
-        else:
-           poly_mode = GL_LINE_STRIP
-        
-        for pts in pts_set:    
-            glVertexPointerd( pts )
-            glEnableClientState( GL_VERTEX_ARRAY )
-            if fill:
-               glColor( fr, fa, fb, fa )
-               glPolygonMode( GL_FRONT_AND_BACK, GL_FILL )
-               glDrawArrays( poly_mode, 0, len_pts )
-            if stroke:
-               glColor( sr, sg, sb, sa )
-               glPolygonMode( GL_FRONT_AND_BACK, GL_LINE )
-               glDrawArrays( poly_mode, 0, len_pts )
-            glDisableClientState( GL_VERTEX_ARRAY )
-
-    def gl_tesselate_polygon ( self, pts, mode ):
-        if not self._glu_tess_set:
-            self.setup_glu_tess()
-
-        if mode in [EOF_FILL, EOF_FILL_STROKE]:
-            gluTessProperty( self._glu_tess, GLU_TESS_WINDING_RULE, 
-                            GLU_TESS_WINDING_ODD )
-        else:
-            gluTessProperty( self._glu_tess, GLU_TESS_WINDING_RULE, 
-                            GLU_TESS_WINDING_NONZERO )
-
-        # Draw the points (need only a single contour)
-        # This may need to go into C for speed.
-        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL )        
-        gluTessBeginPolygon( self._glu_tess, None )
-        
-        # Reported to be 10% when all points lie on x,y plane. Look here:
-        # http://oss.sgi.com/cgi-bin/cvsweb.cgi/projects/ogl-sample/main/gfx/lib/glu/
-        #        libtess/README?rev=1.1&content-type=text/x-cvsweb-markup        
-        gluTessNormal( self._glu_tess, 0, 0, 0 )
-        gluTessBeginContour( self._glu_tess )
-        for pt in pts:
-            thispt = array( [ pt[0], pt[1], 0 ] )
-            gluTessVertex( self._glu_tess, thispt, thispt )
-        gluTessEndContour( self._glu_tess )
-        gluTessEndPolygon( self._glu_tess )
-
-    def setup_glu_tess ( self ):
-        self._glu_tess = gluNewTess()
-        gluTessCallback( self._glu_tess, GLU_TESS_BEGIN,  glBegin )
-        gluTessCallback( self._glu_tess, GLU_TESS_END,    glEnd )
-        gluTessCallback( self._glu_tess, GLU_TESS_VERTEX, glVertex )
-                        
-        gluTessCallback( self._glu_tess, GLU_TESS_COMBINE, mycombine )
-        gluTessProperty( self._glu_tess, GLU_TESS_BOUNDARY_ONLY, GL_FALSE )
-        self._glu_tess_set = 1                   
-        
-    def device_prepare_device_ctm  (self ):
-        sz = self.size
-        glMatrixMode( GL_PROJECTION )
-        glLoadIdentity()
-        gluOrtho2D( 0.0, sz[0], 0.0, sz[1] )
-        glMatrixMode( GL_MODELVIEW )
-        glLoadIdentity()
-        if  DEBUG: print "ctm prepared", self.gl_ctm();
-                
-    def device_transform_device_ctm ( self, func, args ):
-        """ Default implementation for handling scaling matrices.  
-        
-            Many implementations will just use this function.  Others, like
-            OpenGL, can benefit from overriding the method and using 
-            hardware acceleration.            
-        """
-        if func == SCALE_CTM:
-           glScalef( args[0], args[1], 1 )
-        elif func == ROTATE_CTM:
-           glRotate( args[0] * 180 / pi, 0, 0, 1 )        
-        elif func == TRANSLATE_CTM:
-           if DEBUG: print 'translate', args[0], args[1]
-           glTranslate( args[0], args[1], 0 )
-           if DEBUG: print 'after translate', self.gl_ctm(),'\n'
-        elif func == CONCAT_CTM:
-           if DEBUG: print 'concat'
-           glm = self.affine_to_gl( args[0] )
-           glMultMatrixf( glm )
-        elif func == LOAD_CTM:
-           if DEBUG: print 'load', args[0]
-           glm = self.affine_to_gl( args[0] )
-           glLoadMatrixf( glm )
-           if DEBUG: print 'after load', self.gl_ctm(),'\n'
-
-    def line_dash_to_gl ( self ):
-        phase, pattern = self.state.line_dash
+        if matrix:
+            gl.glPopMatrix()
+            gl.glMatrixMode(gl.GL_MODELVIEW)
     
-        # convert this to factor, gl_pattern.  This is only possible exactly if the sum of
-        #  the integers in pattern is 2, 4, 8, or 16.  Otherwise, only an approximation is
-        #  possible.  The approximation selected is to extend the given pattern to a multiple
-        #  of 16, phase-shift the full pattern, then sample the bits to give the 16 bits
-        #  available for the gl_pattern.   The bits are represented in a byte array of 1s and 0s.
-        #  factor is set to the greatest common divisor of pattern and phase.  The pattern and
-        #  phase are then scaled by this factor.
-        L = sum( pattern )
 
-        # Handle case where phase >= L:
-        if phase >= L:
-           phase = phase % L
+def image_as_array(img):
+    """ Adapt an image object into a numpy array.
 
-        # Compute any factor to use:
-        factor = gcd( phase, pattern[0] )
-        for k in range( 1, len( pattern ) ):
-            factor = gcd( factor, pattern[k] )
-        if factor > 1:
-           phase   /= factor
-           pattern  = pattern.copy() / factor
-           L       /= factor
+    Typically, this is used to adapt an agg GraphicsContextArray which has been
+    used for image storage in Kiva applications.
+    """
+    if hasattr(img, 'bmp_array'):
+        # Yup, a GraphicsContextArray.
+        return img.bmp_array
+    elif isinstance(img, ndarray):
+        return img
+    else:
+        raise NotImplementedError("can't convert %r into a numpy array" % (img,))
 
-        D    = lcm( L, 16 )
-        x, n = D / L, D / 16
-        
-        # Make a bit-field xL long:
-        bits = ones( L, 'b' )
-        
-        # Fill the bit-field with the given pattern:
-        start = 0
-        k     = 0
-        for num in pattern:
-            # Odd elements zero-these out in the bit-field:
-            if k % 2:  
-               bits[ int( start) : int( start + num ) ] = 0 # TBD: HACK
-            start += num
-            k     += 1
+def get_dpi():
+    """ Returns the appropriate DPI setting for the system"""
+    pass
 
-        bigbits = bits.copy()
-        for k in range( 1, x ):
-            bigbits = concatenate( ( bigbits, bits ) )
-        if phase > 0:
-           bigbits = concatenate( (bigbits[phase:], bigbits[:phase] ) )
+class MRU(dict):
+    def __init__(self, *args, **kw):
+        # An ordering of keys in self; the last item was the most recently used
+        self.__order__ = []
+        self.__maxlength__ = 30
+        dict.__init__(self, *args, **kw)
 
-        gl_bits = bigbits[:: int( n ) ]  # TBD: HACK take every nth sample.
-    
-        # Just a sanity check:
-        assert(len(gl_bits)==16)   
-        
-        # Convert to integer (place last bit in least significant bit):
-        gl_pattern = 0
-        for k in range( 15, -1, -1 ):
-            gl_pattern <<= 1
-            gl_pattern  += gl_bits[k]
+    def __getitem__(self, key):
+        val = dict.__getitem__(self, key)
+        # If we get here, then key was found in our dict
+        self.__touch__(key)
+        return val
 
-        return ( factor, gl_pattern )
+    def __setitem__(self, key, value):
+        dict.__setitem__(self, key, value)
+        self.__touch__(key)
 
-    def affine_to_gl ( self, mat, load = 0 ):
-        a, b, c, d, tx, ty = affine.affine_params( mat )
-        glm = zeros( (4,4), float32 )
-        
-        # a,b,c,d,tx,ty are transposed from PDF:
-        glm[0,0] = a;  glm[0,1] = b       
-        glm[1,0] = c;  glm[1,1] = d       
-        glm[3,0] = tx; glm[3,1] = ty      # x, y translation
-        glm[2,2] = 1;  glm[3,3] = 1       # z, w diagonal elements        
-        return glm
+    def __delitem__(self, key):
+        dict.__delitem__(self, key)
+        if key in self.__order__:
+            self.__order__.remove(key)
 
-    def gl_ctm ( self ):
-        return glGetFloat( GL_MODELVIEW_MATRIX )
-        
-    def x_device_show_text ( self, text ):
-        """ Insert text at the current text position
-        """
-        self.device_update_font_state()
-        tx, ty     = self.get_text_position()
-        r, g, b, a = self.state.fill_color
-        glColor3( r, g, b )
-        glRasterPos( tx, ty )
-        self.device_draw_rect( tx, ty, 60, 24 ) # TBD: TEMPORARY
-        return ### TBD
-        for char in text:
-            glutBitmapCharacter( self._glut_font, ord( char ) )
-
-    def device_draw_glyphs ( self, glyphs, tx, ty ):
-        dy, dx      = glyphs.image.shape
-        img         = zeros( ( dy, dx, 4 ), uint8 )
-        r, g, b, a  = self.state.fill_color
-        img[:,:,:3] = array( ( int( 255.0 * r ), 
-                               int( 255.0 * g ), 
-                               int( 255.0 * b ) ), uint8 )
-        img[:,:,3]  = glyphs.image.astype( uint8 )[::-1]
-        glRasterPos( tx + glyphs.bbox[0], ty + glyphs.bbox[1] )
-        glEnable( GL_BLEND )
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA )
-        glDrawPixels( dx, dy, GL_RGBA, GL_UNSIGNED_BYTE, img.tostring() )
-        glDisable( GL_BLEND )
-
-    def device_set_clipping_path(self,x,y,width,height):
-        glScissor( x, y, width, height )
-        glEnable( GL_SCISSOR_TEST )
+    def __touch__(self, key):
+        """ Puts **key** as the most recently used item """
+        if len(self.__order__) == 0:
+            self.__order__.append(key)
+        if (len(self.__order__) == self.__maxlength__) and key not in self.__order__:
+            # The MRU is full, so pop the oldest element
+            del self[self.__order__[0]]
+        if key != self.__order__[-1]:
+            try:
+                ndx = self.__order__.index(key)
+                self.__order__[ndx:-1] = self.__order__[ndx+1:]
+                self.__order__[-1] = key
+            except ValueError:
+                # new key that's not already in the cache
+                if len(self.__order__) == self.__maxlength__:
+                    self.__order__ = self.__order__[1:] + [key]
+                else:
+                    self.__order__.append(key)
         return
-        
-    def device_destroy_clipping_path(self):
-        glDisable( GL_SCISSOR_TEST )
-        return    
 
-    #------------------------------------------------------------------------
-    # Overloaded
-    #------------------------------------------------------------------------
-    #def rect(self,x,y,sx,sy):
-    #    """ Add a rectangle as a new subpath.
-    #    """
-    #    self._new_subpath()
-    #    self.active_subpath.append( (RECT,array((x,y,sx,sy),float64)) )
-            
-    def flush ( self ):
-        glFlush()
+# Use a singleton for the font cache
+GlobalFontCache = MRU()
 
-    def synchronize ( self ):
-        # This is taking a whale of a long time (.15 sec on 1000x1000 window)
-        # what gives?
-        #glutSwapBuffers()
-        pass
 
-    #----------------------------------------------------------
-    # Misc methods
-    # TODO: Fix these / figure these out
-    #----------------------------------------------------------
+class GraphicsContext(_GCL):
+    def __init__(self, size, *args, **kw):
+        # Ignore the pix_format argument for now
+        if "pix_format" in kw:
+            kw.pop("pix_format")
+        _GCL.__init__(self, size[0], size[1], *args, **kw)
+        self.corner_pixel_origin = True
+        self.pyglet_font = None
 
-    def clear(self, *args):
-        """ Clears the screen to the given RGB or RGBA colors:
+        # Maps Font instances to pyglet font instance
+        self._font_cache = GlobalFontCache
 
-            clear(r, g, b)
-            clear(r, g, b, a)
-            clear( (r,g,b) )
-            clear( (r,g,b,a) )
-
-            If no color is given, then clears to the current graphics
-            state's fill_color.
+    def set_font(self, font):
+        """ **font** is either a kiva.agg.AggFontType, a kiva.fonttools.Font
+            object, or a Pyglet Font object
         """
-        if len(args) == 0:
-            color = self.state.fill_color
-        elif len(args) == 1:
-            args = args[0]
-
-        if len(args) == 3:
-            color = args + (1,)
+        # The font handling is a bit mangled because we are using
+        # kiva.agg.graphics_state to store the font information on the state
+        # stack.
+        # In order to just use kiva.fonttools.Font, and circumvent using
+        # kiva.agg.AggFontType, we will need to implement a parallel stack and
+        # supplement the GraphicsContextArray implementations of save_state and
+        # restore_state.
+        # For now, though, we do this clumsy process of converting the AggFontType
+        # to a kiva.fonttools.Font object.
+        if isinstance(font, PygletFont):
+            pyglet_font = font
         else:
-            color = args
+            key = (font.name, font.size, font.family, font.style)
+            if key not in self._font_cache:
+                if isinstance(font, AggFontType):
+                    agg_font = font
+                    font = Font(face_name = agg_font.name,
+                                size = agg_font.size,
+                                family = agg_font.family,
+                                style = agg_font.style)
+                bold = False
+                italic = False
+                if font.style == BOLD or font.style == BOLD_ITALIC or font.weight == BOLD:
+                    bold = True
+                if font.style == ITALIC or font.style == BOLD_ITALIC:
+                    italic = True
+                pyglet_font = load_font(font.findfontname(), font.size, bold, italic)
+                self._font_cache[key] = pyglet_font
+            else:
+                pyglet_font = self._font_cache[key]
 
-        glClearColor(*color)
-        glClear(GL_COLOR_BUFFER_BIT)
+        self.pyglet_font = pyglet_font
+        return True
+
+    def get_text_extent(self, text):
+        if self.pyglet_font is None:
+            return (0, 0, 0, 0)
+        # See note in show_text_at_point about the valign argument.
+        pyglet_text = Text(self.pyglet_font, text, valign=Text.BOTTOM)
+        return (0, 0, pyglet_text.width, pyglet_text.height)
+
+    def show_text(self, text, point = None):
+        if point is None:
+            point = (0,0)
+        return self.show_text_at_point(text, *point)
+
+    def show_text_at_point(self, text, x, y):
+        # XXX: make this use self.get_font() to get the font from the state stack
+        # rather than from the last font passed in to set_font()
+        if self.pyglet_font is None:
+            return False
+
+        xform = self.get_ctm()
+        x0 = xform[4]
+        y0 = xform[5]
+
+        # The GL backend places the center of a pixel at (0.5, 0.5); however, 
+        # for show_text_at_point, we don't actually want to render the text
+        # offset by half a pixel.  There is probably a better, more uniform way
+        # to handle this across all of Kiva, because this is probably a common
+        # issue that will arise, but for now, we just round the position down.
+        x = floor(x + x0)
+        y = floor(y + y0)
         
+        # Use valign=Text.BOTTOM because by default, pyglet sets the baseline to
+        # the y coordinate given.  Unfortunately, it doesn't expose a per-Text
+        # descent (only a per-Font descent), so it's impossible to know how to 
+        # offset the y value properly for a given string.  The only solution I've
+        # found is to just set valign to BOTTOM.
+        pyglet_text = Text(self.pyglet_font, text, x=x, y=y, valign=Text.BOTTOM)
+        pyglet_text.color = self.get_fill_color()
+        pyglet_text.draw()
+        return True
 
+    def draw_image(self, img, rect=None, force_copy=False):
+        """ Renders a GraphicsContextArray into this GC """
+        xform = self.get_ctm()
+        x0 = xform[4]
+        y0 = xform[5]
 
-class Canvas(object):
-    pass
+        image = image_as_array(img)
+        shape = image.shape
+        if shape[2] == 4:
+            fmt = "RGBA"
+        else:
+            fmt = "RGB"
+        aii = ArrayImage(image, format=fmt)
+        texture = aii.texture
 
-def font_metrics_provider(*args, **kw):
-    pass
+        # The texture coords consists of (u,v,r) for each corner of the
+        # texture rectangle.  The coordinates are stored in the order
+        # bottom left, bottom right, top right, top left.
+        x, y, w, h = rect
+        texture.width = w
+        texture.height = h
+        t = texture.tex_coords
+        points = array([
+            [x,   y+h],
+            [x+w, y+h],
+            [x+w, y],
+            [x,   y],
+        ])
+        p = transform_points(affine_from_values(*xform), points)
+        a = (gl.GLfloat*32)(
+            t[0],   t[1],   t[2],  1.,
+            p[0,0], p[0,1], 0,     1.,
+            t[3],   t[4],   t[5],  1.,
+            p[1,0], p[1,1], 0,     1.,
+            t[6],   t[7],   t[8],  1.,
+            p[2,0], p[2,1], 0,     1.,
+            t[9],   t[10],  t[11], 1.,
+            p[3,0], p[3,1], 0,     1.,
+        )
+        gl.glPushAttrib(gl.GL_ENABLE_BIT)
+        gl.glEnable(texture.target)
+        gl.glBindTexture(texture.target, texture.id)
+        gl.glPushClientAttrib(gl.GL_CLIENT_VERTEX_ARRAY_BIT)
+        gl.glInterleavedArrays(gl.GL_T4F_V4F, 0, a)
+        gl.glDrawArrays(gl.GL_QUADS, 0, 4)
+        gl.glPopClientAttrib()
+        gl.glPopAttrib()
 
+def font_metrics_provider():
+    return GraphicsContext((1,1))
 
-
-
+Canvas = None
+CanvasWindow = None

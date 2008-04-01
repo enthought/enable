@@ -43,10 +43,11 @@ font_noise = [ 'pt', 'point', 'family' ]
 
 font_families = font_styles = font_weights = DEFAULT = NORMAL = None
 
+
 def init_constants ( ):
     """ Dynamically load Kiva constants to avoid import dependencies.
     """
-    global font_families, font_styles, font_weights, DEFAULT, NORMAL
+    global font_families, font_styles, font_weights, default_face, DEFAULT, NORMAL
 
     if font_families is not None:
         return
@@ -75,6 +76,14 @@ def init_constants ( ):
     font_weights = {
         'bold': kc.BOLD
     }
+
+    default_face = {
+            kc.SWISS: "Arial",
+            kc.ROMAN: "Times",
+            kc.MODERN: "Courier",
+            kc.SCRIPT: "Zapfino",
+            kc.DECORATIVE: "Zapfino",  # need better choice for this
+            }
 
 # Strings to ignore in text representations of fonts
 font_noise = [ 'pt', 'point', 'family' ]
@@ -125,6 +134,8 @@ class TraitKivaFont ( TraitHandler ):
                         point_size = int( lword )
                     except:
                         facename.append( word )
+            if facename == "":
+                facename = default_face.get(family, "")
             return Font(face_name = " ".join(facename),
                         size = point_size,
                         family = family,

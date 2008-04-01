@@ -646,7 +646,7 @@ namespace kiva
     {
         // The following dummy parameter is needed to pass in to agg_pix_to_kiva
         // because MSVC++ 6.0 doesn't properly handle template function
-        // specialization (see notes in kiva_graphics_context_base.h).
+        // specialization (see notes in kiva_pix_format.h).
         agg_pixfmt *msvc6_dummy = NULL;
         return kiva::agg_pix_to_kiva(msvc6_dummy);
     }

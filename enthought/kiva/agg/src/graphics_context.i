@@ -198,7 +198,52 @@ namespace kiva {
     %pythoncode
     %{
         # used in GraphicsContextArray constructors
-        from numpy import zeros, uint8, fromstring, shape, ndarray, resize, dtype
+        from numpy import array, zeros, uint8, fromstring, shape, ndarray, resize, dtype
+
+        # Define paths for the two markers that Agg renders incorrectly
+        from enthought.kiva.constants import DIAMOND_MARKER, CIRCLE_MARKER, FILL_STROKE
+        
+        def diamond_marker_path(path, size):
+            path.lines(array(((0, -size), (-size, 0), (0, size), (size, 0))))
+        
+        def circle_marker_path(path, size):
+            circle_points = array([[ 1.   ,  0.   ],
+                                   [ 0.966,  0.259],
+                                   [ 0.866,  0.5  ],
+                                   [ 0.707,  0.707],
+                                   [ 0.5  ,  0.866],
+                                   [ 0.259,  0.966],
+                                   [ 0.   ,  1.   ],
+                                   [-0.259,  0.966],
+                                   [-0.5  ,  0.866],
+                                   [-0.707,  0.707],
+                                   [-0.866,  0.5  ],
+                                   [-0.966,  0.259],
+                                   [-1.   ,  0.   ],
+                                   [-0.966, -0.259],
+                                   [-0.866, -0.5  ],
+                                   [-0.707, -0.707],
+                                   [-0.5  , -0.866],
+                                   [-0.259, -0.966],
+                                   [ 0.   , -1.   ],
+                                   [ 0.259, -0.966],
+                                   [ 0.5  , -0.866],
+                                   [ 0.707, -0.707],
+                                   [ 0.866, -0.5  ],
+                                   [ 0.966, -0.259],
+                                   [ 1.   , 0.    ]])
+            if size <= 5:
+                pts = circle_points[::3] * size
+            elif size <= 10:
+                pts = circle_points[::2] * size
+            else:
+                pts = circle_points * size
+            path.lines(pts)
+        
+        substitute_markers = {
+            DIAMOND_MARKER: (diamond_marker_path, FILL_STROKE),
+            CIRCLE_MARKER: (circle_marker_path, FILL_STROKE)
+        }
 
         # global freetype engine for text rendering.
         #from enthought import freetype
@@ -230,7 +275,7 @@ namespace kiva {
         atexit.register(cleanup_font_threading_primitives)
 
     %}
-    
+
     %nodefault;
     %rename(GraphicsContextArray) graphics_context_base;
     
@@ -503,7 +548,7 @@ namespace kiva {
             void concat_ctm(agg::trans_affine& m);
             void set_ctm(agg::trans_affine& m);
             void get_freetype_text_matrix(double* out);
-
+            
             %feature("shadow") get_ctm()
             %{
             def get_ctm(self):
@@ -638,13 +683,19 @@ namespace kiva {
             %feature("shadow") draw_marker_at_points(double* pts,int Npts, int size,
                                        agg::marker_e type = agg::marker_square)
             %{            
-            def draw_marker_at_points(self,pts,size,kiva_marker_type):
+            def draw_marker_at_points(self, pts, size, kiva_marker_type):
                 marker = kiva_marker_to_agg.get(kiva_marker_type, None)
                 if marker is None:
                     success = 0
-                else:    
+                elif kiva_marker_type in (DIAMOND_MARKER, CIRCLE_MARKER):
+                    path_func, mode = substitute_markers[kiva_marker_type]
+                    path = self.get_empty_path()
+                    path_func(path, size)
+                    success = _agg.GraphicsContextArray_draw_path_at_points(self, pts, path, mode)
+                else:
                     args = (self,pts,int(size),marker)    
-                    success = apply(_agg.GraphicsContextArray_draw_marker_at_points,args)
+                    success = _agg.GraphicsContextArray_draw_marker_at_points(self, pts,
+                                    int(size), marker)
                 return success
             %}
             int draw_marker_at_points(double* pts,int Npts, int size,
@@ -789,7 +840,7 @@ def init(self, ary_or_size, pix_format="bgra32",
     # swig 1.3.28 does not have real thisown, thisown is mapped
     # to this.own() but with previous 'self.this=obj' an
     # attribute 'own' error is raised. Does this workaround
-    # work with pre-1.3.28 swig?       	 
+    # work with pre-1.3.28 swig?         
     _swig_setattr(self, GraphicsContextArray, 'thisown2', 1)
 
     self.bmp_array = ary
@@ -854,3 +905,104 @@ class Image(GraphicsContextArray):
 
 
 %}
+
+
+
+%{
+#include "gl_graphics_context.h"
+%}
+
+namespace kiva {
+
+    %rename(GraphicsContextGL) gl_graphics_context;
+    
+    class gl_graphics_context : public graphics_context_base
+    {
+    public:
+        gl_graphics_context(int width, int height, 
+                           kiva::pix_format_e format=kiva::pix_format_rgb24);
+        
+        ~gl_graphics_context();
+
+        //---------------------------------------------------------------
+        // GL-specific methods
+        //---------------------------------------------------------------
+        void gl_init();
+        void gl_cleanup();
+        void begin_page();
+        void gl_render_path(kiva::compiled_path *path, bool polygon=false, bool fill=false);
+        void gl_render_points(double** points, bool polygon, bool fill,
+            kiva::draw_mode_e mode = FILL);
+
+        //---------------------------------------------------------------
+        // GraphicsContextBase interface
+        //---------------------------------------------------------------
+
+        kiva::pix_format_e format();
+        void save_state();
+        void restore_state();
+
+        //---------------------------------------------------------------
+        // Clipping path manipulation
+        //---------------------------------------------------------------
+        void clip();
+        void even_odd_clip();
+        void clip_to_rect(double x, double y, double sx, double sy);
+        void clip_to_rect(kiva::rect_type &rect);
+        void clip_to_rects(double* new_rects, int Nrects);
+        void clip_to_rects(kiva::rect_list_type &rects);
+        kiva::rect_type transform_clip_rectangle(const kiva::rect_type &rect);
+        void clear_clip_path();
+
+        int get_num_clip_regions();
+        kiva::rect_type get_clip_region(unsigned int i);
+
+        //---------------------------------------------------------------
+        // Painting paths (drawing and filling contours)
+        //---------------------------------------------------------------
+        
+        // Declare clear() to pass by reference so that the typemap applies,
+        // even though it is pass by value in the actual C++ class
+        void clear(agg::rgba& value=_clear_color);
+        
+        void fill_path();
+        void eof_fill_path();
+        void stroke_path();
+        // empty function; for some reason this is abstract in the base class
+        inline void _stroke_path() { }
+
+        void draw_path(draw_mode_e mode=FILL_STROKE);
+        void draw_rect(double rect[4],
+                       draw_mode_e mode=FILL_STROKE);
+
+        %feature("shadow") draw_marker_at_points(double* pts,int Npts, int size,
+                                   agg::marker_e type = agg::marker_square)
+        %{            
+        def draw_marker_at_points(self,pts,size,kiva_marker_type):
+            marker = kiva_marker_to_agg.get(kiva_marker_type, None)
+            if marker is None:
+                success = 0
+            else:    
+                args = (self,pts,int(size),marker)    
+                success = _agg.GraphicsContextGL_draw_marker_at_points(self, pts,
+                                int(size), marker)
+            return success
+        %}
+        int draw_marker_at_points(double* pts,int Npts,int size,
+                                   agg::marker_e type=agg::marker_square);
+
+        void draw_path_at_points(double* pts,int Npts,
+                                  kiva::compiled_path& marker,
+                                  draw_mode_e mode);
+
+        bool show_text(char *text);
+
+        void draw_glyphs(kiva::graphics_context_base* img, double tx, double ty);
+        int draw_image(kiva::graphics_context_base* img, double rect[4], bool force_copy=false);
+        int draw_image(kiva::graphics_context_base* img);
+        
+    };
+
+}
+
+
