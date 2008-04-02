@@ -27,13 +27,8 @@ from enthought.traits.trait_base \
 from enthought.traits.ui.wx.font_editor \
     import ToolkitEditorFactory as EditorFactory
 
+from enthought.kiva.fonttools.font_manager import fontManager
 
-#-------------------------------------------------------------------------------
-#  Constants:
-#-------------------------------------------------------------------------------
-
-# All available typeface names for fonts
-facenames = None
 
 #-------------------------------------------------------------------------------
 #  'ToolkitEditorFactory' class:
@@ -125,17 +120,7 @@ class ToolkitEditorFactory ( EditorFactory ):
     def all_facenames ( self ):
         """ Returns a list of all available font typeface names.
         """
-        global facenames
-
-        if facenames is None:
-           from enthought.freetype import font_lookup
-
-           facenames = font_lookup.default_font_info.names()
-           if facenames[0] == '':
-               del facenames[0]
-
-           facenames.sort()
-
+        facenames = fontManager.ttfdict.keys()
         return facenames
 
 
