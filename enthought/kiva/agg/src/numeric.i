@@ -299,7 +299,7 @@ int require_size(PyArrayObject* ary, int* size, int n)
         char actual_dims[255] = "[";
         for (i = 0; i < n; i++)
         {
-            sprintf(s, "%d,", array_size(ary,i));
+            sprintf(s, "%d,", (int)array_size(ary,i));
             strcat(actual_dims,s);
         }
         len = strlen(actual_dims);

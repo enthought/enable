@@ -154,6 +154,9 @@ def configuration(parent_package='',top_path=None):
         build_libraries += ["opengl32", "glu32"]
     elif sys.platform == "darwin":
         dict_append(build_info, **darwin_opengl_opts)
+    else:
+        # This should work for most linuxes (linuces?)
+        build_libraries += ["GL", "GLU"]
     dict_append(build_info,
                 sources = ['agg.i'],
                 include_dirs = kiva_include_dirs,

@@ -64,8 +64,9 @@ namespace agg
         {
             m_x = m_x0 = x;
             m_y = y;
+            // comparison between signed and unsigned
             if(y >= 0 && y < (int)m_pixf->height() &&
-               x >= 0 && x+len <= (int)m_pixf->width())
+               x >= 0 && (int)(x+len) <= (int)m_pixf->width())
             {
                 return m_pix_ptr = m_pixf->pix_ptr(x, y);
             }
