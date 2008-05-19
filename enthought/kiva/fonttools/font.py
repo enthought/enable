@@ -4,8 +4,9 @@ specification strings into Font instances.
 """
 
 import copy
-from enthought.kiva.constants import *
-from font_manager import *
+from enthought.kiva.constants import DEFAULT, DECORATIVE, ROMAN, SCRIPT, \
+    SWISS, MODERN, TELETYPE, NORMAL, ITALIC, BOLD, BOLD_ITALIC
+from font_manager import FontProperties, fontManager
 
 # Various maps used by str_to_font
 font_families = {
@@ -50,7 +51,7 @@ def str_to_font(fontspec):
             except:
                 facename.append( word )
     return Font( size=point_size, family=family, weight=weight, style=style, 
-                 underline=underline, face_name=' '.join( face_name ) )
+                 underline=underline, face_name=' '.join( facename ) )
 
 
 
