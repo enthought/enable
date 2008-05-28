@@ -57,7 +57,7 @@
 {
     if (is_new_object$argnum)
     {
-        Py_DECREF(ary$argnum);
+        Py_XDECREF(ary$argnum);
     }
 }
 
@@ -90,7 +90,7 @@
 {
     if (is_new_object$argnum)
     {
-        Py_DECREF(ary$argnum);
+        Py_XDECREF(ary$argnum);
     }
 }
 
@@ -125,7 +125,7 @@
 {
     if (is_new_object$argnum)
     {
-        Py_DECREF(ary$argnum);
+        Py_XDECREF(ary$argnum);
     }
 }
 
@@ -240,7 +240,7 @@
 {
     if (is_new_object$argnum)
     {
-        Py_DECREF(ary$argnum);
+        Py_XDECREF(ary$argnum);
     }
 }
 
