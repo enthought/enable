@@ -329,7 +329,7 @@ class Container(Component):
         
         # The container's annotation and overlay layers draw over those of 
         # its components.
-        if layer in ("annotation", "overlay"):
+        if layer in ("annotation", "overlay", "border"):
             my_handler = getattr(self, "_draw_container_" + layer, None)
             if my_handler:
                 my_handler(gc, view_bounds, mode)
@@ -347,6 +347,9 @@ class Container(Component):
 
     def _draw_container_underlay(self, gc, view_bounds=None, mode="normal"):
         self._draw_underlay(gc, view_bounds, mode)
+
+    def _draw_container_border(self, gc, view_bounds=None, mode="normal"):
+        self._draw_border(gc, view_bounds, mode)
 
     def _get_visible_components(self, bounds):
         """ Returns a list of this plot's children that are in the bounds. """
