@@ -178,7 +178,7 @@ if ETSConfig.toolkit == 'wx':
             return color_table.get(value, transparent_color)
         elif type(value) is int:
             num = int( value )
-            return ((num >> 16)/255.0, ((num>>8) & 0xFF)/255.0, (num & 0xFF)/255.0)
+            return ((num >> 16)/255.0, ((num>>8) & 0xFF)/255.0, (num & 0xFF)/255.0, 1.0)
         elif type(value) in (list, tuple):
             if len(value) == 3:
                 return (value[0]/255.0, value[1]/255.0, value[2]/255.0, 1.0)
@@ -230,7 +230,7 @@ elif ETSConfig.toolkit == 'qt4':
             return color_table.get(value, transparent_color)
         elif type(value) is int:
             num = int(value)
-            return ((num >> 16)/255.0, ((num>>8) & 0xFF)/255.0, (num & 0xFF)/255.0)
+            return ((num >> 16)/255.0, ((num>>8) & 0xFF)/255.0, (num & 0xFF)/255.0, 1.0)
         elif type(value) in (list, tuple):
             if len(value) == 3:
                 return (value[0]/255.0, value[1]/255.0, value[2]/255.0, 1.0)
