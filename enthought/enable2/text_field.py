@@ -1,8 +1,8 @@
 # Standard library imports
-from math import floor
+from math import floor, sqrt
 
 # Enthought library imports
-from enthought.traits.api import (Str, Bool, Int, Event, Instance, Any, Property,
+from enthought.traits.api import (Bool, Int, Event, Instance, Any, Property,
                                   List, Delegate)
 from enthought.kiva import font_metrics_provider
 
@@ -313,8 +313,9 @@ class TextField(Component):
 
             # Show text at the same scale as the graphics context
             ctm = gc.get_ctm()
-            if hasattr(ctm, "scale"):
-                scale = gc.get_ctm().scale()
+            if hasattr(ctm, "__len__") and len(ctm) == 6:
+                scale = sqrt( (ctm[0]+ctm[1]) * (ctm[0]+ctm[1]) / 2.0 + \
+                              (ctm[2]+ctm[3]) * (ctm[2]+ctm[3]) / 2.0 )
             elif hasattr(gc, "get_ctm_scale"):
                 scale = gc.get_ctm_scale()
             else:
