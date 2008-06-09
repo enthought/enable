@@ -51,9 +51,6 @@ from text_field_grid import TextFieldGrid
 from viewport import Viewport
 from window import Window
 
-#from key_bindings import KeyBinding, KeyBindings
-#from color_picker import ColorPicker
-
 # subpackage imports
 from image.api import Image, DraggableImage, Inspector, ColorChip
 #from image_frame import ImageFrame, ResizeFrame, TitleFrame, WindowFrame, \
