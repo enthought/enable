@@ -249,9 +249,7 @@ cdef class CGContext:
         """
         cdef CGAffineTransform t
         t = CGContextGetCTM(self.context)
-        return ((t.a, t.b, 0.0),
-                (t.c, t.d, 0.0),
-                (t.tx,t.ty,1.0))
+        return (t.a, t.b, t.c, t.d, t.tx, t.ty)
 
     def get_ctm_scale(self):
         """ Returns the average scaling factor of the transform matrix.
