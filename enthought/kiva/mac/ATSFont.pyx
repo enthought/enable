@@ -3,10 +3,13 @@
 # :License:   BSD Style
 
 
-include "CoreFoundationDef.pxi"
+include "CoreFoundation.pxi"
+include "ATS.pxi"
 include "Python.pxi"
 
 cdef class ATSFont:
+    cdef ATSFontRef ats_font
+    cdef readonly object postscript_name
     def __init__(self, object postscript_name):
         cdef CFStringRef cf_ps_name
         cdef char* c_ps_name
@@ -68,6 +71,8 @@ cdef OSStatus styles_callback(ATSFontRef font, void* data):
 
 
 cdef class FontLookup:
+    cdef readonly object cache
+    cdef public object default_font
 
     def lookup_ps_name(self, name, style='regular'):
         cdef CFStringRef cf_name

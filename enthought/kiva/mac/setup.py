@@ -49,7 +49,6 @@ def configuration(parent_package='',top_path=None):
                          include_dirs = include_dirs,
                          extra_link_args = extra_link_args,
                          depends=["ATSFont.pyx",
-                                  "CoreFoundationDef.pxi",
                                   "Python.pxi",
                                   "ATS.pxi",
                                   "ATSFont.pxd",
@@ -64,7 +63,6 @@ def configuration(parent_package='',top_path=None):
                                     "numpy.pxi",
                                     "c_numpy.pxd",
                                     "CoreFoundation.pxi",
-                                    "CoreFoundationDef.pxi",
                                     "CoreGraphics.pxi",
                                     "QuickDraw.pxi",
                                     ]

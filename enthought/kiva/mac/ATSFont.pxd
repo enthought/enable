@@ -3,8 +3,6 @@
 # :License:   BSD Style
 
 
-include "CoreFoundation.pxi"
-include "ATS.pxi"
 
 cdef class ATSFont:
     cdef ATSFontRef ats_font

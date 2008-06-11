@@ -48,10 +48,8 @@ cdef extern from "ATSFont.h":
       kFMFontCallbackFilterSelector = 5
       kFMFontDirectoryFilterSelector = 6
 
-
-    cdef enum:
-      kFMTrueTypeFontTechnology     = 'true'
-      kFMPostScriptFontTechnology   = 'typ1'
+    #kFMTrueTypeFontTechnology     = 'true'
+    #kFMPostScriptFontTechnology   = 'typ1'
 
     #struct FMFontDirectoryFilter:
     #  SInt16              fontFolderDomain
@@ -370,8 +368,8 @@ cdef extern from "ATSFont.h":
     #  CFAllocatorReleaseCallBack  release
     #
 
-    ctypedef enum ATSFontQueryMessageID:
-      kATSQueryActivateFontMessage  = 'atsa'
+    #ctypedef enum ATSFontQueryMessageID:
+    #  kATSQueryActivateFontMessage  = 'atsa'
 
 cdef extern from "Fonts.h":
 

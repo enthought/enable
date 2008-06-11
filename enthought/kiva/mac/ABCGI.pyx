@@ -5,7 +5,6 @@
 
 include "Python.pxi"
 include "CoreFoundation.pxi"
-include "CoreFoundationDef.pxi"
 include "CoreGraphics.pxi"
 include "QuickDraw.pxi"
 include "ATS.pxi"
@@ -20,6 +19,21 @@ from ATSFont import default_font_info
 cdef extern from "math.h":
     double sqrt(double arg)
 
+
+cdef CFURLRef url_from_filename(char* filename) except NULL:
+    cdef CFStringRef filePath
+    filePath = CFStringCreateWithCString(NULL, filename,
+        kCFStringEncodingUTF8)
+    if filePath == NULL:
+        raise RuntimeError("could not create CFStringRef")
+
+    cdef CFURLRef cfurl
+    cfurl = CFURLCreateWithFileSystemPath(NULL, filePath,
+        kCFURLPOSIXPathStyle, 0)
+    CFRelease(filePath)
+    if cfurl == NULL:
+        raise RuntimeError("could not create a CFURLRef")
+    return cfurl
 
 # Enumerations
 
@@ -2665,6 +2679,5 @@ cdef object _set_cgcontext_for_layout(CGContextRef context, ATSUTextLayout layou
     if err:
         raise RuntimeError("could not assign the CGContextRef to the ATSUTextLayout")
     return
-
 
 #### EOF #######################################################################
