@@ -51,7 +51,6 @@ def configuration(parent_package='',top_path=None):
                          depends=["ATSFont.pyx",
                                   "Python.pxi",
                                   "ATS.pxi",
-                                  "ATSFont.pxd",
                                   ],
                          )
     config.add_extension('ABCGI',
