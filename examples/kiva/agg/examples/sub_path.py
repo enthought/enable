@@ -1,10 +1,9 @@
-#sub_path.py
+import numpy
 
-from enthought.util.numerix import *
 from enthought.kiva import agg
 
 line_color = (0.0,0.0,0.0)
-fill_color = array((200.,184.,106.))/255.
+fill_color = numpy.array((200.,184.,106.))/255.
 gc = agg.GraphicsContextArray((1600,1600))
 gc.rect(30,30,1200,300)
 gc.set_fill_color(fill_color)
@@ -29,7 +28,7 @@ gc.draw_path()
 gc.save("sub_path1.bmp")
 
 line_color = (0.0,0.0,0.0)
-fill_color = array((200.,184.,106.))/255.
+fill_color = numpy.array((200.,184.,106.))/255.
 gc = agg.GraphicsContextArray((1600,1600))
 gc.rect(30,30,1200,300)
 gc.set_fill_color(fill_color)
