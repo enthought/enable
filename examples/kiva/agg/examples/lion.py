@@ -1,7 +1,8 @@
-from enthought.util.scipyx import *
-from enthought.kiva import agg
 import time
 import sys
+
+from enthought.kiva import agg
+
 
 if sys.platform == 'win32':
     now = time.clock

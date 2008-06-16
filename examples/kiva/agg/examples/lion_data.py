@@ -5,7 +5,7 @@ This module relies on Agg solely for CompiledPath support.
 (Lion path data is copied from from Agg.)
 """
 
-from enthought.util.scipyx import amax, amin, array, Float
+from numpy import amax, amin, array, dtype
 
 from enthought.kiva import CompiledPath
 
@@ -177,7 +177,7 @@ def build_paths(lion_string):
         else:
             fields = array(fields,'O')
             cmd = fields[::2]
-            pts = map(lambda x: array(eval(x),Float), fields[1::2])
+            pts = map(lambda x: array(eval(x), dtype=float), fields[1::2])
             mins.append(amin(pts,axis=0))
             maxs.append(amax(pts,axis=0))
             

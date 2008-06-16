@@ -4,8 +4,7 @@ Benchmarks Agg rendering times.
 
 import time
 
-from enthought.util.scipyx import *
-from scipy import stats
+from scipy import stats, array, shape, arange, transpose, sin, cos
 
 from enthought.kiva import agg
 import enthought.kiva
@@ -107,7 +106,7 @@ def star_array(size=40):
 
 def circle_array(size=5):
     x = arange(0,6.3,.1)
-    pts = transpose(array((cos(x),sin(x)))).copy()*size/2.
+    pts = transpose(array((cos(x), sin(x)))).copy()*size/2.
     return pts
 
 
