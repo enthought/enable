@@ -1,4 +1,4 @@
-from enthought.util.numerix import pi
+from math import pi
 from enthought.kiva import agg
    
 def add_star(gc):
