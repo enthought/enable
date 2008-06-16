@@ -1,5 +1,7 @@
-from enthought.util.scipyx import *
 import time
+
+from numpy import array
+
 from enthought.kiva import agg
 from enthought import kiva
 
