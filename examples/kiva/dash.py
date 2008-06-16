@@ -1,6 +1,9 @@
-from enthought.util.numerix import *
 import time
+
+import numpy
+
 from enthought import kiva
+
 
 def dash(sz=(1000,1000)):
     gc = kiva.GraphicsContext(sz)
@@ -11,7 +14,7 @@ def dash(sz=(1000,1000)):
     gc.set_line_width(10)
     
     phase = width * 2.5;
-    pattern = width * array((5,5))    
+    pattern = width * numpy.array((5,5))
     gc.set_line_dash(pattern,phase)
     gc.set_line_cap(kiva.CAP_BUTT)
     t1 = time.clock()
@@ -24,6 +27,7 @@ def dash(sz=(1000,1000)):
     gc.save("dash.bmp")
     tot_time = t2 - t1
     print 'time:', tot_time
+
 
 if __name__ == "__main__":
     dash()
