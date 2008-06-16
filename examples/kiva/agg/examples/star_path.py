@@ -1,4 +1,7 @@
-from enthought.util.numerix import *
+from math import sin, cos, pi
+
+from numpy import array, arange
+
 import enthought.kiva
 from enthought.kiva import agg
 
