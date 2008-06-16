@@ -17,8 +17,9 @@ every backend.
 """
 
 import time
-from enthought.util.randomx import randint, seed
-from enthought.util.numerix import arange, array, concatenate, NewAxis
+
+import numpy
+
 from enthought.kiva import constants, Font
 
 # This uses the best-fit backend based on the KIVA_WISHLIST environment variable
@@ -45,13 +46,13 @@ def outer_join(a,b):
 def calc_star(size=40):
     half_size = size * .5
     tenth_size = size * .1
-    star_pts = [ array((tenth_size,0)),
-                 array((half_size,size - tenth_size)),
-                 array((size - tenth_size, 0)),
-                 array((0,half_size)),
-                 array((size,half_size)),
+    star_pts = [ numpy.array((tenth_size,0)),
+                 numpy.array((half_size,size - tenth_size)),
+                 numpy.array((size - tenth_size, 0)),
+                 numpy.array((0,half_size)),
+                 numpy.array((size,half_size)),
                ]
-    return array(star_pts)
+    return numpy.array(star_pts)
 
 
 class CapSampler:
@@ -222,8 +223,8 @@ class StarSampler:
         # now we call close_path in the add_symbol funciton
         #self.symbol_pts = concatenate((symbol_pts,symbol_pts[:1,:]))
         self.symbol_pts = symbol_pts
-        seed(10000,10000)
-        self.star_pos = randint(20,100,(star_count,2))        
+        numpy.random.seed(10000)
+        self.star_pos = numpy.random.randint(20,100,(star_count,2))
         self.scale = scale
         self.rotate = rotate
         self.line_width = line_width
@@ -286,13 +287,14 @@ class StarSampler:
 
 class NoiseSampler:
 
-    def __init__(self,points=20,scale=1.0):
+    def __init__(self, points=20, scale=1.0):
         self.point_count = points
-        x = arange(0.,100.,100./self.point_count)
-        y = randint(0,100,(len(x),))
-        self.points = concatenate((x[:,NewAxis],y[:,NewAxis]),-1)
+        x = numpy.arange(0.,100.,100./self.point_count)
+        y = numpy.random.randint(0,100,(len(x),))
+        self.points = numpy.concatenate((x[:,numpy.newaxis],
+                                         y[:,numpy.newaxis]), -1)
         self.scale = scale
-
+        
     def size(self):
         # This really needs to be calculated, but we'll hard code for now.
         return 170*self.scale,250*self.scale
