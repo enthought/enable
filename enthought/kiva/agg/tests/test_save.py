@@ -1,9 +1,10 @@
-from enthought.util.numerix import *
-from enthought.util.testingx import *
-import unittest
 import os
+import unittest
+
+from numpy import allclose, ravel
 
 from enthought.kiva import agg
+
 
 class TestSave(unittest.TestCase):
     format_output_map = {
@@ -12,14 +13,19 @@ class TestSave(unittest.TestCase):
         "rgba32": [255,255,255,255,255,255,255,255,255,0,0,255,255,0,0,255],
         "bgra32": [255,255,255,255,255,255,255,255,0,0,255,255,0,0,255,255]
         }
-    def check_rgb24_format(self):
+    
+    def test_rgb24_format(self):
         self.do_check_format('rgb24')
-    def check_bgr24_format(self):
+        
+    def test_bgr24_format(self):
         self.do_check_format('bgr24')
-    def check_rgba32_format(self):
+        
+    def test_rgba32_format(self):
         self.do_check_format('rgba32')
-    def check_bgra32_format(self):
+        
+    def test_bgra32_format(self):
         self.do_check_format('bgra32')
+        
     def do_check_format(self,fmt):
         gc = agg.GraphicsContextArray((2,2), fmt)
         gc.set_stroke_color((1.0,0.0,0.0))
@@ -29,24 +35,8 @@ class TestSave(unittest.TestCase):
         gc.save(fmt + ".png")
         img = agg.Image(fmt + ".png")
         os.unlink(fmt + ".png")
-        assert_equal(ravel(img.bmp_array),self.format_output_map[fmt])
-
-#----------------------------------------------------------------------------
-# test setup code.
-#----------------------------------------------------------------------------
-
-def check_suite(level=1):
-    suites = []
-    if level > 0:
-        suites.append( unittest.makeSuite(TestSave,'check_') )
-    total_suite = unittest.TestSuite(suites)
-    return total_suite
-
-def test(level=10):
-    all_tests = check_suite(level)
-    runner = unittest.TextTestRunner()
-    runner.run(all_tests)
-    return runner
+        self.assertEqual(list(ravel(img.bmp_array)),
+                         self.format_output_map[fmt])
 
 if __name__ == "__main__":
-    test()
+    unittest.main()
