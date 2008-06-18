@@ -1,10 +1,9 @@
 import time
-from enthought.util.numerix import *
+from math import pi
 
-import sys
-from enthought.kiva import agg
+from enthought.kiva import agg, Font
 
-ArialFont = agg.FontType('arial')
+ArialFont = Font('arial')
 
 def draw_text(gc, text, bbox, text_color, bbox_color):
     gc.set_stroke_color(bbox_color)
