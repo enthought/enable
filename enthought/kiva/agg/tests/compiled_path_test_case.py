@@ -1,6 +1,6 @@
-from enthought.util.numerix import *
-from test_utils import *
 import unittest
+
+from numpy import array, alltrue, ravel, pi
 
 from enthought.kiva import agg
 
@@ -14,7 +14,13 @@ from enthought.kiva import agg
 #    print name, sys.modules[name]
 
 class TestCompiledPath(unittest.TestCase):
-
+    
+    def assertRavelEqual(self, actual, desired):
+        equal = alltrue(ravel(desired) == ravel(actual))
+        if not equal:
+            print "desired != actual:\n%s \n!=\n %s" % (desired, actual)
+        self.assert_(equal)
+        
     def test_init(self):
         path = agg.CompiledPath()
 
@@ -31,24 +37,24 @@ class TestCompiledPath(unittest.TestCase):
         m1 = agg.translation_matrix(5.0,5.0)
         path.set_ctm(m1)
         m2 = path.get_ctm()
-        assert_arrays_equal(m1, m2)
+        self.assertRavelEqual(m1, m2)
         path.restore_ctm()
         m3 = path.get_ctm()
-        assert_arrays_equal(m0, m3)
+        self.assertRavelEqual(m0, m3)
 
     def test_translate_ctm(self):
         path = agg.CompiledPath()
         path.translate_ctm(2.0,2.0)
         actual = path.get_ctm()
         desired = agg.translation_matrix(2.0,2.0)
-        assert_arrays_equal(actual, desired)
+        self.assertRavelEqual(actual, desired)
 
     def test_scale_ctm(self):
         path = agg.CompiledPath()
         path.scale_ctm(2.0,2.0)
         actual = path.get_ctm()
         desired = agg.scaling_matrix(2.0,2.0)
-        assert_arrays_equal(actual, desired)
+        self.assertRavelEqual(actual, desired)
 
     def test_rotate_ctm(self):
         angle = pi/4.
@@ -56,7 +62,7 @@ class TestCompiledPath(unittest.TestCase):
         path.rotate_ctm(angle)
         actual = path.get_ctm()
         desired = agg.rotation_matrix(angle)
-        assert_arrays_equal(actual, desired)
+        self.assertRavelEqual(actual, desired)
     
     def test_concat_ctm(self):
         path = agg.CompiledPath()        
@@ -70,22 +76,22 @@ class TestCompiledPath(unittest.TestCase):
         desired = m0
         des = desired.asarray()
         act = actual.asarray()
-        assert_arrays_equal(actual, desired)
+        self.assertRavelEqual(actual, desired)
         
     def test_vertex(self):
         # !! should get this value from the agg enum value
         path = agg.CompiledPath()
         path.move_to(1.0,1.0)
         actual,actual_flag = path._vertex()
-        desired = array((1.0,1.0),Float)
+        desired = array((1.0,1.0))
         desired_flag = 1
-        assert_arrays_equal(actual,desired)
-        assert_arrays_equal(actual_flag,desired_flag)
+        self.assertRavelEqual(actual,desired)
+        self.assertRavelEqual(actual_flag,desired_flag)
         
         #check for end flag
         actual,actual_flag = path._vertex()
         desired_flag = 0
-        assert_arrays_equal(actual_flag,desired_flag)
+        self.assertRavelEqual(actual_flag,desired_flag)
 
     def test_vertices(self):
         # !! should get this value from the agg enum value
@@ -95,7 +101,7 @@ class TestCompiledPath(unittest.TestCase):
         desired = array(((1.0,1.0,1.0,0.0),
                          (0.0,0.0,0.0,0.0)))
         actual = path._vertices()
-        assert_arrays_equal(actual,desired)
+        self.assertRavelEqual(actual,desired)
 
     def test_rewind(self):
         # !! should get this value from the agg enum value
@@ -106,10 +112,10 @@ class TestCompiledPath(unittest.TestCase):
         
         path._rewind()
         actual,actual_flag = path._vertex()
-        desired = array((1.0,1.0),Float)
+        desired = array((1.0,1.0))
         desired_flag = 1
-        assert_arrays_equal(actual,desired)
-        assert_arrays_equal(actual_flag,desired_flag)
+        self.assertRavelEqual(actual,desired)
+        self.assertRavelEqual(actual_flag,desired_flag)
         
     def test_begin_path(self):
         path = agg.CompiledPath()
@@ -118,14 +124,14 @@ class TestCompiledPath(unittest.TestCase):
         pt, flag = path._vertex()
         # !! should get this value from the agg enum value
         desired = 0
-        assert_arrays_equal(flag,desired)
+        self.assertRavelEqual(flag,desired)
 
     def test_move_to(self):
         path = agg.CompiledPath()
         path.move_to(1.0,1.0)
         actual,flag = path._vertex()
-        desired = array((1.0,1.0),Float)
-        assert_arrays_equal(actual,desired)
+        desired = array((1.0,1.0))
+        self.assertRavelEqual(actual,desired)
 
     def test_move_to1(self):
         """ Test that transforms are affecting move_to commands
@@ -134,8 +140,8 @@ class TestCompiledPath(unittest.TestCase):
         path.translate_ctm(1.0,1.0)
         path.move_to(1.0,1.0)
         actual,flag = path._vertex()
-        desired = array((2.0,2.0),Float)
-        assert_arrays_equal(actual,desired)
+        desired = array((2.0,2.0))
+        self.assertRavelEqual(actual,desired)
 
     def test_quad_curve_to(self):
         path = agg.CompiledPath()
@@ -143,7 +149,7 @@ class TestCompiledPath(unittest.TestCase):
         to = 2.0,2.0
         path.quad_curve_to(ctrl[0],ctrl[1],to[0],to[1])
         actual_ctrl, flag = path._vertex()
-        assert_arrays_equal(actual_ctrl, ctrl)
+        self.assertRavelEqual(actual_ctrl, ctrl)
         assert(flag == 3)
         actual_to, flag = path._vertex()
         assert(actual_to == to)
@@ -185,13 +191,13 @@ class TestCompiledPath(unittest.TestCase):
         
         desired = path1._vertices()
         actual = path2._vertices()
-        assert_arrays_equal(actual, desired)
+        self.assertRavelEqual(actual, desired)
         
         desired = path1.get_ctm()
         actual = path2.get_ctm()
-        assert_arrays_equal(actual, desired)
+        self.assertRavelEqual(actual, desired)
 
-    def base_test_lines(self,lines):
+    def base_helper_lines(self,lines):
         path = agg.CompiledPath()
         path.move_to(1.0,1.0)
         path.line_to(2.0,2.0) #actually (3.0,3.0)
@@ -205,17 +211,17 @@ class TestCompiledPath(unittest.TestCase):
         #print 'desired:', desired
         #print 'actual:', actual
         
-        assert_arrays_equal(actual, desired)
+        self.assertRavelEqual(actual, desired)
 
     def test_lines_array(self):
         lines = array(((3.0,3.0),
                        (4.0,4.0)))
-        self.base_test_lines(lines)
+        self.base_helper_lines(lines)
 
     def test_lines_list(self):
         lines = [[3.0,3.0],
                  [4.0,4.0]]
-        self.base_test_lines(lines)
+        self.base_helper_lines(lines)
                 
     def test_rect(self):
         path = agg.CompiledPath()
@@ -227,9 +233,9 @@ class TestCompiledPath(unittest.TestCase):
                          (2.0,1.0,agg.path_cmd_line_to, agg.path_flags_none),
                          (0.0,0.0,agg.path_cmd_end_poly, agg.path_flags_close),
                          (0.0,0.0,agg.path_cmd_stop, agg.path_flags_none),))
-        assert_arrays_equal(actual, desired)
+        self.assertRavelEqual(actual, desired)
 
-    def base_test_rects(self,rects):
+    def base_helper_rects(self,rects):
         path = agg.CompiledPath()
         path.rects(rects)
         actual = path._vertices()
@@ -244,30 +250,18 @@ class TestCompiledPath(unittest.TestCase):
                          (3.0,2.0,agg.path_cmd_line_to, agg.path_flags_none),
                          (0.0,0.0,agg.path_cmd_end_poly, agg.path_flags_close),
                          (0.0,0.0,agg.path_cmd_stop, agg.path_flags_none),))
-        assert_arrays_equal(actual,desired)
+        self.assertRavelEqual(actual, desired)
 
     def test_rects_array(self):
         rects = array(((1.0,1.0,1.0,1.0),
                        (2.0,2.0,1.0,1.0)))
-        self.base_test_rects(rects)
+        self.base_helper_rects(rects)
 
     def test_rects_list(self):
         rects = [[1.0,1.0,1.0,1.0],
                  [2.0,2.0,1.0,1.0]]
-        self.base_test_rects(rects)
+        self.base_helper_rects(rects)
 
-def test_suite(level=1):
-    suites = []
-    if level > 0:
-        suites.append( unittest.makeSuite(TestCompiledPath,'test_') )
-    total_suite = unittest.TestSuite(suites)
-    return total_suite
-
-def test(level=10):
-    all_tests = test_suite(level)
-    runner = unittest.TextTestRunner()
-    runner.run(all_tests)
-    return runner
 
 if __name__ == "__main__":
-    test()
+    unittest.main()
