@@ -27,13 +27,9 @@ from numpy import array, alltrue, ravel
 from enthought.kiva.agg import GraphicsContextArray
 from enthought import kiva
 
-class JoinStrokePathTestCase(unittest.TestCase):
-    
-    def assertRavelEqual(self,actual, desired):
-        equal = alltrue(ravel(desired) == ravel(actual))
-        if not equal:
-            print "desired != actual:\n%s \n!=\n %s" % (desired, actual)
-        self.assert_(equal)
+from test_utils import Utils
+
+class JoinStrokePathTestCase(unittest.TestCase, Utils):
     
     def helper(self, antialias, width, line_cap, line_join, 
                size=(10,10)):

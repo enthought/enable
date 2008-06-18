@@ -4,6 +4,8 @@ from numpy import array, alltrue, ravel, pi
 
 from enthought.kiva import agg
 
+from test_utils import Utils
+
 # UNCOMMENT THIS TO SEE THE IMPORT ISSUES FROM TICKET  
 # https://svn.enthought.com/enthought/ticket/537 (agg causes python crash during unit tests)
 #
@@ -13,14 +15,8 @@ from enthought.kiva import agg
 #for name in module_names:
 #    print name, sys.modules[name]
 
-class TestCompiledPath(unittest.TestCase):
+class TestCompiledPath(unittest.TestCase, Utils):
     
-    def assertRavelEqual(self, actual, desired):
-        equal = alltrue(ravel(desired) == ravel(actual))
-        if not equal:
-            print "desired != actual:\n%s \n!=\n %s" % (desired, actual)
-        self.assert_(equal)
-        
     def test_init(self):
         path = agg.CompiledPath()
 

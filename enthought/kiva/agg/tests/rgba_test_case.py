@@ -1,17 +1,12 @@
 import unittest
 
-from numpy import array, ones, alltrue, ravel
+from numpy import array, ones
 
 from enthought.kiva import agg
 
+from test_utils import Utils
 
-class RgbaTestCase(unittest.TestCase):
-
-    def assertRavelEqual(self,actual, desired):
-        equal = alltrue(ravel(desired) == ravel(actual))
-        if not equal:
-            print "desired != actual:\n%s \n!=\n %s" % (desired, actual)
-        self.assert_(equal)
+class RgbaTestCase(unittest.TestCase, Utils):
 
     def test_init(self):
         m = agg.Rgba()

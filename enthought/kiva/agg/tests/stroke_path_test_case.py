@@ -54,14 +54,10 @@ from numpy import array, alltrue, ravel
 from enthought.kiva.agg import GraphicsContextArray
 from enthought import kiva
 
+from test_utils import Utils
 
-class StrokePathTestCase(unittest.TestCase):
-    
-    def assertRavelEqual(self,actual, desired):
-        equal = alltrue(ravel(desired) == ravel(actual))
-        if not equal:
-            print "desired != actual:\n%s \n!=\n %s" % (desired, actual)
-        self.assert_(equal)
+
+class StrokePathTestCase(unittest.TestCase, Utils):
     
     def test_alias_width_one(self):
         """ The fastest path through the stroke path code is for aliased 
