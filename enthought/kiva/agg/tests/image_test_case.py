@@ -1,16 +1,20 @@
 import time
 import sys
-from enthought.util.numerix import *
 import unittest
 
-from enthought.kiva import agg, Font, MODERN
-
 import Image
+from numpy import alltrue, array, concatenate, dtype, fromstring, newaxis, \
+                  pi, ravel, ones, zeros
+
+from enthought.kiva import agg, Font
+
 
 # alpha blending is approximate in agg, so we allow some "slop" between
 # desired and actual results, allow channel differences of to 2.
 slop_allowed = 2
 
+UInt8 = dtype('uint8')
+Int32 = dtype('int32')
 
 def save(img,file_name):
     """ This only saves the rgb channels of the image
@@ -24,7 +28,8 @@ def save(img,file_name):
         pil_img = Image.fromstring("RGB",size,st)
         pil_img.save(file_name)
     else:
-        raise NotImplementedError, "currently only supports writing out bgra32 images"
+        raise NotImplementedError(
+            "currently only supports writing out bgra32 images")
     
 def test_name():
     f = sys._getframe()
@@ -44,7 +49,7 @@ def sun(interpolation_scheme="simple"):
     img.resize((pil_img.size[1],pil_img.size[0],3))
 
     alpha = ones(pil_img.size,UInt8) * 255
-    img = concatenate((img[:,:,::-1],alpha[:,:,NewAxis]),-1).copy()
+    img = concatenate((img[:,:,::-1],alpha[:,:,newaxis]),-1).copy()
     return agg.GraphicsContextArray(img,"bgra32", interpolation_scheme)
 
 def solid_bgra32(size,value = 0.0, alpha=1.0):
@@ -75,7 +80,7 @@ def assert_equal(desired,actual):
             msg+= 'abs diff: %s\n' % diff
         else:
             msg = "size: %d.  To large to display" % size
-        raise AssertionError, msg
+        raise AssertionError(msg)
 
 def assert_close(desired,actual,diff_allowed=2):
     """ Only use for small arrays. """
@@ -92,7 +97,7 @@ def assert_close(desired,actual,diff_allowed=2):
             msg+= 'abs diff: %s\n' % diff
         else:
             msg = "size: %d.  To large to display" % size
-        raise AssertionError, msg
+        raise AssertionError(msg)
 
 #----------------------------------------------------------------------------
 # Tests for various alpha blending cases 
@@ -105,7 +110,7 @@ def assert_close(desired,actual,diff_allowed=2):
 class test_alpha_black_image(unittest.TestCase):
     size = (1,1)
     color = 0.0
-    def check_simple(self):
+    def test_simple(self):
         gc = agg.GraphicsContextArray(self.size,pix_format = "bgra32")
         desired = solid_bgra32(self.size,self.color)
         img = agg.GraphicsContextArray(desired, pix_format="bgra32")
@@ -114,7 +119,7 @@ class test_alpha_black_image(unittest.TestCase):
         # for alpha == 1, image should be exactly equal.
         assert_equal(desired,actual)
 
-    def check_image_alpha(self):
+    def test_image_alpha(self):
         alpha = 0.5
         gc = agg.GraphicsContextArray(self.size,pix_format = "bgra32")
         orig = solid_bgra32(self.size,self.color,alpha)
@@ -130,7 +135,7 @@ class test_alpha_black_image(unittest.TestCase):
         # desination graphics context, so we have to ignore alphas
         assert_close(desired[:,:,:-1],actual[:,:,:-1],diff_allowed=slop_allowed)
 
-    def check_ambient_alpha(self):
+    def test_ambient_alpha(self):
         orig = solid_bgra32(self.size,self.color)
         img = agg.GraphicsContextArray(orig, pix_format="bgra32")
         gc = agg.GraphicsContextArray(self.size,pix_format = "bgra32")
@@ -145,7 +150,7 @@ class test_alpha_black_image(unittest.TestCase):
         # alpha blending is approximate, allow channel differences of to 2.
         assert_close(desired,actual,diff_allowed=slop_allowed)
 
-    def check_ambient_plus_image_alpha(self):
+    def test_ambient_plus_image_alpha(self):
         amb_alpha = 0.5
         img_alpha = 0.5
         gc = agg.GraphicsContextArray(self.size,pix_format = "bgra32")
@@ -176,7 +181,7 @@ class test_alpha_gray_image(test_alpha_black_image):
 class test_rect_scaling_image(unittest.TestCase):
     color = 0.0
 
-    def check_rect_scale(self):
+    def test_rect_scale(self):
         orig_sz= (10,10)
         img_ary = solid_bgra32(orig_sz,self.color)
         orig = agg.GraphicsContextArray(img_ary, pix_format="bgra32")
@@ -197,7 +202,7 @@ class test_rect_scaling_image(unittest.TestCase):
         save(gc,test_name()+'2.bmp')
         assert_equal(desired,actual)
 
-    def check_rect_scale_translate(self):
+    def test_rect_scale_translate(self):
         orig_sz= (10,10)
         img_ary = solid_bgra32(orig_sz,self.color)
         orig = agg.GraphicsContextArray(img_ary, pix_format="bgra32")
@@ -226,26 +231,26 @@ class test_rect_scaling_image(unittest.TestCase):
 #----------------------------------------------------------------------------
 
 class test_text_image(unittest.TestCase):
-    def check_antialias(self):
+    def test_antialias(self):
         gc = agg.GraphicsContextArray((200,50),pix_format = "bgra32")
         gc.set_antialias(1)
-        f = Font(MODERN)
+        f = Font('modern')
         gc.set_font(f)
         gc.show_text("hello")
         save(gc,test_name()+'.bmp')    
     
-    def check_no_antialias(self):
+    def test_no_antialias(self):
         gc = agg.GraphicsContextArray((200,50),pix_format = "bgra32")
-        f = Font(MODERN)
+        f = Font('modern')
         gc.set_font(f)
         gc.set_antialias(0)
         gc.show_text("hello")
         save(gc,test_name()+'.bmp')    
 
-    def check_rotate(self):
+    def test_rotate(self):
         text = "hello"
         gc = agg.GraphicsContextArray((150,150),pix_format = "bgra32")
-        f = Font(MODERN)
+        f = Font('modern')
         gc.set_font(f)
         tx,ty,sx,sy = bbox = gc.get_text_extent(text)
         gc.translate_ctm(25,25)
@@ -269,37 +274,46 @@ class test_sun(unittest.TestCase):
         gc.draw_image(img,scaled_rect)
         return gc
         
-    def check_simple(self):        
+    def test_simple(self):        
         gc = self.generic_sun("nearest")
         save(gc,test_name()+'.bmp')
-    def check_bilinear(self):        
+        
+    def test_bilinear(self):
         gc = self.generic_sun("bilinear")
         save(gc,test_name()+'.bmp')
-    def check_bicubic(self):        
+        
+    def test_bicubic(self):        
         gc = self.generic_sun("bicubic")
         save(gc,test_name()+'.bmp')
-    def check_spline16(self):        
+        
+    def test_spline16(self):        
         gc = self.generic_sun("spline16")
-        save(gc,test_name()+'.bmp')    
-    def check_spline36(self):        
+        save(gc,test_name()+'.bmp')
+        
+    def test_spline36(self):        
         gc = self.generic_sun("spline36")
         save(gc,test_name()+'.bmp')
-    def check_sinc64(self):        
+        
+    def test_sinc64(self):        
         gc = self.generic_sun("sinc64")
         save(gc,test_name()+'.bmp')
-    def check_sinc144(self):        
+        
+    def test_sinc144(self):        
         gc = self.generic_sun("sinc144")
         save(gc,test_name()+'.bmp')
-    def check_sinc256(self):        
+        
+    def test_sinc256(self):        
         gc = self.generic_sun("sinc256")
         save(gc,test_name()+'.bmp')
-    def check_blackman100(self):        
+        
+    def test_blackman100(self):        
         gc = self.generic_sun("blackman100")
-        save(gc,test_name()+'.bmp')    
-    def check_blackman256(self):        
+        save(gc,test_name()+'.bmp')
+        
+    def test_blackman256(self):        
         gc = self.generic_sun("blackman256")
         save(gc,test_name()+'.bmp')                            
-    
+
 #----------------------------------------------------------------------------
 # Tests speed of various interpolation schemes
 #
@@ -313,7 +327,8 @@ class test_interpolation_image(unittest.TestCase):
     def generic_timing(self,scheme,size,iters):
         gc = agg.GraphicsContextArray(size,pix_format = "bgra32")
         desired = solid_bgra32(size,self.color)
-        img = agg.GraphicsContextArray(desired, pix_format="bgra32",interpolation=scheme)
+        img = agg.GraphicsContextArray(desired, pix_format="bgra32",
+                                       interpolation=scheme)
         t1 = time.clock()
         for i in range(iters):
             gc.draw_image(img)
@@ -322,49 +337,25 @@ class test_interpolation_image(unittest.TestCase):
         print "'%s' interpolation -> img per sec: %4.2f" % (scheme, img_per_sec)
         return img_per_sec
 
-    def check_simple_timing(self):
+    def test_simple_timing(self):
         scheme = "nearest"
         return self.generic_timing(scheme,self.size,self.N)
 
-    def check_bilinear_timing(self):
+    def test_bilinear_timing(self):
         scheme = "bilinear"
         iters = self.N/2 # this is slower than simple, so use less iters 
         return self.generic_timing(scheme,self.size,iters)
 
-    def check_bicubic_timing(self):
+    def test_bicubic_timing(self):
         scheme = "bicubic"
         iters = self.N/2 # this is slower than simple, so use less iters 
         return self.generic_timing(scheme,self.size,iters)
 
-    def check_sinc144_timing(self):
+    def test_sinc144_timing(self):
         scheme = "sinc144"
         iters = self.N/2 # this is slower than simple, so use less iters 
         return self.generic_timing(scheme,self.size,iters)
 
-#----------------------------------------------------------------------------
-# test setup code.
-#----------------------------------------------------------------------------
-
-def test_suite(level=1):
-    suites = []
-    if level > 0:
-        suites.append( unittest.makeSuite(test_alpha_black_image,'check_') )
-        suites.append( unittest.makeSuite(test_alpha_white_image,'check_') )
-        suites.append( unittest.makeSuite(test_alpha_gray_image,'check_') )        
-        suites.append( unittest.makeSuite(test_rect_scaling_image,'check_') )
-        suites.append( unittest.makeSuite(test_text_image,'check_') )
-    if level > 5:
-        suites.append( unittest.makeSuite(test_interpolation_image,'check_') )
-        suites.append( unittest.makeSuite(test_sun,'check_') )
-        
-    total_suite = unittest.TestSuite(suites)
-    return total_suite
-
-def test(level=10):
-    all_tests = test_suite(level)
-    runner = unittest.TextTestRunner(verbosity=2)
-    runner.run(all_tests)
-    return runner
 
 if __name__ == "__main__":
-    test(level=10)
+    unittest.main()
