@@ -47,15 +47,22 @@
           been tested.    
 """
 
-from enthought.util.numerix import array, UInt8
 import unittest
+
+from numpy import array, alltrue, ravel
 
 from enthought.kiva.agg import GraphicsContextArray
 from enthought import kiva
-from test_utils import assert_arrays_equal
+
 
 class StrokePathTestCase(unittest.TestCase):
-
+    
+    def assertRavelEqual(self,actual, desired):
+        equal = alltrue(ravel(desired) == ravel(actual))
+        if not equal:
+            print "desired != actual:\n%s \n!=\n %s" % (desired, actual)
+        self.assert_(equal)
+    
     def test_alias_width_one(self):
         """ The fastest path through the stroke path code is for aliased 
             path with width=1.  It is reasonably safe here not to worry 
@@ -88,14 +95,14 @@ class StrokePathTestCase(unittest.TestCase):
                
         # test a single color channel.
         desired = array(((255,255,255),
-                         (  0,  0,  0)),UInt8)
+                         (  0,  0,  0)))
         actual = gc.bmp_array[:,:,0]
-        assert_arrays_equal(actual, desired)
+        self.assertRavelEqual(actual, desired)
         
     def test_alias_width_two_outline_aa(self):
-        """ When  width>1, alias text is drawn using a couple of different paths 
-            through the underlying C++ code. This test the faster of the two 
-            which uses the agg::rasterizer_outline_aa C++ code.  It is only
+        """ When  width>1, alias text is drawn using a couple of different
+            paths through the underlying C++ code. This test the faster of the
+            two which uses the agg::rasterizer_outline_aa C++ code.  It is only
             used when 2<=width<=10, and cap is ROUND or BUTT, and join is MITER
             
             The C++ classes used in the underlying C++ code for this is
@@ -121,16 +128,15 @@ class StrokePathTestCase(unittest.TestCase):
                
         # test a single color channel.
         desired = array(((255, 255, 255),
-                         (  0,   0,   0)),UInt8)
+                         (  0,   0,   0)))
         actual = gc.bmp_array[:,:,0]
-        assert_arrays_equal(actual, desired)
+        self.assertRavelEqual(actual, desired)
 
     def test_alias_width_two_scanline_aa(self):
-        """ When  width > 1, alias text is drawn using a couple of different paths 
-            through the underlying C++ code. This test the slower of the two 
-            which uses the agg::rasterizer_scanline_aa C++ code.  We've set the 
-            line join to bevel to trigger this path.
-            
+        """ When width > 1, alias text is drawn using a couple of different
+            paths through the underlying C++ code. This test the slower of the
+            two which uses the agg::rasterizer_scanline_aa C++ code.  We've set
+            the line join to bevel to trigger this path.
         """
         gc = GraphicsContextArray((3, 2), pix_format="rgb24")    
         
@@ -152,15 +158,15 @@ class StrokePathTestCase(unittest.TestCase):
                
         # test a single color channel.
         desired = array(((255, 255, 255),
-                         (  0,   0,   0)),UInt8)
+                         (  0,   0,   0)))
         actual = gc.bmp_array[:,:,0]
-        assert_arrays_equal(actual, desired)
+        self.assertRavelEqual(actual, desired)
 
     #########################################################################
     # Cap Tests
     #########################################################################
     
-    def cap_equality_test_helper(self, antialias, width, line_cap, line_join, 
+    def cap_equality_helper(self, antialias, width, line_cap, line_join,
                                  size=(6,6)):
 
         gc = GraphicsContextArray(size, pix_format="rgb24")    
@@ -212,10 +218,10 @@ class StrokePathTestCase(unittest.TestCase):
                          (255,   0,   0,   0,   0, 255),
                          (255,   0,   0,   0,   0, 255),
                          (255, 255, 255, 255, 255, 255),
-                         (255, 255, 255, 255, 255, 255)),UInt8)
+                         (255, 255, 255, 255, 255, 255)))
 
         actual = gc.bmp_array[:,:,0]
-        assert_arrays_equal(desired, actual)
+        self.assertRavelEqual(desired, actual)
         
     def test_alias_cap_round_equality(self):
         """ There are two paths that can generate aliased round capped lines.
@@ -228,16 +234,14 @@ class StrokePathTestCase(unittest.TestCase):
         width = 2
         cap = kiva.CAP_ROUND
         # join=miter allows the faster outline path through C++ code.
-        gc1 = self.cap_equality_test_helper(antialias, width, cap, 
-                                            kiva.JOIN_MITER)
-
-        # join=bevel forces the scanline path through C++ code.                                   
-        gc2 = self.cap_equality_test_helper(antialias, width, cap, 
-                                            kiva.JOIN_BEVEL)
+        gc1 = self.cap_equality_helper(antialias, width, cap, kiva.JOIN_MITER)
+        
+        # join=bevel forces the scanline path through C++ code.
+        gc2 = self.cap_equality_helper(antialias, width, cap, kiva.JOIN_BEVEL)
                
         # Instead of testing against a known desired value, we are simply
         # testing for equality...
-        assert_arrays_equal(gc1.bmp_array[:,:,0], gc2.bmp_array[:,:,0])
+        self.assertRavelEqual(gc1.bmp_array[:,:,0], gc2.bmp_array[:,:,0])
 
     def test_alias_cap_square(self):
         """ Round caps should extend beyond the end of the line. by
@@ -268,10 +272,10 @@ class StrokePathTestCase(unittest.TestCase):
                          (255, 255,   0,   0, 255, 255),
                          (255, 255,   0,   0, 255, 255),
                          (255, 255, 255, 255, 255, 255),
-                         (255, 255, 255, 255, 255, 255)),UInt8)
+                         (255, 255, 255, 255, 255, 255)))
 
         actual = gc.bmp_array[:,:,0]
-        assert_arrays_equal(desired, actual)
+        self.assertRavelEqual(desired, actual)
 
     def test_alias_cap_square(self):
         """ Square caps should extend beyond the end of the line. by
@@ -300,10 +304,10 @@ class StrokePathTestCase(unittest.TestCase):
                          (255,   0,   0,   0,   0, 255),
                          (255,   0,   0,   0,   0, 255),
                          (255, 255, 255, 255, 255, 255),
-                         (255, 255, 255, 255, 255, 255)),UInt8)
+                         (255, 255, 255, 255, 255, 255)))
 
         actual = gc.bmp_array[:,:,0]
-        assert_arrays_equal(desired, actual)
+        self.assertRavelEqual(desired, actual)
     
     def test_alias_cap_butt_equality(self):
         """ There are two paths that can generate aliased butt capped lines.
@@ -313,14 +317,14 @@ class StrokePathTestCase(unittest.TestCase):
         width = 2
         cap = kiva.CAP_BUTT
         # join=miter allows the faster outline path through C++ code.
-        gc1 = self.cap_equality_test_helper(antialias, width, cap, kiva.JOIN_MITER)
+        gc1 = self.cap_equality_helper(antialias, width, cap, kiva.JOIN_MITER)
 
-        # join=bevel forces the scanline path through C++ code.                                   
-        gc2 = self.cap_equality_test_helper(antialias, width, cap, kiva.JOIN_BEVEL)
+        # join=bevel forces the scanline path through C++ code.
+        gc2 = self.cap_equality_helper(antialias, width, cap, kiva.JOIN_BEVEL)
                
         # Instead of testing against a known desired value, we are simply
         # testing for equality...
-        assert_arrays_equal(gc1.bmp_array, gc2.bmp_array)
+        self.assertRavelEqual(gc1.bmp_array, gc2.bmp_array)
 
     def test_alias_cap_square(self):
         """ Square caps should extend beyond the end of the line. by
@@ -349,10 +353,10 @@ class StrokePathTestCase(unittest.TestCase):
                          (255,   0,   0,   0,   0, 255),
                          (255,   0,   0,   0,   0, 255),
                          (255, 255, 255, 255, 255, 255),
-                         (255, 255, 255, 255, 255, 255)),UInt8)
+                         (255, 255, 255, 255, 255, 255)))
 
         actual = gc.bmp_array[:,:,0]
-        assert_arrays_equal(desired, actual)
+        self.assertRavelEqual(desired, actual)
 
     def test_alias_cap_square_equality(self):
         """ There are two paths that can generate aliased square capped lines.
@@ -362,14 +366,14 @@ class StrokePathTestCase(unittest.TestCase):
         width = 2
         cap = kiva.CAP_SQUARE
         # join=miter allows the faster outline path through C++ code.
-        gc1 = self.cap_equality_test_helper(antialias, width, cap, kiva.JOIN_MITER)
-
-        # join=bevel forces the scanline path through C++ code.                                   
-        gc2 = self.cap_equality_test_helper(antialias, width, cap, kiva.JOIN_BEVEL)
-               
+        gc1 = self.cap_equality_helper(antialias, width, cap, kiva.JOIN_MITER)
+        
+        # join=bevel forces the scanline path through C++ code.
+        gc2 = self.cap_equality_helper(antialias, width, cap, kiva.JOIN_BEVEL)
+        
         # Instead of testing against a known desired value, we are simply
         # testing for equality...
-        assert_arrays_equal(gc1.bmp_array, gc2.bmp_array)
+        self.assertRavelEqual(gc1.bmp_array, gc2.bmp_array)
 
     def test_antialias_width_one(self):
         """ An anti-aliased horizontal line of width=1 has its energy 
@@ -402,9 +406,9 @@ class StrokePathTestCase(unittest.TestCase):
                
         # test a single color channel.
         desired = array(((255, 255, 255),
-                         (127, 127, 127)),UInt8)
+                         (127, 127, 127)))
         actual = gc.bmp_array[:,:,0]
-        assert_arrays_equal(desired, actual)
+        self.assertRavelEqual(desired, actual)
 
     def test_antialias_width_slower_path(self):
         """ An anti-aliased horizontal line of width=1 has its energy 
@@ -437,9 +441,9 @@ class StrokePathTestCase(unittest.TestCase):
                
         # test a single color channel.
         desired = array(((255, 255, 255),
-                         (127, 127, 127)),UInt8)
+                         (127, 127, 127)))
         actual = gc.bmp_array[:,:,0]
-        assert_arrays_equal(desired, actual)
+        self.assertRavelEqual(desired, actual)
 
     def test_curve_to(self):
         """ curve_to
@@ -483,19 +487,19 @@ class StrokePathTestCase(unittest.TestCase):
         # test a single color channel.
         # note: This is a "screen capture" from running this
         #       test.  It looks right, but hasn't been check closely.
-        desired = array([[255, 255, 255, 231, 255, 255, 255, 255, 255, 255],
-                         [255, 255, 231,  26, 212, 255, 255, 255, 255, 255],
-                         [255, 252,  66, 128, 255, 255, 255, 255, 255, 255],
-                         [255, 126,  42, 136, 249, 255, 255, 255, 255, 255],
-                         [196,   4,  53,  68,  38, 182, 255, 254, 177, 255],
-                         [253, 176, 254, 255, 180,  37,  70,  53,   4, 198],
-                         [255, 255, 255, 255, 255, 248, 134,  41, 127, 255],
-                         [255, 255, 255, 255, 255, 255, 127,  67, 252, 255],
-                         [255, 255, 255, 255, 255, 211,  27, 231, 255, 255],
-                         [255, 255, 255, 255, 255, 254, 230, 255, 255, 255]])
+        desired = array([[255, 255, 255, 230, 255, 255, 255, 255, 255, 255],
+                         [255, 255, 231,  25, 212, 255, 255, 255, 255, 255],
+                         [255, 252,  65, 128, 255, 255, 255, 255, 255, 255],
+                         [255, 103,  26, 143, 229, 255, 255, 255, 255, 255],
+                         [179,   2, 115,  96,  23, 189, 255, 255, 204, 255],
+                         [255, 205, 255, 255, 189,  23,  97, 116,   2, 179],
+                         [255, 255, 255, 255, 255, 229, 142,  25, 103, 255],
+                         [255, 255, 255, 255, 255, 255, 127,  66, 252, 255],
+                         [255, 255, 255, 255, 255, 212,  26, 231, 255, 255],
+                         [255, 255, 255, 255, 255, 255, 231, 255, 255, 255]])
         actual = gc.bmp_array[:,:,0]
-        assert_arrays_equal(desired, actual)
+        self.assertRavelEqual(desired, actual)
                     
+
 if __name__ == "__main__":
-    from unittest import main
-    main()
+    unittest.main()
