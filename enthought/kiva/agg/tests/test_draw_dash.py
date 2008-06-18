@@ -1,7 +1,8 @@
-from enthought.util.numerix import *
-import unittest
-import Image
 import sys
+import unittest
+
+import numpy
+import Image
 
 from enthought.kiva import agg
 
@@ -17,10 +18,11 @@ def save(img,file_name):
         pil_img = Image.fromstring("RGB",size,st)
         pil_img.save(file_name)
     else:
-        raise NotImplementedError, "currently only supports writing out bgra32 images"
+        raise NotImplementedError("currently only supports writing out "
+                                  "bgra32 images")
 
 class TestDrawDash(unittest.TestCase):
-    def check_dash(self):
+    def test_dash(self):
         gc = agg.GraphicsContextArray((100,100))
         gc.set_line_dash([2,2])
         for i in range(10):
@@ -30,18 +32,5 @@ class TestDrawDash(unittest.TestCase):
             gc.translate_ctm(10,0)
         save(gc,'dash.bmp')
 
-def test_suite(level=1):
-    suites = []
-    if level > 0:
-        suites.append( unittest.makeSuite(TestDrawDash,'check_') )
-    total_suite = unittest.TestSuite(suites)
-    return total_suite
-
-def test(level=10):
-    all_tests = test_suite(level)
-    runner = unittest.TextTestRunner()
-    runner.run(all_tests)
-    return runner
-
 if __name__ == "__main__":
-    test()
+    unittest.main()
