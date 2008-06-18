@@ -11,7 +11,8 @@
 import unittest
 import sys
 
-from enthought.util.numerix import alltrue, array, ravel
+from numpy import alltrue, array, ravel
+
 from enthought.kiva import affine
 from enthought.kiva import basecore2d
 from enthought.kiva import constants
