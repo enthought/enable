@@ -27,7 +27,8 @@ class KeySpec(object):
         if self.magic_key.match(event):
             # do stuff...
     
-    The names of the keys come from Enable.
+    The names of the keys come from Enable, so both examples above
+    are specifying the user pressing Ctrl + Right_arrow.
     """
     def __init__(self, key, *modifiers):
         """ Creates this key spec with the given modifiers. """
@@ -43,8 +44,10 @@ class KeySpec(object):
         Returns True if the given Enable key_pressed event matches this key
         specification.
         """
-        if (self.key == event.character) and (self.alt == event.alt_down) and \
-           (self.control == event.control_down) and (self.shift == event.shift_down):
+        if (self.key == getattr(event, 'character',None)) and \
+           (self.alt == event.alt_down) and \
+           (self.control == event.control_down) and \
+           (self.shift == event.shift_down):
             return True
         else:
             return False
