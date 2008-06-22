@@ -155,9 +155,17 @@ color_table = {"aliceblue": (0.941, 0.973, 1.000, 1.0),
     "whitesmoke": (0.961, 0.961, 0.961, 1.0),
     "yellow": (1.000, 1.000, 0.000, 1.0),
     "yellowgreen": (0.604, 0.804, 0.196, 1.0),
+        
+    # Several aliases for transparent
     "clear": transparent_color,
     "transparent": transparent_color,
-    "none": transparent_color
+    "none": transparent_color,
+    
+    # Placeholders for system- and toolkit-specific UI colors; the 
+    # toolkit-dependent code below will fill these with the appropriate
+    # values.  These hardcoded defaults are for the Windows Classic
+    # theme.
+    "sys_window" : (0.83137, 0.81569, 0.78431, 1.0),
 }
 
 if ETSConfig.toolkit == 'wx':
@@ -192,6 +200,10 @@ if ETSConfig.toolkit == 'wx':
                              'the form 0xRRGGBB, where RR is red, GG is green, '
                              'and BB is blue, a list/tuple of (r,g,b) or (r,g,b,a)')
     
+    # Set the system color
+    # We use ACTIVEBORDER, but on WinXP the INACTIVEBORDER has the same color
+    color_table["sys_window"] = convert_from_wx_color(None, None,
+                                    wx.SystemSettings.GetColour(wx.SYS_COLOUR_ACTIVEBORDER))
 
     class ColorEditorFactory(StandardColorEditorFactory):
         def to_wx_color(self, editor):
