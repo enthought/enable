@@ -84,18 +84,18 @@ class ToolkitEditorFactory ( EditorFactory ):
         import enthought.kiva.constants as kc
         from enthought.kiva.fonttools import Font
 
-        return Font( font.GetPointSize(),
-                     { wx.DEFAULT:    kc.DEFAULT,
-                       wx.DECORATIVE: kc.DECORATIVE,
-                       wx.ROMAN:      kc.ROMAN,
-                       wx.SCRIPT:     kc.SCRIPT,
-                       wx.SWISS:      kc.SWISS,
-                       wx.MODERN:     kc.MODERN }.get( font.GetFamily(),
-                                                       kc.SWISS ),
-                    ( kc.NORMAL, kc.BOLD   )[ font.GetWeight() == wx.BOLD ],
-                    ( kc.NORMAL, kc.ITALIC )[ font.GetStyle()  == wx.ITALIC ],
-                    font.GetUnderlined() - 0, #convert Bool to an int type
-                    font.GetFaceName() )
+        return Font( size = font.GetPointSize(),
+                     family = { wx.DEFAULT:    kc.DEFAULT,
+                                wx.DECORATIVE: kc.DECORATIVE,
+                                wx.ROMAN:      kc.ROMAN,
+                                wx.SCRIPT:     kc.SCRIPT,
+                                wx.SWISS:      kc.SWISS,
+                                wx.MODERN:     kc.MODERN }.get( font.GetFamily(),
+                                                                kc.SWISS ),
+                     weight = ( kc.NORMAL, kc.BOLD   )[ font.GetWeight() == wx.BOLD ],
+                     style = ( kc.NORMAL, kc.ITALIC )[ font.GetStyle()  == wx.ITALIC ],
+                     underline = font.GetUnderlined() - 0, #convert Bool to an int type
+                     face_name = font.GetFaceName() )
 
     #---------------------------------------------------------------------------
     #  Returns the text representation of the specified object trait value:

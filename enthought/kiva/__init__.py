@@ -100,7 +100,7 @@ def _backend_passthrough():
 def backend():
     'Return the name of the current backend'
     if not _backend:
-        raise RuntimeError, 'no backend exists'
+        raise RuntimeError('no backend exists')
     return _backend
 
 
@@ -110,7 +110,7 @@ if ETSConfig.toolkit:
     if "KIVA_WISHLIST" in os.environ:
         _backend_passthrough()
     elif not _try_backend(ETSConfig.toolkit):
-        raise RuntimeError, "no kiva backend for %s" % ETSConfig.toolkit
+        raise RuntimeError("no kiva backend for %s" % ETSConfig.toolkit)
 else:
     _backend_passthrough()
 
