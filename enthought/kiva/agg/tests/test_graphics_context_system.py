@@ -1,6 +1,6 @@
 import unittest
 
-from enthought.kiva.agg import GraphicsContext
+from enthought.kiva.agg import GraphicsContextSystem
 
 class GraphicsContextSystemTestCase(unittest.TestCase):
 
@@ -10,7 +10,7 @@ class GraphicsContextSystemTestCase(unittest.TestCase):
             That problem is fixed now.
         """
         for i in range(10):
-            gc = GraphicsContext((100,100), "rgba32")
+            gc = GraphicsContextSystem((100,100), "rgba32")
             del gc
             
 #----------------------------------------------------------------------------
