@@ -56,6 +56,12 @@
 %{
 #include "kiva_graphics_context.h"
 
+#ifdef ALWAYS_32BIT_WORKAROUND
+bool ALWAYS_32BIT_WORKAROUND_FLAG = true;
+#else
+bool ALWAYS_32BIT_WORKAROUND_FLAG = false;
+#endif
+
 // hack to get around SWIGs typechecking for overloaded constructors
 kiva::graphics_context_base* graphics_context_from_array(
        unsigned char *data, int width, int height, int stride,
@@ -182,6 +188,8 @@ void graphics_context_multiply_alpha(double alpha,
 
 %}
 
+bool ALWAYS_32BIT_WORKAROUND_FLAG;
+
 kiva::graphics_context_base* graphics_context_from_array(
        unsigned char *data, int width, int height, int stride,
        kiva::pix_format_e format, 
@@ -199,6 +207,7 @@ namespace kiva {
     %{
         # used in GraphicsContextArray constructors
         from numpy import array, zeros, uint8, fromstring, shape, ndarray, resize, dtype
+        import numpy
 
         # Define paths for the two markers that Agg renders incorrectly
         from enthought.kiva.constants import DIAMOND_MARKER, CIRCLE_MARKER, FILL_STROKE
@@ -833,6 +842,20 @@ def init(self, ary_or_size, pix_format="bgra32",
         msg = "Only UnsignedInt8 arrays are supported but got "    
         assert ary.dtype == dtype('uint8'), msg + repr(ary.dtype)
         
+    if cvar.ALWAYS_32BIT_WORKAROUND_FLAG:
+        if ary.shape[-1] == 3:
+            if pix_format not in ('rgb24', 'bgr24'):
+                import warnings
+                warnings.warn('need to workaround AGG bug since '
+                	'ALWAYS_32BIT_WORKAROUND is on, but got unhandled '
+                	'format %r' % pix_format)
+            else:
+                pix_format = '%sa32' % pix_format[:3]
+                ary = numpy.dstack([ary, numpy.empty(ary.shape[:2], dtype=uint8)])
+                ary[:,:,-1].fill(255)
+        pix_format_id = pix_format_string_map[pix_format]
+        img_depth = pix_format_bytes[pix_format]
+        
     obj = graphics_context_from_array(ary,pix_format_id,interpolation_id,
                                       bottom_up)
         
@@ -870,11 +893,12 @@ class Image(GraphicsContextArray):
         pil_img = PilImage.open(file)
         
         # Convert image to a numeric array
-        if pil_img.mode not in ["RGB","RGBA"]:
+        if (pil_img.mode not in ["RGB","RGBA"] or 
+            (cvar.ALWAYS_32BIT_WORKAROUND_FLAG and pil_img.mode != "RGBA")):
             pil_img = pil_img.convert(mode="RGBA")
         depth = pil_depth_map[pil_img.mode]
         img = fromstring(pil_img.tostring(),uint8)
-        img = resize(img, (pil_img.size[1],pil_img.size[0],depth))    
+        img = resize(img, (pil_img.size[1],pil_img.size[0],depth))
         format = pil_format_map[pil_img.mode]
         
         GraphicsContextArray.__init__(self, img, pix_format=format,
