@@ -5,7 +5,7 @@ overview of how event handling works in Chaco.
 
 
 # Enthought library imports
-from enthought.traits.api import Enum, false, Instance, true
+from enthought.traits.api import Bool, Enum, Instance
 
 # Local relative imports
 from component import Component
@@ -69,7 +69,7 @@ class BaseTool(Interactor):
     # Is this tool's visual representation visible?  For passive inspector-type
     # tools, this is a constant value set in the class definition;
     # for stateful or modal tools, the tool's listener sets this attribute.
-    visible = false
+    visible = Bool(False)
 
     # How the tool draws on top of its component.  This, in conjuction with a
     # a tool's status on the component, is used by the component to determine

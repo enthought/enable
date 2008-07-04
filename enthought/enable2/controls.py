@@ -20,9 +20,9 @@ import os.path
 
 # Enthought library imports
 from enthought.enable2.colors import ColorTrait
-from enthought.traits.api import Delegate, false, HasTraits, Str, Trait, \
-                                 TraitPrefixList, true
-from enthought.traits.ui.api import View, Group, Include
+from enthought.traits.api import Bool, Delegate, HasTraits, Str, Trait, \
+                                 TraitPrefixList
+from enthought.traits.ui.api import View, Group
 
 # Local relative imports
 from component import Component
@@ -30,8 +30,7 @@ from base import LEFT, RIGHT, TOP, BOTTOM, HCENTER, VCENTER, EMBOSSED, ENGRAVED,
                  transparent_color, xy_in_bounds, add_rectangles
 from enable_traits import spacing_trait, padding_trait, margin_trait,\
                           border_size_trait, image_trait
-from enable_traits import position_trait, alignment_trait, font_trait, \
-                          engraving_trait
+from enable_traits import position_trait, font_trait, engraving_trait
 from radio_group import RadioStyle, RadioGroup
 
 
@@ -73,8 +72,8 @@ class LabelTraits ( HasTraits ):
     border_color      = ColorTrait("black")
     bg_color          = ColorTrait("clear")
 
-    enabled           = true
-    selected          = false
+    enabled           = Bool(True)
+    selected          = Bool(False)
 
     #---------------------------------------------------------------------------
     #  Trait view definitions:

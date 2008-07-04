@@ -1,7 +1,4 @@
 
-# Major library imports
-import types
-
 # Enthought library imports
 from enthought.traits.api import HasTraits, Property
 

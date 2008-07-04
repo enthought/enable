@@ -25,7 +25,7 @@ from enthought.enable.wx import Window
 from enthought.enable2.traits.ui.wx.rgba_color_editor import \
     ToolkitEditorFactory as EditorFactory
 from enthought.kiva.traits.kiva_font_trait import KivaFont
-from enthought.traits.api import Enum, Str, true
+from enthought.traits.api import Bool, Enum, Str
 from enthought.traits.ui.api import View
 from enthought.traits.ui.wx.editor import Editor
 from enthought.traits.ui.wx.helper import position_window
@@ -57,11 +57,11 @@ class ToolkitEditorFactory ( EditorFactory ):
     #---------------------------------------------------------------------------
 
     # Should the color be updated automatically?
-    auto_set   = true
+    auto_set   = Bool(True)
     # Initial color space mode
     mode       = Enum( 'rgb', 'hsv', 'hsv2', 'hsv3', cols = 2 )
     # Should the alpha channel be edited?
-    edit_alpha = true
+    edit_alpha = Bool(True)
     # Text to display in the color well
     text       = Str( '%R' )
     # Font to use when displaying text

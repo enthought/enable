@@ -14,7 +14,7 @@
 #  Imports:
 #-------------------------------------------------------------------------------
 
-from enthought.traits.api import HasPrivateTraits, Instance, Trait
+from enthought.traits.api import HasPrivateTraits, Trait
             
 #-------------------------------------------------------------------------------
 #  Trait definitions:

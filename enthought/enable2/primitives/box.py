@@ -1,7 +1,5 @@
-"""Define a simple filled box component"""
-
-# Enthought library imports
-from enthought.traits.ui.api import Group, View, Include
+""" Define a simple filled box component.
+"""
 
 # Parent package imports
 from enthought.enable2.api import border_size_trait, Component, transparent_color

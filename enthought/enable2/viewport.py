@@ -2,7 +2,6 @@
 
 # Standard library imports
 from numpy import array
-from sets import Set
 
 # Enthought library traits
 from enthought.enable2.tools.api import ViewportZoomTool
@@ -16,7 +15,6 @@ from component import Component
 from container import Container
 from canvas import Canvas
 
-from enthought.kiva import Font
 
 class Viewport(Component):
     """
@@ -85,6 +83,15 @@ class Viewport(Component):
                     return []
         else:
             return []
+
+    def is_in(self, x, y):
+        """ Return True if the (x,y) coordinates are within the viewport's
+        native coordinate space.
+        """
+        pos = [0.0, 0.0]
+        bounds = self.view_bounds
+        return (x >= pos[0]) and (x < pos[0] + bounds[0]) and \
+               (y >= pos[1]) and (y < pos[1] + bounds[1])
 
     def invalidate_draw(self, damaged_regions=None, self_relative=False,
                         view_relative=False):
@@ -228,6 +235,12 @@ class Viewport(Component):
 
     def _view_position_items_changed(self):
         self._view_position_changed()
+
+    def _get_position(self):
+        return self.view_position
+
+    def _get_bounds(self):
+        return self.view_bounds
 
     def get_event_transform(self, event=None, suffix=""):
         transform = affine.affine_identity()

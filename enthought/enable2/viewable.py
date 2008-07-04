@@ -1,6 +1,6 @@
 
 # Enthought library imports
-from enthought.traits.api import HasTraits, List, Instance
+from enthought.traits.api import HasTraits
 
 
 class Viewable(HasTraits):

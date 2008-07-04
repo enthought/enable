@@ -6,12 +6,11 @@ import warnings
 # Enthought library imports
 from enthought.kiva import affine
 from enthought.traits.api import Any, Bool, Enum, HasTraits, Instance, List, \
-        Property, Trait, Tuple
+        Property, Tuple
 
 # Local, relative imports
 from base import empty_rectangle, intersect_bounds
 from component import Component
-from enable_traits import border_size_trait
 from events import BlobEvent, BlobFrameEvent, DragEvent, MouseEvent
 from abstract_layout_controller import AbstractLayoutController
 
@@ -636,15 +635,6 @@ class Container(Component):
         self._draw_children(gc, view_bounds, mode) #This was children_draw_mode
         self._draw_overlays(gc, view_bounds, mode)
         gc.restore_state()
-        return
-    
-        # The container's annotation and overlay layers draw over those of 
-        # its components.
-        if layer in ("annotation", "overlay"):
-            my_handler = getattr(self, "_draw_container_" + layer, None)
-            if my_handler:
-                my_handler(gc, view_bounds, mode)
-        
         return
 
     def _draw_children(self, gc, view_bounds=None, mode="normal"):

@@ -6,12 +6,13 @@ from numpy import array
 
 # Enthought library imports.
 from enthought.kiva import EOF_FILL_STROKE, FILL_STROKE
+from enthought.kiva.agg import points_in_polygon
 from enthought.traits.api import Any, Event, Float, HasTraits, Instance, List, \
                              Property, Trait, Tuple
 from enthought.traits.ui.api import Group, View
 
 # Local imports.
-from enthought.enable2.api import border_size_trait, Component, transparent_color
+from enthought.enable2.api import border_size_trait, Component
 from enthought.enable2.colors import ColorTrait
 
 

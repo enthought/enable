@@ -1,9 +1,9 @@
 
 # Enthought library imports
-from enthought.traits.api import Bool, Instance, Int, Any, Float, Property
+from enthought.traits.api import Bool, Instance, Int, Any, Float
 
 # Local, relative imports
-from base import transparent_color, add_rectangles, intersect_bounds, empty_rectangle
+from base import intersect_bounds, empty_rectangle
 from colors import ColorTrait
 from component import Component
 from container import Container

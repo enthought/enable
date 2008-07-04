@@ -3,10 +3,10 @@ TextGrid is a text grid widget that is meant to be used with Numpy.
 """
 
 # Major library imports
-from numpy import arange, array, dstack, indices, repeat, newaxis
+from numpy import arange, array, dstack, repeat, newaxis
 
 # Enthought library imports
-from enthought.traits.api import Any, Array, false, Int, List, Property, Trait, Tuple
+from enthought.traits.api import Any, Array, Bool, Int, List, Property, Trait, Tuple
 from enthought.kiva import font_metrics_provider
 from enthought.kiva.traits.kiva_font_trait import KivaFont
 
@@ -64,7 +64,7 @@ class TextGrid(Component):
     #------------------------------------------------------------------------
 
     # Are our cached extent values still valid?
-    _cache_valid = false
+    _cache_valid = Bool(False)
 
     # The maximum width and height of all cells, as a tuple (w,h)
     _cached_cell_size = Tuple

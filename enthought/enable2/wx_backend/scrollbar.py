@@ -8,8 +8,8 @@ import wx
 from types import ListType, TupleType
 
 # Enthought Imports
-from enthought.traits.api import Event, Property, Trait, TraitError, \
-     Any, Enum, Str, Bool, Float, Int
+from enthought.traits.api import Property, Trait, TraitError, \
+     Any, Enum, Bool, Int
 
 from enthought.enable2.component import Component
 

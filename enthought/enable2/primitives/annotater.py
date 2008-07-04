@@ -4,7 +4,7 @@ component
 """
 
 from enthought.traits.api import Event, Trait, TraitPrefixList
-from enthought.traits.ui.api import Group, View, Include
+from enthought.traits.ui.api import Group, View
 
 from enthought.enable2.api import Component
 from enthought.enable2.colors import ColorTrait

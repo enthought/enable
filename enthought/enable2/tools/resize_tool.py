@@ -23,14 +23,15 @@ class ResizeTool(DragTool):
     _prev_pos = Tuple(0, 0)
 
     def is_draggable(self, x, y):
-        if self.component:
+        if self.component is not None:
             c = self.component
             return (c.x <= x <= c.x2) and (c.y <= y <= c.y2)
         else:
             return False
 
     def drag_start(self, event):
-        if self.component:
+        if self.component is not None:
+            component = self.component
             self._prev_pos = (event.x, event.y)
             # Figure out which corner we are resizing
             if event.x > component.x + component.width/2:
@@ -56,14 +57,15 @@ class ResizeTool(DragTool):
         return
 
     def dragging(self, event):
-        if self.component:
+        # FIXME: this function appears to do nothing.
+        if self.component is not None:
             #dx = event.x - self._prev_pos[0]
             #dy = event.y - self._prev_pos[1]
             #pos = self.component.position
             #self.component.position = [pos[0] + dx, pos[1] + dy]
             offset = self._offset
             if self._corner[1] == 'l':   # left
-                width
+                raise NotImplementedError
             else:                        # right
                 x2 = event.x + offset
 

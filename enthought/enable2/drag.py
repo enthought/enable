@@ -12,8 +12,8 @@
 #
 #-------------------------------------------------------------------------------
 
-from base import add_rectangles, union_coordinates, intersect_coordinates, \
-                 send_event_to, bounds_to_coordinates
+from base import add_rectangles, intersect_coordinates, send_event_to, \
+    bounds_to_coordinates
 from events import DragEvent
 from interactor import Interactor
     

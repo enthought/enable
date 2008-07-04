@@ -1,14 +1,17 @@
-""" Defines the Component class """
+""" Defines the Component class.
+
+FIXME: this appears to be unfinished and unworking as of 2008-08-03.
+"""
 
 # Enthought library imports
-from enthought.traits.api import Delegate, Enum, false, Float, Instance, Int, \
-                             Property, Str, Trait, true
+from enthought.traits.api import Any, Bool, Delegate, HasTraits, Instance, \
+    Int, List, Property
 
 # Local relative imports
 from abstract_component import AbstractComponent
-from colors import black_color_trait, white_color_trait
+from abstract_layout_controller import AbstractLayoutController
 from coordinate_box import CoordinateBox
-from enable_traits import bounds_trait, LineStyle
+from render_controllers import AbstractRenderController
 
 
 coordinate_delegate = Delegate("inner", modify=True)
@@ -59,7 +62,7 @@ class Component(CoordinateBox, AbstractComponent):
     vpadding = Property
 
     # Does the component respond to mouse events occurring over the padding area?
-    padding_accepts_focus = true
+    padding_accepts_focus = Bool(True)
 
     #------------------------------------------------------------------------
     # Position and bounds of outer box (encloses the padding and border area)
@@ -305,7 +308,7 @@ class NewComponent(CoordinateBox, AbstractComponent):
     vpadding = Property
 
 
-    padding_accepts_focus = true
+    padding_accepts_focus = Bool(True)
 
 
 

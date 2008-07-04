@@ -8,9 +8,9 @@ them appropriately in the draw phase.
 # PZW: Define a scrollbar that uses the system/wx-native scrollbar instead
 # of drawing our own.
 
-from types                          import TupleType
-from enthought.traits.api               import Event, Property, Trait, TraitError
-from enthought.traits.ui.api            import Group, View, Include
+from types import TupleType
+from enthought.traits.api import Event, Property, Trait, TraitError
+from enthought.traits.ui.api import Group, View
 
 # Relative imports
 from component import Component

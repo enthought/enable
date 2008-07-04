@@ -2,8 +2,8 @@
 
 # Enthought library imports
 from enthought.traits.api \
-    import Any, Bool, Delegate, Enum, false, Float, Instance, Int, List, \
-           Property, Str, Trait, true
+    import Any, Bool, Delegate, Enum, Float, Instance, Int, List, \
+           Property, Str, Trait
 from enthought.kiva import GraphicsContext, FILL
 
 try:
@@ -163,7 +163,7 @@ class Component(CoordinateBox, Interactor):
     vpadding = Property
 
     # Does the component respond to mouse events over the padding area?
-    padding_accepts_focus = true
+    padding_accepts_focus = Bool(True)
 
 
     #------------------------------------------------------------------------
@@ -244,7 +244,7 @@ class Component(CoordinateBox, Interactor):
 
     # Is the border visible?  If this is false, then all the other border
     # properties are not
-    border_visible = false
+    border_visible = Bool(False)
 
     # The line style (i.e. dash pattern) of the border.
     border_dash = LineStyle
@@ -268,7 +268,7 @@ class Component(CoordinateBox, Interactor):
     use_backbuffer = Bool(False)
     
     # Should the backbuffer extend to the pad area?
-    backbuffer_padding = true
+    backbuffer_padding = Bool(True)
 
     # If a draw were to occur, whether the component would actually change.
     # This is useful for determining whether a backbuffer is valid, and is
@@ -276,7 +276,7 @@ class Component(CoordinateBox, Interactor):
     # _invalidate_draw().  It is exposed as a public trait for the rare cases
     # when another component wants to know the validity of this component's
     # backbuffer.
-    draw_valid = false
+    draw_valid = Bool(False)
 
     # drawn_outer_position specifies the outer position this component was drawn to
     # on the last draw cycle.  This is used to determine what areas of the screen

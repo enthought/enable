@@ -3,7 +3,6 @@ Defines the concrete top-level Enable 'Window' class for the Pyglet framework.
 Uses the Kiva GL backend.
 """
 
-import sys
 import warnings
 
 # Pyglet imports
@@ -12,17 +11,15 @@ from pyglet import gl, window
 from pyglet.window import key
 
 # Enthought library imports
-from enthought.traits.api import Any, Bool, Float, Instance, Trait
+from enthought.traits.api import Any, Bool
 
 # Enable imports
-from enthought.enable2.base import send_event_to, union_bounds
-from enthought.enable2.component  import Component
-from enthought.enable2.events import MouseEvent, KeyEvent, DragEvent
+from enthought.enable2.events import MouseEvent, KeyEvent
 from enthought.enable2.graphics_context import GraphicsContextEnable
 from enthought.enable2.abstract_window import AbstractWindow
 
 # local, relative imports
-from constants import ASCII_CONTROL_KEYS, BUTTON_NAME_MAP, KEY_MAP, \
+from constants import ASCII_CONTROL_KEYS, KEY_MAP, \
         POINTER_MAP, TEXT_KEYS
 
 

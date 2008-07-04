@@ -3,20 +3,16 @@
 from numpy import dot
 
 # Enthought library imports
-from enthought.traits.api import Any, Bool, Enum, Event, HasTraits, Instance, \
-        ReadOnly, Str, Trait, Tuple, List
+from enthought.traits.api import Any, Bool, Event, HasTraits, Instance, \
+        ReadOnly, Trait, Tuple, List
 
 
 # Local relative imports
-from base import bounds_to_coordinates, coordinates_to_bounds, intersect_coordinates, \
-                 union_coordinates, does_disjoint_intersect_coordinates, \
-                 disjoint_union_coordinates, transparent_color, coordinates_to_size, \
-                 empty_rectangle, bounding_box, bounding_coordinates, add_rectangles, \
-                 xy_in_bounds, BOTTOM_LEFT, TOP, BOTTOM, LEFT, RIGHT, union_bounds
+from base import bounds_to_coordinates, does_disjoint_intersect_coordinates, \
+    union_bounds
 from component import Component
 from interactor import Interactor
 from container import Container
-from enable_traits import CURSOR_X, CURSOR_Y
 from colors import ColorTrait
 
 class AbstractWindow(HasTraits):

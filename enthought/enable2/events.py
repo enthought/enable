@@ -5,11 +5,11 @@ For a list of all the possible event suffixes, see interactor.py.
 """
 
 # Major library imports
-from numpy import array, dot, eye, matrix, float64 
+from numpy import array, dot
 
 # Enthought imports
 from enthought.kiva import affine
-from enthought.traits.api import (Any, Bool, Constant, Float, HasTraits, Int,
+from enthought.traits.api import (Any, Bool, Float, HasTraits, Int,
     Event, List, ReadOnly)
 
 

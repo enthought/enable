@@ -17,7 +17,7 @@
 #-------------------------------------------------------------------------------
 
 from enthought.traits.api               import Trait, Str
-from enthought.traits.ui.api            import Group, View, Include
+from enthought.traits.ui.api            import Group, View
 
 from enthought.enable2.component     import Component
 from enthought.enable2.enable_traits import alignment_trait, \

@@ -29,17 +29,15 @@ from os.path import dirname, splitext, abspath, join
 from types import TypeType, TupleType
 from zipfile import ZipFile, is_zipfile
 from cStringIO import StringIO
-from numpy import array, uint8
 
 # Enthought library imports
 from enthought.traits.api import TraitError
 
-from enthought.kiva import GraphicsContext, font_metrics_provider
-from enthought.kiva.backend_image import GraphicsContext as GraphicsContextArray
+from enthought.kiva import font_metrics_provider
 from enthought.kiva.constants import DEFAULT, DECORATIVE, ROMAN, SCRIPT, SWISS,\
                                      MODERN, NORMAL, BOLD, ITALIC
 from enthought.kiva.fonttools import Font
-from enthought.kiva.backend_image import Image, FontType
+from enthought.kiva.backend_image import Image
 
 from colors import color_table, transparent_color
 

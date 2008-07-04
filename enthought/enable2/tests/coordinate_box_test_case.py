@@ -1,5 +1,4 @@
 import unittest
-import pdb
 
 from enthought.enable2.api import CoordinateBox
 
@@ -33,20 +32,8 @@ class CoordinateBoxTestCase(unittest.TestCase):
         self.assert_(not c.is_in(10, 10))
         return
 
-def test_suite(level=1):
-    suites = []
-    if level > 0:
-        suites.append(unittest.makeSuite(CoordinateBoxTestCase, 'check_'))
-    total_suite = unittest.TestSuite(suites)
-    return total_suite
-
-def test(level=10):
-    all_tests = test_suite(level)
-    runner = unittest.TextTestRunner()
-    runner.run(all_tests)
-    return runner
-
 if __name__ == "__main__":
-    test()
+    import nose
+    nose.main()
 
 # EOF

@@ -1,7 +1,7 @@
 """ A point-to-point drawn polygon. """
 
 from enthought.enable2.api import cursor_style_trait, Line
-from enthought.traits.api import Event, Float, Int, Any, Trait, Instance
+from enthought.traits.api import Event, Int, Instance
 
 from drawing_tool import DrawingTool
 

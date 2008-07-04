@@ -17,12 +17,12 @@ import wx
 
 from enthought.enable2.colors import color_table
 
-from enthought.traits.api import Trait, true, TraitError
+from enthought.traits.api import Bool
 from enthought.traits.trait_base import SequenceTypes
 
 from enthought.traits.ui.api import View
-from enthought.traits.ui.wx.editor_factory import EditorFactory, SimpleEditor, \
-        TextEditor, ReadonlyEditor
+from enthought.traits.ui.wx.editor_factory import EditorFactory, \
+        ReadonlyEditor
 from enthought.traits.ui.wx.editor import Editor
 from enthought.traits.ui.wx.helper import position_window
 from enthought.traits.ui.wx.color_editor import color_samples
@@ -40,7 +40,7 @@ class ToolkitEditorFactory ( EditorFactory ):
     #---------------------------------------------------------------------------
 
     # Is the underlying color trait mapped?
-    mapped = true
+    mapped = Bool(True)
 
     #---------------------------------------------------------------------------
     #  Traits view definition:

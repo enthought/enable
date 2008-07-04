@@ -8,11 +8,11 @@ import time
 import wx
 
 
-from enthought.traits.api import Any, Float, Instance, Trait
+from enthought.traits.api import Any, Instance, Trait
 from enthought.traits.ui.wx.menu import MakeMenu
 
 # Relative imports
-from enthought.enable2.base import send_event_to, union_bounds
+from enthought.enable2.base import union_bounds
 from enthought.enable2.component  import Component
 from enthought.enable2.events import MouseEvent, KeyEvent, DragEvent
 from enthought.enable2.graphics_context import GraphicsContextEnable
@@ -27,7 +27,8 @@ else:
 
 try:
     from enthought.util.wx.drag_and_drop import clipboard, PythonDropTarget
-except:
+except ImportError:
+    clipboard = None
     PythonDropTarget = None
 
 #-------------------------------------------------------------------------------

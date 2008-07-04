@@ -1,8 +1,8 @@
 
 from enthought.enable2.api import Container, Component, ColorTrait
-from enthought.kiva.constants import FILL, FILL_STROKE, MODERN
+from enthought.kiva.constants import FILL, FILL_STROKE
 from enthought.kiva.traits.kiva_font_trait import KivaFont
-from enthought.traits.api import Any, Delegate, Enum, false, Instance, Int, List, Str
+from enthought.traits.api import Any, Bool, Delegate, Enum, Instance, Int, List, Str
 
 
 class Button(Component):
@@ -32,7 +32,7 @@ class Button(Component):
     # Generally, buttons are not resizable
     resizable = ""
 
-    _got_mousedown = false
+    _got_mousedown = Bool(False)
 
     def perform(self, event):
         """

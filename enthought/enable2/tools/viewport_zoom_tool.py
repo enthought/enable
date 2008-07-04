@@ -1,11 +1,11 @@
 """ Defines the SimpleZoom class.
 """
-from numpy import array, inf
+from numpy import inf
 
 # Enthought library imports
 from enthought.enable2.api import ColorTrait, KeySpec
-from enthought.traits.api \
-    import Enum, false, true, Float, Instance, Int, List, Str, Trait, true, Tuple
+from enthought.traits.api import Bool, Enum, Float, Instance, Int, List, \
+    Trait, Tuple
 
 # Enable imports
 from enthought.enable2.abstract_overlay import AbstractOverlay
@@ -32,7 +32,7 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
     
     # Is the tool always "on"? If True, left-clicking always initiates
     # a zoom operation; if False, the user must press a key to enter zoom mode.
-    always_on = false
+    always_on = Bool(False)
 
     #-------------------------------------------------------------------------
     # Zoom control
@@ -47,7 +47,7 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
     #-------------------------------------------------------------------------
     
     # Enable the mousewheel for zooming?
-    enable_wheel = true
+    enable_wheel = Bool(True)
 
     # The mouse button that initiates the drag.
     drag_button = Enum("left", "right")
@@ -64,7 +64,7 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
     exit_zoom_key = Instance(KeySpec, args=("z",))
 
     # Disable the tool after the zoom is completed?
-    disable_on_complete = true
+    disable_on_complete = Bool(True)
     
     # The minimum amount of screen space the user must select in order for
     # the tool to actually take effect.
@@ -121,7 +121,7 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
 
     # If **always_on** is False, this attribute indicates whether the tool
     # is currently enabled.
-    _enabled = false
+    _enabled = Bool(False)
 
     # the original numerical screen ranges 
     _orig_position = Trait(None, List, Float)

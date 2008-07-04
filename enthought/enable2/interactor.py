@@ -1,14 +1,11 @@
 """ Defines the Interactor class """
 
-# Major library imports
-from numpy import eye
-
 # Enthought library imports
 from enthought.kiva.affine import affine_identity
 from enthought.traits.api import Any, Bool, HasTraits, List, Property, Str, Trait
 
 # Local relative imports
-from enable_traits import bounds_trait, cursor_style_trait, Pointer
+from enable_traits import cursor_style_trait, Pointer
 from enthought.enable2.colors import ColorTrait
 
 class Interactor(HasTraits):

@@ -84,20 +84,8 @@ class ContainerTestCase(EnableUnitTest):
         return
 
 
-def test_suite(level=1):
-    suites = []
-    if level > 0:
-        suites.append(unittest.makeSuite(ContainerTestCase, 'test_'))
-    total_suite = unittest.TestSuite(suites)
-    return total_suite
-
-def test(level=10):
-    all_tests = test_suite(level)
-    runner = unittest.TextTestRunner()
-    runner.run(all_tests)
-    return runner
-
 if __name__ == "__main__":
-    test()
+    import nose
+    nose.main()
 
 # EOF

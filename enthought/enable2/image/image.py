@@ -17,11 +17,11 @@
 #  Imports:
 #-------------------------------------------------------------------------------
 
-from enthought.traits.api               import Trait, TraitPrefixList
-from enthought.traits.ui.api            import Group, View, Include
+from enthought.traits.api import Trait, TraitPrefixList
+from enthought.traits.ui.api import Group, View
 
-from enthought.enable2.base          import IDroppedOnHandler, gc_image_for
-from enthought.enable2.component     import Component
+from enthought.enable2.base import IDroppedOnHandler, gc_image_for
+from enthought.enable2.component import Component
 from enthought.enable2.enable_traits import string_image_trait, NoStretch
 from enthought.enable2.colors import ColorTrait
 

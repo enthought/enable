@@ -5,7 +5,7 @@ from enthought.traits.api import Instance
 
 # Relative imports
 from abstract_window import AbstractWindow
-from base import bounding_coordinates, coordinates_to_bounds, default_font
+from base import bounding_coordinates, coordinates_to_bounds
 
 class GraphicsContextEnable(GraphicsContext):
     """

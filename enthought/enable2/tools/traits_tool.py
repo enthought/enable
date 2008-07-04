@@ -1,10 +1,8 @@
-""" Defines the TraitsTool and Fifo classes, and get_nested_components90
-function.
+""" Defines the TraitsTool and Fifo classes, and get_nested_components function.
 """
+
 # Enthought library imports
 from enthought.enable2.api import BaseTool, Container
-from enthought.traits.api import Any, Dict, Enum, Float, Instance
-from enthought.traits.ui.api import View
 
 
 

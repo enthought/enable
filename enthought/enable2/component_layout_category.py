@@ -1,9 +1,9 @@
-
+""" FIXME: Tentative implementation of a new layout mechanism. Unused and unworking.
+"""
 
 
 # Enthought library imports
-from enthought.traits.api import Any, Category, Enum, false, HasTraits, Instance, \
-                                 Int, List, Trait, true
+from enthought.traits.api import Any, Category, Enum
 
 # Singleton representing the default Enable2 layout manager
 DefaultLayoutController = LayoutController()
