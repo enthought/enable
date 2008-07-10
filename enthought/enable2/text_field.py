@@ -86,6 +86,13 @@ class TextField(Component):
 
     # Whether or not to draw the cursor (is mouse over box?)
     _draw_cursor = Bool(False)
+    
+    # fixme: Shouldn't traits initialize these on its own?
+    # fixme again: I moved these out of __init__ because they weren't accessible
+    # from the _get__text_height and _get__text_width methods. Not sure if this
+    # is the right fix (dmartin)
+    _width_cache = None
+    _height_cache = None
 
 
     #------------------------------------------------------------------------
@@ -99,9 +106,6 @@ class TextField(Component):
 
         # Initialize internal tracking variables
         self.reset()
-        
-        # fixme: Shouldn't traits initialize these on its own?
-        self._width_cache, self._height_cache = None, None
 
         super(TextField, self).__init__(**traits)
 
