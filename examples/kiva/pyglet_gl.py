@@ -7,9 +7,12 @@ from pyglet.window import key, Window
 try:
     import OpenGL
 except ImportError:
-    raise Exception('OpenGL pacakge needs to be isntalled to run this example')
+    raise Exception('OpenGL pacakge needs to be isntalled to run this example.')
 
-from enthought.kiva.backend_gl import GraphicsContext
+try:
+    from enthought.kiva.backend_gl import GraphicsContext
+except ImportError:
+    raise Exception('pygarrayimage needs to be installed to run this example.')
 from enthought.kiva.constants import FILL, STROKE, FILL_STROKE
 
 class TestWindow(Window):
