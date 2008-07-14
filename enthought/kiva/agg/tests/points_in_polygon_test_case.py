@@ -1,5 +1,6 @@
-from enthought.util.numerix import *
 import unittest
+
+from numpy import array, allclose
 
 from enthought.kiva import agg
 

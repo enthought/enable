@@ -1,5 +1,7 @@
-from enthought.util.numerix import *
+from math import pi
 import unittest
+
+from numpy import array, allclose, ones, alltrue
 
 from enthought.kiva import agg
     

@@ -1,7 +1,6 @@
-from enthought.util.numerix import *
-from enthought import freetype
+from numpy import array
 
-import sys
+from enthought import freetype
 
 from enthought.kiva import agg
 
