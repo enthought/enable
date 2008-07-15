@@ -7,7 +7,7 @@ from pyglet.window import key, Window
 try:
     import OpenGL
 except ImportError:
-    raise Exception('OpenGL pacakge needs to be isntalled to run this example.')
+    raise Exception('OpenGL package needs to be installed to run this example.')
 
 try:
     from enthought.kiva.backend_gl import GraphicsContext
