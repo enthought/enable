@@ -12,7 +12,7 @@ class Box(Shape):
     # Protected 'Component' interface.
     ###########################################################################
 
-    def _draw(self, gc, view_bounds=None, mode='default'):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode='default'):
         """ Draw the component. """
         
         gc.save_state()
