@@ -11,8 +11,8 @@ except ImportError:
 
 try:
     from enthought.kiva.backend_gl import GraphicsContext
-except ImportError:
-    raise Exception('pygarrayimage needs to be installed to run this example.')
+except ImportError, e:
+    raise Exception(e)
 from enthought.kiva.constants import FILL, STROKE, FILL_STROKE
 
 class TestWindow(Window):
