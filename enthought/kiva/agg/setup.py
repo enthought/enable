@@ -2,7 +2,7 @@
 import sys
 import os
 import os.path
-
+import platform
 
 
 
@@ -135,6 +135,20 @@ def configuration(parent_package='',top_path=None):
     #-------------------------------------------------------------------------
     # Build the extension itself
     #-------------------------------------------------------------------------
+
+    # Check for g++ < 4.0 on 64-bit Linux
+    use_32bit_workaround = False
+    
+    if '64bit' in platform.architecture():
+        gcc_version = os.popen("g++ --version")
+        gcc_version_head = gcc_version.readline().split()
+        gcc_version.close()
+        if int(gcc_version_head[2][0]) < 4:
+            use_32bit_workaround = True
+    
+    # Enable workaround of agg bug on 64-bit machines with g++ < 4.0
+    if use_32bit_workaround:
+        define_macros.append(("ALWAYS_32BIT_WORKAROUND", 1))
 
     # Options to make OS X link OpenGL
     darwin_opengl_opts = dict(
