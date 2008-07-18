@@ -42,7 +42,7 @@
 """
 
 from numpy import array, alltrue, arctan2, cos, dot, eye, float64, ones, \
-        ravel, sin, zeros, shape
+        ravel, sin, zeros
 
 #-----------------------------------------------------------------------------
 # Affine transform construction
@@ -146,7 +146,7 @@ def concat(transform,other):
 def invert(m):
     """ Returns the inverse of the transform, m.
     """
-    inv      = zeros(shape(m), float64)
+    inv      = zeros(m.shape, float64)
     det      =  m[0,0] * m[1,1] - m[0,1] * m[1,0]
     
     inv[0,0] =  m[1,1] 
