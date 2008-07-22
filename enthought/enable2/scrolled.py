@@ -504,7 +504,7 @@ class Scrolled(Container):
 
     def _draw(self, gc, view_bounds=None, mode="default"):
 
-        if self._layout_needed:
+        if self.layout_needed:
             self._do_layout()
         try:
             gc.save_state()

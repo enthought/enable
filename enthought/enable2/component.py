@@ -101,6 +101,12 @@ class Component(CoordinateBox, Interactor):
     # in the free space?
     auto_center = Bool(True)
 
+    # A read-only property that returns True if this component needs layout.
+    # It is a reflection of both the value of the component's private
+    # _layout_needed attribute as well as any logical layout dependencies with
+    # other components.
+    layout_needed = Property
+
     #------------------------------------------------------------------------
     # Overlays and underlays
     #------------------------------------------------------------------------
@@ -320,7 +326,9 @@ class Component(CoordinateBox, Interactor):
     # enable component in a Window.
     _window = Any    # Instance("Window")
 
-    # Does the component need to do a layout call?
+    # Whether or not component itself needs to be laid out.  Some times
+    # components are composites of others, in which case the layout
+    # invalidation relationships should be implemented in layout_needed.
     _layout_needed = Bool(True)
 
     #------------------------------------------------------------------------
@@ -359,10 +367,10 @@ class Component(CoordinateBox, Interactor):
         # gets notified of our being added to it.
         if traits.has_key("container"):
             container = traits.pop("container")
-            Interactor.__init__(self, **traits)
+            super(Component,self).__init__(**traits)
             container.add(self)
         else:
-            Interactor.__init__(self, **traits)
+            super(Component,self).__init__(**traits)
         return
 
     def draw(self, gc, view_bounds=None, mode="default"):
@@ -389,7 +397,7 @@ class Component(CoordinateBox, Interactor):
                 its best effort to render as fast as possible, even if there is
                 an aesthetic cost.
         """
-        if self._layout_needed:
+        if self.layout_needed:
             self.do_layout()
 
         self._draw(gc, view_bounds, mode)
@@ -593,7 +601,7 @@ class Component(CoordinateBox, Interactor):
             even if *force* is False.
             
         """
-        if self._layout_needed or force:
+        if self.layout_needed or force:
             if size is not None:
                 self.bounds = size
             self._do_layout()
@@ -653,7 +661,7 @@ class Component(CoordinateBox, Interactor):
         if not self.visible:
             return
         
-        if self._layout_needed:
+        if self.layout_needed:
             self.do_layout()
 
         self.drawn_outer_position = list(self.outer_position[:])
@@ -703,7 +711,7 @@ class Component(CoordinateBox, Interactor):
         # is mostly for backwards compatibility.
         if layer == "selection" and not self.use_selection:
             return
-        if self._layout_needed:
+        if self.layout_needed:
             self.do_layout()
 
         handler = getattr(self, "_draw_" + layer, None) 
@@ -951,6 +959,10 @@ class Component(CoordinateBox, Interactor):
         self.invalidate_and_redraw()
         return
 
+    def _get_layout_needed(self):
+        return self._layout_needed
+
+
     def _tools_items_changed(self):
         self.invalidate_and_redraw()
     
@@ -1031,6 +1043,10 @@ class Component(CoordinateBox, Interactor):
     def _position_items_changed(self, *args):
         if self.container is not None:
             self.container._component_position_changed(self)
+
+    def _visible_changed(self, old, new):
+        if new:
+            self._layout_needed = True
 
     #------------------------------------------------------------------------
     # Position and padding setters and getters

@@ -298,7 +298,7 @@ class Container(Component):
         if new_bounds == empty_rectangle:
             return
         
-        if self._layout_needed:
+        if self.layout_needed:
             self.do_layout()
 
         # Give the container a chance to draw first for the layers that are
@@ -442,6 +442,18 @@ class Container(Component):
 
     def _get_components(self):
         return self._components
+
+    def _get_layout_needed(self):
+        # Override the parent implementation to take into account whether any
+        # of our contained components need layout.
+        if self._layout_needed:
+            return True
+        else:
+            for c in self.components:
+                if c.layout_needed:
+                    return True
+            else:
+                return False
 
     #------------------------------------------------------------------------
     # Interactor interface

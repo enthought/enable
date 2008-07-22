@@ -60,7 +60,7 @@ class AbstractOverlay(Component):
         from the superclass Component.do_layout() in that it accepts an
         optional **component** argument.
         """
-        if self._layout_needed or force:
+        if self.layout_needed or force:
             if size is not None:
                 self.bounds = size
             self._do_layout(component)
