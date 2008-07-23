@@ -353,7 +353,7 @@ class Container(Component):
     def _get_visible_components(self, bounds):
         """ Returns a list of this plot's children that are in the bounds. """
         if bounds is None:
-            return self.components
+            return [c for c in self.components if c.visible]
         
         visible_components = []
         for component in self.components:
