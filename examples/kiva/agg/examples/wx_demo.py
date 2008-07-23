@@ -40,8 +40,9 @@ class BrainCanvas(Canvas):
                                                        
     def do_draw(self,gc):
         sz = self.GetClientSizeTuple()
-        gc.save_state()
         gc.set_font(str_to_font("modern 10"))
+        gc.save_state()
+        
         t1 = time.clock()
         self.brain1.set_image_interpolation(self.model.interpolation)
         img_box = (0, 0, sz[0], sz[1])

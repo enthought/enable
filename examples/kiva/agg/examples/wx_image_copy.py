@@ -150,9 +150,8 @@ class LionCanvas(Canvas):
                                                self.blit_time, 
                                                self.clear_time,                                  
                                                self.total_paint_time)
-        if not gc.is_font_initialized():
-            f = Font(face_name="Arial")
-            gc.set_font(f)
+        
+        gc.set_font(Font(face_name="Arial"))
             
         text = "total time: %3.3f" % self.total_paint_time
         gc.show_text(text,(10,sz[1] - 20))
