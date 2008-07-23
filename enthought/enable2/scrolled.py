@@ -20,7 +20,7 @@ class Scrolled(Container):
     # The component that we are viewing
     component = Instance(Component)
 
-    # The actual viewport onto our component
+    # The viewport onto our component
     viewport_component = Instance(Viewport)
 
     # Inside padding is a background drawn area between the edges or scrollbars

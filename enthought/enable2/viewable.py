@@ -16,7 +16,6 @@ class Viewable(HasTraits):
     def request_redraw(self):
         # This overrides the default Component request_redraw by asking
         # all of the views to redraw themselves.
-        print "request_redraw on viewable"
         return
     
     def draw(self, gc, view_bounds=None, mode="default"):
