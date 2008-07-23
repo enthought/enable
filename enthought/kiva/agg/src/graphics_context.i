@@ -554,9 +554,26 @@ namespace kiva {
             void translate_ctm(double x, double y);
             void rotate_ctm(double angle);
             void scale_ctm(double sx, double sy);
+
+            %feature("shadow") concat_ctm(agg::trans_affine& m)
+            %{
+            def concat_ctm(self, m):
+                if isinstance(m, tuple):
+                    _agg.GraphicsContextArray_concat_ctm(self, _AffineMatrix(*m))
+                else:
+                    _agg.GraphicsContextArray_concat_ctm(self, m)
+            %}
             void concat_ctm(agg::trans_affine& m);
+
+            %feature("shadow") set_ctm(agg::trans_affine& m)
+            %{
+            def set_ctm(self, m):
+                if isinstance(m, tuple):
+                    _agg.GraphicsContextArray_set_ctm(self, _AffineMatrix(*m))
+                else:
+                    _agg.GraphicsContextArray_set_ctm(self, m)
+            %}
             void set_ctm(agg::trans_affine& m);
-            void get_freetype_text_matrix(double* out);
             
             %feature("shadow") get_ctm()
             %{
@@ -566,6 +583,8 @@ namespace kiva {
             %}
             agg::trans_affine get_ctm();
 
+            void get_freetype_text_matrix(double* out);
+            
             void flush();
             void synchronize();
 

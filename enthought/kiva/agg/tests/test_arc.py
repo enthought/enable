@@ -76,11 +76,6 @@ class TestAffineMatrix(unittest.TestCase):
         gc.add_path(whole_shebang)
         gc.set_stroke_color((0.0,0.0,1.0))
         gc.stroke_path()
-        # FIXME:  The rest of test is skipped because gc.set_ctm(ctm2) fails.
-        #    The object ctm2 given to the method set_ctm() was created by the
-        #    method get_ctm().  However, set_ctm() fails with a TypeError
-        #    which appears to be inconsistent.
-        return
         gc.set_ctm(ctm2)
         
         gc.translate_ctm(130.5, 0.0)
