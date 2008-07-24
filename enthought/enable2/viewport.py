@@ -5,7 +5,9 @@ from numpy import array
 
 # Enthought library traits
 from enthought.enable2.tools.api import ViewportZoomTool
-from enthought.traits.api import Bool, Delegate, Float, Instance
+from enthought.enable2.simple_layout import simple_container_get_preferred_size, \
+                                            simple_container_do_layout
+from enthought.traits.api import Bool, Delegate, Float, Instance, Enum, List, Any
 from enthought.kiva import affine
 
 # Local relative imports
@@ -47,8 +49,17 @@ class Viewport(Component):
     # we are zoomed in.  Zoom should always be positive and nonzero.
     zoom = Float(1.0)
 
+    # Whether to initiate layout on the viewed component.  This is necessary
+    # if the component is only viewed through viewports, in which case one
+    # of the viewports must lay it out or bounds must be set explicitly
+    # on the component.
+    initiate_layout = Bool(False)
+
+
     min_zoom = Delegate('zoom_tool', modify=True)
     max_zoom = Delegate('zoom_tool', modify=True)
+
+    _component_preferred_size = Any(None)
 
     #------------------------------------------------------------------------
     # Public methods
@@ -110,6 +121,17 @@ class Viewport(Component):
         if self.component:
             self.component.cleanup(window)
 
+    def get_preferred_size(self):
+        """If we're initiating layout, act like an OverlayPlotContainer,
+           otherwise do the normal component action"""
+        if self.initiate_layout:
+            self._component_preferred_size = simple_container_get_preferred_size(self, components=[container])
+            return self._component_preferred_size
+        else:
+            return super(Viewport, self).get_preferred_size()
+
+    
+        
     #------------------------------------------------------------------------
     # Component interface
     #------------------------------------------------------------------------
@@ -172,6 +194,17 @@ class Viewport(Component):
         else:
             pass
         return
+
+    def _do_layout(self):
+        if self.initiate_layout:
+            self.component.bounds = list(self.component.get_preferred_size())
+            simple_container_do_layout(self, components=[self.component])
+                
+        else:
+            super(Viewport, self)._do_layout()
+
+    
+    
 
     #------------------------------------------------------------------------
     # Event handlers

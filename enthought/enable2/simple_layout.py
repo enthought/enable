@@ -49,24 +49,22 @@ def simple_container_get_preferred_size(container, components=None):
     container._cached_preferred_size = (max_width + container.hpadding, max_height + container.vpadding)
     return container._cached_preferred_size
 
-def simple_container_do_layout(container):
+def simple_container_do_layout(container, components=None):
     """ Actually performs a layout (called by do_layout()).
     """
 
-    width, height = container.bounds
-    if "h" in container.fit_components:
-        width = container._cached_preferred_size[0] - container.hpadding
-    if "v" in container.fit_components:
-        height = container._cached_preferred_size[1] - container.vpadding
+    if components is None:
+        components = container.components
 
     x = container.x
     y = container.y
     width = container.width
     height = container.height
 
-    for component in container.components:
-        if not container._should_layout(component):
-            continue
+    for component in components:
+        if hasattr(container, '_should_layout'):
+            if not container._should_layout(component):
+                continue
 
         position = list(component.outer_position)
         bounds = list(component.outer_bounds)
@@ -84,6 +82,6 @@ def simple_container_do_layout(container):
         component.outer_bounds = bounds
 
     # Tell all of our components to do a layout
-    for component in container.components:
+    for component in components:
         component.do_layout()
     return
