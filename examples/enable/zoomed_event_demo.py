@@ -1,10 +1,10 @@
 
 from enthought.traits.api import Float
 
-from enthought.enable2.api import AbstractOverlay, Canvas, Viewport, \
+from enthought.enable.api import AbstractOverlay, Canvas, Viewport, \
         Window, ColorTrait, Scrolled, Container
-from enthought.enable2.tools.api import ViewportPanTool
-from enthought.enable2.example_support import demo_main, DemoFrame
+from enthought.enable.tools.api import ViewportPanTool
+from enthought.enable.example_support import demo_main, DemoFrame
 
 
 class EventTracer(AbstractOverlay):

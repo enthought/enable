@@ -1,9 +1,9 @@
 """ Small demo of the Label component.  """
 
-from enthought.enable2.example_support import DemoFrame, demo_main
-from enthought.enable2.label import Label
+from enthought.enable.example_support import DemoFrame, demo_main
+from enthought.enable.label import Label
 
-from enthought.enable2.api import Component, Container, Pointer, Window
+from enthought.enable.api import Component, Container, Pointer, Window
 
 class MyFrame(DemoFrame):
     

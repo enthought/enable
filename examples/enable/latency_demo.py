@@ -7,8 +7,8 @@ import wx
 
 from enthought.traits.api import Float
 
-from enthought.enable2.api import Component, Container, ColorTrait, black_color_trait
-from enthought.enable2.wx_backend.api import Window
+from enthought.enable.api import Component, Container, ColorTrait, black_color_trait
+from enthought.enable.wx_backend.api import Window
 
 from enthought.kiva import Font
 

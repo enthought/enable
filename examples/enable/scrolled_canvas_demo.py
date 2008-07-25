@@ -1,10 +1,10 @@
 
 from numpy import arange, array
 
-from enthought.enable2.api import Canvas, Viewport, Window, Scrolled
-from enthought.enable2.tools.api import ViewportPanTool
-from enthought.enable2.primitives.api import Box
-from enthought.enable2.example_support import demo_main, DemoFrame
+from enthought.enable.api import Canvas, Viewport, Window, Scrolled
+from enthought.enable.tools.api import ViewportPanTool
+from enthought.enable.primitives.api import Box
+from enthought.enable.example_support import demo_main, DemoFrame
 
 class MyFrame(DemoFrame):
 

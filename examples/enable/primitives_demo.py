@@ -2,10 +2,10 @@
 This demo is a canvas that showcases some of the drawing primitives in Enable.
 """
 
-from enthought.enable2.example_support import DemoFrame, demo_main
+from enthought.enable.example_support import DemoFrame, demo_main
 
-from enthought.enable2.api import Box, Component, Container, Window
-from enthought.enable2.drawing.api import DragLine, DragPolygon, DragSegment, \
+from enthought.enable.api import Box, Component, Container, Window
+from enthought.enable.drawing.api import DragLine, DragPolygon, DragSegment, \
     DrawingTool, PointLine, PointPolygon, DrawingCanvas, ToolbarButton, \
     DrawingCanvasToolbar
 

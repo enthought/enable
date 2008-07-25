@@ -3,9 +3,9 @@ Similar to simple_drag_demo, put one circle inside a scrolled container
 """
 from numpy import array
 
-from enthought.enable2.example_support import DemoFrame, demo_main
+from enthought.enable.example_support import DemoFrame, demo_main
 
-from enthought.enable2.api import Component, Scrolled, Container, Container,\
+from enthought.enable.api import Component, Scrolled, Container, Container,\
                                   Pointer, NativeScrollBar, Viewport, Window
 
 from enthought.traits.api import Array, Enum, Float, Instance, Trait, Tuple

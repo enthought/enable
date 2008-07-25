@@ -2,10 +2,10 @@
 This allows a simple component to be moved around the screen.
 """
 
-from enthought.enable2.example_support import DemoFrame, demo_main
+from enthought.enable.example_support import DemoFrame, demo_main
 
 from enthought.traits.api import Float, Tuple
-from enthought.enable2.api import Component, Container, Pointer, Window
+from enthought.enable.api import Component, Container, Pointer, Window
 
 class Box(Component):
     """

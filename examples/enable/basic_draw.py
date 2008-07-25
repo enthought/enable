@@ -4,8 +4,8 @@ component is created and added to a container.
 """
 
 
-from enthought.enable2.example_support import DemoFrame, demo_main
-from enthought.enable2.api import Component, Container, Window
+from enthought.enable.example_support import DemoFrame, demo_main
+from enthought.enable.api import Component, Container, Window
 
 class Box(Component):
 

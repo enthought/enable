@@ -2,8 +2,8 @@
 
 
 # Enthought library imports.
-from enthought.enable2.api import Window
-from enthought.enable2.example_support import DemoFrame, demo_main
+from enthought.enable.api import Window
+from enthought.enable.example_support import DemoFrame, demo_main
 
 # Local imports
 from box import Box

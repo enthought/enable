@@ -2,7 +2,7 @@
 
 
 # Enthought library imports.
-from enthought.enable2.api import Container
+from enthought.enable.api import Container
 
 
 class ShapeContainer(Container):

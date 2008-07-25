@@ -1,6 +1,6 @@
 
-from enthought.enable2.api import Container, TextField, Window
-from enthought.enable2.example_support import DemoFrame, demo_main
+from enthought.enable.api import Container, TextField, Window
+from enthought.enable.example_support import DemoFrame, demo_main
 
 class MyFrame(DemoFrame):
     def _create_window(self):
