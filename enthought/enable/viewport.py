@@ -198,7 +198,7 @@ class Viewport(Component):
     def _do_layout(self):
         if self.initiate_layout:
             self.component.bounds = list(self.component.get_preferred_size())
-            simple_container_do_layout(self, components=[self.component])
+            self.component.do_layout()
                 
         else:
             super(Viewport, self)._do_layout()
