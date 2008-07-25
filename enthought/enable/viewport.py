@@ -202,8 +202,7 @@ class Viewport(Component):
                 
         else:
             super(Viewport, self)._do_layout()
-
-    
+        return
     
 
     #------------------------------------------------------------------------

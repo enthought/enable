@@ -223,7 +223,9 @@ class Scrolled(Container):
         return
 
     def _bounds_changed_for_component(self):
+        self._layout_needed = True
         self.update_from_viewport()
+        self.request_redraw()
         return
 
     def _bounds_items_changed_for_component(self):
@@ -333,6 +335,8 @@ class Scrolled(Container):
     def _do_layout ( self ):
         """ This is explicitly called by _draw(). 
         """
+        self.viewport_component.do_layout()
+        
         # Window is composed of border + scrollbar + canvas in each direction.
         # To compute the overall geometry, first calculate whether component.x
         # + the border fits in the x size of the window.
