@@ -20,6 +20,8 @@ import unittest
 
 from numpy import array, transpose
 
+import nose
+
 from enthought.kiva.agg import GraphicsContextArray
 from enthought import kiva
 
@@ -169,13 +171,14 @@ class ClipToRectTestCase(unittest.TestCase, Utils):
         actual2 = gc.bmp_array[:,:,0]
         self.assertRavelEqual(desired2, actual2)
 
-    def fixme_clip_to_rect_rotated(self):
-        """ fix me: This test raises an exception currently because the 
-            underlying library doesn't handle clipping to a rotated
-            rectangle.  For now, we catch the the case with an
-            exception, so that people can't screw up.  In the future,
-            we should actually support this functionality.
-        """
+    def test_clip_to_rect_rotated(self):
+        # FIXME: test skipped
+        #   This test raises an exception currently because the 
+        #   underlying library doesn't handle clipping to a rotated
+        #   rectangle.  For now, we catch the the case with an
+        #   exception, so that people can't screw up.  In the future,
+        #   we should actually support this functionality.
+        raise nose.SkipTest 
         
         gc = GraphicsContextArray((1,1), pix_format="rgb24")    
         gc.rotate_ctm(1.0)
