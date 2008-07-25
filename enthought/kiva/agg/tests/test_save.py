@@ -6,7 +6,20 @@ from numpy import allclose, ravel
 from enthought.kiva import agg
 
 
-class TestSave(unittest.TestCase):
+# Note:
+#   This test is broken, and Peter promised to fix it at some point.
+#   The reason that nose 0.10.3 does not report this test as a failure
+#   (when running nosetests in this directory or from setup.py test)
+#   is because the class name does not contain Tests.
+#   However when you say either
+#     $ python test_save.py
+#   or
+#     $ nosetests test_save.py
+#   it will fail.
+#   I added the explanation of this behavior, because it might confuse
+#   people otherwise.
+
+class Save(unittest.TestCase):
     format_output_map = {
         "rgb24": [255,255,255,255,255,255,255,0,0,255,0,0],
         "bgr24": [255,255,255,255,255,255,0,0,255,0,0,255],
