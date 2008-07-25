@@ -210,7 +210,7 @@ cdef class CGContext:
 
     def _setup_fonts(self):
         self.style_cache = {}
-        self.select_font("Times New Roman", 12)
+        self.select_font("Helvetica", 12)
         CGContextSetShouldSmoothFonts(self.context, 1)
         CGContextSetShouldAntialias(self.context, 1)
 
