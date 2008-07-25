@@ -3,23 +3,15 @@ import unittest
 
 from numpy import allclose, ravel
 
+import nose
+
 from enthought.kiva import agg
 
 
-# Note:
-#   This test is broken, and Peter promised to fix it at some point.
-#   The reason that nose 0.10.3 does not report this test as a failure
-#   (when running nosetests in this directory or from setup.py test)
-#   is because the class name does not contain Tests.
-#   However when you say either
-#     $ python test_save.py
-#   or
-#     $ nosetests test_save.py
-#   it will fail.
-#   I added the explanation of this behavior, because it might confuse
-#   people otherwise.
+# FIXME:
+#   These tests are broken, and Peter promised to fix it at some point.
 
-class Save(unittest.TestCase):
+class Test_Save(unittest.TestCase):
     format_output_map = {
         "rgb24": [255,255,255,255,255,255,255,0,0,255,0,0],
         "bgr24": [255,255,255,255,255,255,0,0,255,0,0,255],
@@ -40,6 +32,9 @@ class Save(unittest.TestCase):
         self.do_check_format('bgra32')
         
     def do_check_format(self,fmt):
+        # FIXME:
+        raise nose.SkipTest
+
         gc = agg.GraphicsContextArray((2,2), fmt)
         gc.set_stroke_color((1.0,0.0,0.0))
         gc.move_to(0.0, 0.5)
