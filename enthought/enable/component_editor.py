@@ -40,7 +40,6 @@ class _ComponentEditor( Editor ):
         """ Finishes initializing the editor by creating the underlying toolkit
         widget.
         """
-        print "editor size:", self.factory.size
         self._window          = Window( parent, size=self.factory.size, component=self.value )
         self.control          = self._window.control
         self._window.bg_color = self.factory.bgcolor
