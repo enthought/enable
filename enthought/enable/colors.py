@@ -1,6 +1,8 @@
 # This is a redirection file that determines what constitutes a color trait
 # in Chaco, and what constitutes the standard colors.
 
+import sys
+
 from enthought.etsconfig.api import ETSConfig
 from enthought.traits.api import List, Str, Trait, Tuple, TraitError
 
@@ -201,9 +203,13 @@ if ETSConfig.toolkit == 'wx':
                              'and BB is blue, a list/tuple of (r,g,b) or (r,g,b,a)')
     
     # Set the system color
-    # We use ACTIVEBORDER, but on WinXP the INACTIVEBORDER has the same color
-    color_table["sys_window"] = convert_from_wx_color(None, None,
-                                    wx.SystemSettings.GetColour(wx.SYS_COLOUR_ACTIVEBORDER))
+    if sys.platform == 'darwin':
+        # There is no way to correctly interrogate wx for the correct color.
+        color_table["sys_window"] = (232./255, 232./255, 232./255, 1.0)
+    else:
+        # We use ACTIVEBORDER, but on WinXP the INACTIVEBORDER has the same color
+        color_table["sys_window"] = convert_from_wx_color(None, None,
+            wx.SystemSettings.GetColour(wx.SYS_COLOUR_ACTIVEBORDER))
 
     class ColorEditorFactory(StandardColorEditorFactory):
         def to_wx_color(self, editor):
