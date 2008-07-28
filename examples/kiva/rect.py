@@ -1,4 +1,4 @@
-from enthought.kiva.backend_image import GraphicsContext
+from enthought.kiva import GraphicsContext
    
 gc = GraphicsContext((500,500))
 gc.clear()

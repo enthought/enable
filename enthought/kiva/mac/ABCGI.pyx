@@ -12,6 +12,7 @@ include "ATSUI.pxi"
 
 cimport c_numpy
 
+import os
 import warnings
 
 from ATSFont import default_font_info
@@ -1158,7 +1159,7 @@ cdef class CGLayerContext(CGContextInABox):
         filename (e.g. if you wanted to save a PNG file as a .dat or .bin).
 
         filename may also be "file-like" object such as a StringIO, in which
-        case a file_format must be supplied
+        case a file_format must be supplied.
 
         pil_options is a dict of format-specific options that are passed down to
         the PIL image file writer.  If a writer doesn't recognize an option, it
@@ -1497,7 +1498,7 @@ cdef class CGBitmapContext(CGContext):
         filename (e.g. if you wanted to save a PNG file as a .dat or .bin).
 
         filename may also be "file-like" object such as a StringIO, in which
-        case a file_format must be supplied
+        case a file_format must be supplied.
 
         pil_options is a dict of format-specific options that are passed down to
         the PIL image file writer.  If a writer doesn't recognize an option, it
@@ -1525,6 +1526,14 @@ cdef class CGBitmapContext(CGContext):
             raise ValueError("cannot save this pixel format")
 
         img = Image.fromstring(mode, (self.width(), self.height()), self)
+        if 'A' in mode:
+            # Check the output format to see if it can handle an alpha channel.
+            no_alpha_formats = ('jpg', 'bmp', 'eps', 'jpeg')
+            if ((isinstance(filename, basestring) and
+                 os.path.splitext(filename)[1][1:] in no_alpha_formats) or
+                (file_format.lower() in no_alpha_formats)):
+                img = img.convert('RGB')
+
         img.save(filename, format=file_format, options=pil_options)
 
 cdef class CGImage:
