@@ -10,6 +10,7 @@ from enthought.enable.api import ColorTrait
 
 from enthought.etsconfig.api import ETSConfig
 
+from enthought.traits.api import Property, Tuple
 from enthought.traits.ui.api import BasicEditorFactory
 
 if ETSConfig.toolkit == 'wx':
@@ -39,7 +40,8 @@ class _ComponentEditor( Editor ):
         """ Finishes initializing the editor by creating the underlying toolkit
         widget.
         """
-        self._window          = Window( parent, component=self.value )
+        print "editor size:", self.factory.size
+        self._window          = Window( parent, size=self.factory.size, component=self.value )
         self.control          = self._window.control
         self._window.bg_color = self.factory.bgcolor
 
@@ -66,3 +68,23 @@ class ComponentEditor( BasicEditorFactory ):
     # The background color for the window
     bgcolor = ColorTrait('sys_window')
 
+    # The default size of the Window wrapping this Enable component
+    size = Tuple((400,400))
+
+    # Convenience function for accessing the width
+    width = Property
+
+    # Convenience function for accessing the width
+    height = Property
+
+    def _get_width(self):
+        return self.size[0]
+
+    def _set_width(self, width):
+        self.size = (width, self.size[1])
+
+    def _get_height(self):
+        return self.size[1]
+
+    def _set_height(self, height):
+        self.size = (self.size[0], height)
