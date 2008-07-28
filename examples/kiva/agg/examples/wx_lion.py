@@ -76,7 +76,10 @@ class LionCanvas(Canvas):
                                  self.blit_time + self.clear_time)
         text = "total time: %3.3f" % self.total_paint_time
         gc.show_text(text,(10,sz[1] - 20))
-        text = "frames/sec: %3.3f" % (1.0/self.total_paint_time)
+        if self.total_paint_time > 1E-8:
+            text = "frames/sec: %3.3f" % (1.0/self.total_paint_time)
+        else:
+            text = "frames/sec: -----"
         gc.show_text(text,(10,sz[1] - 40))
         gc.restore_state()
         
