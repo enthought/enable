@@ -1,0 +1,45 @@
+The icons are mostly derived work from other icons. As such they are
+licensed accordingly to the original license:
+
+    D. Morrill: BSD-like as described in LICENSE.txt
+    Crystal Project Icons: LGPL license as described in icon_OOo_LICENSE.txt
+
+Unless stated in this file, icons are work of enthought, and are released
+under BSD-like license.
+
+Files and orginal authors:
+----------------------------------------------------------------
+enthought/enable/images:
+0_weight.gif                    D. Morrill
+1_weight.gif                    D. Morrill
+2_weight.gif                    D. Morrill
+3_weight.gif                    D. Morrill
+4_weight.gif                    D. Morrill
+5_weight.gif                    D. Morrill
+6_weight.gif                    D. Morrill
+7_weight.gif                    D. Morrill
+8_weight.gif                    D. Morrill
+bottom_center_position.gif      D. Morrill
+bottom_left_position.gif        D. Morrill
+bottom_right_position.gif       D. Morrill
+center_align.gif                D. Morrill
+center_left_position.gif        D. Morrill
+center_position.gif             D. Morrill
+center_right_position.gif       D. Morrill
+left_align.gif                  D. Morrill
+right_align.gif                 D. Morrill
+top_center_position.gif         D. Morrill
+top_left_position.gif           D. Morrill
+top_right_position.gif          D. Morrill
+
+enthought/enable/image/images:
+colorchip.png                   D. Morrill
+image.png                       D. Morrill
+inspector.png                   Crystal Project Icons
+
+examples/enable/deepfield.jpg                         ?
+examples/kiva/agg/examples/serengeti.jpg              ?
+examples/kiva/agg/examples/brain1.gif                 ?
+examples/kiva/agg/examples/brain2.gif                 ?
+enthought/kiva/agg/tests/doubleprom_soho_full.jpg     ?
+
