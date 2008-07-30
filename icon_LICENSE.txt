@@ -10,7 +10,7 @@ under BSD-like license.
 
 Files and orginal authors:
 ----------------------------------------------------------------
-enthought/enable/images:
+enthought/enable/images/:
 0_weight.gif                    D. Morrill
 1_weight.gif                    D. Morrill
 2_weight.gif                    D. Morrill
@@ -33,15 +33,16 @@ top_center_position.gif         D. Morrill
 top_left_position.gif           D. Morrill
 top_right_position.gif          D. Morrill
 
-enthought/enable/image/images:
+enthought/enable/image/images/:
 colorchip.png                   D. Morrill
 image.png                       D. Morrill
 inspector.png                   Crystal Project
 
-examples/enable/deepfield.jpg                             NASA
-examples/kiva/agg/examples/serengeti.jpg                  ?
-examples/kiva/agg/examples/brain1.gif                     ?
-examples/kiva/agg/examples/brain2.gif                     ?
 enthought/kiva/agg/tests/doubleprom_soho_full.jpg         NASA
+examples/enable/deepfield.jpg                             NASA
 examples/kiva/agg/agg-24/win32_api/pure_api/pure_api.ico  ?
 examples/kiva/agg/agg-24/win32_api/pure_api/small.ico     ?
+examples/kiva/agg/examples/brain1.gif                     ?
+examples/kiva/agg/examples/brain2.gif                     ?
+examples/kiva/agg/examples/serengeti.jpg                  ?
+
