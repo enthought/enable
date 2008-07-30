@@ -10,6 +10,8 @@ GV (Gael Varoquaux)     Public Domain             N/A
 NASA                    Public Domain             N/A
 Nuvola                  LGPL                      image_LICENSE_Nuvola.txt
 OOo                     LGPL                      image_LICENSE_OOo.txt
+Rick Marin              Public Domain             N/A
+US Government           Public Domain             N/A
 
 Unless stated in this file, icons are the work of Enthought, and are
 released under a 3 clause BSD license.
@@ -25,6 +27,7 @@ docs/kiva/freetype:
                         img0006.png | Enthought
                         img0007.png | Enthought
                         img0008.png | Enthought
+
 enthought/enable/images:
                        0_weight.gif | Enthought
                        1_weight.gif | Enthought
@@ -47,15 +50,19 @@ enthought/enable/images:
             top_center_position.gif | Enthought
               top_left_position.gif | Enthought
              top_right_position.gif | Enthought
+
 enthought/enable/image/images:
                       colorchip.png | Enthought
                           image.png | Enthought
                       inspector.png | Crystal Project
+
 examples/enable:
                       deepfield.jpg | NASA
+
 examples/kiva/agg/examples:
-                      serengeti.jpg | ?
-                         brain1.gif | ?
-                         brain2.gif | ?
+                      serengeti.jpg | Rick Marin
+                        finger1.gif | US Government
+                        finger2.gif | US Government
+
 enthought/kiva/agg/tests:
            doubleprom_soho_full.jpg | NASA
