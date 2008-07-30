@@ -1,0 +1,51 @@
+The icons are mostly derived work from other icons. As such they are
+licensed accordingly to the original license:
+
+Project                 License                   File
+----------------------------------------------------------------------------
+Eclipse                 Eclipse Public License    image_LICENSE_Eclipse.txt
+Enthought               BSD 3-Clause              LICENSE.txt
+GV (Gael Varoquaux)     Public Domain             N/A
+NASA                    Public Domain             N/A
+Nuvola                  LGPL                      image_LICENSE_Nuvola.txt
+OOo                     LGPL                      image_LICENSE_OOo.txt
+
+Unless stated in this file, icons are the work of Enthought, and are
+released under a 3 clause BSD license.
+
+Files and orginal authors:
+----------------------------------------------------------------------------
+enthought/enable/images:
+                       0_weight.gif | Enthought
+                       1_weight.gif | Enthought
+                       2_weight.gif | Enthought
+                       3_weight.gif | Enthought
+                       4_weight.gif | Enthought
+                       5_weight.gif | Enthought
+                       6_weight.gif | Enthought
+                       7_weight.gif | Enthought
+                       8_weight.gif | Enthought
+         bottom_center_position.gif | Enthought
+           bottom_left_position.gif | Enthought
+          bottom_right_position.gif | Enthought
+                   center_align.gif | Enthought
+           center_left_position.gif | Enthought
+                center_position.gif | Enthought
+          center_right_position.gif | Enthought
+                     left_align.gif | Enthought
+                    right_align.gif | Enthought
+            top_center_position.gif | Enthought
+              top_left_position.gif | Enthought
+             top_right_position.gif | Enthought
+enthought/enable/image/images:
+                      colorchip.png | Enthought
+                          image.png | Enthought
+                      inspector.png | CP
+examples/enable:
+                      deepfield.jpg | NASA
+examples/kiva/agg/examples:
+                      serengeti.jpg | ?
+                         brain1.gif | ?
+                         brain2.gif | ?
+enthought/kiva/agg/tests:
+           doubleprom_soho_full.jpg | NASA
