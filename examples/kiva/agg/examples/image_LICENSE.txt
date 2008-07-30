@@ -1,0 +1,17 @@
+
+
+serengeti.jpg:
+    Wikipedia; This image has been released into the public domain
+    by its author, Rick marin.  This applies worldwide.\
+
+
+finger1.gif:
+    Wikipedia; This work is in the public domain in the United States
+    because it is a work of the United States Federal Government under
+    the terms of Title 17, Chapter 1, Section 105 of the US Code.
+
+
+finger2.gif:
+    Enthought modification of finger1.gif
+
+

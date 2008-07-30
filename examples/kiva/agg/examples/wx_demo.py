@@ -6,7 +6,7 @@ from enthought.traits.api import Enum, HasTraits, Range
 
 import time
 
-class BrainModel(HasTraits):
+class FingerModel(HasTraits):
     x = Range(-0.5, 0.5, 0.3855)
     y = Range(-0.5, 0.5, 0.4019)
     rotation = Range(0.0, 360.0, 0.0)
@@ -15,20 +15,20 @@ class BrainModel(HasTraits):
     interpolation = Enum("nearest","bilinear","bicubic",
                                   "spline16","blackman100")
 
-class BrainCanvas(Canvas):
+class FingerCanvas(Canvas):
                  
     def __init__(self, parent, id = -1, size = wx.DefaultSize):
         Canvas.__init__(self,parent,id,size)
 
         dirname = os.path.dirname(os.path.abspath(__file__))
-        self.brain1 = Image(os.path.join(dirname, "brain1.gif"),
+        self.finger1 = Image(os.path.join(dirname, "finger1.gif"),
                             interpolation="nearest")                                           
-        self.brain2 = Image(os.path.join(dirname, "brain2.gif"),
+        self.finger2 = Image(os.path.join(dirname, "finger2.gif"),
                             interpolation="nearest")                                           
         # set the alpha channel to the same as the "blue" channel
-        self.brain2.bmp_array[:,:,3] = self.brain2.bmp_array[:,:,0]
+        self.finger2.bmp_array[:,:,3] = self.finger2.bmp_array[:,:,0]
         
-        self.model = BrainModel()
+        self.model = FingerModel()
         self.model.on_trait_change(self.update_window)
 
     def controls_ui(self, parent=None, kind='modal'):
@@ -44,9 +44,9 @@ class BrainCanvas(Canvas):
         gc.save_state()
         
         t1 = time.clock()
-        self.brain1.set_image_interpolation(self.model.interpolation)
+        self.finger1.set_image_interpolation(self.model.interpolation)
         img_box = (0, 0, sz[0], sz[1])
-        gc.draw_image(self.brain1, img_box)
+        gc.draw_image(self.finger1, img_box)
         t2 = time.clock()
         self.image_time = t2 - t1
         
@@ -65,8 +65,8 @@ class BrainCanvas(Canvas):
         gc.scale_ctm(self.model.scale, self.model.scale)
         gc.set_alpha(self.model.opacity)
 
-        self.brain2.set_image_interpolation(self.model.interpolation)
-        gc.draw_image(self.brain2)
+        self.finger2.set_image_interpolation(self.model.interpolation)
+        gc.draw_image(self.finger2)
         t2 = time.clock()
         self.lion_time = t2 - t1
         gc.restore_state()
@@ -81,11 +81,11 @@ class BrainCanvas(Canvas):
         gc.show_text(text, (10, sz[1] - 40))
         gc.restore_state()
         
-class BrainCanvasWindow(wx.Frame):
+class FingerCanvasWindow(wx.Frame):
     def __init__(self, id=-1, title='Kiva wxPython Demo',size=(600,800)):
         parent = None
         wx.Frame.__init__(self, parent, id, title, size=size)
-        canvas = BrainCanvas(self)
+        canvas = FingerCanvas(self)
         canvas.SetSize((500,500))
         controls = canvas.controls_ui(parent=self, kind='subpanel')
                 
@@ -104,7 +104,7 @@ def main():
     
     class MyApp(wx.App):
         def OnInit(self):
-            BrainCanvasWindow(size=(700,700))
+            FingerCanvasWindow(size=(700,700))
             return 1
     
     app = MyApp(0)
