@@ -1272,6 +1272,8 @@ namespace kiva
             p++;
         }
         
+        agg::trans_affine null_xform = agg::trans_affine_translation(0., 0.);
+        font_engine->transform(null_xform);
         this->_release_font_manager();
 
         agg::trans_affine trans = agg::trans_affine_translation(advance_x,
