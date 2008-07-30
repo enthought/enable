@@ -3,6 +3,7 @@ licensed accordingly to the original license:
 
 Project                 License                   File
 ----------------------------------------------------------------------------
+Crystal Project         LGPL                      image_LICENSE_CP.txt
 Eclipse                 Eclipse Public License    image_LICENSE_Eclipse.txt
 Enthought               BSD 3-Clause              LICENSE.txt
 GV (Gael Varoquaux)     Public Domain             N/A
@@ -49,7 +50,7 @@ enthought/enable/images:
 enthought/enable/image/images:
                       colorchip.png | Enthought
                           image.png | Enthought
-                      inspector.png | CP
+                      inspector.png | Crystal Project
 examples/enable:
                       deepfield.jpg | NASA
 examples/kiva/agg/examples:
