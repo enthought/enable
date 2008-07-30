@@ -15,6 +15,15 @@ released under a 3 clause BSD license.
 
 Files and orginal authors:
 ----------------------------------------------------------------------------
+docs/kiva/freetype:
+                        img0001.png | Enthought
+                        img0002.png | Enthought
+                        img0003.png | Enthought
+                        img0004.png | Enthought
+                        img0005.png | Enthought
+                        img0006.png | Enthought
+                        img0007.png | Enthought
+                        img0008.png | Enthought
 enthought/enable/images:
                        0_weight.gif | Enthought
                        1_weight.gif | Enthought
