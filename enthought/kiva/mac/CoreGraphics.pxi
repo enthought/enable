@@ -162,10 +162,17 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
         kCGColorSpaceUserRGB
         kCGColorSpaceUserCMYK
 
+    ctypedef enum FakedEnums:
+        kCGColorSpaceGenericGray
+        kCGColorSpaceGenericRGB
+        kCGColorSpaceGenericCMYK
+
     CGColorSpaceRef CGColorSpaceCreateDeviceGray()
     CGColorSpaceRef CGColorSpaceCreateDeviceRGB()
     CGColorSpaceRef CGColorSpaceCreateDeviceCMYK()
+    CGColorSpaceRef CGColorSpaceCreateWithName(FakedEnums name)
     CGColorSpaceRef CGColorSpaceRetain(CGColorSpaceRef cs)
+    int CGColorSpaceGetNumberOfComponents(CGColorSpaceRef cs)
     void CGColorSpaceRelease(CGColorSpaceRef cs) 
 
     ctypedef void* CGColorRef

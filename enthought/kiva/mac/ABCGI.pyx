@@ -1376,19 +1376,20 @@ cdef class CGBitmapContext(CGContext):
             alpha_info = kCGImageAlphaNone
             bits_per_component = 8
             bits_per_pixel = 8
-            colorspace = CGColorSpaceCreateDeviceGray()
+            colorspace = CGColorSpaceCreateWithName(kCGColorSpaceGenericGray)
         elif bits_per_component == 5:
             alpha_info = kCGImageAlphaNoneSkipFirst
             bits_per_pixel = 16
-            colorspace = CGColorSpaceCreateDeviceRGB()
+            colorspace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB)
         elif bits_per_component == 8:
             if alpha_info not in (kCGImageAlphaNoneSkipFirst,
                                   kCGImageAlphaNoneSkipLast,
                                   kCGImageAlphaPremultipliedFirst,
-                                  kCGImageAlphaPremultipliedLast):
+                                  kCGImageAlphaPremultipliedLast,
+                                 ):
                 raise ValueError("not a valid alpha_info")
             bits_per_pixel = 32
-            colorspace = CGColorSpaceCreateDeviceRGB()
+            colorspace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB)
         else:
             raise ValueError("bits_per_component must be 5 or 8")
 
@@ -1578,7 +1579,7 @@ cdef class CGImage:
 
     def __init__(self, object size_or_array, bool grey_scale=0,
         int bits_per_component=8, int bytes_per_row=-1,
-        alpha_info=kCGImageAlphaPremultipliedLast, int should_interpolate=1):
+        alpha_info=kCGImageAlphaLast, int should_interpolate=1):
 
         cdef int bits_per_pixel
         cdef CGColorSpaceRef colorspace
@@ -1636,7 +1637,10 @@ cdef class CGImage:
             if alpha_info in (kCGImageAlphaNoneSkipFirst,
                               kCGImageAlphaNoneSkipLast,
                               kCGImageAlphaPremultipliedFirst,
-                              kCGImageAlphaPremultipliedLast):
+                              kCGImageAlphaPremultipliedLast,
+                              kCGImageAlphaFirst,
+                              kCGImageAlphaLast,
+                             ):
                 bits_per_pixel = 32
             elif alpha_info == kCGImageAlphaNone:
                 bits_per_pixel = 24
@@ -2491,7 +2495,7 @@ cdef class PiecewiseLinearColorFunction(ShadingFunction):
         if stop_colors[0,0] != 0.0 or stop_colors[0,-1] != 1.0:
             raise ValueError("stops need to start with 0.0 and end with 1.0")
 
-        if not numpy.alltrue(stop_colors[0,1:] - stop_colors[0,:-1] >= 0):
+        if not numpy.greater_equal(numpy.diff(stop_colors[0]), 0.0).all():
             raise ValueError("stops must be sorted and unique")
 
         self.num_stops = stop_colors.shape[1]
@@ -2501,22 +2505,43 @@ cdef class PiecewiseLinearColorFunction(ShadingFunction):
         self.blue = <float*>PyMem_Malloc(sizeof(float)*self.num_stops)
         self.alpha = <float*>PyMem_Malloc(sizeof(float)*self.num_stops)
 
-        stop_array = <c_numpy.ndarray>stop_colors
-        memcpy(self.stops, stop_array.data, self.num_stops*sizeof(float))
-        memcpy(self.red, stop_array.data+stop_array.strides[0],
-            self.num_stops*sizeof(float))
-        memcpy(self.green, stop_array.data+2*stop_array.strides[0],
-            self.num_stops*sizeof(float))
-        memcpy(self.blue, stop_array.data+3*stop_array.strides[0],
-            self.num_stops*sizeof(float))
-        if stop_colors.shape[0] == 5:
-            memcpy(self.alpha, stop_array.data+4*stop_array.strides[0],
-                self.num_stops*sizeof(float))
-        else:
-            for i from 0 <= i < self.num_stops:
+        has_alpha = stop_colors.shape[0] == 5
+        for i from 0 <= i < self.num_stops:
+            self.stops[i] = stop_colors[0,i]
+            self.red[i] = stop_colors[1,i]
+            self.green[i] = stop_colors[2,i]
+            self.blue[i] = stop_colors[3,i]
+            if has_alpha:
+                self.alpha[i] = stop_colors[4,i]
+            else:
                 self.alpha[i] = 1.0
 
         self._setup_function(piecewise_callback)
+
+    def dump(self):
+        cdef int i
+        print 'PiecewiseLinearColorFunction'
+        print '  num_stops = %i' % self.num_stops
+        print '  stops = ',
+        for i from 0 <= i < self.num_stops:
+            print self.stops[i],
+        print
+        print '  red = ',
+        for i from 0 <= i < self.num_stops:
+            print self.red[i],
+        print
+        print '  green = ',
+        for i from 0 <= i < self.num_stops:
+            print self.green[i],
+        print
+        print '  blue = ',
+        for i from 0 <= i < self.num_stops:
+            print self.blue[i],
+        print
+        print '  alpha = ',
+        for i from 0 <= i < self.num_stops:
+            print self.alpha[i],
+        print
 
     def __dealloc__(self):
         safe_free(self.stops)
