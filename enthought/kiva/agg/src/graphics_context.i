@@ -697,6 +697,14 @@ namespace kiva {
                                            double rect[4], bool force_copy=false)
             %{
             def draw_image(self, img, rect=None, force_copy=False):
+                if isinstance(img, ndarray):
+                    # The C++ implementation only handles other
+                    # GraphicsContexts, so create one.
+                    if img.shape[-1] == 3:
+                        pix_format = 'rgb24'
+                    else:
+                        pix_format = 'rgba32'
+                    img = GraphicsContextArray(img, pix_format=pix_format)
                 if rect is None:
                     rect = array((0,0,img.width(),img.height()),float)
                 return _agg.GraphicsContextArray_draw_image(self,img,rect,force_copy)

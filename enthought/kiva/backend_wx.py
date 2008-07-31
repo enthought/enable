@@ -146,7 +146,7 @@ class BaseWxCanvas(object):
 
 if sys.platform == 'darwin':
     from mac import get_macport, ABCGI
-    from mac.ABCGI import CGBitmapContext, CGImage, \
+    from mac.ABCGI import CGBitmapContext, CGImage, CGImageFile, \
         CGLayerContext, CGMutablePath
 
     # The Mac backend only supports numpy.
@@ -190,6 +190,7 @@ if sys.platform == 'darwin':
 
 
     CompiledPath = CGMutablePath
+    Image = CGImageFile
 
     class GraphicsContext(CGLayerContext):
         def __init__(self, size_or_array, *args, **kwds):
@@ -208,7 +209,6 @@ if sys.platform == 'darwin':
                 (width, height))
             if image is not None:
                 self.draw_image(image)
-
 
     class Canvas(BaseWxCanvas, WidgetClass):
         """ Mac wx Kiva canvas.
