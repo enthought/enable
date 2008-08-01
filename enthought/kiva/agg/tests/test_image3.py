@@ -1,9 +1,14 @@
+import os
 import time
 from math import pi
+from tempfile import gettempdir
 
 from enthought.kiva import agg, Font
 
 ArialFont = Font('arial')
+
+def save_path(filename):
+    return os.path.join(gettempdir(), filename)
 
 def draw_text(gc, text, bbox, text_color, bbox_color):
     gc.set_stroke_color(bbox_color)
@@ -56,7 +61,7 @@ def main():
     t2 = time.clock()
     print '4th:', t2-t1
     print 'tot:', time.clock() - tot1
-    gc.save('text2.bmp')
+    gc.save(save_path('text2.bmp'))
     
     import random
     import string
@@ -87,7 +92,7 @@ def main():
     print "Version 2. above is common in graphs and should be about 10 "
     print "times faster than the first because of caching"
     print
-    gc.save('text2.bmp')
+    gc.save(save_path('text2.bmp'))
 
 def main2():
 

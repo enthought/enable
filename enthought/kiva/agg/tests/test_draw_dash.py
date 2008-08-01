@@ -1,5 +1,7 @@
+import os
 import sys
 import unittest
+from tempfile import gettempdir
 
 import numpy
 import Image
@@ -16,7 +18,7 @@ def save(img,file_name):
         rgb = bgr[:,:,::-1].copy()
         st = rgb.tostring()
         pil_img = Image.fromstring("RGB",size,st)
-        pil_img.save(file_name)
+        pil_img.save(os.path.join(gettempdir(), file_name))
     else:
         raise NotImplementedError("currently only supports writing out "
                                   "bgra32 images")
