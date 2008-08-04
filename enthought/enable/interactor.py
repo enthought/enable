@@ -13,29 +13,30 @@ class Interactor(HasTraits):
     The base class of any Enable object that receives keyboard and mouse
     events.  Adds the notion of "state" which determines which set of
     event handler methods get called.  The default state is "normal", so
-    a "left_down" event would be dispatched by calling:
+    a "left_down" event would be dispatched by calling::
+
         self.normal_left_down(event)
 
-    The event suffices are:
+    The event suffixes are:
 
-    left_down
-    left_up
-    left_dclick
-    right_down
-    right_up
-    right_dclick
-    middle_down
-    middle_up
-    middle_dclick
-    mouse_move
-    mouse_wheel
-    mouse_enter
-    mouse_leave
-    key_pressed
-    dropped_on
-    drag_over
-    drag_enter
-    drag_leave
+    - left_down
+    - left_up
+    - left_dclick
+    - right_down
+    - right_up
+    - right_dclick
+    - middle_down
+    - middle_up
+    - middle_dclick
+    - mouse_move
+    - mouse_wheel
+    - mouse_enter
+    - mouse_leave
+    - key_pressed
+    - dropped_on
+    - drag_over
+    - drag_enter
+    - drag_leave
     """
 
     # Name of the object's event state.  Used as a prefix when looking up

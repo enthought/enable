@@ -25,10 +25,10 @@ KNOWN ISSUES
   - update_fonts not implemented
 
 
-Authors   : John Hunter <jdhunter@ace.bsd.uchicago.edu>
+:Author: John Hunter <jdhunter@ace.bsd.uchicago.edu>
             Paul Barrett <Barrett@STScI.Edu>
-Copyright : John Hunter (2004,2005), Paul Barrett (2004,2005)
-License   : matplotlib license (PSF compatible)
+:Copyright: John Hunter (2004,2005), Paul Barrett (2004,2005)
+:License: matplotlib license (PSF compatible)
             The font directory code is from ttfquery,
             see license/LICENSE_TTFQUERY.
 
@@ -545,23 +545,26 @@ The font properties are those described in the W3C Cascading Style
 Sheet, Level 1 (CSS1; http://www.w3.org/TR/1998/REC-CSS2-19980512/)
 font specification.  The six properties are:
 
-  family  - A list of font names in decreasing order of priority.
-            The last item is the default font name and is given the
-            name of the font family, either serif, sans-serif,
-            cursive, fantasy, and monospace.
-  style   - Either normal, italic or oblique.
-  variant - Either normal or small-caps.
-  stretch - Either an absolute value of ultra-condensed, extra-
-            condensed, condensed, semi-condensed, normal, semi-
-            expanded, expanded, extra-expanded or ultra-expanded;
-            or a relative value of narrower or wider.
-            This property is currently not implemented and is set to
-            normal.
-  weight  - A numeric value in the range 100, 200, 300, ..., 900.
-  size    - Either an absolute value of xx-small, x-small, small,
-            medium, large, x-large, xx-large; or a relative value
-            of smaller or larger; or an absolute font size, e.g. 12;
-            or scalable.
+  family 
+      A list of font names in decreasing order of priority. The last item is 
+      the default font name and is given the name of the font family, one of:
+      serif, sans-serif, cursive, fantasy, or monospace.
+  style 
+      One of: normal, italic or oblique.
+  variant
+      Either normal or small-caps.
+  stretch 
+      Either an absolute or relative value. Absolute values are: 
+      ultra-condensed, extra-condensed, condensed, semi-condensed, normal, 
+      semi-expanded, expanded, extra-expanded or ultra-expanded; relative values
+      are: narrower or wider. This property is currently not implemented and is
+      set to 'normal'.
+  weight 
+      A numeric value in the range 100, 200, 300, ..., 900.
+  size 
+      An absolute or relative value, or an absolute font size, or scalable. 
+      Absolute values are: xx-small, x-small, small, medium, large, x-large,
+      xx-large; relative values are smaller or larger.
 
 The default font property for TrueType fonts is: sans-serif, normal,
 normal, normal, 400, scalable.
@@ -573,7 +576,7 @@ default font size, i.e. by using the set_default_size() method of the
 font manager.
 
 
-Examples:
+Examples::
 
   #  Load default font properties
   >>> p = FontProperties()

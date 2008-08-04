@@ -70,7 +70,7 @@ class BasicEvent(HasTraits):
         Shifts this event to be in the coordinate frame whose origin, specified
         in the event's coordinate frame, is (origin_x, origin_y).
         
-        Basically, a component calls event.offset_xy(*self.position) to shift
+        Basically, a component calls event.offset_xy(\*self.position) to shift
         the event into its own coordinate frame.
         """
         self.push_transform(affine.affine_from_translation(-origin_x, -origin_y))

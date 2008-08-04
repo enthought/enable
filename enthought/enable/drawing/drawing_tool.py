@@ -13,11 +13,14 @@ class DrawingTool(Component):
     """
 
     # The mode in which this tool draws:
-    #   "normal": the tool draws like a normal component, alongside other
-    #             components in the container
-    #   "overlay": the tool draws on top of over components in the container
-    #   "exclusive": the tool gets total control of how the container should
-    #                be rendered
+    #
+    # "normal"
+    #     The tool draws like a normal component, alongside other components 
+    #     in the container
+    # "overlay"
+    #     The tool draws on top of over components in the container
+    # "exclusive"
+    #     The tool gets total control of how the container should be rendered
     draw_mode = Enum("normal", "overlay", "exclusive")
 
     def reset(self):

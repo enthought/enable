@@ -210,11 +210,11 @@ class Component(CoordinateBox, Interactor):
     # each of its contained components for each rendering pass.
     # Typically, the definitions of the layers are:
     #
-    # 1. 'background': Background image, shading, and (possibly) borders
-    # 2. 'mainlayer': The main layer that most objects should draw on
-    # 3. 'border': A special layer for rendering the border on top of the
+    # #. 'background': Background image, shading, and (possibly) borders
+    # #. 'mainlayer': The main layer that most objects should draw on
+    # #. 'border': A special layer for rendering the border on top of the
     #     component instead of under its main layer (see **overlay_border**)
-    # 6. 'overlay': Legends, selection regions, and other tool-drawn visual
+    # #. 'overlay': Legends, selection regions, and other tool-drawn visual
     #     elements
     draw_order = Instance(list, args=(DEFAULT_DRAWING_ORDER,))
     

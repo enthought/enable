@@ -77,9 +77,10 @@ class TTFont:
 		
 		The 'checkChecksums' argument is used to specify how sfnt
 		checksums are treated upon reading a file from disk:
-			0: don't check (default)
-			1: check, print warnings if a wrong checksum is found
-			2: check, raise an exception if a wrong checksum is found.
+            
+		- 0: don't check (default)
+		- 1: check, print warnings if a wrong checksum is found
+		- 2: check, raise an exception if a wrong checksum is found.
 		
 		The TTFont constructor can also be called without a 'file' 
 		argument: this is the way to create a new empty font. 
@@ -87,9 +88,11 @@ class TTFont:
 		
 		If the recalcBBoxes argument is false, a number of things will *not*
 		be recalculated upon save/compile:
-			1) glyph bounding boxes
-			2) maxp font bounding box
-			3) hhea min/max values
+
+			1. glyph bounding boxes
+			2. maxp font bounding box
+			3. hhea min/max values
+            
 		(1) is needed for certain kinds of CJK fonts (ask Werner Lemberg ;-).
 		Additionally, upon importing an TTX file, this option cause glyphs
 		to be compiled right away. This should reduce memory consumption 
@@ -627,7 +630,8 @@ def tagToIdentifier(tag):
 	letters get an underscore after the letter. Trailing spaces are
 	trimmed. Illegal characters are escaped as two hex bytes. If the
 	result starts with a number (as the result of a hex escape), an
-	extra underscore is prepended. Examples: 
+	extra underscore is prepended. Examples::
+        
 		'glyf' -> '_g_l_y_f'
 		'cvt ' -> '_c_v_t'
 		'OS/2' -> 'O_S_2f_2'

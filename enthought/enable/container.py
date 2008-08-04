@@ -61,10 +61,10 @@ class Container(Component):
 
     # Whether or not the container should automatically maximize itself to
     # fit inside the Window, if this is a top-level container.
-    # Note: the way that a Container determines that it's a top-level
-    #       window is that someone has explicitly set its .window attribute.
-    #       If you need to do this for some other reason, you may want to
-    #       turn fit_window off.
+    #
+    # NOTE: the way that a Container determines that it's a top-level window is
+    # that someone has explicitly set its .window attribute. If you need to do
+    # this for some other reason, you may want to turn fit_window off.
     fit_window = Bool(True)
 
     # If true, the container get events before its children.  Otherwise, it
@@ -75,6 +75,7 @@ class Container(Component):
     # This trait only applies to dimensions that are also resizable; if the
     # container is not resizable in a certain dimension, then fit_components
     # has no effect.
+    #
     # Also, note that the container does not *automatically* resize itself
     # based on the value of this trait.  Rather, this trait determines
     # what value is reported in get_preferred_size(); it is up to the parent
@@ -82,7 +83,7 @@ class Container(Component):
     # needs by setting its bounds appropriately.
     #
     # TODO: Merge resizable and this into a single trait?  Or have a separate
-    #       "fit" flag for each dimension in the **resizable** trait?
+    # "fit" flag for each dimension in the **resizable** trait?
     # TODO: This trait is used in layout methods of various Container
     # subclasses in Chaco.  We need to move those containers into
     # Enable.

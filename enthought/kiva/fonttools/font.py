@@ -24,9 +24,7 @@ font_noise = [ 'pt', 'point', 'family' ]
 def str_to_font(fontspec):
     """ 
     Converts a string specification of a font into a Font instance.
-    string specifications are of the form:
-        "modern 12pt"
-        "9pt roman italic"
+    string specifications are of the form: "modern 12pt", "9pt roman italic",
     and so on.
     """
     point_size = 10

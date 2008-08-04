@@ -706,14 +706,17 @@ class GraphicsContextBase(object):
         Parameters
         ----------
         x_ctrl1 : float
+            X-value of the first control point.
         y_ctrl1 : float
-            The first control point.
+            Y-value of the first control point.
         x_ctrl2 : float
+            X-value of the second control point.
         y_ctrl2 : float
-            The second control point.
+            Y-value of the second control point.
         x_to : float
+            X-value of the ending point of the curve.
         y_to : float
-            The ending point of the curve.
+            Y-value of the ending point of the curve.
         """
         # XXX: figure out a reasonable number of points from the current scale
         # and arc length. Since the arc length is expensive to calculate, the
@@ -741,11 +744,13 @@ class GraphicsContextBase(object):
         Parameters
         ----------
         x_ctrl : float
+            X-value of the control point
         y_ctrl : float
-            The control point.
+            Y-value of the control point.
         x_to : float
+            X-value of the ending point of the curve
         y_to : float
-            The ending point of the curve.
+            Y-value of the ending point of the curve.
         """
         # A quadratic Bezier curve is just a special case of the cubic. Reuse
         # its implementation in case it has been implemented for the specific
@@ -767,13 +772,16 @@ class GraphicsContextBase(object):
         Parameters
         ----------
         x : float
+            X-value of the center of the arc.
         y : float
-            The center of the arc.
+            Y-value of the center of the arc.
         radius : float
             The radius of the arc.
         start_angle : float
+            The angle, in radians, that the starting point makes with respect
+            to the positive X-axis from the center point.
         end_angle : float
-            The angles, in radians, that the starting and final points make with
+            The angles, in radians, that the final point makes with
             respect to the positive X-axis from the center point.
         cw : bool, optional
             Whether the arc should be drawn clockwise or not.
