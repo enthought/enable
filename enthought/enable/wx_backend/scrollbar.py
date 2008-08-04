@@ -258,7 +258,7 @@ class NativeScrollBar(Component):
 
     def _mouse_wheel_changed(self, event):
         event.handled  = True
-        self.scroll_position -= (event.mouse_wheel * self.range[3] * self.mouse_wheel_speed)
+        self.scroll_position += (event.mouse_wheel * self.range[3] * self.mouse_wheel_speed)
         return
 
     def _scroll_position_changed(self):
