@@ -26,8 +26,10 @@ from enthought.traits.ui.wx.editor import Editor
 from enthought.traits.ui.wx.basic_editor_factory import BasicEditorFactory
     
 
-from svg.compliance.viewer import RenderPanel
 from svg.svg.document import SVGDocument
+
+# FIXME: programatically figure out which backend to use
+from wx_render_panel import RenderPanel
 
 #-------------------------------------------------------------------------------
 #  '_SVGEditor' class:

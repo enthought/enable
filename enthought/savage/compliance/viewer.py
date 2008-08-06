@@ -7,7 +7,7 @@ import wx
 import wx.aui
 import enthought.savage.svg.document as document
 
-from wx_render_panel import RenderPanel
+from enthought.savage.traits.ui.wx.wx_render_panel import RenderPanel
 
 class ReferencePanel(wx.Panel):
     def __init__(self, parent, bmp):
