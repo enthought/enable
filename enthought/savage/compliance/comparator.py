@@ -22,10 +22,11 @@ from enthought.traits.api import (Any, Button, Dict, HasTraits, HTML, Instance,
     List, Property, Str, on_trait_change)
 from enthought.traits.ui import api as tui
 
+from enthought.savage.svg import document
+
 from crosshair import Crosshair, MultiController
 from profile_this import ProfileThis
 from sike import Sike
-from svg import document
 from svg_component import ImageComponent, SVGComponent
 from xml_view import xml_to_tree, xml_tree_editor
 

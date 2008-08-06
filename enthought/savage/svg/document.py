@@ -15,13 +15,13 @@ from xml.etree import cElementTree as ET
 import numpy
 
 import css
-from svg.css.colour import colourValue
-from svg.css import values
+from css.colour import colourValue
+from css import values
 from attributes import paintValue
 from svg_regex import svg_parser
 
-from svg.backends.wx.renderer import Renderer, AbstractGradientBrush
-#from svg.backends.kiva.renderer import Renderer, AbstractGradientBrush
+from enthought.savage.svg.backends.wx.renderer import Renderer, AbstractGradientBrush
+#from enthought.savage.svg.backends.kiva.renderer import Renderer, AbstractGradientBrush
 
 
 class XMLNS(object):

@@ -1,7 +1,7 @@
 import time
 import wx
 
-from svg.backends.wx import renderer
+from enthought.savage.svg.backends.wx import renderer
 
 class RenderPanel(wx.PyPanel):
     def __init__(self, parent, document=None):

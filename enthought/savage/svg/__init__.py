@@ -4,7 +4,7 @@
 import math
 import wx
 
-import svg.svg_extras
+import enthought.savage.svg.svg_extras
 
 def AddEllipticalArc(self, x, y, w, h, start_angle, extent, clockwise=False):
     """ Draws an arc of an ellipse within bounding rect (x,y,w,h) 

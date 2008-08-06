@@ -5,7 +5,7 @@ import xml.etree.cElementTree as etree
 
 import wx
 import wx.aui
-import svg.document as document
+import enthought.savage.svg.document as document
 
 from wx_render_panel import RenderPanel
 

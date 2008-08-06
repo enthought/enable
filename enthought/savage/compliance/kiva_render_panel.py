@@ -1,4 +1,4 @@
-from svg.backends.kiva import renderer
+from enthought.savage.svg.backends.kiva import renderer
 
 class KivaRenderPanel(renderer.Canvas):
     def __init__(self, parent, document=None):
