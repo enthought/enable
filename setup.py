@@ -62,6 +62,24 @@ Kiva Prerequisites
 ReportLab PDF: ReportLab Open source PDF library (needed for PDF backend
 support)
 """
+import sys
+# Add arguments to setup.py develop
+#
+# These are necessary to get the clib compiled.  The following also adds
+# an additional option --compiler=STR to develop, which usually does not
+# have such an option.
+# The code below is a bad hack, as it changes sys.argv to fool setuptools
+# which therefore has to be imported BELOW this hack.
+if 'develop' in sys.argv:
+    idx = sys.argv.index('develop')
+    compiler = []
+    for arg in sys.argv[idx+1:]:
+        if arg.startswith('--compiler='):
+            compiler = ['-c', arg[11:]]
+            del sys.argv[idx+1:]
+    sys.argv[idx:idx] = ['build_src', '--inplace', 'build_clib'] + compiler + \
+                        ['build_ext', '--inplace'] + compiler
+
 
 
 # Setuptools must be imported BEFORE numpy.distutils for things to work right!
@@ -69,6 +87,7 @@ from setuptools.command.develop import develop
 import setuptools
 
 from distutils import log
+from distutils.command.clean import clean
 from distutils.command.build import build as distbuild
 from make_docs import HtmlBuild
 from numpy.distutils.core import setup
@@ -77,6 +96,7 @@ from pkg_resources import DistributionNotFound, parse_version, require, \
 import numpy
 import os
 import zipfile
+import shutil
 
 # FIXME: This works around a setuptools bug which gets setup_data.py metadata
 # from incorrect packages. Ticket #1592
@@ -84,6 +104,38 @@ import zipfile
 setup_data = dict(__name__='', __file__='setup_data.py')
 execfile('setup_data.py', setup_data)
 INFO = setup_data['INFO']
+
+
+# The full list of files that are potentially produced by an in-place build.
+# This is relative to the enthought/kiva/ directory.
+INPLACE_FILES = (
+    # Mac
+    os.path.join("mac", "ABCGI.so"),
+    os.path.join("mac", "macport.so"),
+    os.path.join("mac", "ABCGI.c"),
+    os.path.join("mac", "ATSFont.so"),
+    os.path.join("mac", "ATSFont.c"),
+    
+    # Common AGG
+    os.path.join("agg", "agg.py"),
+    os.path.join("agg", "plat_support.py"),
+    os.path.join("agg", "agg_wrap.cpp"),
+    
+    # Win32 Agg
+    os.path.join("agg", "_agg.pyd"),
+    os.path.join("agg", "_plat_support.pyd"),
+    os.path.join("agg", "src", "win32", "plat_support.pyd"),
+    
+    # *nix Agg
+    os.path.join("agg", "_agg.so"),
+    os.path.join("agg", "_plat_support.so"),
+    os.path.join("agg", "src", "x11", "plat_support_wrap.cpp"),
+    
+    # Misc
+    os.path.join("agg", "src", "gl", "plat_support_wrap.cpp"),
+    os.path.join("agg", "src", "gl", "plat_support.py"),
+    )
+
 
 # Pull the description values for the setup keywords from our file docstring.
 DOCLINES = __doc__.split("\n")
@@ -245,6 +297,21 @@ class my_build(distbuild):
         distbuild.run(self)
         generate_docs()
 
+class my_clean(clean):
+    def run(self):
+        clean.run(self)
+        
+        if os.path.isdir("build"):
+            shutil.rmtree("build", ignore_errors=True)
+        
+        if os.path.isdir("dist"):
+            shutil.rmtree("dist", ignore_errors=True)
+        
+        for f in INPLACE_FILES:
+            f = os.path.join("enthought", "kiva", f)
+            if os.path.isfile(f):
+                os.remove(f)
+
 
 # The actual setup call.
 setup(
@@ -272,7 +339,8 @@ setup(
         'sdist': setuptools.command.sdist.sdist,
 
         'develop': my_develop,
-        'build': my_build
+        'build': my_build,
+        'clean': my_clean
         },
     dependency_links = [
         'http://code.enthought.com/enstaller/eggs/source',
