@@ -7,8 +7,12 @@ namespace kiva
 {
 
 #ifdef _MSC_VER
-    #ifndef INT64
-        #define INT64 __int64
+    #if _MSC_VER => 1300
+        typedef signed __int64      INT64, *PINT64;
+    #else
+        #ifndef INT64
+            #define INT64 __int64
+        #endif
     #endif
 #endif
 #ifdef __GNUC__
