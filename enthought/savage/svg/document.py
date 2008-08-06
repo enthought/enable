@@ -20,8 +20,8 @@ from css import values
 from attributes import paintValue
 from svg_regex import svg_parser
 
-from enthought.savage.svg.backends.wx.renderer import Renderer, AbstractGradientBrush
-#from enthought.savage.svg.backends.kiva.renderer import Renderer, AbstractGradientBrush
+#from enthought.savage.svg.backends.wx.renderer import Renderer, AbstractGradientBrush
+from enthought.savage.svg.backends.kiva.renderer import Renderer, AbstractGradientBrush
 
 
 class XMLNS(object):
@@ -542,7 +542,7 @@ class SVGDocument(object):
         # TODO: properly handle inheritance.
         if size and size != 'inherit':
             val, unit = values.length.parseString(size)
-            Renderer.setFontSize(font, size)
+            Renderer.setFontSize(font, val)
         
         # fixme: Handle text-decoration for line-through and underline.
         #        These are probably done externally using drawing commands.    

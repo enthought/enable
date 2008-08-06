@@ -6,6 +6,7 @@ import time
 
 from enthought.enable.api import Component
 from enthought.traits.api import Any, Array, Bool, Float
+from enthought.kiva import Font
 
 
 if sys.platform == 'win32':
@@ -40,7 +41,12 @@ class SVGComponent(Component):
         width, height = self.bounds
         gc.save_state()
         if self.document is None:
-            gc.select_font("Helvetica", 36)
+            # fixme: The Mac backend doesn't accept style/width as non-integers
+            #        in set_font, but does for select_font...
+            if sys.platform == 'darwin':            
+                gc.select_font("Helvetica", 36)
+            else:
+                gc.set_font(Font("Helvetica", 36))
             gc.show_text_at_point("Could not parse document.", 20, height-56)
             gc.restore_state()
             if self.profile_this is not None:

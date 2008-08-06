@@ -8,10 +8,12 @@ import wx
 from enthought import kiva
 from enthought.kiva import affine, constants
 
-import svg.svg_extras
+from enthought.savage.svg import svg_extras
 
 # Get the Canvas class for drawing on...
 
+def _GetCurrentPoint(gc):
+    return gc.vertex(gc.total_vertices()-1)[0]
 
 class CompiledPath(kiva.CompiledPath):
     
@@ -20,7 +22,10 @@ class CompiledPath(kiva.CompiledPath):
     MoveToPoint = kiva.CompiledPath.move_to
     AddLineToPoint = kiva.CompiledPath.line_to
     CloseSubpath = kiva.CompiledPath.close_path
-    GetCurrentPoint = kiva.CompiledPath.get_current_point
+    if sys.platform == 'darwin':
+        GetCurrentPoint = kiva.CompiledPath.get_current_point
+    else:
+        GetCurrentPoint = _GetCurrentPoint
     AddQuadCurveToPoint = kiva.CompiledPath.quad_curve_to
 
     def AddCurveToPoint(self, ctrl1, ctrl2, endpoint):
@@ -335,17 +340,23 @@ class Renderer(object):
 
         # text color is controlled by stroke instead of fill color in kiva.
         gc.set_stroke_color(color)
-
+        
         try:
             # fixme: The Mac backend doesn't accept style/width as non-integers
             #        in set_font, but does for select_font...
-            #gc.set_font(font)
-            style = font_style(font)            
-            gc.select_font(font.face_name, font.size, style=style)
+            if sys.platform == 'darwin':
+                style = font_style(font)
+                gc.select_font(font.face_name, font.size, style=style)
+            else:
+                gc.set_font(font)
             
         except ValueError:
-            warnings.warn("failed to find font '%s'.  Using Arial" % font.face_name)
-            gc.select_font('Arial', font.size, font_style(font))    
+            warnings.warn("failed to find set '%s'.  Using Arial" % font.face_name)
+            if sys.platform == 'darwin':
+                style = font_style(font)
+                gc.select_font('Arial', font.size, style)    
+            else:
+                gc.set_font(font)
             
     @classmethod
     def setBrush(cls, gc, brush):
@@ -369,7 +380,7 @@ class Renderer(object):
     def fillPath(cls, gc, path, mode):
         # fixme: Do we need to clear the path first?
         gc.add_path(path)
-        return gc.draw_path(mode=mode)
+        return gc.draw_path(mode)
 
     @classmethod
     def gradientPath(cls, gc, path, brush):
