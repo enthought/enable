@@ -29,13 +29,6 @@ Enable provides a high-level interface for creating GUI objects, while
 enabling a high level of control over user interaction. Enable is a supporting
 technology for the Chaco and BlockCanvas projects.
 
-Enable Prerequisites
-````````````````````
-You must have the following libraries installed before installing Enable:
-
-* `SWIG <http://www.swig.org/>`_ version 1.3.30 or later.
-* `Pyrex <http://pypi.python.org/pypi/Pyrex/0.9.4.1>`_  versions 0.9.6.x or
-  0.9.8.x.
 
 Kiva
 ----
@@ -65,10 +58,19 @@ Kiva currently implements the following features:
 - RGB, RGBA, or grayscale color depths
 - transparency
 
-Kiva Prerequisites
-``````````````````
-Kive requires `ReportLab Toolkit <http://www.reportlab.org/rl_toolkit.html/>`_
-for PDF backend support. 
+Prerequisites
+-------------
+
+You must have the following libraries installed before building or installing
+the Enable project:
+
+* `setuptools <http://pypi.python.org/pypi/setuptools/0.6c8>`_
+* `SWIG <http://www.swig.org/>`_ version 1.3.30 or later.
+* `Pyrex <http://pypi.python.org/pypi/Pyrex/0.9.4.1>`_  versions 0.9.6.x or
+  0.9.8.x.
+* `Numpy <http://pypi.python.org/pypi/numpy/1.1.1>`_ version 1.0.4 or later. 
+* `ReportLab Toolkit <http://www.reportlab.org/rl_toolkit.html/>`_ for PDF 
+   backend support in Kiva.
 """
 import sys
 # Add arguments to setup.py develop
