@@ -2,10 +2,11 @@
     SVG path data parser
     
     
-    Usage:
-    steps = svg.parseString(pathdata)
-    for command, arguments in steps:
-        pass
+    Usage::
+            
+        steps = svg.parseString(pathdata)
+        for command, arguments in steps:
+            pass
     
 """
 

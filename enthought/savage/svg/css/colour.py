@@ -1,11 +1,12 @@
 """
     Parsing for CSS colour values.
     Supported formats:
-        hex literal short: #fff
-        hex literal long: #fafafa
-        rgb bytes: rgb(255,100,0)
-        rgb percent: rgb(100%,100%,0%)
-        named color: black
+        
+    * hex literal short: #fff
+    * hex literal long: #fafafa
+    * rgb bytes: rgb(255,100,0)
+    * rgb percent: rgb(100%,100%,0%)
+    * named color: black
 """
 import wx
 import string
