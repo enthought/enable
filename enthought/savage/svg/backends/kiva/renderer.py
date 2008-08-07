@@ -329,6 +329,26 @@ class Renderer(NullRenderer):
         return font        
 
     @classmethod
+    def setFontStyle(cls, font, style):
+        if isinstance(style, basestring):
+            if style not in kiva.fonttools.font.font_styles:
+                warnings.warn('font style "%s" not supported' % style)
+            else:
+                font.style = kiva.fonttools.font.font_styles[style]
+        else:
+            font.style = style
+    
+    @classmethod
+    def setFontWeight(cls, font, weight):
+        if isinstance(weight, basestring):
+            if weight not in kiva.fonttools.font.font_weights:
+                warnings.warn('font weight "%s" not supported' % weight)
+            else:
+                font.weight = kiva.fonttools.font.font_weights[weight]
+        else:
+            font.weight = weight
+
+    @classmethod
     def setFont(cls, gc, font, brush):
         color = tuple([c/255.0 for c in getattr(brush, 'color', (0,0,0))])
 

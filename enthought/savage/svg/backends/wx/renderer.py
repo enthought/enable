@@ -120,6 +120,13 @@ class Renderer(NullRenderer):
             font.SetPointSize(int(size))
         return font
         
+    @classmethod
+    def setFontStyle(cls, font, style):
+        font.style = style
+    
+    @classmethod
+    def setFontWeight(cls, font, weight):
+        font.weight = weight
 
     @staticmethod
     def setPen(*args):

@@ -89,6 +89,14 @@ class NullRenderer(object):
     @classmethod
     def setFontSize(cls, font, size):
         raise NotImplemented()
+    
+    @classmethod
+    def setFontStyle(cls, font, style):
+        raise NotImplemented()
+    
+    @classmethod
+    def setFontWeight(cls, font, weight):
+        raise NotImplemented()
 
     @classmethod
     def setFont(cls, gc, font, brush):

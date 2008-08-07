@@ -545,11 +545,11 @@ class SVGDocument(object):
         
         style = self.state.get("font-style")
         if style:
-            font.style = style
+            self.renderer.setFontStyle(font, style)
 
         weight = self.state.get("font-weight")
         if weight:
-            font.weight = weight
+            self.renderer.setFontWeight(font, weight)
             
         size = self.state.get("font-size")
         # TODO: properly handle inheritance.
