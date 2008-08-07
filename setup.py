@@ -68,9 +68,10 @@ the Enable project:
 * `SWIG <http://www.swig.org/>`_ version 1.3.30 or later.
 * `Pyrex <http://pypi.python.org/pypi/Pyrex/0.9.4.1>`_  versions 0.9.6.x or
   0.9.8.x.
-* `Numpy <http://pypi.python.org/pypi/numpy/1.1.1>`_ version 1.0.4 or later. 
+* `Numpy <http://pypi.python.org/pypi/numpy/1.1.1>`_  version 1.1.0 or later is
+  preferred. Version 1.0.4 will work, but some tests may fail. 
 * `ReportLab Toolkit <http://www.reportlab.org/rl_toolkit.html/>`_ for PDF 
-   backend support in Kiva.
+  backend support in Kiva.
 """
 import sys
 # Add arguments to setup.py develop
