@@ -13,7 +13,10 @@ from enthought.savage.svg import svg_extras
 # Get the Canvas class for drawing on...
 
 def _GetCurrentPoint(gc):
-    return gc.vertex(gc.total_vertices()-1)[0]
+    total_vertices = gc.total_vertices()
+    if total_vertices == 0:
+        return (0.0, 0.0)
+    return gc.vertex(total_vertices-1)[0]
 
 class CompiledPath(kiva.CompiledPath):
     
@@ -271,7 +274,9 @@ class Renderer(object):
 
     @classmethod
     def createAffineMatrix(cls, a,b,c,d,x,y):
-        return affine.affine_from_values(a,b,c,d,x,y)
+        # FIXME: should we create a 6x1 or 3x3 matrix???
+        return (a,b,c,d,x,y)
+#        return affine.affine_from_values(a,b,c,d,x,y)
 
     @classmethod
     def createBrush(cls, color_tuple):
@@ -317,8 +322,7 @@ class Renderer(object):
     
     @classmethod
     def makePath(cls):
-        return CompiledPath()
-        #return wx.GraphicsRenderer_GetDefaultRenderer().CreatePath()        
+        return CompiledPath()        
 
     @classmethod
     def popState(cls, gc):

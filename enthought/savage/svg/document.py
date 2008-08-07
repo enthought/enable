@@ -998,7 +998,7 @@ class SVGDocument(object):
             ) = arg 
             
             x, y = normalizePoint((x,y))
-            path.elliptical_arc_to(rx,ry,angle,fa,fs,x,y)
+            path.AddEllipticalArcTo(rx,ry,angle,fa,fs,x,y)
             
             
         elif type == 'Z':

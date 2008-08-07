@@ -98,8 +98,8 @@ class Renderer(object):
         return wx.GraphicsContext.PushState(state)
 
     @staticmethod
-    def rotate(angle):
-        return wx.GraphicsContext.Rotate(angle)
+    def rotate(dc, angle):
+        return dc.Rotate(angle)
     
     @staticmethod
     def scale(*args):
