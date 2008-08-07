@@ -31,7 +31,11 @@ technology for the Chaco and BlockCanvas projects.
 
 Enable Prerequisites
 ````````````````````
-Enable requires `SWIG <http://www.swig.org/>`_ version 1.3.30 or later.
+You must have the following libraries installed before installing Enable:
+
+* `SWIG <http://www.swig.org/>`_ version 1.3.30 or later.
+* `Pyrex <http://pypi.python.org/pypi/Pyrex/0.9.4.1>`_  versions 0.9.6.x or
+  0.9.8.x.
 
 Kiva
 ----
