@@ -297,18 +297,29 @@ class Comparator(HasTraits):
         self.current_xml = ET.parse(self.abs_current_file).getroot()
         self.current_xml_view = xml_to_tree(self.current_xml)
         resources = document.ResourceGetter.fromfilename(self.abs_current_file)
+        self.profile_this.stop()
         try:
+            self.profile_this.start('Creating WX document')
             self.document = document.SVGDocument(self.current_xml, 
                                                  resources=resources,
                                                  renderer=WxRenderer)
+        except:
+            logger.exception('Error parsing document %s', new)
+            self.document = None
+            
+        self.profile_this.stop()
 
+        try:
+            self.profile_this.start('Creating Kiva document')
             self.kiva_component.document = document.SVGDocument(self.current_xml, 
                                                                 resources=resources, 
                                                                 renderer=KivaRenderer)
         except Exception, e:
             logger.exception('Error parsing document %s', new)
-            self.document = None
+            self.kiva_component.document
+            
         self.profile_this.stop()
+            
             
         png_file = self.svg_png.get(new, None)
         if png_file is None:

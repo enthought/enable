@@ -284,13 +284,14 @@ class Renderer(NullRenderer):
     
     @classmethod
     def createLinearGradientBrush(cls, x1,y1,x2,y2, stops, spreadMethod='pad',
-        transforms=None, units='userSpaceOnUse'):
+                                  transforms=None, units='userSpaceOnUse'):
         return LinearGradientBrush(x1,y1,x2,y2,stops, spreadMethod, transforms,
             units)
 
     @classmethod
     def createRadialGradientBrush(cls, cx,cy, r, stops, fx=None,fy=None,
-        spreadMethod='pad', transforms=None, units='userSpaceOnUse'):
+                                  spreadMethod='pad', transforms=None, 
+                                  units='userSpaceOnUse'):
         return RadialGradientBrush(cx,cy, r, stops, fx,fy, spreadMethod,
             transforms, units)
 

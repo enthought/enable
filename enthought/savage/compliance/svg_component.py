@@ -56,6 +56,7 @@ class SVGComponent(Component):
         try:
             # SVG origin is upper right with y positive is down.
             # Set up the transforms to fix this up.
+            # FIXME: if the rendering stage fails, all subsequent renders are vertically flipped
             gc.translate_ctm(0, height)
             # TODO: bother with zoom?
             # TODO: inspect the view bounds and scale to the shape of the
@@ -64,6 +65,7 @@ class SVGComponent(Component):
             gc.scale_ctm(scale, -scale)
             self.document.render(gc)
             self.last_render = now() - start
+            
         finally:
             gc.restore_state()
             if self.profile_this is not None:
