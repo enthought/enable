@@ -23,6 +23,9 @@ from enthought.traits.api import (Any, Button, Dict, HasTraits, HTML, Instance,
 from enthought.traits.ui import api as tui
 
 from enthought.savage.svg import document
+from enthought.savage.traits.ui.wx.svg_editor import SVGEditor
+from enthought.savage.svg.backends.wx.renderer import Renderer as WxRenderer
+from enthought.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
 
 from crosshair import Crosshair, MultiController
 from profile_this import ProfileThis
@@ -105,12 +108,13 @@ class Comparator(HasTraits):
 
     # The description of the test.
     description = HTML()
+    
+    document = Instance(document.SVGDocument)
 
     # The components to view.
     kiva_component = ComponentTrait(klass=SVGComponent)
     ref_component = ComponentTrait(klass=ImageComponent, args=())
     ch_controller = Instance(MultiController)
-    # TODO: agg_component = ComponentTrait(klass=ImageComponent, args=())
 
     # The profiler views.
     parsing_sike = Instance(Sike, args=())
@@ -134,6 +138,7 @@ class Comparator(HasTraits):
                         tui.Item('current_xml_view', editor=xml_tree_editor, show_label=False),
                     ),
                     tui.HSplit(
+                        tui.Item('document', editor=SVGEditor(), show_label=False),
                         tui.Item('kiva_component', show_label=False),
                         tui.Item('ref_component', show_label=False),
                         # TODO: tui.Item('agg_component', show_label=False),
@@ -293,13 +298,18 @@ class Comparator(HasTraits):
         self.current_xml_view = xml_to_tree(self.current_xml)
         resources = document.ResourceGetter.fromfilename(self.abs_current_file)
         try:
-            svg_doc = document.SVGDocument(self.current_xml, resources=resources)
+            self.document = document.SVGDocument(self.current_xml, 
+                                                 resources=resources,
+                                                 renderer=WxRenderer)
+
+            self.kiva_component.document = document.SVGDocument(self.current_xml, 
+                                                                resources=resources, 
+                                                                renderer=KivaRenderer)
         except Exception, e:
             logger.exception('Error parsing document %s', new)
-            svg_doc = None
+            self.document = None
         self.profile_this.stop()
-
-        self.kiva_component.document = svg_doc
+            
         png_file = self.svg_png.get(new, None)
         if png_file is None:
             png_file = self.default_png

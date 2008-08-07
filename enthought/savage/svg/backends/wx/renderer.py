@@ -1,5 +1,7 @@
 import wx
 
+from enthought.savage.svg.backends.null.null_renderer import NullRenderer
+
 class AbstractGradientBrush(object):
     """ Abstract base class for gradient brushes so they can be detected easily.
     """
@@ -13,7 +15,7 @@ class AbstractGradientBrush(object):
         x0, y0, w, h = bbox
         gc.concat_ctm(((w, 0, 0), (0, h, 0), (x0, y0, 1)))
 
-class Renderer(object):
+class Renderer(NullRenderer):
     
     NullBrush = wx.NullBrush
     NullGraphicsBrush = wx.NullGraphicsBrush
@@ -145,4 +147,15 @@ class Renderer(object):
         y -= h
         context.DrawText(text, x, y)
     
-    
+    @staticmethod
+    def DrawImage(context, image, x, y, width, height):
+        # ignore the width & height provided
+        width = image.shape[1]
+        height = image.shape[0]
+        
+        if image.shape[2] == 3:
+            bmp = wx.BitmapFromBuffer(width, height, image.flatten())
+        else:
+            bmp = wx.BitmapFromBufferRGBA(width, height, image.flatten())
+            
+        context.DrawBitmap(bmp, x, y, width, height)

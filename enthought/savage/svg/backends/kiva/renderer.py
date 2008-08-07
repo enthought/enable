@@ -9,6 +9,7 @@ from enthought import kiva
 from enthought.kiva import affine, constants
 
 from enthought.savage.svg import svg_extras
+from enthought.savage.svg.backends.null.null_renderer import NullRenderer
 
 # Get the Canvas class for drawing on...
 
@@ -231,7 +232,7 @@ def font_style(font):
 
     return style
     
-class Renderer(object):
+class Renderer(NullRenderer):
     # fimxe: Shouldn't this just be the GraphicsContext?
     
     NullBrush = None
@@ -251,17 +252,6 @@ class Renderer(object):
             'round':kiva.JOIN_ROUND,
             'bevel':kiva.JOIN_BEVEL
             }
-    # caps = {
-    #         'butt':wx.CAP_BUTT,
-    #         'round':wx.CAP_ROUND,
-    #         'square':wx.CAP_PROJECTING
-    #         }
-    # 
-    # joins = {
-    #         'miter':wx.JOIN_MITER,
-    #         'round':wx.JOIN_ROUND,
-    #         'bevel':wx.JOIN_BEVEL
-    #         }
     
     fill_rules = {'nonzero':kiva.FILL, 'evenodd': kiva.EOF_FILL}
     
@@ -465,16 +455,3 @@ class Renderer(object):
         gc.scale_ctm(1.0, -1.0)
         gc.draw_image(image, (0,0,width,height))
         gc.restore_state()
-
-    @classmethod
-    def getImage(cls, path):
-        """ Read an image from a filename.
-        """
-        import Image
-        pil_img = Image.open(path)
-        if pil_img.mode not in ('RGB', 'RGBA'):
-            pil_img = pil_img.convert('RGBA')
-        img = np.fromstring(pil_img.tostring(), np.uint8)
-        shape = (pil_img.size[1],pil_img.size[0],len(pil_img.mode))
-        img.shape = shape
-        return img

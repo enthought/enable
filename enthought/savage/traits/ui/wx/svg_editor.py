@@ -26,10 +26,10 @@ from enthought.traits.ui.wx.editor import Editor
 from enthought.traits.ui.wx.basic_editor_factory import BasicEditorFactory
     
 
-from svg.svg.document import SVGDocument
+from enthought.savage.svg.document import SVGDocument
 
 # FIXME: programatically figure out which backend to use
-from kiva_render_panel import RenderPanel
+from wx_render_panel import RenderPanel
 
 #-------------------------------------------------------------------------------
 #  '_SVGEditor' class:

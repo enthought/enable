@@ -20,8 +20,7 @@ from css import values
 from attributes import paintValue
 from svg_regex import svg_parser
 
-#from enthought.savage.svg.backends.wx.renderer import Renderer, AbstractGradientBrush
-from enthought.savage.svg.backends.kiva.renderer import Renderer, AbstractGradientBrush
+from enthought.savage.svg.backends.null.null_renderer import NullRenderer, AbstractGradientBrush
 
 
 class XMLNS(object):
@@ -125,15 +124,15 @@ def pathHandler(func):
         #pen = self.getPenFromState()
         #if not (brush or pen):
         #    return None, []
-        path = Renderer.makePath()
+        path = self.renderer.makePath()
         func(self, node, path)
         ops = [
-            (Renderer.pushState, ()),
+            (self.renderer.pushState, ()),
         ]
         ops.extend(self.createTransformOpsFromNode(node))
         ops.extend(self.generatePathOps(path))
         ops.append(
-            (Renderer.popState, ())
+            (self.renderer.popState, ())
         )
         return path, ops
     return inner
@@ -185,24 +184,37 @@ class ResourceGetter(object):
 
     def open_image(self, path):
         """ Resolve and read an image into an appropriate object for the
-        Renderer.
+        renderer.
 
-        If it happens to refer to an SVG data URI, we will reluctantly return
-        the Element built from it insted of an image object.
         """
         path, open = self.resolve(path)
         fin = open(path)
-        return Renderer.getImage(fin)
-
+        
+        import Image
+        import numpy
+        pil_img = Image.open(fin)
+        if pil_img.mode not in ('RGB', 'RGBA'):
+            pil_img = pil_img.convert('RGBA')
+        img = numpy.fromstring(pil_img.tostring(), numpy.uint8)
+        shape = (pil_img.size[1],pil_img.size[0],len(pil_img.mode))
+        img.shape = shape
+        return img
+        
 
 class SVGDocument(object):
-    lastControl = None
-    brushCache = {}
-    penCache = {}
-    def __init__(self, element, resources=None):
+    def __init__(self, element, resources=None, renderer=NullRenderer):
         """
         Create an SVG document from an ElementTree node.
+        
+        FIXME: this is really wrong that the doc must know about the renderer
         """
+        self.renderer = renderer
+        
+        self.lastControl = None
+        self.brushCache = {}
+        self.penCache = {}
+        
+        
         self.handlers = {
             SVG.svg: self.addGroupToDocument,
             SVG.a: self.addGroupToDocument,
@@ -235,6 +247,7 @@ class SVGDocument(object):
         self.stateStack = [{}]
         path, ops = self.processElement(element)
         self.ops = ops
+        
 
     def findIDs(self, element, uri=''):
         """ Iterate through the tree under an element and record all elements
@@ -335,7 +348,7 @@ class SVGDocument(object):
                     else:
                         x, y = args
                     ops.append(
-                        (Renderer.scale, (x, y))
+                        (self.renderer.scale, (x, y))
                     )
                 if transform == 'translate':
                     if len(args) == 1:
@@ -344,43 +357,43 @@ class SVGDocument(object):
                     else:
                         x, y = args
                     ops.append(
-                        (Renderer.translate, (x, y))
+                        (self.renderer.translate, (x, y))
                     )
                 if transform == 'rotate':
                     if len(args) == 3:
                         angle, cx, cy = args
                         angle = math.radians(angle)
                         ops.extend([
-                            (Renderer.translate, (cx, cy)),
-                            (Renderer.rotate, (angle,)),
-                            (Renderer.translate, (-cx, -cy)),
+                            (self.renderer.translate, (cx, cy)),
+                            (self.renderer.rotate, (angle,)),
+                            (self.renderer.translate, (-cx, -cy)),
                         ])
                     else:
                         angle = args[0]
                         angle = math.radians(angle)
                         ops.append(
-                            (Renderer.rotate, (angle,))
+                            (self.renderer.rotate, (angle,))
                         )
                 if transform == 'matrix':
-                    matrix = Renderer.createAffineMatrix(
+                    matrix = self.renderer.createAffineMatrix(
                         *args
                     )
                     ops.append(
-                        (Renderer.concatTransform, (matrix,))
+                        (self.renderer.concatTransform, (matrix,))
                     )
                 if transform == 'skewX':
-                    matrix = Renderer.createAffineMatrix(
+                    matrix = self.renderer.createAffineMatrix(
                         1,0,math.tan(math.radians(args[0])),1,0,0
                     )
                     ops.append(
-                        (Renderer.concatTransform, (matrix,))
+                        (self.renderer.concatTransform, (matrix,))
                     )
                 if transform == 'skewY':
-                    matrix = Renderer.createAffineMatrix(
+                    matrix = self.renderer.createAffineMatrix(
                         1,math.tan(math.radians(args[0])),0,1,0,0
                     )
                     ops.append(
-                        (Renderer.concatTransform, (matrix,))
+                        (self.renderer.concatTransform, (matrix,))
                     )
         return ops
         
@@ -395,7 +408,7 @@ class SVGDocument(object):
         y = attrAsFloat(node, 'y')
         if x != 0.0 or y != 0.0:
             ops.append(
-                (Renderer.translate, (x,y))
+                (self.renderer.translate, (x,y))
             )
         return ops
 
@@ -404,10 +417,10 @@ class SVGDocument(object):
         then process all child elements
         """
         ops = [
-            (Renderer.pushState, ())
+            (self.renderer.pushState, ())
         ]
         
-        path = Renderer.makePath()
+        path = self.renderer.makePath()
         ops.extend(self.createTransformOpsFromNode(node))
         ops.extend(self.createTransformOpsFromXY(node))
         for child in node.getchildren():
@@ -417,7 +430,7 @@ class SVGDocument(object):
             if cops:
                 ops.extend(cops)
         ops.append(
-            (Renderer.popState, ())
+            (self.renderer.popState, ())
         )
         return path, ops
 
@@ -444,10 +457,10 @@ class SVGDocument(object):
             return None, []
         
         ops = [
-            (Renderer.pushState, ())
+            (self.renderer.pushState, ())
         ]
         
-        path = Renderer.makePath()
+        path = self.renderer.makePath()
         ops.extend(self.createTransformOpsFromNode(node))
         ops.extend(self.createTransformOpsFromXY(node))
         cpath, cops = self.processElement(element)
@@ -456,7 +469,7 @@ class SVGDocument(object):
         if cops:
             ops.extend(cops)
         ops.append(
-            (Renderer.popState, ())
+            (self.renderer.popState, ())
         )
         return path, ops
 
@@ -497,7 +510,7 @@ class SVGDocument(object):
             warnings.warn("Could not find image file %s. %s: %s" % (uri[:100], e.__class__.__name__, str(e)[:100]))
             return None, []
         ops = [
-            (Renderer.pushState, ()),
+            (self.renderer.pushState, ()),
         ]
         ops.extend(self.createTransformOpsFromNode(node))
         if type(image).__name__ == 'Element':
@@ -507,7 +520,7 @@ class SVGDocument(object):
             imgpath, imgops = self.processElement(image)
             ops.extend(imgops)
             ops.append(
-                (Renderer.popState, ())
+                (self.renderer.popState, ())
             )
             return imgpath, ops
         x = attrAsFloat(node, 'x')
@@ -517,13 +530,13 @@ class SVGDocument(object):
         if width == 0.0 or height == 0.0:
             return None, []
         ops.extend([
-            (Renderer.DrawImage, (image, x, y, width, height)),
-            (Renderer.popState, ()),
+            (self.renderer.DrawImage, (image, x, y, width, height)),
+            (self.renderer.popState, ()),
         ])
         return None, ops
 
     def getFontFromState(self):
-        font = Renderer.getFont()
+        font = self.renderer.getFont()
         family = self.state.get("font-family")
         #print 'family', family
         if family:
@@ -542,7 +555,7 @@ class SVGDocument(object):
         # TODO: properly handle inheritance.
         if size and size != 'inherit':
             val, unit = values.length.parseString(size)
-            Renderer.setFontSize(font, val)
+            self.renderer.setFontSize(font, val)
         
         # fixme: Handle text-decoration for line-through and underline.
         #        These are probably done externally using drawing commands.    
@@ -556,7 +569,7 @@ class SVGDocument(object):
         brush = self.getBrushFromState()
         if not (brush and brush.IsOk()):
             black_tuple = (255,255,255,255)
-            brush = Renderer.createBrush(black_tuple)
+            brush = self.renderer.createBrush(black_tuple)
             #print "using black brush"
         # TODO: handle <tspan>, <a> and <tref>.
         # TODO: handle xml:space="preserve"? The following more or less
@@ -566,13 +579,13 @@ class SVGDocument(object):
             return None, []
         text_anchor = self.state.get('text-anchor', 'start')
         ops = [
-            (Renderer.pushState, ()),
+            (self.renderer.pushState, ()),
         ]
         ops.extend(self.createTransformOpsFromNode(node))
         ops.extend([
-            (Renderer.setFont, (font, brush)),
-            (Renderer.DrawText, (text, x, y, brush, text_anchor)),
-            (Renderer.popState, ()),
+            (self.renderer.setFont, (font, brush)),
+            (self.renderer.DrawText, (text, x, y, brush, text_anchor)),
+            (self.renderer.popState, ()),
         ])
         return None, ops
         
@@ -716,22 +729,22 @@ class SVGDocument(object):
         ops = []
         brush = self.getBrushFromState(path)
         fillRule = self.state.get('fill-rule', 'nonzero')
-        fr = Renderer.fill_rules.get(fillRule, wx.ODDEVEN_RULE)
+        fr = self.renderer.fill_rules.get(fillRule, wx.ODDEVEN_RULE)
         if brush is not None:
             if isinstance(brush, AbstractGradientBrush):
                 ops.extend([
-                    (Renderer.gradientPath, (path, brush)),
+                    (self.renderer.gradientPath, (path, brush)),
                 ])
             else:
                 ops.extend([
-                    (Renderer.setBrush, (brush,)),
-                    (Renderer.fillPath, (path, fr)),
+                    (self.renderer.setBrush, (brush,)),
+                    (self.renderer.fillPath, (path, fr)),
                 ])
         pen = self.getPenFromState()
         if pen is not None:
             ops.extend([
-                (Renderer.setPen, (pen,)),
-                (Renderer.strokePath, (path,)),
+                (self.renderer.setPen, (pen,)),
+                (self.renderer.strokePath, (path,)),
             ])
         return ops
         
@@ -740,17 +753,17 @@ class SVGDocument(object):
         if pencolour == 'currentColor':
             pencolour = self.state.get('color', 'none')
         if pencolour == 'transparent':
-            return Renderer.TransparentPen
+            return self.renderer.TransparentPen
         if pencolour == 'none':
-            return Renderer.NullPen
+            return self.renderer.NullPen
         type, value = colourValue.parseString(pencolour)
         if type == 'URL':
             warnings.warn("Color servers for stroking not implemented")
-            return Renderer.NullPen
+            return self.renderer.NullPen
         else:
             if value[:3] == (-1, -1, -1):
-                return Renderer.NullPen
-            pen = Renderer.createPen(value)
+                return self.renderer.NullPen
+            pen = self.renderer.createPen(value)
         width = self.state.get('stroke-width')
         if width:
             width, units = values.length.parseString(width)
@@ -764,9 +777,9 @@ class SVGDocument(object):
                 stroke_dasharray = stroke_dasharray * 2
             stroke_dashoffset = valueToPixels(self.state.get('stroke-dashoffset', '0'))
             pen.SetDash(stroke_dasharray, stroke_dashoffset)
-        pen.SetCap(Renderer.caps.get(self.state.get('stroke-linecap', None), Renderer.caps['butt']))
-        pen.SetJoin(Renderer.joins.get(self.state.get('stroke-linejoin', None), Renderer.joins['miter']))
-        return Renderer.createNativePen(pen)
+        pen.SetCap(self.renderer.caps.get(self.state.get('stroke-linecap', None), self.renderer.caps['butt']))
+        pen.SetJoin(self.renderer.joins.get(self.state.get('stroke-linejoin', None), self.renderer.joins['miter']))
+        return self.renderer.createNativePen(pen)
 
     def parseStops(self, element):
         """ Parse the color stops from a gradient definition.
@@ -831,7 +844,7 @@ class SVGDocument(object):
                     if '}' in element_tag:
                         element_tag[element_tag.find('}')+1:]
                     warnings.warn("<%s> not implemented" % element_tag)
-                    return Renderer.NullBrush
+                    return self.renderer.NullBrush
                 href = element.get(XLink.href, None)
                 seen = set([element])
                 # The attributes on the referencing element override those on the
@@ -858,13 +871,13 @@ class SVGDocument(object):
                 units = state.get('gradientUnits', 'objectBoundingBox')
                 stops = self.parseStops(element)
                 if stops.size == 0:
-                    return Renderer.NullBrush
+                    return self.renderer.NullBrush
                 if element_tag == SVG.linearGradient:
                     x1 = attrAsFloat(state, 'x1', '0%')
                     y1 = attrAsFloat(state, 'y1', '0%')
                     x2 = attrAsFloat(state, 'x2', '100%')
                     y2 = attrAsFloat(state, 'y2', '0%')
-                    return Renderer.createLinearGradientBrush(x1,y1,x2,y2,
+                    return self.renderer.createLinearGradientBrush(x1,y1,x2,y2,
                         stops, spreadMethod=spreadMethod, transforms=transforms,
                         units=units)
                 elif element_tag == SVG.radialGradient:
@@ -873,12 +886,12 @@ class SVGDocument(object):
                     r = attrAsFloat(state, 'r', '50%')
                     fx = attrAsFloat(state, 'fx', state.get('cx', '50%'))
                     fy = attrAsFloat(state, 'fy', state.get('cy', '50%'))
-                    return Renderer.createRadialGradientBrush(cx,cy, r, stops,
+                    return self.renderer.createRadialGradientBrush(cx,cy, r, stops,
                         fx,fy, spreadMethod=spreadMethod, transforms=transforms,
                         units=units)
                 else:
                     #invlid gradient specified
-                    return Renderer.NullBrush
+                    return self.renderer.NullBrush
             r,g,b  = 0,0,0
         if type == 'CURRENTCOLOR':
             type, details = paintValue.parseString(self.state.get('color', 'none'))
@@ -886,7 +899,7 @@ class SVGDocument(object):
             r,g,b = details
         elif type == "NONE":
             #print 'returning null brush'
-            return Renderer.NullBrush
+            return self.renderer.NullBrush
         opacity = self.state.get('fill-opacity', self.state.get('opacity', '1'))
         opacity = float(opacity)
         opacity = min(max(opacity, 0.0), 1.0)
@@ -896,9 +909,9 @@ class SVGDocument(object):
         #be created every time anyway in order to pass them,
         #defeating the purpose of the cache
         try:
-            brush = SVGDocument.brushCache[(r,g,b,a)]
+            brush = self.brushCache[(r,g,b,a)]
         except KeyError:
-            brush = SVGDocument.brushCache.setdefault((r,g,b,a), Renderer.createBrush((r,g,b,a)))
+            brush = self.brushCache.setdefault((r,g,b,a), self.renderer.createBrush((r,g,b,a)))
         return brush
 
     def addStrokeToPath(self, path, stroke):
