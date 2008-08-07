@@ -29,6 +29,10 @@ Enable provides a high-level interface for creating GUI objects, while
 enabling a high level of control over user interaction. Enable is a supporting
 technology for the Chaco and BlockCanvas projects.
 
+Enable Prerequisites
+````````````````````
+Enable requires `SWIG <http://www.swig.org/>`_ version 1.3.30 or later.
+
 Kiva
 ----
 Kiva is a multi-platform DisplayPDF vector drawing engine that supports
@@ -59,8 +63,8 @@ Kiva currently implements the following features:
 
 Kiva Prerequisites
 ``````````````````
-ReportLab PDF: ReportLab Open source PDF library (needed for PDF backend
-support)
+Kive requires `ReportLab Toolkit <http://www.reportlab.org/rl_toolkit.html/>`_
+for PDF backend support. 
 """
 import sys
 # Add arguments to setup.py develop
