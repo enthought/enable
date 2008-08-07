@@ -41,5 +41,5 @@ INFO = {
         TRAITS_UI,
         ],
     'name': 'Enable',
-    'version': '3.0.0b2',
+    'version': '3.0.0',
     }
