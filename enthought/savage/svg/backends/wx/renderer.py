@@ -167,6 +167,10 @@ class Renderer(NullRenderer):
     @staticmethod
     def setPen(*args):
         wx.GraphicsContext.SetPen(*args)
+        
+    @staticmethod
+    def setPenDash(pen, dasharray, offset):
+        pen.SetDashes(dasharray)
     
     @staticmethod
     def setFont(context, font, brush):

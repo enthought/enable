@@ -107,6 +107,10 @@ class NullRenderer(object):
         raise NotImplemented()
 
     @classmethod
+    def setPenDash(cls, pen, dasharray, offset):
+        raise NotImplemented()        
+            
+    @classmethod
     def setPen(cls, gc, pen):
         raise NotImplemented()
     

@@ -777,7 +777,7 @@ class SVGDocument(object):
                 # Repeat to get an even array.
                 stroke_dasharray = stroke_dasharray * 2
             stroke_dashoffset = valueToPixels(self.state.get('stroke-dashoffset', '0'))
-            pen.SetDash(stroke_dasharray, stroke_dashoffset)
+            self.renderer.setPenDash(pen, stroke_dasharray, stroke_dashoffset)
         pen.SetCap(self.renderer.caps.get(self.state.get('stroke-linecap', None), self.renderer.caps['butt']))
         pen.SetJoin(self.renderer.joins.get(self.state.get('stroke-linejoin', None), self.renderer.joins['miter']))
         return self.renderer.createNativePen(pen)

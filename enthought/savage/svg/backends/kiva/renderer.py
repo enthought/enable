@@ -384,6 +384,10 @@ class Renderer(NullRenderer):
     @classmethod
     def setPen(cls, gc, pen):
         pen.set_on_gc(gc)
+        
+    @classmethod
+    def setPenDash(cls, pen, dasharray, offset):
+        pen.SetDash(dasharray, offset)
     
     @classmethod
     def strokePath(cls, gc, path):
