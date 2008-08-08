@@ -119,6 +119,9 @@ class Comparator(HasTraits):
     # The profiler views.
     parsing_sike = Instance(Sike, args=())
     drawing_sike = Instance(Sike, args=())
+    wx_doc_sike  = Instance(Sike, args=())
+    kiva_doc_sike= Instance(Sike, args=())
+
 
 
     traits_view = tui.View(
@@ -149,7 +152,11 @@ class Comparator(HasTraits):
             tui.Item('parsing_sike', style='custom', show_label=False,
                 label='Parsing Profile'),
             tui.Item('drawing_sike', style='custom', show_label=False,
-                label='Drawing Profile'),
+                label='Kiva Drawing Profile'),
+            tui.Item('wx_doc_sike', style='custom', show_label=False,
+                label='Creating WX document'),
+            tui.Item('kiva_doc_sike', style='custom', show_label=False,
+                label='Creating WX document'),
         ),
 
         width=1280,
@@ -344,6 +351,10 @@ class Comparator(HasTraits):
                 self.parsing_sike.stats = stats
             elif name == 'Drawing':
                 self.drawing_sike.stats = stats
+            elif name == 'Creating WX document':
+                self.wx_doc_sike.stats = stats
+            elif name == 'Creating Kiva document':
+                self.kiva_doc_sike.stats = stats
 
 
 class OpenClipartComparator(Comparator):
