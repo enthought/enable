@@ -567,7 +567,8 @@ class SVGDocument(object):
         
         font = self.getFontFromState()
         brush = self.getBrushFromState()
-        if not (brush and brush.IsOk()):
+        
+        if not (brush and hasattr(brush, 'IsOk') and brush.IsOk()):
             black_tuple = (255,255,255,255)
             brush = self.renderer.createBrush(black_tuple)
             #print "using black brush"

@@ -62,7 +62,6 @@ class Renderer(NullRenderer):
         return wx.Pen(wx.Colour(*color_tuple))
     
     @staticmethod
-#    def createLinearGradientBrush(x1,y1,x2,y2, start_color_tuple, end_color_tuple):
     def createLinearGradientBrush(x1,y1,x2,y2, stops, spreadMethod='pad',
                                   transforms=None, units='userSpaceOnUse'):
         
@@ -73,10 +72,7 @@ class Renderer(NullRenderer):
 
         def convert_stop(stop):
             offset, red, green, blue, opacity = stop
-            red *= 255
-            blue *= 255
-            green *= 255
-            color = wx.Colour(red, green, blue, opacity)
+            color = wx.Colour(red*255, green*255, blue*255, opacity*255)
             return offset, color
         
         start_offset, start_color = convert_stop(stops[0])
@@ -90,11 +86,21 @@ class Renderer(NullRenderer):
     def createRadialGradientBrush(cx,cy, r, stops, fx=None,fy=None,
                                   spreadMethod='pad', transforms=None, 
                                   units='userSpaceOnUse'):
+        
+        stops = numpy.transpose(stops)
+        
         if len(stops) > 2:
             warnings.warn("Wx only supports 2 gradient stops, but %d were specified" % len(stops))
+        
+        
             
-        start_color = wx.Colour(*stops[0])
-        end_color = wx.Colour(*stops[1])
+        def convert_stop(stop):
+            offset, red, green, blue, opacity = stop
+            color = wx.Colour(red*255, green*255, blue*255, opacity*255)
+            return offset, color
+        
+        start_offset, start_color = convert_stop(stops[0])
+        end_offset, end_color = convert_stop(stops[1])
         
         if fx is None:
             fx = cx
