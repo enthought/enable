@@ -1,4 +1,7 @@
 """
+A multi-platform DisplayPDF vector drawing engine. 
+Part of the Enable project of the Enthought Tool Suite.
+
 This file pulls in the Kiva constants and does the detection of what backend
 to use via the KIVA_WISHLIST environment variable.
 """
