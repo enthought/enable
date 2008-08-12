@@ -24,10 +24,10 @@ def _init_toolkit():
     """ Initialise the current toolkit. """
 
     # Toolkits to check for if none is explicitly specified.
-    known_toolkits = ('wx', 'qt4')
+    known_toolkits = ('wx', 'qt4', 'pyglet')
 
     # Get the toolkit.
-    toolkit = ETSConfig.toolkit
+    toolkit = ETSConfig.enable_toolkit
 
     if toolkit:
         toolkits = (toolkit, )
@@ -50,7 +50,7 @@ def _init_toolkit():
             raise ImportError, "unable to import an enable backend for any of the %s toolkits" % ", ".join(known_toolkits)
 
     # In case we have just decided on a toolkit, tell everybody else.
-    ETSConfig.toolkit = tk
+    ETSConfig.enable_toolkit = tk
 
     # Save the imported toolkit module.
     global _toolkit_backend
