@@ -12,7 +12,10 @@ from enthought.enable.wx_backend.api import Window
 
 from enthought.kiva import Font
 
-font = Font(face_name="Arial")
+try:
+    font = Font(face_name="Arial")
+except:
+    font = Font(face_name="SWISS")
 
 class Box(Component):
     color = ColorTrait("red")
