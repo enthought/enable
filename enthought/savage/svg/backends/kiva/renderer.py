@@ -37,11 +37,11 @@ class CompiledPath(kiva.CompiledPath):
                        ctrl2[0], ctrl2[1],
                        endpoint[0], endpoint[1])
 
-    def AddEllipticalArcTo(self, x, y, w, h, theta0, dtheta):
+    def AddEllipticalArcTo(self, x, y, w, h, theta0, dtheta, phi=0):
         for i, (x1,y1, x2,y2, x3,y3, x4,y4) in enumerate(svg_extras.bezier_arc(
             x, y, x+w, y+h, theta0, dtheta)):
             self.curve_to(x2,y2, x3,y3, x4,y4)
-
+            
     def elliptical_arc_to(self, rx, ry, phi, large_arc_flag, sweep_flag, x2, y2):
         svg_extras.elliptical_arc_to(self, rx, ry, phi, large_arc_flag, sweep_flag, x2, y2)
         
@@ -294,6 +294,10 @@ class Renderer(NullRenderer):
                                   units='userSpaceOnUse'):
         return RadialGradientBrush(cx,cy, r, stops, fx,fy, spreadMethod,
             transforms, units)
+        
+    @classmethod
+    def getCurrentPoint(cls, path):
+        return path.GetCurrentPoint()
 
     @classmethod
     def getFont(cls, font_name='Arial'):

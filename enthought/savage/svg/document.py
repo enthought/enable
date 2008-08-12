@@ -1007,13 +1007,13 @@ class SVGDocument(object):
             (
             (rx, ry), #radii of ellipse
             angle, #angle of rotation on the ellipse in degrees
-            fa, fs, #arc and stroke angle flags
-            (x, y) #endpoint on the arc
+            large_arc_flag, sweep_flag, #arc and stroke angle flags
+            (x2, y2) #endpoint on the arc
             ) = arg 
-            
-            x, y = normalizePoint((x,y))
-            path.AddEllipticalArcTo(rx,ry,angle,fa,fs,x,y)
-            
+
+            x2, y2 = normalizePoint((x2,y2))
+
+            path.elliptical_arc_to(rx, ry, angle, large_arc_flag, sweep_flag, x2, y2)
             
         elif type == 'Z':
             #~ Bugginess:

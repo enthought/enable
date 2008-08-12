@@ -116,6 +116,10 @@ class Renderer(NullRenderer):
         return wx.GraphicsContext.FillPath(*args)
 
     @staticmethod
+    def getCurrentPoint(path):
+        return path.GetCurrentPoint().Get()
+
+    @staticmethod
     def getFont(font_name=wx.SYS_DEFAULT_GUI_FONT):
         return wx.SystemSettings.GetFont(font_name)
 

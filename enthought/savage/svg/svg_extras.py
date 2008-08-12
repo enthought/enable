@@ -1,6 +1,6 @@
 """ Extra math for implementing SVG on top of Kiva.
 """
-
+import sys
 from math import acos, sin, cos, hypot, ceil, sqrt, radians, degrees
 import warnings
 
@@ -93,7 +93,16 @@ def elliptical_arc_to(path, rx, ry, phi, large_arc_flag, sweep_flag, x2, y2):
     Algorithm taken from the SVG 1.1 Implementation Notes:
         http://www.w3.org/TR/SVG/implnote.html#ArcImplementationNotes
     """
-    x1, y1 = path.get_current_point()
+    if sys.platform == 'darwin':
+        x1, y1 = path.get_current_point()
+    else:
+        def _get_current_point(path):
+            total_vertices = path.total_vertices()
+            if total_vertices == 0:
+                return (0.0, 0.0)
+            return path.vertex(total_vertices-1)[0]
+        x1, y1 = _get_current_point(path) 
+        
     # Basic normalization.
     rx = abs(rx)
     ry = abs(ry)
