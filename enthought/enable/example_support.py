@@ -22,7 +22,7 @@ if not ETSConfig.toolkit:
         raise RuntimeError("Can't load wx or qt4 backend for Chaco.")
 
 
-if ETSConfig.toolkit == 'wx':
+if ETSConfig.enable_toolkit == 'wx':
     import wx
 
     class DemoFrame(wx.Frame):
@@ -59,7 +59,7 @@ if ETSConfig.toolkit == 'wx':
         app.SetTopWindow(frame)
         app.MainLoop()
 
-elif ETSConfig.toolkit == 'qt4':
+elif ETSConfig.enable_toolkit == 'qt4':
     from PyQt4 import QtGui
 
     _app = QtGui.QApplication.instance()
@@ -100,7 +100,7 @@ elif ETSConfig.toolkit == 'qt4':
         _app.exec_()
 
 
-elif ETSConfig.toolkit == 'pyglet':
+elif ETSConfig.enable_toolkit == 'pyglet':
     from enthought.enable.pyglet_backend.pyglet_app import get_app, PygletApp
 
     class DemoFrame(object):
