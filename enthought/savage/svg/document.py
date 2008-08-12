@@ -818,6 +818,8 @@ class SVGDocument(object):
             row = (offset, color[0]/255., color[1]/255., color[2]/255., opacity)
             stops.append(row)
         stops.sort()
+        if len(stops) == 0:
+            return numpy.array([])
         if stops[0][0] > 0.0:
             stops.insert(0, (0.0,) + stops[0][1:])
         if stops[-1][0] < 1.0:
