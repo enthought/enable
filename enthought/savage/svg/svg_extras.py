@@ -86,23 +86,13 @@ def transform_from_local(xp,yp,cphi,sphi,mx,my):
     y = xp * sphi + yp * cphi + my
     return (x,y)
 
-def elliptical_arc_to(path, rx, ry, phi, large_arc_flag, sweep_flag, x2, y2):
+def elliptical_arc_to(path, rx, ry, phi, large_arc_flag, sweep_flag, x1, y1, x2, y2):
     """ Add an elliptical arc to the kiva CompiledPath by approximating it with
     Bezier curves or a line segment.
 
     Algorithm taken from the SVG 1.1 Implementation Notes:
         http://www.w3.org/TR/SVG/implnote.html#ArcImplementationNotes
     """
-    if sys.platform == 'darwin':
-        x1, y1 = path.get_current_point()
-    else:
-        def _get_current_point(path):
-            total_vertices = path.total_vertices()
-            if total_vertices == 0:
-                return (0.0, 0.0)
-            return path.vertex(total_vertices-1)[0]
-        x1, y1 = _get_current_point(path) 
-        
     # Basic normalization.
     rx = abs(rx)
     ry = abs(ry)
@@ -112,11 +102,11 @@ def elliptical_arc_to(path, rx, ry, phi, large_arc_flag, sweep_flag, x2, y2):
     if x1==x2 and y1==y2:
         # Omit the arc.
         # x1 and y1 can obviously remain the same for the next segment.
-        return
+        return []
     if rx == 0 or ry == 0:
         # Line segment.
         path.line_to(x2,y2)
-        return
+        return []
 
     rphi = radians(phi)
     cphi = cos(rphi)
@@ -162,6 +152,7 @@ def elliptical_arc_to(path, rx, ry, phi, large_arc_flag, sweep_flag, x2, y2):
         dtheta += 360
 
     # Step 5: Break it apart into Bezier arcs.
+    arcs = []
     control_points = bezier_arc(cxp-rx,cyp-ry,cxp+rx,cyp+ry, theta1, dtheta)
     for x1p,y1p, x2p,y2p, x3p,y3p, x4p,y4p in control_points:
         # Transform them back to asbolute space.
@@ -170,6 +161,6 @@ def elliptical_arc_to(path, rx, ry, phi, large_arc_flag, sweep_flag, x2, y2):
             transform_from_local(x3p,y3p,cphi,sphi,mx,my) +
             transform_from_local(x4p,y4p,cphi,sphi,mx,my)
         )
-        path.curve_to(*args)
+        arcs.append(args)
 
-
+    return arcs

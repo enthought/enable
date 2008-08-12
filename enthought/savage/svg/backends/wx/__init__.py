@@ -7,7 +7,19 @@ import wx
 from enthought.savage.svg import svg_extras
 
 def elliptical_arc_to(self, rx, ry, phi, large_arc_flag, sweep_flag, x2, y2):
-    pass
+    x1, y1 = self.GetCurrentPoint()
+    arcs = svg_extras.elliptical_arc_to(self, rx, ry, phi, 
+                                        large_arc_flag, sweep_flag, 
+                                        x1, y1, x2, y2)
+    for arc in arcs:
+        path = wx.GraphicsRenderer_GetDefaultRenderer().CreatePath()
+        path.MoveToPoint(x1, y1)
+        path.AddCurveToPoint(*arc)
+
+        self.AddPath(path)
+        x1, y1 = self.GetCurrentPoint() 
+        self.MoveToPoint(x1, y1)
+        self.CloseSubpath()
     
 
 def AddEllipticalArc(self, x, y, width, height, theta, dtheta, clockwise=False):
