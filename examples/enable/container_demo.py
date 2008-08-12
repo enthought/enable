@@ -44,10 +44,7 @@ class Region(PlotComponent, DragTool):
 class Overlay(AbstractOverlay):
 
     text = Str
-    try:
-        font = KivaFont("Times 16")
-    except:
-        font = KivaFont("DEFAULT 16")
+    font = KivaFont("DEFAULT 16")
     alpha = Float(0.5)
     margin = Int(8)
 
