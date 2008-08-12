@@ -11,8 +11,9 @@ from enthought.enable.api import Component, Container, ColorTrait, black_color_t
 from enthought.enable.wx_backend.api import Window
 
 from enthought.kiva import Font
+from enthought.kiva import SWISS
 
-font = Font(face_name="SWISS")
+font = Font(family=SWISS)
 
 class Box(Component):
     color = ColorTrait("red")
