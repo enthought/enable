@@ -14,7 +14,7 @@ if not ETSConfig.toolkit:
     for toolkit in ('wx', 'qt4'):
         try:
             exec "import " + toolkit
-            ETSConfig.toolkit = toolkit
+            ETSConfig.enable_toolkit = toolkit
             break
         except ImportError:
             pass
