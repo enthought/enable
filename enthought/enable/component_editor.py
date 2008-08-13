@@ -40,9 +40,10 @@ class _ComponentEditor( Editor ):
         """ Finishes initializing the editor by creating the underlying toolkit
         widget.
         """
-        self._window          = Window( parent, size=self.factory.size, component=self.value )
-        self.control          = self._window.control
+        self._window = Window( parent, size=self.factory.size, component=self.value )
+        self.control = self._window.control
         self._window.bg_color = self.factory.bgcolor
+        self._parent = parent
 
     #---------------------------------------------------------------------------
     #  Updates the editor when the object trait changes externally to the editor:
@@ -51,7 +52,8 @@ class _ComponentEditor( Editor ):
         """ Updates the editor when the object trait changes externally to the
         editor.
         """
-        pass
+        self._window.component = self.value
+        return
 
 
 class ComponentEditor( BasicEditorFactory ):
