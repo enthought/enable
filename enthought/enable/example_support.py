@@ -10,7 +10,7 @@ from enthought.etsconfig.api import ETSConfig
 # early.  Until it is fixed we just assume wx if we can import it.
 # Force the selection of a valid toolkit.
 #import enthought.enable.toolkit 
-if not ETSConfig.toolkit:
+if not ETSConfig.enable_toolkit:
     for toolkit in ('wx', 'qt4'):
         try:
             exec "import " + toolkit
