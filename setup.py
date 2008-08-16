@@ -73,14 +73,16 @@ the Enable project:
 * `ReportLab Toolkit <http://www.reportlab.org/rl_toolkit.html/>`_ for PDF 
   backend support in Kiva.
 """
-import sys
-# Add arguments to setup.py develop
+
+
+# FIXME: Hack to add arguments to setup.py develop
 #
 # These are necessary to get the clib compiled.  The following also adds
 # an additional option --compiler=STR to develop, which usually does not
-# have such an option.
-# The code below is a bad hack, as it changes sys.argv to fool setuptools
-# which therefore has to be imported BELOW this hack.
+# have such an option.  The code below is a bad hack, as it changes 
+# sys.argv to fool setuptools which therefore has to be imported BELOW 
+# this hack.
+import sys
 if 'develop' in sys.argv:
     idx = sys.argv.index('develop')
     compiler = []
@@ -90,7 +92,6 @@ if 'develop' in sys.argv:
             del sys.argv[idx+1:]
     sys.argv[idx:idx] = ['build_src', '--inplace', 'build_clib'] + compiler + \
                         ['build_ext', '--inplace'] + compiler
-
 
 
 # Setuptools must be imported BEFORE numpy.distutils for things to work right!
@@ -108,6 +109,7 @@ import numpy
 import os
 import zipfile
 import shutil
+
 
 # FIXME: This works around a setuptools bug which gets setup_data.py metadata
 # from incorrect packages. Ticket #1592
@@ -205,6 +207,7 @@ if numpy.__version__[:5] < '1.0.3':
         old_run(self)
 
     build_ext.build_ext.run = new_run
+
 
 # Monkeypatch the 'develop' command so that we build_src will execute
 # inplace.  This is fixed in numpy 1.0.5 (svn r4569).
