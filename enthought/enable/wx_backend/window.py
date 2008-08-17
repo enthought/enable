@@ -397,14 +397,16 @@ class Window ( AbstractWindow ):
             control_down = event.ControlDown()
             key_code     = event.GetKeyCode()
             key = None
-            if control_down:
-                if (1 <= key_code <= 26):
-                    key = chr( key_code + 96 )
+
+            if control_down and (1 <= key_code <= 26):
+                # Shift Ctrl-A through Ctrl-Z so that the 'key' value of
+                # this event is the ASCII character
+                key = chr(key_code + 96)
             elif key_map.has_key(key_code):
-                key = key_map.get( key_code )
+                key = key_map.get(key_code)
             if key is None:
                 if key_code >= 0 and key_code < 256:
-                    key = chr( key_code )
+                    key = chr(key_code)
 
             # Use the last-seen mouse coordinates instead of GetX/GetY due
             # to wx bug.
