@@ -54,5 +54,5 @@ examples/kiva/agg/examples:
                         finger1.gif | US Government
                         finger2.gif | US Government
 
-enthought/kiva/agg/tests:
+integrationtests/kiva/agg:
            doubleprom_soho_full.jpg | NASA
