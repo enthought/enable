@@ -1,14 +1,13 @@
 import os
 import unittest
 from math import pi
-from tempfile import gettempdir
 
 import numpy
 
 from enthought.kiva import agg
 
 def save_path(filename):
-    return os.path.join(gettempdir(), filename)
+    return filename
 
 def draw_arcs(gc, x2, y2, radiusstep=25.0):
     gc.set_stroke_color((0.2,0.2,0.2))   # lightgray

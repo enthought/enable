@@ -1,7 +1,6 @@
 import time
 import os, sys
 import unittest
-from tempfile import gettempdir
 
 import Image
 from numpy import alltrue, array, concatenate, dtype, fromstring, newaxis, \
@@ -27,7 +26,7 @@ def save(img,file_name):
         rgb = bgr[:,:,::-1].copy()
         st = rgb.tostring()
         pil_img = Image.fromstring("RGB",size,st)
-        pil_img.save(os.path.join(gettempdir(), file_name))
+        pil_img.save(file_name)
     else:
         raise NotImplementedError(
             "currently only supports writing out bgra32 images")
@@ -42,10 +41,7 @@ def test_name():
     return '.'.join((class_name,method_name))
 
 def sun(interpolation_scheme="simple"):
-    import os.path
-    dir = os.path.dirname(__file__)
-
-    pil_img = Image.open(os.path.join(dir, 'doubleprom_soho_full.jpg'))
+    pil_img = Image.open('doubleprom_soho_full.jpg')
     img = fromstring(pil_img.tostring(),UInt8)
     img.resize((pil_img.size[1],pil_img.size[0],3))
 

@@ -1,14 +1,13 @@
 import os
 import time
 from math import pi
-from tempfile import gettempdir
 
 from enthought.kiva import agg, Font
 
 ArialFont = Font('arial')
 
 def save_path(filename):
-    return os.path.join(gettempdir(), filename)
+    return filename
 
 def draw_text(gc, text, bbox, text_color, bbox_color):
     gc.set_stroke_color(bbox_color)

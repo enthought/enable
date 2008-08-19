@@ -1,6 +1,0 @@
-These tests used to be in the kiva/agg unittest directory,
-however they need visual inspection.
-
-Currently they write into /tmp (or whatever tempfile.gettempdir() returns),
-this needs to bechanged and they should write the output into this
-directory.
