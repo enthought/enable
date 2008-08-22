@@ -90,8 +90,9 @@ if 'develop' in sys.argv:
         if arg.startswith('--compiler='):
             compiler = ['-c', arg[11:]]
             del sys.argv[idx+1:]
+    # insert extra options right before 'develop'
     sys.argv[idx:idx] = ['build_src', '--inplace', 'build_clib'] + compiler + \
-        ['build_ext', '--inplace'] + compiler + ['develop']
+        ['build_ext', '--inplace'] + compiler
 
 
 # Setuptools must be imported BEFORE numpy.distutils for things to work right!
