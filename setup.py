@@ -69,8 +69,8 @@ the Enable project:
 * `Pyrex <http://pypi.python.org/pypi/Pyrex/0.9.4.1>`_  versions 0.9.6.x or
   0.9.8.x.
 * `Numpy <http://pypi.python.org/pypi/numpy/1.1.1>`_  version 1.1.0 or later is
-  preferred. Version 1.0.4 will work, but some tests may fail. 
-* `ReportLab Toolkit <http://www.reportlab.org/rl_toolkit.html/>`_ for PDF 
+  preferred. Version 1.0.4 will work, but some tests may fail.
+* `ReportLab Toolkit <http://www.reportlab.org/rl_toolkit.html/>`_ for PDF
   backend support in Kiva.
 """
 
@@ -79,8 +79,8 @@ the Enable project:
 #
 # These are necessary to get the clib compiled.  The following also adds
 # an additional option --compiler=STR to develop, which usually does not
-# have such an option.  The code below is a bad hack, as it changes 
-# sys.argv to fool setuptools which therefore has to be imported BELOW 
+# have such an option.  The code below is a bad hack, as it changes
+# sys.argv to fool setuptools which therefore has to be imported BELOW
 # this hack.
 import sys
 if 'develop' in sys.argv:
@@ -91,24 +91,22 @@ if 'develop' in sys.argv:
             compiler = ['-c', arg[11:]]
             del sys.argv[idx+1:]
     sys.argv[idx:idx] = ['build_src', '--inplace', 'build_clib'] + compiler + \
-                        ['build_ext', '--inplace'] + compiler
+        ['build_ext', '--inplace'] + compiler + ['develop']
 
 
 # Setuptools must be imported BEFORE numpy.distutils for things to work right!
-from setuptools.command.develop import develop
 import setuptools
 
-from distutils import log
-from distutils.command.clean import clean
-from distutils.command.build import build as distbuild
+
 from make_docs import HtmlBuild
 from numpy.distutils.core import setup
 from pkg_resources import DistributionNotFound, parse_version, require, \
     VersionConflict
+import distutils
 import numpy
 import os
-import zipfile
 import shutil
+import zipfile
 
 
 # FIXME: This works around a setuptools bug which gets setup_data.py metadata
@@ -117,41 +115,6 @@ import shutil
 setup_data = dict(__name__='', __file__='setup_data.py')
 execfile('setup_data.py', setup_data)
 INFO = setup_data['INFO']
-
-
-# The full list of files that are potentially produced by an in-place build.
-# This is relative to the enthought/kiva/ directory.
-INPLACE_FILES = (
-    # Mac
-    os.path.join("mac", "ABCGI.so"),
-    os.path.join("mac", "macport.so"),
-    os.path.join("mac", "ABCGI.c"),
-    os.path.join("mac", "ATSFont.so"),
-    os.path.join("mac", "ATSFont.c"),
-    
-    # Common AGG
-    os.path.join("agg", "agg.py"),
-    os.path.join("agg", "plat_support.py"),
-    os.path.join("agg", "agg_wrap.cpp"),
-    
-    # Win32 Agg
-    os.path.join("agg", "_agg.pyd"),
-    os.path.join("agg", "_plat_support.pyd"),
-    os.path.join("agg", "src", "win32", "plat_support.pyd"),
-    
-    # *nix Agg
-    os.path.join("agg", "_agg.so"),
-    os.path.join("agg", "_plat_support.so"),
-    os.path.join("agg", "src", "x11", "plat_support_wrap.cpp"),
-    
-    # Misc
-    os.path.join("agg", "src", "gl", "plat_support_wrap.cpp"),
-    os.path.join("agg", "src", "gl", "plat_support.py"),
-    )
-
-
-# Pull the description values for the setup keywords from our file docstring.
-DOCLINES = __doc__.split("\n")
 
 
 # Configure python extensions.
@@ -169,6 +132,7 @@ def configuration(parent_package='', top_path=None):
     config.add_data_files('enthought/__init__.py')
 
     return config
+
 
 
 # Build the full set of packages by appending any found by setuptools'
@@ -243,21 +207,21 @@ def generate_docs():
         require("Sphinx>=%s" % required_sphinx_version)
         sphinx_installed = True
     except (DistributionNotFound, VersionConflict):
-        log.warn('Sphinx install of version %s could not be verified.'
-            ' Trying simple import...' % required_sphinx_version)
+        distutils.log.warn(('Sphinx install of version %s could not be '
+            'verified. Trying simple import...') % required_sphinx_version)
         try:
             import sphinx
             if parse_version(sphinx.__version__) < parse_version(
                 required_sphinx_version):
-                log.error("Sphinx version must be >=" + \
+                distutils.log.error("Sphinx version must be >=" + \
                     "%s." % required_sphinx_version)
             else:
                 sphinx_installed = True
         except ImportError:
-            log.error("Sphinx install not found.")
+            distutils.log.error("Sphinx install not found.")
 
     if sphinx_installed:
-        log.info("Generating %s documentation..." % INFO['name'])
+        distutils.log.info("Generating %s documentation..." % INFO['name'])
         docsrc = source_dir
         target = dest_dir
 
@@ -275,14 +239,15 @@ def generate_docs():
             del build
 
         except:
-            log.error("The documentation generation failed.  Falling back to "
-                "the zip file.")
+            distutils.log.error('The documentation generation failed.  '
+                'Falling back to the zip file.')
 
             # Unzip the docs into the 'html' folder.
             unzip_html_docs(html_zip, doc_dir)
     else:
         # Unzip the docs into the 'html' folder.
-        log.info("Installing %s documentation from zip file.\n" % INFO['name'])
+        distutils.log.info("Installing %s documentation from zip file.\n" % \
+            INFO['name'])
         unzip_html_docs(html_zip, doc_dir)
 
 def unzip_html_docs(src_path, dest_dir):
@@ -301,26 +266,78 @@ def unzip_html_docs(src_path, dest_dir):
                 os.mkdir(cur_name)
     file.close()
 
-class my_develop(develop):
+
+class MyDevelop(setuptools.command.develop.develop):
+    '''
+    Subclass to generate our docs when doing a develop.
+
+    This subclasses setuptools' develop since numpy.distutils doesn't have one.
+
+    '''
     def run(self):
-        develop.run(self)
+        setuptools.command.develop.develop.run(self)
         generate_docs()
 
-class my_build(distbuild):
+
+class MyBuild(numpy.distutils.command.build.build):
+    '''
+    Subclass to generate our docs when doing a build.
+
+    This subclasses numpy.distutils' version because we're using the
+    numpy.distutils setup function below.
+
+    '''
     def run(self):
-        distbuild.run(self)
+        numpy.distutils.command.build.build.run(self)
         generate_docs()
 
-class my_clean(clean):
+
+class MyClean(distutils.command.clean.clean):
+    '''
+    Subclass to remove any files created in an inplace build.
+
+    This subclasses distutils' clean because neither setuptools nor
+    numpy.distutils implements a clean command.
+
+    '''
     def run(self):
-        clean.run(self)
-        
+        distutils.command.clean.clean.run(self)
+
+        # Clean any build or dist directory
         if os.path.isdir("build"):
             shutil.rmtree("build", ignore_errors=True)
-        
         if os.path.isdir("dist"):
             shutil.rmtree("dist", ignore_errors=True)
-        
+
+        # Clean out any files produced by an in-place build.  Note that our
+        # code assumes the files are relative to the 'enthought/kiva' dir.
+        INPLACE_FILES = (
+            # Common AGG
+            os.path.join("agg", "agg.py"),
+            os.path.join("agg", "plat_support.py"),
+            os.path.join("agg", "agg_wrap.cpp"),
+
+            # Mac
+            os.path.join("mac", "ABCGI.so"),
+            os.path.join("mac", "macport.so"),
+            os.path.join("mac", "ABCGI.c"),
+            os.path.join("mac", "ATSFont.so"),
+            os.path.join("mac", "ATSFont.c"),
+
+            # Win32 Agg
+            os.path.join("agg", "_agg.pyd"),
+            os.path.join("agg", "_plat_support.pyd"),
+            os.path.join("agg", "src", "win32", "plat_support.pyd"),
+
+            # *nix Agg
+            os.path.join("agg", "_agg.so"),
+            os.path.join("agg", "_plat_support.so"),
+            os.path.join("agg", "src", "x11", "plat_support_wrap.cpp"),
+
+            # Misc
+            os.path.join("agg", "src", "gl", "plat_support_wrap.cpp"),
+            os.path.join("agg", "src", "gl", "plat_support.py"),
+            )
         for f in INPLACE_FILES:
             f = os.path.join("enthought", "kiva", f)
             if os.path.isfile(f):
@@ -328,6 +345,7 @@ class my_clean(clean):
 
 
 # The actual setup call.
+DOCLINES = __doc__.split("\n")
 setup(
     author = 'Enthought, Inc',
     author_email = 'info@enthought.com',
@@ -352,9 +370,10 @@ setup(
         # setuptools' sdist command.
         'sdist': setuptools.command.sdist.sdist,
 
-        'develop': my_develop,
-        'build': my_build,
-        'clean': my_clean
+        # Use our customized commands
+        'build': MyBuild,
+        'clean': MyClean,
+        'develop': MyDevelop,
         },
     dependency_links = [
         'http://code.enthought.com/enstaller/eggs/source',
