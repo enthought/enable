@@ -25,8 +25,20 @@ from enthought.traits.ui.wx.editor_factory import EditorFactory, \
         ReadonlyEditor
 from enthought.traits.ui.wx.editor import Editor
 from enthought.traits.ui.wx.helper import position_window
-from enthought.traits.ui.wx.color_editor import color_samples
 
+#-------------------------------------------------------------------------------
+#  Constants:
+#-------------------------------------------------------------------------------
+
+# Standard color samples: 
+color_choices = ( 0, 51, 102, 153, 204, 255 ) 
+color_samples = [ None ] * 216 
+i             = 0 
+for r in color_choices: 
+    for g in color_choices: 
+        for b in color_choices: 
+            color_samples[i] = wx.Colour( r, g, b ) 
+            i += 1   
 
 #-------------------------------------------------------------------------------
 #  'ToolkitEditorFactory' class:
