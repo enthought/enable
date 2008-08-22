@@ -12,7 +12,7 @@ import wx
 import string
 import urlparse
 from pyparsing import nums, Literal, Optional, oneOf, Group, StringEnd, Combine, Word, alphas, hexnums
-from ..pathdata import number, sign
+from enthought.savage.svg.pathdata import number, sign
 
 number = number.copy()
 integerConstant = Word(nums+"+-").setParseAction(lambda t:int(t[0]))

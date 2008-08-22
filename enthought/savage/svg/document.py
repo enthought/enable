@@ -575,7 +575,10 @@ class SVGDocument(object):
         # TODO: handle <tspan>, <a> and <tref>.
         # TODO: handle xml:space="preserve"? The following more or less
         # corresponds to xml:space="default".
-        text = ' '.join(node.text.split() if node.text else "")
+        if node.text:
+            text = ' '.join(node.text.split())
+        else:
+            text = ''
         if text is None:
             return None, []
         text_anchor = self.state.get('text-anchor', 'start')

@@ -3,8 +3,6 @@
 #there's probably a better way to do this
 
 
-from __future__ import absolute_import
-
 from svg.tests.test_pathdata import *
 from svg.tests.test_document import *
 from svg.tests.css import *
