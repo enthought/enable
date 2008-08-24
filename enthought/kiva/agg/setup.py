@@ -66,7 +66,7 @@ def configuration(parent_package='',top_path=None):
         plat = 'x11'  # use with gtk2, it's slow but reliable
         #plat = 'gdkpixbuf2'
 
-    
+
     #-------------------------------------------------------------------------
     # Add the freetype library (agg 2.4 links against this)
     #-------------------------------------------------------------------------
@@ -138,14 +138,14 @@ def configuration(parent_package='',top_path=None):
 
     # Check for g++ < 4.0 on 64-bit Linux
     use_32bit_workaround = False
-    
+
     if '64bit' in platform.architecture():
         gcc_version = os.popen("g++ --version")
         gcc_version_head = gcc_version.readline().split()
         gcc_version.close()
         if int(gcc_version_head[2][0]) < 4:
             use_32bit_workaround = True
-    
+
     # Enable workaround of agg bug on 64-bit machines with g++ < 4.0
     if use_32bit_workaround:
         define_macros.append(("ALWAYS_32BIT_WORKAROUND", 1))
@@ -224,7 +224,6 @@ def configuration(parent_package='',top_path=None):
                          **plat_info
                          )
 
-    config.add_data_dir('docs')
     config.add_data_dir('tests')
     config.add_data_files('*.txt','*.bat')
 
