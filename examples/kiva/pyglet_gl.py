@@ -1,13 +1,6 @@
 
-
 from numpy import array
-
-import pyglet
 from pyglet.window import key, Window
-try:
-    import OpenGL
-except ImportError:
-    raise Exception('OpenGL package needs to be installed to run this example.')
 
 try:
     from enthought.kiva.backend_gl import GraphicsContext
@@ -24,7 +17,7 @@ class TestWindow(Window):
 
     def init_window(self):
         self.gc = GraphicsContext(size=(self.width, self.height))
-        #self.gc.init_gl_viewport()
+        self.gc.gl_init()
 
     def on_key_press(self, symbol, modifiers):
         if symbol in (key.ESCAPE, key.Q):
