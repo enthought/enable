@@ -93,7 +93,6 @@ class TextGrid(Component):
     #------------------------------------------------------------------------
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
-
         text_color = self.text_color_
         highlight_color = self.highlight_color_
         highlight_bgcolor = self.highlight_bgcolor_
@@ -138,8 +137,10 @@ class TextGrid(Component):
         gc.set_line_dash(self.cell_border_style_)
         gc.set_antialias(0)
 
-        x_points = self._cached_cell_coords[:,0,0] - (self.cell_border_width-1)/2.0
-        y_points = self._cached_cell_coords[0,:,1] - (self.cell_border_width-1)/2.0
+        # Skip the leftmost and bottommost cell coords (since Y axis is reversed,
+        # the bottommost coord is the last one)
+        x_points = self._cached_cell_coords[1:,0,0] - (self.cell_border_width-1)/2.0
+        y_points = self._cached_cell_coords[0,:-1,1] - (self.cell_border_width-1)/2.0
 
         for x in x_points:
             gc.move_to(x, self.y)
@@ -231,9 +232,13 @@ class TextGrid(Component):
                             + self.cell_border_width
 
         numrows, numcols = self.string_array.shape
-        i = int(x / width)
-        j = numrows - (int(y / height) + 1)
-        return i,j
+        i = int((x - self.padding_left) / width)
+        j = numrows - (int((y - self.padding_bottom)/ height) + 1)
+        shape = self.string_array.shape
+        if 0 <= i < shape[1] and 0 <= j < shape[0]:
+            return i,j
+        else:
+            return None
 
     #------------------------------------------------------------------------
     # Trait events, property setters and getters
