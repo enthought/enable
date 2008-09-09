@@ -363,14 +363,27 @@ class Component(CoordinateBox, Interactor):
     #------------------------------------------------------------------------
 
     def __init__(self, **traits):
-        # The only reason we need the constructor is to make sure our container
-        # gets notified of our being added to it.
+        # The 'padding' trait sets 4 individual traits in bulk. Make sure that
+        # it gets set first before other explicit padding traits get set so they
+        # may override the bulk default.
+        padding = traits.pop('padding', None)
+        padding_traits = {}
+        for name in traits.keys():
+            # Use .keys() so we can modify the dict during iteration safely.
+            if name in ['padding_top', 'padding_bottom', 'padding_left',
+                'padding_right']:
+                padding_traits[name] = traits.pop(name)
+
         if traits.has_key("container"):
+            # After the component is otherwise configured, make sure our
+            # container gets notified of our being added to it.
             container = traits.pop("container")
             super(Component,self).__init__(**traits)
+            self._set_padding_traits(padding, padding_traits)
             container.add(self)
         else:
             super(Component,self).__init__(**traits)
+            self._set_padding_traits(padding, padding_traits)
         return
 
     def draw(self, gc, view_bounds=None, mode="default"):
@@ -634,6 +647,21 @@ class Component(CoordinateBox, Interactor):
     #------------------------------------------------------------------------
     # Protected methods
     #------------------------------------------------------------------------
+
+    def _set_padding_traits(self, padding, padding_traits):
+        """ Set the bulk padding trait and all of the others in the correct
+        order.
+
+        Parameters
+        ----------
+        padding : None, int or list of ints
+            The bulk padding.
+        padding_traits : dict mapping str to int
+            The specific padding traits.
+        """
+        if padding is not None:
+            self.trait_set(padding=padding)
+        self.trait_set(**padding_traits)
 
     def _request_redraw(self):
         if self.container is not None:
