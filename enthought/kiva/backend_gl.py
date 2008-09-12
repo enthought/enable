@@ -5,6 +5,13 @@ from math import floor
 from numpy import array, ndarray
 
 # Pyglet and pyglet-related imports
+# Before we import anything else from pyglet, we need to set the shadow_window
+# option to False, so that it does not conflict with WX, in case someone is
+# trying to use the kiva GL GraphicsContext from within WX.
+# This is necessary as of pyglet 1.1.
+import pyglet
+pyglet.options['shadow_window'] = False
+
 from pyglet.font import Text
 from pyglet.font import load as load_font
 from pyglet.font.base import Font as PygletFont
