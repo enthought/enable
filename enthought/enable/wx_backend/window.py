@@ -7,7 +7,6 @@ import sys
 import time
 import wx
 
-
 from enthought.traits.api import Any, Instance, Trait
 from enthought.traits.ui.wx.menu import MakeMenu
 
@@ -15,15 +14,17 @@ from enthought.traits.ui.wx.menu import MakeMenu
 from enthought.enable.base import union_bounds
 from enthought.enable.component  import Component
 from enthought.enable.events import MouseEvent, KeyEvent, DragEvent
-from enthought.enable.graphics_context import GraphicsContextEnable
 from enthought.enable.abstract_window import AbstractWindow
 from enthought.kiva import backend
 
 if backend() == "gl":
+    import pyglet
+    pyglet.options['shadow_window'] = False
     from wx.glcanvas import GLCanvas
-    WidgetClass = GLCanvas
+    from enthought.enable.gl_graphics_context import GLGraphicsContextEnable
 else:
-    WidgetClass = wx.Window
+    GLCanvas = object
+    from enthought.enable.graphics_context import GraphicsContextEnable
 
 try:
     from enthought.util.wx.drag_and_drop import clipboard, PythonDropTarget
@@ -259,7 +260,7 @@ class LessSuckyDropTarget(PythonDropTarget):
         return drag_result
 
 
-class Window ( AbstractWindow ):
+class _Window(AbstractWindow):
 
     # Screen scroll increment amount:
     scroll_incr = ( wx.SystemSettings_GetMetric( wx.SYS_SCREEN_Y )
@@ -272,21 +273,17 @@ class Window ( AbstractWindow ):
     _cursor_color = Any  # PZW: figure out the correct type for this...
 
     # Reference to the actual wxPython window:
-    control      = Instance(WidgetClass)
+    control      = Instance(wx.Window)
     
     # This is set by downstream components to notify us of whether or not
     # the current drag operation should return DragCopy, DragMove, or DragNone.
     _drag_result = Any
     
-    def __init__ ( self, parent, wid = -1, pos = wx.DefaultPosition,
-                   size = wx.DefaultSize, **traits ):
-        AbstractWindow.__init__( self, **traits )
+    def __init__(self, parent, wid = -1, pos = wx.DefaultPosition,
+                   size = wx.DefaultSize, **traits):
+        AbstractWindow.__init__(self, **traits)
         self._timer          = None
         self._mouse_captured = False
-
-        # If we are using the GL backend, we will need to have a pyglet
-        # GL context
-        self._pyglet_gl_context = None
 
         # Due to wx wonkiness, we don't reliably get cursor position from
         # a wx KeyEvent.  Thus, we manually keep track of when we last saw
@@ -295,9 +292,7 @@ class Window ( AbstractWindow ):
         self._last_mouse_pos = (0, 0)
         
         # Create the delegate: 
-        self.control = control = WidgetClass( parent, wid, pos, size,
-                                              style = wx.CLIP_CHILDREN |
-                                                      wx.WANTS_CHARS )
+        self.control = control = self._create_control(parent, wid, pos, size)
         
         # Set up the 'erase background' event handler:
         wx.EVT_ERASE_BACKGROUND( control, self._on_erase_background )
@@ -336,6 +331,12 @@ class Window ( AbstractWindow ):
             control.SetDropTarget( LessSuckyDropTarget( self ) ) 
             self._drag_over = []
         return
+    
+    def _create_control(self, parent, wid, pos = wx.DefaultPosition, 
+                        size = wx.DefaultSize):
+        return wx.Window(parent, wid, pos, size, style = wx.CLIP_CHILDREN |
+                           wx.WANTS_CHARS)
+
            
     def _on_close(self, event):
         # Might be scrollbars or other native components under
@@ -515,7 +516,7 @@ class Window ( AbstractWindow ):
                            mouse_wheel  = 0,
                            window = self)
     
-    def _create_gc ( self, size, pix_format = "bgra32" ):
+    def _create_gc(self, size, pix_format = "bgra32"):
         "Create a Kiva graphics context of a specified size"
         gc = GraphicsContextEnable((size[0]+1, size[1]+1), pix_format = pix_format, window=self )
         gc.translate_ctm(0.5, 0.5)
@@ -525,7 +526,7 @@ class Window ( AbstractWindow ):
         "Request a redraw of the window"
         if coordinates is None:
             if self.control:
-                self.control.Refresh( False )
+                self.control.Refresh(False)
         else:
             xl, yb, xr, yt = coordinates
             rect = wx_rect
@@ -534,7 +535,7 @@ class Window ( AbstractWindow ):
             rect.SetWidth(  int( xr - xl ) )
             rect.SetHeight( int( yt - yb ) )
             if self.control:
-                self.control.Refresh( False, rect )
+                self.control.Refresh(False, rect)
         return
     
     def _get_control_size ( self ):
@@ -544,35 +545,18 @@ class Window ( AbstractWindow ):
             result = self.control.GetSizeTuple()
         return result
 
-    def _init_gc(self):
-        if backend() == "gl":
-            gc = GraphicsContextEnable(self._size, window=self)
-            if self._pyglet_gl_context is None:
-                from pyglet.gl import Context
-                self._pyglet_gl_context = Context()
-            self._pyglet_gl_context.set_current()
-            self.control.SetCurrent()
-            gc.gl_init()
-            self._gc = gc
-        else:
-            gc = self._gc
-        gc.clear(self.bg_color_)
-
     def _window_paint ( self, event):
         "Do a GUI toolkit specific screen update"
-        if backend() == "gl":
-            self.control.SwapBuffers()
+        control = self.control
+        wdc = control._dc = wx.PaintDC(control)
+        self._update_region = None
+        if self._update_region is not None:
+            update_bounds = reduce(union_bounds, self._update_region)
+            self._gc.pixel_map.draw_to_wxwindow( control, int(update_bounds[0]), int(update_bounds[1]),
+                                                 width=int(update_bounds[2]), height=int(update_bounds[3]))
         else:
-            control = self.control
-            wdc     = control._dc = wx.PaintDC( control )
-            self._update_region = None
-            if self._update_region is not None:
-                update_bounds = reduce(union_bounds, self._update_region)
-                self._gc.pixel_map.draw_to_wxwindow( control, int(update_bounds[0]), int(update_bounds[1]),
-                                                     width=int(update_bounds[2]), height=int(update_bounds[3]))
-            else:
-                self._gc.pixel_map.draw_to_wxwindow( control, 0, 0 )
-            control._dc = None
+            self._gc.pixel_map.draw_to_wxwindow( control, 0, 0 )
+        control._dc = None
         return
         
     def set_pointer ( self, pointer ):
@@ -672,6 +656,67 @@ class Window ( AbstractWindow ):
         "Pop-up a wxMenu at a specified location"
         self.control.PopupMenuXY( menu.menu, int(x), int( self._flip_y(y) ) ) 
         return
+
+
+class GLWindow(_Window):
+    
+    control = Instance(GLCanvas)
+
+    def __init__(self, *args, **kw):
+        super(GLWindow, self).__init__(*args, **kw)
+
+        # If we are using the GL backend, we will need to have a pyglet
+        # GL context
+        self._pyglet_gl_context = None
+
+        self._gc = None
+
+    def _create_control(self, parent, wid, pos = wx.DefaultPosition, 
+                        size = wx.DefaultSize):
+        return GLCanvas(parent, wid, pos, size, style = wx.CLIP_CHILDREN | wx.WANTS_CHARS)
+
+    def _on_erase_background(self, event):
+        #if self._gc is not None:
+        #    self._paint(event)
+        pass
+
+    def _create_gc(self, size, pix_format="bgra32"):
+        gc = GLGraphicsContextEnable(self._size, window=self)
+        if self._pyglet_gl_context is None:
+            from pyglet.gl import Context
+            self._pyglet_gl_context = Context()
+        gc.gl_init()
+        return gc
+
+    def _init_gc(self):
+        """ Gives the GC a chance to initialize itself before components perform layout
+        and draw.  This is called every time through the paint loop.
+        """
+        dc = wx.PaintDC(self.control)
+        self._pyglet_gl_context.set_current()
+        self.control.SetCurrent()
+        super(GLWindow, self)._init_gc()
+
+    def _paint(self, event=None):
+        # Override the base class _paint() method because we need to call
+        # _create_gc() each time *before* self.component draws.
+
+        size = self._get_control_size()
+        self._size = tuple(size)
+        self._gc = self._create_gc(size)
+        self._init_gc()
+        if hasattr(self.component, "do_layout"):
+            self.component.do_layout()
+        self._gc.clear(self.bg_color_)
+        self.component.draw(self._gc, view_bounds=(0, 0, size[0], size[1]))
+        self._update_region = []
+        #self.control.flip()
+        self.control.SwapBuffers()
+
+if backend() == "gl":
+    Window = GLWindow
+else:
+    Window = _Window
 
 
 if wx.__version__.startswith("2.6"):

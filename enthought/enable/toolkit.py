@@ -27,14 +27,16 @@ def _init_toolkit():
     known_toolkits = ('wx', 'qt4', 'pyglet')
 
     # Get the toolkit.
-    toolkit = ETSConfig.enable_toolkit
+    enable_toolkit = ETSConfig.enable_toolkit
 
-    if toolkit:
-        toolkits = (toolkit, )
+    if enable_toolkit:
+        enable_toolkits = (enable_toolkit, )
     else:
-        toolkits = known_toolkits
+        enable_toolkits = known_toolkits
 
-    for tk in toolkits:
+    # Check to see if we are trying to embed GL within a Wx or Qt window
+
+    for tk in enable_toolkits:
         # Try and import the toolkit's enable backend.
         be = 'enthought.enable.%s_backend.api' % tk
 
@@ -44,8 +46,8 @@ def _init_toolkit():
         except ImportError:
             pass
     else:
-        if toolkit:
-            raise ImportError, "unable to import an enable backend for the %s toolkit" % toolkit
+        if enable_toolkit:
+            raise ImportError, "unable to import an enable backend for the %s toolkit" % enable_toolkit
         else:
             raise ImportError, "unable to import an enable backend for any of the %s toolkits" % ", ".join(known_toolkits)
 

@@ -101,16 +101,16 @@ elif ETSConfig.enable_toolkit == 'qt4':
 
 
 elif ETSConfig.enable_toolkit == 'pyglet':
-    from enthought.enable.pyglet_backend.pyglet_app import get_app, PygletApp
+
+    from pyglet import app
+    from pyglet import clock
 
     class DemoFrame(object):
         def __init__(self):
-            app = get_app()
             if app:
                 window = self._create_window()
                 if window:
                     self.enable_win = window
-                    app.add_window(window.control)
                 else:
                     self.enable_win = None
             return
@@ -125,7 +125,6 @@ elif ETSConfig.enable_toolkit == 'pyglet':
         **demo_class** should be a subclass of DemoFrame or the pyglet
         backend's Window class.
         """
-        app = PygletApp()
         if issubclass(demo_class, DemoFrame):
             frame = demo_class()
             if frame.enable_win is not None:
@@ -139,8 +138,9 @@ elif ETSConfig.enable_toolkit == 'pyglet':
             if not window.fullscreen:
                 window.set_size(*size)
             window.set_caption(title)
-            app.set_main_window(window)
+
         app.run()
         
+
 
 # EOF

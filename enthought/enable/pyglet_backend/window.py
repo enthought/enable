@@ -50,11 +50,16 @@ class PygletMouseEvent(object):
 
 
 class PygletWindow(window.Window):
-    """ Pyglet recommends subclassing their base Window class as the preferred
-    method for customizing behavior.  This PygletWindow class serves to bridge
-    events and methods between the Enable layer and Pyglet.
+    """ Mix-in class that, when combined with a Pyglet event dispatcher of
+    some sort, will allow pyglet events to propagate down to Enable.
 
+    The target class should have an attribute named **enable_window** 
+    that is a reference to the instance of a subclass of AbstractWindow.
     """
+ 
+    VALID_CTOR_KWARGS = ("width", "height", "caption", "resizable", "style",
+                         "fullscreen", "visible", "vsync", "display", "screen",
+                         "config", "context")
 
     def __init__(self, enable_window, **kwargs):
         """ PygletWindow needs a reference to the Enable window; other
@@ -65,7 +70,10 @@ class PygletWindow(window.Window):
         # This indicates whether or not we should call the Enable window to
         # draw.  If this flag is False, then the draw() method just passes.
         self._dirty = True
-
+        
+        #for key in kwargs:
+        #    if key not in PygletWindow.VALID_CTOR_KWARGS:
+        #        kwargs.pop(key)
         super(PygletWindow, self).__init__(**kwargs)
 
         # use a KeyStateHandler to remember the keyboard state.  This
@@ -80,7 +88,7 @@ class PygletWindow(window.Window):
     # These are not inherited from/part of the pyglet.window.Window interface
     #-------------------------------------------------------------------------
 
-    def draw(self):
+    def on_draw(self):
         "Called by the mainloop to perform the actual draw"
         if self._dirty:
             self.enable_window._paint()
@@ -262,8 +270,6 @@ class PygletWindow(window.Window):
     def on_context_state_lost(self):
         pass
 
-
-
 class Window(AbstractWindow):
 
     # If this is True, then the screen is configured for full-screen
@@ -317,7 +323,7 @@ class Window(AbstractWindow):
             resizable=resizable, vsync=vsync)
         if size is not None and not fullscreen:
             kwds['width'], kwds['height'] = size
-        self.control = PygletWindow(self, **kwds)
+        self.control = PygletWindow(enable_window=self, **kwds)
         if pos is not None:
             self.control.set_location(*pos)
         
@@ -478,12 +484,14 @@ class Window(AbstractWindow):
         size = self._get_control_size()
         self._size = tuple(size)
         self._gc = self._create_gc(size)
+        self.control.clear()
         gc = self._gc
         if hasattr(self.component, "do_layout"):
             self.component.do_layout()
         gc.clear(self.bg_color_)
         self.component.draw(gc, view_bounds=(0, 0, size[0], size[1]))
         self._update_region = []
+        #self.control.flip()
         return
 
     def _window_paint(self, event):
