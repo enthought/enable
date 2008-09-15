@@ -12,9 +12,11 @@ from numpy import array, ndarray
 import pyglet
 pyglet.options['shadow_window'] = False
 
-from pyglet.font import Text
+#from pyglet.font import Text
+from pyglet.text import Label
 from pyglet.font import load as load_font
 from pyglet.font.base import Font as PygletFont
+from pyglet.graphics import Batch
 from pyglet import gl
 from pygarrayimage.arrayimage import ArrayInterfaceImage
 
@@ -243,6 +245,53 @@ class MRU(dict):
 
 # Use a singleton for the font cache
 GlobalFontCache = MRU()
+def GetFont(font):
+    """ Returns a Pylget Font object for the given Agg or Kiva font """
+    if isinstance(font, PygletFont):
+        pyglet_font = font
+    else:
+        # AggFontType
+        key = (font.name, font.size, font.family, font.style)
+        if key not in GlobalFontCache:
+            if isinstance(font, AggFontType):
+                agg_font = font
+                font = Font(face_name = agg_font.name,
+                            size = agg_font.size,
+                            family = agg_font.family,
+                            style = agg_font.style)
+            bold = False
+            italic = False
+            if font.style == BOLD or font.style == BOLD_ITALIC or font.weight == BOLD:
+                bold = True
+            if font.style == ITALIC or font.style == BOLD_ITALIC:
+                italic = True
+            pyglet_font = load_font(font.findfontname(), font.size, bold, italic)
+            GlobalFontCache[key] = pyglet_font
+        else:
+            pyglet_font = GlobalFontCache[key]
+    return pyglet_font
+
+
+# Because Pyglet 1.1 uses persistent Label objects to efficiently lay
+# out and render text, we cache these globally to minimize the creation
+# time.  An MRU is not really the right structure to use here, though.
+# (We typically expect that the same numbers of labels will be rendered.)
+GlobalTextCache = MRU()
+GlobalTextCache.__maxlength__ = 100
+def GetLabel(text, pyglet_font):
+    """ Returns a Pyglet Label object for the given text and font """
+    key = (text, pyglet_font)
+    if key not in GlobalTextCache:
+        # Use anchor_y="bottom" because by default, pyglet sets the baseline to
+        # the y coordinate given.  Unfortunately, it doesn't expose a per-Text
+        # descent (only a per-Font descent), so it's impossible to know how to
+        # offset the y value properly for a given string.
+        label = Label(text, font_name=pyglet_font.name, font_size=pyglet_font.size,
+                      anchor_y="bottom")
+        GlobalTextCache[key] = label
+    else:
+        label = GlobalTextCache[key]
+    return label
 
 
 class GraphicsContext(_GCL):
@@ -252,55 +301,29 @@ class GraphicsContext(_GCL):
             kw.pop("pix_format")
         _GCL.__init__(self, size[0], size[1], *args, **kw)
         self.corner_pixel_origin = True
-        self.pyglet_font = None
 
-        # Maps Font instances to pyglet font instance
-        self._font_cache = GlobalFontCache
+        self._font_stack = []
+        self._current_font = None
+
+    def save_state(self):
+        super(GraphicsContext, self).save_state()
+        self._font_stack.append(self._current_font)
+
+    def restore_state(self):
+        super(GraphicsContext, self).restore_state()
+        self._current_font = self._font_stack.pop()
 
     def set_font(self, font):
-        """ **font** is either a kiva.agg.AggFontType, a kiva.fonttools.Font
-            object, or a Pyglet Font object
-        """
-        # The font handling is a bit mangled because we are using
-        # kiva.agg.graphics_state to store the font information on the state
-        # stack.
-        # In order to just use kiva.fonttools.Font, and circumvent using
-        # kiva.agg.AggFontType, we will need to implement a parallel stack and
-        # supplement the GraphicsContextArray implementations of save_state and
-        # restore_state.
-        # For now, though, we do this clumsy process of converting the AggFontType
-        # to a kiva.fonttools.Font object.
-        if isinstance(font, PygletFont):
-            pyglet_font = font
-        else:
-            key = (font.name, font.size, font.family, font.style)
-            if key not in self._font_cache:
-                if isinstance(font, AggFontType):
-                    agg_font = font
-                    font = Font(face_name = agg_font.name,
-                                size = agg_font.size,
-                                family = agg_font.family,
-                                style = agg_font.style)
-                bold = False
-                italic = False
-                if font.style == BOLD or font.style == BOLD_ITALIC or font.weight == BOLD:
-                    bold = True
-                if font.style == ITALIC or font.style == BOLD_ITALIC:
-                    italic = True
-                pyglet_font = load_font(font.findfontname(), font.size, bold, italic)
-                self._font_cache[key] = pyglet_font
-            else:
-                pyglet_font = self._font_cache[key]
-
-        self.pyglet_font = pyglet_font
-        return True
+        super(GraphicsContext, self).set_font(font)
+        self._current_font = font
 
     def get_text_extent(self, text):
-        if self.pyglet_font is None:
+        if self._current_font is None:
             return (0, 0, 0, 0)
-        # See note in show_text_at_point about the valign argument.
-        pyglet_text = Text(self.pyglet_font, text, valign=Text.BOTTOM)
-        return (0, 0, pyglet_text.width, pyglet_text.height)
+
+        pyglet_font = GetFont(self._current_font)
+        label = GetLabel(text, pyglet_font)
+        return (0, 0, label.content_width, label.content_height)
 
     def show_text(self, text, point = None):
         if point is None:
@@ -308,10 +331,11 @@ class GraphicsContext(_GCL):
         return self.show_text_at_point(text, *point)
 
     def show_text_at_point(self, text, x, y):
-        # XXX: make this use self.get_font() to get the font from the state stack
-        # rather than from the last font passed in to set_font()
-        if self.pyglet_font is None:
-            return False
+        if self._current_font is None:
+            return
+
+        pyglet_font = GetFont(self._current_font)
+        label = GetLabel(text, pyglet_font)
 
         xform = self.get_ctm()
         x0 = xform[4]
@@ -325,14 +349,11 @@ class GraphicsContext(_GCL):
         x = floor(x + x0)
         y = floor(y + y0)
         
-        # Use valign=Text.BOTTOM because by default, pyglet sets the baseline to
-        # the y coordinate given.  Unfortunately, it doesn't expose a per-Text
-        # descent (only a per-Font descent), so it's impossible to know how to 
-        # offset the y value properly for a given string.  The only solution I've
-        # found is to just set valign to BOTTOM.
-        pyglet_text = Text(self.pyglet_font, text, x=x, y=y, valign=Text.BOTTOM)
-        pyglet_text.color = self.get_fill_color()
-        pyglet_text.draw()
+        label.x = x
+        label.y = y
+        c = self.get_fill_color()
+        label.color = (int(c[0]*255), int(c[1]*255), int(c[2]*255), int(c[3]*255))
+        label.draw()
         return True
 
     def draw_image(self, img, rect=None, force_copy=False):
