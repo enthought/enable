@@ -98,11 +98,7 @@ if 'develop' in sys.argv:
 # Setuptools must be imported BEFORE numpy.distutils for things to work right!
 import setuptools
 
-
-from make_docs import HtmlBuild
 from numpy.distutils.core import setup
-from pkg_resources import DistributionNotFound, parse_version, require, \
-    VersionConflict
 import distutils
 import numpy
 import os
@@ -193,81 +189,6 @@ if numpy.__version__[:5] < '1.0.5':
     core.numpy_cmdclass['develop'] = develop
 
 
-# Functions to generate docs from sources when building this project.
-def generate_docs():
-    """ If sphinx is installed, generate docs.
-    """
-    doc_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'docs')
-    source_dir = os.path.join(doc_dir, 'source')
-    html_zip = os.path.join(doc_dir,  'html.zip')
-    dest_dir = doc_dir
-
-    required_sphinx_version = "0.4.1"
-    sphinx_installed = False
-    try:
-        require("Sphinx>=%s" % required_sphinx_version)
-        sphinx_installed = True
-    except (DistributionNotFound, VersionConflict):
-        distutils.log.warn(('Sphinx install of version %s could not be '
-            'verified. Trying simple import...') % required_sphinx_version)
-        try:
-            import sphinx
-            if parse_version(sphinx.__version__) < parse_version(
-                required_sphinx_version):
-                distutils.log.error("Sphinx version must be >=" + \
-                    "%s." % required_sphinx_version)
-            else:
-                sphinx_installed = True
-        except ImportError:
-            distutils.log.error("Sphinx install not found.")
-
-    if sphinx_installed:
-        distutils.log.info("Generating %s documentation..." % INFO['name'])
-        docsrc = source_dir
-        target = dest_dir
-
-        try:
-            build = HtmlBuild()
-            build.start({
-                'commit_message': None,
-                'doc_source': docsrc,
-                'preserve_temp': True,
-                'subversion': False,
-                'target': target,
-                'verbose': True,
-                'versioned': False
-                }, [])
-            del build
-
-        except:
-            distutils.log.error('The documentation generation failed.  '
-                'Falling back to the zip file.')
-
-            # Unzip the docs into the 'html' folder.
-            unzip_html_docs(html_zip, doc_dir)
-    else:
-        # Unzip the docs into the 'html' folder.
-        distutils.log.info("Installing %s documentation from zip file.\n" % \
-            INFO['name'])
-        unzip_html_docs(html_zip, doc_dir)
-
-def unzip_html_docs(src_path, dest_dir):
-    """ Given a path to a zipfile, extract its contents to a given 'dest_dir'.
-    """
-    file = zipfile.ZipFile(src_path)
-    for name in file.namelist():
-        cur_name = os.path.join(dest_dir, name)
-        if not name.endswith('/'):
-            out = open(cur_name, 'wb')
-            out.write(file.read(name))
-            out.flush()
-            out.close()
-        else:
-            if not os.path.exists(cur_name):
-                os.mkdir(cur_name)
-    file.close()
-
-
 class MyDevelop(setuptools.command.develop.develop):
     '''
     Subclass to generate our docs when doing a develop.
@@ -277,7 +198,7 @@ class MyDevelop(setuptools.command.develop.develop):
     '''
     def run(self):
         setuptools.command.develop.develop.run(self)
-        generate_docs()
+        self.run_command('build_docs')
 
 
 class MyBuild(numpy.distutils.command.build.build):
@@ -290,7 +211,7 @@ class MyBuild(numpy.distutils.command.build.build):
     '''
     def run(self):
         numpy.distutils.command.build.build.run(self)
-        generate_docs()
+        self.run_command('build_docs')
 
 
 class MyClean(distutils.command.clean.clean):
@@ -392,6 +313,7 @@ setup(
         "enthought",
         ],
     platforms = ["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
+    setup_requires = 'setupdocs',
     tests_require = [
         'nose >= 0.10.3',
         ],
