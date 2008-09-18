@@ -913,7 +913,7 @@ class Component(CoordinateBox, Interactor):
             overlay.dispatch(event, suffix)
             if event.handled:
                 break
-            
+
         if not event.handled:
             self._dispatch_stateful_event(event, suffix)
         
@@ -1018,6 +1018,8 @@ class Component(CoordinateBox, Interactor):
         elif ratio == 0:
             self.width = 0
             return
+        elif old_h == 0:
+            return 
         elif int(old_w) == int(ratio * old_h):
             return
 
