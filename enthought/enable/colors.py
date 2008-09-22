@@ -5,6 +5,7 @@ import sys
 
 from enthought.etsconfig.api import ETSConfig
 from enthought.traits.api import List, Str, Trait, Tuple, TraitError
+from enthought.traits.ui.editors.api import ColorEditor
 
 
 # Color definitions
@@ -172,7 +173,6 @@ color_table = {"aliceblue": (0.941, 0.973, 1.000, 1.0),
 
 if ETSConfig.toolkit == 'wx':
     import wx
-    from enthought.traits.ui.wx.color_editor import ToolkitEditorFactory as StandardColorEditorFactory
 
     # Version dependent imports (ColourPtr not defined in wxPython 2.8):
     try:
@@ -211,7 +211,7 @@ if ETSConfig.toolkit == 'wx':
         color_table["sys_window"] = convert_from_wx_color(None, None,
             wx.SystemSettings.GetColour(wx.SYS_COLOUR_ACTIVEBORDER))
 
-    class ColorEditorFactory(StandardColorEditorFactory):
+    class ColorEditorFactory(ColorEditor):
         def to_wx_color(self, editor):
             if self.mapped:
                 retval = getattr( editor.object, editor.name + '_' )
@@ -237,10 +237,6 @@ if ETSConfig.toolkit == 'wx':
 elif ETSConfig.toolkit == 'qt4':
     from PyQt4 import QtGui
 
-    from enthought.traits.ui.qt4.color_editor \
-            import ToolkitEditorFactory as StandardColorEditorFactory
-
-
     def convert_from_pyqt_color(obj, name, value):
         if isinstance(value, QtGui.QColor):
             return value.getRgbF()
@@ -265,7 +261,7 @@ elif ETSConfig.toolkit == 'qt4':
             "(r,g,b,a)")
 
 
-    class ColorEditorFactory(StandardColorEditorFactory):
+    class ColorEditorFactory(ColorEditor):
 
         def to_pyqt_color(self, editor):
 
