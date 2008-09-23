@@ -58,6 +58,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.state = GraphicsState()
         self.state_stack = []
         
+        self.text_matrix = cairo.Matrix()
+        self.text_position = (0.,0.)
+        
     def scale_ctm(self, sx, sy):
         """ Sets the coordinate system scale to the given values, (sx,sy).
 
@@ -795,12 +798,13 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     def set_text_matrix(self,ttm):
         """
         """
-        self.state.text_matrix = ttm.copy()
+        m = cairo.Matrix(ttm)
+        self.text_matrix = m
         
     def get_text_matrix(self):
         """
         """        
-        return self.state.text_matrix.copy()
+        return copy.copy(self.text_matrix)
         
     def show_text(self,text):
         """ Draws text on the device at the current text position.
@@ -810,69 +814,14 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             
             It is not clear yet how this should affect the current point.
         """
-        self.device_show_text(text)
-
-    #------------------------------------------------------------------------
-    # kiva defaults to drawing text using the freetype rendering engine.
-    #
-    # If you would like to use a systems native text rendering engine, 
-    # override this method in the class concrete derived from this one.
-    #------------------------------------------------------------------------
-    def device_show_text(self,text):
-        """ Draws text on the device at the current text position.
-        
-            This relies on the FreeType engine to render the text to an array
-            and then calls the device dependent device_show_text() to display
-            the rendered image to the screen.
-            
-            !! antiliasing is turned off until we get alpha blending 
-            !! of images figured out.
-        """
-
-        # This is not currently implemented in a device-independent way.
-        self._ctx.show_text(text)
-
-        ##---------------------------------------------------------------------
-        ## The fill_color is used to specify text color in wxPython. 
-        ## If it is transparent, we don't do any painting.  
-        ##---------------------------------------------------------------------
-        #if is_fully_transparent( self.state.fill_color ):
-        #   return
-        #
-        ##---------------------------------------------------------------------
-        ## Set the text transformation matrix
-        ## 
-        ## This requires the concatenation of the text and coordinate
-        ## transform matrices
-        ##---------------------------------------------------------------------
-        #ttm = self.get_text_matrix()
-        #ctm = self.get_ctm()  # not device_ctm!!
-        #m   = affine.concat( ctm, ttm )
-        #a, b, c, d, tx, ty = affine.affine_params( m )
-        #ft_engine.transform( ( a, b, c, d ) )
-        #
-        ## Select the correct font into the freetype engine:
-        #f = self.state.font
-        #ft_engine.select_font( f.name, f.size, f.style, f.encoding )
-        #ft_engine.select_font( 'Arial', 10 )   ### TEMPORARY ###
-        #
-        ## Set antialiasing flag for freetype engine:
-        #ft_engine.antialias( self.state.antialias )
-        #
-        ## Render the text:  
-        ##
-        ## The returned object is a freetype.Glyphs object that contains an 
-        ## array with the gray scale image, the bbox and some other info.
-        #rendered_glyphs = ft_engine.render( text )
-        #        
-        ## Render the glyphs in a device specific manner:
-        #self.device_draw_glyphs( rendered_glyphs, tx, ty )
-        #
-        ## Advance the current text position by the width of the glyph string:
-        #ttm = self.get_text_matrix()
-        #a, b, c, d, tx, ty = affine.affine_params( ttm )
-        #tx += rendered_glyphs.width
-        #self.state.text_matrix = affine.affine_from_values( a, b, c, d, tx, ty )        
+        ctx = self._ctx
+        cur_point = ctx.get_current_point()
+        ctx.save()
+        ctx.transform(self.text_matrix)
+        ctx.move_to(*self.text_position)
+        ctx.show_text(text)
+        ctx.move_to(*cur_point)
+        ctx.restore()
     
     def show_glyphs(self):
         """
@@ -939,48 +888,6 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             ctx.stroke()
             
         ctx.set_fill_rule(fr)
-
-    def device_prepare_device_ctm(self):
-        self.device_ctm = affine.affine_identity()
-        
-    def device_transform_device_ctm(self,func,args):
-        """ Default implementation for handling scaling matrices.  
-        
-            Many implementations will just use this function.  Others, like
-            OpenGL, can benefit from overriding the method and using 
-            hardware acceleration.            
-        """
-        if func == SCALE_CTM:
-            #print  'scale:', args
-            self.device_ctm = affine.scale(self.device_ctm,args[0],args[1])
-        elif func == ROTATE_CTM:
-            #print 'rotate:', args
-            self.device_ctm = affine.rotate(self.device_ctm,args[0])
-        elif func == TRANSLATE_CTM:
-            #print 'translate:', args
-            self.device_ctm = affine.translate(self.device_ctm,args[0],args[1])
-        elif func == CONCAT_CTM:
-            #print  'concat'
-            self.device_ctm = affine.concat(self.device_ctm,args[0])
-        elif func == LOAD_CTM:
-            #print 'load'
-            self.device_ctm = args[0].copy()
-    
-    def device_draw_rect(self,x,y,sx,sy,mode):
-        """ Default implementation of drawing  a rect.
-        """
-        self._new_subpath()
-        # When rectangles are rotated, they have to be drawn as a polygon
-        # on most devices.  We'll need to specialize this on API's that 
-        # can handle rotated rects such as Quartz and OpenGL(?).
-        # All transformations are done in the call to lines().
-        pts = array(((x   ,y   ),
-                     (x   ,y+sy),
-                     (x+sx,y+sy),
-                     (x+sx,y   ),
-                     (x   ,y   )))
-        self.add_point_to_subpath(pts)
-        self.draw_subpath(mode)
                 
     def stroke_rect(self):
         """
