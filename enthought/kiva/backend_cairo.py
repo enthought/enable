@@ -35,6 +35,20 @@ font_weight = {"regular":cairo.FONT_WEIGHT_NORMAL,
                "bold":cairo.FONT_WEIGHT_BOLD,
                 "italic":cairo.FONT_WEIGHT_NORMAL,
                  "bold italic":cairo.FONT_WEIGHT_BOLD}
+                
+text_draw_modes = {'FILL': (constants.TEXT_FILL,
+                            constants.TEXT_FILL_CLIP,
+                            constants.TEXT_FILL_STROKE,
+                            constants.TEXT_FILL_STROKE_CLIP),
+                    'STROKE':(constants.TEXT_FILL_STROKE,
+                            constants.TEXT_FILL_STROKE_CLIP,
+                            constants.TEXT_STROKE,
+                            constants.TEXT_STROKE_CLIP),
+                    'CLIP':(constants.TEXT_CLIP,
+                            constants.TEXT_FILL_CLIP,
+                            constants.TEXT_FILL_STROKE_CLIP,
+                            constants.TEXT_STROKE_CLIP),
+                    'INVISIBLE': constants.TEXT_INVISIBLE}
 
 class GraphicsState(object):
     """ Holds information used by a graphics context when drawing.
@@ -115,8 +129,8 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.state = GraphicsState()
         self.state_stack = []
         
+        #the text-matrix includes the text position
         self.text_matrix = cairo.Matrix() #not part of the graphics state
-        self.text_position = (0.,0.)
         
     def scale_ctm(self, sx, sy):
         """ Sets the coordinate system scale to the given values, (sx,sy).
@@ -170,7 +184,8 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             
         
     def get_ctm(self):
-        """ Returns the current coordinate transform matrix.
+        """ Returns the current coordinate transform matrix
+            as a list of matrix elements
         """           
         return list(self._ctx.get_matrix())
         
@@ -381,7 +396,6 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             Notes:
                 See note in move_to about the current_point.
         """
-        print "line", x, y
         self._ctx.line_to(x,y)
     
     def lines(self,points):
@@ -558,55 +572,11 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         p = numpy.array(p)
         return [p.min(axis=1), p.max(axis=1)]
 
-#    def from_agg_affine(self, aff):
-#        """Convert an agg.AffineTransform to a numpy matrix
-#        representing the affine transform usable by kiva.affine
-#        and other non-agg parts of kiva"""
-#        return array([[aff[0], aff[1], 0],
-#                      [aff[2], aff[3], 0],
-#                      [aff[4], aff[5], 1]], float64)
         
-#    def add_path(self, path):
-#        """Draw a compiled path into this gc.  Note: if the CTM is
-#        changed and not restored to the identity in the compiled path,
-#        the CTM change will continue in this GC."""
-#        # Local import to avoid a dependency if we can avoid it.
-#        from enthought.kiva import agg
-#
-#        multi_state = 0 #For multi-element path commands we keep the previous
-#        x_ctrl1 = 0     #information in these variables.
-#        y_ctrl1 = 0
-#        x_ctrl2 = 0
-#        y_ctrl2 = 0
-#        for x, y, cmd, flag in path._vertices():
-#            if cmd == agg.path_cmd_line_to:
-#                self.line_to(x,y)
-#            elif cmd == agg.path_cmd_move_to:
-#                self.move_to(x, y)
-#            elif cmd == agg.path_cmd_stop:
-#                self.concat_ctm(path.get_kiva_ctm())
-#            elif cmd == agg.path_cmd_end_poly:
-#                self.close_path()
-#            elif cmd == agg.path_cmd_curve3:
-#                if multi_state == 0:
-#                    x_ctrl1 = x
-#                    y_ctrl1 = y
-#                    multi_state = 1
-#                else:
-#                    self.quad_curve_to(x_ctrl1, y_ctrl1, x, y)
-#                    multi_state = 0
-#            elif cmd == agg.path_cmd_curve4:
-#                if multi_state == 0:
-#                    x_ctrl1 = x
-#                    y_ctrl1 = y
-#                    multi_state = 1
-#                elif multi_state == 1:
-#                    x_ctrl2 = x
-#                    y_ctrl2 = y
-#                    multi_state = 2
-#                elif multi_state == 2:
-#                    self.curve_to(x_ctrl1, y_ctrl1, x_ctrl2, y_ctrl2, x, y)
-
+    def add_path(self, path):
+        """Draw a compiled path into this gc.  
+        In this case, a compiled path is a Cairo.Path"""
+        self._ctx.append_path(path)
                 
                     
     #----------------------------------------------------------------
@@ -759,22 +729,18 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
     def set_font(self,font):
         """ Set the font for the current graphics context.
+        
+            A device-specific font object. In this case, a cairo FontFace object.
+            It's not clear how this can be used right now.
         """
-        self.state.font = font.copy()
+        self._ctx.set_font_face(font)
     
     def set_font_size(self,size):
         """ Sets the size of the font.
 
             The size is specified in user space coordinates.
-
-            Note:  
-                I don't think the units of this are really "user space
-                coordinates" on most platforms.  I haven't looked into 
-                the text drawing that much, so this stuff needs more
-                attention.
         """
-        return
-        self.state.font.size = size
+        self._ctx.set_font_size(size)
         
     def set_character_spacing(self,spacing):
         """ Sets the amount of additional spacing between text characters.
@@ -790,7 +756,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             Notes
             -----
             1.  I'm assuming this is horizontal spacing?
-            2.  Not implemented in wxPython.
+            2.  Not implemented in wxPython, or cairo (for the time being)
         """
         self.state.character_spacing = spacing
         
@@ -836,26 +802,22 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     def set_text_position(self,x,y):
         """
         """
-        return
-        a,b,c,d,tx,ty = affine.affine_params(self.state.text_matrix)
-        tx, ty = x,y
-        self.state.text_matrix = affine.affine_from_values(a,b,c,d,tx,ty)
-        # No longer uses knowledge that matrix has 3x3 representation
-        #self.state.text_matrix[2,:2] = (x,y)
+        m = list(self.state.text_matrix)
+        m[4:6] = x,y
+        self.state.text_matrix = cairo.Matrix(*m)
         
     def get_text_position(self):
         """
         """
-        return
-        a,b,c,d,tx,ty = affine.affine_params(self.state.text_matrix)
-        return tx,ty
-        # No longer uses knowledge that matrix has 3x3 representation
-        #return self.state.text_matrix[2,:2]
+        return tuple(self.state.text_matrix)[4:6]
         
     def set_text_matrix(self,ttm):
         """
         """
-        m = cairo.Matrix(ttm)
+        if isinstance(ttm, cairo.Matrix):
+            m = ttm
+        else:
+            m = cairo.Matrix(ttm)
         self.text_matrix = m
         
     def get_text_matrix(self):
@@ -865,20 +827,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         
     def show_text(self,text):
         """ Draws text on the device at the current text position.
-        
-            This calls the device dependent device_show_text() method to
-            do all the heavy lifting.
-            
-            It is not clear yet how this should affect the current point.
+            Leaves the current point unchanged.
         """
-        ctx = self._ctx
-        cur_point = ctx.get_current_point()
-        ctx.save()
-        ctx.transform(self.text_matrix)
-        ctx.move_to(*self.text_position)
-        ctx.show_text(text)
-        ctx.move_to(*cur_point)
-        ctx.restore()
+        self.show_text_at_point(text, 0.0,0.0)
     
     def show_glyphs(self):
         """
@@ -888,7 +839,27 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     def show_text_at_point(self, text, x, y):
         """
         """
-        pass
+        ctx = self._ctx
+        cur_path = ctx.copy_path()
+        ctx.save()
+        ctx.transform(self.text_matrix)
+        ctx.transform(cairo.Matrix(1,0,0,1,x,y))
+        ctx.new_path()
+        ctx.text_path()
+        
+        #need to set up text drawing mode
+        #'outline' and  'invisible' modes are not supported.
+        mode = self.state.text_drawing_mode
+        if mode in text_draw_modes['STROKE']:
+            ctx.stroke_preserve()
+        if mode in text_draw_modes['FILL']:
+            ctx.fill_preserve()
+        if mode in text_draw_modes['CLIP']:
+            ctx.clip_preserve()
+            
+        ctx.restore()
+        ctx.new_path()
+        ctx.append_path(cur_path)
     
     def show_glyphs_at_point(self):
         """
@@ -948,6 +919,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
                 
     def stroke_rect(self):
         """
+        How does this affect the current path?
         """
         pass
     
@@ -970,79 +942,6 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         """
         pass           
-       
-    #----------------------------------------------------------------
-    # Subpath point management and drawing routines.
-    #----------------------------------------------------------------
-
-    def add_point_to_subpath(self,pt):        
-        self.draw_points.append(pt)
-        
-    def clear_subpath_points(self):
-        self.draw_points = []
-            
-    def get_subpath_points(self,debug=0):
-        """ Gets the points that are in the current path.
-            
-            The first entry in the draw_points list may actually
-            be an array.  If this is true, the other points are 
-            converted to an array and concatenated with the first
-        """
-        if self.draw_points and len(shape(self.draw_points[0])) > 1:
-            first_points = self.draw_points[0]
-            other_points = asarray(self.draw_points[1:])
-            if len(other_points):
-                pts = concatenate((first_points,other_points),0)
-            else:
-                pts = first_points
-        else:
-            pts = asarray(self.draw_points)                
-        return pts
-                            
-    def draw_subpath(self,mode):
-        """ Fills and strokes the point path.
-
-            After the path is drawn, the subpath point list is 
-            cleared and ready for the next subpath.
-            
-            Parameters
-            ----------
-            
-            mode 
-                Specifies how the subpaths are drawn.  The default is 
-                FILL_STROKE.  The following are valid values.  
-
-                    FILL
-                        Paint the path using the nonzero winding rule
-                        to determine the regions for painting.
-                    EOF_FILL
-                        Paint the path using the even-odd fill rule.
-                    STROKE
-                        Draw the outline of the path with the 
-                        current width, end caps, etc settings.
-                    FILL_STROKE
-                        First fill the path using the nonzero 
-                        winding rule, then stroke the path.
-                    EOF_FILL_STROKE
-                        First fill the path using the even-odd
-                        fill method, then stroke the path.                               
-
-            Note: 
-                If path is closed, it is about 50% faster to call
-                DrawPolygon with the correct pen set than it is to
-                call DrawPolygon and DrawLines separately in wxPython. But,
-                because paths can be left open, Polygon can't be
-                called in the general case because it automatically
-                closes the path.  We might want a separate check in here
-                and allow devices to specify a faster version if the path is 
-                closed.
-        """
-        pts = self.get_subpath_points()
-        if len(pts) > 1:
-            self.device_fill_points(pts,mode)
-            self.device_stroke_points(pts,mode)
-        self.clear_subpath_points()                        
-
     
     def get_text_extent(self,textstring):
         """
@@ -1050,29 +949,14 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         return self.device_get_text_extent(textstring)
 
-    def device_get_text_extent(self,textstring):
-        return self.device_get_full_text_extent(textstring)
-
     def get_full_text_extent(self,textstring):
         """
-            Calls device specific text extent method.
+            How does this differ from 'get_text_extent' ???
+            
+            This just calls get_text_extent, for the time being.
         """
-        return self.device_get_full_text_extent(textstring)
+        return self.get_text_extent(textstring)
 
-    def device_get_full_text_extent(self,textstring):
-        return (0.0, 0.0, 0.0, 0.0)
-        #raise NotImplementedError("device_get_full_text_extent() is not implemented")
-        #ttm = self.get_text_matrix()
-        #ctm = self.get_ctm()  # not device_ctm!!
-        #m   = affine.concat( ctm, ttm )
-        #ft_engine.transform( affine.affine_params( m )[0:4] )
-        #f = self.state.font   ### TEMPORARY ###
-        #ft_engine.select_font( f.name, f.size, f.style, f.encoding )   ### TEMPORARY ###
-        ##ft_engine.select_font( 'Arial', 10 )   ### TEMPORARY ###
-        #ft_engine.antialias( self.state.antialias )
-        #glyphs = ft_engine.render( textstring )
-        #dy, dx = shape( glyphs.img )
-        #return ( dx, dy, -glyphs.bbox[1], 0 )
         
     def render_component(self, component, container_coords=False):
         """ Renders the given component.
@@ -1102,3 +986,43 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.translate_ctm(x, y)
         component.draw(self, view_bounds=(0, 0, w, h))
         return
+
+if __name__=="__main__":
+    from numpy import fabs, linspace, pi, sin
+    from scipy.special import jn
+    
+    from enthought.traits.api import false
+    from enthought.chaco.api import ArrayPlotData, Plot
+    from enthought.chaco.example_support import COLOR_PALETTE
+    
+    DPI = 72.0
+    dpi_scale = DPI / 72.0
+    
+    def create_plot():
+        numpoints = 100
+        low = -5
+        high = 15.0
+        x = linspace(low, high, numpoints)
+        pd = ArrayPlotData(index=x)
+        p = Plot(pd, bgcolor="lightgray", padding=50, border_visible=True)
+        for i in range(10):
+            pd.set_data("y" + str(i), jn(i,x))
+            p.plot(("index", "y" + str(i)), color=tuple(COLOR_PALETTE[i]),
+                   width = 2.0 * dpi_scale)
+        p.x_grid.visible = True
+        p.x_grid.line_width *= dpi_scale
+        p.y_grid.visible = True
+        p.y_grid.line_width *= dpi_scale
+        p.legend.visible = True
+        return p
+    
+    container = create_plot()
+    container.outer_bounds = [800,600]
+    container.do_layout(force=True)
+    
+    s = cairo.ImageSurface(cairo.FORMAT_RGB24, 800,600)
+    ctx = cairo.Context(s)
+    gc = GraphicsContext(ctx)
+    gc.render_component(container)
+    s.flush()
+    s.write_to_png("/home/bryan/kiva_cairo.png")
