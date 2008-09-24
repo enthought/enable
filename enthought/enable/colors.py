@@ -261,17 +261,15 @@ elif ETSConfig.toolkit == 'qt4':
             "name, an integer which in hex is of the form 0xRRGGBB, where RR "
             "is red, GG is green, and BB is blue, a list/tuple of (r,g,b) or "
         "(r,g,b,a)")
-        return color
 
     class ColorEditorFactory(StandardColorEditorFactory):
         
         def to_qt4_color(self, editor):
-    
             if self.mapped:
                 retval = getattr(editor.object, editor.name + '_')
             else:
                 retval = getattr(editor.object, editor.name)
-    
+
             if isinstance(retval, tuple):
                 col = QtGui.QColor()
                 col.setRgbF(*retval)
@@ -280,14 +278,14 @@ elif ETSConfig.toolkit == 'qt4':
             return retval
     
         def str_color(self, color):
-    
             if isinstance(color, QtGui.QColor):
                 color = color.getRgbF()
     
             if isinstance(color, tuple):
                 fmt = "(" + ",".join(["%0.3f"] * len(color)) + ")"
                 color =  fmt % color
-
+            return color
+        
     ColorTrait = Trait("black", Tuple, List, Str, color_table,
                        convert_from_pyqt_color, editor=ColorEditorFactory)
 
