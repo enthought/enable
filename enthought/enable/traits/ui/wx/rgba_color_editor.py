@@ -20,7 +20,7 @@ from enthought.enable.colors import color_table
 from enthought.traits.api import Bool
 from enthought.traits.trait_base import SequenceTypes
 
-from enthought.traits.ui.api import View. EditorFactory
+from enthought.traits.ui.api import View, EditorFactory
 from enthought.traits.ui.wx.editor import Editor
 from enthought.traits.ui.wx.editor_factory import ReadonlyEditor
 from enthought.traits.ui.wx.helper import position_window
