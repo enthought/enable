@@ -112,9 +112,9 @@ class GraphicsState(object):
         self.fill_color = [0.0,0.0,0.0]
         self.stroke_color = [0.0,0.0,0.0]
         self.alpha = 1.0
+        self.text_drawing_mode = constants.TEXT_FILL
         
         #not implemented yet...
-        self.text_drawing_mode = None
         self.text_character_spacing = None
         self.fill_colorspace = None
         self.stroke_colorspace = None
@@ -733,7 +733,25 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             A device-specific font object. In this case, a cairo FontFace object.
             It's not clear how this can be used right now.
         """
-        self._ctx.set_font_face(font)
+        if font.weight in (constants.BOLD, constants.BOLD_ITALIC):
+            weight = cairo.FONT_WEIGHT_BOLD
+        else:
+            weight = cairo.FONT_WEIGHT_NORMAL
+            
+        if font.style in (constants.ITALIC, constants.BOLD_ITALIC):
+            style = cairo.FONT_SLANT_ITALIC
+        else:
+            style = cairo.FONT_SLANT_NORMAL
+            
+        face_name = font.face_name
+            
+        ctx = self._ctx
+        ctx.select_font_face('arial', style, weight)
+        ctx.set_font_size(font.size)
+        #facename = font.face_name
+        #slant = font.style
+        
+        #self._ctx.set_font_face(font)
     
     def set_font_size(self,size):
         """ Sets the size of the font.
@@ -802,14 +820,14 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     def set_text_position(self,x,y):
         """
         """
-        m = list(self.state.text_matrix)
+        m = list(self.text_matrix)
         m[4:6] = x,y
-        self.state.text_matrix = cairo.Matrix(*m)
+        self.text_matrix = cairo.Matrix(*m)
         
     def get_text_position(self):
         """
         """
-        return tuple(self.state.text_matrix)[4:6]
+        return tuple(self.text_matrix)[4:6]
         
     def set_text_matrix(self,ttm):
         """
@@ -845,18 +863,19 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         ctx.transform(self.text_matrix)
         ctx.transform(cairo.Matrix(1,0,0,1,x,y))
         ctx.new_path()
-        ctx.text_path()
-        
+        ctx.text_path(text)
         #need to set up text drawing mode
         #'outline' and  'invisible' modes are not supported.
         mode = self.state.text_drawing_mode
         if mode in text_draw_modes['STROKE']:
+            self._set_source_color(self.state.stroke_color)
             ctx.stroke_preserve()
         if mode in text_draw_modes['FILL']:
+            self._set_source_color(self.state.fill_color)
             ctx.fill_preserve()
         if mode in text_draw_modes['CLIP']:
             ctx.clip_preserve()
-            
+
         ctx.restore()
         ctx.new_path()
         ctx.append_path(cur_path)
@@ -945,9 +964,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     
     def get_text_extent(self,textstring):
         """
-            Calls device specific text extent method.
+            returns the width and height of the rendered text
         """
-        return self.device_get_text_extent(textstring)
+        return self.get_full_text_extent(textstring)[:2]
 
     def get_full_text_extent(self,textstring):
         """
@@ -955,8 +974,10 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             
             This just calls get_text_extent, for the time being.
         """
-        return self.get_text_extent(textstring)
-
+        xb, yb, w, h, xa, ya = self._ctx.text_extents(textstring)
+        descent = h+yb
+        leading = 0 #this should be the line spacing
+        return w, h, descent, leading
         
     def render_component(self, component, container_coords=False):
         """ Renders the given component.
@@ -1022,6 +1043,8 @@ if __name__=="__main__":
     
     s = cairo.ImageSurface(cairo.FORMAT_RGB24, 800,600)
     ctx = cairo.Context(s)
+    ctx.set_source_rgb(1,1,1)
+    ctx.paint()
     gc = GraphicsContext(ctx)
     gc.render_component(container)
     s.flush()
