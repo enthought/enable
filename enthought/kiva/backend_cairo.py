@@ -39,15 +39,72 @@ font_weight = {"regular":cairo.FONT_WEIGHT_NORMAL,
 class GraphicsState(object):
     """ Holds information used by a graphics context when drawing.
 
-        I'm not sure if these should be a separate class, a dictionary,
-        or part of the GraphicsContext object.  Making them a dictionary
-        or object simplifies save_state and restore_state a little bit.
+        the cairo state stores the following:
+            Operator (the blend mode)
+            Tolerance
+            Antialias (bool)
+            stroke style (line width, cap, join, mitre-limit, dash-style)
+            fill rule
+            font face
+            scaled font
+            font matrix (includes font size)
+            font options (antialias, subpixel order, hint style, hint metrics)
+            clip region
+            target surface and previous target surface
+            CTM, CTM-inverse, source CTM
+            
+        The Quartz2D state (which kiva follows AFAIK) includes:
+            CTM
+            stroke style (line width, cap, join, mitre, dash)
+            clip region
+            tolerance (accuracy)
+            anti-alias
+            *fill- and stroke- colors
+            *fill- and stroke- Color Space (RGB, HSV, CMYK etc.)
+            *Rendering intent (something to do with Color Spaces)
+            *alpha value
+            blend mode
+            text font
+            text font size
+            *text drawing mode (stroked, filled, clipped and combinations of these)
+            *text character spacing (extra space between glyphs)
+            
+        * - items in the Quartz2D state which cairo doesn't support directly.
 
+        basecore2d GraphicsState includes:
+            ctm 
+            line_color
+            line_width
+            line_join
+            line_cap
+            line_dash
+            fill_color
+            alpha
+            font
+            *text_matrix
+            clipping_path
+            *current_point
+            should_antialias
+            miter_limit
+            flatness
+            character_spacing
+            text_drawing_mode
+            rendering_intent (not yet implemented)
+            
+        * - discrepancies compared to Quartz2D
+        
     """
     def __init__(self):       
         self.fill_color = [0.0,0.0,0.0]
         self.stroke_color = [0.0,0.0,0.0]
         self.alpha = 1.0
+        
+        #not implemented yet...
+        self.text_drawing_mode = None
+        self.text_character_spacing = None
+        self.fill_colorspace = None
+        self.stroke_colorspace = None
+        self.rendering_intent = None
 
     def copy(self):
         return copy.deepcopy(self)
@@ -58,7 +115,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.state = GraphicsState()
         self.state_stack = []
         
-        self.text_matrix = cairo.Matrix()
+        self.text_matrix = cairo.Matrix() #not part of the graphics state
         self.text_position = (0.,0.)
         
     def scale_ctm(self, sx, sy):
