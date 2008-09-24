@@ -20,9 +20,9 @@ from enthought.enable.colors import color_table
 from enthought.traits.api import Bool
 from enthought.traits.trait_base import SequenceTypes
 
-from enthought.traits.ui.api import View, EditorFactory
+from enthought.traits.ui.api import View
 from enthought.traits.ui.wx.editor import Editor
-from enthought.traits.ui.wx.editor_factory import ReadonlyEditor
+from enthought.traits.ui.wx.editor_factory import EditorFactory, ReadonlyEditor
 from enthought.traits.ui.wx.helper import position_window
 
 #-------------------------------------------------------------------------------
@@ -63,18 +63,38 @@ class ToolkitEditorFactory ( EditorFactory ):
     #  'Editor' factory methods:
     #---------------------------------------------------------------------------
 
-    def _get_simple_editor_class ( self ):
-        return SimpleColorEditor
-
-    def _get_custom_editor_class ( self ):
-        return CustomColorEditor
-
-    def _get_text_editor_class ( self ):
-        return TextColorEditor
-
-    def _get_readonly_editor_class ( self ):
-        return ReadonlyColorEditor
-
+    def simple_editor ( self, ui, object, name, description, parent ): 
+        return SimpleColorEditor( parent, 
+                                  factory     = self, 
+                                  ui          = ui, 
+                                  object      = object, 
+                                  name        = name, 
+                                  description = description)
+        
+    def custom_editor ( self, ui, object, name, description, parent ): 
+        return CustomColorEditor( parent, 
+                                  factory     = self, 
+                                  ui          = ui, 
+                                  object      = object, 
+                                  name        = name, 
+                                  description = description )
+        
+    def text_editor ( self, ui, object, name, description, parent ): 
+        return TextColorEditor( parent, 
+                                factory     = self, 
+                                ui          = ui, 
+                                object      = object, 
+                                name        = name, 
+                                description = description )
+        
+    def readonly_editor ( self, ui, object, name, description, parent ): 
+        return ReadonlyColorEditor( parent, 
+                                    factory     = self, 
+                                    ui          = ui, 
+                                    object      = object, 
+                                    name        = name, 
+                                    description = description )
+        
     #---------------------------------------------------------------------------
     #  Gets the object trait color:
     #---------------------------------------------------------------------------

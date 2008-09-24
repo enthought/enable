@@ -85,11 +85,23 @@ class ToolkitEditorFactory ( EditorFactory ):
     #  'Editor' factory methods:
     #---------------------------------------------------------------------------
 
-    def _get_simple_editor_class ( self ):
-        return SimpleColorEditor
-
-    def _get_custom_editor_class ( self ):
-        return CustomColorEditor
+    def simple_editor ( self, ui, object, name, description, parent ): 
+        return ColorEditor( parent, 
+                            factory     = self, 
+                            ui          = ui, 
+                            object      = object, 
+                            name        = name, 
+                            description = description, 
+                            style       = 'simple' )
+        
+    def custom_editor ( self, ui, object, name, description, parent ): 
+        return ColorEditor( parent, 
+                            factory     = self, 
+                            ui          = ui, 
+                            object      = object, 
+                            name        = name, 
+                            description = description, 
+                            style       = 'custom' )
 
 #-------------------------------------------------------------------------------
 #  'ColorEditor' class:
@@ -165,29 +177,6 @@ class ColorEditor ( Editor ):
             editor.
         """
         self._picker.color = self.value
-
-#------------------------------------------------------------------------------
-# 'SimpleColorEditor' class:
-#------------------------------------------------------------------------------
-class SimpleColorEditor ( ColorEditor)
-    """ Simple style of editor for RGBA colors. 
-    """
-    
-    # Style of editor
-    # Value is overridden from the default value in ColorEditor.
-    style = 'simple'
-    
-#------------------------------------------------------------------------------
-# 'CustomColorEditor' class:
-#------------------------------------------------------------------------------
-class CustomColorEditor ( ColorEditor)
-    """ Custom style of editor for RGBA colors. 
-    """
-    
-    # Style of editor
-    # Value is overridden from the default value in ColorEditor.
-    style = 'custom'
-    
     
 def EnableRGBAColorEditor ( *args, **traits ):
     return ToolkitEditorFactory( *args, **traits )
