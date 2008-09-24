@@ -13,36 +13,39 @@ def simple_container_get_preferred_size(container, components=None):
     if components is None:
         components = container.components
 
+    fit_components = getattr(container, "fit_components", "")
+
     # this is used to determine if we should use our default bounds
     no_visible_components = True
 
     max_width = 0.0
     max_height = 0.0
-    for component in components:
-        if not container._should_layout(component):
-            continue
-        no_visible_components = False
-        pref_size = None
+    if fit_components != "":
+        for component in components:
+            if not container._should_layout(component):
+                continue
+            no_visible_components = False
+            pref_size = None
 
-        if "h" not in component.resizable:
-            pref_size = component.get_preferred_size()
-            if pref_size[0] > max_width:
-                max_width = pref_size[0]
-
-        if "v" not in component.resizable:
-            if pref_size is None:
+            if "h" in fit_components:
                 pref_size = component.get_preferred_size()
-            if pref_size[1] > max_height:
-                max_height = pref_size[1]
+                if pref_size[0] > max_width:
+                    max_width = pref_size[0]
 
-    if "h" not in container.resizable:
+            if "v" in fit_components:
+                if pref_size is None:
+                    pref_size = component.get_preferred_size()
+                if pref_size[1] > max_height:
+                    max_height = pref_size[1]
+
+    if "h" not in fit_components:
         max_width = container.width
-    elif no_visible_components or (max_width == 0):
+    if no_visible_components or (max_width == 0):
         max_width = container.default_size[0]
 
-    if "v" not in container.resizable:
+    if "v" not in fit_components:
         max_height = container.height
-    elif no_visible_components or (max_height == 0):
+    if no_visible_components or (max_height == 0):
         max_height = container.default_size[1]
 
     # Add in our padding and border
