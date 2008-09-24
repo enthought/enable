@@ -5,7 +5,6 @@ import sys
 
 from enthought.etsconfig.api import ETSConfig
 from enthought.traits.api import List, Str, Trait, Tuple, TraitError
-from enthought.traits.ui.editors.api import ColorEditor
 
 
 # Color definitions
@@ -173,9 +172,8 @@ color_table = {"aliceblue": (0.941, 0.973, 1.000, 1.0),
 
 if ETSConfig.toolkit == 'wx':
     import wx
-    from enthought.traits.ui.wx.color_editor import \
-        SimpleEditor, CustomEditor, TextEditor, ReadonlyEditor
-        
+    from enthought.traits.ui.wx.color_editor \
+                import ToolkitEditorFactory as StandardColorEditorFactory    
     # Version dependent imports (ColourPtr not defined in wxPython 2.8):
     try:
         ColourPtr = wx.ColourPtr
@@ -213,67 +211,34 @@ if ETSConfig.toolkit == 'wx':
         color_table["sys_window"] = convert_from_wx_color(None, None,
             wx.SystemSettings.GetColour(wx.SYS_COLOUR_ACTIVEBORDER))
 
-    # Functions used by the editor classes.
-    def to_wx_color(editor):
-        if editor.factory.mapped:
-            retval = getattr( editor.object, editor.name + '_' )
-        else:
-            retval = getattr( editor.object, editor.name )
+    class ColorEditorFactory(StandardColorEditorFactory):
 
-        if isinstance(retval, tuple):
-            retval = wx.Colour(int(255*retval[0]), int(255*retval[1]),
-                               int(255*retval[2]))
-        return retval
-
-    def str_color(color):
-        if isinstance( color, ( wx.Colour, ColourPtr ) ):
-            return "(%d,%d,%d)" % ( color.Red(), color.Green(), color.Blue() )
-        elif isinstance(color, tuple):
-            fmt = "(" + ",".join(["%0.3f"]*len(color)) + ")"
-            return fmt % color
-        return color
-
-    class ColorEditorFactory(ColorEditor):
-        
-        # Property getters
-        
-        def _get_simple_editor_class (self):
-            return SimpleColorEditor
-        
-        def _get_custom_editor_class (self):
-            return CustomColorEditor
-        
-        def _get_text_editor_class (self):
-            return TextColorEditor
-        
-        def _get_readonly_editor_class (self):
-            return ReadonlyColorEditor
-        
-    # FIXME: The following classes are redefined here simply so 
-    # they can use the to_wx_color, str_color functions defined
-    # here instead of in the color_editor.py file. The implementation
-    # needs to be changed.
-    class SimpleColorEditor(SimpleEditor):
-        pass
+        def to_wx_color(self, editor):
+            if self.mapped:
+                retval = getattr( editor.object, editor.name + '_' )
+            else:
+                retval = getattr( editor.object, editor.name )
+            if isinstance(retval, tuple):
+                retval = wx.Colour(int(255*retval[0]), int(255*retval[1]),
+                                   int(255*retval[2]))
+            return retval
     
-    class CustomColorEditor(CustomEditor):
-        pass
-    
-    class TextColorEditor(TextEditor):
-        pass
-    
-    class ReadonlyColorEditor(ReadonlyEditor):
-        pass
-    
+        def str_color(self, color):
+            if isinstance( color, ( wx.Colour, ColourPtr ) ):
+                return "(%d,%d,%d)" % ( color.Red(), color.Green(), color.Blue() )
+            elif isinstance(color, tuple):
+                fmt = "(" + ",".join(["%0.3f"]*len(color)) + ")"
+                return fmt % color
+            return color
     
     ColorTrait = Trait("black", Tuple, List, Str, color_table,
                        convert_from_wx_color, editor=ColorEditorFactory)
 
 elif ETSConfig.toolkit == 'qt4':
     from PyQt4 import QtGui
-    from enthought.traits.ui.qt4.color_editor import \
-        SimpleEditor, CustomEditor, TextEditor, ReadonlyEditor
-
+    from enthought.traits.ui.qt4.color_editor \
+                import ToolkitEditorFactory as StandardColorEditorFactory    
+    
     def convert_from_pyqt_color(obj, name, value):
         if isinstance(value, QtGui.QColor):
             return value.getRgbF()
@@ -296,66 +261,35 @@ elif ETSConfig.toolkit == 'qt4':
             "name, an integer which in hex is of the form 0xRRGGBB, where RR "
             "is red, GG is green, and BB is blue, a list/tuple of (r,g,b) or "
         "(r,g,b,a)")
-
-    def to_qt4_color(editor):
-
-        if editor.factory.mapped:
-            retval = getattr(editor.object, editor.name + '_')
-        else:
-            retval = getattr(editor.object, editor.name)
-
-        if isinstance(retval, tuple):
-            col = QtGui.QColor()
-            col.setRgbF(*retval)
-            retval = col
-
-        return retval
-
-    def str_color(color):
-
-        if isinstance(color, QtGui.QColor):
-            color = color.getRgbF()
-
-        if isinstance(color, tuple):
-            fmt = "(" + ",".join(["%0.3f"] * len(color)) + ")"
-            color =  fmt % color
-
         return color
-        
-    # FIXME: The following classes are redefined here simply so 
-    # they can use the to_qt4_color, str_color functions defined
-    # here instead of in the color_editor.py file. The implementation
-    # needs to be changed.
-    class SimpleColorEditor(SimpleEditor):
-        pass
-    
-    class CustomColorEditor(CustomEditor):
-        pass
-    
-    class TextColorEditor(TextEditor):
-        pass
-    
-    class ReadonlyColorEditor(ReadonlyEditor):
-        pass
 
-    class ColorEditorFactory(ColorEditor):
+    class ColorEditorFactory(StandardColorEditorFactory):
         
-        # Property getters
-        
-        def _get_simple_editor_class (self):
-            return SimpleColorEditor
-        
-        def _get_custom_editor_class (self):
-            return CustomColorEditor
-        
-        def _get_text_editor_class (self):
-            return TextColorEditor
-        
-        def _get_readonly_editor_class (self):
-            return ReadonlyColorEditor
+        def to_qt4_color(self, editor):
+    
+            if self.mapped:
+                retval = getattr(editor.object, editor.name + '_')
+            else:
+                retval = getattr(editor.object, editor.name)
+    
+            if isinstance(retval, tuple):
+                col = QtGui.QColor()
+                col.setRgbF(*retval)
+                retval = col
+    
+            return retval
+    
+        def str_color(self, color):
+    
+            if isinstance(color, QtGui.QColor):
+                color = color.getRgbF()
+    
+            if isinstance(color, tuple):
+                fmt = "(" + ",".join(["%0.3f"] * len(color)) + ")"
+                color =  fmt % color
 
     ColorTrait = Trait("black", Tuple, List, Str, color_table,
-            convert_from_pyqt_color, editor=ColorEditorFactory)
+                       convert_from_pyqt_color, editor=ColorEditorFactory)
 
 else:
     ColorTrait = Trait("black", Tuple, List, Str, color_table)
