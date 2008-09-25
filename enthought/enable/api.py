@@ -33,6 +33,7 @@ from container import Container
 from coordinate_box import CoordinateBox
 #from drag import DragHandler
 #from drag_resize import DragResizeHandler
+from component_editor import ComponentEditor
 
 # Breaks code that does not use numpy
 from label import Label
