@@ -682,10 +682,33 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         img is either a N*M*3 or N*M*4 numpy array, or a Kiva image
         
-        Need to implement a pycairo function to create an ImageSurface 
-        directly from a numpy array or a Kiva image.
+        rect - what is this? assume it's a tuple (x,y, w, h)
+        Only works with numpy arrays. What is a "Kiva Image" anyway?
+        Not Yet Tested.
         """
-        pass
+        if img.shape[2]==3:
+            format = cairo.FORMAT_RGB24
+        elif img.shape[2]==4:
+            format = cairo.FORMAT_ARGB32
+        w,h = img.shape[:2]
+        s = cairo.ImageSurface.create_for_data(img.astype(numpy.uint8), 
+                                               format, w, h)
+        ctx = self._ctx
+        ##the cairo state doesn't include the source, so there's no point in
+        ##saving the state here.
+        #ctx.save()
+        if rect:
+            x,y,sx,sy = rect
+            ctx.set_source_surface(s, x, y)
+            p = ctx.copy_path() #need to save the path
+            ctx.new_path()
+            ctx.rectangle(x,y,sx,sy)
+            ctx.fill()
+        else:
+            ctx.set_source_surface(s)
+            ctx.paint()
+        #ctx.restore()
+            
 
     #-------------------------------------------------------------------------
     # Drawing Text
