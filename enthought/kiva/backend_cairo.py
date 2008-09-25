@@ -130,7 +130,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.state_stack = []
         
         #the text-matrix includes the text position
-        self.text_matrix = cairo.Matrix() #not part of the graphics state
+        self.text_matrix = cairo.Matrix(1,0,0,-1,0,0) #not part of the graphics state
         
     def scale_ctm(self, sx, sy):
         """ Sets the coordinate system scale to the given values, (sx,sy).
@@ -746,7 +746,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         face_name = font.face_name
             
         ctx = self._ctx
-        ctx.select_font_face('arial', style, weight)
+        ctx.select_font_face(face_name, style, weight)
         ctx.set_font_size(font.size)
         #facename = font.face_name
         #slant = font.style
@@ -858,6 +858,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         """
         ctx = self._ctx
+        #print text, list(ctx.get_matrix())
         cur_path = ctx.copy_path()
         ctx.save()
         ctx.transform(self.text_matrix)
@@ -966,7 +967,8 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
             returns the width and height of the rendered text
         """
-        return self.get_full_text_extent(textstring)[:2]
+        xb, yb, w, h, xa, ya = self._ctx.text_extents(textstring)
+        return w, h
 
     def get_full_text_extent(self,textstring):
         """
@@ -974,10 +976,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             
             This just calls get_text_extent, for the time being.
         """
-        xb, yb, w, h, xa, ya = self._ctx.text_extents(textstring)
-        descent = h+yb
-        leading = 0 #this should be the line spacing
-        return w, h, descent, leading
+        w,h = self.get_text_extent(textstring)
+        ascent, descent, height, maxx, maxy = self._ctx.font_extents()
+        return w, ascent+descent, -descent, height
         
     def render_component(self, component, container_coords=False):
         """ Renders the given component.
@@ -1013,8 +1014,10 @@ if __name__=="__main__":
     from scipy.special import jn
     
     from enthought.traits.api import false
-    from enthought.chaco.api import ArrayPlotData, Plot
+    from enthought.chaco.api import ArrayPlotData, Plot, PlotGraphicsContext
     from enthought.chaco.example_support import COLOR_PALETTE
+    
+    from itertools import cycle, izip
     
     DPI = 72.0
     dpi_scale = DPI / 72.0
@@ -1026,10 +1029,10 @@ if __name__=="__main__":
         x = linspace(low, high, numpoints)
         pd = ArrayPlotData(index=x)
         p = Plot(pd, bgcolor="lightgray", padding=50, border_visible=True)
-        for i in range(10):
+        for t,i in izip(cycle(['line','scatter']),range(10)):
             pd.set_data("y" + str(i), jn(i,x))
             p.plot(("index", "y" + str(i)), color=tuple(COLOR_PALETTE[i]),
-                   width = 2.0 * dpi_scale)
+                   width = 2.0 * dpi_scale, type=t)
         p.x_grid.visible = True
         p.x_grid.line_width *= dpi_scale
         p.y_grid.visible = True
@@ -1041,11 +1044,57 @@ if __name__=="__main__":
     container.outer_bounds = [800,600]
     container.do_layout(force=True)
     
-    s = cairo.ImageSurface(cairo.FORMAT_RGB24, 800,600)
-    ctx = cairo.Context(s)
-    ctx.set_source_rgb(1,1,1)
-    ctx.paint()
-    gc = GraphicsContext(ctx)
-    gc.render_component(container)
-    s.flush()
-    s.write_to_png("/home/bryan/kiva_cairo.png")
+    def render_cairo_png():
+        w,h = 800,600
+        scale = 1.0
+        s = cairo.ImageSurface(cairo.FORMAT_RGB24, w*scale,h*scale)
+        s.set_device_offset(0,h*scale)
+        ctx = cairo.Context(s)
+        ctx.set_source_rgb(1,1,1)
+        ctx.paint()
+        ctx.scale(1,-1)
+        ctx.scale(scale,scale)
+        gc = GraphicsContext(ctx)
+        gc.render_component(container)
+        s.flush()
+        s.write_to_png("/home/bryan/kiva_cairo.png")
+        
+    def render_cairo_svg():
+        w,h = 800,600
+        scale = 1.0
+        s = cairo.SVGSurface("/home/bryan/kiva_cairo.svg", w*scale,h*scale)
+        s.set_device_offset(0,h*scale)
+        ctx = cairo.Context(s)
+        ctx.set_source_rgb(1,1,1)
+        ctx.paint()
+        ctx.scale(1,-1)
+        ctx.scale(scale,scale)
+        gc = GraphicsContext(ctx)
+        gc.render_component(container)
+        s.finish()
+        
+    def render_cairo_pdf():
+        w,h = 800,600
+        scale = 1.0
+        s = cairo.PDFSurface("/home/bryan/kiva_cairo.pdf", w*scale,h*scale)
+        s.set_device_offset(0,h*scale)
+        ctx = cairo.Context(s)
+        ctx.set_source_rgb(1,1,1)
+        ctx.paint()
+        ctx.scale(1,-1)
+        ctx.scale(scale,scale)
+        gc = GraphicsContext(ctx)
+        gc.render_component(container)
+        s.finish()
+    
+    def render_agg():
+        gc2 = PlotGraphicsContext((800,600), dpi=DPI)
+        gc2.render_component(container)
+        gc2.save("/home/bryan/kiva_agg.png")
+        
+    #render_agg()
+    render_cairo_png()
+    render_cairo_svg()
+    render_cairo_pdf()
+    render_agg()
+    
