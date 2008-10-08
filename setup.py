@@ -312,6 +312,7 @@ setup(
     namespace_packages = [
         "enthought",
         ],
+    package_data = {'': ['*.zip']},
     platforms = ["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
     setup_requires = 'setupdocs',
     tests_require = [
