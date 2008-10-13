@@ -6,7 +6,7 @@
 #  (c) Copyright 2007 by Enthought, Inc.
 #----------------------------------------------------------------------------
 
-from enthought.enable.api import ColorTrait
+from enthought.enable.colors import ColorTrait
 
 from enthought.etsconfig.api import ETSConfig
 
