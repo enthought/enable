@@ -184,6 +184,10 @@ class Renderer(NullRenderer):
     @staticmethod
     def strokePath(*args):
         return wx.GraphicsContext.StrokePath(*args)
+
+    @staticmethod
+    def clipPath(gc, path):
+        return gc.Clip(wx.Region(path.GetBox()))
     
     @staticmethod
     def translate(*args):

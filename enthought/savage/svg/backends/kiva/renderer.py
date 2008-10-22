@@ -429,10 +429,11 @@ class Renderer(NullRenderer):
         brush.set_on_gc(gc, bbox=bbox)
         gc.restore_state()
 
-    @classmethod
-    def clipPath(cls, gc, path):
-        gc.add_path(path)
-        return gc.clip()
+#    @classmethod
+#    def clipPath(cls, gc, path):
+#        print "clipping!"
+#        gc.add_path(path)
+#        return gc.clip()
 
     @classmethod
     def translate(cls, gc, *args):

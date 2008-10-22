@@ -107,6 +107,7 @@ def valueToPixels(val, defaultUnits="px"):
     try:
         val, unit = values.length.parseString(val)
     except ParseException:
+        import pdb;pdb.set_trace()
         print 'valueToPixels(%r, %r)' % (val, defaultUnits)
         raise
     val *= units_to_px.get(unit, 1)
@@ -125,10 +126,19 @@ def pathHandler(func):
         #if not (brush or pen):
         #    return None, []
         path = self.renderer.makePath()
-        func(self, node, path)
+        results = func(self, node, path)
+
         ops = [
             (self.renderer.pushState, ()),
         ]
+
+        # the results willbe None, unless the path has something which affects
+        # the render stack, such as clipping
+        if results != None:
+            cpath, cops = results
+            path = cpath
+            ops = cops + ops
+        
         ops.extend(self.createTransformOpsFromNode(node))
         ops.extend(self.generatePathOps(path))
         ops.append(
@@ -245,6 +255,7 @@ class SVGDocument(object):
         self.idmap = self.findIDs(element)
         self.paths = {}
         self.stateStack = [{}]
+        self.clippingStack = []
         path, ops = self.processElement(element)
         self.ops = ops
         
@@ -598,6 +609,31 @@ class SVGDocument(object):
         x, y, w, h = (attrAsFloat(node, attr) for attr in ['x', 'y', 'width', 'height'])
         rx = node.get('rx')
         ry = node.get('ry')
+
+        ops = []
+
+        if 'clip-path' in node.keys():
+            element = self.dereference(node.get('clip-path'))
+
+            ops = [
+                (self.renderer.pushState, ()),
+            ]
+
+            clip_path = self.renderer.makePath()
+            ops.extend(self.createTransformOpsFromNode(element))
+            ops.extend(self.generatePathOps(clip_path))
+            for child in element.getchildren():
+                cpath, cops = self.processElement(child)
+                if cpath:
+                    clip_path.AddPath(cpath)
+                    ops.append((self.renderer.clipPath, (clip_path,)))
+                    path.AddPath(clip_path)
+                if cops:
+                    ops.extend(cops)
+            ops.append(
+                (self.renderer.popState, ())
+            )
+
         if not (w and h):
             path.MoveToPoint(x,y) #keep the current point correct
             return
@@ -648,9 +684,14 @@ class SVGDocument(object):
             )
             path.CloseSubpath()
         else:
-            path.AddRectangle(
-                x, y, w, h
-            )
+            if len(self.clippingStack) > 0:
+                self.renderer.clipPath()
+            else:
+                path.AddRectangle(
+                    x, y, w, h
+                )
+
+        return path, ops
     
     @pathHandler
     def addCircleToDocument(self, node, path):
