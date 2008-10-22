@@ -400,7 +400,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--openclipart', action='store_true',
         help="The suite is in OpenClipart layout rather than the SVG test suite layout.")
-    parser.add_argument('suitedir', nargs='?',
+    parser.add_argument('--suitedir', nargs='?',
         default=os.path.join(this_dir, 'w3c_svg_11'),
         help="The directory with the test suite. [default: %(default)s]")
 
