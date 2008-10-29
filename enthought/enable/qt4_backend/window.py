@@ -1,5 +1,5 @@
 #------------------------------------------------------------------------------
-# Copyright (c) 2007, Riverbank Computing Limited
+# Copyright (c) 2008, Riverbank Computing Limited
 # All rights reserved.
 #
 # This software is provided without warranty under the terms of the BSD
@@ -42,6 +42,8 @@ class _QtWindow(QtGui.QWidget):
         self.setAttribute(QtCore.Qt.WA_OpaquePaintEvent)
         self.setFocusPolicy(QtCore.Qt.WheelFocus)
         self.setMouseTracking(True)
+        self.setSizePolicy(QtGui.QSizePolicy.Expanding,
+                QtGui.QSizePolicy.Expanding)
 
     def paintEvent(self, event):
         self._enable_window._paint(event)
