@@ -43,7 +43,7 @@ def _init_toolkit():
         try:
             __import__(be)
             break
-        except ImportError:
+        except (ImportError, SystemExit):
             pass
     else:
         if enable_toolkit:
