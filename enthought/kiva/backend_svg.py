@@ -153,11 +153,12 @@ except ImportError:
 font_face_map = {'Arial': 'Helvetica'}
 
 # This backend has no compiled path object, yet.
-CompiledPath = None
+class CompiledPath(object):
+    pass
 
 _clip_counter = 0
 class GraphicsContext(basecore2d.GraphicsContextBase):
-
+    
     def __init__(self, size):
         basecore2d.GraphicsContextBase.__init__(self)
         self.size = size
@@ -172,6 +173,16 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         contents = self.contents.getvalue().replace("<svg:", "<").replace("</svg:", "</")
         return xmltemplate % locals()
 
+    def clear(self, size):
+        # TODO: clear the contents
+        pass
+    
+    def width(self):
+        return self.size[0]
+    
+    def height(self):
+        return self.size[1]
+    
     def save(self, filename):
         f = open(filename, 'w')
         ext = os.path.splitext(filename)[1]
@@ -186,10 +197,13 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         else:
             raise ValueError, "don't know how to write a %s file" % ext
         f.write(template % locals())
+        
 
     # Text handling code
 
     def set_font(self, font):
+        if font.face_name == '':
+            font.face_name = 'Arial'
         self.face_name = font_face_map.get(font.face_name, font.face_name)
         self.font = pdfmetrics.Font(self.face_name, self.face_name, pdfmetrics.defaultEncoding)
         self.font_size = font.size
@@ -352,6 +366,8 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         pass
 
 
+def font_metrics_provider():
+    return GraphicsContext((1,1))
 
 class Canvas:
     def __init__(self, filename='', id = -1, size = (200,200)):
