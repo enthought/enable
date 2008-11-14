@@ -10,7 +10,6 @@ class RenderPanel(renderer.Canvas):
         self.zoom = 100
 #        self.offset = wx.Point(0,0)
 
-
     def do_draw(self, gc):
         start = time.time()
         gc.clear()

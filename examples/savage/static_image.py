@@ -20,7 +20,8 @@ class StaticImageExample(HasTraits):
         
         # FIXME: programatically figure out which renderer to use
         from enthought.savage.svg.backends.wx.renderer import Renderer as WxRenderer
-        self.svg = SVGDocument(root, renderer=WxRenderer)
+        from enthought.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
+        self.svg = SVGDocument(root, renderer=KivaRenderer)
         
 if __name__ == "__main__":
     import os.path

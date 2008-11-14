@@ -21,15 +21,27 @@
 #-------------------------------------------------------------------------------
 #  Imports:
 #-------------------------------------------------------------------------------
-from enthought.traits.api import Instance, Int
+from enthought.traits.api import Instance, Int, Enum
 from enthought.traits.ui.wx.editor import Editor
 from enthought.traits.ui.wx.basic_editor_factory import BasicEditorFactory
     
 
 from enthought.savage.svg.document import SVGDocument
 
-# FIXME: programatically figure out which backend to use
-from wx_render_panel import RenderPanel
+from enthought.etsconfig.api import ETSConfig
+
+from enthought.savage.svg.backends.wx.renderer import Renderer as WxRenderer
+from enthought.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
+
+from kiva_render_panel import RenderPanel as KivaRenderPanel
+if ETSConfig.toolkit == 'wx':
+    from wx_render_panel import RenderPanel as WxRenderPanel
+else:
+    import warnings
+    warning.warn("Only 'wx' toolkit is supported currently, falling back to Kiva backend")
+    from kiva_render_panel import RenderPanel as WxRenderPanel
+    
+
 
 #-------------------------------------------------------------------------------
 #  '_SVGEditor' class:
@@ -51,8 +63,14 @@ class _SVGEditor ( Editor ):
             widget.
         """
         document = self.value
-         
-        self.control = RenderPanel( parent, document=document)
+        
+        # TODO: the document should not know about the renderer, this should
+        # be an attribute of the editor
+        
+        if document.renderer == WxRenderer:
+            self.control = WxRenderPanel( parent, document=document)
+        else:
+            self.control = KivaRenderPanel( parent, document=document)
                         
     #---------------------------------------------------------------------------
     #  Updates the editor when the object trait changes external to the editor:
@@ -69,8 +87,6 @@ class _SVGEditor ( Editor ):
 #-------------------------------------------------------------------------------
 #  Create the editor factory object:
 #-------------------------------------------------------------------------------
-
-# wxPython editor factory for svg editors:
 class SVGEditor ( BasicEditorFactory ):
     
     # The editor class to be created:
