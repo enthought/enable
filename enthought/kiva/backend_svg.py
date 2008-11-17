@@ -46,31 +46,6 @@ import basecore2d
 import constants
 from constants import FILL, FILL_STROKE, EOF_FILL_STROKE, EOF_FILL, STROKE
 
-try:
-    import logging
-    import tempfile
-    _logfile = os.path.join(tempfile.gettempdir(), "kivasvg.log")
-    hdlr = logging.FileHandler(_logfile)
-    BASIC_FORMAT = "%(levelname)s: %(name)s: %(message)s"
-    fmt = logging.Formatter(BASIC_FORMAT)
-    hdlr.setFormatter(fmt)
-    logging.root.addHandler(hdlr)
-    log = logging.getLogger('')
-    log.setLevel(logging.INFO)
-except ImportError:
-    class FakeLogger:
-        def debug(self, message):
-            print >> sys.stderr, "DEBUG:", message
-        def info(self, message):
-            print >> sys.stderr, "INFO:", message
-        def warn(self, message):
-            print >> sys.stderr, "WARN:", message
-        def error(self, message):
-            print >> sys.stderr, "ERROR:", message
-        def critical(self, message):
-            print >> sys.stderr, "CRITICAL:", message
-    log = FakeLogger()
-
 def _strpoints(points):
     c = cStringIO.StringIO()
     for x,y in points:
