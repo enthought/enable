@@ -31,6 +31,7 @@ class Crosshair(BaseTool):
         matches the origin of its component. (For containers, this is just the
         origin; for components, it is the origin of their containers.)
         """
+        
         if not self.mouse_in:
             return
         # Convert from SVG coordinates to Enable coordinates.

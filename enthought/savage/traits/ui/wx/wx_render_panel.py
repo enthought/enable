@@ -38,7 +38,7 @@ class RenderPanel(wx.PyPanel):
     def GetBestSize(self):
         if not self.document:
             return (-1,-1)
-        sz = map(int,self.document.tree.getroot().get("viewBox").split())
+        sz = map(int,self.document.tree.get("viewBox").split())
         return wx.Rect(*sz).GetSize()
 
     def OnWheel(self, evt):
