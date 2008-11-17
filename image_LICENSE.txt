@@ -48,6 +48,9 @@ enthought/enable/image/images:
 
 examples/enable:
                       deepfield.jpg | NASA
+examples/savage:
+                      edit-copy.svg | Oxygen, CC 3.0 and GPL
+                     edit-paste.svg | Oxygen, CC 3.0 and GPL
 
 examples/kiva/agg/examples:
                       serengeti.jpg | Rick Marin
