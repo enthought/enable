@@ -15,6 +15,22 @@ from enthought.savage.svg.backends.wx.renderer import Renderer
 from wx_render_panel import RenderPanel
 
 
+class ButtonRenderPanel(RenderPanel):
+    def __init__(self, parent, button):
+        self.button = button
+        self.document = button.document
+        
+        super(ButtonRenderPanel, self).__init__(parent, document=self.document)
+    
+    def OnLeftDown(self, evt):
+        print "left down!"
+        evt.Skip()
+
+    def OnLeftUp(self, evt):
+        print "left up!"
+        evt.Skip()
+
+
 class _SVGButtonControl(Widget):
     
     document = Instance(SVGDocument)
@@ -60,7 +76,7 @@ class _SVGButtonControl(Widget):
         panel.SetAutoLayout(True)
         panel.SetBackgroundColour(wx.NullColor)
         
-        render_panel = RenderPanel( parent, document=self.document)
+        render_panel = ButtonRenderPanel(parent, self)
         
         if self.label != '':
             label_control = wx.StaticText(panel, -1, self.label)
@@ -97,6 +113,8 @@ class _SVGButtonEditor ( Editor ):
     """ Traits UI 'display only' image editor.
     """
     
+    document = Instance(SVGDocument)
+    
     #---------------------------------------------------------------------------
     #  Finishes initializing the editor by creating the underlying toolkit
     #  widget:
@@ -110,10 +128,10 @@ class _SVGButtonEditor ( Editor ):
         tree = etree.parse(self.factory.filename)
         root = tree.getroot()
         
-        document = SVGDocument(root, renderer=Renderer)
+        self.document = SVGDocument(root, renderer=Renderer)
         #self._control = _SVGButtonControl( parent, document=document, label=self.factory.label)
         #self.control = self._control.control
-        self.control = RenderPanel( parent, document=document)
+        self.control = ButtonRenderPanel( parent, self)
         
         svg_w, svg_h = self.control.GetBestSize()
         scale_factor = svg_w/self.factory.width
