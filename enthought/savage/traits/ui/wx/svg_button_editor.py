@@ -2,7 +2,7 @@
 import xml.etree.cElementTree as etree
 import wx
 
-from enthought.traits.api import Str, Range, Enum, Instance, Event, Int
+from enthought.traits.api import Str, Range, Enum, Instance, Event, Int, Property
 from enthought.traits.ui.api import View
 from enthought.traits.ui.ui_traits import AView
 from enthought.traits.ui.wx.editor import Editor
@@ -34,13 +34,12 @@ class ButtonRenderPanel(RenderPanel):
         return bgcolor
     
     def OnLeftDown(self, evt):
-        print "left down!"
         self.state = 'down'
+        self.button.update_editor()
         evt.Skip()
         self.Refresh()
 
     def OnLeftUp(self, evt):
-        print "left up!"
         self.state = 'up'
         evt.Skip()
         self.Refresh()
@@ -85,10 +84,8 @@ class _SVGButtonEditor ( Editor ):
         """ Updates the editor when the object trait changes externally to the
             editor.
         """
-        import pdb;pdb.set_trace()
+        factory    = self.factory
         self.value = factory.value
-        pass
-        #self.control.Refresh()
                     
 #-------------------------------------------------------------------------------
 #  Create the editor factory object:
@@ -97,6 +94,9 @@ class SVGButtonEditor ( BasicEditorFactory ):
     
     # The editor class to be created:
     klass = _SVGButtonEditor
+    
+    # Value to set when the button is clicked
+    value = Property    
     
     label = Str()
     

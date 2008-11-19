@@ -1,3 +1,4 @@
+import copy
 import os.path
 
 from enthought.savage.traits.ui.wx.svg_button import SVGButton
@@ -11,10 +12,18 @@ class ButtonDemo(HasTraits):
     paste_button = SVGButton('paste', filename=os.path.join(os.path.dirname(__file__), 'edit-paste.svg'))
     text = Str()
     
+    clipboard = Str()
+    
     traits_view = View(HGroup(Item('copy_button', width=32, height=32, show_label=False),
                               Item('paste_button', width=32, height=32, show_label=False)),
                        Item('text'),
                        title="SVG Button Demo")
+                       
+    def _copy_button_fired(self, event):
+        self.clipboard = copy.copy(self.text)
+        
+    def _paste_button_fired(self, event):
+        self.text += self.clipboard
                                     
 if __name__ == "__main__":
     import os.path
