@@ -19,16 +19,31 @@ class ButtonRenderPanel(RenderPanel):
     def __init__(self, parent, button):
         self.button = button
         self.document = button.document
+        self.state = 'up'
         
         super(ButtonRenderPanel, self).__init__(parent, document=self.document)
+        
+    def GetBackgroundColour(self):
+        bgcolor = super(ButtonRenderPanel, self).GetBackgroundColour()
+        if self.state == 'down':
+            red, green, blue = bgcolor.Get()
+            red -= 50
+            green -= 50
+            blue -= 50
+            bgcolor.Set(red, green, blue, 255)
+        return bgcolor
     
     def OnLeftDown(self, evt):
         print "left down!"
+        self.state = 'down'
         evt.Skip()
+        self.Refresh()
 
     def OnLeftUp(self, evt):
         print "left up!"
+        self.state = 'up'
         evt.Skip()
+        self.Refresh()
 
 
 class _SVGButtonControl(Widget):
