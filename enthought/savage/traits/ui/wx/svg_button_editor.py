@@ -22,6 +22,9 @@ class ButtonRenderPanel(RenderPanel):
         self.state = 'up'
         
         super(ButtonRenderPanel, self).__init__(parent, document=self.document)
+            
+    def DoGetBestSize(self):
+        return wx.Size(self.button.factory.width, self.button.factory.height)        
         
     def GetBackgroundColour(self):
         bgcolor = super(ButtonRenderPanel, self).GetBackgroundColour()
@@ -72,7 +75,7 @@ class _SVGButtonEditor ( Editor ):
         self.control = ButtonRenderPanel( parent, self)
         
         svg_w, svg_h = self.control.GetBestSize()
-        scale_factor = svg_w/self.factory.width
+        scale_factor = float(svg_w)/self.factory.width
         self.control.zoom /= scale_factor
         self.control.Refresh()
                         
@@ -119,7 +122,7 @@ class SVGButtonEditor ( BasicEditorFactory ):
     
     width = Int(32)
     height = Int(32)
-
+    
     #---------------------------------------------------------------------------
     #  Traits view definition:
     #---------------------------------------------------------------------------
@@ -150,6 +153,6 @@ class SVGButtonEditor ( BasicEditorFactory ):
 
     def __init__ ( self, **traits ):
         self._value = 0
-        super( SVGButtonEditor, self ).__init__( **traits )
+        super( SVGButtonEditor, self ).__init__( **traits)
     
     
