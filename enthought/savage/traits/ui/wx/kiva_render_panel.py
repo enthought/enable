@@ -28,7 +28,6 @@ class RenderPanel(renderer.Canvas):
         self.lastRender = time.time() - start
         print 'draw time:', self.lastRender
         
-        
     def GetBestSize(self):
         if not self.document:
             return (-1,-1)

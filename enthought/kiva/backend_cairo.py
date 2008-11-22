@@ -12,6 +12,7 @@
 import cairo
 import basecore2d
 import constants
+import numpy
 
 import copy
 from itertools import izip
@@ -131,6 +132,15 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         
         #the text-matrix includes the text position
         self.text_matrix = cairo.Matrix(1,0,0,-1,0,0) #not part of the graphics state
+        
+    def clear(self, color=(1,1,1)):
+        pass
+    
+    def height(self):
+        return self._ctx.get_target().get_height()
+    
+    def width(self):
+        return self._ctx.get_target().get_width()
         
     def scale_ctm(self, sx, sy):
         """ Sets the coordinate system scale to the given values, (sx,sy).
@@ -576,6 +586,14 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     def add_path(self, path):
         """Draw a compiled path into this gc.  
         In this case, a compiled path is a Cairo.Path"""
+        if isinstance(path, CompiledPath):
+            self._ctx.new_sub_path()
+            for op_name, op_args in path.state:
+                op = getattr(self._ctx, op_name)
+                op(*op_args)
+            path = self._ctx.copy_path()
+            self._ctx.close_path()
+                
         self._ctx.append_path(path)
                 
                     
@@ -1031,6 +1049,108 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.translate_ctm(x, y)
         component.draw(self, view_bounds=(0, 0, w, h))
         return
+        
+try:
+    import wx
+    from backend_wx import WidgetClass, BaseWxCanvas
+    class Canvas(BaseWxCanvas, WidgetClass):
+        def __init__(self, parent, id = -1, size = wx.DefaultSize):
+            WidgetClass.__init__(self, parent, id, wx.Point(0, 0), size, 
+                                    wx.SUNKEN_BORDER | wx.WANTS_CHARS | \
+                                    wx.FULL_REPAINT_ON_RESIZE )
+                        
+            self.gc = None
+            self.new_gc()
+            
+            self.clear_color = (1,1,1)
+            self.dirty = True
+            
+            
+            wx.EVT_PAINT(self, self.OnPaint)
+            wx.EVT_SIZE(self, self.OnSize)      
+            wx.EVT_ERASE_BACKGROUND(self, self.OnErase)
+            
+        def _create_kiva_gc(self, size):
+            """
+            Returns a new backend-dependent GraphicsContext* instance of the
+            given size.
+            """
+            default_height = 600
+            default_width = 800
+            
+            self.surface = cairo.ImageSurface(cairo.FORMAT_RGB24, default_width, default_height)
+            self.surface.set_device_offset(0,default_height)
+            
+            ctx = cairo.Context(self.surface)
+            ctx.set_source_rgb(1,1,1)
+            ctx.scale(1,1)
+            
+            return GraphicsContext(ctx)
+            
+        def blit(self, event):
+            paintdc = wx.PaintDC(self)
+            #w, h = self.size()
+            w,h = 600, 800
+            
+            self.surface.finish()            
+            pixels = numpy.frombuffer(self.surface.get_data(), numpy.uint8)
+            #pixels.shape = (w, h, 4)
+            
+            memDC = wx.MemoryDC()            
+            bitmap = wx.BitmapFromBufferRGBA(w, h, pixels.flatten())
+            memDC.SelectObject(bitmap)
+            
+            paintdc.Blit(0, 0, w, h, memDC, 0, 0)
+            self.dirty = 0
+            return
+            
+        def clear(self):
+            self.gc.clear(self.clear_color)
+            return
+            
+        def OnSize(self,event):
+            # resize buffer bitmap and repaint.
+            sz = self.GetClientSizeTuple()
+            if sz != (self.surface.get_width(),self.surface.get_height()):
+                self.new_gc(sz)
+            event.Skip()
+            return
+                        
+except:
+    Canvas = None
+        
+        
+class CompiledPath(object):
+    
+    def __init__(self):
+        self.state = []
+    
+    def add_path(self, *args):
+        self.state.append(('add_path', args))
+        
+    def rect(self, *args):
+        self.state.append(('rect', args))
+        
+    def move_to(self, *args):
+        self.state.append(('move_to', args))
+        
+    def line_to(self, *args):
+        self.state.append(('line_to', args))
+        
+    def close_path(self, *args):
+        self.state.append(('close_path', args))
+        
+    def quad_curve_to(self, *args):
+        self.state.append(('quad_curve_to', args))
+        
+    def curve_to(self, *args):
+        self.state.append(('curve_to', args))
+        
+    def arc(self, *args):
+        self.state.append(('arc', args))
+        
+        
+font_metrics_provider = None
 
 if __name__=="__main__":
     from numpy import fabs, linspace, pi, sin
@@ -1080,12 +1200,12 @@ if __name__=="__main__":
         gc = GraphicsContext(ctx)
         gc.render_component(container)
         s.flush()
-        s.write_to_png("/home/bryan/kiva_cairo.png")
+        s.write_to_png("/tmp/kiva_cairo.png")
         
     def render_cairo_svg():
         w,h = 800,600
         scale = 1.0
-        s = cairo.SVGSurface("/home/bryan/kiva_cairo.svg", w*scale,h*scale)
+        s = cairo.SVGSurface("/tmp/kiva_cairo.svg", w*scale,h*scale)
         s.set_device_offset(0,h*scale)
         ctx = cairo.Context(s)
         ctx.set_source_rgb(1,1,1)
@@ -1099,7 +1219,7 @@ if __name__=="__main__":
     def render_cairo_pdf():
         w,h = 800,600
         scale = 1.0
-        s = cairo.PDFSurface("/home/bryan/kiva_cairo.pdf", w*scale,h*scale)
+        s = cairo.PDFSurface("/tmp/kiva_cairo.pdf", w*scale,h*scale)
         s.set_device_offset(0,h*scale)
         ctx = cairo.Context(s)
         ctx.set_source_rgb(1,1,1)
@@ -1113,7 +1233,7 @@ if __name__=="__main__":
     def render_agg():
         gc2 = PlotGraphicsContext((800,600), dpi=DPI)
         gc2.render_component(container)
-        gc2.save("/home/bryan/kiva_agg.png")
+        gc2.save("/tmp/kiva_agg.png")
         
     #render_agg()
     render_cairo_png()
