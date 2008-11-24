@@ -1092,7 +1092,6 @@ try:
             #w, h = self.size()
             w,h = 600, 800
             
-            self.surface.finish()            
             pixels = numpy.frombuffer(self.surface.get_data(), numpy.uint8)
             #pixels.shape = (w, h, 4)
             
