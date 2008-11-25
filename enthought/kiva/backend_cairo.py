@@ -125,8 +125,21 @@ class GraphicsState(object):
         return copy.deepcopy(self)
 
 class GraphicsContext(basecore2d.GraphicsContextBase):
-    def __init__(self, cairoCtx):
-        self._ctx = cairoCtx
+    def __init__(self, size, *args, **kw):
+        
+        w,h = size
+        
+        self.surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
+        self.surface.set_device_offset(0,h)
+        
+        if 'context' in kw:
+            ctx = kw.pop('context')
+        else:        
+            ctx = cairo.Context(self.surface)
+            ctx.set_source_rgba(1,1,1,1)
+            ctx.scale(1,-1)
+        
+        self._ctx = ctx
         self.state = GraphicsState()
         self.state_stack = []
         
@@ -1076,23 +1089,16 @@ try:
             given size.
             """
             
-            w,h = size
-            
-            self.surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
-            self.surface.set_device_offset(0,h)
-            
-            ctx = cairo.Context(self.surface)
-            ctx.set_source_rgba(1,1,1,1)
-            ctx.scale(1,-1)
-            
-            return GraphicsContext(ctx)
+            return GraphicsContext(size)
             
         def blit(self, event):
             paintdc = wx.PaintDC(self)
-            width = self.surface.get_width()
-            height = self.surface.get_height()
             
-            pixels = numpy.frombuffer(self.surface.get_data(), numpy.uint8)
+            surface = self.gc._ctx.get_target()            
+            width = surface.get_width()
+            height = surface.get_height()
+            
+            pixels = numpy.frombuffer(surface.get_data(), numpy.uint8)
             buffer_size = width*height*4
             
             alpha = pixels[3::4]
@@ -1117,7 +1123,8 @@ try:
         def OnSize(self,event):
             # resize buffer bitmap and repaint.
             sz = self.GetClientSizeTuple()
-            if sz != (self.surface.get_width(),self.surface.get_height()):
+            surface = self.gc._ctx.get_target()
+            if sz != (surface.get_width(),surface.get_height()):
                 self.new_gc(sz)
             event.Skip()
             return
@@ -1162,7 +1169,8 @@ class CompiledPath(object):
         return (self.state[index-1][1][0:2],)
         
         
-font_metrics_provider = None
+def font_metrics_provider():
+    return GraphicsContext((1,1))
 
 if __name__=="__main__":
     from numpy import fabs, linspace, pi, sin
@@ -1202,14 +1210,14 @@ if __name__=="__main__":
     def render_cairo_png():
         w,h = 800,600
         scale = 1.0
-        s = cairo.ImageSurface(cairo.FORMAT_RGB24, w*scale,h*scale)
+        s = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(w*scale),int(h*scale))
         s.set_device_offset(0,h*scale)
         ctx = cairo.Context(s)
         ctx.set_source_rgb(1,1,1)
         ctx.paint()
         ctx.scale(1,-1)
         ctx.scale(scale,scale)
-        gc = GraphicsContext(ctx)
+        gc = GraphicsContext((w,h), context=ctx)
         gc.render_component(container)
         s.flush()
         s.write_to_png("/tmp/kiva_cairo.png")
@@ -1224,7 +1232,7 @@ if __name__=="__main__":
         ctx.paint()
         ctx.scale(1,-1)
         ctx.scale(scale,scale)
-        gc = GraphicsContext(ctx)
+        gc = GraphicsContext((w,h), context=ctx)
         gc.render_component(container)
         s.finish()
         
@@ -1238,7 +1246,7 @@ if __name__=="__main__":
         ctx.paint()
         ctx.scale(1,-1)
         ctx.scale(scale,scale)
-        gc = GraphicsContext(ctx)
+        gc = GraphicsContext((w,h), context=ctx)
         gc.render_component(container)
         s.finish()
     
