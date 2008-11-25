@@ -1054,7 +1054,7 @@ try:
     import wx
     from backend_wx import WidgetClass, BaseWxCanvas
     class Canvas(BaseWxCanvas, WidgetClass):
-        def __init__(self, parent, id = -1, size = (350,450)):
+        def __init__(self, parent, id = -1, size = (600,400)):
             WidgetClass.__init__(self, parent, id, wx.Point(0, 0), size, 
                                     wx.SUNKEN_BORDER | wx.WANTS_CHARS | \
                                     wx.FULL_REPAINT_ON_RESIZE )
@@ -1079,10 +1079,11 @@ try:
             w,h = size
             
             self.surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
+            self.surface.set_device_offset(0,h)
             
             ctx = cairo.Context(self.surface)
-            ctx.set_source_rgb(1,1,1)
-            ctx.scale(1,1)
+            ctx.set_source_rgba(1,1,1,1)
+            ctx.scale(1,-1)
             
             return GraphicsContext(ctx)
             
@@ -1094,10 +1095,10 @@ try:
             pixels = numpy.frombuffer(self.surface.get_data(), numpy.uint8)
             buffer_size = width*height*4
             
-            alpha = pixels[0::4]
-            red = pixels[1::4]
-            green = pixels[2::4]
-            blue = pixels[3::4]
+            alpha = pixels[3::4]
+            red = pixels[2::4]
+            green = pixels[1::4]
+            blue = pixels[0::4]
             
             pixels = numpy.vstack((red, green, blue, alpha)).T.flatten()
             
@@ -1153,6 +1154,12 @@ class CompiledPath(object):
         
     def arc(self, *args):
         self.state.append(('arc', args))
+        
+    def total_vertices(self):
+        return len(self.state) + 1
+    
+    def vertex(self, index):
+        return (self.state[index-1][1][0:2],)
         
         
 font_metrics_provider = None
