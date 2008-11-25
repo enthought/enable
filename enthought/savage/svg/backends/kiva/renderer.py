@@ -27,7 +27,8 @@ class CompiledPath(kiva.CompiledPath):
     AddLineToPoint = kiva.CompiledPath.line_to
     CloseSubpath = kiva.CompiledPath.close_path
     if sys.platform == 'darwin':
-        GetCurrentPoint = kiva.CompiledPath.get_current_point
+        from enthought.kiva.backend_wx import CompiledPath
+        GetCurrentPoint = CompiledPath.get_current_point
     else:
         GetCurrentPoint = _GetCurrentPoint
     AddQuadCurveToPoint = kiva.CompiledPath.quad_curve_to
