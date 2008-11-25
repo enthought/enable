@@ -1054,13 +1054,13 @@ try:
     import wx
     from backend_wx import WidgetClass, BaseWxCanvas
     class Canvas(BaseWxCanvas, WidgetClass):
-        def __init__(self, parent, id = -1, size = wx.DefaultSize):
+        def __init__(self, parent, id = -1, size = (350,450)):
             WidgetClass.__init__(self, parent, id, wx.Point(0, 0), size, 
                                     wx.SUNKEN_BORDER | wx.WANTS_CHARS | \
                                     wx.FULL_REPAINT_ON_RESIZE )
-                        
+                                    
             self.gc = None
-            self.new_gc()
+            self.new_gc(size)
             
             self.clear_color = (1,1,1)
             self.dirty = True
@@ -1075,11 +1075,10 @@ try:
             Returns a new backend-dependent GraphicsContext* instance of the
             given size.
             """
-            default_height = 600
-            default_width = 800
             
-            self.surface = cairo.ImageSurface(cairo.FORMAT_RGB24, default_width, default_height)
-            self.surface.set_device_offset(0,default_height)
+            w,h = size
+            
+            self.surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
             
             ctx = cairo.Context(self.surface)
             ctx.set_source_rgb(1,1,1)
@@ -1089,17 +1088,24 @@ try:
             
         def blit(self, event):
             paintdc = wx.PaintDC(self)
-            #w, h = self.size()
-            w,h = 600, 800
+            width = self.surface.get_width()
+            height = self.surface.get_height()
             
             pixels = numpy.frombuffer(self.surface.get_data(), numpy.uint8)
-            #pixels.shape = (w, h, 4)
+            buffer_size = width*height*4
+            
+            alpha = pixels[0::4]
+            red = pixels[1::4]
+            green = pixels[2::4]
+            blue = pixels[3::4]
+            
+            pixels = numpy.vstack((red, green, blue, alpha)).T.flatten()
             
             memDC = wx.MemoryDC()            
-            bitmap = wx.BitmapFromBufferRGBA(w, h, pixels.flatten())
+            bitmap = wx.BitmapFromBufferRGBA(width, height, pixels)
             memDC.SelectObject(bitmap)
             
-            paintdc.Blit(0, 0, w, h, memDC, 0, 0)
+            paintdc.Blit(0, 0, width, height, memDC, 0, 0)
             self.dirty = 0
             return
             
