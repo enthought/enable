@@ -38,7 +38,7 @@ if ETSConfig.toolkit == 'wx':
     from wx_render_panel import RenderPanel as WxRenderPanel
 else:
     import warnings
-    warning.warn("Only 'wx' toolkit is supported currently, falling back to Kiva backend")
+    warnings.warn("Only 'wx' toolkit is supported currently, falling back to Kiva backend")
     from kiva_render_panel import RenderPanel as WxRenderPanel
     
 
