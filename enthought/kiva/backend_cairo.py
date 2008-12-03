@@ -110,8 +110,8 @@ class GraphicsState(object):
         
     """
     def __init__(self):       
-        self.fill_color = [0.0,0.0,0.0]
-        self.stroke_color = [0.0,0.0,0.0]
+        self.fill_color = [1,1,1]
+        self.stroke_color = [1,1,1]
         self.alpha = 1.0
         self.text_drawing_mode = constants.TEXT_FILL
         
@@ -136,7 +136,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             ctx = kw.pop('context')
         else:        
             ctx = cairo.Context(self.surface)
-            ctx.set_source_rgba(1,1,1,1)
+            ctx.set_source_rgb(1,1,1)
             ctx.scale(1,-1)
         
         self._ctx = ctx
@@ -147,7 +147,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.text_matrix = cairo.Matrix(1,0,0,-1,0,0) #not part of the graphics state
         
     def clear(self, color=(1,1,1)):
-        pass
+        self._ctx.set_source_rgb(*color)
     
     def height(self):
         return self._ctx.get_target().get_height()
@@ -1112,7 +1112,7 @@ try:
     import wx
     from backend_wx import WidgetClass, BaseWxCanvas
     class Canvas(BaseWxCanvas, WidgetClass):
-        def __init__(self, parent, id = -1, size = (600,400)):
+        def __init__(self, parent, id = -1, size = (600,600)):
             WidgetClass.__init__(self, parent, id, wx.Point(0, 0), size, 
                                     wx.SUNKEN_BORDER | wx.WANTS_CHARS | \
                                     wx.FULL_REPAINT_ON_RESIZE )
