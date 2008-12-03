@@ -187,7 +187,9 @@ class Renderer(NullRenderer):
 
     @staticmethod
     def clipPath(gc, path):
-        return gc.Clip(wx.Region(path.GetBox()))
+        rect = path.GetBox()
+        region = wx.Region(rect.x, rect.y, rect.width, rect.height)
+        gc.ClipRegion(region)
     
     @staticmethod
     def translate(*args):
