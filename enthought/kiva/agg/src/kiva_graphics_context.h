@@ -9,6 +9,8 @@
 #include <assert.h>
 #include <stack>
 
+#include <iostream>
+
 #include "agg_trans_affine.h"
 #include "agg_path_storage.h"
 
@@ -760,17 +762,28 @@ namespace kiva
         // lessen the potential for inconsistencies.
         this->path.remove_all();
 
-
         if (this->state.use_rect_clipping())
         {
+//            std::cout << "trying to clip a rectangle" << std::endl;
+
             kiva::rect_type device_rect(transform_clip_rectangle(rect));
 
             // optimize for case when there is only one existing rectangle
             if (this->state.device_space_clip_rects.size() == 1)
             {
+//                std::cout << "only one rectangle to intersect" << std::endl;
+
                 kiva::rect_type old(this->state.device_space_clip_rects.back());
                 this->state.device_space_clip_rects.pop_back();
                 kiva::rect_type newrect(kiva::disjoint_intersect(old, device_rect));
+
+//                std::cout << "old rect: " << old.x << ", " << old.y << ","
+//                          << old.w << ", " << old.h << std::endl;
+//                std::cout << "intersecting rect: " << device_rect.x << ", " << device_rect.y << ","
+//                          << device_rect.w << ", " << device_rect.h << std::endl;
+//                std::cout << "new rect: " << newrect.x << ", " << newrect.y << ","
+//                          << newrect.w << ", " << newrect.h << std::endl;
+
                 if ((newrect.w < 0) || (newrect.h < 0))
                 {
                     // new clip rectangle doesn't intersect anything, so we push on

@@ -375,6 +375,53 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """        
         pass
             
+            
+    def radial_gradient(self, cx, cy, r, stops, fx=None,fy=None, spreadMethod='pad',
+                        transforms=None, units='userSpaceOnUse'):
+        
+        # TODO: handle transforms
+        # TODO: handle units
+        # TODO: handle spread
+        gradient = cairo.RadialGradient(cx, cy, r, fx, fx, r)
+        
+        for stop in stops:
+            # FIXME: the stops are possibly being generated wrong if the offset is specified
+            if stop.size == 10:
+                start = tuple(stop[0:5])
+                end = tuple(stop[5:10]) 
+                gradient.add_color_stop_rgba(*start)
+                gradient.add_color_stop_rgba(*end)
+            else:
+                start = tuple(stop[0:5])
+                gradient.add_color_stop_rgba(*start)
+                            
+        # TODO: does the context need to set the surface or mask?
+            
+        return gradient
+            
+    def linear_gradient(self, x1, y1, x2, y2, stops, spreadMethod='pad', 
+                        transforms=None, units='userSpaceOnUse'):
+        # TODO: handle transforms
+        # TODO: handle units
+        # TODO: handle spread
+    
+        gradient = cairo.LinearGradient(x1, y1, x2, y2)
+        
+        for stop in stops:
+            # FIXME: the stops are possibly being generated wrong if the offset is specified
+            if stop.size == 10:
+                start = tuple(stop[0:5])
+                end = tuple(stop[5:10]) 
+                gradient.add_color_stop_rgba(*start)
+                gradient.add_color_stop_rgba(*end)
+            else:
+                start = tuple(stop[0:5])
+                gradient.add_color_stop_rgba(*start)
+                            
+        # TODO: does the context need to set the surface or mask?
+            
+        return gradient
+    
     #----------------------------------------------------------------
     # Building paths (contours that are drawn)
     #
@@ -600,14 +647,12 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """Draw a compiled path into this gc.  
         In this case, a compiled path is a Cairo.Path"""
         if isinstance(path, CompiledPath):
-            self._ctx.new_sub_path()
+            self.begin_path()
             for op_name, op_args in path.state:
-                op = getattr(self._ctx, op_name)
+                op = getattr(self, op_name)
                 op(*op_args)
-            path = self._ctx.copy_path()
-            self._ctx.close_path()
+            self.close_path()
                 
-        self._ctx.append_path(path)
                 
                     
     #----------------------------------------------------------------
@@ -1075,9 +1120,8 @@ try:
             self.gc = None
             self.new_gc(size)
             
-            self.clear_color = (1,1,1)
+            self.clear_color = (0,0,0)
             self.dirty = True
-            
             
             wx.EVT_PAINT(self, self.OnPaint)
             wx.EVT_SIZE(self, self.OnSize)      
@@ -1095,12 +1139,12 @@ try:
             paintdc = wx.PaintDC(self)
             
             surface = self.gc._ctx.get_target()            
-            width = surface.get_width()
-            height = surface.get_height()
+            width = self.gc.width()
+            height = self.gc.height()
             
             pixels = numpy.frombuffer(surface.get_data(), numpy.uint8)
             buffer_size = width*height*4
-            
+                        
             alpha = pixels[3::4]
             red = pixels[2::4]
             green = pixels[1::4]
@@ -1139,7 +1183,7 @@ class CompiledPath(object):
         self.state = []
     
     def add_path(self, *args):
-        self.state.append(('add_path', args))
+        self.state.append(('begin_path', args))
         
     def rect(self, *args):
         self.state.append(('rect', args))

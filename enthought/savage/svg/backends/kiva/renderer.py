@@ -182,7 +182,12 @@ class LinearGradientBrush(AbstractGradientBrush):
                 extend_start=1, extend_end=1)
             gc.draw_shading(shading)
         else:
-            warnings.warn("Gradients on non-OS X platforms are not implemented.")
+            if not hasattr(gc, 'linear_gradient'):
+                warnings.warn("Gradients for this platform is not implemented.")
+            else:
+                gc.linear_gradient(self.x1, self.y1, self.x2, self.y2, self.stops,
+                                    self.spreadMethod, self.transforms,
+                                    self.units)
 
 class RadialGradientBrush(AbstractGradientBrush):
     """ A Brush representing a radial gradient.
@@ -224,7 +229,12 @@ class RadialGradientBrush(AbstractGradientBrush):
                 (self.cx,self.cy), self.r, extend_start=1, extend_end=1)
             gc.draw_shading(shading)
         else:
-            warnings.warn("Gradients on non-OS X platforms are not implemented.")
+            if not hasattr(gc, 'radial_gradient'):
+                warnings.warn("Gradients for this platform is not implemented.")
+            else:
+                gc.radial_gradient(self.cx, self.cy, self.r, self.stops, self.fx,
+                                    self.fy, self.spreadMethod, self.transforms,
+                                    self.units)
 
 
 def font_style(font):
@@ -430,11 +440,12 @@ class Renderer(NullRenderer):
         brush.set_on_gc(gc, bbox=bbox)
         gc.restore_state()
 
-#    @classmethod
-#    def clipPath(cls, gc, path):
-#        print "clipping!"
-#        gc.add_path(path)
-#        return gc.clip()
+    #@classmethod
+    #def clipPath(cls, gc, path):
+        #print "clipping!"
+        #return gc.clip_to_rect(100, 10, 100, 60)
+        ##gc.add_path(path)
+        ##return gc.clip()
 
     @classmethod
     def translate(cls, gc, *args):
