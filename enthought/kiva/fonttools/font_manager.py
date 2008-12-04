@@ -876,7 +876,10 @@ font dictionary can act like a font cache.
                 break
         else:
             # use anything
-            self.defaultFont = self.ttffiles[0]
+            if len(self.ttffiles) > 0:
+                self.defaultFont = self.ttffiles[0]
+            else:
+                self.defaultFont = None
 
         cache_message = \
 """Saving TTF font cache for non-PS backends to %s.
