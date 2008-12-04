@@ -37,7 +37,7 @@ from fonttools import Font   # relative import; not the fonttools project!
 
 
 _kiva_only_backends = 'gl image pdf svg ps cairo'
-_backends = 'wx qt4' + _kiva_only_backends
+_backends = 'wx qt4 ' + _kiva_only_backends
 
 _backend = None
 DEBUG = 1
