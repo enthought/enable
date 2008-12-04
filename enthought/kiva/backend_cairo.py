@@ -147,7 +147,10 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.text_matrix = cairo.Matrix(1,0,0,-1,0,0) #not part of the graphics state
         
     def clear(self, color=(1,1,1)):
-        self._ctx.set_source_rgb(*color)
+        if len(color) == 4:
+            self._ctx.set_source_rgba(*color)
+        else:
+            self._ctx.set_source_rgb(*color)
     
     def height(self):
         return self._ctx.get_target().get_height()
