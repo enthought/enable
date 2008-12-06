@@ -1115,7 +1115,7 @@ try:
     import wx
     from backend_wx import WidgetClass, BaseWxCanvas
     class Canvas(BaseWxCanvas, WidgetClass):
-        def __init__(self, parent, id = -1, size = (600,600)):
+        def __init__(self, parent, id = -1, size = (400,400)):
             WidgetClass.__init__(self, parent, id, wx.Point(0, 0), size, 
                                     wx.SUNKEN_BORDER | wx.WANTS_CHARS | \
                                     wx.FULL_REPAINT_ON_RESIZE )
@@ -1129,6 +1129,9 @@ try:
             wx.EVT_PAINT(self, self.OnPaint)
             wx.EVT_SIZE(self, self.OnSize)      
             wx.EVT_ERASE_BACKGROUND(self, self.OnErase)
+            
+            self.bitmap = None
+            self.memdc = None
             
         def _create_kiva_gc(self, size):
             """
@@ -1152,15 +1155,36 @@ try:
             red = pixels[2::4]
             green = pixels[1::4]
             blue = pixels[0::4]
+            pixels = numpy.vstack((red, green, blue)).T.flatten()
             
-            pixels = numpy.vstack((red, green, blue, alpha)).T.flatten()
+            if self.bitmap is None:
+                # There are 2 ways to do this, 
+                #  1. create an image, set its data, and create a bitmap from it
+                #  2. Create the bitmap directly from the array
+                # Unfortunatly the faster method (#2) doesn't seem to work 
+                # reliably with some versions of wx. We use the slower method for 
+                # now
+                
+                # Bitmap Creation Method #1, slower but works with all modern
+                # wx versions
+                image = wx.EmptyImage(width, height)
+                image.SetData(pixels.tostring())
+                self.bitmap = wx.BitmapFromImage(image, depth=-1)
+                                           
+                # Bitmap Creation Method #2, faster but doesn't work as reliably
+                #self.bitmap = wx.BitmapFromBufferRGBA(width, height, pixels)
+                
+                self.memdc = wx.MemoryDC()
+                self.memdc.SelectObject(self.bitmap)     
+                                           
+            else:
+                self.bitmap.CopyFromBufferRGBA(pixels)
+                
             
-            memDC = wx.MemoryDC()            
-            bitmap = wx.BitmapFromBufferRGBA(width, height, pixels)
-            memDC.SelectObject(bitmap)
-            
-            paintdc.Blit(0, 0, width, height, memDC, 0, 0)
+            paintdc.Blit(0, 0, width, height, self.memdc, 0, 0)
+
             self.dirty = 0
+            
             return
             
         def clear(self):
