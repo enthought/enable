@@ -54,59 +54,62 @@ text_draw_modes = {'FILL': (constants.TEXT_FILL,
 class GraphicsState(object):
     """ Holds information used by a graphics context when drawing.
 
-        the cairo state stores the following:
-            Operator (the blend mode)
-            Tolerance
-            Antialias (bool)
-            stroke style (line width, cap, join, mitre-limit, dash-style)
-            fill rule
-            font face
-            scaled font
-            font matrix (includes font size)
-            font options (antialias, subpixel order, hint style, hint metrics)
-            clip region
-            target surface and previous target surface
-            CTM, CTM-inverse, source CTM
+        The Cairo state stores the following:
+            
+        * Operator (the blend mode)
+        * Tolerance
+        * Antialias (bool)
+        * stroke style (line width, cap, join, mitre-limit, dash-style)
+        * fill rule
+        * font face
+        * scaled font
+        * font matrix (includes font size)
+        * font options (antialias, subpixel order, hint style, hint metrics)
+        * clip region
+        * target surface and previous target surface
+        * CTM, CTM-inverse, source CTM
             
         The Quartz2D state (which kiva follows AFAIK) includes:
-            CTM
-            stroke style (line width, cap, join, mitre, dash)
-            clip region
-            tolerance (accuracy)
-            anti-alias
-            *fill- and stroke- colors
-            *fill- and stroke- Color Space (RGB, HSV, CMYK etc.)
-            *Rendering intent (something to do with Color Spaces)
-            *alpha value
-            blend mode
-            text font
-            text font size
-            *text drawing mode (stroked, filled, clipped and combinations of these)
-            *text character spacing (extra space between glyphs)
             
-        * - items in the Quartz2D state which cairo doesn't support directly.
+        * CTM
+        * stroke style (line width, cap, join, mitre, dash)
+        * clip region
+        * tolerance (accuracy)
+        * anti-alias
+        * \*fill- and stroke- colors
+        * \*fill- and stroke- Color Space (RGB, HSV, CMYK etc.)
+        * \*Rendering intent (something to do with Color Spaces)
+        * \*alpha value
+        * blend mode
+        * text font
+        * text font size
+        * \*text drawing mode (stroked, filled, clipped and combinations of these)
+        * \*text character spacing (extra space between glyphs)
+            
+        \*: items in the Quartz2D state that Cairo doesn't support directly.
 
         basecore2d GraphicsState includes:
-            ctm 
-            line_color
-            line_width
-            line_join
-            line_cap
-            line_dash
-            fill_color
-            alpha
-            font
-            *text_matrix
-            clipping_path
-            *current_point
-            should_antialias
-            miter_limit
-            flatness
-            character_spacing
-            text_drawing_mode
-            rendering_intent (not yet implemented)
             
-        * - discrepancies compared to Quartz2D
+        * ctm 
+        * line_color
+        * line_width
+        * line_join
+        * line_cap
+        * line_dash
+        * fill_color
+        * alpha
+        * font
+        * \*text_matrix
+        * clipping_path
+        * \*current_point
+        * should_antialias
+        * miter_limit
+        * flatness
+        * character_spacing
+        * text_drawing_mode
+        * rendering_intent (not yet implemented)
+            
+        \*: discrepancies compared to Quartz2D
         
     """
     def __init__(self):       
