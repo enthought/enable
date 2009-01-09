@@ -6,7 +6,7 @@ from enthought.savage.traits.ui.wx.svg_button_editor import SVGButtonEditor
 from enthought.traits.api import HasTraits, Instance, Str, Int
 from enthought.traits.ui.api import Item, View, HGroup
 
-button_size = (128, 128)
+button_size = (32, 32)
 
 class ButtonDemo(HasTraits):
     
