@@ -11,9 +11,9 @@ from enthought.etsconfig.api import ETSConfig
 # Force the selection of a valid toolkit.
 #import enthought.enable.toolkit 
 if not ETSConfig.enable_toolkit:
-    for toolkit in ('wx', 'qt4'):
+    for toolkit, toolkit_module in (('wx', 'wx'), ('qt4', 'PyQt4')):
         try:
-            exec "import " + toolkit
+            exec "import " + toolkit_module
             ETSConfig.enable_toolkit = toolkit
             break
         except ImportError:
