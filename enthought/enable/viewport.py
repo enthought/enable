@@ -4,7 +4,7 @@
 from numpy import array
 
 # Enthought library traits
-from enthought.enable.tools.api import ViewportZoomTool
+from enthought.enable.tools.viewport_zoom_tool import ViewportZoomTool
 from enthought.enable.simple_layout import simple_container_get_preferred_size, \
                                             simple_container_do_layout
 from enthought.traits.api import Bool, Delegate, Float, Instance, Enum, List, Any

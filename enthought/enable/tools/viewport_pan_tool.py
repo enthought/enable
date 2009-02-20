@@ -1,7 +1,7 @@
 """ Defines the PanTool class.
 """
 # Enthought library imports
-from enthought.enable.api import Pointer
+from enthought.enable.enable_traits import Pointer
 from enthought.traits.api import Bool, Enum, Float, Tuple
 
 from drag_tool import DragTool
