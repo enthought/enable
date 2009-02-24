@@ -73,6 +73,8 @@ MSFontDirectories   = [
 X11FontDirectories  = [
     # what seems to be the standard installation point
     "/usr/X11R6/lib/X11/fonts/TTF/",
+    # Solaris doesn't abbreviate TrueType
+    "/usr/X11R6/lib/X11/fonts/TrueType/",
     # documented as a good place to install new fonts...
     "/usr/share/fonts/",
     # common application, not really useful
