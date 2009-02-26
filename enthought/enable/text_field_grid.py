@@ -61,7 +61,7 @@ class TextFieldGrid(Container):
         """
         self.rows = rows
         self.columns = columns
-    	self.selected_box = []
+        self.selected_box = []
         super(TextFieldGrid, self).__init__(**traits)
 
     def set_cell(self, row, column, text):
