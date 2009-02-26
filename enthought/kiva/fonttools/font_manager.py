@@ -789,7 +789,7 @@ def _is_writable_dir(p):
 
     try:
         t = tempfile.TemporaryFile(dir=p)
-        t.write('1')
+        t.write('kiva.test')
         t.close()
     except OSError:
         return False
@@ -804,9 +804,12 @@ def get_configdir():
     """
 
     p = os.path.join(ETSConfig.application_data, 'kiva')
+    if not os.path.exists(p):
+        os.makedirs(p)
     if not _is_writable_dir(p):
-        os.mkdir(p)
+        raise IOError('Configuration directory %s must be writable' % p)
     return p
+
 
 def get_home():
     """Find user's home directory if possible.
