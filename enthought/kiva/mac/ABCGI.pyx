@@ -460,15 +460,29 @@ cdef class CGContext:
 
             current_point is moved to the last point in points
         """
+
         cdef int n
-        n = len(points)
         cdef int i
+        cdef CGPoint* cg_points
+        n = len(points)
 
-        if n > 0:
+        # Shortcuts for the 0, 1, and 2 point cases
+        if n < 2:
+            return
+        if n == 2:
             CGContextMoveToPoint(self.context, points[0][0], points[0][1])
+            CGContextAddLineToPoint(self.context, points[1][0], points[1][1])
+            return
 
-            for i from 1 <= i < n:
-                CGContextAddLineToPoint(self.context, points[i][0], points[i][1])
+        cg_points = <CGPoint*>malloc(2*n*sizeof(CGPoint))
+        try:
+            for i from 0 <= i < n:
+                cg_points[i].x = points[i][0]
+                cg_points[i].y = points[i][1]
+
+            CGContextAddLines(self.context, cg_points, n)
+        finally:
+            free(cg_points)
 
     def line_set(self, object starts, object ends):
         """ Adds a series of disconnected line segments as a new subpath.
@@ -1686,7 +1700,7 @@ cdef class CGImageFile(CGImage):
         import types
 
         if type(image_or_filename) is str:
-            img = Image.open(filename)
+            img = Image.open(image_or_filename)
             img.load()
         elif isinstance(image_or_filename, Image.Image):
             img = image_or_filename
