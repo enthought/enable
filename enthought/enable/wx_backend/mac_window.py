@@ -23,38 +23,18 @@ class MacWindow(Window):
 
         Window.__init__(self, parent, wid=wid, pos=pos, size=size, **traits)
 
-        self.memDC = wx.MemoryDC()
+        #self.memDC = wx.MemoryDC()
         return
-
 
     def _create_gc(self, size, pix_format="bgra32"):
-        """ Create a Kiva graphics context of a specified size.
-
-        The pix_format argument is for interface compatibility and will be
-        ignored.
-        """
-
-        if self._gc is not None:
-            self._gc.end()
-
-        self.bitmap = wx.EmptyBitmap(size[0], size[1])
-        self.memDC.SelectObject(self.bitmap)
-        gc = gc_for_dc(self.memDC)
+        self.dc = wx.ClientDC(self.control)
+        gc = gc_for_dc(self.dc)
         gc.begin()
         return gc
- 
 
     def _window_paint(self, event):
-        """ Do a GUI toolkit specific screen update.
-        """
-        # NOTE: This should do an optimal update based on the value of the 
-        # self._update_region, but Kiva does not currently support this:
-        control = self.control
-        wdc = control._dc = wx.PaintDC(control)
-        wdc.Blit(0, 0, self._size[0], self._size[1], self.memDC, 0, 0)
-
-        control._dc = None
-        return
+        self.dc = None
+        self._gc = None  # force a new gc to be created for the next paint()
 
 
     #### 'AbstractWindow' interface ############################################
