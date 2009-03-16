@@ -20,12 +20,15 @@ class ButtonRenderPanel(RenderPanel):
         self.button = button
         self.document = button.document
         self.state = 'up'
-        
+        self.hover = False
+
+        self.padding = (10,10)
+
         super(ButtonRenderPanel, self).__init__(parent, document=self.document)
-            
+
     def DoGetBestSize(self):
-        return wx.Size(self.button.factory.width, self.button.factory.height)        
-        
+        return wx.Size(self.button.factory.width + self.padding[0], self.button.factory.height + self.padding[1])
+
     def GetBackgroundColour(self):
         bgcolor = super(ButtonRenderPanel, self).GetBackgroundColour()
         if self.state == 'down':
@@ -35,7 +38,34 @@ class ButtonRenderPanel(RenderPanel):
             blue -= 50
             bgcolor.Set(red, green, blue, 255)
         return bgcolor
-    
+
+    def OnPaint(self, evt):
+        offset = self.padding[0]/2.0, self.padding[1]/2.0
+
+        if self.hover:
+            dc = wx.BufferedPaintDC(self)
+            dc.SetBackground(wx.Brush(self.GetBackgroundColour()))
+            dc.Clear()
+
+            gc = wx.GraphicsContext_Create(dc)
+            gc.SetPen(wx.Pen('darkgrey', width=3))
+            gc.DrawRectangle(offset[0]/2.0, offset[1]/2.0,
+                            self.button.factory.width+offset[0],
+                            self.button.factory.height+offset[1])
+        else:
+            dc = wx.BufferedPaintDC(self)
+            dc.SetBackground(wx.Brush(self.GetBackgroundColour()))
+            dc.Clear()
+
+            gc = wx.GraphicsContext_Create(dc)
+
+        scale = float(self.zoom) / 100.0
+
+        gc.Translate(*offset)
+        gc.Scale(scale, scale)
+
+        self.document.render(gc)
+
     def OnLeftDown(self, evt):
         self.state = 'down'
         self.button.update_editor()
@@ -47,38 +77,46 @@ class ButtonRenderPanel(RenderPanel):
         evt.Skip()
         self.Refresh()
 
+    def OnEnterWindow(self, evt):
+        self.hover = True
+        self.Refresh()
+
+    def OnLeaveWindow(self, evt):
+        self.hover = False
+        self.Refresh()
+
 
 #-------------------------------------------------------------------------------
 #  '_SVGEditor' class:
 #-------------------------------------------------------------------------------
-                               
+
 class _SVGButtonEditor ( Editor ):
     """ Traits UI 'display only' image editor.
     """
-    
+
     document = Instance(SVGDocument)
-    
+
     #---------------------------------------------------------------------------
     #  Finishes initializing the editor by creating the underlying toolkit
     #  widget:
     #---------------------------------------------------------------------------
-        
+
     def init ( self, parent ):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
-        
+
         tree = etree.parse(self.factory.filename)
         root = tree.getroot()
-        
+
         self.document = SVGDocument(root, renderer=Renderer)
         self.control = ButtonRenderPanel( parent, self)
-        
+
         svg_w, svg_h = self.control.GetBestSize()
         scale_factor = float(svg_w)/self.factory.width
         self.control.zoom /= scale_factor
         self.control.Refresh()
-                        
+
     #---------------------------------------------------------------------------
     #  Updates the editor when the object trait changes external to the editor:
     #---------------------------------------------------------------------------
@@ -89,22 +127,22 @@ class _SVGButtonEditor ( Editor ):
         """
         factory    = self.factory
         self.value = factory.value
-                    
+
 #-------------------------------------------------------------------------------
 #  Create the editor factory object:
 #-------------------------------------------------------------------------------
 class SVGButtonEditor ( BasicEditorFactory ):
-    
+
     # The editor class to be created:
     klass = _SVGButtonEditor
-    
+
     # Value to set when the button is clicked
-    value = Property    
-    
+    value = Property
+
     label = Str()
-    
+
     filename = Str()
-    
+
     # Extra padding to add to both the left and the right sides
     width_padding = Range( 0, 31, 7 )
 
@@ -116,13 +154,13 @@ class SVGButtonEditor ( BasicEditorFactory ):
 
     # Orientation of the text relative to the image
     orientation = Enum( 'vertical', 'horizontal' )
-    
+
     # The optional view to display when the button is clicked:
     view = AView
-    
+
     width = Int(32)
     height = Int(32)
-    
+
     #---------------------------------------------------------------------------
     #  Traits view definition:
     #---------------------------------------------------------------------------
@@ -154,5 +192,4 @@ class SVGButtonEditor ( BasicEditorFactory ):
     def __init__ ( self, **traits ):
         self._value = 0
         super( SVGButtonEditor, self ).__init__( **traits)
-    
-    
+
