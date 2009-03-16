@@ -17,7 +17,7 @@ class RenderPanel(wx.PyPanel):
         self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
         self.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
         self.Bind(wx.EVT_MIDDLE_UP, self.OnMiddleClick)
- 
+
     def OnPaint(self, evt):
         start = time.time()
         dc = wx.BufferedPaintDC(self)
@@ -31,15 +31,27 @@ class RenderPanel(wx.PyPanel):
 
         gc.Translate(*self.offset)
         gc.Scale(scale, scale)
- 
+
         self.document.render(gc)
         self.lastRender = time.time() - start
 
     def GetBestSize(self):
         if not self.document:
             return (-1,-1)
-        sz = map(int,self.document.tree.get("viewBox").split())
-        return wx.Rect(*sz).GetSize()
+
+        width = -1
+        width_node = self.document.tree.get('width')
+        if width_node is not None:
+            # omit 'px' if it was specified
+            width=int(width_node.split('px')[0])
+
+        height = -1
+        height_node = self.document.tree.get('height')
+        if height_node is not None:
+            # omit 'px' if it was specified
+            height=int(height_node.split('px')[0])
+
+        return wx.Size(width, height)
 
     def OnWheel(self, evt):
         self.zoom += (evt.m_wheelRotation / evt.m_wheelDelta) * 10
