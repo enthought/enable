@@ -16,18 +16,19 @@ from wx_render_panel import RenderPanel
 
 
 class ButtonRenderPanel(RenderPanel):
-    def __init__(self, parent, button):
+    def __init__(self, parent, button, padding=(8,8)):
         self.button = button
         self.document = button.document
         self.state = 'up'
         self.hover = False
 
-        self.padding = (10,10)
+        self.padding = padding
 
         super(ButtonRenderPanel, self).__init__(parent, document=self.document)
 
     def DoGetBestSize(self):
-        return wx.Size(self.button.factory.width + self.padding[0], self.button.factory.height + self.padding[1])
+        return wx.Size( self.button.factory.width + self.padding[0],
+                        self.button.factory.height + self.padding[1])
 
     def GetBackgroundColour(self):
         bgcolor = super(ButtonRenderPanel, self).GetBackgroundColour()
