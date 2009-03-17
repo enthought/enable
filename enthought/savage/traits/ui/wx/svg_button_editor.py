@@ -87,10 +87,6 @@ class ButtonRenderPanel(RenderPanel):
         self.Refresh()
 
 
-#-------------------------------------------------------------------------------
-#  '_SVGEditor' class:
-#-------------------------------------------------------------------------------
-
 class _SVGButtonEditor ( Editor ):
     """ Traits UI 'display only' image editor.
     """
@@ -98,8 +94,7 @@ class _SVGButtonEditor ( Editor ):
     document = Instance(SVGDocument)
 
     #---------------------------------------------------------------------------
-    #  Finishes initializing the editor by creating the underlying toolkit
-    #  widget:
+    # Editor API
     #---------------------------------------------------------------------------
 
     def init ( self, parent ):
@@ -118,9 +113,17 @@ class _SVGButtonEditor ( Editor ):
         self.control.zoom /= scale_factor
         self.control.Refresh()
 
-    #---------------------------------------------------------------------------
-    #  Updates the editor when the object trait changes external to the editor:
-    #---------------------------------------------------------------------------
+    def prepare ( self, parent ):
+        """ Finishes setting up the editor. This differs from the base class
+            it that self.update_editor() is not called at the end, which
+            would fire an event
+        """
+        name = self.extended_name
+        if name != 'None':
+            self.context_object.on_trait_change( self._update_editor, name,
+                                                 dispatch = 'ui' )
+        self.init( parent )
+        self._sync_values()
 
     def update_editor ( self ):
         """ Updates the editor when the object trait changes externally to the
@@ -129,9 +132,6 @@ class _SVGButtonEditor ( Editor ):
         factory    = self.factory
         self.value = factory.value
 
-#-------------------------------------------------------------------------------
-#  Create the editor factory object:
-#-------------------------------------------------------------------------------
 class SVGButtonEditor ( BasicEditorFactory ):
 
     # The editor class to be created:
@@ -169,7 +169,15 @@ class SVGButtonEditor ( BasicEditorFactory ):
     traits_view = View( [ 'value', '|[]' ] )
 
     #---------------------------------------------------------------------------
-    #  Implementation of the 'value' property:
+    #  object API
+    #---------------------------------------------------------------------------
+
+    def __init__ ( self, **traits ):
+        self._value = 0
+        super( SVGButtonEditor, self ).__init__( **traits)
+
+    #---------------------------------------------------------------------------
+    #  Traits properties
     #---------------------------------------------------------------------------
 
     def _get_value ( self ):
@@ -185,12 +193,3 @@ class SVGButtonEditor ( BasicEditorFactory ):
                     self._value = float( value )
                 except:
                     pass
-
-    #---------------------------------------------------------------------------
-    #  Initializes the object:
-    #---------------------------------------------------------------------------
-
-    def __init__ ( self, **traits ):
-        self._value = 0
-        super( SVGButtonEditor, self ).__init__( **traits)
-
