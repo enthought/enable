@@ -41,6 +41,8 @@ class Interactor(HasTraits):
 
     # Name of the object's event state.  Used as a prefix when looking up
     # which set of event handlers should be used for MouseEvents and KeyEvents.
+    # Subclasses should override this with an enumeration of their possible
+    # states.
     event_state = Str("normal")
 
     # The cursor shape that should be displayed when this interactor is "active"
@@ -78,6 +80,14 @@ class Interactor(HasTraits):
     def dispatch(self, event, suffix):
         """ Public method for sending mouse/keyboard events to this interactor.
         Subclasses may override this to customize the public dispatch behavior.
+
+        Parameters
+        ==========
+        event : enable.BaseEvent instance
+            The event to dispach
+        suffix : string
+            The type of event that occurred.  See class docstring for the
+            list of possible suffixes.
         """
         self._dispatch_stateful_event(event, suffix)
 

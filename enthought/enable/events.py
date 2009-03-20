@@ -123,6 +123,9 @@ mouse_event_trait = Event(MouseEvent)
 
 
 class DragEvent(BasicEvent):
+    """ A system UI drag-and-drop operation.  This is not the same as a
+    DragTool event.
+    """
     x0   = Float
     y0   = Float
     copy = ReadOnly

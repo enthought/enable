@@ -329,6 +329,9 @@ class Container(Component):
         
         # The container's annotation and overlay layers draw over those of 
         # its components.
+        # FIXME: This needs to be abstracted so that when subclasses override
+        # the draw_order list, these are pulled from the subclass list instead
+        # of hardcoded here.
         if layer in ("annotation", "overlay", "border"):
             my_handler = getattr(self, "_draw_container_" + layer, None)
             if my_handler:
