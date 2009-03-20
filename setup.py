@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #
-# Copyright (c) 2008 by Enthought, Inc.
+# Copyright (c) 2008-2009 by Enthought, Inc.
 # All rights reserved.
-#
+
 
 """
 Drawing and interaction packages.
@@ -98,12 +98,13 @@ if 'develop' in sys.argv:
 # Setuptools must be imported BEFORE numpy.distutils for things to work right!
 import setuptools
 
-from numpy.distutils.core import setup
 import distutils
 import numpy
 import os
 import shutil
 import zipfile
+
+from numpy.distutils.core import setup
 
 
 # FIXME: This works around a setuptools bug which gets setup_data.py metadata
@@ -297,9 +298,6 @@ setup(
         'clean': MyClean,
         'develop': MyDevelop,
         },
-    dependency_links = [
-        'http://code.enthought.com/enstaller/eggs/source',
-        ],
     description = DOCLINES[1],
     extras_require = INFO['extras_require'],
     include_package_data = True,
