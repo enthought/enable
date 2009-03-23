@@ -6,6 +6,7 @@ class SVGButton ( Event ):
     """
 
     def __init__ ( self, label = '', filename = None,
+                         tooltip = '', toggle=False,
                          width = 32, height = 32,
                          orientation = 'vertical', width_padding = 7,
                          height_padding = 5, view = None, **metadata ):
@@ -27,6 +28,12 @@ class SVGButton ( Event ):
             height_padding : integer between 0 and 31
                 Extra padding (in pixels) added to the top and bottom of the
                 button
+            tooltip : string
+                What to display when the mouse hovers over the button. An
+                empty string implies no tooltip
+            toggle : boolean
+                Whether the button is a toggle with 2 states, or a regular
+                button with 1 state
 
             Default Value
             -------------
@@ -35,6 +42,8 @@ class SVGButton ( Event ):
 
         self.editor = SVGButtonEditor( label       = label,
                                     filename       = filename,
+                                    tooltip        = tooltip,
+                                    toggle         = toggle,
                                     orientation    = orientation,
                                     width_padding  = width_padding,
                                     height_padding = height_padding,

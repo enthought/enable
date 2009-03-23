@@ -2,7 +2,8 @@
 import xml.etree.cElementTree as etree
 import wx
 
-from enthought.traits.api import Str, Range, Enum, Instance, Event, Int, Property
+from enthought.traits.api import Str, Range, Enum, Instance, Event, Int, \
+        Bool, Property
 from enthought.traits.ui.api import View
 from enthought.traits.ui.ui_traits import AView
 from enthought.traits.ui.wx.editor import Editor
@@ -20,7 +21,8 @@ class ButtonRenderPanel(RenderPanel):
         self.button = button
         self.document = button.document
         self.state = 'up'
-        self.hover = False
+
+        self.toggle_state = 'up'
 
         self.padding = padding
 
@@ -43,22 +45,11 @@ class ButtonRenderPanel(RenderPanel):
     def OnPaint(self, evt):
         offset = self.padding[0]/2.0, self.padding[1]/2.0
 
-        if self.hover:
-            dc = wx.BufferedPaintDC(self)
-            dc.SetBackground(wx.Brush(self.GetBackgroundColour()))
-            dc.Clear()
-
-            gc = wx.GraphicsContext_Create(dc)
-            gc.SetPen(wx.Pen('darkgrey', width=3))
-            gc.DrawRectangle(offset[0]/2.0, offset[1]/2.0,
-                            self.button.factory.width+offset[0],
-                            self.button.factory.height+offset[1])
+        if self.toggle_state == 'down' and self.button.factory.toggle:
+            gc = self._draw_highlight(True)
         else:
-            dc = wx.BufferedPaintDC(self)
-            dc.SetBackground(wx.Brush(self.GetBackgroundColour()))
-            dc.Clear()
+            gc = self._draw_highlight(False)
 
-            gc = wx.GraphicsContext_Create(dc)
 
         scale = float(self.zoom) / 100.0
 
@@ -68,6 +59,13 @@ class ButtonRenderPanel(RenderPanel):
         self.document.render(gc)
 
     def OnLeftDown(self, evt):
+        # if the button is supposed to toggle, set the toggle_state
+        # to the opposite of what it currently is
+        if self.button.factory.toggle and self.toggle_state == 'down':
+            self.toggle_state = 'up'
+        else:
+            self.toggle_state = 'down'
+            
         self.state = 'down'
         self.button.update_editor()
         evt.Skip()
@@ -85,6 +83,29 @@ class ButtonRenderPanel(RenderPanel):
     def OnLeaveWindow(self, evt):
         self.hover = False
         self.Refresh()
+
+    def _draw_highlight(self, value):
+        if value:
+            offset = self.padding[0]/2.0, self.padding[1]/2.0
+
+            dc = wx.BufferedPaintDC(self)
+            dc.SetBackground(wx.Brush(self.GetBackgroundColour()))
+            dc.Clear()
+
+            gc = wx.GraphicsContext_Create(dc)
+            gc.SetPen(wx.Pen('darkgrey', width=3))
+            gc.DrawRectangle(offset[0]/2.0, offset[1]/2.0,
+                            self.button.factory.width+offset[0],
+                            self.button.factory.height+offset[1])
+        else:
+            dc = wx.BufferedPaintDC(self)
+            dc.SetBackground(wx.Brush(self.GetBackgroundColour()))
+            dc.Clear()
+
+            gc = wx.GraphicsContext_Create(dc)
+
+        return gc
+
 
 
 class _SVGButtonEditor ( Editor ):
@@ -107,6 +128,9 @@ class _SVGButtonEditor ( Editor ):
 
         self.document = SVGDocument(root, renderer=Renderer)
         self.control = ButtonRenderPanel( parent, self)
+
+        if self.factory.tooltip != '':
+            self.control.SetToolTip(wx.ToolTip(self.factory.tooltip))
 
         svg_w, svg_h = self.control.GetBestSize()
         scale_factor = float(svg_w)/self.factory.width
@@ -161,6 +185,10 @@ class SVGButtonEditor ( BasicEditorFactory ):
 
     width = Int(32)
     height = Int(32)
+
+    tooltip = Str()
+    
+    toggle = Bool(True)
 
     #---------------------------------------------------------------------------
     #  Traits view definition:
