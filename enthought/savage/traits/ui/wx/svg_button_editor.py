@@ -1,4 +1,4 @@
-
+import sys
 import xml.etree.cElementTree as etree
 import wx
 
@@ -6,6 +6,7 @@ from enthought.traits.api import Str, Range, Enum, Instance, Event, Int, \
         Bool, Property
 from enthought.traits.ui.api import View
 from enthought.traits.ui.ui_traits import AView
+from enthought.traits.ui.wx.constants import WindowColor
 from enthought.traits.ui.wx.editor import Editor
 from enthought.traits.ui.wx.basic_editor_factory import BasicEditorFactory
 
@@ -33,7 +34,7 @@ class ButtonRenderPanel(RenderPanel):
                         self.button.factory.height + self.padding[1])
 
     def GetBackgroundColour(self):
-        bgcolor = super(ButtonRenderPanel, self).GetBackgroundColour()
+        bgcolor = WindowColor
         if self.state == 'down':
             red, green, blue = bgcolor.Get()
             red -= 50
