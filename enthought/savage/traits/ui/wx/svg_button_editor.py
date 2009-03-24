@@ -1,3 +1,4 @@
+import copy
 import sys
 import xml.etree.cElementTree as etree
 import wx
@@ -34,7 +35,7 @@ class ButtonRenderPanel(RenderPanel):
                         self.button.factory.height + self.padding[1])
 
     def GetBackgroundColour(self):
-        bgcolor = WindowColor
+        bgcolor = copy.copy(WindowColor)
         if self.state == 'down':
             red, green, blue = bgcolor.Get()
             red -= 50
