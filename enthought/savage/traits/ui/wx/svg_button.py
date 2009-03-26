@@ -8,8 +8,8 @@ class SVGButton ( Event ):
     def __init__ ( self, label = '', filename = None,
                          tooltip = '', toggle=False,
                          width = 32, height = 32,
-                         orientation = 'vertical', width_padding = 7,
-                         height_padding = 5, view = None, **metadata ):
+                         orientation = 'vertical', width_padding = 3,
+                         height_padding = 1, view = None, **metadata ):
         """ Returns a trait event whose editor is a button.
 
             Parameters

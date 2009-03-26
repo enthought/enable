@@ -17,6 +17,8 @@ class RenderPanel(wx.PyPanel):
         self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
         self.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
         self.Bind(wx.EVT_MIDDLE_UP, self.OnMiddleClick)
+        self.Bind(wx.EVT_ENTER_WINDOW, self.OnEnterWindow)
+        self.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow)
 
     def OnPaint(self, evt):
         start = time.time()
@@ -80,3 +82,9 @@ class RenderPanel(wx.PyPanel):
         self.offset = wx.Point(0,0)
         self.zoom = 100
         self.Refresh()
+
+    def OnEnterWindow(self, evt):
+        pass
+
+    def OnLeaveWindow(self, evt):
+        pass

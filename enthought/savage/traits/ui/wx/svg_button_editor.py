@@ -67,7 +67,7 @@ class ButtonRenderPanel(RenderPanel):
             self.toggle_state = 'up'
         else:
             self.toggle_state = 'down'
-            
+
         self.state = 'down'
         self.button.update_editor()
         evt.Skip()
@@ -128,8 +128,10 @@ class _SVGButtonEditor ( Editor ):
         tree = etree.parse(self.factory.filename)
         root = tree.getroot()
 
+        padding=(self.factory.width_padding, self.factory.height_padding)
+
         self.document = SVGDocument(root, renderer=Renderer)
-        self.control = ButtonRenderPanel( parent, self)
+        self.control = ButtonRenderPanel( parent, self, padding=padding )
 
         if self.factory.tooltip != '':
             self.control.SetToolTip(wx.ToolTip(self.factory.tooltip))
@@ -171,10 +173,10 @@ class SVGButtonEditor ( BasicEditorFactory ):
     filename = Str()
 
     # Extra padding to add to both the left and the right sides
-    width_padding = Range( 0, 31, 7 )
+    width_padding = Range( 0, 31, 3 )
 
     # Extra padding to add to both the top and the bottom sides
-    height_padding = Range( 0, 31, 5 )
+    height_padding = Range( 0, 31, 3 )
 
     # Presentation style
     style = Enum( 'button', 'radio', 'toolbar', 'checkbox' )
@@ -189,7 +191,7 @@ class SVGButtonEditor ( BasicEditorFactory ):
     height = Int(32)
 
     tooltip = Str()
-    
+
     toggle = Bool(True)
 
     #---------------------------------------------------------------------------
