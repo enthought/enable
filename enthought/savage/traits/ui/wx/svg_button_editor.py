@@ -2,6 +2,7 @@ import copy
 import sys
 import xml.etree.cElementTree as etree
 import wx
+import os.path
 
 from enthought.traits.api import Str, Range, Enum, Instance, Event, Int, \
         Bool, Property
@@ -22,6 +23,7 @@ class ButtonRenderPanel(RenderPanel):
     def __init__(self, parent, button, padding=(8,8)):
         self.button = button
         self.document = button.document
+        self.toggle_document = button.toggle_document
         self.state = 'up'
 
         self.toggle_state = 'up'
@@ -48,9 +50,9 @@ class ButtonRenderPanel(RenderPanel):
         offset = self.padding[0]/2.0, self.padding[1]/2.0
 
         if self.toggle_state == 'down' and self.button.factory.toggle:
-            gc = self._draw_highlight(True)
+            gc = self._draw_toggle(True)
         else:
-            gc = self._draw_highlight(False)
+            gc = self._draw_toggle(False)
 
 
         scale = float(self.zoom) / 100.0
@@ -86,19 +88,32 @@ class ButtonRenderPanel(RenderPanel):
         self.hover = False
         self.Refresh()
 
-    def _draw_highlight(self, value):
+    def _draw_toggle(self, value):
         if value:
-            offset = self.padding[0]/2.0, self.padding[1]/2.0
-
             dc = wx.BufferedPaintDC(self)
             dc.SetBackground(wx.Brush(self.GetBackgroundColour()))
             dc.Clear()
 
             gc = wx.GraphicsContext_Create(dc)
-            gc.SetPen(wx.Pen('darkgrey', width=3))
-            gc.DrawRectangle(offset[0]/2.0, offset[1]/2.0,
-                            self.button.factory.width+offset[0],
-                            self.button.factory.height+offset[1])
+
+            # the toggle doc and button doc may not be the same
+            # size, so calculate the scaling factor. Byt using the padding
+            # to lie about the size of the toggle button, we can grow the
+            # toggle a bit to use some of the padding. This is good for icons
+            # which use all of their available space
+            zoom_scale = float(self.zoom) / 100.0
+            doc_size = self.document.getSize()
+            toggle_doc_size = self.toggle_document.getSize()
+            w_scale = zoom_scale * doc_size[0] / (toggle_doc_size[0]-self.padding[0]-1)
+            h_scale = zoom_scale * doc_size[1] / (toggle_doc_size[1]-self.padding[1]-1)
+
+            # Now scale the gc and render
+            gc.Scale(w_scale, h_scale)
+            self.toggle_document.render(gc)
+
+            # And return the scaling factor back to what it originally was
+            gc.Scale(1/w_scale, 1/h_scale)
+
         else:
             dc = wx.BufferedPaintDC(self)
             dc.SetBackground(wx.Brush(self.GetBackgroundColour()))
@@ -115,6 +130,7 @@ class _SVGButtonEditor ( Editor ):
     """
 
     document = Instance(SVGDocument)
+    toggle_document = Instance(SVGDocument)
 
     #---------------------------------------------------------------------------
     # Editor API
@@ -131,6 +147,12 @@ class _SVGButtonEditor ( Editor ):
         padding=(self.factory.width_padding, self.factory.height_padding)
 
         self.document = SVGDocument(root, renderer=Renderer)
+
+        # load the button toggle document which will be displayed when the
+        # button is toggled.
+        tree = etree.parse(os.path.join(os.path.dirname(__file__), 'data', 'button_toggle.svg'))
+        self.toggle_document = SVGDocument(tree.getroot(), renderer=Renderer)
+
         self.control = ButtonRenderPanel( parent, self, padding=padding )
 
         if self.factory.tooltip != '':

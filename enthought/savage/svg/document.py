@@ -138,7 +138,7 @@ def pathHandler(func):
             cpath, cops = results
             path = cpath
             ops = cops + ops
-        
+
         ops.extend(self.createTransformOpsFromNode(node))
         ops.extend(self.generatePathOps(path))
         ops.append(
@@ -146,7 +146,7 @@ def pathHandler(func):
         )
         return path, ops
     return inner
-        
+
 
 class ResourceGetter(object):
     """ Simple context for getting relative-pathed resources.
@@ -199,7 +199,7 @@ class ResourceGetter(object):
         """
         path, open = self.resolve(path)
         fin = open(path)
-        
+
         import Image
         import numpy
         pil_img = Image.open(fin)
@@ -209,22 +209,22 @@ class ResourceGetter(object):
         shape = (pil_img.size[1],pil_img.size[0],len(pil_img.mode))
         img.shape = shape
         return img
-        
+
 
 class SVGDocument(object):
     def __init__(self, element, resources=None, renderer=NullRenderer):
         """
         Create an SVG document from an ElementTree node.
-        
+
         FIXME: this is really wrong that the doc must know about the renderer
         """
         self.renderer = renderer
-        
+
         self.lastControl = None
         self.brushCache = {}
         self.penCache = {}
-        
-        
+
+
         self.handlers = {
             SVG.svg: self.addGroupToDocument,
             SVG.a: self.addGroupToDocument,
@@ -242,7 +242,7 @@ class SVGDocument(object):
             SVG.path: self.addPathDataToDocument,
             SVG.text: self.addTextToDocument
         }
-        
+
         assert element.tag == SVG.svg, 'Not an SVG fragment'
         if resources is None:
             resources = ResourceGetter()
@@ -258,7 +258,23 @@ class SVGDocument(object):
         self.clippingStack = []
         path, ops = self.processElement(element)
         self.ops = ops
-        
+
+
+    def getSize(self):
+        width = -1
+        width_node = self.tree.get('width')
+        if width_node is not None:
+            # omit 'px' if it was specified
+            width=int(width_node.split('px')[0])
+
+        height = -1
+        height_node = self.tree.get('height')
+        if height_node is not None:
+            # omit 'px' if it was specified
+            height=int(height_node.split('px')[0])
+
+        return (width, height)
+
 
     def findIDs(self, element, uri=''):
         """ Iterate through the tree under an element and record all elements
@@ -293,7 +309,7 @@ class SVGDocument(object):
         Returns
         -------
         element : Element
-        
+
         Raises
         ------
         KeyError :
@@ -312,7 +328,7 @@ class SVGDocument(object):
     def state(self):
         """ Retrieve the current state, without popping"""
         return self.stateStack[-1]
-        
+
     def getLocalState(self, element, state=None):
         """ Get the state local to an element.
         """
@@ -329,7 +345,7 @@ class SVGDocument(object):
         """ Process one element of the XML tree.
         Returns the path representing the node,
         and an operation list for drawing the node.
-        
+
         Parent nodes should return a path (for hittesting), but
         no draw operations
         """
@@ -345,7 +361,7 @@ class SVGDocument(object):
         """ Returns an oplist for transformations.
         This applies to a node, not the current state because
         the transform stack is saved in the wxGraphicsContext.
-        
+
         This oplist does *not* include the push/pop state commands
         """
         ops = []
@@ -407,7 +423,7 @@ class SVGDocument(object):
                         (self.renderer.concatTransform, (matrix,))
                     )
         return ops
-        
+
     def createTransformOpsFromXY(self, node):
         """ On some nodes, x and y attributes cause a translation of the
         coordinate system.
@@ -430,7 +446,7 @@ class SVGDocument(object):
         ops = [
             (self.renderer.pushState, ())
         ]
-        
+
         path = self.renderer.makePath()
         ops.extend(self.createTransformOpsFromNode(node))
         ops.extend(self.createTransformOpsFromXY(node))
@@ -466,11 +482,11 @@ class SVGDocument(object):
             # SVG file cannot be found.
             warnings.warn("Could not find SVG file %s. %s: %s" % (href, e.__class__.__name__, e))
             return None, []
-        
+
         ops = [
             (self.renderer.pushState, ())
         ]
-        
+
         path = self.renderer.makePath()
         ops.extend(self.createTransformOpsFromNode(node))
         ops.extend(self.createTransformOpsFromXY(node))
@@ -553,7 +569,7 @@ class SVGDocument(object):
         if family:
             #print "setting font", family
             font.face_name = family
-        
+
         style = self.state.get("font-style")
         if style:
             self.renderer.setFontStyle(font, style)
@@ -561,24 +577,24 @@ class SVGDocument(object):
         weight = self.state.get("font-weight")
         if weight:
             self.renderer.setFontWeight(font, weight)
-            
+
         size = self.state.get("font-size")
         # TODO: properly handle inheritance.
         if size and size != 'inherit':
             val, unit = values.length.parseString(size)
             self.renderer.setFontSize(font, val)
-        
+
         # fixme: Handle text-decoration for line-through and underline.
-        #        These are probably done externally using drawing commands.    
+        #        These are probably done externally using drawing commands.
         return font
-    
+
     def addTextToDocument(self, node):
         # TODO: these attributes can actually be lists of numbers. text-text-04-t.svg
         x, y = [attrAsFloat(node, attr) for attr in ('x', 'y')]
-        
+
         font = self.getFontFromState()
         brush = self.getBrushFromState()
-        
+
         if not (brush and hasattr(brush, 'IsOk') and brush.IsOk()):
             black_tuple = (255,255,255,255)
             brush = self.renderer.createBrush(black_tuple)
@@ -603,7 +619,7 @@ class SVGDocument(object):
             (self.renderer.popState, ()),
         ])
         return None, ops
-        
+
     @pathHandler
     def addRectToDocument(self, node, path):
         x, y, w, h = (attrAsFloat(node, attr) for attr in ['x', 'y', 'width', 'height'])
@@ -647,7 +663,7 @@ class SVGDocument(object):
             #value clamping as per spec section 9.2
             rx = min(rx, w/2)
             ry = min(ry, h/2)
-            
+
             #origin
             path.MoveToPoint(x+rx, y)
             path.AddLineToPoint(x+w-rx, y)
@@ -692,12 +708,12 @@ class SVGDocument(object):
                 )
 
         return path, ops
-    
+
     @pathHandler
     def addCircleToDocument(self, node, path):
         cx, cy, r = [attrAsFloat(node, attr) for attr in ('cx', 'cy', 'r')]
         path.AddCircle(cx, cy, r)
-        
+
     @pathHandler
     def addEllipseToDocument(self, node, path):
         cx, cy, rx, ry = [float(node.get(attr, 0)) for attr in ('cx', 'cy', 'rx', 'ry')]
@@ -706,31 +722,31 @@ class SVGDocument(object):
         if rx <= 0 or ry <= 0:
             return
         path.AddEllipse(cx, cy, rx, ry)
-    
-    @pathHandler            
+
+    @pathHandler
     def addLineToDocument(self, node, path):
         x1, y1, x2, y2 = [attrAsFloat(node, attr) for attr in ('x1', 'y1', 'x2', 'y2')]
         path.MoveToPoint(x1, y1)
         path.AddLineToPoint(x2, y2)
-        
+
     @pathHandler
     def addPolyLineToDocument(self, node, path):
         #translate to pathdata and render that
         data = "M " + node.get("points")
         self.addPathDataToPath(data, path)
-    
-    @pathHandler    
+
+    @pathHandler
     def addPolygonToDocument(self, node, path):
         #translate to pathdata and render that
         points = node.get("points")
         if points is not None:
             data = "M " + points + " Z"
             self.addPathDataToPath(data, path)
-        
+
     @pathHandler
     def addPathDataToDocument(self, node, path):
         self.addPathDataToPath(node.get('d', ''), path)
-    
+
     def addPathDataToPath(self, data, path):
         self.lastControl = None
         self.lastControlQ = None
@@ -740,7 +756,7 @@ class SVGDocument(object):
             form of (command, [list of arguments]).
             We translate that to [(command, args[0]), (command, args[1])]
             via a generator.
-            
+
             M is special cased because its subsequent arguments
             become linetos.
             """
@@ -765,10 +781,10 @@ class SVGDocument(object):
         else:
             for stroke in normalizeStrokes(parsed):
                 self.addStrokeToPath(path, stroke)
-        
-        
+
+
     def generatePathOps(self, path):
-        """ Look at the current state and generate the 
+        """ Look at the current state and generate the
         draw operations (fill, stroke, neither) for the path.
         """
         ops = []
@@ -792,7 +808,7 @@ class SVGDocument(object):
                 (self.renderer.strokePath, (path,)),
             ])
         return ops
-        
+
     def getPenFromState(self):
         pencolour = self.state.get('stroke', 'none')
         if pencolour == 'currentColor':
@@ -815,7 +831,7 @@ class SVGDocument(object):
             pen.SetWidth(width)
         stroke_dasharray = self.state.get('stroke-dasharray', 'none')
         if stroke_dasharray != 'none':
-            stroke_dasharray = map(valueToPixels, 
+            stroke_dasharray = map(valueToPixels,
                 stroke_dasharray.replace(',', ' ').split())
             if len(stroke_dasharray) % 2:
                 # Repeat to get an even array.
@@ -951,7 +967,7 @@ class SVGDocument(object):
         opacity = float(opacity)
         opacity = min(max(opacity, 0.0), 1.0)
         a = 255 * opacity
-        #using try/except block instead of 
+        #using try/except block instead of
         #just setdefault because the wxBrush and wxColour would
         #be created every time anyway in order to pass them,
         #defeating the purpose of the cache
@@ -965,7 +981,7 @@ class SVGDocument(object):
         """ Given a stroke from a path command
         (in the form (command, arguments)) create the path
         commands that represent it.
-        
+
         TODO: break out into (yet another) class/module,
         especially so we can get O(1) dispatch on type?
         """
@@ -999,8 +1015,8 @@ class SVGDocument(object):
             )
             self.lastControl = control2
             path.AddCurveToPoint(
-                control1, 
-                control2, 
+                control1,
+                control2,
                 endpoint
             )
             #~ cp = path.GetCurrentPoint()
@@ -1009,7 +1025,7 @@ class SVGDocument(object):
             #~ path.AddCircle(x,y, 7)
             #~ path.MoveToPoint(cp)
             #~ print "C", control1, control2, endpoint
-        
+
         elif type == 'S':
             #control2, endpoint = arg
             control2, endpoint = map(
@@ -1019,11 +1035,11 @@ class SVGDocument(object):
                 control1 = reflectPoint(self.lastControl, path.GetCurrentPoint())
             else:
                 control1 = path.GetCurrentPoint()
-            #~ print "S", self.lastControl,":",control1, control2, endpoint    
+            #~ print "S", self.lastControl,":",control1, control2, endpoint
             self.lastControl = control2
             path.AddCurveToPoint(
-                control1, 
-                control2, 
+                control1,
+                control2,
                 endpoint
             )
         elif type == "Q":
@@ -1038,29 +1054,29 @@ class SVGDocument(object):
                 cx, cy = path.GetCurrentPoint()
             self.lastControlQ = (cx, cy)
             path.AddQuadCurveToPoint(cx, cy, x, y)
-                
+
         elif type == "V":
             _, y = normalizePoint((0, arg))
             x, _ = path.GetCurrentPoint()
             path.AddLineToPoint(x,y)
-        
+
         elif type == "H":
             x, _ = normalizePoint((arg, 0))
             _, y = path.GetCurrentPoint()
             path.AddLineToPoint(x,y)
-            
+
         elif type == "A":
             (
             (rx, ry), #radii of ellipse
             angle, #angle of rotation on the ellipse in degrees
             large_arc_flag, sweep_flag, #arc and stroke angle flags
             (x2, y2) #endpoint on the arc
-            ) = arg 
+            ) = arg
 
             x2, y2 = normalizePoint((x2,y2))
 
             path.elliptical_arc_to(rx, ry, angle, large_arc_flag, sweep_flag, x2, y2)
-            
+
         elif type == 'Z':
             #~ Bugginess:
             #~ CloseSubpath() doesn't change the
@@ -1072,18 +1088,18 @@ class SVGDocument(object):
             #~ results
             #~ Manually closing the path *and* calling CloseSubpath() appears
             #~ to give correct results on win32
-                
+
             #pt = self.firstPoints.pop()
             #path.AddLineToPoint(*pt)
             path.CloseSubpath()
-                
+
     def render(self, context):
         if not hasattr(self, "ops"):
             return
         for op, args in self.ops:
             #print op, context, args
             op(context, *args)
-            
+
 if __name__ == '__main__':
     from tests.test_document import TestBrushFromColourValue, TestValueToPixels, unittest
     unittest.main()
