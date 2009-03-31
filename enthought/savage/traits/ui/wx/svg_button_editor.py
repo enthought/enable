@@ -9,7 +9,7 @@ from enthought.traits.ui.api import View
 from enthought.traits.ui.ui_traits import AView
 from enthought.traits.ui.wx.constants import WindowColor
 from enthought.traits.ui.wx.editor import Editor
-from enthought.traits.ui.wx.basic_editor_factory import BasicEditorFactory
+from enthought.traits.ui.api import BasicEditorFactory
 
 from enthought.pyface.widget import Widget
 
