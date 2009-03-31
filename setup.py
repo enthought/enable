@@ -138,6 +138,7 @@ def configuration(parent_package='', top_path=None):
 config = configuration().todict()
 packages = setuptools.find_packages(exclude=config['packages'] +
     ['docs', 'examples'])
+packages += ['enthought.savage.traits.ui.wx.data']
 config['packages'] += packages
 
 
@@ -310,7 +311,7 @@ setup(
     namespace_packages = [
         "enthought",
         ],
-    package_data = {'': ['*.zip']},
+    package_data = {'': ['*.zip', '*.svg']},
     platforms = ["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
     setup_requires = 'setupdocs>=1.0',
     tests_require = [
