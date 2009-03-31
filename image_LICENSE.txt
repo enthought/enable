@@ -45,6 +45,8 @@ enthought/enable/image/images:
                       colorchip.png | Enthought
                           image.png | Enthought
                       inspector.png | Crystal Project
+enthought/savage/traits/ui/wx/data:
+                  button_toggle.svg | Enthought
 
 examples/enable:
                       deepfield.jpg | NASA
