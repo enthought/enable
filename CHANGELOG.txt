@@ -1,4 +1,4 @@
-Enable 3.1.2
+Enable 3.1.1
 --------------
  * Changed SVGButtonEditor toggle to draw a SVG under the button SVG instead of drawing a plain box
 
