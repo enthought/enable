@@ -28,29 +28,31 @@ from numpy import shape, transpose, zeros, rank, reshape, int32
 def points_in_polygon(pts, poly_pts, use_winding=False):
     """ Test whether point pairs in pts are within the polygon, poly_pts.
 
-        pts -- a Nx2 array of x,y point pairs (floating point).  Each 
-               point is tested to determine whether it falls within the 
-               polygon defined by poly_pts. 
-               
-        poly_pts -- a Mx2 array of x,y point pairs (floating point) that
-                    define the boundaries of a polygon. The last point 
-                    is considered to be connected to the first point.
+    Parameters
+    ----------
+    pts 
+        an Nx2 array of x,y point pairs (floating point).  Each point is tested
+        to determine whether it falls within the polygon defined by `poly_pts`.                
+    poly_pts
+        an Mx2 array of x,y point pairs (floating point) that define the 
+        boundaries of a polygon. The last point is considered to be connected
+        to the first point.
+    return 
+        a 1D array of integers.  1 is returned if the corresponding x,y pair 
+        in `pts` falls within `poly_pts`.  0 is returned otherwise.
         
-        return -- a 1D array of integers.  1 is returned if the cooresponding
-                  x,y pair in pts falls within poly_pts.  0 is returned
-                  otherwise.
-        
-        This algorithm works for complex polygons.  
+    This algorithm works for complex polygons.  
          
-        Note: If the test point is on the border of the polygon, this 
-        algorithm will deliver unpredictable results; i.e. the result 
-        may be "inside" or "outside" depending on arbitrary factors 
-        such as how the polygon is oriented with respect to the 
-        coordinate system.
-            
-        Adapted from: http://www.alienryderflex.com/polygon/
+    Note: If the test point is on the border of the polygon, this 
+    algorithm will deliver unpredictable results; i.e. the result 
+    may be "inside" or "outside" depending on arbitrary factors 
+    such as how the polygon is oriented with respect to the 
+    coordinate system.
         
-        Example:
+    Adapted from: http://www.alienryderflex.com/polygon/
+    
+    Example::
+    
         >>> from numpy import *
         >>> from enthought.kiva import agg        
         >>> poly = array(((0.0,   0.0),
@@ -62,6 +64,7 @@ def points_in_polygon(pts, poly_pts, use_winding=False):
                          ( 15.0, 15.0)))
         >>> results = agg.points_in_polygon(pts, poly)
         [0 1 0]
+        
         
     """
     

@@ -911,9 +911,13 @@ class Image(GraphicsContextArray):
     def __init__(self, file, interpolation="nearest", bottom_up=1):
         """ Create an Image object (GraphicsContextArray) from a file.
             
-            file can either be a file name or an open file object.
-            interpolation -- specifies the type of filter used when putting
-                             the image into another GraphicsContextArray.
+        Parameters
+        ----------
+        file 
+            can be either a file name or an open file object
+        interpolation
+            specifies the type of filter used when putting the image into 
+            another GraphicsContextArray
         """
         # read the file using PIL
         import Image as PilImage
