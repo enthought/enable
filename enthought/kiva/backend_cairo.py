@@ -1081,7 +1081,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
             This just calls get_text_extent, for the time being.
         """
-        w,h = self.get_text_extent(textstring)
+        x,y,w,h = self.get_text_extent(textstring)
         ascent, descent, height, maxx, maxy = self._ctx.font_extents()
         return w, ascent+descent, -descent, height
 
