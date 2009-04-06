@@ -20,7 +20,7 @@ def _GetCurrentPoint(gc):
     return gc.vertex(total_vertices-1)[0]
 
 class CompiledPath(kiva.CompiledPath):
-    
+
     AddPath = kiva.CompiledPath.add_path
     AddRectangle = kiva.CompiledPath.rect
     MoveToPoint = kiva.CompiledPath.move_to
@@ -42,7 +42,7 @@ class CompiledPath(kiva.CompiledPath):
         for i, (x1,y1, x2,y2, x3,y3, x4,y4) in enumerate(svg_extras.bezier_arc(
             x, y, x+w, y+h, theta0, dtheta)):
             self.curve_to(x2,y2, x3,y3, x4,y4)
-            
+
     def elliptical_arc_to(self, rx, ry, phi, large_arc_flag, sweep_flag, x2, y2):
         if sys.platform == 'darwin':
             x1, y1 = path.get_current_point()
@@ -52,15 +52,15 @@ class CompiledPath(kiva.CompiledPath):
                 if total_vertices == 0:
                     return (0.0, 0.0)
                 return path.vertex(total_vertices-1)[0]
-            x1, y1 = _get_current_point(self) 
-                
-        arcs = svg_extras.elliptical_arc_to(self, rx, ry, phi, 
-                                            large_arc_flag, sweep_flag, 
+            x1, y1 = _get_current_point(self)
+
+        arcs = svg_extras.elliptical_arc_to(self, rx, ry, phi,
+                                            large_arc_flag, sweep_flag,
                                             x1, y1, x2, y2)
-        
+
         for arc in arcs:
             self.curve_to(*arc)
-        
+
     def AddCircle(self, x, y, r):
         self.arc(x, y, r, 0.0, 2*pi)
 
@@ -73,7 +73,7 @@ class CompiledPath(kiva.CompiledPath):
 
 
 Canvas = kiva.Canvas
-    
+
 
 class Pen(object):
     def __init__(self, color):
@@ -84,13 +84,13 @@ class Pen(object):
         self.width = 1
         self.dasharray = None
         self.dashoffset = 0.0
-        
+
     def SetCap(self, cap):
-        self.cap = cap    
+        self.cap = cap
 
     def SetJoin(self, join):
         self.join = join
-        
+
     def SetWidth(self, width):
         self.width = width
 
@@ -111,21 +111,21 @@ class Pen(object):
         gc.set_line_width(self.width)
         if self.dasharray is not None:
             gc.set_line_dash(self.dasharray, self.dashoffset)
-        
-            
+
+
 class ColorBrush(object):
     def __init__(self, color):
         # fixme: what format is the color passed in? int or float
         self.color = color
-        # fixme: This was needed for a font setting in document.  
+        # fixme: This was needed for a font setting in document.
         #        Fix this and remove.
         self.Colour = self.color
-    
+
     def __repr__(self):
         return 'ColorBrush(%r)' % (self.color,)
 
     def IsOk(self):
-        return True    
+        return True
 
     def set_on_gc(self, gc):
         """ Set the appropriate properties on the GraphicsContext.
@@ -238,49 +238,49 @@ class RadialGradientBrush(AbstractGradientBrush):
 
 
 def font_style(font):
-    """ Return a string for the font style of a given font.  
-        
+    """ Return a string for the font style of a given font.
+
         fixme: Shouldn't the backends handle this?
     """
-    
+
     if font.style == 'italic' and font.weight == 'bold':
         style = 'bold italic'
     elif font.style == 'italic':
         style = 'italic'
-    elif font.weight== 'bold':                    
+    elif font.weight== 'bold':
         style = 'bold'
     elif font.style in [0, 'regular','normal']:
         style = 'regular'
     else:
         print "Font style '%s' and weight: '%s' not known." \
-              " Using style='regular'" % (font.style, font.weight)           
+              " Using style='regular'" % (font.style, font.weight)
         style = 'regular'
 
     return style
-    
+
 class Renderer(NullRenderer):
     # fimxe: Shouldn't this just be the GraphicsContext?
-    
+
     NullBrush = None
-    
+
     NullGraphicsBrush = None
     NullPen = None
     TransparentPen = Pen((1.0, 1.0, 1.0, 0.0))
-    
+
     caps = {
             'butt':kiva.CAP_BUTT,
             'round':kiva.CAP_ROUND,
             'square':kiva.CAP_SQUARE
             }
-    
+
     joins = {
             'miter':kiva.JOIN_MITER,
             'round':kiva.JOIN_ROUND,
             'bevel':kiva.JOIN_BEVEL
             }
-    
+
     fill_rules = {'nonzero':kiva.FILL, 'evenodd': kiva.EOF_FILL}
-    
+
     def __init__(self):
         pass
 
@@ -297,17 +297,17 @@ class Renderer(NullRenderer):
     @classmethod
     def createBrush(cls, color_tuple):
         return ColorBrush(color_tuple)
-    
+
     @classmethod
     def createNativePen(cls, pen):
         # fixme: Not really sure what to do here...
         #return wx.GraphicsRenderer_GetDefaultRenderer().CreatePen(pen)
         return pen
-        
+
     @classmethod
     def createPen(cls, color_tuple):
         return Pen(color_tuple)
-    
+
     @classmethod
     def createLinearGradientBrush(cls, x1,y1,x2,y2, stops, spreadMethod='pad',
                                   transforms=None, units='userSpaceOnUse'):
@@ -316,11 +316,11 @@ class Renderer(NullRenderer):
 
     @classmethod
     def createRadialGradientBrush(cls, cx,cy, r, stops, fx=None,fy=None,
-                                  spreadMethod='pad', transforms=None, 
+                                  spreadMethod='pad', transforms=None,
                                   units='userSpaceOnUse'):
         return RadialGradientBrush(cx,cy, r, stops, fx,fy, spreadMethod,
             transforms, units)
-        
+
     @classmethod
     def getCurrentPoint(cls, path):
         return path.GetCurrentPoint()
@@ -340,24 +340,25 @@ class Renderer(NullRenderer):
     @classmethod
     def makeMatrix(cls, *args):
         return wx.GraphicsRenderer_GetDefaultRenderer().CreateMatrix(*args)
-    
+
     @classmethod
     def makePath(cls):
-        return CompiledPath()        
+        return CompiledPath()
 
     @classmethod
     def popState(cls, gc):
         return gc.restore_state()
-    
+
     @classmethod
     def pushState(cls, gc):
         return gc.save_state()
-    
+
 
     @classmethod
     def setFontSize(cls, font, size):
-        font.size = size
-        return font        
+        # Agg expects only integer fonts
+        font.size = int(size)
+        return font
 
     @classmethod
     def setFontStyle(cls, font, style):
@@ -368,7 +369,7 @@ class Renderer(NullRenderer):
                 font.style = kiva.fonttools.font.font_styles[style]
         else:
             font.style = style
-    
+
     @classmethod
     def setFontWeight(cls, font, weight):
         if isinstance(weight, basestring):
@@ -385,7 +386,7 @@ class Renderer(NullRenderer):
 
         # text color is controlled by stroke instead of fill color in kiva.
         gc.set_stroke_color(color)
-        
+
         try:
             # fixme: The Mac backend doesn't accept style/width as non-integers
             #        in set_font, but does for select_font...
@@ -394,15 +395,16 @@ class Renderer(NullRenderer):
                 gc.select_font(font.face_name, font.size, style=style)
             else:
                 gc.set_font(font)
-            
+
+
         except ValueError:
             warnings.warn("failed to find set '%s'.  Using Arial" % font.face_name)
             if sys.platform == 'darwin':
                 style = font_style(font)
-                gc.select_font('Arial', font.size, style)    
+                gc.select_font('Arial', font.size, style)
             else:
                 gc.set_font(font)
-            
+
     @classmethod
     def setBrush(cls, gc, brush):
         if brush is Renderer.NullBrush:
@@ -414,11 +416,11 @@ class Renderer(NullRenderer):
     @classmethod
     def setPen(cls, gc, pen):
         pen.set_on_gc(gc)
-        
+
     @classmethod
     def setPenDash(cls, pen, dasharray, offset):
         pen.SetDash(dasharray, offset)
-    
+
     @classmethod
     def strokePath(cls, gc, path):
         # fixme: Do we need to clear the path first?
@@ -458,7 +460,7 @@ class Renderer(NullRenderer):
     @classmethod
     def scale(cls, gc, sx, sy):
         return gc.scale_ctm(sx, sy)
-    
+
     @classmethod
     def GetTextExtent(cls, gc, text):
         x, y, w, h = gc.get_text_extent(text)
@@ -468,7 +470,7 @@ class Renderer(NullRenderer):
     def DrawText(cls, gc, text, x, y, brush, anchor='start'):
         """ Draw text at the given x,y position with the color of the
             given brush.
-            
+
             fixme: Handle gradients...?
         """
         gc.save_state()
@@ -477,21 +479,21 @@ class Renderer(NullRenderer):
             # Setting stroke instead of fill color because that is
             # what kiva uses.
             gc.set_stroke_color(color)
-        
+
             # PDF (our API) has the origin in the lower left.
             # SVG (what we are rendering) has the origin in the upper right.
-            # The ctm (our API) has been set up with a scaling and translation to 
-            # draw as if the upper right is the origin and positive is down so 
-            # that the SVG will render correctly.  This works great accept for 
+            # The ctm (our API) has been set up with a scaling and translation to
+            # draw as if the upper right is the origin and positive is down so
+            # that the SVG will render correctly.  This works great accept for
             # text which will render up side down.  To fix this, we set the
             # text transform matrix to have y going up so the text is rendered
             # upright.  But since, +y is now *up*, we need to draw at -y.
-        
+
             # fixme: There is something wrong with the text matrix.  The following
             #        commands don't work and I would expect them to.
             #text_matrix = affine.affine_from_values(1,0,0,-1,x,-y)
             #gc.set_text_matrix(text_matrix)
-            #gc.show_text_at_point(text, 0, 0)        
+            #gc.show_text_at_point(text, 0, 0)
 
             if anchor != 'start':
                 tx, ty, tw, th = gc.get_text_extent(text)
@@ -501,9 +503,9 @@ class Renderer(NullRenderer):
                     x -= tw
             gc.scale_ctm(1.0, -1.0)
             gc.show_text_at_point(text, x, -y)
-        finally:    
+        finally:
             gc.restore_state()
-    
+
     @classmethod
     def DrawImage(cls, gc, image, x, y, width, height):
         rect = (x, y, width, height)
