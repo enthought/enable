@@ -7,6 +7,9 @@ def simple_container_get_preferred_size(container, components=None):
 
     Overrides PlotComponent.
     """
+    if container.fixed_preferred_size is not None:
+        return container.fixed_preferred_size
+
     if container.resizable == "":
         return container.outer_bounds
 

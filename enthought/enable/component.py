@@ -107,6 +107,15 @@ class Component(CoordinateBox, Interactor):
     # other components.
     layout_needed = Property
 
+    # If the component is resizable, this attribute can be used to specify the
+    # amount of space that the component would like to get in each dimension,
+    # as a tuple (width, height).  This attribute can be used to establish
+    # relative sizes between resizable components in a container: if one
+    # component specifies, say, a fixed preferred width of 50 and another one
+    # specifies a fixed preferred width of 100, then the latter component will
+    # always be twice as wide as the former.
+    fixed_preferred_size = Trait(None, None, bounds_trait)
+
     #------------------------------------------------------------------------
     # Overlays and underlays
     #------------------------------------------------------------------------
@@ -249,7 +258,7 @@ class Component(CoordinateBox, Interactor):
     border_width = Int(1)
 
     # Is the border visible?  If this is false, then all the other border
-    # properties are not
+    # properties are not used.
     border_visible = Bool(False)
 
     # The line style (i.e. dash pattern) of the border.
@@ -636,13 +645,16 @@ class Component(CoordinateBox, Interactor):
         is visually appropriate.  (The component's actual bounds are 
         determined by its container's do_layout() method.)
         """
-        size = [0,0]
-        outer_bounds = self.outer_bounds
-        if "h" not in self.resizable:
-            size[0] = outer_bounds[0]
-        if "v" not in self.resizable:
-            size[1] = outer_bounds[1]
-        return size
+        if self.fixed_preferred_size is not None:
+            return self.fixed_preferred_size
+        else:
+            size = [0,0]
+            outer_bounds = self.outer_bounds
+            if "h" not in self.resizable:
+                size[0] = outer_bounds[0]
+            if "v" not in self.resizable:
+                size[1] = outer_bounds[1]
+            return size
 
     #------------------------------------------------------------------------
     # Protected methods
