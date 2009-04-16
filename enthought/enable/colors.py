@@ -6,7 +6,6 @@ import sys
 from enthought.etsconfig.api import ETSConfig
 from enthought.traits.api import List, Str, Trait, Tuple, TraitError
 
-
 # Color definitions
 transparent_color = (0.0, 0.0, 0.0, 0.0)
 
@@ -203,13 +202,11 @@ if ETSConfig.toolkit == 'wx':
                              'and BB is blue, a list/tuple of (r,g,b) or (r,g,b,a)')
     
     # Set the system color
-    if sys.platform == 'darwin':
-        # There is no way to correctly interrogate wx for the correct color.
-        color_table["sys_window"] = (232./255, 232./255, 232./255, 1.0)
-    else:
-        # We use ACTIVEBORDER, but on WinXP the INACTIVEBORDER has the same color
-        color_table["sys_window"] = convert_from_wx_color(None, None,
-            wx.SystemSettings.GetColour(wx.SYS_COLOUR_ACTIVEBORDER))
+    from enthought.traits.ui.wx.constants import WindowColor
+    color_table["sys_window"] = (WindowColor.Red()/255.0, 
+                                 WindowColor.Green()/255.0,
+                                 WindowColor.Blue()/255.0,
+                                 1.0)
 
     class ColorEditorFactory(StandardColorEditorFactory):
 
