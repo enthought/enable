@@ -464,25 +464,29 @@ cdef class CGContext:
         cdef int n
         cdef int i
         cdef CGPoint* cg_points
+        cdef c_numpy.ndarray apoints
+        cdef float x, y
+
         n = len(points)
 
-        # Shortcuts for the 0, 1, and 2 point cases
+        # Shortcut for the 0 and 1 point case
         if n < 2:
             return
-        if n == 2:
-            CGContextMoveToPoint(self.context, points[0][0], points[0][1])
-            CGContextAddLineToPoint(self.context, points[1][0], points[1][1])
-            return
 
-        cg_points = <CGPoint*>malloc(2*n*sizeof(CGPoint))
-        try:
-            for i from 0 <= i < n:
-                cg_points[i].x = points[i][0]
-                cg_points[i].y = points[i][1]
+        apoints = <c_numpy.ndarray>(numpy.asarray(points, dtype=numpy.float32))
 
-            CGContextAddLines(self.context, cg_points, n)
-        finally:
-            free(cg_points)
+        if apoints.nd != 2 or apoints.dimensions[1] != 2:
+            msg = "must pass array of 2-D points"
+            raise ValueError(msg)
+
+        CGContextAddLines
+        x = (<float*>c_numpy.PyArray_GETPTR2(apoints, 0, 0))[0]
+        y = (<float*>c_numpy.PyArray_GETPTR2(apoints, 0, 1))[0]
+        CGContextMoveToPoint(self.context, x, y)
+        for i from 1 <= i < n:	
+            x = (<float*>c_numpy.PyArray_GETPTR2(apoints, i, 0))[0]
+            y = (<float*>c_numpy.PyArray_GETPTR2(apoints, i, 1))[0]
+            CGContextAddLineToPoint(self.context, x, y)
 
     def line_set(self, object starts, object ends):
         """ Adds a series of disconnected line segments as a new subpath.
