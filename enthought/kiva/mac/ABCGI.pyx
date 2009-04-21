@@ -463,7 +463,6 @@ cdef class CGContext:
 
         cdef int n
         cdef int i
-        cdef CGPoint* cg_points
         cdef c_numpy.ndarray apoints
         cdef float x, y
 
@@ -479,7 +478,6 @@ cdef class CGContext:
             msg = "must pass array of 2-D points"
             raise ValueError(msg)
 
-        CGContextAddLines
         x = (<float*>c_numpy.PyArray_GETPTR2(apoints, 0, 0))[0]
         y = (<float*>c_numpy.PyArray_GETPTR2(apoints, 0, 1))[0]
         CGContextMoveToPoint(self.context, x, y)
