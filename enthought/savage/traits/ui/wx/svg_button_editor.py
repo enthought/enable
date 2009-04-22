@@ -26,7 +26,7 @@ class ButtonRenderPanel(RenderPanel):
         self.toggle_document = button.toggle_document
         self.state = 'up'
 
-        self.toggle_state = 'up'
+        self.toggle_state = button.factory.toggle_state
 
         self.padding = padding
 
@@ -49,7 +49,7 @@ class ButtonRenderPanel(RenderPanel):
     def OnPaint(self, evt):
         offset = self.padding[0]/2.0, self.padding[1]/2.0
 
-        if self.toggle_state == 'down' and self.button.factory.toggle:
+        if self.toggle_state and self.button.factory.toggle:
             gc = self._draw_toggle(True)
         else:
             gc = self._draw_toggle(False)
@@ -65,10 +65,8 @@ class ButtonRenderPanel(RenderPanel):
     def OnLeftDown(self, evt):
         # if the button is supposed to toggle, set the toggle_state
         # to the opposite of what it currently is
-        if self.button.factory.toggle and self.toggle_state == 'down':
-            self.toggle_state = 'up'
-        else:
-            self.toggle_state = 'down'
+        if self.button.factory.toggle:
+            self.toggle_state = not self.toggle_state
 
         self.state = 'down'
         self.button.update_editor()
@@ -215,6 +213,9 @@ class SVGButtonEditor ( BasicEditorFactory ):
     tooltip = Str()
 
     toggle = Bool(True)
+
+    # the toggle state displayed
+    toggle_state = Bool(False)
 
     #---------------------------------------------------------------------------
     #  Traits view definition:
