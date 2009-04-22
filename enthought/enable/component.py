@@ -716,8 +716,13 @@ class Component(CoordinateBox, Interactor):
                 width, height = self.bounds
             
             if not self.draw_valid:
+                if hasattr(GraphicsContext, 'create_from_gc'):
+                    # For some backends, such as the mac, a much more efficient
+                    # backbuffer can be created from the window gc.
+                    bb = GraphicsContext.create_from_gc(gc, (int(width), int(height)))
+                else:
+                    bb = GraphicsContext((int(width), int(height)))
                 # Fixme: should there be a +1 here?
-                bb = GraphicsContext((int(width), int(height)))
                 bb.translate_ctm(-x+0.5, -y+0.5)
                 # There are a couple of strategies we could use here, but we
                 # have to do something about view_bounds.  This is because

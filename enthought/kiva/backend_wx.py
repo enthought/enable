@@ -193,9 +193,14 @@ if sys.platform == 'darwin':
     Image = CGImageFile
 
     class GraphicsContext(CGLayerContext):
-        def __init__(self, size_or_array, *args, **kwds):
-            # Create a tiny base context to spawn the CGLayerContext from.
-            bitmap = CGBitmapContext((1,1))
+        def __init__(self, size_or_array, window_gc=None, *args, **kwds):
+            gc = window_gc 
+            if not gc:
+                # Create a tiny base context to spawn the CGLayerContext from.
+                # We are better off making our Layer from the window gc since
+                # the data formats will match and so it will be faster to draw the
+                # layer.
+                gc = CGBitmapContext((1,1))
             if isinstance(size_or_array, np.ndarray):
                 # Initialize the layer with an image.
                 image = CGImage(size_or_array)
@@ -205,10 +210,14 @@ if sys.platform == 'darwin':
                 # No initialization.
                 image = None
                 width, height = size_or_array
-            CGLayerContext.__init__(self, bitmap, 
+            CGLayerContext.__init__(self, gc,
                 (width, height))
             if image is not None:
                 self.draw_image(image)
+
+        @classmethod
+        def create_from_gc(klass, gc, size_or_array, *args, **kwds):
+            return klass(size_or_array, gc, *args, **kwds)
 
     class Canvas(BaseWxCanvas, WidgetClass):
         """ Mac wx Kiva canvas.
