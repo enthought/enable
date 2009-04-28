@@ -86,6 +86,9 @@ class ButtonRenderPanel(RenderPanel):
         self.hover = False
         self.Refresh()
 
+    def OnWheel(self, evt):
+        pass
+
     def _draw_toggle(self, value):
         if value:
             dc = wx.BufferedPaintDC(self)
