@@ -30,7 +30,7 @@ elif ETSConfig.toolkit == 'qt4':
     #from enthought.traits.ui.qt4.color_trait import standard_colors
     standard_colors = {}
 else:
-    standard_colors = {}
+    from enthought.traits.ui.null.color_trait import standard_colors
 
 
 #-------------------------------------------------------------------------------
@@ -67,13 +67,15 @@ convert_to_color.info = ('a tuple of the form (red,green,blue,alpha), where '
 
 # RGBA versions of standard colors
 rgba_standard_colors = {}
-for name, color in standard_colors.items():
-    rgba_standard_colors[ name ] = ( color.Red()   / 255.0,
-                                     color.Green() / 255.0,
-                                     color.Blue()  / 255.0,
-                                     1.0 )
-rgba_standard_colors[ 'clear' ] = ( 0, 0, 0, 0 )
-
+try:
+    for name, color in standard_colors.items():
+        rgba_standard_colors[ name ] = ( color.Red()   / 255.0,
+                                         color.Green() / 255.0,
+                                         color.Blue()  / 255.0,
+                                         1.0 )
+    rgba_standard_colors[ 'clear' ] = ( 0, 0, 0, 0 )
+except:
+    pass
 
 #-------------------------------------------------------------------------------
 #  Define Enable/Kiva specific color traits:
@@ -107,7 +109,7 @@ def RGBAColorFunc(*args, **metadata):
         RGBAColorEditor = None
     else:
         RGBAColorEditor = None
-    
+
     tmp_trait = Trait( 'white', convert_to_color, rgba_standard_colors, 
            editor = RGBAColorEditor )
     return tmp_trait(*args, **metadata)
