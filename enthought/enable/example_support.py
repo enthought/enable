@@ -54,7 +54,9 @@ if ETSConfig.enable_toolkit == 'wx':
 
     def demo_main(demo_class, size=(400,400), title="Enable Demo"):
         "Takes the class of the demo to run as an argument."
-        app = wx.PySimpleApp()
+        app = wx.GetApp()
+        if app is None:
+            app = wx.PySimpleApp()
         frame = demo_class(None, size=size, title=title)
         app.SetTopWindow(frame)
         app.MainLoop()
