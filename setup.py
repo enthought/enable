@@ -313,7 +313,10 @@ setup(
         ],
     package_data = {'': ['*.zip', '*.svg']},
     platforms = ["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
-    setup_requires = 'setupdocs>=1.0',
+    setup_requires = [
+        'pyrex',
+        'setupdocs>=1.0',
+        ],
     tests_require = [
         'nose >= 0.10.3',
         ],
