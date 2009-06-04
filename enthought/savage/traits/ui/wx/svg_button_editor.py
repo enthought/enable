@@ -64,15 +64,23 @@ class ButtonRenderPanel(RenderPanel):
         if self.toggle_state and self.button.factory.toggle:
             self._draw_toggle(gc)
 
-        x_offset = (((max(0, text_width - self.button.factory.width) +
-                      self.padding[0])) / 2.0)
+        # Put the icon in the middle of the alotted space. If the text is wider
+        # than the icon, then the best_size will be wider, in which case we
+        # want to put the icon in a little bit more towards the center,
+        # otherwise, the icon will be drawn starting after the left padding.
+
+        best_size = self.DoGetBestSize()
+        x_offset = (self.padding[0] + best_size.width - self.button.factory.width)/2.0
         y_offset = self.padding[1] / 2.0
         gc.Translate(x_offset, y_offset)
         gc.Scale(float(self.zoom_x) / 100, float(self.zoom_y) / 100)
 
         self.document.render(gc)
 
-        text_x = max(0, (self.button.factory.width - text_width) / 2.0)
+        # Reset the translation, then draw the text at an offset based on the text width
+        gc.Translate(-x_offset, -y_offset)
+
+        text_x = (self.padding[0] + best_size.width - text_width)/2.0
         text_y = self.button.factory.height
         dc.DrawText(self.button.factory.label, text_x, text_y)
 
