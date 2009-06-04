@@ -23,9 +23,9 @@ class ButtonRenderPanel(RenderPanel):
     def __init__(self, parent, button, padding=(8,8)):
         self.button = button
         self.document = button.document
-        self.toggle_document = button.toggle_document
         self.state = 'up'
 
+        self.toggle_document = button.toggle_document
         self.toggle_state = button.factory.toggle_state
 
         self.padding = padding
@@ -33,8 +33,14 @@ class ButtonRenderPanel(RenderPanel):
         super(ButtonRenderPanel, self).__init__(parent, document=self.document)
 
     def DoGetBestSize(self):
-        return wx.Size( self.button.factory.width + self.padding[0],
-                        self.button.factory.height + self.padding[1])
+        label = self.button.factory.label
+        if len(label):
+            label_size = wx.MemoryDC().GetTextExtent(label)
+        else:
+            label_size = (0, 0)
+        width = max(self.button.factory.width, label_size[0])
+        height = self.button.factory.height + label_size[1]
+        return wx.Size(width + self.padding[0], height + self.padding[1])
 
     def GetBackgroundColour(self):
         bgcolor = copy.copy(WindowColor)
@@ -47,20 +53,28 @@ class ButtonRenderPanel(RenderPanel):
         return bgcolor
 
     def OnPaint(self, evt):
-        offset = self.padding[0]/2.0, self.padding[1]/2.0
-
+        dc = wx.BufferedPaintDC(self)
+        dc.SetBackground(wx.Brush(self.GetBackgroundColour()))
+        dc.Clear()
+        dc.SetFont(wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT))
+        text_width = dc.GetTextExtent(self.button.factory.label)[0]
+        
+        gc = wx.GraphicsContext_Create(dc)
+        
         if self.toggle_state and self.button.factory.toggle:
-            gc = self._draw_toggle(True)
-        else:
-            gc = self._draw_toggle(False)
+            self._draw_toggle(gc)
 
-
-        scale = float(self.zoom) / 100.0
-
-        gc.Translate(*offset)
-        gc.Scale(scale, scale)
+        x_offset = (((max(0, text_width - self.button.factory.width) + 
+                      self.padding[0])) / 2.0)
+        y_offset = self.padding[1] / 2.0
+        gc.Translate(x_offset, y_offset)
+        gc.Scale(float(self.zoom_x) / 100, float(self.zoom_y) / 100)
 
         self.document.render(gc)
+
+        text_x = max(0, (self.button.factory.width - text_width) / 2.0)
+        text_y = self.button.factory.height
+        dc.DrawText(self.button.factory.label, text_x, text_y)
 
     def OnLeftDown(self, evt):
         # if the button is supposed to toggle, set the toggle_state
@@ -89,41 +103,25 @@ class ButtonRenderPanel(RenderPanel):
     def OnWheel(self, evt):
         pass
 
-    def _draw_toggle(self, value):
-        if value:
-            dc = wx.BufferedPaintDC(self)
-            dc.SetBackground(wx.Brush(self.GetBackgroundColour()))
-            dc.Clear()
-
-            gc = wx.GraphicsContext_Create(dc)
-
-            # the toggle doc and button doc may not be the same
-            # size, so calculate the scaling factor. Byt using the padding
-            # to lie about the size of the toggle button, we can grow the
-            # toggle a bit to use some of the padding. This is good for icons
-            # which use all of their available space
-            zoom_scale = float(self.zoom) / 100.0
-            doc_size = self.document.getSize()
-            toggle_doc_size = self.toggle_document.getSize()
-            w_scale = zoom_scale * doc_size[0] / (toggle_doc_size[0]-self.padding[0]-1)
-            h_scale = zoom_scale * doc_size[1] / (toggle_doc_size[1]-self.padding[1]-1)
-
-            # Now scale the gc and render
-            gc.Scale(w_scale, h_scale)
-            self.toggle_document.render(gc)
-
-            # And return the scaling factor back to what it originally was
-            gc.Scale(1/w_scale, 1/h_scale)
-
-        else:
-            dc = wx.BufferedPaintDC(self)
-            dc.SetBackground(wx.Brush(self.GetBackgroundColour()))
-            dc.Clear()
-
-            gc = wx.GraphicsContext_Create(dc)
-
-        return gc
-
+    def _draw_toggle(self, gc):
+        # the toggle doc and button doc may not be the same
+        # size, so calculate the scaling factor. Byt using the padding
+        # to lie about the size of the toggle button, we can grow the
+        # toggle a bit to use some of the padding. This is good for icons
+        # which use all of their available space
+        zoom_scale_x = float(self.zoom_x) / 100
+        zoom_scale_y = float(self.zoom_y) / 100
+        doc_size = self.document.getSize()
+        toggle_doc_size = self.toggle_document.getSize()
+        w_scale = zoom_scale_x * doc_size[0] / (toggle_doc_size[0]-self.padding[0]-1)
+        h_scale = zoom_scale_y * doc_size[1] / (toggle_doc_size[1]-self.padding[1]-1)
+        
+        # Now scale the gc and render
+        gc.Scale(w_scale, h_scale)
+        self.toggle_document.render(gc)
+        
+        # And return the scaling factor back to what it originally was
+        gc.Scale(1/w_scale, 1/h_scale)
 
 
 class _SVGButtonEditor ( Editor ):
@@ -143,31 +141,28 @@ class _SVGButtonEditor ( Editor ):
         """
 
         tree = etree.parse(self.factory.filename)
-        root = tree.getroot()
-
-        padding=(self.factory.width_padding, self.factory.height_padding)
-
-        self.document = SVGDocument(root, renderer=Renderer)
+        self.document = SVGDocument(tree.getroot(), renderer=Renderer)
 
         # load the button toggle document which will be displayed when the
         # button is toggled.
         tree = etree.parse(os.path.join(os.path.dirname(__file__), 'data', 'button_toggle.svg'))
         self.toggle_document = SVGDocument(tree.getroot(), renderer=Renderer)
 
+        padding = (self.factory.width_padding, self.factory.height_padding)
         self.control = ButtonRenderPanel( parent, self, padding=padding )
 
         if self.factory.tooltip != '':
             self.control.SetToolTip(wx.ToolTip(self.factory.tooltip))
 
         svg_w, svg_h = self.control.GetBestSize()
-        scale_factor = float(svg_w)/self.factory.width
-        self.control.zoom /= scale_factor
+        self.control.zoom_x /= float(svg_w) / self.factory.width
+        self.control.zoom_y /= float(svg_h) / self.factory.height
         self.control.Refresh()
 
     def prepare ( self, parent ):
         """ Finishes setting up the editor. This differs from the base class
-            it that self.update_editor() is not called at the end, which
-            would fire an event
+            in that self.update_editor() is not called at the end, which
+            would fire an event.
         """
         name = self.extended_name
         if name != 'None':
@@ -182,6 +177,7 @@ class _SVGButtonEditor ( Editor ):
         """
         factory    = self.factory
         self.value = factory.value
+
 
 class SVGButtonEditor ( BasicEditorFactory ):
 

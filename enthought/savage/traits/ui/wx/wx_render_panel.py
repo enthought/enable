@@ -8,7 +8,8 @@ class RenderPanel(wx.PyPanel):
         wx.PyPanel.__init__(self, parent)
         self.lastRender = None
         self.document = document
-        self.zoom = 100
+        self.zoom_x = 100
+        self.zoom_y = 100
         self.offset = wx.Point(0,0)
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
@@ -29,10 +30,9 @@ class RenderPanel(wx.PyPanel):
             dc.DrawText("No Document", 20, 20)
             return
         gc = wx.GraphicsContext_Create(dc)
-        scale = float(self.zoom) / 100.0
 
         gc.Translate(*self.offset)
-        gc.Scale(scale, scale)
+        gc.Scale(float(self.zoom_x) / 100, float(self.zoom_y) / 100)
 
         self.document.render(gc)
         self.lastRender = time.time() - start
@@ -44,7 +44,9 @@ class RenderPanel(wx.PyPanel):
         return wx.Size(*(self.document.getSize()))
 
     def OnWheel(self, evt):
-        self.zoom += (evt.m_wheelRotation / evt.m_wheelDelta) * 10
+        delta = (evt.m_wheelRotation / evt.m_wheelDelta) * 10
+        self.zoom_x += delta
+        self.zoom_y += delta
         self.Refresh()
 
     def OnLeftDown(self, evt):
@@ -68,7 +70,8 @@ class RenderPanel(wx.PyPanel):
 
     def OnMiddleClick(self, evt):
         self.offset = wx.Point(0,0)
-        self.zoom = 100
+        self.zoom_x = 100
+        self.zoom_y = 100
         self.Refresh()
 
     def OnEnterWindow(self, evt):
