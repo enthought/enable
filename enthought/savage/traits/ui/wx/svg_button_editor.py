@@ -46,9 +46,9 @@ class ButtonRenderPanel(RenderPanel):
         bgcolor = copy.copy(WindowColor)
         if self.state == 'down':
             red, green, blue = bgcolor.Get()
-            red -= 50
-            green -= 50
-            blue -= 50
+            red -= 15
+            green -= 15
+            blue -= 15
             bgcolor.Set(red, green, blue, 255)
         return bgcolor
 
@@ -58,13 +58,13 @@ class ButtonRenderPanel(RenderPanel):
         dc.Clear()
         dc.SetFont(wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT))
         text_width = dc.GetTextExtent(self.button.factory.label)[0]
-        
+
         gc = wx.GraphicsContext_Create(dc)
-        
+
         if self.toggle_state and self.button.factory.toggle:
             self._draw_toggle(gc)
 
-        x_offset = (((max(0, text_width - self.button.factory.width) + 
+        x_offset = (((max(0, text_width - self.button.factory.width) +
                       self.padding[0])) / 2.0)
         y_offset = self.padding[1] / 2.0
         gc.Translate(x_offset, y_offset)
@@ -83,12 +83,12 @@ class ButtonRenderPanel(RenderPanel):
             self.toggle_state = not self.toggle_state
 
         self.state = 'down'
-        self.button.update_editor()
         evt.Skip()
         self.Refresh()
 
     def OnLeftUp(self, evt):
         self.state = 'up'
+        self.button.update_editor()
         evt.Skip()
         self.Refresh()
 
@@ -115,11 +115,11 @@ class ButtonRenderPanel(RenderPanel):
         toggle_doc_size = self.toggle_document.getSize()
         w_scale = zoom_scale_x * doc_size[0] / (toggle_doc_size[0]-self.padding[0]-1)
         h_scale = zoom_scale_y * doc_size[1] / (toggle_doc_size[1]-self.padding[1]-1)
-        
+
         # Now scale the gc and render
         gc.Scale(w_scale, h_scale)
         self.toggle_document.render(gc)
-        
+
         # And return the scaling factor back to what it originally was
         gc.Scale(1/w_scale, 1/h_scale)
 
