@@ -672,7 +672,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         else:
             x,y = self.text_xy                       
         self.gc.drawString(x,y,text)
-                  
+
+    def show_text_at_point(self, text, x, y):
+        self.show_text(text, x, y)
         
     def show_glyphs(self):
         """
