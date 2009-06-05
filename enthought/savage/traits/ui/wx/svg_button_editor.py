@@ -35,7 +35,7 @@ class ButtonRenderPanel(RenderPanel):
     def DoGetBestSize(self):
         label = self.button.factory.label
         if len(label):
-            label_size = wx.MemoryDC().GetTextExtent(label)
+            label_size = wx.ScreenDC().GetTextExtent(label)
         else:
             label_size = (0, 0)
         width = max(self.button.factory.width, label_size[0])
@@ -77,8 +77,10 @@ class ButtonRenderPanel(RenderPanel):
 
         self.document.render(gc)
 
-        # Reset the translation, then draw the text at an offset based on the text width
+        # Reset the translation and zoom, then draw the text at an offset
+        # based on the text width
         gc.Translate(-x_offset, -y_offset)
+        gc.Scale(100/float(self.zoom_x), 100/float(self.zoom_y))
 
         text_x = (self.padding[0] + best_size.width - text_width)/2.0
         text_y = self.button.factory.height
