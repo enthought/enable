@@ -35,7 +35,9 @@ class ButtonRenderPanel(RenderPanel):
     def DoGetBestSize(self):
         label = self.button.factory.label
         if len(label):
-            label_size = wx.ScreenDC().GetTextExtent(label)
+            dc = wx.ScreenDC()
+            dc.SetFont(wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT))
+            label_size = dc.GetTextExtent(label)
         else:
             label_size = (0, 0)
         width = max(self.button.factory.width, label_size[0])
@@ -70,7 +72,7 @@ class ButtonRenderPanel(RenderPanel):
         # otherwise, the icon will be drawn starting after the left padding.
 
         best_size = self.DoGetBestSize()
-        x_offset = (self.padding[0] + best_size.width - self.button.factory.width)/2.0
+        x_offset = (best_size.width - self.button.factory.width)/2.0
         y_offset = self.padding[1] / 2.0
         gc.Translate(x_offset, y_offset)
         gc.Scale(float(self.zoom_x) / 100, float(self.zoom_y) / 100)
@@ -82,7 +84,7 @@ class ButtonRenderPanel(RenderPanel):
         gc.Translate(-x_offset, -y_offset)
         gc.Scale(100/float(self.zoom_x), 100/float(self.zoom_y))
 
-        text_x = (self.padding[0] + best_size.width - text_width)/2.0
+        text_x = (best_size.width - text_width)/2.0
         text_y = self.button.factory.height
         dc.DrawText(self.button.factory.label, text_x, text_y)
 
