@@ -81,12 +81,13 @@ class ButtonRenderPanel(RenderPanel):
 
         # Reset the translation and zoom, then draw the text at an offset
         # based on the text width
-        gc.Translate(-x_offset, -y_offset)
-        gc.Scale(100/float(self.zoom_x), 100/float(self.zoom_y))
 
         text_x = (best_size.width - text_width)/2.0
         text_y = self.button.factory.height
-        dc.DrawText(self.button.factory.label, text_x, text_y)
+        gc.Scale(100/float(self.zoom_x), 100/float(self.zoom_y))
+        gc.Translate(-x_offset + text_x, -y_offset + text_y)
+
+        dc.DrawText(self.button.factory.label, 0, 0)
 
     def OnLeftDown(self, evt):
         # if the button is supposed to toggle, set the toggle_state

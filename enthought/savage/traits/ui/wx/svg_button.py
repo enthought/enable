@@ -9,7 +9,7 @@ class SVGButton ( Event ):
                          tooltip = '', toggle=False,
                          toggle_state=False,
                          width = 32, height = 32,
-                         orientation = 'vertical', width_padding = 3,
+                         orientation = 'vertical', width_padding = 4,
                          height_padding = 1, view = None, **metadata ):
         """ Returns a trait event whose editor is a button.
 
