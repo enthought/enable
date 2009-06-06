@@ -129,12 +129,20 @@ class ButtonRenderPanel(RenderPanel):
         w_scale = zoom_scale_x * doc_size[0] / (toggle_doc_size[0]-self.padding[0]-1)
         h_scale = zoom_scale_y * doc_size[1] / (toggle_doc_size[1]-self.padding[1]-1)
 
+        # move to the center of the allotted area
+        best_size = self.DoGetBestSize()
+        x_offset = (best_size.width - self.button.factory.width)/2.0
+        y_offset = self.padding[1] / 2.0
+        gc.Translate(x_offset, y_offset)
+
         # Now scale the gc and render
         gc.Scale(w_scale, h_scale)
         self.toggle_document.render(gc)
 
         # And return the scaling factor back to what it originally was
+        # and return to the origial location
         gc.Scale(1/w_scale, 1/h_scale)
+        gc.Translate(-x_offset, -y_offset)
 
 
 class _SVGButtonEditor ( Editor ):
