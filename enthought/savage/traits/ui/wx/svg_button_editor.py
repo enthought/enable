@@ -82,20 +82,21 @@ class ButtonRenderPanel(RenderPanel):
         # Reset the translation and zoom, then draw the text at an offset
         # based on the text width. There is a minor gotcha for supporting
         # multiple platforms here, Translate and DrawText behave differently
-        # on different platforms. For this reason, the x offset is set in
-        # gc.Translate and the y position is set in dc.DrawText. If both are
-        # set in gc.Translate, on Linux the text appears in the vertical 
-        # middle, and if both are set in dc.DrawText, on OS X the label will
-        # start at the bottom, but in the horizontal middle (not centered).
+        # on different platforms. 
         # It would be nice is a cross platform library actually worked the
         # same across platforms...
 
         text_x = (best_size.width - text_width)/2.0
         text_y = self.button.factory.height
         gc.Scale(100/float(self.zoom_x), 100/float(self.zoom_y))
-        gc.Translate(-x_offset + text_x, -y_offset)
-
-        dc.DrawText(self.button.factory.label, 0, text_y)
+        
+        if sys.platform == 'darwin':
+            gc.Translate(-x_offset + text_x, -y_offset + text_y)
+            dc.DrawText(self.button.factory.label, 0, 0)
+        else:
+            gc.Translate(-x_offset, -y_offset)
+            dc.DrawText(self.button.factory.label, text_x, text_y)
+            
 
     def OnLeftDown(self, evt):
         # if the button is supposed to toggle, set the toggle_state
