@@ -2,6 +2,7 @@ import time
 import wx
 
 from enthought.savage.svg.backends.wx import renderer
+from enthought.traits.ui.wx.constants import WindowColor
 
 class RenderPanel(wx.PyPanel):
     def __init__(self, parent, document=None):
@@ -36,6 +37,9 @@ class RenderPanel(wx.PyPanel):
 
         self.document.render(gc)
         self.lastRender = time.time() - start
+
+    def GetBackgroundColour(self):
+        return WindowColor
 
     def GetBestSize(self):
         if not self.document:
