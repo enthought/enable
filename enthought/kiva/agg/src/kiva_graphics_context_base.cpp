@@ -39,7 +39,7 @@ void kiva::cleanup_font_threading_primitives()
     DeleteCriticalSection(&gCriticalSection);
 #else
 
-#endif    
+#endif
 }
 
 
@@ -65,40 +65,40 @@ int graphics_context_base::width()
 }
 
 
-int graphics_context_base::height()  
-{ 
-    return this->buf.height(); 
+int graphics_context_base::height()
+{
+    return this->buf.height();
 }
 
 
-int graphics_context_base::stride()  
-{ 
-    return this->buf.stride(); 
+int graphics_context_base::stride()
+{
+    return this->buf.stride();
 }
 
 
-int graphics_context_base::bottom_up() 
-{ 
-    return (this->stride() > 0 ? 0 : 1); 
+int graphics_context_base::bottom_up()
+{
+    return (this->stride() > 0 ? 0 : 1);
 }
 
 
-agg::rendering_buffer* graphics_context_base::rendering_buffer_ptr() 
-{ 
-    return &(this->buf); 
+agg::rendering_buffer* graphics_context_base::rendering_buffer_ptr()
+{
+    return &(this->buf);
 }
 
 
 
-kiva::interpolation_e graphics_context_base::get_image_interpolation() 
-{ 
-    return this->_image_interpolation; 
+kiva::interpolation_e graphics_context_base::get_image_interpolation()
+{
+    return this->_image_interpolation;
 }
 
 
-void graphics_context_base::set_image_interpolation(kiva::interpolation_e interpolation) 
-{ 
-    this->_image_interpolation = interpolation; 
+void graphics_context_base::set_image_interpolation(kiva::interpolation_e interpolation)
+{
+    this->_image_interpolation = interpolation;
 }
 
 
@@ -107,33 +107,33 @@ void graphics_context_base::set_image_interpolation(kiva::interpolation_e interp
 //---------------------------------------------------------------
 
 
-void graphics_context_base::set_stroke_color(agg::rgba& value) 
-{ 
-    this->state.line_color = value; 
+void graphics_context_base::set_stroke_color(agg::rgba& value)
+{
+    this->state.line_color = value;
 }
 
 
-agg::rgba& graphics_context_base::get_stroke_color() 
-{ 
-    return this->state.line_color; 
+agg::rgba& graphics_context_base::get_stroke_color()
+{
+    return this->state.line_color;
 }
 
 
-void graphics_context_base::set_line_width(double value) 
-{ 
-    this->state.line_width = value; 
+void graphics_context_base::set_line_width(double value)
+{
+    this->state.line_width = value;
 }
 
 
-void graphics_context_base::set_line_join(kiva::line_join_e value) 
-{ 
-    this->state.line_join = value; 
+void graphics_context_base::set_line_join(kiva::line_join_e value)
+{
+    this->state.line_join = value;
 }
 
 
-void graphics_context_base::set_line_cap(kiva::line_cap_e value) 
-{ 
-    this->state.line_cap = value; 
+void graphics_context_base::set_line_cap(kiva::line_cap_e value)
+{
+    this->state.line_cap = value;
 }
 
 void graphics_context_base::set_line_dash(double* pattern, int n, double phase)
@@ -141,9 +141,9 @@ void graphics_context_base::set_line_dash(double* pattern, int n, double phase)
     this->state.line_dash = kiva::dash_type(phase, pattern, n);
 }
 
-void graphics_context_base::set_blend_mode(kiva::blend_mode_e value) 
-{ 
-    this->state.blend_mode = value; 
+void graphics_context_base::set_blend_mode(kiva::blend_mode_e value)
+{
+    this->state.blend_mode = value;
 }
 
 kiva::blend_mode_e graphics_context_base::get_blend_mode()
@@ -152,13 +152,13 @@ kiva::blend_mode_e graphics_context_base::get_blend_mode()
 }
 
 void graphics_context_base::set_fill_color(agg::rgba& value)
-{ 
-    this->state.fill_color = value; 
+{
+    this->state.fill_color = value;
 }
 
-agg::rgba& graphics_context_base::get_fill_color() 
+agg::rgba& graphics_context_base::get_fill_color()
 {
-    return this->state.fill_color; 
+    return this->state.fill_color;
 }
 
 void graphics_context_base::set_alpha(double value)
@@ -176,32 +176,32 @@ void graphics_context_base::set_alpha(double value)
 }
 
 
-double graphics_context_base::get_alpha() 
-{ 
-    return this->state.alpha; 
+double graphics_context_base::get_alpha()
+{
+    return this->state.alpha;
 }
 
-void graphics_context_base::set_antialias(int value) 
-{ 
-    this->state.should_antialias = value; 
-}
-
-
-int graphics_context_base::get_antialias() 
-{ 
-    return this->state.should_antialias; 
+void graphics_context_base::set_antialias(int value)
+{
+    this->state.should_antialias = value;
 }
 
 
-void graphics_context_base::set_miter_limit(double value) 
-{ 
-    this->state.miter_limit = value; 
+int graphics_context_base::get_antialias()
+{
+    return this->state.should_antialias;
 }
 
 
-void graphics_context_base::set_flatness(double value) 
-{ 
-    this->state.flatness = value; 
+void graphics_context_base::set_miter_limit(double value)
+{
+    this->state.miter_limit = value;
+}
+
+
+void graphics_context_base::set_flatness(double value)
+{
+    this->state.flatness = value;
 }
 
 
@@ -224,7 +224,7 @@ void graphics_context_base::get_text_position(double* tx, double* ty)
 {
     double temp[6];
     agg::trans_affine result = this->get_text_matrix();
-    result.store_to(temp);            
+    result.store_to(temp);
     *tx = temp[4];
     *ty = temp[5];
 }
@@ -238,27 +238,27 @@ bool graphics_context_base::is_font_initialized()
     return true;
 }
 
-void graphics_context_base::set_text_matrix(agg::trans_affine& value) 
-{ 
-    this->text_matrix = value; 
+void graphics_context_base::set_text_matrix(agg::trans_affine& value)
+{
+    this->text_matrix = value;
 }
 
 
-agg::trans_affine graphics_context_base::get_text_matrix() 
-{ 
-    return this->text_matrix; 
+agg::trans_affine graphics_context_base::get_text_matrix()
+{
+    return this->text_matrix;
 }
 
 
-void graphics_context_base::set_character_spacing(double value) 
-{ 
-    this->state.character_spacing = value; 
+void graphics_context_base::set_character_spacing(double value)
+{
+    this->state.character_spacing = value;
 }
 
 
-double graphics_context_base::get_character_spacing() 
-{ 
-    return this->state.character_spacing; 
+double graphics_context_base::get_character_spacing()
+{
+    return this->state.character_spacing;
 }
 
 
@@ -323,10 +323,10 @@ agg::trans_affine graphics_context_base::get_ctm()
 
 
 void graphics_context_base::get_freetype_text_matrix(double* out)
-{            
+{
     agg::trans_affine result =  this->get_ctm();
     result.multiply(this->get_text_matrix());
-    result.store_to(out);            
+    result.store_to(out);
     // freetype and agg transpose their matrix conventions
     double temp = out[1];
     out[1] = out[2];
@@ -476,13 +476,13 @@ agg::path_storage graphics_context_base::boundary_path(agg::trans_affine& affine
     double p2x = this->width();
     double p2y = this->height();
     double p3x = 0;
-    double p3y = this->height(); 
-            
+    double p3y = this->height();
+
     affine_mtx.transform(&p0x, &p0y);
     affine_mtx.transform(&p1x, &p1y);
     affine_mtx.transform(&p2x, &p2y);
     affine_mtx.transform(&p3x, &p3y);
-    
+
     clip_path.move_to(p0x, p0y);
     clip_path.line_to(p1x, p1y);
     clip_path.line_to(p2x, p2y);
@@ -495,17 +495,17 @@ agg::path_storage graphics_context_base::boundary_path(agg::trans_affine& affine
 // Text methods
 /////////////////////////////////////////////////////////////////////////////
 
-bool graphics_context_base::set_font(kiva::font_type& font) 
-{ 
+bool graphics_context_base::set_font(kiva::font_type& font)
+{
     // See if the font is the same; if it is, then do nothing:
     if (font == this->state.font)
     {
         return true;
     }
-    
+
     this->state.font = font;
 
-    // short-circuit: if the font didn't even load properly, then this 
+    // short-circuit: if the font didn't even load properly, then this
     // call can't succeed.
     if (!this->state.font.is_loaded())
     {
@@ -518,14 +518,14 @@ bool graphics_context_base::set_font(kiva::font_type& font)
 }
 
 
-kiva::font_type& graphics_context_base::get_font() 
-{ 
-    return this->state.font; 
+kiva::font_type& graphics_context_base::get_font()
+{
+    return this->state.font;
 }
 
 
-bool graphics_context_base::set_font_size(int size) 
-{ 
+bool graphics_context_base::set_font_size(int size)
+{
     // just make sure the font is loaded; don't check is_font_initialized
     if (!this->state.font.is_loaded())
     {
@@ -539,11 +539,11 @@ bool graphics_context_base::set_font_size(int size)
 }
 
 
-bool graphics_context_base::show_text_at_point(char *text, 
+bool graphics_context_base::show_text_at_point(char *text,
                                                double tx, double ty)
 {
     double oldx, oldy;
-    
+
     this->get_text_position(&oldx, &oldy);
     this->set_text_position(tx, ty);
     bool retval = this->show_text(text);
@@ -566,7 +566,7 @@ kiva::rect_type graphics_context_base::get_text_extent(char *text)
 
     //typedef agg::glyph_raster_bin<agg::rgba8> GlyphGeneratorType;
     //GlyphGeneratorType glyphGen(this->font_manager.glyph(*p)->data);
-    
+
     while (*p)
     {
         glyph = font_manager->glyph(*p);
@@ -584,7 +584,7 @@ kiva::rect_type graphics_context_base::get_text_extent(char *text)
     }
 
     this->_release_font_manager();
-    
+
     return kiva::rect_type(x1, y1, x2-x1, y2 - y1);
 }
 
@@ -630,12 +630,12 @@ void graphics_context_base::_grab_font_manager()
 #ifdef KIVA_USE_FREETYPE
     if (font->filename.c_str() != "")
     {
-        font_engine->load_font(font->filename.c_str(), 0, 
+        font_engine->load_font(font->filename.c_str(), 0,
                                agg::glyph_ren_agg_gray8);
     }
     else
     {
-        font_engine->load_font(font->name.c_str(), 0, 
+        font_engine->load_font(font->name.c_str(), 0,
                                agg::glyph_ren_agg_gray8);
     }
 #endif
@@ -676,5 +676,24 @@ void graphics_context_base::_release_font_manager()
 #else
 
 #endif  // _WIN32
+}
+
+//---------------------------------------------------------------------
+// Gradient support
+//---------------------------------------------------------------------
+void graphics_context_base::linear_gradient(double x1, double y1,
+                    double x2, double y2,
+                    double* stops, int n_stops,
+                    char* spread_method)
+{
+    // not yet implemented
+}
+
+void graphics_context_base::radial_gradient(double cx, double cy, double r,
+                    double fx, double fy,
+                    double* stops, int n_stops,
+                    char* spread_method)
+{
+    // not yet implemented
 }
 

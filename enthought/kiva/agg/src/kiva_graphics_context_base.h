@@ -49,7 +49,7 @@ namespace kiva
     font_manager_type* GlobalFontManager();
     void cleanup_font_threading_primitives();
 
-	class graphics_context_base 
+	class graphics_context_base
 	{
 	public:
         // The current path.  This also includes the ctm.
@@ -70,7 +70,7 @@ namespace kiva
 
         // text handling.
 
-        graphics_context_base(unsigned char *data, 
+        graphics_context_base(unsigned char *data,
                  int width, int height, int stride,
                  kiva::interpolation_e interp);
 
@@ -80,7 +80,7 @@ namespace kiva
         int height();
         int stride();
         int bottom_up();
-        
+
 		virtual kiva::pix_format_e format() = 0;
 
         agg::rendering_buffer* rendering_buffer_ptr();
@@ -101,8 +101,8 @@ namespace kiva
         void set_line_join(line_join_e value);
         void set_line_cap(line_cap_e value);
         void set_line_dash(double* pattern, int n, double phase=0);
-        
-        // fix me: Blend mode is *barely* supported and 
+
+        // fix me: Blend mode is *barely* supported and
         //         probably abused (my copy setting).
         void set_blend_mode(blend_mode_e value);
         kiva::blend_mode_e get_blend_mode();
@@ -113,7 +113,7 @@ namespace kiva
         // should I return a reference??
         agg::rgba& get_fill_color();
 
-        // need get method for freetype renderer. 
+        // need get method for freetype renderer.
         // fix me: Is the get method still needed?
         void set_alpha(double value);
         double get_alpha();
@@ -142,19 +142,19 @@ namespace kiva
         double get_character_spacing();
 
         void set_text_drawing_mode(text_draw_mode_e value);
-        
+
         // The following methods all return true if successful and false
-        // otherwise.  
-        bool set_font(kiva::font_type& font); 
+        // otherwise.
+        bool set_font(kiva::font_type& font);
         bool is_font_initialized();
-        bool set_font_size(int size); 
+        bool set_font_size(int size);
         virtual bool show_text(char *text)=0;
 
         bool show_text_at_point(char *text, double tx, double ty);
 
-        // This will always return a font_type object.  The font's 
+        // This will always return a font_type object.  The font's
         // is_loaded() method should be checked to see if the font is valid.
-        kiva::font_type& get_font(); 
+        kiva::font_type& get_font();
 
         // Returns a rectangle representing the bounds of the text string.
         // The rectangle is measured in the transformed space of the text
@@ -163,7 +163,7 @@ namespace kiva
         // is_font_initialized() should be checked to make sure the font
         // has been properly loaded and initialized.
         kiva::rect_type get_text_extent(char *text);
-        
+
         bool get_text_bbox_as_rect(char *text);
 
         //---------------------------------------------------------------
@@ -277,7 +277,7 @@ namespace kiva
         //---------------------------------------------------------------
         virtual void clear(agg::rgba value=agg::rgba(1,1,1,1)) = 0;
         //virtual void clear(double alpha) = 0;
-        
+
         virtual void fill_path() = 0;
         virtual void eof_fill_path() = 0;
 
@@ -287,11 +287,11 @@ namespace kiva
         virtual void draw_path(draw_mode_e mode=FILL_STROKE) = 0;
         virtual void draw_rect(double rect[4],
                                draw_mode_e mode=FILL_STROKE) = 0;
-        
-        // Draw a marker at all the points in the list.  This is a 
+
+        // Draw a marker at all the points in the list.  This is a
         // very fast function that only works in special cases.
         // The succeeds if the line_width != 0.0 or 1.0, the line_join
-        // is set to JOIN_MITER (!! NOT CURRENTLY ENFORCED), and the 
+        // is set to JOIN_MITER (!! NOT CURRENTLY ENFORCED), and the
         // ctm only has translational components.
         //
         // Typically this is called before trying the more general
@@ -303,8 +303,8 @@ namespace kiva
         //          1 on success
         virtual int draw_marker_at_points(double* pts,int Npts,int size,
                                    agg::marker_e type=agg::marker_square) = 0;
- 
-        virtual void draw_path_at_points(double* pts,int Npts, 
+
+        virtual void draw_path_at_points(double* pts,int Npts,
                                   kiva::compiled_path& marker,
                                   draw_mode_e mode) = 0;
 
@@ -321,7 +321,27 @@ namespace kiva
         // fix me: This is a temporary fix to help with speed issues in draw image.
         //         WE SHOULD GET RID OF IT AND SUPPORT DRAWING MODES.
         //virtual int copy_image(kiva::graphics_context_base* img, int tx, int ty);
-    
+
+
+        //---------------------------------------------------------------------
+        // Gradient support
+        //---------------------------------------------------------------------
+
+        //
+        // stops is a an array of length % 5 (i.e length=15 implies 3 stops)
+        //
+        void linear_gradient(double x1, double y1, double x2, double y2,
+                            double* stops, int n_stops,
+                            char* spread_method);
+
+        //
+        // stops is a an array of length % 5 (i.e length=15 implies 3 stops)
+        //
+        void radial_gradient(double cx, double cy, double r,
+                            double fx, double fy,
+                            double* stops, int n_stops,
+                            char* spread_method);
+
     protected:
         // Grabs and configure the font engine with the settings on our current
         // state's font object.

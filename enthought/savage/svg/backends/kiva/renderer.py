@@ -185,9 +185,13 @@ class LinearGradientBrush(AbstractGradientBrush):
             if not hasattr(gc, 'linear_gradient'):
                 warnings.warn("Gradients for this platform is not implemented.")
             else:
-                gc.linear_gradient(self.x1, self.y1, self.x2, self.y2, self.stops,
-                                    self.spreadMethod, self.transforms,
-                                    self.units)
+                if self.transforms is not None:
+                    for func, args in self.transforms:
+                        func(gc, *args)
+
+                gc.linear_gradient(self.x1, self.y1, self.x2, self.y2,
+                                    self.stops, self.stops.size,
+                                    self.spreadMethod)
 
 class RadialGradientBrush(AbstractGradientBrush):
     """ A Brush representing a radial gradient.
@@ -232,9 +236,14 @@ class RadialGradientBrush(AbstractGradientBrush):
             if not hasattr(gc, 'radial_gradient'):
                 warnings.warn("Gradients for this platform is not implemented.")
             else:
-                gc.radial_gradient(self.cx, self.cy, self.r, self.stops, self.fx,
-                                    self.fy, self.spreadMethod, self.transforms,
-                                    self.units)
+                if self.transforms is not None:
+                    for func, args in self.transforms:
+                        func(gc, *args)
+
+                print "-------- ", self.stops
+                gc.radial_gradient(self.cx, self.cy, self.r, self.fx, self.fy,
+                                    self.stops, self.stops.size,
+                                    self.spreadMethod)
 
 
 def font_style(font):
