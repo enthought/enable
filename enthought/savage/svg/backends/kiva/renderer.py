@@ -189,8 +189,11 @@ class LinearGradientBrush(AbstractGradientBrush):
                     for func, args in self.transforms:
                         func(gc, *args)
 
+                stops = np.transpose(self.stops)
+
+                print "-------- linear ", stops
                 gc.linear_gradient(self.x1, self.y1, self.x2, self.y2,
-                                    self.stops, self.stops.size,
+                                    stops, stops.shape[0],
                                     self.spreadMethod)
 
 class RadialGradientBrush(AbstractGradientBrush):
@@ -240,9 +243,11 @@ class RadialGradientBrush(AbstractGradientBrush):
                     for func, args in self.transforms:
                         func(gc, *args)
 
-                print "-------- ", self.stops
+                stops = np.transpose(self.stops)
+
+                print "-------- radial ", stops
                 gc.radial_gradient(self.cx, self.cy, self.r, self.fx, self.fy,
-                                    self.stops, self.stops.size,
+                                    stops, stops.shape[0],
                                     self.spreadMethod)
 
 
