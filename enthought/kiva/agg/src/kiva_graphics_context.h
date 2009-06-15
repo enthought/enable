@@ -36,6 +36,7 @@
 #include "agg_rasterizer_outline_aa.h"
 #include "agg_rasterizer_scanline_aa.h"
 
+#include "agg_span_gradient.h"
 
 #include "kiva_image_filters.h"
 
@@ -46,6 +47,7 @@
 #include "kiva_exceptions.h"
 #include "kiva_graphics_context_base.h"
 #include "kiva_alpha_gamma.h"
+#include "kiva_gradient.h"
 
 namespace kiva
 {
@@ -150,7 +152,7 @@ namespace kiva
         private:
         int blend_image(kiva::graphics_context_base* img, int tx, int ty);
         int copy_image(kiva::graphics_context_base* img, int tx, int ty);
-        int transform_image(kiva::graphics_context_base* img, 
+        int transform_image(kiva::graphics_context_base* img,
                             agg::trans_affine& img_mtx);
 
         private:
@@ -448,7 +450,52 @@ namespace kiva
             }
         }
 
+        //---------------------------------------------------------------------
+        // Gradient support
+        //---------------------------------------------------------------------
+        void linear_gradient(double x1, double y1,
+                            double x2, double y2,
+                            double* stops, int n_stops,
+                            char* spread_method)
+        {
+            typedef std::pair<double, double> point_type;
+            typedef std::pair<double, agg::rgba8> stop_type;
+            std::vector<stop_type> stops_list;
+            std::vector<point_type> points;
+
+            for (int i = 0; i < n_stops; i++)
+            {
+                // the stop is offset, red, green, blue, alpha
+                agg::rgba stop(stops[5*i+1]*255, stops[7*i+2]*255, stops[7*i+3]*255, stops[7*i+4]*255);
+                stops_list.push_back(stop_type(stops[5*i], stop));
+            }
+
+            points.push_back(point_type(x1, y1));
+            points.push_back(point_type(x2, y2));
+
+           this->state.gradient_fill = gradient(kiva::grad_linear, points, stops_list);
+        }
+
+        void radial_gradient(double cx, double cy, double r,
+                            double fx, double fy,
+                            double* stops, int n_stops,
+                            char* spread_method)
+        {
+            typedef std::pair<double, double> point_type;
+
+            std::vector<point_type> points;
+            for (int i = 0; i < n_stops; i++)
+            {
+                points.push_back(point_type(stops[i], stops[5*i+1]));
+                points.push_back(point_type(stops[5*i+2], stops[5*i+3]));
+            }
+
+           this->state.gradient_fill = gradient(kiva::grad_radial, points);
+        }
+
+
         private:
+
         template <class path_type>
         void fill_path_clip_conversion(path_type& input_path,
                                        agg::filling_rule_e rule)
@@ -492,7 +539,54 @@ namespace kiva
             //}
         }
 
-      
+        template <class path_type>
+        void fill_path_clip_conversion_new(path_type& input_path,
+                                       agg::filling_rule_e rule)
+        {
+            agg::conv_clip_polygon<path_type> clipped(input_path);
+
+            // fix me: We can do this more intelligently based on the current clip path.
+            // fix me: What coordinates should this be in?  I think in user space instead
+            //         of device space.  This looks wrong...
+
+            agg::rasterizer_scanline_aa<> rasterizer;
+
+            rasterizer.filling_rule(rule);
+            rasterizer.add_path(clipped);
+            // !! non-clipped version is about 8% faster or so for lion if it
+            // !! is entirely on the screen.  It is slower, however, when
+            // !! things are rendered off screen.  Perhaps we should add a
+            // !! compiled_path method for asking path what its bounding box
+            // !! is and call this if it is all within the screen.
+            //rasterizer.add_path(this->path);
+
+
+            clipped.clip_box(0,0, this->buf.width(), this->buf.height());
+
+            if (this->state.gradient_fill.gradient_type == kiva::grad_none)
+            {
+                agg::scanline_u8 scanline;
+
+                // set fill color -- multiply by alpha if it is set.
+                agg::rgba color;
+                color = this->state.fill_color;
+                color.a *= this->state.alpha;
+
+                // fix me: we need to select the renderer in another method.
+                agg::renderer_scanline_aa_solid< renderer_base_type >
+                            aa_renderer(this->renderer);
+                aa_renderer.color(color);
+                // draw the filled path to the buffer
+                agg::render_scanlines(rasterizer, scanline, aa_renderer);
+            }
+            else
+            {
+                this->state.gradient_fill.apply(this->renderer_pixfmt,
+                                                &rasterizer, &this->renderer);
+            }
+        }
+
+
         //---------------------------------------------------------------
         // Handle drawing filled rect quickly in some cases.
         //---------------------------------------------------------------
@@ -518,16 +612,16 @@ namespace kiva
             agg::trans_affine inv_img_mtx = img_mtx;
             inv_img_mtx.invert();
             agg::span_interpolator_linear<> interpolator(inv_img_mtx);
-            
-            agg::rgba back_color = agg::rgba(1,1,1,0);                
+
+            agg::rgba back_color = agg::rgba(1,1,1,0);
             agg::span_allocator<agg::rgba8> span_alloc;
-                        
+
 			// 1. Switch on filter type.
             switch (img.get_image_interpolation())
             {
                 case nearest:
                 {
-                    typedef typename kiva::image_filters<other_format>::nearest_type span_gen_type;                            
+                    typedef typename kiva::image_filters<other_format>::nearest_type span_gen_type;
                     typedef typename kiva::image_filters<other_format>::source_type source_type;
 
                     source_type source(*src_buf, back_color);
@@ -539,7 +633,7 @@ namespace kiva
                 {
                     typedef typename kiva::image_filters<other_format>::bilinear_type span_gen_type;
                     typedef typename kiva::image_filters<other_format>::source_type source_type;
-                    
+
                     source_type source(*src_buf, back_color);
                     span_gen_type span_generator(source, interpolator);
                     this->transform_image_final(img_outline, span_generator);
@@ -585,7 +679,7 @@ namespace kiva
                         case blackman256:
                             filter.calculate(agg::image_filter_blackman256());
                             break;
-                            
+
                         case nearest:
                         case bilinear:
                             break;
@@ -593,14 +687,14 @@ namespace kiva
 
                     typedef typename kiva::image_filters<other_format>::general_type span_gen_type;
                     typedef typename kiva::image_filters<other_format>::source_type source_type;
-                    
+
                     source_type source(*src_buf, back_color);
                     span_gen_type span_generator(source, interpolator, filter);
                     this->transform_image_final(img_outline, span_generator);
 
                     break;
                 }
-                
+
             }
 
         }
@@ -981,27 +1075,27 @@ namespace kiva
     {
         // Try a fast renderer first.
         int fast_worked = this->_draw_rect_simple(rect, mode);
-        
+
         if (!fast_worked)
         {
             double x = rect[0];
             double y = rect[1];
             double sx = rect[2];
             double sy = rect[3];
-    
+
             this->begin_path();
             this->move_to(x, y);
             this->line_to(x+sx, y);
             this->line_to(x+sx, y+sy);
             this->line_to(x, y+sy);
             this->close_path();
-            this->draw_path(mode);    
+            this->draw_path(mode);
         }
         else
         {
             //printf("simple worked!\n");
         }
-                        
+
         this->path.remove_all();
     }
 
@@ -1011,12 +1105,12 @@ namespace kiva
     {
         /* function requires that antialiasing is false and ctm doesn't
            have any rotation.
-        */   
+        */
         //printf("trying _simple\n");
         int success = 0;
         agg::trans_affine ctm = this->get_ctm();
 
-        if ( !this->state.should_antialias && 
+        if ( !this->state.should_antialias &&
               only_scale_and_translation(ctm) &&
              (this->state.line_width == 1.0 ||
               this->state.line_width == 0.0))
@@ -1038,7 +1132,7 @@ namespace kiva
             double scale_y = temp[3];
             double tx = temp[4];
             double ty = temp[5];
-            
+
             //printf("rect: %d, %d %d, %d\n", rect[0], rect[1], rect[2], rect[3]);
             //printf("trans, scale: %d, %d %d, %d\n", tx, ty, scale_x, scale_y);
             // fix me: need to handle rounding here...
@@ -1047,7 +1141,7 @@ namespace kiva
             int x2 = int((rect[0]+rect[2])*scale_x + tx);
             int y2 = int((rect[1]+rect[3])*scale_y + ty);
 
-                        
+
             if (mode == FILL_STROKE ||
                 mode == EOF_FILL_STROKE)
             {
@@ -1056,7 +1150,7 @@ namespace kiva
                 // This isn't right, but it should be faster.  Interestingly,
                 // it didn't seem to be.
                 //this->renderer.copy_bar(x1, y1, x2, y2, this->get_fill_color());
-                success = 1;                
+                success = 1;
             }
             else if (mode == STROKE )
             {
@@ -1072,10 +1166,10 @@ namespace kiva
                 success = 1;
             }
         }
-        
+
         return success;
     }
-                                              
+
 
     template <class agg_pixfmt>
     int graphics_context<agg_pixfmt>::draw_marker_at_points(double* pts,int Npts,int size,
@@ -1229,7 +1323,7 @@ namespace kiva
         // Concatenate the CTM with the text matrix to get the full transform for the
         // font engine.
     	agg::trans_affine full_text_xform(this->path.get_ctm() * this->text_matrix);
-    	    
+
        // the AGG freetype transform is a per character transform.  We need to remove the
        // offset part of the transform to prevent that offset from occuring between each
        // character.  We'll handle the intial offset ourselves.
@@ -1244,9 +1338,9 @@ namespace kiva
        text_xform_array[4] = 0.0;
        text_xform_array[5] = 0.0;
 
-       full_text_xform.load_from(text_xform_array);       
+       full_text_xform.load_from(text_xform_array);
        font_engine->transform(full_text_xform);
- 	
+
         if (this->state.text_drawing_mode == kiva::TEXT_FILL)
         {
             scanlineRenderer.color(this->state.fill_color);
@@ -1259,13 +1353,13 @@ namespace kiva
 
         double advance_x = 0.0;
         double advance_y = 0.0;
-        
+
         while (*p)
         {
             double x = start_x + advance_x;
-            double y = start_y + advance_y;            
+            double y = start_y + advance_y;
             glyph = font_manager->glyph(*p);
-            
+
             if (glyph == NULL)
             {
                 retval = false;
@@ -1284,7 +1378,7 @@ namespace kiva
             advance_y += glyph->advance_y;
             p++;
         }
-        
+
         agg::trans_affine null_xform = agg::trans_affine_translation(0., 0.);
         font_engine->transform(null_xform);
         this->_release_font_manager();
@@ -1296,7 +1390,7 @@ namespace kiva
     }
 
     template <class agg_pixfmt>
-    int graphics_context<agg_pixfmt>::draw_image(kiva::graphics_context_base* img, 
+    int graphics_context<agg_pixfmt>::draw_image(kiva::graphics_context_base* img,
                                                  double rect[4], bool force_copy)
     {
         int success = 0;
@@ -1313,15 +1407,15 @@ namespace kiva
 
         double tx, ty;
         get_translation(img_mtx, &tx, &ty);
-        
-        
-        //success = transform_image(img, img_mtx);            
-        
-        
+
+
+        //success = transform_image(img, img_mtx);
+
+
         // The following section attempts to use a fast method for blending in
         // cases where the full interpolation methods aren't needed.
-        
-        // When there isn't any scaling or rotation, try a fast method for 
+
+        // When there isn't any scaling or rotation, try a fast method for
         // copy or blending the pixels.  They will fail if pixel formats differ...
         // If the user is forcing us to respect the blend_copy mode regardless
         // of the CTM, then we make it so.
@@ -1334,38 +1428,38 @@ namespace kiva
                 success = this->copy_image(img, (int) tx, (int) ty);
             }
             else
-            {   
+            {
                 success = this->blend_image(img, (int)tx, (int)ty);
             }
         }
 
         if (!success)
-        {            
-            // looks like the fast approach didn't work -- there is some 
+        {
+            // looks like the fast approach didn't work -- there is some
             // transform to the matrix so we'll use an interpolation scheme.
 
-            // We're just starting blend_mode support.  From here down, we 
+            // We're just starting blend_mode support.  From here down, we
             // only support normal.
             if (!(this->state.blend_mode == kiva::blend_normal))
             {
                 success = 0;
                 return success;
             }
-            
-            success = transform_image(img, img_mtx);            
-            
+
+            success = transform_image(img, img_mtx);
+
         }
-        
+
         return success;
     }
 
     template <class agg_pixfmt>
-    int graphics_context<agg_pixfmt>::copy_image(kiva::graphics_context_base* img, 
+    int graphics_context<agg_pixfmt>::copy_image(kiva::graphics_context_base* img,
                                                  int tx, int ty)
-    {        
-        // This function is only valid if only_translation(ctm) == True and 
+    {
+        // This function is only valid if only_translation(ctm) == True and
         // image is not to be scaled.
-        
+
         int success = 0;
 
         // Copy only works if images have the same format.
@@ -1387,19 +1481,19 @@ namespace kiva
         }
         return success;
     }
-    
+
     template <class agg_pixfmt>
-    int graphics_context<agg_pixfmt>::blend_image(kiva::graphics_context_base* img, 
+    int graphics_context<agg_pixfmt>::blend_image(kiva::graphics_context_base* img,
                                                   int tx, int ty)
-    {        
-        // This function is only valid if only_translation(ctm) == True and 
+    {
+        // This function is only valid if only_translation(ctm) == True and
         // image is not to be scaled.
         // Note: I thought I needed to negate the tx,ty in here, but it doesn't
         // turn out to be true.
-        
+
         int success = 0;
         unsigned int alpha = unsigned(this->state.alpha*255);
-        
+
         // Check that format match.  I think the formats
         // actually only have to have the same number of channels,
         // so this test is to restrictive.
@@ -1414,17 +1508,17 @@ namespace kiva
         else
         {
             agg::rect_i r(0, 0, img->width(), img->height());
-    
+
             switch (img->format())
             {
                 // fix me: agg 2.4 doesn't work for blending rgb values into other buffers.
-                //         I think this should be fixed, but I also think it would take 
+                //         I think this should be fixed, but I also think it would take
                 //         some major agg hackery.
-                case kiva::pix_format_rgb24:                
+                case kiva::pix_format_rgb24:
                 case kiva::pix_format_bgr24:
                     success = 0;
                     break;
-                
+
                 //case kiva::pix_format_rgb24:
                 //{
                 //    typedef kiva::graphics_context<agg::pixfmt_rgb24> pix_format_type;
@@ -1442,14 +1536,14 @@ namespace kiva
                 //    success = 1;
                 //    break;
                 //}
-                
+
                 case kiva::pix_format_rgba32:
                 {
                     typedef kiva::graphics_context<agg::pixfmt_rgba32> pix_format_type;
                     this->renderer.blend_from(static_cast<pix_format_type* >(img)->renderer_pixfmt,
                                               &r, tx, ty, alpha);
                     success = 1;
-                    break;                    
+                    break;
                 }
                 case kiva::pix_format_argb32:
                 {
@@ -1457,7 +1551,7 @@ namespace kiva
                     this->renderer.blend_from(static_cast<pix_format_type* >(img)->renderer_pixfmt,
                                               &r, tx, ty, alpha);
                     success = 1;
-                    break;                    
+                    break;
                 }
                 case kiva::pix_format_abgr32:
                 {
@@ -1465,7 +1559,7 @@ namespace kiva
                     this->renderer.blend_from(static_cast<pix_format_type* >(img)->renderer_pixfmt,
                                               &r, tx, ty, alpha);
                     success = 1;
-                    break;                    
+                    break;
                 }
                 case kiva::pix_format_bgra32:
                 {
@@ -1473,7 +1567,7 @@ namespace kiva
                     this->renderer.blend_from(static_cast<pix_format_type* >(img)->renderer_pixfmt,
                                               &r, tx, ty, alpha);
                     success = 1;
-                    break;                    
+                    break;
                 }
                 case kiva::pix_format_undefined:
                 case kiva::pix_format_gray8:
@@ -1487,59 +1581,59 @@ namespace kiva
                 }
             }
         }
-  
+
         return success;
     }
 
     template <class agg_pixfmt>
-    int graphics_context<agg_pixfmt>::transform_image(kiva::graphics_context_base* img, 
+    int graphics_context<agg_pixfmt>::transform_image(kiva::graphics_context_base* img,
                                                       agg::trans_affine& img_mtx)
     {
         int success = 0;
-        
+
         switch (img->format())
         {
             case kiva::pix_format_rgb24:
             {
                 typedef kiva::graphics_context<agg::pixfmt_rgb24> gc_type;
                 this->transform_image_interpolate(*(static_cast<gc_type*>(img)), img_mtx);
-                success = 1;   
+                success = 1;
                 break;
             }
             case kiva::pix_format_bgr24:
             {
-                
+
                 typedef kiva::graphics_context<agg::pixfmt_bgr24> gc_type;
                 this->transform_image_interpolate(*(static_cast<gc_type*>(img)), img_mtx);
-                success = 1;   
+                success = 1;
                 break;
             }
             case kiva::pix_format_rgba32:
             {
                 typedef kiva::graphics_context<agg::pixfmt_rgba32> gc_type;
                 this->transform_image_interpolate(*(static_cast<gc_type*>(img)), img_mtx);
-                success = 1;   
+                success = 1;
                 break;
             }
             case kiva::pix_format_argb32:
             {
                 typedef kiva::graphics_context<agg::pixfmt_argb32> gc_type;
                 this->transform_image_interpolate(*(static_cast<gc_type*>(img)),img_mtx);
-                success = 1;   
+                success = 1;
                 break;
             }
             case kiva::pix_format_abgr32:
             {
                 typedef kiva::graphics_context<agg::pixfmt_abgr32> gc_type;
                 this->transform_image_interpolate(*(static_cast<gc_type*>(img)),img_mtx);
-                success = 1;   
+                success = 1;
                 break;
             }
             case kiva::pix_format_bgra32:
             {
                 typedef kiva::graphics_context<agg::pixfmt_bgra32> gc_type;
                 this->transform_image_interpolate(*(static_cast<gc_type*>(img)),img_mtx);
-                success = 1;   
+                success = 1;
                 break;
             }
             case kiva::pix_format_undefined:
@@ -1553,10 +1647,10 @@ namespace kiva
                 success = 0;
             }
         }
-        
+
         return success;
     }
-    
+
     typedef graphics_context<agg::pixfmt_rgb24> graphics_context_rgb24;
     typedef graphics_context<agg::pixfmt_bgr24> graphics_context_bgr24;
     typedef graphics_context<agg::pixfmt_bgra32> graphics_context_bgra32;

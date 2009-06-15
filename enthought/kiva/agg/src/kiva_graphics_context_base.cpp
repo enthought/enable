@@ -628,7 +628,7 @@ void graphics_context_base::_grab_font_manager()
     font_type *font = &this->state.font;
 
 #ifdef KIVA_USE_FREETYPE
-    if (font->filename.c_str() != "")
+    if (font->filename != "")
     {
         font_engine->load_font(font->filename.c_str(), 0,
                                agg::glyph_ren_agg_gray8);
@@ -686,7 +686,7 @@ void graphics_context_base::linear_gradient(double x1, double y1,
                     double* stops, int n_stops,
                     char* spread_method)
 {
-    // not yet implemented
+    // not implemented
 }
 
 void graphics_context_base::radial_gradient(double cx, double cy, double r,
@@ -694,6 +694,6 @@ void graphics_context_base::radial_gradient(double cx, double cy, double r,
                     double* stops, int n_stops,
                     char* spread_method)
 {
-    // not yet implemented
+    // not implemented
 }
 

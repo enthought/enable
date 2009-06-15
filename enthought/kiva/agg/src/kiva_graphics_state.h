@@ -8,6 +8,7 @@
 #include "kiva_font_type.h"
 #include "kiva_dash_type.h"
 #include "kiva_compiled_path.h"
+#include "kiva_gradient.h"
 
 namespace kiva
 {
@@ -18,19 +19,20 @@ namespace kiva
     class graphics_state
     {
         public:
-            
+
             // line attributes
             agg::rgba line_color;
             double line_width;
             kiva::line_cap_e line_cap;
             kiva::line_join_e line_join;
             kiva::dash_type line_dash;
-            
-                                        
+
+
             // other attributes
             kiva::blend_mode_e blend_mode;
             kiva::font_type font;
             agg::rgba fill_color;
+            gradient gradient_fill;
             double alpha;
 
             // clipping path
@@ -52,14 +54,14 @@ namespace kiva
             kiva::compiled_path clipping_path;
             std::vector<kiva::rect_type> device_space_clip_rects;
             inline bool use_rect_clipping();
-            
+
             double current_point[2]; // !! not sure about this.
             int should_antialias;
             double miter_limit;
             double flatness;  // !! not sure about this type.
             double character_spacing; //!! not sure about this type.
             kiva::text_draw_mode_e text_drawing_mode;
-            
+
             // double rendering_intent; // !! I know this type is wrong...
 
             graphics_state():
@@ -67,6 +69,7 @@ namespace kiva
                 line_cap(kiva::CAP_BUTT), line_join(kiva::JOIN_MITER),
                 blend_mode(kiva::blend_normal), font(kiva::font_type("")),
                 fill_color(agg::rgba(0.0,0.0,0.0)),
+                gradient_fill(kiva::grad_none),
                 alpha(1.0), should_antialias(1), text_drawing_mode(kiva::TEXT_FILL)
             {
             }
@@ -74,10 +77,10 @@ namespace kiva
             ~graphics_state()
             {
             }
-            
-            inline bool is_singleclip() 
-            { 
-                return (device_space_clip_rects.size() <= 1 ? true : false); 
+
+            inline bool is_singleclip()
+            {
+                return (device_space_clip_rects.size() <= 1 ? true : false);
             }
     };
 
