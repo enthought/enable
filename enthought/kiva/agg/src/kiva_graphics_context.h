@@ -473,7 +473,7 @@ namespace kiva
             points.push_back(point_type(x1, y1));
             points.push_back(point_type(x2, y2));
 
-           this->state.gradient_fill = gradient(kiva::grad_linear, points, stops_list);
+            this->state.gradient_fill = gradient(kiva::grad_linear, points, stops_list);
         }
 
         void radial_gradient(double cx, double cy, double r,
@@ -482,15 +482,22 @@ namespace kiva
                             char* spread_method)
         {
             typedef std::pair<double, double> point_type;
-
+            typedef std::pair<double, agg::rgba8> stop_type;
+            std::vector<stop_type> stops_list;
             std::vector<point_type> points;
+
             for (int i = 0; i < n_stops; i++)
             {
-                points.push_back(point_type(stops[i], stops[5*i+1]));
-                points.push_back(point_type(stops[5*i+2], stops[5*i+3]));
+                // the stop is offset, red, green, blue, alpha
+                agg::rgba stop(stops[5*i+1]*255, stops[7*i+2]*255, stops[7*i+3]*255, stops[7*i+4]*255);
+                stops_list.push_back(stop_type(stops[5*i], stop));
             }
 
-           this->state.gradient_fill = gradient(kiva::grad_radial, points);
+            points.push_back(point_type(cx, cy));
+            points.push_back(point_type(cx+r, cy));
+            points.push_back(point_type(fx, fy));
+
+            this->state.gradient_fill = gradient(kiva::grad_radial, points, stops_list);
         }
 
 
@@ -500,50 +507,14 @@ namespace kiva
         void fill_path_clip_conversion(path_type& input_path,
                                        agg::filling_rule_e rule)
         {
-            // fix me: we need to select the renderer in another method.
-            agg::renderer_scanline_aa_solid< renderer_base_type >
-                          aa_renderer(this->renderer);
-
-            agg::conv_clip_polygon<path_type> clipped(input_path);
-
-            // fix me: We can do this more intelligently based on the current clip path.
-            // fix me: What coordinates should this be in?  I think in user space instead
-            //         of device space.  This looks wrong...
-            clipped.clip_box(0,0, this->buf.width(), this->buf.height());
-
-            agg::scanline_u8 scanline;
-            agg::rasterizer_scanline_aa<> rasterizer;
-
-            rasterizer.filling_rule(rule);
-            rasterizer.add_path(clipped);
             // !! non-clipped version is about 8% faster or so for lion if it
             // !! is entirely on the screen.  It is slower, however, when
             // !! things are rendered off screen.  Perhaps we should add a
             // !! compiled_path method for asking path what its bounding box
             // !! is and call this if it is all within the screen.
             //rasterizer.add_path(this->path);
-
-            // set fill color -- multiply by alpha if it is set.
-            agg::rgba color;
-            color = this->state.fill_color;
-            color.a *= this->state.alpha;
-
-            // This if statement was causes the painting of transparent
-            // rectangles to always be black.  Need to investigate, but will
-            // comment out for now.
-            //if (color.a != 0.0)
-            //{
-                aa_renderer.color(color);
-                // draw the filled path to the buffer
-                agg::render_scanlines(rasterizer, scanline, aa_renderer);
-            //}
-        }
-
-        template <class path_type>
-        void fill_path_clip_conversion_new(path_type& input_path,
-                                       agg::filling_rule_e rule)
-        {
             agg::conv_clip_polygon<path_type> clipped(input_path);
+            clipped.clip_box(0,0, this->buf.width(), this->buf.height());
 
             // fix me: We can do this more intelligently based on the current clip path.
             // fix me: What coordinates should this be in?  I think in user space instead
@@ -553,28 +524,20 @@ namespace kiva
 
             rasterizer.filling_rule(rule);
             rasterizer.add_path(clipped);
-            // !! non-clipped version is about 8% faster or so for lion if it
-            // !! is entirely on the screen.  It is slower, however, when
-            // !! things are rendered off screen.  Perhaps we should add a
-            // !! compiled_path method for asking path what its bounding box
-            // !! is and call this if it is all within the screen.
-            //rasterizer.add_path(this->path);
-
-
-            clipped.clip_box(0,0, this->buf.width(), this->buf.height());
 
             if (this->state.gradient_fill.gradient_type == kiva::grad_none)
             {
                 agg::scanline_u8 scanline;
+
+                // fix me: we need to select the renderer in another method.
+                agg::renderer_scanline_aa_solid< renderer_base_type >
+                            aa_renderer(this->renderer);
 
                 // set fill color -- multiply by alpha if it is set.
                 agg::rgba color;
                 color = this->state.fill_color;
                 color.a *= this->state.alpha;
 
-                // fix me: we need to select the renderer in another method.
-                agg::renderer_scanline_aa_solid< renderer_base_type >
-                            aa_renderer(this->renderer);
                 aa_renderer.color(color);
                 // draw the filled path to the buffer
                 agg::render_scanlines(rasterizer, scanline, aa_renderer);
@@ -747,6 +710,7 @@ namespace kiva
         return kiva::agg_pix_to_kiva(msvc6_dummy);
     }
 
+
     //---------------------------------------------------------------
     // Restore state
     //---------------------------------------------------------------
@@ -858,25 +822,14 @@ namespace kiva
 
         if (this->state.use_rect_clipping())
         {
-//            std::cout << "trying to clip a rectangle" << std::endl;
-
             kiva::rect_type device_rect(transform_clip_rectangle(rect));
 
             // optimize for case when there is only one existing rectangle
             if (this->state.device_space_clip_rects.size() == 1)
             {
-//                std::cout << "only one rectangle to intersect" << std::endl;
-
                 kiva::rect_type old(this->state.device_space_clip_rects.back());
                 this->state.device_space_clip_rects.pop_back();
                 kiva::rect_type newrect(kiva::disjoint_intersect(old, device_rect));
-
-//                std::cout << "old rect: " << old.x << ", " << old.y << ","
-//                          << old.w << ", " << old.h << std::endl;
-//                std::cout << "intersecting rect: " << device_rect.x << ", " << device_rect.y << ","
-//                          << device_rect.w << ", " << device_rect.h << std::endl;
-//                std::cout << "new rect: " << newrect.x << ", " << newrect.y << ","
-//                          << newrect.w << ", " << newrect.h << std::endl;
 
                 if ((newrect.w < 0) || (newrect.h < 0))
                 {

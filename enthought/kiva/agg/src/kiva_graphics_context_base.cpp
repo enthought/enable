@@ -10,6 +10,7 @@
 
 #include <assert.h>
 #include "agg_path_storage.h"
+#include "kiva_exceptions.h"
 #include "kiva_graphics_context_base.h"
 
 using namespace kiva;
@@ -687,6 +688,7 @@ void graphics_context_base::linear_gradient(double x1, double y1,
                     char* spread_method)
 {
     // not implemented
+    throw kiva::not_implemented_error;
 }
 
 void graphics_context_base::radial_gradient(double cx, double cy, double r,
@@ -695,5 +697,6 @@ void graphics_context_base::radial_gradient(double cx, double cy, double r,
                     char* spread_method)
 {
     // not implemented
+    throw kiva::not_implemented_error;
 }
 

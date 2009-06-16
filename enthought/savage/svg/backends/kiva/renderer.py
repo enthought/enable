@@ -9,7 +9,7 @@ from enthought import kiva
 from enthought.kiva import affine, constants
 
 from enthought.savage.svg import svg_extras
-from enthought.savage.svg.backends.null.null_renderer import NullRenderer
+from enthought.savage.svg.backends.null.null_renderer import NullRenderer, AbstractGradientBrush
 
 # Get the Canvas class for drawing on...
 
@@ -134,20 +134,6 @@ class ColorBrush(object):
         color = tuple([x/255.0 for x in self.color])
         gc.set_fill_color(color)
 
-class AbstractGradientBrush(object):
-    """ Abstract base class for gradient brushes so they can be detected easily.
-    """
-
-    def IsOk(self):
-        return True
-
-    def bbox_transform(self, gc, bbox):
-        """ Apply a transformation to make the bbox a unit square.
-        """
-        x0, y0, w, h = bbox
-        gc.concat_ctm(((w, 0, 0), (0, h, 0), (x0, y0, 1)))
-
-
 class LinearGradientBrush(AbstractGradientBrush):
     """ A Brush representing a linear gradient.
     """
@@ -191,7 +177,6 @@ class LinearGradientBrush(AbstractGradientBrush):
 
                 stops = np.transpose(self.stops)
 
-                print "-------- linear ", stops
                 gc.linear_gradient(self.x1, self.y1, self.x2, self.y2,
                                     stops, stops.shape[0],
                                     self.spreadMethod)
@@ -245,7 +230,6 @@ class RadialGradientBrush(AbstractGradientBrush):
 
                 stops = np.transpose(self.stops)
 
-                print "-------- radial ", stops
                 gc.radial_gradient(self.cx, self.cy, self.r, self.fx, self.fy,
                                     stops, stops.shape[0],
                                     self.spreadMethod)
@@ -451,9 +435,11 @@ class Renderer(NullRenderer):
     def gradientPath(cls, gc, path, brush):
         gc.save_state()
         gc.add_path(path)
-        gc.clip()
-        bbox = path.get_bounding_box()
-        brush.set_on_gc(gc, bbox=bbox)
+        #gc.clip()
+        #bbox = path.get_bounding_box()
+        #brush.set_on_gc(gc, bbox=bbox)
+        brush.set_on_gc(gc)
+        gc.fill_path()
         gc.restore_state()
 
     #@classmethod

@@ -87,14 +87,18 @@ namespace kiva
             color_array_type    color_array;                     // Gradient colors
             agg::scanline_u8 scanline;
 
-            // TODO: shouldn't d1 and d2 be passed in?
-            double d1 = 0;
-            double d2 = 100;
+            double d1 = this->points[0].first;
+            double d2 = this->points[1].first;
 
-            std::cout << "applying gradient" << std::endl;
+            if ((this->gradient_type == kiva::grad_radial) && (this->points.size() >2))
+            {
+                d1 = points[2].first;
+                d2 = points[2].first + (points[1].first-points[0].first);
+            }
 
             this->_apply_linear_transform(points[0], points[1], gradient_mtx, d2);
 
+            std::cout << "applying gradient" << std::endl;
             span_gradient_type span_gradient(span_interpolator,
                                             gradient_func,
                                             color_array,
