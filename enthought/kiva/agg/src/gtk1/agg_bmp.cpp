@@ -50,21 +50,29 @@ namespace agg
   {
     DEBUG_MTH("pixel_map::~pixel_map");
     destroy();
+
+    delete m_specific;
+
   }
 
   //------------------------------------------------------------------------
   void pixel_map::destroy()
   {
-    if (m_specific->m_ximage != 0) {
-      m_specific->destroy();
-    } else if(m_bmp) delete [] (unsigned char*)m_bmp;
+    if (m_specific->m_ximage != 0)
+    {
+        m_specific->destroy();
+    } else if(m_bmp)
+    {
+        delete [] (unsigned char*)m_bmp;
+    }
+
     m_bmp  = 0;
     m_buf = 0;
   }
 
   //------------------------------------------------------------------------
-  void pixel_map::create(unsigned width, 
-			 unsigned height, 
+  void pixel_map::create(unsigned width,
+			 unsigned height,
 			 unsigned clear_val)
   {
     destroy();
@@ -80,10 +88,10 @@ namespace agg
     if(clear_val <= 255) {
       memset(m_buf, clear_val, img_size);
     }
-    
+
     m_rbuf_window.attach(m_buf, width, height,
 			 (m_specific->m_flip_y ? -row_len : row_len));
-    
+
   }
 
   //------------------------------------------------------------------------
