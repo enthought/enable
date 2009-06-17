@@ -2,28 +2,28 @@
 /* AffineMatrix class wrapper
 
     1. C++ class 'trans_affine' is renamed to python '_AffineMatrix'
-    
+
     2. All methods accept 'transform' and 'inverse_transform' are
        wrapped.
-       
+
     3. __repr__ and __str__ methods are added to print out an
        _AffineMatrix object as: "AffineMatrix(a,b,c,d,tx,ty)"
-       
-    4. A subclass called 'AffineMatrix' is derived from '_AffineMatrix'
-       using a %pythoncode directive.  This is so that __init__ can be 
-       overloadeded to convert a sequence into the appropriate argument
-       convention for the _AffineMatrix constructor.  
 
-    5. Classes such as trans_affine_rotation were converted to factory 
+    4. A subclass called 'AffineMatrix' is derived from '_AffineMatrix'
+       using a %pythoncode directive.  This is so that __init__ can be
+       overloadeded to convert a sequence into the appropriate argument
+       convention for the _AffineMatrix constructor.
+
+    5. Classes such as trans_affine_rotation were converted to factory
        functions so that they return an trans_affine class instead of
        having a new class type (such as RotationMatrix).
-       
+
     Notes:
     !! 1.
-    !! (4) is a hack to get around the fact that I couldn't 
+    !! (4) is a hack to get around the fact that I couldn't
     !! figure out how to get the overloaded constructor for trans_affine
     !! to accept a Numeric array as input -- even if I added a function
-    !! new_AffineMatrix(double ary[6]); and then put the 
+    !! new_AffineMatrix(double ary[6]); and then put the
     !! trans_affine(double ary[6]) signature in the class interface.  It
     !! appears that SWIG is a little overzealous in its type checking
     !! in the constructor call, only allowing double* pointers through
@@ -32,10 +32,10 @@
     !! my own test.
     !!
     !! 2.
-    !! The C++ operator *= is definitely broken -- probably not setting the 
+    !! The C++ operator *= is definitely broken -- probably not setting the
     !! thisown property correctly on returned pointers.  It is currently
     !! set to return void so that it can't cause any mischief, but it also
-    !! breaks its functionality.      
+    !! breaks its functionality.
     !! FIX: I have just created this function in Python and call the
     !!      C++ multiply() method.
 */
@@ -52,7 +52,7 @@
 #endif
 #include "agg_trans_affine.h"
 
-// These factories mimic the functionality of like-named classes in agg.  
+// These factories mimic the functionality of like-named classes in agg.
 // Making them functions that return trans_affine types leads to a cleaner
 // and easier to maintain Python interface.
 
@@ -79,15 +79,19 @@ agg::trans_affine* trans_affine_skewing(double sx, double sy)
 
 %}
 
+%newobject trans_affine_rotation;
 %rename(rotation_matrix) trans_affine_rotation(double);
 agg::trans_affine* trans_affine_rotation(double a);
 
+%newobject trans_affine_scaling;
 %rename(scaling_matrix) trans_affine_scaling(double, double);
 agg::trans_affine* trans_affine_scaling(double sx, double sy);
 
+%newobject trans_affine_translation;
 %rename(translation_matrix) trans_affine_translation(double, double);
 agg::trans_affine* trans_affine_translation(double tx, double ty);
 
+%newobject trans_affine_skewing;
 %rename(skewing_matrix) trans_affine_skewing(double, double);
 agg::trans_affine* trans_affine_skewing(double sx, double sy);
 
@@ -96,7 +100,7 @@ agg::trans_affine* trans_affine_skewing(double sx, double sy);
 %apply (double* array6) {(double* out)};
 
 // used by __getitem__
-%typemap(check) (int affine_index) 
+%typemap(check) (int affine_index)
 {
     if ($1 < 0 || $1 > 5)
     {
@@ -117,15 +121,15 @@ namespace agg
     class trans_affine
     {
     public:
-        trans_affine();        
+        trans_affine();
         trans_affine(const trans_affine& m);
-        trans_affine(double v0, double v1, double v2, double v3, 
+        trans_affine(double v0, double v1, double v2, double v3,
                       double v4, double v5);
         trans_affine operator ~ () const;
         // I added this to trans_affine -- it really isn't there.
         // trans_affine operator *(const trans_affine& m);
-        
-        // Returning trans_affine& causes problems, so these are all 
+
+        // Returning trans_affine& causes problems, so these are all
         // changed to void.
         //const trans_affine& operator *= (const trans_affine& m);
         //const trans_affine& reset();
@@ -142,14 +146,14 @@ namespace agg
 
         double scale() const;
         double determinant() const;
-        
-        void store_to(double* out) const;        
+
+        void store_to(double* out) const;
         //const trans_affine& load_from(double ary[6]);
         void load_from(double ary[6]);
-        
+
         // !! omitted
-        //void transform(double* x, double* y) const;        
-        //void inverse_transform(double* x, double* y) const;        
+        //void transform(double* x, double* y) const;
+        //void inverse_transform(double* x, double* y) const;
     };
 };
 
@@ -171,28 +175,28 @@ class AffineMatrix(_AffineMatrix):
             if len(args) != 6:
                 raise ValueError, "array argument must be 1x6"
         _AffineMatrix.__init__(self,*args)
-        
+
     def __imul__(self,other):
         """ inplace multiply
-        
+
             We don't use the C++ version of this because it ends up
             deleting the object out from under itself.
         """
         self.multiply(other)
-        return self    
+        return self
 }
 
-%extend agg::trans_affine 
-{    
+%extend agg::trans_affine
+{
     char *__repr__()
     {
         // Write out elements of trans_affine in a,b,c,d,tx,ty order
-        // !! We should work to make output formatting conform to 
+        // !! We should work to make output formatting conform to
         // !! whatever it Numeric does (which needs to be cleaned up also).
         static char tmp[1024];
         double m[6];
         self->store_to(m);
-        sprintf(tmp,"AffineMatrix(%g,%g,%g,%g,%g,%g)", m[0], m[1], m[2], 
+        sprintf(tmp,"AffineMatrix(%g,%g,%g,%g,%g,%g)", m[0], m[1], m[2],
                                                         m[3], m[4], m[5]);
         return tmp;
     }
@@ -209,8 +213,8 @@ class AffineMatrix(_AffineMatrix):
         other.store_to(ary2);
         int eq = 1;
         for (int i = 0; i < 6; i++)
-            eq &= (ary1[i] == ary2[i]);     
+            eq &= (ary1[i] == ary2[i]);
         return eq;
-    }    
+    }
 }
 
