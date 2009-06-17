@@ -1,4 +1,8 @@
 Enable 3.1.1
 --------------
  * Changed SVGButtonEditor toggle to draw a SVG under the button SVG instead of drawing a plain box
+ * Added labels for SVGButton
+ * Added basic gradients to Kiva
+ * Fixed Python 2.6 datatype errors
+ * Fixed memory leak as reported in ticket 1815
 
