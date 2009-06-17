@@ -24,6 +24,27 @@
    $1 = $1_ltype(temp);
 }
 
+
+// --------------------------------------------------------------------------
+// Typemaps for (double x, double y) points
+//
+//    For: *
+//    
+//    This is useful for places where ints may be passed in and need to
+//    be converted. Python 2.6 requires this
+// --------------------------------------------------------------------------
+%typemap(in) double x, double y
+{
+    if (PyNumber_Check($input))
+    {
+        $1 = static_cast<double>(PyFloat_AsDouble($input));
+    }
+    else
+    {
+        SWIG_exception(SWIG_TypeError, "Expected argument $argnum of type '$1_type'");
+     }
+}
+
 // --------------------------------------------------------------------------
 // Typemaps for (double* pts, int Npts) used in lines()
 //
