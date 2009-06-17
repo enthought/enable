@@ -459,15 +459,14 @@ namespace kiva
                             char* spread_method)
         {
             typedef std::pair<double, double> point_type;
-            typedef std::pair<double, agg::rgba8> stop_type;
-            std::vector<stop_type> stops_list;
+            std::vector<gradient_stop> stops_list;
             std::vector<point_type> points;
 
             for (int i = 0; i < n_stops; i++)
             {
                 // the stop is offset, red, green, blue, alpha
-                agg::rgba stop(stops[5*i+1]*255, stops[7*i+2]*255, stops[7*i+3]*255, stops[7*i+4]*255);
-                stops_list.push_back(stop_type(stops[5*i], stop));
+                agg::rgba8 color(stops[5*i+1]*255, stops[5*i+2]*255, stops[5*i+3]*255, stops[5*i+4]*255);
+                stops_list.push_back(gradient_stop(stops[5*i], color));
             }
 
             points.push_back(point_type(x1, y1));
@@ -482,15 +481,14 @@ namespace kiva
                             char* spread_method)
         {
             typedef std::pair<double, double> point_type;
-            typedef std::pair<double, agg::rgba8> stop_type;
-            std::vector<stop_type> stops_list;
+            std::vector<gradient_stop> stops_list;
             std::vector<point_type> points;
 
             for (int i = 0; i < n_stops; i++)
             {
                 // the stop is offset, red, green, blue, alpha
-                agg::rgba stop(stops[5*i+1]*255, stops[7*i+2]*255, stops[7*i+3]*255, stops[7*i+4]*255);
-                stops_list.push_back(stop_type(stops[5*i], stop));
+                agg::rgba8 color(stops[5*i+1]*255, stops[5*i+2]*255, stops[5*i+3]*255, stops[5*i+4]*255);
+                stops_list.push_back(gradient_stop(stops[5*i], color));
             }
 
             points.push_back(point_type(cx, cy));

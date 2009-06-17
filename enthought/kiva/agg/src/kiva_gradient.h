@@ -17,14 +17,26 @@
 
 namespace kiva
 {
+    class gradient_stop
+    {
+        public:
+        double offset;
+        agg::rgba8 color;
+
+        gradient_stop(double offset, agg::rgba8& color) :
+            offset(offset),
+            color(color)
+        {
+        }
+    };
+
     class gradient
     {
         public:
         typedef std::pair<double, double> point;
-        typedef std::pair<double, agg::rgba8> stop;
 
         std::vector<point> points;
-        std::vector<stop> stops;
+        std::vector<gradient_stop> stops;
         gradient_type_e gradient_type;
 
         gradient(gradient_type_e gradient_type) :
@@ -32,7 +44,7 @@ namespace kiva
         {
         }
 
-        gradient(gradient_type_e gradient_type, std::vector<point> points, std::vector<stop> stops) :
+        gradient(gradient_type_e gradient_type, std::vector<point> points, std::vector<gradient_stop> stops) :
             points(points),
             stops(stops),
             gradient_type(gradient_type)
@@ -98,16 +110,16 @@ namespace kiva
 
             this->_apply_linear_transform(points[0], points[1], gradient_mtx, d2);
 
-            std::cout << "applying gradient" << std::endl;
             span_gradient_type span_gradient(span_interpolator,
                                             gradient_func,
                                             color_array,
                                             d1, d2);
 
-            // TODO: use the offsets
-            this->fill_two_stop_array(color_array, this->stops[0].second, this->stops[1].second);
-
             renderer_gradient_type grad_renderer(*rbase, span_allocator, span_gradient);
+
+
+            this->fill_color_array(color_array);
+
             agg::render_scanlines(*ras, scanline, grad_renderer);
         }
 
@@ -122,44 +134,43 @@ namespace kiva
             mtx.invert();
         }
 
-        // A simple function to form the gradient color array
-        // consisting of 2 colors, "begin", "end"
-        //---------------------------------------------------
-        template<class Array>
-        void fill_two_stop_array(Array& array,
-                            agg::rgba8 begin,
-                            agg::rgba8 end)
+        template <class Array>
+        void fill_color_array(Array& array)
         {
-            unsigned i;
-            for(i = 0; i < array.size(); ++i)
+            // The agg::rgb::gradient function is not documented, so here's
+            // my guess at what it does: the first argument is obvious,
+            // since we are constructing a gradient from one color to another.
+            // The 2nd argument is a float, which must be between 0 and 1, and
+            // represents the ratio of the first color to the second color.
+            // Hence, it should always go from 0->1. In a multi-stop scenario
+            // we will loop through the stops, for each pair the gradient call
+            // will go from 0% to 100% of the 2nd color.
+            // I hope that makes sense.
+
+            std::vector<gradient_stop>::iterator stop_it = this->stops.begin();
+            double offset = 0.0;
+            int i = 0;
+
+            for (; stop_it+1 != this->stops.end(); stop_it++)
             {
-                array[i] = begin.gradient(end, i / double(array.size()));
+                std::vector<gradient_stop>::iterator next_it = stop_it+1;
+                double offset_range = next_it->offset - stop_it->offset;
+                while ( (offset <= next_it->offset) && (offset <=1.0))
+                {
+                    array[i] = stop_it->color.gradient(next_it->color, (offset-stop_it->offset)/offset_range);
+                    i++;
+                    offset = i/double(array.size());
+                }
+            }
+
+            // fill with the last color if the gradient was not specified for
+            // the full 0->1 offset range
+            for (; i < array.size(); i++)
+            {
+                array[i] = this->stops.back().color;
             }
         }
-
-        // A simple function to form the gradient color array
-        // consisting of 3 colors, "begin", "middle", "end"
-        //---------------------------------------------------
-        template<class Array>
-        void fill_three_stop_array(Array& array,
-                            agg::rgba8 begin,
-                            agg::rgba8 middle,
-                            agg::rgba8 end)
-        {
-            unsigned i;
-            unsigned half_size = array.size() / 2;
-            for(i = 0; i < half_size; ++i)
-            {
-                array[i] = begin.gradient(middle, i / double(half_size));
-            }
-            for(; i < array.size(); ++i)
-            {
-                array[i] = middle.gradient(end, (i - half_size) / double(half_size));
-            }
-        }
-
-
-    };
+  };
 }
 
 #endif

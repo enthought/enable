@@ -3,7 +3,7 @@ import numpy
 
 # colors are 5 doubles: offset, red, green, blue, alpha
 starting_color = numpy.array([0.0, 1.0, 1.0, 1.0, 1.0])
-ending_color = numpy.array([0.0, 0.0, 0.0, 0.0, 1.0])
+ending_color = numpy.array([1.0, 0.0, 0.0, 0.0, 1.0])
 
 gc = GraphicsContext((500,500))
 gc.clear()

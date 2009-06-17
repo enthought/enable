@@ -12,7 +12,7 @@ class MyCanvas(Canvas):
     def do_draw(self, gc):
         # colors are 5 doubles: offset, red, green, blue, alpha
         starting_color = numpy.array([0.0, 1.0, 1.0, 1.0, 1.0])
-        ending_color = numpy.array([0.0, 0.0, 0.0, 0.0, 1.0])
+        ending_color = numpy.array([1.0, 0.0, 0.0, 0.0, 1.0])
 
         gc.clear()
         gc.rect(100,100,300,300)
