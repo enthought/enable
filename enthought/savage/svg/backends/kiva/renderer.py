@@ -183,10 +183,11 @@ class LinearGradientBrush(AbstractGradientBrush):
                 y2 = self.y2
 
                 if self.units == 'objectBoundingBox':
+                    # vertically flip the points
                     x1 = bbox[0] + (bbox[2] + bbox[0])*x1
-                    y1 = bbox[1] + (bbox[3] + bbox[1])*self.y2
+                    y1 = bbox[3] - (bbox[3] + bbox[1])*y1
                     x2 = bbox[0] + (bbox[2] + bbox[0])*x2
-                    y2 = bbox[1] + (bbox[3] + bbox[1])*self.y1
+                    y2 = bbox[3] - (bbox[3] + bbox[1])*y2
                 elif self.units == 'userSpace':
                     # not sure what to do here. 'userSpace' means that the
                     # coordinates are in relation to the time when they were
@@ -254,10 +255,11 @@ class RadialGradientBrush(AbstractGradientBrush):
                 fy = self.fy
 
                 if self.units == 'objectBoundingBox':
+                    # vertically flip the points
                     cx = bbox[0] + (bbox[2] + bbox[0])*cx
-                    cy = bbox[1] + (bbox[3] + bbox[1])*cy
+                    cy = bbox[3] - (bbox[3] + bbox[1])*cy
                     fx = bbox[0] + (bbox[2] + bbox[0])*fx
-                    fy = bbox[1] + (bbox[3] + bbox[1])*fy
+                    fy = bbox[3] - (bbox[3] + bbox[1])*fy
                     r *= np.sqrt((bbox[2] - bbox[0])**2 + (bbox[3] - bbox[1])**2)
                 elif self.units == 'userSpace':
                     # not sure what to do here. 'userSpace' means that the
