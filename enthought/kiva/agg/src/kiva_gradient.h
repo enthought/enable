@@ -8,6 +8,8 @@
 
 #include "agg_pixfmt_rgb.h"
 #include "agg_rasterizer_scanline_aa.h"
+#include "agg_renderer_scanline.h"
+#include "agg_scanline_u.h"
 #include "agg_span_gradient.h"
 #include "agg_span_allocator.h"
 #include "agg_span_interpolator_linear.h"
@@ -38,9 +40,13 @@ namespace kiva
         std::vector<point> points;
         std::vector<gradient_stop> stops;
         gradient_type_e gradient_type;
+        gradient_spread_e spread_method;
 
         gradient(gradient_type_e gradient_type);
-        gradient(gradient_type_e gradient_type, std::vector<point> points, std::vector<gradient_stop> stops);
+        gradient(gradient_type_e gradient_type,
+                std::vector<point> points,
+                std::vector<gradient_stop> stops,
+                const char* spread_method);
         ~gradient();
 
         template <typename pixfmt_type>
@@ -87,13 +93,15 @@ namespace kiva
             color_array_type    color_array;                     // Gradient colors
             agg::scanline_u8 scanline;
 
+            std::vector<point> user_space_points;
+
             double d1 = this->points[0].first;
             double d2 = this->points[1].first;
 
             if ((this->gradient_type == kiva::grad_radial) && (this->points.size() >2))
             {
-                d1 = points[2].first;
-                d2 = points[2].first + (points[1].first-points[0].first);
+                d1 = this->points[2].first;
+                d2 = this->points[2].first + (this->points[1].first-this->points[0].first);
             }
 
             this->_apply_linear_transform(points[0], points[1], gradient_mtx, d2);
@@ -143,11 +151,20 @@ namespace kiva
                 }
             }
 
-            // fill with the last color if the gradient was not specified for
-            // the full 0->1 offset range
-            for (; i < array.size(); i++)
+            if (this->spread_method == kiva::pad)
             {
-                array[i] = this->stops.back().color;
+                for (; i < array.size(); i++)
+                {
+                    array[i] = this->stops.back().color;
+                }
+            }
+            else if (this->spread_method == kiva::reflect)
+            {
+                // TODO: handle 'relect' spread method
+            }
+            else
+            {
+                // TODO: handle 'repeat' spread method
             }
         }
     };

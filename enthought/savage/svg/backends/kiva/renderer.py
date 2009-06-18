@@ -177,7 +177,24 @@ class LinearGradientBrush(AbstractGradientBrush):
 
                 stops = np.transpose(self.stops)
 
-                gc.linear_gradient(self.x1, self.y1, self.x2, self.y2,
+                x1 = self.x1
+                x2 = self.x2
+                y1 = self.y1
+                y2 = self.y2
+
+                if self.units == 'objectBoundingBox':
+                    x1 = bbox[0] + (bbox[2] + bbox[0])*x1
+                    y1 = bbox[1] + (bbox[3] + bbox[1])*self.y2
+                    x2 = bbox[0] + (bbox[2] + bbox[0])*x2
+                    y2 = bbox[1] + (bbox[3] + bbox[1])*self.y1
+                elif self.units == 'userSpace':
+                    # not sure what to do here. 'userSpace' means that the
+                    # coordinates are in relation to the time when they were
+                    # defined, but I dont currently think that info is available
+                    # even at the time the constructor is called...
+                    pass
+
+                gc.linear_gradient(x1, y1, x2, y2,
                                     stops, stops.shape[0],
                                     self.spreadMethod)
 
@@ -230,7 +247,26 @@ class RadialGradientBrush(AbstractGradientBrush):
 
                 stops = np.transpose(self.stops)
 
-                gc.radial_gradient(self.cx, self.cy, self.r, self.fx, self.fy,
+                cx = self.cx
+                cy = self.cy
+                r = self.r
+                fx = self.fx
+                fy = self.fy
+
+                if self.units == 'objectBoundingBox':
+                    cx = bbox[0] + (bbox[2] + bbox[0])*cx
+                    cy = bbox[1] + (bbox[3] + bbox[1])*cy
+                    fx = bbox[0] + (bbox[2] + bbox[0])*fx
+                    fy = bbox[1] + (bbox[3] + bbox[1])*fy
+                    r *= np.sqrt((bbox[2] - bbox[0])**2 + (bbox[3] - bbox[1])**2)
+                elif self.units == 'userSpace':
+                    # not sure what to do here. 'userSpace' means that the
+                    # coordinates are in relation to the time when they were
+                    # defined, but I dont currently think that info is available
+                    # even at the time the constructor is called...
+                    pass
+
+                gc.radial_gradient(cx, cy, r, fx, fy,
                                     stops, stops.shape[0],
                                     self.spreadMethod)
 
@@ -436,9 +472,18 @@ class Renderer(NullRenderer):
         gc.save_state()
         gc.add_path(path)
         #gc.clip()
-        #bbox = path.get_bounding_box()
-        #brush.set_on_gc(gc, bbox=bbox)
-        brush.set_on_gc(gc)
+        if hasattr(path, 'get_bounding_box'):
+            bbox = path.get_bounding_box()
+        else:
+            bbox = [np.inf, np.inf, -np.inf, -np.inf]
+            for i in range(path.total_vertices()):
+                vertex = path.vertex(i)
+                bbox[0] = min(bbox[0], vertex[0][0])
+                bbox[1] = min(bbox[1], vertex[0][1])
+                bbox[2] = max(bbox[2], vertex[0][0])
+                bbox[3] = max(bbox[3], vertex[0][1])
+
+        brush.set_on_gc(gc, bbox=bbox)
         gc.fill_path()
         gc.restore_state()
 

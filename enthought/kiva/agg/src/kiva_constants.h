@@ -154,5 +154,12 @@ namespace kiva
         grad_radial
     };
 
+    enum gradient_spread_e
+    {
+        pad = 0,
+        reflect,
+        repeat
+    };
+
 }
 #endif

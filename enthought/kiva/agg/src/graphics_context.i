@@ -835,12 +835,12 @@ namespace kiva {
             //---------------------------------------------------------------------
             void linear_gradient(double x1, double y1, double x2, double y2,
                                 double* stops, int n_stops,
-                                char* spread_method);
+                                const char* spread_method);
 
             void radial_gradient(double cx, double cy, double r,
                                 double fx, double fy,
                                 double* stops, int n_stops,
-                                char* spread_method);
+                                const char* spread_method);
 
     };
 }

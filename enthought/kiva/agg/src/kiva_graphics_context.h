@@ -456,7 +456,7 @@ namespace kiva
         void linear_gradient(double x1, double y1,
                             double x2, double y2,
                             double* stops, int n_stops,
-                            char* spread_method)
+                            const char* spread_method)
         {
             typedef std::pair<double, double> point_type;
             std::vector<gradient_stop> stops_list;
@@ -472,13 +472,13 @@ namespace kiva
             points.push_back(point_type(x1, y1));
             points.push_back(point_type(x2, y2));
 
-            this->state.gradient_fill = gradient(kiva::grad_linear, points, stops_list);
+            this->state.gradient_fill = gradient(kiva::grad_linear, points, stops_list, spread_method);
         }
 
         void radial_gradient(double cx, double cy, double r,
                             double fx, double fy,
                             double* stops, int n_stops,
-                            char* spread_method)
+                            const char* spread_method)
         {
             typedef std::pair<double, double> point_type;
             std::vector<gradient_stop> stops_list;
@@ -495,7 +495,7 @@ namespace kiva
             points.push_back(point_type(cx+r, cy));
             points.push_back(point_type(fx, fy));
 
-            this->state.gradient_fill = gradient(kiva::grad_radial, points, stops_list);
+            this->state.gradient_fill = gradient(kiva::grad_radial, points, stops_list, spread_method);
         }
 
 
