@@ -113,7 +113,7 @@ void compiled_path::arc_to(double x1, double y1, double x2, double y2,
     // as the start angle and then inverse transform these back.  (The angular
     // sweep of the arc is unchanged.)
 
-    double x0, y0;
+    double x0=0, y0=0;
     this->last_vertex(&x0, &y0);
     this->ptm.inverse_transform(&x0, &y0);
 

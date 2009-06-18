@@ -21,23 +21,6 @@ gradient::~gradient()
 {
 }
 
-template <typename pixfmt_type>
-void gradient::apply(pixfmt_type pixfmt,
-            agg::rasterizer_scanline_aa<>* ras,
-            agg::renderer_mclip<pixfmt_type>* rbase)
-{
-    if (this->gradient_type == kiva::grad_linear)
-    {
-        agg::gradient_x grad_func;
-        this->_apply(pixfmt, ras, rbase, grad_func);
-    }
-    else
-    {
-        agg::gradient_circle grad_func;
-        this->_apply(pixfmt, ras, rbase, grad_func);
-    }
-}
-
 template <class pixfmt_type, class gradient_func_type>
 void gradient::_apply(pixfmt_type pixfmt,
             agg::rasterizer_scanline_aa<>* ras,

@@ -50,7 +50,7 @@ void gl_graphics_context::gl_init()
 
 	// Use scissors to implement clipping
 	glEnable(GL_SCISSOR_TEST);
-    
+
 	// Need to set up blending for antialiasing
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -105,7 +105,7 @@ void gl_graphics_context::restore_state()
 			kiva::rect_list_type rects = disjoint_intersect(this->state.device_space_clip_rects);
 
 			// XXX: Right now we don't support disjoint clip rects.  To implement
-			// this, we would probably want to use a mask or stencil, or just 
+			// this, we would probably want to use a mask or stencil, or just
 			// re-render with each clip rect set as the scissor.
 			// XXX: figure out better way to round out the floating-point
 			// dimensions for kiva_rect than just casting to int().
@@ -303,7 +303,7 @@ void gl_graphics_context::gl_render_path(kiva::compiled_path *path, bool polygon
 	if ((path == NULL) || (path->total_vertices() == 0))
 		return;
 
-	// This should be just double, but as long as we're using C++... 
+	// This should be just double, but as long as we're using C++...
 	typedef agg::path_storage::container_type::value_type VertexType;
 	typedef std::pair<VertexType, VertexType> PointType;
 	typedef std::vector<PointType> PointListType;
@@ -347,10 +347,10 @@ void gl_graphics_context::gl_render_path(kiva::compiled_path *path, bool polygon
         VertexType t, t2, t3, u, u2, u3;
         GLfloat vvx, vvy;
         unsigned int j;
-        int _Npoints = 100;
+        unsigned int _Npoints = 100;
 
 	for (unsigned int i=0; i < path->total_vertices(); i++)
-	{		
+	{
 		// Clear the point list and prepare to accumulate new points
 		//pointlist.clear();
 
@@ -506,7 +506,7 @@ void gl_graphics_context::draw_path(draw_mode_e mode)
 		for (int i=numvertices-1; i>0; i--)
 		{
 			unsigned cmd = this->path.vertex(i, &xf, &yf);
-			if (((cmd & agg::path_cmd_mask) == agg::path_cmd_curve3) || 
+			if (((cmd & agg::path_cmd_mask) == agg::path_cmd_curve3) ||
 				((cmd & agg::path_cmd_mask) == agg::path_cmd_curve4) ||
 				((cmd & agg::path_cmd_mask) == agg::path_cmd_line_to))
 			{
@@ -551,7 +551,7 @@ void gl_graphics_context::draw_path(draw_mode_e mode)
 		{
 			glDisable(GL_LINE_STIPPLE);
 		}
-		
+
 		gl_render_path(&this->path, polygon, false);
 	}
 
@@ -584,7 +584,7 @@ void gl_graphics_context::draw_rect(double rect[4], draw_mode_e mode)
 		glColor4f(EXPAND_COLOR(fill_color));
         glRectf(rect[0], rect[1], rect[0]+rect[2], rect[1]+rect[3]);
     }
-    
+
     // Stroke the path
     if (mode != FILL)
     {
@@ -627,7 +627,7 @@ int gl_graphics_context::draw_marker_at_points(double *pts, int Npts, int size,
     double x0=0.0, y0=0.0;
     this->path.get_ctm().translation(&x0, &y0);
 
-    kiva::draw_mode_e draw_mode;
+    kiva::draw_mode_e draw_mode = FILL;
     if (do_fill & !do_stroke)
         draw_mode = FILL;
     else if (do_stroke & !do_fill)
@@ -650,7 +650,7 @@ int gl_graphics_context::draw_marker_at_points(double *pts, int Npts, int size,
         case agg::marker_pixel:
                 draw_pixel(pts, Npts, size, draw_mode, x0, y0); break;
 
-        
+
         // Paths that need to be filled and stroked
         // There are experimental approaches taken for drawing squares and
         // diamonds, so they are in their own block here.  There's no reason
@@ -664,7 +664,7 @@ int gl_graphics_context::draw_marker_at_points(double *pts, int Npts, int size,
 
         case agg::marker_crossed_circle:
                 draw_crossed_circle(pts, Npts, size, draw_mode, x0, y0); break;
-        
+
         case agg::marker_circle:
                 fill_list = make_marker_lists(&kiva::gl_graphics_context::circle_path_func, draw_mode, size);
                 list_created = true;
@@ -695,7 +695,7 @@ int gl_graphics_context::draw_marker_at_points(double *pts, int Npts, int size,
     return 1;
 }
 
-void gl_graphics_context::draw_path_at_points(double *pts, int Npts, 
+void gl_graphics_context::draw_path_at_points(double *pts, int Npts,
 											  kiva::compiled_path &marker,
 											  draw_mode_e mode)
 {
@@ -703,7 +703,7 @@ void gl_graphics_context::draw_path_at_points(double *pts, int Npts,
 }
 
 
-void gl_graphics_context::draw_glyphs(kiva::graphics_context_base* img, 
+void gl_graphics_context::draw_glyphs(kiva::graphics_context_base* img,
 									  double tx, double ty)
 {
 }
@@ -811,11 +811,11 @@ void gl_graphics_context::draw_square(double *pts, int Npts, int size,
 {
 	agg::rgba *line_color = &this->state.line_color;
     agg::rgba *fill_color = &this->state.fill_color;
-    
+
     // We build up a VertexArray of the vertices of all the squares.
     // We then use glDrawElements with GL_QUADS or GL_LINE_LOOP to fill
     // and stroke the markers.
-    
+
     // The vertex array contains all the vertices in all the rects.
     // The convention is that each rect's vertices are stored
     // clockwise, starting with the lower-left vertex.
@@ -855,7 +855,7 @@ void gl_graphics_context::draw_square(double *pts, int Npts, int size,
 // of extention function pointer juggling.  Avoid this for now and just
 // use the more brute-force approach.
 #if 0
-        // To use glMultiDrawElements, we need to have a GLvoid** of 
+        // To use glMultiDrawElements, we need to have a GLvoid** of
         // indices.  To avoid a lot of unnecessary memory allocation, we
         // just allocate a single array of all the indices and set up
         // the top-level array of arrays to point into it.
@@ -871,7 +871,7 @@ void gl_graphics_context::draw_square(double *pts, int Npts, int size,
             indices[i] = (GLvoid*)(realindices + i*4);
             counts[i] = 4;
         }
-        MULTI_DRAW_ELEMENTS(GL_LINE_LOOP, counts, GL_UNSIGNED_INT, 
+        MULTI_DRAW_ELEMENTS(GL_LINE_LOOP, counts, GL_UNSIGNED_INT,
                             (const GLvoid**)indices, Npts);
 
         delete[] counts;
@@ -893,7 +893,7 @@ void gl_graphics_context::draw_square(double *pts, int Npts, int size,
         }
 #endif
     }
-    
+
     glDisableClientState(GL_VERTEX_ARRAY);
     delete[] vertices;
 }
@@ -916,12 +916,12 @@ void gl_graphics_context::draw_diamond(double *pts, int Npts, int size,
         int ndx = i * 4 * 2;
         double x = pts[2*i] + x0;
         double y = pts[2*i + 1] + y0;
-        
+
         // Set the x-coords of the top and bottom vertices
         vertices[ndx+2] = vertices[ndx+6] = x;
         // Set the y-coords of the left and right vertices
         vertices[ndx+1] = vertices[ndx+5] = y;
-        
+
         // x-coords of left and right vertices
         vertices[ndx+0] = x-s;
         vertices[ndx+4] = x+s;
@@ -956,7 +956,7 @@ void gl_graphics_context::draw_diamond(double *pts, int Npts, int size,
             indices[3] += 4;
         }
     }
-    
+
     glDisableClientState(GL_VERTEX_ARRAY);
     delete[] vertices;
 }
@@ -1014,7 +1014,7 @@ void gl_graphics_context::draw_x_marker(double *pts, int Npts, int size,
 
     float s = size / 2.0;
     GLuint marker_list = glGenLists(1);
-    
+
     // Create the marker
     glNewList(marker_list, GL_COMPILE);
     glBegin(GL_LINES);
@@ -1037,7 +1037,7 @@ void gl_graphics_context::draw_cross(double *pts, int Npts, int size,
 
     float s = size / 2.0;
     GLuint marker_list = glGenLists(1);
-    
+
     // Create the marker
     glNewList(marker_list, GL_COMPILE);
     glBegin(GL_LINES);
@@ -1065,7 +1065,7 @@ void gl_graphics_context::draw_pixel(double *pts, int Npts, int size,
     glColor4f(EXPAND_COLOR(line_color));
 
     glBegin(GL_POINTS);
-    for (int i; i < Npts; i++)
+    for (int i=0; i < Npts; i++)
     {
         glVertex2f(pts[i*2] + x0, pts[i*2+1] + y0);
     }

@@ -46,7 +46,19 @@ namespace kiva
         template <typename pixfmt_type>
         void apply(pixfmt_type pixfmt,
                    agg::rasterizer_scanline_aa<>* ras,
-                   agg::renderer_mclip<pixfmt_type>* rbase);
+                   agg::renderer_mclip<pixfmt_type>* rbase)
+        {
+            if (this->gradient_type == kiva::grad_linear)
+            {
+                agg::gradient_x grad_func;
+                this->_apply(pixfmt, ras, rbase, grad_func);
+            }
+            else
+            {
+                agg::gradient_circle grad_func;
+                this->_apply(pixfmt, ras, rbase, grad_func);
+            }
+        }
 
         protected:
 
@@ -60,7 +72,7 @@ namespace kiva
 
         template <class Array>
         void fill_color_array(Array& array);
-  };
+    };
 }
 
 #endif
