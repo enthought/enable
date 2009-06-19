@@ -300,7 +300,7 @@ class _Window(AbstractWindow):
         # Set up the 'paint' event handler:
         wx.EVT_PAINT( control, self._paint )
         wx.EVT_SIZE(  control, self._on_size )
-        
+
         # Set up mouse event handlers:
         wx.EVT_LEFT_DOWN(     control, self._on_left_down )
         wx.EVT_LEFT_UP(       control, self._on_left_up )
@@ -330,6 +330,12 @@ class _Window(AbstractWindow):
         if PythonDropTarget is not None:
             control.SetDropTarget( LessSuckyDropTarget( self ) ) 
             self._drag_over = []
+
+        # In some cases, on the Mac at least, we never get an initial EVT_SIZE
+        # since the initial size is correct. Because of this we call _on_size
+        # here to initialize our bounds.
+        self._on_size(None)
+
         return
     
     def _create_control(self, parent, wid, pos = wx.DefaultPosition, 
