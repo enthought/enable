@@ -23,41 +23,26 @@ _toolkit_backend = None
 def _init_toolkit():
     """ Initialise the current toolkit. """
 
-    # Toolkits to check for if none is explicitly specified.
-    known_toolkits = ('wx', 'qt4', 'pyglet')
+    # If not defined, use the same toolkit as Traits UI
+    if not ETSConfig.enable_toolkit:
 
-    # Get the toolkit.
-    enable_toolkit = ETSConfig.enable_toolkit
+        # Force Traits to decide on its toolkit if it hasn't already
+        from enthought.traits.ui.toolkit import toolkit as traits_toolkit
+        traits_toolkit()
 
-    if enable_toolkit:
-        enable_toolkits = (enable_toolkit, )
-    else:
-        enable_toolkits = known_toolkits
+        ETSConfig.enable_toolkit = ETSConfig.toolkit
 
-    # Check to see if we are trying to embed GL within a Wx or Qt window
-
-    for tk in enable_toolkits:
-        # Try and import the toolkit's enable backend.
-        be = 'enthought.enable.%s_backend.api' % tk
-
-        try:
-            __import__(be)
-            break
-        except (ImportError, SystemExit):
-            pass
-    else:
-        if enable_toolkit:
-            raise ImportError, "unable to import an enable backend for the %s toolkit" % enable_toolkit
-        else:
-            raise ImportError, "unable to import an enable backend for any of the %s toolkits" % ", ".join(known_toolkits)
-
-    # In case we have just decided on a toolkit, tell everybody else.
-    ETSConfig.enable_toolkit = tk
+    # Import the selected backend
+    backend = 'enthought.enable.%s_backend.api' % ETSConfig.enable_toolkit
+    try:
+        __import__(backend)
+    except ImportError, SystemExit:
+        raise ImportError, "Unable to import an Enable backend for the %s " \
+            "toolkit." % ETSConfig.enable_toolkit
 
     # Save the imported toolkit module.
     global _toolkit_backend
-    _toolkit_backend = be
-
+    _toolkit_backend = backend
 
 # Do this once then disappear.
 _init_toolkit()
