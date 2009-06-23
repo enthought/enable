@@ -15,11 +15,28 @@ class MyCanvas(Canvas):
         ending_color = numpy.array([1.0, 0.0, 0.0, 0.0, 1.0])
 
         gc.clear()
-        gc.rect(100,100,300,300)
-        gc.linear_gradient(100, 100, 300, 300,
+
+        # diagonal
+        gc.rect(100,25,300,125)
+        gc.linear_gradient(100,25,300,125,
                             numpy.array([starting_color, ending_color]),
                             2, "")
         gc.draw_path()
+
+        # vertical
+        gc.rect(100,150,300,250)
+        gc.linear_gradient(100,150,100,250,
+                            numpy.array([starting_color, ending_color]),
+                            2, "")
+        gc.draw_path()
+
+        # horizontal
+        gc.rect(100,300,300,400)
+        gc.linear_gradient(100,300,300,300,
+                            numpy.array([starting_color, ending_color]),
+                            2, "")
+        gc.draw_path()
+
         return
 
 class MyWindow(wx.Frame):
