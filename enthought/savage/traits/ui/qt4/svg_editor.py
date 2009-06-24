@@ -1,19 +1,19 @@
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #
-#  Copyright (c) 2008, Enthought, Inc.
+#  Copyright (c) 2009, Enthought, Inc.
 #  All rights reserved.
-#
+# 
 #  This software is provided without warranty under the terms of the BSD
 #  license included in enthought/LICENSE.txt and may be redistributed only
 #  under the conditions described in the aforementioned license.  The license
 #  is also available online at http://www.enthought.com/licenses/BSD.txt
 #
 #  Thanks for using Enthought open source!
+#  
+#  Author: Evan Patterson
+#  Date:   06/24/2009
 #
-#  Author: Bryce Hendrix
-#  Date:   08/06/2008
-#
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 """ Traits UI 'display only' SVG editor.
 """
@@ -22,14 +22,15 @@
 #  Imports:
 #-------------------------------------------------------------------------------
 
-from enthought.traits.ui.wx.editor import Editor
-    
-from enthought.savage.svg.backends.wx.renderer import Renderer as WxRenderer
-from enthought.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
+from cStringIO import StringIO
+from xml.etree.cElementTree import ElementTree
 
-from kiva_render_panel import RenderPanel as KivaRenderPanel
-from wx_render_panel import RenderPanel as WxRenderPanel
-    
+from enthought.savage.svg.document import SVGDocument
+
+from enthought.traits.ui.qt4.editor import Editor
+
+from PyQt4 import QtCore, QtSvg
+
 #-------------------------------------------------------------------------------
 #  'SVGEditor' class:
 #-------------------------------------------------------------------------------
@@ -49,16 +50,8 @@ class SVGEditor(Editor):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
-        document = self.value
-        
-        # TODO: the document should not know about the renderer, this should
-        # be an attribute of the editor
-        
-        if document.renderer == WxRenderer:
-            self.control = WxRenderPanel(parent, document=document)
-        else:
-            self.control = KivaRenderPanel(parent, document=document)
-                        
+        self.control = QtSvg.QSvgWidget()
+    
     #---------------------------------------------------------------------------
     #  Updates the editor when the object trait changes external to the editor:
     #---------------------------------------------------------------------------
@@ -67,7 +60,11 @@ class SVGEditor(Editor):
         """ Updates the editor when the object trait changes externally to the
             editor.
         """
-        if self.control.document != self.value:
-            self.control.document = self.value
-            self.control.Refresh()
-                    
+        value = self.value
+
+        if isinstance(value, SVGDocument):
+            string_io = StringIO()
+            ElementTree(value.tree).write(string_io)
+            value = string_io.getvalue()
+
+        self.control.load(QtCore.QString(value).toAscii())
