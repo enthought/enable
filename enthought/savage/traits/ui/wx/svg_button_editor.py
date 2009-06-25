@@ -1,21 +1,38 @@
+#------------------------------------------------------------------------------
+#
+#  Copyright (c) 2009, Enthought, Inc.
+#  All rights reserved.
+# 
+#  This software is provided without warranty under the terms of the BSD
+#  license included in enthought/LICENSE.txt and may be redistributed only
+#  under the conditions described in the aforementioned license.  The license
+#  is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+#  Thanks for using Enthought open source!
+#  
+#------------------------------------------------------------------------------
+
+""" Traits UI button editor for SVG images.
+"""
+
+# Standard library imports
 import copy
 import sys
 import xml.etree.cElementTree as etree
-import wx
 import os.path
 
-from enthought.traits.api import Str, Range, Enum, Instance, Event, Int, \
-        Bool, Property
-from enthought.traits.ui.api import View
-from enthought.traits.ui.ui_traits import AView
-from enthought.traits.ui.wx.constants import WindowColor
-from enthought.traits.ui.wx.editor import Editor
-from enthought.traits.ui.api import BasicEditorFactory
+# System library imports
+import wx
 
+# ETS imports
 from enthought.pyface.widget import Widget
-
 from enthought.savage.svg.document import SVGDocument
 from enthought.savage.svg.backends.wx.renderer import Renderer
+from enthought.traits.api import Instance
+from enthought.traits.ui.wx.constants import WindowColor
+from enthought.traits.ui.wx.editor import Editor
+
+# Local imports
 from wx_render_panel import RenderPanel
 
 
@@ -154,7 +171,7 @@ class ButtonRenderPanel(RenderPanel):
         gc.Translate(-x_offset, -y_offset)
 
 
-class _SVGButtonEditor ( Editor ):
+class SVGButtonEditor ( Editor ):
     """ Traits UI 'display only' image editor.
     """
 
@@ -207,73 +224,3 @@ class _SVGButtonEditor ( Editor ):
         """
         factory    = self.factory
         self.value = factory.value
-
-
-class SVGButtonEditor ( BasicEditorFactory ):
-
-    # The editor class to be created:
-    klass = _SVGButtonEditor
-
-    # Value to set when the button is clicked
-    value = Property
-
-    label = Str()
-
-    filename = Str()
-
-    # Extra padding to add to both the left and the right sides
-    width_padding = Range( 0, 31, 3 )
-
-    # Extra padding to add to both the top and the bottom sides
-    height_padding = Range( 0, 31, 3 )
-
-    # Presentation style
-    style = Enum( 'button', 'radio', 'toolbar', 'checkbox' )
-
-    # Orientation of the text relative to the image
-    orientation = Enum( 'vertical', 'horizontal' )
-
-    # The optional view to display when the button is clicked:
-    view = AView
-
-    width = Int(32)
-    height = Int(32)
-
-    tooltip = Str()
-
-    toggle = Bool(True)
-
-    # the toggle state displayed
-    toggle_state = Bool(False)
-
-    #---------------------------------------------------------------------------
-    #  Traits view definition:
-    #---------------------------------------------------------------------------
-
-    traits_view = View( [ 'value', '|[]' ] )
-
-    #---------------------------------------------------------------------------
-    #  object API
-    #---------------------------------------------------------------------------
-
-    def __init__ ( self, **traits ):
-        self._value = 0
-        super( SVGButtonEditor, self ).__init__( **traits)
-
-    #---------------------------------------------------------------------------
-    #  Traits properties
-    #---------------------------------------------------------------------------
-
-    def _get_value ( self ):
-        return self._value
-
-    def _set_value ( self, value ):
-        self._value = value
-        if isinstance(value, basestring):
-            try:
-                self._value = int( value )
-            except:
-                try:
-                    self._value = float( value )
-                except:
-                    pass

@@ -1,5 +1,23 @@
+#------------------------------------------------------------------------------
+#
+#  Copyright (c) 2009, Enthought, Inc.
+#  All rights reserved.
+# 
+#  This software is provided without warranty under the terms of the BSD
+#  license included in enthought/LICENSE.txt and may be redistributed only
+#  under the conditions described in the aforementioned license.  The license
+#  is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+#  Thanks for using Enthought open source!
+#  
+#------------------------------------------------------------------------------
+
+# ETS imports
 from enthought.traits.api import Event
-from enthought.savage.traits.ui.wx.svg_button_editor import SVGButtonEditor
+
+# Local imports
+from svg_button_editor import SVGButtonEditor
+
 
 class SVGButton ( Event ):
     """ Defines a trait whose UI editor is a button.
@@ -41,16 +59,16 @@ class SVGButton ( Event ):
             No default value because events do not store values.
         """
 
-        self.editor = SVGButtonEditor( label       = label,
-                                    filename       = filename,
-                                    tooltip        = tooltip,
-                                    toggle         = toggle,
-                                    toggle_state   = toggle_state,
-                                    orientation    = orientation,
-                                    width_padding  = width_padding,
-                                    height_padding = height_padding,
-                                    width          = width,
-                                    height         = height,
-                                    view           = view )
+        self.editor = SVGButtonEditor( label          = label,
+                                       filename       = filename,
+                                       tooltip        = tooltip,
+                                       toggle         = toggle,
+                                       toggle_state   = toggle_state,
+                                       orientation    = orientation,
+                                       width_padding  = width_padding,
+                                       height_padding = height_padding,
+                                       width          = width,
+                                       height         = height,
+                                       view           = view )
 
         super( SVGButton, self ).__init__( **metadata )
