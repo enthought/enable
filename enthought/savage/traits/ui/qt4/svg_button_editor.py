@@ -40,13 +40,20 @@ class SVGButtonEditor(Editor):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
-        self.control = QtGui.QPushButton(self.factory.label)
-        self.control.setFlat(True)
-        self.control.setIcon(QtGui.QIcon(self.factory.filename))
-        QtCore.QObject.connect(self.control, QtCore.SIGNAL('clicked()'),
+        control = self.control = QtGui.QToolButton()
+        control.setAutoRaise(True)
+        control.setIcon(QtGui.QIcon(self.factory.filename))
+        control.setText(self.factory.label)
+        if self.factory.label:
+            control.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        else:
+            control.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
+
+        QtCore.QObject.connect(control, QtCore.SIGNAL('clicked()'),
                                self.update_object)
+
         if self.factory.tooltip:
-            self.control.setToolTip(self.factory.tooltip)
+            control.setToolTip(self.factory.tooltip)
         else:
             self.set_tooltip()
 
