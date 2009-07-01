@@ -3,22 +3,33 @@ Tool to detect when the user hovers over a specific part of an underlying
 components.
 """
 
-# Major library imports
-import wx  # Used for the hover implementation.
-
 # Enthought library imports
 from enthought.enable.base_tool import BaseTool
+from enthought.etsconfig.api import ETSConfig
+from enthought.pyface.toolkit import toolkit_object
 from enthought.traits.api import Any, Callable, Enum, Float, Int
 	
+# Define a toolkit-specific function for determining the global mouse position
+if ETSConfig.toolkit == 'wx':
+    import wx
+    def GetGlobalMousePosition():
+        pos = wx.GetMousePosition()
+        if isinstance(pos, tuple):
+            return pos
+        elif hasattr(pos, "x") and hasattr(pos, "y"):
+            return (pos.x, pos.y)
+        else:
+            raise RuntimeError("Unable to determine mouse position")
 
-def GetGlobalMousePosition():
-    pos = wx.GetMousePosition()
-    if isinstance(pos, tuple):
-        return pos
-    elif hasattr(pos, "x") and hasattr(pos, "y"):
-        return (pos.x, pos.y)
-    else:
-        raise RuntimeError("Unable to determine mouse position")
+elif ETSConfig.toolkit == 'qt4':
+    from PyQt4 import QtGui
+    def GetGlobalMousePosition():
+        pos = QtGui.QCursor.pos()
+        return (pos.x(), pos.y())
+
+else:
+    raise NotImplementedError, "GetGlobalMousePosition is not defined for" \
+        "toolkit '%s'." % ETSConfig.toolkit
 
 
 class HoverTool(BaseTool):
@@ -83,8 +94,6 @@ class HoverTool(BaseTool):
                 self.callback(self.cb_param)
             else:
                 self.callback()
-        else:
-            pass
     
     def normal_mouse_move(self, event):
         if self._is_in(event.x, event.y):
@@ -98,10 +107,10 @@ class HoverTool(BaseTool):
     def restart_hover_timer(self, event):
         if self._timer is None:
             self._create_timer(event)
+        else:
+            self._timer.Start()
 
-        self._timer.Start(self.hover_delay, wx.TIMER_ONE_SHOT)
-
-    def on_timer(self, event):
+    def on_timer(self):
         position = GetGlobalMousePosition()
         diffx = abs(position[0] - self._start_xy[0])
         diffy = abs(position[1] - self._start_xy[1])
@@ -110,7 +119,6 @@ class HoverTool(BaseTool):
             self.on_hover()
             
         self._timer.Stop()
-        return
 
         
     #-------------------------------------------------------------------------
@@ -138,8 +146,5 @@ class HoverTool(BaseTool):
             return any((t, b, r, l))
             
     def _create_timer(self, event):
-        control = event.window.control
-        timerId = wx.NewId()
-        self._timer = wx.Timer(control, timerId)
-        control.Bind(wx.EVT_TIMER, self.on_timer, id=timerId)
-        
+        klass = toolkit_object("timer.timer:Timer")
+        self._timer = klass(self.hover_delay, self.on_timer)
