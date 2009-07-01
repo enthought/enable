@@ -68,7 +68,7 @@ namespace kiva
                 }
                 else
                 {
-                    agg::gradient_xy grad_func;
+                    agg::gradient_x grad_func;
                     this->_apply(pixfmt, ras, rbase, grad_func);
                 }
             }
@@ -108,45 +108,44 @@ namespace kiva
 
             std::vector<point> user_space_points;
 
-            double d1 = this->points[0].first;
-            double d2 = this->points[1].first;
+            double dx = points[1].first - points[0].first;
+            double dy = points[1].second - points[0].second;
+
+            double d1 = 0;
+            double d2 = sqrt(dx * dx + dy * dy);
 
             if ((this->gradient_type == kiva::grad_radial) && (this->points.size() >2))
             {
-                d1 = this->points[2].first;
-                d2 = this->points[2].first + (this->points[1].first-this->points[0].first);
-
+            	d2 += points[2].first;
+                gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy) / (d2-d1));
+                gradient_mtx *= agg::trans_affine_translation(-points[0].first, -points[0].second);
                 this->_apply_linear_transform(points[0], points[1], gradient_mtx, d2);
             }
             else if (this->gradient_type == kiva::grad_linear)
             {
-                // veritcal, horizontal, and point-to-point gradients are
+                // vertical, horizontal, and point-to-point gradients are
                 // special cased because each one needs a slightly different
                 // set of transformations. Special casing should not be needed,
                 // but better agg docs or a lot more time to read the agg source
                 // would be required...
                 if (points[0].first == points[1].first)
                 {
-                    // vertical special cased because atan2(dx, dy)
-                    double dx = points[1].first - points[0].first;
-                    double dy = points[1].second - points[0].second;
-                    d1 = this->points[0].second;
-                    d2 = this->points[1].second;
                     gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy) / (d2-d1));
                     gradient_mtx *= agg::trans_affine_rotation(atan2(dx, dy));
+                    gradient_mtx *= agg::trans_affine_translation(-points[0].first, -points[0].second);
                 }
                 else if (points[0].second == points[1].second)
                 {
-                    // no transforms necessary for horizontal
+                	// No need to rotate
+                    gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy) / (d2-d1));
+                    gradient_mtx *= agg::trans_affine_translation(-points[0].first, -points[0].second);
                 }
                 else
                 {
-                    // point-to-point special cased because the vector to apply the
-                    // gradient to is the hypotenuse
-                    double dx = points[1].first - points[0].first;
-                    double dy = points[1].second - points[0].second;
+                	// general case: scale, rotate and translate
                     gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy) / (d2-d1));
-                    gradient_mtx *= agg::trans_affine_translation(points[0].first, points[0].second);
+                    gradient_mtx *= agg::trans_affine_rotation(atan2(-dy, dx));
+                    gradient_mtx *= agg::trans_affine_translation(-points[0].first, -points[0].second);
                 }
             }
 
@@ -204,7 +203,7 @@ namespace kiva
             }
             else if (this->spread_method == kiva::reflect)
             {
-                // TODO: handle 'relect' spread method
+                // TODO: handle 'reflect' spread method
             }
             else
             {
