@@ -155,18 +155,22 @@ class LinearGradientBrush(AbstractGradientBrush):
 
     def set_on_gc(self, gc, bbox=None):
         if sys.platform == 'darwin':
-            from enthought.kiva.mac.ABCGI import AxialShading, PiecewiseLinearColorFunction
             if self.spreadMethod != 'pad':
                 warnings.warn("spreadMethod %r is not supported. Using 'pad'" % self.spreadMethod)
             if self.transforms is not None:
                 for func, args in self.transforms:
                     func(gc, *args)
-            func = PiecewiseLinearColorFunction(self.stops)
+
+            if bbox is not None:
+                gc.clip_to_rect(*bbox)
+
             if self.units == 'objectBoundingBox' and bbox is not None:
                 self.bbox_transform(gc, bbox)
-            shading = AxialShading(func, (self.x1,self.y1), (self.x2,self.y2),
-                extend_start=1, extend_end=1)
-            gc.draw_shading(shading)
+                    
+            stops = np.transpose(self.stops)
+            gc.linear_gradient(self.x1, self.y1, self.x2, self.y2, stops, self.spreadMethod)
+
+            
         else:
             if not hasattr(gc, 'linear_gradient'):
                 warnings.warn("Gradients for this platform is not implemented.")
@@ -232,12 +236,16 @@ class RadialGradientBrush(AbstractGradientBrush):
             if self.transforms is not None:
                 for func, args in self.transforms:
                     func(gc, *args)
-            func = PiecewiseLinearColorFunction(self.stops)
+
+
+            if bbox is not None:
+                gc.clip_to_rect(*bbox)
+
             if self.units == 'objectBoundingBox' and bbox is not None:
                 self.bbox_transform(gc, bbox)
-            shading = RadialShading(func, (self.fx,self.fy), 0.0,
-                (self.cx,self.cy), self.r, extend_start=1, extend_end=1)
-            gc.draw_shading(shading)
+                    
+            stops = np.transpose(self.stops)
+            gc.radial_gradient(self.cx, self.cy, self.r, self.fx, self.fy, stops, self.spreadMethod)
         else:
             if not hasattr(gc, 'radial_gradient'):
                 warnings.warn("Gradients for this platform is not implemented.")
