@@ -74,7 +74,9 @@ namespace kiva
             }
             else
             {
-                agg::gradient_circle grad_func;
+                agg::gradient_radial_focus grad_func(points[1].first,
+										points[2].first - points[0].first,
+										points[2].second - points[0].second);
                 this->_apply(pixfmt, ras, rbase, grad_func);
             }
         }
@@ -116,18 +118,11 @@ namespace kiva
 
             if ((this->gradient_type == kiva::grad_radial) && (this->points.size() >2))
             {
-            	d2 += points[2].first;
-                gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy) / (d2-d1));
+            	d2 = points[1].first;
                 gradient_mtx *= agg::trans_affine_translation(-points[0].first, -points[0].second);
-                this->_apply_linear_transform(points[0], points[1], gradient_mtx, d2);
             }
             else if (this->gradient_type == kiva::grad_linear)
             {
-                // vertical, horizontal, and point-to-point gradients are
-                // special cased because each one needs a slightly different
-                // set of transformations. Special casing should not be needed,
-                // but better agg docs or a lot more time to read the agg source
-                // would be required...
                 if (points[0].first == points[1].first)
                 {
                     gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy) / (d2-d1));
@@ -137,7 +132,6 @@ namespace kiva
                 else if (points[0].second == points[1].second)
                 {
                 	// No need to rotate
-                    gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy) / (d2-d1));
                     gradient_mtx *= agg::trans_affine_translation(-points[0].first, -points[0].second);
                 }
                 else
@@ -162,8 +156,6 @@ namespace kiva
             agg::render_scanlines(*ras, scanline, grad_renderer);
         }
 
-
-        void _apply_linear_transform(point p1, point p2, agg::trans_affine& mtx, double d2);
 
         template <class Array>
         void fill_color_array(Array& array)

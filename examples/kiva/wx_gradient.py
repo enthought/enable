@@ -17,22 +17,44 @@ class MyCanvas(Canvas):
         gc.clear()
 
         # diagonal
-        gc.rect(100,25,300,125)
-        gc.linear_gradient(100,25,300,125,
+        gc.rect(50,25,150,100)
+        gc.linear_gradient(50,25,150,125,
                             numpy.array([starting_color, ending_color]),
                             "pad")
         gc.draw_path()
 
         # vertical
-        gc.rect(100,150,300,250)
-        gc.linear_gradient(100,150,100,250,
+        gc.rect(50,150,150,100)
+        gc.linear_gradient(50,150,50,250,
                             numpy.array([starting_color, ending_color]),
                             "pad")
         gc.draw_path()
 
         # horizontal
-        gc.rect(100,300,300,400)
-        gc.linear_gradient(100,300,300,300,
+        gc.rect(50,275,150,100)
+        gc.linear_gradient(50,275,150,275,
+                            numpy.array([starting_color, ending_color]),
+                            "pad")
+        gc.draw_path()
+        
+        # radial
+        gc.arc(325, 75, 50, 0.0, 2*numpy.pi)
+        gc.radial_gradient(325, 75, 50, 325, 75,
+                            numpy.array([starting_color, ending_color]),
+                            "pad")
+        gc.draw_path()
+
+
+        # radial with focal point in upper left
+        gc.arc(325, 200, 50, 0.0, 2*numpy.pi)
+        gc.radial_gradient(325, 200, 50, 300, 225,
+                            numpy.array([starting_color, ending_color]),
+                            "pad")
+        gc.draw_path()
+
+        # radial with focal point in bottom right
+        gc.arc(325, 325, 50, 0.0, 2*numpy.pi)
+        gc.radial_gradient(325, 325, 50, 350, 300,
                             numpy.array([starting_color, ending_color]),
                             "pad")
         gc.draw_path()
@@ -50,7 +72,7 @@ class MyWindow(wx.Frame):
 if __name__ == "__main__":
     class MyApp(wx.App):
         def OnInit(self):
-            MyWindow(size=(500,500))
+            MyWindow(size=(500,400))
             return 1
 
     app = MyApp()

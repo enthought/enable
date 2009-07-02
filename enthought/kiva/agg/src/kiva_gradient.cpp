@@ -24,14 +24,3 @@ gradient::gradient(gradient_type_e gradient_type, std::vector<point> points,
 gradient::~gradient()
 {
 }
-
-void gradient::_apply_linear_transform(point p1, point p2, agg::trans_affine& mtx, double d2)
-{
-    double dx = p2.first - p1.first;
-    double dy = p2.second - p1.second;
-    mtx.reset();
-    mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy) / d2);
-    mtx *= agg::trans_affine_rotation(atan2(dy, dx));
-    mtx *= agg::trans_affine_translation(p1.first, p1.second);
-    mtx.invert();
-}

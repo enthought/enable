@@ -477,7 +477,7 @@ namespace kiva
             std::vector<point_type> points;
 
             points.push_back(point_type(cx, cy));
-            points.push_back(point_type(cx+r, cy));
+            points.push_back(point_type(r, 0));
             points.push_back(point_type(fx, fy));
 
             this->state.gradient_fill = gradient(kiva::grad_radial, points, stops, spread_method);
