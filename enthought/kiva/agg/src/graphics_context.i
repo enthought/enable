@@ -55,6 +55,8 @@
 
 %{
 #include "kiva_graphics_context.h"
+#include "kiva_gradient.h"
+
 
 #ifdef ALWAYS_32BIT_WORKAROUND
 bool ALWAYS_32BIT_WORKAROUND_FLAG = true;
@@ -834,12 +836,12 @@ namespace kiva {
             // Gradient support
             //---------------------------------------------------------------------
             void linear_gradient(double x1, double y1, double x2, double y2,
-                                double* stops, int n_stops,
+                                std::vector<kiva::gradient_stop> stops,
                                 const char* spread_method);
 
             void radial_gradient(double cx, double cy, double r,
                                 double fx, double fy,
-                                double* stops, int n_stops,
+                                std::vector<kiva::gradient_stop> stops,
                                 const char* spread_method);
 
     };

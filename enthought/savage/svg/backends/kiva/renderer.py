@@ -154,54 +154,46 @@ class LinearGradientBrush(AbstractGradientBrush):
                 self.spreadMethod, self.transforms, self.units))
 
     def set_on_gc(self, gc, bbox=None):
+
+        # Apply transforms
+        if self.transforms is not None:
+            for func, args in self.transforms:
+                func(gc, *args)
+                
+
+        x1 = self.x1
+        x2 = self.x2
+        y1 = self.y1
+        y2 = self.y2
+
         if sys.platform == 'darwin':
             if self.spreadMethod != 'pad':
                 warnings.warn("spreadMethod %r is not supported. Using 'pad'" % self.spreadMethod)
-            if self.transforms is not None:
-                for func, args in self.transforms:
-                    func(gc, *args)
 
             if bbox is not None:
                 gc.clip_to_rect(*bbox)
 
             if self.units == 'objectBoundingBox' and bbox is not None:
                 self.bbox_transform(gc, bbox)
-                    
-            stops = np.transpose(self.stops)
-            gc.linear_gradient(self.x1, self.y1, self.x2, self.y2, stops, self.spreadMethod)
 
-            
         else:
-            if not hasattr(gc, 'linear_gradient'):
-                warnings.warn("Gradients for this platform is not implemented.")
-            else:
-                if self.transforms is not None:
-                    for func, args in self.transforms:
-                        func(gc, *args)
+            if self.units == 'objectBoundingBox' and bbox is not None:
+                # vertically flip the points
+                x1 = bbox[0] + (bbox[2] + bbox[0])*x1
+                y1 = bbox[3] - (bbox[3] + bbox[1])*y1
+                x2 = bbox[0] + (bbox[2] + bbox[0])*x2
+                y2 = bbox[3] - (bbox[3] + bbox[1])*y2
+            elif self.units == 'userSpace':
+                # not sure what to do here. 'userSpace' means that the
+                # coordinates are in relation to the time when they were
+                # defined, but I dont currently think that info is available
+                # even at the time the constructor is called...
+                pass
+            
+                
+        stops = np.transpose(self.stops)
+        gc.linear_gradient(x1, y1, x2, y2, stops, self.spreadMethod)            
 
-                stops = np.transpose(self.stops)
-
-                x1 = self.x1
-                x2 = self.x2
-                y1 = self.y1
-                y2 = self.y2
-
-                if self.units == 'objectBoundingBox':
-                    # vertically flip the points
-                    x1 = bbox[0] + (bbox[2] + bbox[0])*x1
-                    y1 = bbox[3] - (bbox[3] + bbox[1])*y1
-                    x2 = bbox[0] + (bbox[2] + bbox[0])*x2
-                    y2 = bbox[3] - (bbox[3] + bbox[1])*y2
-                elif self.units == 'userSpace':
-                    # not sure what to do here. 'userSpace' means that the
-                    # coordinates are in relation to the time when they were
-                    # defined, but I dont currently think that info is available
-                    # even at the time the constructor is called...
-                    pass
-
-                gc.linear_gradient(x1, y1, x2, y2,
-                                    stops, stops.shape[0],
-                                    self.spreadMethod)
 
 class RadialGradientBrush(AbstractGradientBrush):
     """ A Brush representing a radial gradient.
@@ -229,56 +221,43 @@ class RadialGradientBrush(AbstractGradientBrush):
                 self.transforms, self.units))
 
     def set_on_gc(self, gc, bbox=None):
+        
+        if self.transforms is not None:
+            for func, args in self.transforms:
+                func(gc, *args)
+
+        cx = self.cx
+        cy = self.cy
+        r = self.r
+        fx = self.fx
+        fy = self.fy
+        
         if sys.platform == 'darwin':
-            from enthought.kiva.mac.ABCGI import RadialShading, PiecewiseLinearColorFunction
             if self.spreadMethod != 'pad':
                 warnings.warn("spreadMethod %r is not supported. Using 'pad'" % self.spreadMethod)
-            if self.transforms is not None:
-                for func, args in self.transforms:
-                    func(gc, *args)
-
 
             if bbox is not None:
                 gc.clip_to_rect(*bbox)
-
+                
             if self.units == 'objectBoundingBox' and bbox is not None:
                 self.bbox_transform(gc, bbox)
-                    
-            stops = np.transpose(self.stops)
-            gc.radial_gradient(self.cx, self.cy, self.r, self.fx, self.fy, stops, self.spreadMethod)
         else:
-            if not hasattr(gc, 'radial_gradient'):
-                warnings.warn("Gradients for this platform is not implemented.")
-            else:
-                if self.transforms is not None:
-                    for func, args in self.transforms:
-                        func(gc, *args)
-
-                stops = np.transpose(self.stops)
-
-                cx = self.cx
-                cy = self.cy
-                r = self.r
-                fx = self.fx
-                fy = self.fy
-
-                if self.units == 'objectBoundingBox':
-                    # vertically flip the points
-                    cx = bbox[0] + (bbox[2] + bbox[0])*cx
-                    cy = bbox[3] - (bbox[3] + bbox[1])*cy
-                    fx = bbox[0] + (bbox[2] + bbox[0])*fx
-                    fy = bbox[3] - (bbox[3] + bbox[1])*fy
-                    r *= np.sqrt((bbox[2] - bbox[0])**2 + (bbox[3] - bbox[1])**2)
-                elif self.units == 'userSpace':
-                    # not sure what to do here. 'userSpace' means that the
-                    # coordinates are in relation to the time when they were
-                    # defined, but I dont currently think that info is available
-                    # even at the time the constructor is called...
-                    pass
-
-                gc.radial_gradient(cx, cy, r, fx, fy,
-                                    stops, stops.shape[0],
-                                    self.spreadMethod)
+            if self.units == 'objectBoundingBox' and bbox is not None:
+                # vertically flip the points
+                cx = bbox[0] + (bbox[2] + bbox[0])*cx
+                cy = bbox[3] - (bbox[3] + bbox[1])*cy
+                fx = bbox[0] + (bbox[2] + bbox[0])*fx
+                fy = bbox[3] - (bbox[3] + bbox[1])*fy
+                r *= np.sqrt((bbox[2] - bbox[0])**2 + (bbox[3] - bbox[1])**2)
+            elif self.units == 'userSpace':
+                # not sure what to do here. 'userSpace' means that the
+                # coordinates are in relation to the time when they were
+                # defined, but I dont currently think that info is available
+                # even at the time the constructor is called...
+                pass
+                
+        stops = np.transpose(self.stops)
+        gc.radial_gradient(cx, cy, r, fx, fy, stops, self.spreadMethod)
 
 
 def font_style(font):

@@ -20,21 +20,21 @@ class MyCanvas(Canvas):
         gc.rect(100,25,300,125)
         gc.linear_gradient(100,25,300,125,
                             numpy.array([starting_color, ending_color]),
-                            2, "")
+                            "pad")
         gc.draw_path()
 
         # vertical
         gc.rect(100,150,300,250)
         gc.linear_gradient(100,150,100,250,
                             numpy.array([starting_color, ending_color]),
-                            2, "")
+                            "pad")
         gc.draw_path()
 
         # horizontal
         gc.rect(100,300,300,400)
         gc.linear_gradient(100,300,300,300,
                             numpy.array([starting_color, ending_color]),
-                            2, "")
+                            "pad")
         gc.draw_path()
 
         return

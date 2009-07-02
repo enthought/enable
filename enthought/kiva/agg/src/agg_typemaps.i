@@ -315,11 +315,25 @@
 //---------------------------------------------------------------------
 // Gradient support
 //---------------------------------------------------------------------
-%typemap(in) double* stops {
+%typemap(in) std::vector<kiva::gradient_stop> (PyArrayObject* ary=NULL,
+                                         		   int is_new_object)
+{
     PyArrayObject* ary = obj_to_array_no_conversion($input, PyArray_DOUBLE);
     if (ary == NULL)
     {
         goto fail;
     }
-    $1 = (double*) ary->data;
+    
+    std::vector<kiva::gradient_stop> stops;
+    
+    for (int i = 0; i < ary->dimensions[0]; i++)
+    {
+        // the stop is offset, red, green, blue, alpha
+        double* data = (double*)(ary->data);
+        agg::rgba8 color(data[5*i+1]*255, data[5*i+2]*255, data[5*i+3]*255, data[5*i+4]*255);
+        stops.push_back(kiva::gradient_stop(data[5*i], color));
+    }
+    
+    
+    $1 = stops;
 }

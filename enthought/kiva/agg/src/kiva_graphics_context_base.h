@@ -328,18 +328,18 @@ namespace kiva
         //---------------------------------------------------------------------
 
         //
-        // stops is a an array of length % 5 (i.e length=15 implies 3 stops)
+        //
         //
         virtual void linear_gradient(double x1, double y1, double x2, double y2,
-                            double* stops, int n_stops,
+							std::vector<kiva::gradient_stop> stops,
                             const char* spread_method);
 
         //
-        // stops is a an array of length % 5 (i.e length=15 implies 3 stops)
+        //
         //
         virtual void radial_gradient(double cx, double cy, double r,
                             double fx, double fy,
-                            double* stops, int n_stops,
+							std::vector<kiva::gradient_stop> stops,
                             const char* spread_method);
 
     protected:
