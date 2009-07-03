@@ -173,23 +173,19 @@ class LinearGradientBrush(AbstractGradientBrush):
             if bbox is not None:
                 gc.clip_to_rect(*bbox)
 
-            if self.units == 'objectBoundingBox' and bbox is not None:
-                self.bbox_transform(gc, bbox)
-
         else:
             if self.units == 'objectBoundingBox' and bbox is not None:
-                # vertically flip the points
-                x1 = bbox[0] + (bbox[2] + bbox[0])*x1
-                y1 = bbox[3] - (bbox[3] + bbox[1])*y1
-                x2 = bbox[0] + (bbox[2] + bbox[0])*x2
-                y2 = bbox[3] - (bbox[3] + bbox[1])*y2
-            elif self.units == 'userSpace':
-                # not sure what to do here. 'userSpace' means that the
-                # coordinates are in relation to the time when they were
-                # defined, but I dont currently think that info is available
-                # even at the time the constructor is called...
-                pass
-            
+                x1 = (bbox[2] + bbox[0])*x1
+                y1 = (bbox[3] + bbox[1])*y1
+                x2 = (bbox[2] + bbox[0])*x2
+                y2 = (bbox[3] + bbox[1])*y2
+                
+            # kiva and SVGs have different origins, so flip the points
+            y1 = gc.height() - y1
+            y2 = gc.height() - y2
+
+        if self.units == 'objectBoundingBox' and bbox is not None:
+            self.bbox_transform(gc, bbox)
                 
         stops = np.transpose(self.stops)
         gc.linear_gradient(x1, y1, x2, y2, stops, self.spreadMethod)            
@@ -239,23 +235,24 @@ class RadialGradientBrush(AbstractGradientBrush):
             if bbox is not None:
                 gc.clip_to_rect(*bbox)
                 
-            if self.units == 'objectBoundingBox' and bbox is not None:
-                self.bbox_transform(gc, bbox)
         else:
             if self.units == 'objectBoundingBox' and bbox is not None:
-                # vertically flip the points
-                cx = bbox[0] + (bbox[2] + bbox[0])*cx
-                cy = bbox[3] - (bbox[3] + bbox[1])*cy
-                fx = bbox[0] + (bbox[2] + bbox[0])*fx
-                fy = bbox[3] - (bbox[3] + bbox[1])*fy
+                cx = (bbox[2] + bbox[0])*cx
+                cy = (bbox[3] + bbox[1])*cy
+                fx = (bbox[2] + bbox[0])*fx
+                fy = (bbox[3] + bbox[1])*fy
                 r *= np.sqrt((bbox[2] - bbox[0])**2 + (bbox[3] - bbox[1])**2)
-            elif self.units == 'userSpace':
-                # not sure what to do here. 'userSpace' means that the
-                # coordinates are in relation to the time when they were
-                # defined, but I dont currently think that info is available
-                # even at the time the constructor is called...
-                pass
-                
+
+            # kiva and SVGs have different origins, so flip the points
+            cy = gc.height()-cy
+            fy = gc.height()-fy
+
+        if self.units == 'objectBoundingBox' and bbox is not None:
+            self.bbox_transform(gc, bbox)
+
+            pass
+
+                            
         stops = np.transpose(self.stops)
         gc.radial_gradient(cx, cy, r, fx, fy, stops, self.spreadMethod)
 

@@ -1,3 +1,5 @@
+import sys
+
 class AbstractGradientBrush(object):
     """ Abstract base class for gradient brushes so they can be detected easily.
     """
@@ -9,7 +11,10 @@ class AbstractGradientBrush(object):
         """ Apply a transformation to make the bbox a unit square.
         """
         x0, y0, w, h = bbox
-        gc.concat_ctm(((w, 0, 0), (0, h, 0), (x0, y0, 1)))
+        if sys.platform == 'darwin': 
+            gc.concat_ctm(((w, 0, 0), (0, h, 0), (x0, y0, 1)))
+        else:
+            gc.concat_ctm((w,0,0,h,x0,y0))
 
 
 class NullRenderer(object):
