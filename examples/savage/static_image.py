@@ -1,5 +1,5 @@
 from enthought.savage.svg.document import SVGDocument
-from enthought.savage.traits.ui.wx.svg_editor import SVGEditor
+from enthought.savage.traits.ui.svg_editor import SVGEditor
 from enthought.traits.api import HasTraits, Instance
 from enthought.traits.ui.api import Item, View
 import xml.etree.cElementTree as etree
