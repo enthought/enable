@@ -120,6 +120,8 @@ namespace kiva
             {
             	d2 = points[1].first;
                 gradient_mtx *= agg::trans_affine_translation(-points[0].first, -points[0].second);
+				// TOOD: apply scaling transform here, determined by dx and dy of the bounding box,
+                // if appropriate
             }
             else if (this->gradient_type == kiva::grad_linear)
             {
