@@ -1,9 +1,10 @@
 # Standard library imports
 from math import floor, sqrt
+from bisect import insort_left
 
 # Enthought library imports
 from enthought.traits.api import (Bool, Int, Event, Instance, Any, Property,
-                                  List, Delegate)
+                                  List, DelegatesTo)
 from enthought.kiva import font_metrics_provider
 
 # Local, relative imports
@@ -11,7 +12,7 @@ from component import Component
 from text_field_style import TextFieldStyle
 
 
-StyleDelegate = Delegate("_style", modify=True)
+StyleDelegate = DelegatesTo("_style")
 
 class TextField(Component):
     """ A basic text entry field for Enable.
@@ -153,13 +154,14 @@ class TextField(Component):
         # Transform pixel coordinates to text coordinates
         char_width, char_height = self.metrics.get_text_extent("T")[2:]
         char_height += self._style.line_spacing
-        event_x = event.x - self.x + self._style.text_offset
-        event_y = self.y2 - event.y + self._style.text_offset
-        x = int(round(event_x / char_width)) - 1
+        event_x = event.x - self.x - self._style.text_offset
+        event_y = self.y2 - event.y - self._style.text_offset
         if self.multiline:
-            y = int(round(event_y / char_height)) - 1 
+            y = int(round(event_y / char_height)) - 1
         else:
             y = 0
+        x = int(round(event_x / char_width))
+        
 
         # Clip x and y so that they are with text bounds, then place the cursor
         y = min(max(y, 0), len(self.__draw_text)-1)
@@ -342,7 +344,7 @@ class TextField(Component):
             gc.set_line_width(self._style.cursor_width)
             gc.set_stroke_color(self._style.cursor_color)
             gc.begin_path()
-            x_position = self.x + x_offset + (char_w * .5)
+            x_position = self.x + x_offset + self._style.text_offset
             gc.move_to(x_position, y)
             gc.line_to(x_position, y - char_h)
 
@@ -399,7 +401,7 @@ class TextField(Component):
         """ Return 'text' clipped beginning at 'index' if 'start' is True or
             ending at 'index' if 'start' is False.
         """
-        box_width = self.width - self._style.text_offset
+        box_width = self.width - 2*self._style.text_offset
         total_width = 0.
         end_index = 1
         for t in text:
@@ -509,7 +511,8 @@ class TextField(Component):
         if self._width_cache is None:
             if self.metrics is not None:
                 char_width = self.metrics.get_text_extent("T")[2]
-                self._width_cache = int(floor(self.width/char_width))
+                width = self.width - 2*self._style.text_offset
+                self._width_cache = int(floor(width/char_width))
         return self._width_cache
 
     def _get__text_height(self):
