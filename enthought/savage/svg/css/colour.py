@@ -8,7 +8,6 @@
     * rgb percent: rgb(100%,100%,0%)
     * named color: black
 """
-import wx
 import string
 import urlparse
 from pyparsing import nums, Literal, Optional, oneOf, Group, StringEnd, Combine, Word, alphas, hexnums
@@ -242,43 +241,3 @@ NamedColours = {
     'yellow' : (255, 255, 0) ,
     'yellowgreen' : (154, 205, 50) ,
 }
-
-
-
-def fillCSS2SystemColours():
-    #The system colours require a wxApp to be present to retrieve,
-    #so if you wnat support for them you'll need 
-    #to call this function after your wxApp instance starts
-    systemColors = {
-        "ActiveBorder": wx.SYS_COLOUR_ACTIVEBORDER,
-        "ActiveCaption": wx.SYS_COLOUR_ACTIVECAPTION,
-        "AppWorkspace": wx.SYS_COLOUR_APPWORKSPACE,
-        "Background": wx.SYS_COLOUR_BACKGROUND,
-        "ButtonFace": wx.SYS_COLOUR_BTNFACE,
-        "ButtonHighlight": wx.SYS_COLOUR_BTNHIGHLIGHT,
-        "ButtonShadow": wx.SYS_COLOUR_BTNSHADOW,
-        "ButtonText": wx.SYS_COLOUR_BTNTEXT,
-        "CaptionText": wx.SYS_COLOUR_CAPTIONTEXT,
-        "GrayText": wx.SYS_COLOUR_GRAYTEXT,
-        "Highlight": wx.SYS_COLOUR_HIGHLIGHT,
-        "HighlightText": wx.SYS_COLOUR_HIGHLIGHTTEXT,
-        "InactiveBorder": wx.SYS_COLOUR_INACTIVEBORDER,
-        "InactiveCaption": wx.SYS_COLOUR_INACTIVECAPTION,
-        "InfoBackground": wx.SYS_COLOUR_INFOBK,
-        "InfoText": wx.SYS_COLOUR_INFOTEXT,
-        "Menu": wx.SYS_COLOUR_MENU,
-        "MenuText": wx.SYS_COLOUR_MENUTEXT,
-        "Scrollbar": wx.SYS_COLOUR_SCROLLBAR,
-        "ThreeDDarkShadow": wx.SYS_COLOUR_3DDKSHADOW,
-        "ThreeDFace": wx.SYS_COLOUR_3DFACE,
-        "ThreeDHighlight": wx.SYS_COLOUR_3DHIGHLIGHT,
-        "ThreeDLightShadow": wx.SYS_COLOUR_3DLIGHT,
-        "ThreeDShadow": wx.SYS_COLOUR_3DSHADOW,
-        "Window": wx.SYS_COLOUR_WINDOW,
-        "WindowFrame": wx.SYS_COLOUR_WINDOWFRAME,
-        "WindowText": wx.SYS_COLOUR_WINDOWTEXT
-    }
-    NamedColours.update(
-        #strip the alpha from the system colors. Is this really what we want to do?
-        (k.lower(), wx.SystemSettings.GetColour(v)[:3]) for (k,v) in systemColors.iteritems()
-    )

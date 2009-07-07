@@ -1,7 +1,7 @@
 import unittest
 from pyparsing import ParseException
 
-from svg.pathdata import *
+from enthought.savage.svg.pathdata import *
    
 
 class TestNumber(unittest.TestCase):

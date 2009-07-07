@@ -1,10 +1,8 @@
 import unittest
-import wx
 from pyparsing import ParseException
 
-import svg.css.colour as colour
-
-    
+import enthought.savage.svg.css.colour as colour
+   
             
 class testColourValueClamping(unittest.TestCase):
     def testByte(self):
@@ -68,16 +66,6 @@ class TestNamedColours(unittest.TestCase):
         self.assertEqual(
             self.parser.parseString("fuchsia").asList(),
             self.parser.parseString("FUCHSIA").asList(),
-        )
-        
-class TestSystemColours(unittest.TestCase):
-    parser = colour.namedColour
-    def testSystemColour(self):
-        app = wx.App() #need a wxApp
-        colour.fillCSS2SystemColours()
-        self.assertEqual(
-            self.parser.parseString("ThreeDFace").asList(),
-            ["RGB", wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE).Get()]
         )
         
 class TestValueParser(TestNamedColours, TestHexParsing, TestRGBParsing):

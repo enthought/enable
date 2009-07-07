@@ -1,8 +1,6 @@
 """
     SVGDocument
 """
-import wx
-
 from cStringIO import StringIO
 import warnings
 import math
@@ -360,7 +358,7 @@ class SVGDocument(object):
     def createTransformOpsFromNode(self, node, attribute='transform'):
         """ Returns an oplist for transformations.
         This applies to a node, not the current state because
-        the transform stack is saved in the wxGraphicsContext.
+        the transform stack is saved in the graphics context.
 
         This oplist does *not* include the push/pop state commands
         """
@@ -790,7 +788,7 @@ class SVGDocument(object):
         ops = []
         brush = self.getBrushFromState(path)
         fillRule = self.state.get('fill-rule', 'nonzero')
-        fr = self.renderer.fill_rules.get(fillRule, wx.ODDEVEN_RULE)
+        fr = self.renderer.fill_rules.get(fillRule)
         if brush is not None:
             if isinstance(brush, AbstractGradientBrush):
                 ops.extend([
@@ -968,7 +966,7 @@ class SVGDocument(object):
         opacity = min(max(opacity, 0.0), 1.0)
         a = 255 * opacity
         #using try/except block instead of
-        #just setdefault because the wxBrush and wxColour would
+        #just setdefault because the brush and colour would
         #be created every time anyway in order to pass them,
         #defeating the purpose of the cache
         try:

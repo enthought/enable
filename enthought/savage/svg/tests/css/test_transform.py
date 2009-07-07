@@ -1,8 +1,7 @@
 import unittest
-import wx
 from pyparsing import ParseException
 
-from svg.css.transform import *
+from enthought.savage.svg.css.transform import *
 
 #list of tuples: parser, string, result
 transformTestsGood = [

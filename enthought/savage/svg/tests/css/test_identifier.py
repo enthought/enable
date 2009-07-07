@@ -2,7 +2,7 @@ import unittest
 import string
 import sys
 from pyparsing import ParseException, Regex, StringEnd
-import svg.css.identifier as identifier
+import enthought.savage.svg.css.identifier as identifier
 
 class TestEscaped(unittest.TestCase):
     def testEscapedSpecialChar(self):

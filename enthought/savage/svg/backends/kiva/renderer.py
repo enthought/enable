@@ -3,7 +3,6 @@ import sys
 import warnings
 
 import numpy as np
-import wx
 
 from enthought import kiva
 from enthought.kiva import affine, constants
@@ -359,7 +358,7 @@ class Renderer(NullRenderer):
 
     @classmethod
     def makeMatrix(cls, *args):
-        return wx.GraphicsRenderer_GetDefaultRenderer().CreateMatrix(*args)
+        raise NotImplemented()
 
     @classmethod
     def makePath(cls):
