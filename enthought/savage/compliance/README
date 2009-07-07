@@ -1,0 +1,3 @@
+comparator.py will show a suite of SVG images side by side with pngs for the purpose of testing compliance. Currently the app will show the wx backend, the kiva backend, and the reference png. The use of wx here does not imply wx is required to use Savage, but it is obviously needed to compare the wx backend...
+
+To get the w3c complaince suite, refer to w3c_svg_11/notes.py 
