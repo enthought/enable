@@ -1,13 +1,14 @@
 
 # Enthought library imports
 from enthought.kiva import GraphicsContext
-from enthought.traits.api import Instance
+from enthought.traits.api import HasTraits, Instance
 
 # Relative imports
 from abstract_window import AbstractWindow
 from base import bounding_coordinates, coordinates_to_bounds
 
-class GraphicsContextEnable(GraphicsContext):
+
+class EnableGCMixin(object):
     """
     Subclass of Kiva GraphicsContext that provides a few more utility methods.
     Most importantly, it provides a pointer back to the window that this
@@ -27,7 +28,7 @@ class GraphicsContextEnable(GraphicsContext):
     def __init__(self, *args, **kwargs):
         if kwargs.has_key("window"):
             self.window = kwargs.pop("window")
-        GraphicsContext.__init__(self, *args, **kwargs)
+        super(EnableGCMixin, self).__init__(*args, **kwargs)
         return
 
     def clip_to_rect(self, x, y, width, height):
@@ -82,5 +83,14 @@ class GraphicsContextEnable(GraphicsContext):
         self.restore_state()
         return
     
+class GraphicsContextEnable(EnableGCMixin, GraphicsContext):
+    pass
 
-# EOF
+from enthought.kiva.backend_image import GraphicsContext as GraphicsContextImage
+if isinstance(GraphicsContext, GraphicsContextImage):
+    ImageGraphicsContextEnable = GraphicsContextEnable
+
+else:
+    class ImageGraphicsContextEnable(EnableGCMixin, GraphicsContextImage):
+        pass
+
