@@ -1,7 +1,6 @@
 
 # Enthought library imports
 from enthought.kiva import GraphicsContext
-from enthought.traits.api import HasTraits, Instance
 
 # Relative imports
 from abstract_window import AbstractWindow
@@ -23,7 +22,7 @@ class EnableGCMixin(object):
     # such cases, it is more appropriate to use a GC from Kiva directly as opposed
     # to using the Enable one, as some draw methods may need to parent controls
     # or dialogs from the Window.
-    window = Instance(AbstractWindow)
+    window = None  #Instance(AbstractWindow)
 
     def __init__(self, *args, **kwargs):
         if kwargs.has_key("window"):
@@ -33,9 +32,9 @@ class EnableGCMixin(object):
 
     def clip_to_rect(self, x, y, width, height):
         if getattr(self, "corner_pixel_origin", True):
-            GraphicsContext.clip_to_rect(self, x-0.5, y-0.5, width+1, height+1)
+            super(EnableGCMixin, self).clip_to_rect(x-0.5, y-0.5, width+1, height+1)
         else:
-            GraphicsContext.clip_to_rect(self, x, y, width, height)
+            super(EnableGCMixin, self).clip_to_rect(x, y, width, height)
 
     def clear_clip(self, color, coordinates):
         "Clip and clear a Kiva graphics context to a specified area and color"
@@ -82,14 +81,18 @@ class EnableGCMixin(object):
             y += idy
         self.restore_state()
         return
-    
+
+# Define a GraphicsContextEnable that subclasses whatever the Kiva backend's
+# GraphicsContext is. 
 class GraphicsContextEnable(EnableGCMixin, GraphicsContext):
     pass
 
+# Define an ImageGraphicsContextEnable that is guaranteed to be a subclass of
+# an ImageGraphicsContext, regardless of the actual Kiva backend.  If the kiva
+# backend is already the GraphicsContextImage, then just create an alias.
 from enthought.kiva.backend_image import GraphicsContext as GraphicsContextImage
 if isinstance(GraphicsContext, GraphicsContextImage):
     ImageGraphicsContextEnable = GraphicsContextEnable
-
 else:
     class ImageGraphicsContextEnable(EnableGCMixin, GraphicsContextImage):
         pass
