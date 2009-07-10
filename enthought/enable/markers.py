@@ -279,8 +279,8 @@ MarkerNameDict = {"square": SquareMarker,
                   "custom": CustomMarker }
 
 # A mapped trait that allows string naming of marker classes.
-marker_trait = Trait("square", MarkerNameDict,
+MarkerTrait = Trait("square", MarkerNameDict,
                      editor=EnumEditor(values=marker_names))
 
+marker_trait = MarkerTrait
 
-#EOF

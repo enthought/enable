@@ -19,9 +19,10 @@ from enable_traits import basic_sequence_types, sequence_types, pointer_shapes, 
 from colors import color_table, transparent_color, ColorTrait, black_color_trait, \
                    white_color_trait, transparent_color_trait, ColorEditorFactory
 
-from markers import marker_trait, MarkerNameDict, marker_names, SquareMarker, \
-    CircleMarker, TriangleMarker, Inverted_TriangleMarker, PlusMarker, \
-    CrossMarker, DiamondMarker, DotMarker, PixelMarker, CustomMarker, AbstractMarker
+from markers import MarkerTrait, marker_trait, MarkerNameDict, marker_names, \
+    SquareMarker, CircleMarker, TriangleMarker, Inverted_TriangleMarker, \
+    PlusMarker, CrossMarker, DiamondMarker, DotMarker, PixelMarker, \
+    CustomMarker, AbstractMarker
 
 from events import drag_event_trait, key_event_trait, mouse_event_trait, \
     BasicEvent, BlobEvent, BlobFrameEvent, DragEvent, KeyEvent, MouseEvent
