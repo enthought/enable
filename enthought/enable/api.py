@@ -19,6 +19,10 @@ from enable_traits import basic_sequence_types, sequence_types, pointer_shapes, 
 from colors import color_table, transparent_color, ColorTrait, black_color_trait, \
                    white_color_trait, transparent_color_trait, ColorEditorFactory
 
+from markers import marker_trait, MarkerNameDict, marker_names, SquareMarker, \
+    CircleMarker, TriangleMarker, Inverted_TriangleMarker, PlusMarker, \
+    CrossMarker, DiamondMarker, DotMarker, PixelMarker, CustomMarker
+
 from events import drag_event_trait, key_event_trait, mouse_event_trait, \
     BasicEvent, BlobEvent, BlobFrameEvent, DragEvent, KeyEvent, MouseEvent
 from interactor import Interactor
@@ -27,12 +31,8 @@ from base_tool import BaseTool, KeySpec
 from abstract_overlay import AbstractOverlay
 from canvas import Canvas
 from component import Component
-#from component_render_category import ComponentRenderCategory
-#from component_layout_category import ComponentLayoutCategory
 from container import Container
 from coordinate_box import CoordinateBox
-#from drag import DragHandler
-#from drag_resize import DragResizeHandler
 from component_editor import ComponentEditor
 
 # Breaks code that does not use numpy
@@ -54,8 +54,6 @@ from window import Window
 
 # subpackage imports
 from image.api import Image, DraggableImage, Inspector, ColorChip
-#from image_frame import ImageFrame, ResizeFrame, TitleFrame, WindowFrame, \
-#                        ComponentFactory, Button, CheckBoxButton, RadioButton
 #from image_title import ImageTitle
 #from drawing_canvas import GriddedCanvas, GuideLine, SelectionFrame
 from primitives.api import Annotater, Box, Line, Polygon
