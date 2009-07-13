@@ -11,16 +11,16 @@ namespace agg
 {
     PyObject* pixel_map_as_unowned_array(agg::pixel_map& pix_map)
     {
-        int dims[3];
-        int rows = pix_map.height();
-        int cols = pix_map.width();
-        int depth = pix_map.bpp() / 8;
+        npy_intp dims[3];
+        npy_intp rows = pix_map.height();
+        npy_intp cols = pix_map.width();
+        npy_intp depth = pix_map.bpp() / 8;
     
         dims[0] = rows;
         dims[1] = cols;
         dims[2] = depth;
         
-	return PyArray_FromDimsAndData(3,dims,PyArray_UBYTELTR,(char*)pix_map.buf());
+        return PyArray_SimpleNewFromData(3,dims,NPY_UINT8,(void*)pix_map.buf());
     }
 
 }
