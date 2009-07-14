@@ -35,11 +35,12 @@ from component import Component
 from container import Container
 from coordinate_box import CoordinateBox
 from component_editor import ComponentEditor
+from overlay_container import OverlayContainer
 
 # Breaks code that does not use numpy
 from label import Label
 
-from graphics_context import GraphicsContextEnable
+from graphics_context import GraphicsContextEnable, ImageGraphicsContextEnable
 
 # Old Enable classes and widgets
 from abstract_window import AbstractWindow
@@ -47,6 +48,7 @@ from abstract_window import AbstractWindow
 
 from native_scrollbar import NativeScrollBar
 from scrolled import Scrolled
+from slider import Slider
 from text_field_style import TextFieldStyle
 from text_field import TextField
 from text_field_grid import TextFieldGrid
