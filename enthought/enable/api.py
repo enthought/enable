@@ -47,6 +47,7 @@ from abstract_window import AbstractWindow
 #from controls import LabelTraits, Label, CheckBox, Radio
 
 from native_scrollbar import NativeScrollBar
+from compass import Compass
 from scrolled import Scrolled
 from slider import Slider
 from text_field_style import TextFieldStyle
