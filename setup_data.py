@@ -16,9 +16,9 @@ def etsdep(p, min, max=None, literal=False):
 # Declare our ETS project dependencies.
 #CHACO -- not ever imported here, the etscollect tool is messing up somehow.
 ENTHOUGHTBASE_UI = etsdep('EnthoughtBase[ui]', '3.0.3')
-TRAITSBACKENDWX = etsdep('TraitsBackendWX', '3.1.1')
-TRAITSGUI = etsdep('TraitsGUI', '3.0.5')
-TRAITS_UI = etsdep('Traits[ui]', '3.1.1')
+TRAITSBACKENDWX = etsdep('TraitsBackendWX', '3.2.0')
+TRAITSGUI = etsdep('TraitsGUI', '3.1.0')
+TRAITS_UI = etsdep('Traits[ui]', '3.2.0')
 
 
 # A dictionary of the setup data information.
