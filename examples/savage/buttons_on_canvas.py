@@ -2,6 +2,7 @@ import os.path
 import xml.etree.cElementTree as etree
 
 from enthought.enable.api import Container, Component, ComponentEditor, BaseTool
+from enthought.kiva import Font, MODERN
 from enthought.traits.api import Instance, Callable, List, Str, HasTraits
 from enthought.traits.ui.api import View, Item
 from enthought.savage.svg.document import SVGDocument
@@ -10,6 +11,7 @@ from enthought.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
 
 class CanvasButton(Component):
     document = Instance(SVGDocument)
+    label = Str()
     callback = Callable
     callback_args = List(Str)
     
@@ -34,6 +36,25 @@ class CanvasButton(Component):
         gc.scale_ctm(self.width/float(doc_size[0]), -self.height/float(doc_size[1]))
         
         self.document.render(gc)
+        gc.restore_state()
+        
+        if len(self.label) > 0:
+            self._draw_label(gc)
+
+        
+    def _draw_label(self, gc):
+        
+        gc.save_state()
+
+        font = Font(family=MODERN)
+        gc.set_font(font)
+
+        x, y, width, height = gc.get_text_extent(self.label)
+        text_x = self.x + (self.width - width)/2.0
+        text_y = self.y - height
+
+        
+        gc.show_text(self.label, (text_x, text_y))
         
         gc.restore_state()
 
@@ -84,8 +105,12 @@ class ButtonCanvasView(HasTraits):
 
     def add_buttons(self):
         data_dir = os.path.dirname(__file__)
-        self.canvas.add_button(CanvasButton(os.path.join(data_dir, 'edit-copy.svg'), self.do_copy, [], x=150, y=150))
-        self.canvas.add_button(CanvasButton(os.path.join(data_dir, 'edit-paste.svg'), self.do_paste, [], x=250, y=150))
+        self.canvas.add_button(CanvasButton(os.path.join(data_dir, 'edit-copy.svg'), 
+                                            self.do_copy, [], 
+                                            label="Copy", x=150, y=150,))
+        self.canvas.add_button(CanvasButton(os.path.join(data_dir, 'edit-paste.svg'), 
+                                            self.do_paste, [], 
+                                            label="Paste", x=250, y=150))
 
     def do_copy(self):
         print "copying something"
