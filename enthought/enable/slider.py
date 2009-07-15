@@ -345,6 +345,8 @@ class Slider(Component):
         """ Returns the (x, y, w, h) bounds of the rectangle representing the slider.
         Used for rendering and hit detection.
         """
+        bar_x = self.x + self.width / 2
+        bar_y = self.y + self.height / 2
         pt = self.map_screen(self.value)
         if self.orientation == "h":
             slider_height = self._cached_slider_size
