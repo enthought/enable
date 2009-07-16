@@ -36,6 +36,7 @@ def configuration(parent_package='',top_path=None):
                     pyrex_result.num_errors)
         return target
 
+
     extra_link_args=[
         '-Wl,-framework', '-Wl,CoreFoundation',
         '-Wl,-framework', '-Wl,ApplicationServices',
@@ -86,17 +87,6 @@ def configuration(parent_package='',top_path=None):
         
     info = {}
     dict_append(info, define_macros=[("__WXMAC__", 1)])
-
-    # Hack to remove '-arch ppc' from the build.
-    tmp = []
-    for value in wx_info.get('extra_link_args', []):
-        if value == 'ppc':
-            tmp.pop()
-            continue
-        else:
-            tmp.append(value)
-    wx_info['extra_link_args'] = tmp
-
     dict_append(info, **wx_info)
     config.add_extension('macport', [get_macport_cpp],
                          depends = [macport_cpp],
