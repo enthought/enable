@@ -18,7 +18,7 @@ class StaticImageExample(HasTraits):
     def __init__(self, filename, renderer, *args, **kw):
         super(StaticImageExample, self).__init__(*args, **kw)
 
-        self.svg = SVGDocument.createFromFile(filename, renderer=WxRenderer)
+        self.svg = SVGDocument.createFromFile(filename, renderer=renderer)
         
 if __name__ == "__main__":
     import os.path
@@ -32,7 +32,6 @@ if __name__ == "__main__":
     if '--kiva' in sys.argv:
         renderer = KivaRenderer
         sys.argv.remove('--kiva')
- 
 
     if len(sys.argv) > 1:
         StaticImageExample(sys.argv[1], renderer).configure_traits()
