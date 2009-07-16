@@ -14,17 +14,15 @@ class StaticImageExample(HasTraits):
                             
     def __init__(self, filename, *args, **kw):
         super(StaticImageExample, self).__init__(*args, **kw)
-        
-        tree = etree.parse(filename)
-        root = tree.getroot()
-        
+
         # FIXME: programatically figure out which renderer to use
         from enthought.savage.svg.backends.wx.renderer import Renderer as WxRenderer
         from enthought.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
-        self.svg = SVGDocument(root, renderer=KivaRenderer)
+        self.svg = SVGDocument.createFromFile(filename, renderer=WxRenderer)
         
 if __name__ == "__main__":
     import os.path
-    sample_file = os.path.join(os.path.dirname(__file__), 'lion.svg')
-    example = StaticImageExample(sample_file)
-    example.configure_traits()
+    import sys
+
+    if len(sys.argv) > 1:
+        StaticImageExample(sys.argv[1]).configure_traits(kind='live')
