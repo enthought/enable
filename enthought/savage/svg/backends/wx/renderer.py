@@ -212,6 +212,13 @@ class Renderer(NullRenderer):
         #rather than the top as with our API. This function
         #will measure and then re-orient the text as needed.
         w, h = context.GetTextExtent(text)
+        
+        if anchor != 'start':
+            if anchor == 'middle':
+                x -= w/2.0
+            elif anchor == 'end':
+                x -= w
+        
         y -= h
         context.DrawText(text, x, y)
 
