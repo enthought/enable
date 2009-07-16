@@ -256,6 +256,17 @@ class SVGDocument(object):
         self.clippingStack = []
         path, ops = self.processElement(element)
         self.ops = ops
+        
+    @classmethod
+    def createFromFile(cls, filename, renderer):
+        if not os.path.exists(filename):
+            raise IOError('No such file: ' + filename)
+        
+        tree = ET.parse(filename)
+        root = tree.getroot()
+        
+        resources = ResourceGetter(os.path.dirname(filename))
+        return cls(root, resources, renderer)
 
 
     def getSize(self):

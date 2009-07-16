@@ -186,9 +186,8 @@ class SVGButtonEditor ( Editor ):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
-
-        tree = etree.parse(self.factory.filename)
-        self.document = SVGDocument(tree.getroot(), renderer=Renderer)
+        
+        self.document = SVGDocument.createFromFile(self.factory.filename, renderer=Renderer)
 
         # load the button toggle document which will be displayed when the
         # button is toggled.
