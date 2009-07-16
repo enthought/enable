@@ -69,6 +69,44 @@ class CompiledPath(kiva.CompiledPath):
             if i == 0:
                 self.move_to(x1,y1)
             self.curve_to(x2,y2, x3,y3, x4,y4)
+            
+    def AddRoundedRectangleEx(self, x, y, w, h, rx, ry):
+        #origin
+        self.move_to(x+rx, y)
+        self.line_to(x+w-rx, y)
+        #top right
+        cx = rx * 2
+        cy = ry * 2
+        self.AddEllipticalArcTo(
+            x+w-cx, y,
+            cx, cy,
+            270, 90,
+        )
+        self.AddLineToPoint(x+w, y+h-ry)
+        #top left
+        self.AddEllipticalArcTo(
+            x+w-cx, y+h-cy,
+            cx, cy,
+            0, 90,
+        )
+        self.line_to(x+rx, y+h)
+        #bottom left
+        self.AddEllipticalArcTo(
+            x, y+h-cy,
+            cx, cy,
+            90,
+            90,
+        )
+        self.line_to(x, y+ry)
+        #bottom right
+        self.AddEllipticalArcTo(
+            x, y,
+            cx, cy,
+            180,
+            90,
+        )
+        self.close_path()
+        
 
 
 Canvas = kiva.Canvas

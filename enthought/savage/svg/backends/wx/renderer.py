@@ -1,8 +1,17 @@
+import copy
 import numpy
 import warnings
 import wx
 
 from enthought.savage.svg.backends.null.null_renderer import NullRenderer
+
+
+def _fixup_path_methods(path):
+    def _new_add_rounded_rectangle(self, x, y, w, h, rx, ry):
+        r = numpy.sqrt(rx*rx + ry*ry)
+        self.AddRoundedRectangle(x, y, w, h, r)
+
+    path.__class__.AddRoundedRectangleEx = _new_add_rounded_rectangle
 
 class AbstractGradientBrush(object):
     """ Abstract base class for gradient brushes so they can be detected easily.
@@ -16,7 +25,7 @@ class AbstractGradientBrush(object):
         """
         x0, y0, w, h = bbox
         gc.concat_ctm(((w, 0, 0), (0, h, 0), (x0, y0, 1)))
-
+        
 class Renderer(NullRenderer):
 
     NullBrush = wx.NullBrush
@@ -129,7 +138,9 @@ class Renderer(NullRenderer):
 
     @staticmethod
     def makePath():
-        return wx.GraphicsRenderer_GetDefaultRenderer().CreatePath()
+        path = wx.GraphicsRenderer_GetDefaultRenderer().CreatePath()
+        _fixup_path_methods(path)
+        return path
 
     @staticmethod
     def popState(*args):

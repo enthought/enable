@@ -672,42 +672,8 @@ class SVGDocument(object):
             #value clamping as per spec section 9.2
             rx = min(rx, w/2)
             ry = min(ry, h/2)
-
-            #origin
-            path.MoveToPoint(x+rx, y)
-            path.AddLineToPoint(x+w-rx, y)
-            #top right
-            cx = rx * 2
-            cy = ry * 2
-            path.AddEllipticalArcTo(
-                x+w-cx, y,
-                cx, cy,
-                270, 90,
-            )
-            path.AddLineToPoint(x+w, y+h-ry)
-            #top left
-            path.AddEllipticalArcTo(
-                x+w-cx, y+h-cy,
-                cx, cy,
-                0, 90,
-            )
-            path.AddLineToPoint(x+rx, y+h)
-            #bottom left
-            path.AddEllipticalArcTo(
-                x, y+h-cy,
-                cx, cy,
-                90,
-                90,
-            )
-            path.AddLineToPoint(x, y+ry)
-            #bottom right
-            path.AddEllipticalArcTo(
-                x, y,
-                cx, cy,
-                180,
-                90,
-            )
-            path.CloseSubpath()
+            
+            path.AddRoundedRectangleEx(x, y, w, h, rx, ry)
         else:
             if len(self.clippingStack) > 0:
                 self.renderer.clipPath()
