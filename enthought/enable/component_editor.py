@@ -42,7 +42,7 @@ class _ComponentEditor( Editor ):
         """
         self._window = Window( parent, size=self.factory.size, component=self.value )
         self.control = self._window.control
-        self._window.bg_color = self.factory.bgcolor
+        self._window.bgcolor = self.factory.bgcolor
         self._parent = parent
 
     #---------------------------------------------------------------------------

@@ -4,7 +4,7 @@ from numpy import dot
 
 # Enthought library imports
 from enthought.traits.api import Any, Bool, Event, HasTraits, Instance, \
-        ReadOnly, Trait, Tuple, List
+        Property, ReadOnly, Trait, Tuple, List
 
 
 # Local relative imports
@@ -14,6 +14,10 @@ from component import Component
 from interactor import Interactor
 from container import Container
 from colors import ColorTrait
+
+def Alias(name):
+    return Property(lambda obj: getattr(obj, name),
+                    lambda obj, val: setattr(obj, name, val))
 
 class AbstractWindow(HasTraits):
 
@@ -36,7 +40,15 @@ class AbstractWindow(HasTraits):
     # dispatch order for events (until it releases the mouse).
     mouse_owner_dispatch_history = Trait(None, None, List)
 
-    bg_color      = ColorTrait("lightgray")
+    # The background window of the window.  The entire window first gets
+    # painted with this color before the component gets to draw.
+    bgcolor = ColorTrait("lightgray")
+
+    # Unfortunately, for a while, there was a naming inconsistency and the
+    # background color trait named "bg_color".  This is still provided for
+    # backwards compatibility but should not be used in new code.
+    bg_color = Alias("bgcolor")
+
     window        = ReadOnly
     alt_pressed   = Bool(False)
     ctrl_pressed  = Bool(False)
@@ -116,7 +128,7 @@ class AbstractWindow(HasTraits):
         if self._update_region == [] or not self.use_damaged_region:
             self._update_region = None
         if self._update_region is None:
-            gc.clear(self.bg_color_)
+            gc.clear(self.bgcolor_)
         else:
             # Fixme: should use clip_to_rects
             update_union = reduce(union_bounds, self._update_region)
@@ -352,7 +364,7 @@ class AbstractWindow(HasTraits):
         return
 
     def __getstate__(self):
-        attribs = ("component", "bg_color", "overlay", "_scroll_origin")
+        attribs = ("component", "bgcolor", "overlay", "_scroll_origin")
         state = {}
         for attrib in attribs:
             state[attrib] = getattr(self, attrib)

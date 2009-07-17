@@ -488,7 +488,7 @@ class Window(AbstractWindow):
         gc = self._gc
         if hasattr(self.component, "do_layout"):
             self.component.do_layout()
-        gc.clear(self.bg_color_)
+        gc.clear(self.bgcolor_)
         self.component.draw(gc, view_bounds=(0, 0, size[0], size[1]))
         self._update_region = []
         #self.control.flip()

@@ -69,7 +69,7 @@ Viewport(Component)
     view_position
     view_bounds
     stay_inside
-    bg_color
+    bgcolor
     components_at(x, y, add_containers=False) -> [components]
 
 # ----- Event handling stuff ------------------------------------------------

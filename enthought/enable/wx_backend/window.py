@@ -713,7 +713,7 @@ class GLWindow(_Window):
         self._init_gc()
         if hasattr(self.component, "do_layout"):
             self.component.do_layout()
-        self._gc.clear(self.bg_color_)
+        self._gc.clear(self.bgcolor_)
         self.component.draw(self._gc, view_bounds=(0, 0, size[0], size[1]))
         self._update_region = []
         #self.control.flip()

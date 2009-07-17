@@ -46,7 +46,7 @@ class MacWindow(Window):
             self._size = tuple(size)
         gc = self._gc
         gc.begin()
-        gc.clear(self.bg_color_)
+        gc.clear(self.bgcolor_)
         if hasattr(self.component, "do_layout"):
             self.component.do_layout()
         self.component.draw(gc, view_bounds=(0, 0, size[0], size[1]))
