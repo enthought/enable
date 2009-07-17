@@ -39,14 +39,19 @@ class Compass(Component):
     # Appearance Traits
     #------------------------------------------------------------------------
 
+    # The line color of the triangles
     color = ColorTrait("black")
 
-    fill_color = ColorTrait("none")
-
-    clicked_color = ColorTrait("lightgray")
-
+    # The line width of the triangles
     line_width = Int(2)
 
+    # The triangle fill color when the mouse has not been clicked
+    fill_color = ColorTrait("none")
+
+    # The fill color of the triangle that the user has clicked on
+    clicked_color = ColorTrait("lightgray")
+
+    # Override the inherited **event_state** attribute
     event_state = Enum("normal", "clicked")
 
     #------------------------------------------------------------------------
@@ -98,6 +103,9 @@ class Compass(Component):
                 break
         return
 
+    def normal_left_dclick(self, event):
+        return self.normal_left_down(event)
+
     def clicked_left_up(self, event):
         self.event_state = "normal"
         self.clicked = None
@@ -110,6 +118,17 @@ class Compass(Component):
     #------------------------------------------------------------------------
     # Rendering methods
     #------------------------------------------------------------------------
+
+    def get_preferred_size(self):
+        # Since we can compute our preferred size from the size of the
+        # arrows and the spacing, we can return a sensible preferred
+        # size, so override the default implementation in Component.
+
+        if self.fixed_preferred_size is not None:
+            return self.fixed_preferred_size
+        else:
+            extent = self.scale * 2 * (self.spacing + self.triangle_length/2)
+            return [extent + self.hpadding, extent + self.vpadding]
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="normal"):
         gc.save_state()
@@ -145,6 +164,5 @@ class Compass(Component):
             
         finally:
             gc.restore_state()
-
 
 
