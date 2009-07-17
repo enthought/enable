@@ -41,6 +41,8 @@ class Slider(Component):
     # Whether this is a horizontal or vertical slider
     orientation = Enum("h", "v")
 
+    # The thickness, in pixels, of the lines used to render the ticks,
+    # endcaps, and main slider bar.
     bar_width = Int(4)
 
     bar_color = ColorTrait("black")
