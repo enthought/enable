@@ -34,5 +34,5 @@ if __name__ == "__main__":
         StaticImageExample(sys.argv[1], Renderer).configure_traits()
     else:
         filename = os.path.join(os.path.dirname(__file__), 'lion.svg')
-        StaticImageExample(filename, renderer).configure_traits()
+        StaticImageExample(filename, Renderer).configure_traits()
      
