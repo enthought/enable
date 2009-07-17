@@ -15,6 +15,7 @@
 #include "agg_span_interpolator_linear.h"
 #include "agg_renderer_mclip.h"
 
+#include "kiva_affine_helpers.h"
 #include "kiva_constants.h"
 
 namespace kiva
@@ -41,12 +42,15 @@ namespace kiva
         std::vector<gradient_stop> stops;
         gradient_type_e gradient_type;
         gradient_spread_e spread_method;
+        gradient_units_e units;
+        agg::trans_affine affine_mtx;
 
         gradient(gradient_type_e gradient_type);
         gradient(gradient_type_e gradient_type,
                 std::vector<point> points,
                 std::vector<gradient_stop> stops,
-                const char* spread_method);
+                const char* spread_method,
+                const char* units="userSpaceOnUse");
         ~gradient();
 
         template <typename pixfmt_type>
@@ -116,10 +120,28 @@ namespace kiva
             double d1 = 0;
             double d2 = sqrt(dx * dx + dy * dy);
 
+            if (this->units == kiva::user_space)
+            {
+            	double x, y;
+            	kiva::get_translation(this->affine_mtx, &x, &y);
+            	gradient_mtx *= agg::trans_affine_translation(-x, -y);
+
+//                gradient_mtx *= this->affine_mtx;
+
+            }
+
+//            std::cout << "starting with affine matrix " << gradient_mtx.m0
+//					  << ", " << gradient_mtx.m1 << ", "
+//					  << ", " << gradient_mtx.m2 << ", "
+//					  << ", " << gradient_mtx.m3 << ", "
+//					  << ", " << gradient_mtx.m4 << ", "
+//					  << ", " << gradient_mtx.m5 << std::endl;
+
+            gradient_mtx *= agg::trans_affine_translation(-points[0].first, -points[0].second);
+
             if ((this->gradient_type == kiva::grad_radial) && (this->points.size() >2))
             {
             	d2 = points[1].first;
-                gradient_mtx *= agg::trans_affine_translation(-points[0].first, -points[0].second);
 				// TOOD: apply scaling transform here, determined by dx and dy of the bounding box,
                 // if appropriate
             }
@@ -129,19 +151,16 @@ namespace kiva
                 {
                     gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy) / (d2-d1));
                     gradient_mtx *= agg::trans_affine_rotation(atan2(dx, dy));
-                    gradient_mtx *= agg::trans_affine_translation(-points[0].first, -points[0].second);
                 }
                 else if (points[0].second == points[1].second)
                 {
                 	// No need to rotate
-                    gradient_mtx *= agg::trans_affine_translation(-points[0].first, -points[0].second);
                 }
                 else
                 {
                 	// general case: scale, rotate and translate
                     gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy) / (d2-d1));
                     gradient_mtx *= agg::trans_affine_rotation(atan2(-dy, dx));
-                    gradient_mtx *= agg::trans_affine_translation(-points[0].first, -points[0].second);
                 }
             }
 

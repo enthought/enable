@@ -456,7 +456,8 @@ namespace kiva
         void linear_gradient(double x1, double y1,
                             double x2, double y2,
                             std::vector<kiva::gradient_stop> stops,
-                            const char* spread_method)
+                            const char* spread_method,
+                            const char* units="userSpaceOnUse")
         {
             typedef std::pair<double, double> point_type;
             std::vector<gradient_stop> stops_list;
@@ -465,13 +466,15 @@ namespace kiva
             points.push_back(point_type(x1, y1));
             points.push_back(point_type(x2, y2));
 
-            this->state.gradient_fill = gradient(kiva::grad_linear, points, stops, spread_method);
+            this->state.gradient_fill = gradient(kiva::grad_linear, points,
+												stops, spread_method, units);
         }
 
         void radial_gradient(double cx, double cy, double r,
                             double fx, double fy,
                             std::vector<kiva::gradient_stop> stops,
-                            const char* spread_method)
+                            const char* spread_method,
+                            const char* units="userSpaceOnUse")
         {
             typedef std::pair<double, double> point_type;
             std::vector<point_type> points;
@@ -480,7 +483,8 @@ namespace kiva
             points.push_back(point_type(r, 0));
             points.push_back(point_type(fx, fy));
 
-            this->state.gradient_fill = gradient(kiva::grad_radial, points, stops, spread_method);
+            this->state.gradient_fill = gradient(kiva::grad_radial, points,
+												stops, spread_method, units);
         }
 
 
@@ -527,6 +531,7 @@ namespace kiva
             }
             else
             {
+            	this->state.gradient_fill.affine_mtx = this->get_ctm();
                 this->state.gradient_fill.apply(this->renderer_pixfmt,
                                                 &rasterizer, &this->renderer);
             }

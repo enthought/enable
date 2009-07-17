@@ -685,7 +685,8 @@ void graphics_context_base::_release_font_manager()
 void graphics_context_base::linear_gradient(double x1, double y1,
                     double x2, double y2,
                     std::vector<kiva::gradient_stop> stops,
-                    const char* spread_method)
+                    const char* spread_method,
+                    const char* units)
 {
     // not implemented
     throw kiva::not_implemented_error;
@@ -694,7 +695,8 @@ void graphics_context_base::linear_gradient(double x1, double y1,
 void graphics_context_base::radial_gradient(double cx, double cy, double r,
                     double fx, double fy,
                     std::vector<kiva::gradient_stop> stops,
-                    const char* spread_method)
+                    const char* spread_method,
+                    const char* units)
 {
     // not implemented
     throw kiva::not_implemented_error;

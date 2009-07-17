@@ -161,5 +161,11 @@ namespace kiva
         repeat
     };
 
+    enum gradient_units_e
+    {
+    	user_space = 0,
+    	object_bounding_box
+    };
+
 }
 #endif

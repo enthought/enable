@@ -175,7 +175,7 @@ class LinearGradientBrush(AbstractGradientBrush):
     """ A Brush representing a linear gradient.
     """
     def __init__(self, x1,y1, x2,y2, stops, spreadMethod='pad',
-        transforms=None, units='userSpaceOnUse'):
+        transforms=[], units='userSpaceOnUse'):
         self.x1 = x1
         self.y1 = y1
         self.x2 = x2
@@ -184,20 +184,22 @@ class LinearGradientBrush(AbstractGradientBrush):
         self.spreadMethod = spreadMethod
         self.transforms = transforms
         self.units = units
-
+        
     def __repr__(self):
         return ('LinearGradientBrush(%r,%r, %r,%r, %r, spreadMethod=%r, '
             'transforms=%r, units=%r)' % (self.x1,self.y1, self.x2,self.y2, self.stops,
                 self.spreadMethod, self.transforms, self.units))
 
     def set_on_gc(self, gc, bbox=None):
-
+        
         # Apply transforms
         if self.transforms is not None:
-            for func, args in self.transforms:
-                func(gc, *args)
-                
-
+            for func, f_args in self.transforms:
+                if isinstance(f_args, tuple):
+                    func(gc, *f_args)
+                else:
+                    func(gc, f_args)
+                    
         x1 = self.x1
         x2 = self.x2
         y1 = self.y1
@@ -217,22 +219,21 @@ class LinearGradientBrush(AbstractGradientBrush):
                 x2 = (bbox[2] + bbox[0])*x2
                 y2 = (bbox[3] + bbox[1])*y2
                 
+                self.bbox_transform(gc, bbox)
+                
             # kiva and SVGs have different origins, so flip the points
             y1 = gc.height() - y1
             y2 = gc.height() - y2
-
-        if self.units == 'objectBoundingBox' and bbox is not None:
-            self.bbox_transform(gc, bbox)
-                
+            
         stops = np.transpose(self.stops)
-        gc.linear_gradient(x1, y1, x2, y2, stops, self.spreadMethod)            
+        gc.linear_gradient(x1, y1, x2, y2, stops, self.spreadMethod, self.units)            
 
 
 class RadialGradientBrush(AbstractGradientBrush):
     """ A Brush representing a radial gradient.
     """
     def __init__(self, cx,cy, r, stops, fx=None,fy=None, spreadMethod='pad',
-        transforms=None, units='userSpaceOnUse'):
+        transforms=[], units='userSpaceOnUse'):
         self.cx = cx
         self.cy = cy
         self.r = r
@@ -256,8 +257,11 @@ class RadialGradientBrush(AbstractGradientBrush):
     def set_on_gc(self, gc, bbox=None):
         
         if self.transforms is not None:
-            for func, args in self.transforms:
-                func(gc, *args)
+            for func, f_args in self.transforms:
+                if isinstance(f_args, tuple):
+                    func(gc, *f_args)
+                else:
+                    func(gc, f_args)
 
         cx = self.cx
         cy = self.cy
@@ -280,18 +284,14 @@ class RadialGradientBrush(AbstractGradientBrush):
                 fy = (bbox[3] + bbox[1])*fy
                 r *= np.sqrt((bbox[2] - bbox[0])**2 + (bbox[3] - bbox[1])**2)
 
+                self.bbox_transform(gc, bbox)
+
             # kiva and SVGs have different origins, so flip the points
             cy = gc.height()-cy
             fy = gc.height()-fy
 
-        if self.units == 'objectBoundingBox' and bbox is not None:
-            self.bbox_transform(gc, bbox)
-
-            pass
-
-                            
         stops = np.transpose(self.stops)
-        gc.radial_gradient(cx, cy, r, fx, fy, stops, self.spreadMethod)
+        gc.radial_gradient(cx, cy, r, fx, fy, stops, self.spreadMethod, self.units)
 
 
 def font_style(font):
@@ -367,13 +367,13 @@ class Renderer(NullRenderer):
 
     @classmethod
     def createLinearGradientBrush(cls, x1,y1,x2,y2, stops, spreadMethod='pad',
-                                  transforms=None, units='userSpaceOnUse'):
+                                  transforms=[], units='userSpaceOnUse'):
         return LinearGradientBrush(x1,y1,x2,y2,stops, spreadMethod, transforms,
             units)
 
     @classmethod
     def createRadialGradientBrush(cls, cx,cy, r, stops, fx=None,fy=None,
-                                  spreadMethod='pad', transforms=None,
+                                  spreadMethod='pad', transforms=[],
                                   units='userSpaceOnUse'):
         return RadialGradientBrush(cx,cy, r, stops, fx,fy, spreadMethod,
             transforms, units)
@@ -494,6 +494,7 @@ class Renderer(NullRenderer):
     def gradientPath(cls, gc, path, brush):
         gc.save_state()
         gc.add_path(path)
+        
         #gc.clip()
         if hasattr(path, 'get_bounding_box'):
             bbox = path.get_bounding_box()
@@ -506,7 +507,13 @@ class Renderer(NullRenderer):
                 bbox[2] = max(bbox[2], vertex[0][0])
                 bbox[3] = max(bbox[3], vertex[0][1])
 
+        # set the transform matrix to that of the path, so the agg code can
+        # apply the transform
+        gc.set_ctm(path.get_ctm())
+                
         brush.set_on_gc(gc, bbox=bbox)
+        
+        gc.close_path()
         gc.fill_path()
         gc.restore_state()
 

@@ -636,7 +636,7 @@ class SVGDocument(object):
         ry = node.get('ry')
 
         ops = []
-
+        
         if 'clip-path' in node.keys():
             element = self.dereference(node.get('clip-path'))
 
@@ -905,7 +905,7 @@ class SVGDocument(object):
                 transforms = self.createTransformOpsFromNode(state,
                     'gradientTransform')
                 if not transforms:
-                    transforms = None
+                    transforms = []
                 units = state.get('gradientUnits', 'objectBoundingBox')
                 stops = self.parseStops(element)
                 if stops.size == 0:

@@ -332,7 +332,8 @@ namespace kiva
         //
         virtual void linear_gradient(double x1, double y1, double x2, double y2,
 							std::vector<kiva::gradient_stop> stops,
-                            const char* spread_method);
+                            const char* spread_method,
+                            const char* units="userSpaceOnUse");
 
         //
         //
@@ -340,7 +341,8 @@ namespace kiva
         virtual void radial_gradient(double cx, double cy, double r,
                             double fx, double fy,
 							std::vector<kiva::gradient_stop> stops,
-                            const char* spread_method);
+                            const char* spread_method,
+                            const char* units="userSpaceOnUse");
 
     protected:
         // Grabs and configure the font engine with the settings on our current
