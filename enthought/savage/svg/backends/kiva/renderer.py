@@ -220,10 +220,6 @@ class LinearGradientBrush(AbstractGradientBrush):
                 y2 = (bbox[3] + bbox[1])*y2
                 
                 self.bbox_transform(gc, bbox)
-                
-            # kiva and SVGs have different origins, so flip the points
-            y1 = gc.height() - y1
-            y2 = gc.height() - y2
             
         stops = np.transpose(self.stops)
         gc.linear_gradient(x1, y1, x2, y2, stops, self.spreadMethod, self.units)            
@@ -285,10 +281,6 @@ class RadialGradientBrush(AbstractGradientBrush):
                 r *= np.sqrt((bbox[2] - bbox[0])**2 + (bbox[3] - bbox[1])**2)
 
                 self.bbox_transform(gc, bbox)
-
-            # kiva and SVGs have different origins, so flip the points
-            cy = gc.height()-cy
-            fy = gc.height()-fy
 
         stops = np.transpose(self.stops)
         gc.radial_gradient(cx, cy, r, fx, fy, stops, self.spreadMethod, self.units)
@@ -507,10 +499,6 @@ class Renderer(NullRenderer):
                 bbox[2] = max(bbox[2], vertex[0][0])
                 bbox[3] = max(bbox[3], vertex[0][1])
 
-        # set the transform matrix to that of the path, so the agg code can
-        # apply the transform
-        gc.set_ctm(path.get_ctm())
-                
         brush.set_on_gc(gc, bbox=bbox)
         
         gc.close_path()

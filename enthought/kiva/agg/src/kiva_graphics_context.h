@@ -468,6 +468,7 @@ namespace kiva
 
             this->state.gradient_fill = gradient(kiva::grad_linear, points,
 												stops, spread_method, units);
+            this->state.gradient_fill.set_ctm(this->get_ctm());
         }
 
         void radial_gradient(double cx, double cy, double r,
@@ -485,6 +486,7 @@ namespace kiva
 
             this->state.gradient_fill = gradient(kiva::grad_radial, points,
 												stops, spread_method, units);
+            this->state.gradient_fill.set_ctm(this->get_ctm());
         }
 
 
@@ -531,7 +533,6 @@ namespace kiva
             }
             else
             {
-            	this->state.gradient_fill.affine_mtx = this->get_ctm();
                 this->state.gradient_fill.apply(this->renderer_pixfmt,
                                                 &rasterizer, &this->renderer);
             }

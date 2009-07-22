@@ -40,4 +40,15 @@ namespace kiva
         *tx = temp[4];
         *ty = temp[5];
     }
+
+    void get_scale(agg::trans_affine& m, double* dx, double* dy)
+    {
+        {
+            double temp[6];
+            m.store_to(temp);
+            *dx = temp[0];
+            *dy = temp[3];
+        }
+    }
+
 }

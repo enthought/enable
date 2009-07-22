@@ -43,8 +43,11 @@ namespace kiva
         gradient_type_e gradient_type;
         gradient_spread_e spread_method;
         gradient_units_e units;
+
+        private:
         agg::trans_affine affine_mtx;
 
+        public:
         gradient(gradient_type_e gradient_type);
         gradient(gradient_type_e gradient_type,
                 std::vector<point> points,
@@ -85,6 +88,11 @@ namespace kiva
             }
         }
 
+        void set_ctm(const agg::trans_affine& mtx)
+        {
+        	this->affine_mtx = mtx;
+        }
+
         protected:
 
         template <class pixfmt_type, class gradient_func_type>
@@ -122,19 +130,23 @@ namespace kiva
 
             if (this->units == kiva::user_space)
             {
-            	double x, y;
+                gradient_mtx *= this->affine_mtx;
+
+                // scale the translation part of the transform, otherwise Agg
+                // will draw the gradient at the wrong location
+
+            	double x, y, scale_x, scale_y;
             	kiva::get_translation(this->affine_mtx, &x, &y);
-            	gradient_mtx *= agg::trans_affine_translation(-x, -y);
-
-//                gradient_mtx *= this->affine_mtx;
-
+            	kiva::get_scale(this->affine_mtx, &scale_x, &scale_y);
+            	gradient_mtx *= agg::trans_affine_translation(-x+x*scale_x,
+    														  -y-y*scale_y);
             }
 
 //            std::cout << "starting with affine matrix " << gradient_mtx.m0
-//					  << ", " << gradient_mtx.m1 << ", "
-//					  << ", " << gradient_mtx.m2 << ", "
-//					  << ", " << gradient_mtx.m3 << ", "
-//					  << ", " << gradient_mtx.m4 << ", "
+//					  << ", " << gradient_mtx.m1
+//					  << ", " << gradient_mtx.m2
+//					  << ", " << gradient_mtx.m3
+//					  << ", " << gradient_mtx.m4
 //					  << ", " << gradient_mtx.m5 << std::endl;
 
             gradient_mtx *= agg::trans_affine_translation(-points[0].first, -points[0].second);
@@ -149,8 +161,8 @@ namespace kiva
             {
                 if (points[0].first == points[1].first)
                 {
-                    gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy) / (d2-d1));
-                    gradient_mtx *= agg::trans_affine_rotation(atan2(dx, dy));
+                	gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy) / (d2-d1));
+                	gradient_mtx *= agg::trans_affine_rotation(atan2(dx, dy));
                 }
                 else if (points[0].second == points[1].second)
                 {
@@ -163,6 +175,13 @@ namespace kiva
                     gradient_mtx *= agg::trans_affine_rotation(atan2(-dy, dx));
                 }
             }
+
+//            std::cout << "drawing with affine matrix " << gradient_mtx.m0
+//					  << ", " << gradient_mtx.m1
+//					  << ", " << gradient_mtx.m2
+//					  << ", " << gradient_mtx.m3
+//					  << ", " << gradient_mtx.m4
+//					  << ", " << gradient_mtx.m5 << std::endl;
 
             span_gradient_type span_gradient(span_interpolator,
                                             gradient_func,
