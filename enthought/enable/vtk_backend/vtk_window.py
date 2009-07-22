@@ -95,11 +95,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
         self.renderer = renderer
         rwi = render_window_interactor
 
-        #if rwi.interactor_style is None:
-        if 1:       
-            rwi.interactor_style = istyle_class()
-        #else:
-        #    print "previous interactor style:", rwi.interactor_style
+        rwi.interactor_style = istyle_class()
 
         istyle = rwi.interactor_style
         istyle.add_observer("LeftButtonPressEvent", self._vtk_mouse_button_event)
@@ -319,8 +315,18 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
                 self.bounds[1] = new_height
         
         comp = self.component
-        self.component.outer_bounds = self.bounds[:]
-        self.component.do_layout(force=True)
+        dx, dy = size
+        if getattr(comp, "fit_window", False):
+            comp.outer_position = [0,0]
+            comp.outer_bounds = [dx, dy]
+        elif hasattr(comp, "resizable"):
+            if "h" in comp.resizable:
+                comp.outer_x = 0
+                comp.outer_width = dx
+            if "v" in comp.resizable:
+                comp.outer_y = 0
+                comp.outer_height = dy
+        comp.do_layout(force=True)
         
         # Invalidate the GC and the draw flag
         self._gc = None
