@@ -148,8 +148,8 @@ namespace kiva
 //                gradient_mtx.load_from(temp);
 
 
-            	gradient_mtx *= agg::trans_affine_translation(-(x-scale_trans_x),
-    														  -(y-y*scale_trans_y));
+            	gradient_mtx *= agg::trans_affine_translation(-(x-scaled_trans_x),
+    														  -(y-y*scaled_trans_y));
             }
 
 //            std::cout << "starting with affine matrix " << gradient_mtx.m0
