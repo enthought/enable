@@ -1060,14 +1060,16 @@ cdef class CGContext:
             CGContextDrawPath(self.context, cg_mode)
             CGContextRestoreGState(self.context)
             
-    def linear_gradient(self, x1, y1, x2, y2, stops, spread_method):
+    def linear_gradient(self, x1, y1, x2, y2, stops, spread_method, units='userSpaceOnUse'):
+        self.clip()           
         stops_list = stops.transpose().tolist()
         func = PiecewiseLinearColorFunction(stops_list)
         shading = AxialShading(func, (x1,y1), (x2,y2),
                                extend_start=1, extend_end=1)
         self.draw_shading(shading)
             
-    def radial_gradient(self, cx, cy, r, fx, fy,  stops, spread_method):
+    def radial_gradient(self, cx, cy, r, fx, fy,  stops, spread_method, units='userSpaceOnUse'):
+        self.clip()           
         stops_list = stops.transpose().tolist()
         func = PiecewiseLinearColorFunction(stops_list)
         shading = RadialShading(func, (fx, fy), 0.0, (cx, cy), r,
