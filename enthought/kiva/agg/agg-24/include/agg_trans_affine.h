@@ -266,7 +266,7 @@ namespace agg
             *sy = sqrt(m1*m1 + m3*m3);
         }
 
-    private:
+    public:
         double m0;
         double m1;
         double m2;
