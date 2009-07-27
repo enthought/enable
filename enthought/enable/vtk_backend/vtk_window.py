@@ -16,6 +16,15 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
     # from observing the RenderWindowInteractor
     control = Instance(tvtk.RenderWindowInteractor)
 
+    # If events don't get handled by anything in Enable, do they get passed
+    # through to the underlying VTK InteractorStyle?
+    #
+    # This defaults to False because for opaque objects and backgrounds event
+    # pass-through can be surprising.  However, it can be useful in the cases
+    # when a transparent Enable container or collection of objects overlays
+    # a VTK window.
+    event_passthrough = Bool(False)
+
     #------------------------------------------------------------------------
     # Layout traits
     #------------------------------------------------------------------------
@@ -219,14 +228,18 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
             print "Unable to create event for", eventname
             return
         event_name = button + "_" + action
-        self._handle_mouse_event(event_name, action)
+        handled = self._handle_mouse_event(event_name, action)
+        if self.event_passthrough and not handled:
+            self._pass_event_to_vtk(vtk_obj, eventname)
 
     def _vtk_mouse_move(self, vtk_obj, eventname):
         x, y = self.control.event_position
         if not (self.x <= x <= self.x2 and self.y <= y <= self.y2):
             return self._pass_event_to_vtk(vtk_obj, eventname)
 
-        self._handle_mouse_event("mouse_move", "move")
+        handled = self._handle_mouse_event("mouse_move", "move")
+        if self.event_passthrough and not handled:
+            self._pass_event_to_vtk(vtk_obj, eventname)
 
     def _vtk_mouse_wheel(self, vtk_obj, eventname):
         x, y = self.control.event_position
@@ -237,7 +250,9 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
             self._wheel_amount = 1
         else:
             self._wheel_amount = -1
-        self._handle_mouse_event("mouse_wheel", "wheel")
+        handled = self._handle_mouse_event("mouse_wheel", "wheel")
+        if self.event_passthrough and not handled:
+            self._pass_event_to_vtk(vtk_obj, eventname)
 
     def _vtk_key_updown(self, vtk_obj, eventname):
         print "key updown:", self.control.key_sym

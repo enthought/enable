@@ -425,6 +425,7 @@ class Slider(Component):
     def dragging_mouse_move(self, event):
         dx, dy = self._offset
         self.value = self.map_data(event.x - dx, event.y - dy)
+        event.handled = True
         self.request_redraw()
 
     def dragging_mouse_leave(self, event):
@@ -465,11 +466,13 @@ class Slider(Component):
             # The mouse click missed the bar and the slider.
             return
 
+        event.handled = True
         self.event_state = "dragging"
         return
 
     def _mouse_released(self, event):
         self.event_state = "normal"
+        event.handled = True
 
     #------------------------------------------------------------------------
     # Private trait event handlers and property getters/setters

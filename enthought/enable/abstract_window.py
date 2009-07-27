@@ -240,13 +240,16 @@ class AbstractWindow(HasTraits):
         """ **event** should be a toolkit-specific opaque object that will
         be passed in to the backend's _create_mouse_event() method.  It can
         be None if the the toolkit lacks a native "mouse event" object.
+
+        Returns True if the event has been handled within the Enable object
+        hierarchy, or False otherwise.
         """
         if self._size is None:
             # PZW: Hack!
             # We need to handle the cases when the window hasn't been painted yet, but
             # it's gotten a mouse event.  In such a case, we just ignore the mouse event.
             # If the window has been painted, then _size will have some sensible value.
-            return
+            return False
 
         mouse_event = self._create_mouse_event(event)
         mouse_owner = self.mouse_owner
@@ -311,7 +314,7 @@ class AbstractWindow(HasTraits):
                 else:
                     pass
 
-        return
+        return mouse_event.handled
 
     def set_tooltip(self, components):
         "Set the window's tooltip (if necessary)"

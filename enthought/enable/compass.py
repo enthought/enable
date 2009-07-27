@@ -101,6 +101,7 @@ class Compass(Component):
                 self.mouse_down(direction)
                 self.request_redraw()
                 break
+        event.handled = True
         return
 
     def normal_left_dclick(self, event):
@@ -109,6 +110,7 @@ class Compass(Component):
     def clicked_left_up(self, event):
         self.event_state = "normal"
         self.clicked = None
+        event.handled = True
         self.mouse_up()
         self.request_redraw()
 
