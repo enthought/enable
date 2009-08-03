@@ -1,3 +1,4 @@
+import warnings
 
 from enthought.tvtk.api import tvtk
 from enthought.traits.api import HasTraits, Any, Property, Instance, \
@@ -146,10 +147,12 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
         #    self._paint()
 
     def _vtk_render_event(self, vtk_obj, eventname):
-        print "Good gods!  A VTK RenderEvent!"
+        #print "Good gods!  A VTK RenderEvent!"
+        pass
 
     def _vtk_expose_event(self, vtk_obj, eventname):
-        print "Good gods!  A VTK ExposeEvent!"
+        #print "Good gods!  A VTK ExposeEvent!"
+        pass
 
     def _vtk_timer_event(self, vtk_obj, eventname):
         # TODO: how do I check a redraw timer??
@@ -194,7 +197,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
         if meth is not None:
             meth()
         else:
-            print "Unable to pass through mouse event '%s' to vtkInteractionStyle" % eventname
+            warnings.warn("Unable to pass through mouse event '%s' to vtkInteractionStyle" % eventname)
         return
 
     def _vtk_mouse_button_event(self, vtk_obj, eventname):
@@ -214,7 +217,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
             button = "middle"
         else:
             # Unable to figure out the appropriate method to dispatch to
-            print "Unable to create event for", eventname
+            warnings.warn("Unable to create event for", eventname)
             return
 
         if "Press" in eventname:
@@ -225,7 +228,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
             setattr(self, "_%s_down"%button, False)
         else:
             # Unable to figure out the appropriate method to dispatch to
-            print "Unable to create event for", eventname
+            warnings.warn("Unable to create event for", eventname)
             return
         event_name = button + "_" + action
         handled = self._handle_mouse_event(event_name, action)
@@ -255,7 +258,8 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
             self._pass_event_to_vtk(vtk_obj, eventname)
 
     def _vtk_key_updown(self, vtk_obj, eventname):
-        print "key updown:", self.control.key_sym
+        #print "key updown:", self.control.key_sym
+        pass
 
     def _create_mouse_event(self, event_string):
         """ Returns an enable.MouseEvent that reflects the VTK mouse event.
@@ -304,7 +308,6 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
         self._redraw_needed = True
 
     def _on_size(self):
-        print "on size:"
         pass
 
     def _layout(self, size):
