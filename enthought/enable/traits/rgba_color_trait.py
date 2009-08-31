@@ -9,6 +9,7 @@
 # Thanks for using Enthought open source!
 #
 #------------------------------------------------------------------------------
+
 """ Trait definition for an RGBA-based color, which is either:
 
 * A tuple of the form (*red*,*green*,*blue*,*alpha*), where each component is
@@ -17,18 +18,15 @@
   RR is red, GG is green, and BB is blue.
 """
 
-
+from enthought.etsconfig.api import ETSConfig
+from enthought.enable.traits.ui.api import RGBAColorEditor
 from enthought.traits.api import Trait, TraitError, TraitFactory
 from enthought.traits.trait_base import SequenceTypes
-
-from enthought.etsconfig.api import ETSConfig
 
 if ETSConfig.toolkit == 'wx':
     from enthought.traits.ui.wx.color_trait import standard_colors
 elif ETSConfig.toolkit == 'qt4':
-    # FIXME
-    #from enthought.traits.ui.qt4.color_trait import standard_colors
-    standard_colors = {}
+    from enthought.traits.ui.qt4.color_trait import standard_colors
 else:
     from enthought.traits.ui.null.color_trait import standard_colors
 
@@ -100,16 +98,6 @@ def RGBAColorFunc(*args, **metadata):
     -------------
     For wxPython, (1.0, 1.0, 1.0, 1.0) (that is, opaque white)
     """
-    # The editor is commented out for now to avoid a circular import.
-    if ETSConfig.toolkit == 'wx':
-        from enthought.enable.traits.ui.wx.rgba_color_editor import RGBAColorEditor
-    elif ETSConfig.toolkit == 'qt4':
-        # FIXME
-        #from enthought.enable.traits.ui.qt4.rgba_color_editor import RGBAColorEditor
-        RGBAColorEditor = None
-    else:
-        RGBAColorEditor = None
-
     tmp_trait = Trait( 'white', convert_to_color, rgba_standard_colors, 
            editor = RGBAColorEditor )
     return tmp_trait(*args, **metadata)
