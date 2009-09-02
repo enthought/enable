@@ -158,12 +158,17 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
         # TODO: how do I check a redraw timer??
         #if self.control._timer_id == self._redraw_timer:
         if 1:
-            # Check for bounds updates
-            if self._size != self._get_control_size():
-                self._layout_needed = True
-            if self._redraw_needed or self._layout_needed:
-                self._paint()
-            self.control.reset_timer(self._redraw_timer)
+            if self.control.timer_event_id == self._redraw_timer:
+                # Hack for spectrum.py demo
+                if getattr(self.component, "timer_callback", None):
+                    self.component.timer_callback()
+
+                # Check for bounds updates
+                if self._size != self._get_control_size():
+                    self._layout_needed = True
+                if self._redraw_needed or self._layout_needed:
+                    self._paint()
+                self.control.reset_timer(self._redraw_timer)
 
     def _pass_event_to_vtk(self, vtk_obj, eventname):
         """ Method to dispatch a particular event name to the appropriate
@@ -390,7 +395,8 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
 
     def _paint(self, event=None):
         
-        size = self._get_control_size()
+        control_size = self._get_control_size()
+        size = list(control_size)
         if self._layout_needed or (size != self._size):
             self._layout(size)
 
@@ -415,8 +421,9 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
         try:
             ary = ascontiguousarray(self._gc.bmp_array[::-1, :, :4])
             ary_2d = reshape(ary, (width * height, 4))
-        except:
-            import pdb; pdb.set_trace()
+        except Exception, e:
+            warnings.warn("Error reshaping array of shape %s to width and height of (%d, %d)" % (str(ary.shape), width, height))
+            return
 
         # Make sure we paint to the right location on the mapper
         self._vtk_image_data.point_data.scalars = ary_2d
