@@ -42,7 +42,7 @@ class AbstractWindow(HasTraits):
 
     # The background window of the window.  The entire window first gets
     # painted with this color before the component gets to draw.
-    bgcolor = ColorTrait("lightgray")
+    bgcolor = ColorTrait("sys_window")
 
     # Unfortunately, for a while, there was a naming inconsistency and the
     # background color trait named "bg_color".  This is still provided for
