@@ -1,6 +1,7 @@
 import warnings
 
 from enthought.tvtk.api import tvtk
+from enthought.tvtk import messenger
 from enthought.traits.api import HasTraits, Any, Property, Instance, \
         Bool, Enum, Int, on_trait_change
 
@@ -108,21 +109,21 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
         rwi.interactor_style = istyle_class()
 
         istyle = rwi.interactor_style
-        istyle.add_observer("LeftButtonPressEvent", self._vtk_mouse_button_event)
-        istyle.add_observer("LeftButtonReleaseEvent", self._vtk_mouse_button_event)
-        istyle.add_observer("MiddleButtonPressEvent", self._vtk_mouse_button_event)
-        istyle.add_observer("MiddleButtonReleaseEvent", self._vtk_mouse_button_event)
-        istyle.add_observer("RightButtonPressEvent", self._vtk_mouse_button_event)
-        istyle.add_observer("RightButtonReleaseEvent", self._vtk_mouse_button_event)
-        istyle.add_observer("MouseMoveEvent", self._vtk_mouse_move)
-        istyle.add_observer("MouseWheelForwardEvent", self._vtk_mouse_wheel)
-        istyle.add_observer("MouseWheelBackwardEvent", self._vtk_mouse_wheel)
+        self._add_observer(istyle, "LeftButtonPressEvent", self._vtk_mouse_button_event)
+        self._add_observer(istyle, "LeftButtonReleaseEvent", self._vtk_mouse_button_event)
+        self._add_observer(istyle, "MiddleButtonPressEvent", self._vtk_mouse_button_event)
+        self._add_observer(istyle, "MiddleButtonReleaseEvent", self._vtk_mouse_button_event)
+        self._add_observer(istyle, "RightButtonPressEvent", self._vtk_mouse_button_event)
+        self._add_observer(istyle, "RightButtonReleaseEvent", self._vtk_mouse_button_event)
+        self._add_observer(istyle, "MouseMoveEvent", self._vtk_mouse_move)
+        self._add_observer(istyle, "MouseWheelForwardEvent", self._vtk_mouse_wheel)
+        self._add_observer(istyle, "MouseWheelBackwardEvent", self._vtk_mouse_wheel)
 
-        istyle.add_observer("KeyPressEvent", self._vtk_key_updown)
+        self._add_observer(istyle, "KeyPressEvent", self._vtk_key_updown)
 
-        istyle.add_observer("TimerEvent", self._vtk_timer_event)
-        istyle.add_observer("RenderEvent", self._vtk_render_event)
-        istyle.add_observer("ExposeEvent", self._vtk_expose_event)
+        self._add_observer(istyle, "TimerEvent", self._vtk_timer_event)
+        self._add_observer(istyle, "RenderEvent", self._vtk_render_event)
+        self._add_observer(istyle, "ExposeEvent", self._vtk_expose_event)
         self.interactor_style = istyle
 
         self._redraw_timer = rwi.create_repeating_timer(16)
@@ -145,6 +146,11 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
 
         #if self.component is not None:
         #    self._paint()
+
+    def _add_observer(self, obj, event, cb):
+        """ Adds a vtk observer using messenger to avoid generating uncollectable objects. """
+        obj.add_observer(event, messenger.send)
+        messenger.connect(tvtk.to_vtk(obj), event, cb)
 
     def _vtk_render_event(self, vtk_obj, eventname):
         #print "Good gods!  A VTK RenderEvent!"
