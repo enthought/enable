@@ -124,7 +124,7 @@ namespace agg
     dims[1] = h;
     dims[2] = 3;
     import_array();
-    arr = PyArray_FromDims(3,dims,PyArray_CHAR);
+    arr = PyArray_SimpleNew(3,dims,PyArray_BYTE);
     if (arr==NULL)
       return NULL;
     data = ((PyArrayObject *)arr)->data;
