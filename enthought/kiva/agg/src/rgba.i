@@ -10,7 +10,7 @@
 
 %typemap(argout) double *out {
    // Append output value $1 to $result
-   int dims = 4;
+   npy_intp dims = 4;
    PyArrayObject* ary_obj = (PyArrayObject*) PyArray_SimpleNew(1,&dims,PyArray_DOUBLE);
    if( ary_obj == NULL )
     return NULL;

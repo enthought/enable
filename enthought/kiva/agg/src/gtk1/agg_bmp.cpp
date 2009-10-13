@@ -117,7 +117,7 @@ namespace agg
     pix_format_e format = get_pix_format();
     rgba8 c;
     unsigned i,j;
-    int dims[3];
+    npy_intp dims[3];
     PyObject* arr = NULL;
     char* data = NULL;
     dims[0] = w;

@@ -78,7 +78,7 @@
 
 %typemap(out) rgba_as_array 
 {
-    int size = 4;
+    npy_intp size = 4;
     $result = PyArray_SimpleNew(1, &size, PyArray_DOUBLE);        
     double* data = (double*)((PyArrayObject*)$result)->data;
     data[0] = $1->r;
