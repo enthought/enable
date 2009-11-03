@@ -274,13 +274,13 @@ class SVGDocument(object):
         width_node = self.tree.get('width')
         if width_node is not None:
             # omit 'px' if it was specified
-            width=int(width_node.split('px')[0])
+            width=int(float(width_node.split('px')[0]))
 
         height = -1
         height_node = self.tree.get('height')
         if height_node is not None:
             # omit 'px' if it was specified
-            height=int(height_node.split('px')[0])
+            height=int(float(height_node.split('px')[0]))
 
         return (width, height)
 
