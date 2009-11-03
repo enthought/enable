@@ -103,7 +103,7 @@ namespace agg
         arr = self.convert_to_rgbarray()
         sz = arr.shape[:2]
         image = wx.EmptyImage(*sz)
-        image.SetData(arr.tostring())
+        image.SetData(arr.data)
         bmp = wx.BitmapFromImage(image, depth=-1)
 
         window_dc.BeginDrawing()
