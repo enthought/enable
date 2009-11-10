@@ -44,7 +44,7 @@ class CompiledPath(kiva.CompiledPath):
 
     def elliptical_arc_to(self, rx, ry, phi, large_arc_flag, sweep_flag, x2, y2):
         if sys.platform == 'darwin':
-            x1, y1 = path.get_current_point()
+            x1, y1 = self.get_current_point()
         else:
             def _get_current_point(path):
                 total_vertices = path.total_vertices()
