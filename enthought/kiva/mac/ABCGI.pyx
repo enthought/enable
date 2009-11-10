@@ -250,9 +250,7 @@ cdef class CGContext:
                                        the current coordinate matrix.
         """
         cdef float a,b,c,d,tx,ty
-        ((a, b, _),
-         (c, d, _),
-         (tx, ty, _)) = transform
+        a,b,c,d,tx,ty = transform
 
         cdef CGAffineTransform atransform
         atransform = CGAffineTransformMake(a,b,c,d,tx,ty)
