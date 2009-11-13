@@ -714,7 +714,7 @@ class Component(CoordinateBox, Interactor):
             else:
                 x, y = self.position
                 width, height = self.bounds
-            
+
             if not self.draw_valid:
                 if hasattr(GraphicsContext, 'create_from_gc'):
                     # For some backends, such as the mac, a much more efficient
@@ -722,6 +722,22 @@ class Component(CoordinateBox, Interactor):
                     bb = GraphicsContext.create_from_gc(gc, (int(width), int(height)))
                 else:
                     bb = GraphicsContext((int(width), int(height)))
+
+                # if not fill_padding, then we have to fill the backbuffer 
+                # with the window color. This is the only way I've found that
+                # it works- perhaps if we had better blend support we could set
+                # the alpha to 0, but for now doing so causes the backbuffer's
+                # background to be white  
+                if not self.fill_padding:
+                    bb.save_state()
+                    bb.set_antialias(False)
+                    try:
+                        bb.set_fill_color(self.window.bgcolor_)
+                        bb.draw_rect((x, y, width, height), FILL)
+                    finally:
+                        bb.restore_state()
+                   
+                
                 # Fixme: should there be a +1 here?
                 bb.translate_ctm(-x+0.5, -y+0.5)
                 # There are a couple of strategies we could use here, but we
@@ -736,13 +752,14 @@ class Component(CoordinateBox, Interactor):
                 
                 self._backbuffer = bb
                 self.draw_valid = True
-            
+
             # Blit the backbuffer and then draw the overlay on top
             gc.draw_image(self._backbuffer, (x, y, width, height))
             self._dispatch_draw("overlay", gc, view_bounds, mode)
         else:
             for layer in self.draw_order:
                 self._dispatch_draw(layer, gc, view_bounds, mode)
+                
         return
 
     def _dispatch_draw(self, layer, gc, view_bounds, mode):
@@ -832,7 +849,6 @@ class Component(CoordinateBox, Interactor):
             try:
                 gc.set_fill_color(self.bgcolor_)
                 gc.draw_rect(r, FILL)
-                
             finally:
                 gc.restore_state()
         
