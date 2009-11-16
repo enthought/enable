@@ -3,8 +3,8 @@ from numpy import linspace, zeros, zeros_like
 
 # Enthought library imports
 from enthought.kiva import STROKE
-from enthought.traits.api import Any, Bool, Enum, Float, Instance, Int, Property, \
-        on_trait_change, Trait
+from enthought.traits.api import (Any, Bool, Enum, Float, Instance, Int, Property,
+                                  on_trait_change, Trait)
 from enthought.traits.ui.api import EnumEditor
 
 # Local, relative imports
