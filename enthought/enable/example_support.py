@@ -11,15 +11,24 @@ from enthought.etsconfig.api import ETSConfig
 # Force the selection of a valid toolkit.
 #import enthought.enable.toolkit 
 if not ETSConfig.enable_toolkit:
-    for toolkit, toolkit_module in (('wx', 'wx'), ('qt4', 'PyQt4')):
+    if ETSConfig.toolkit:
+        # Set the enable_toolkit to the same value as the GUI toolkit
         try:
-            exec "import " + toolkit_module
-            ETSConfig.enable_toolkit = toolkit
-            break
-        except ImportError:
-            pass
+            exec "import enthought.enable.%s_backend" % ETSConfig.toolkit
+            ETSConfig.enable_toolkit = ETSConfig.toolkit
+        except (ImportError, SyntaxError):
+            raise RuntimeError("Can't determine appropriate Enable backend for ETS toolkit '%s'; "
+                 "Please set $ENABLE_TOOLKIT or ETSConfig.enable_toolkit." % ETSConfig.toolkit)
     else:
-        raise RuntimeError("Can't load wx or qt4 backend for Chaco.")
+        for toolkit, toolkit_module in (('wx', 'wx'), ('qt4', 'PyQt4')):
+            try:
+                exec "import " + toolkit_module
+                ETSConfig.enable_toolkit = toolkit
+                break
+            except ImportError:
+                pass
+        else:
+            raise RuntimeError("Can't load wx or qt4 backend for Chaco.")
 
 
 if ETSConfig.enable_toolkit == 'wx':
