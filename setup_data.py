@@ -36,7 +36,6 @@ INFO = {
         },
     'install_requires': [
         ENTHOUGHTBASE_UI,
-        TRAITSBACKENDWX,
         TRAITSGUI,
         TRAITS_UI,
         ],
