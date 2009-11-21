@@ -139,7 +139,7 @@ def configuration(parent_package='',top_path=None):
     # Check for g++ < 4.0 on 64-bit Linux
     use_32bit_workaround = False
 
-    if '64bit' in platform.architecture():
+    if '64bit' in platform.architecture() and sys.platform == 'linux2':
         gcc_version = os.popen("g++ --version")
         gcc_version_head = gcc_version.readline().split()
         gcc_version.close()
