@@ -1111,15 +1111,20 @@ class Component(CoordinateBox, Interactor):
         if new:
             self._layout_needed = True
 
-    #------------------------------------------------------------------------
-    # Position and padding setters and getters
-    #------------------------------------------------------------------------
-
-    def _get_window(self, win):
-        return self._window
+    def _get_window(self):
+        if self._window is not None:
+            return self._window
+        elif self.container is not None:
+            return self.container.window
+        else:
+            return None
 
     def _set_window(self, win):
         self._window = win
+
+    #------------------------------------------------------------------------
+    # Position and padding setters and getters
+    #------------------------------------------------------------------------
 
     def _get_x(self):
         return self.position[0]
