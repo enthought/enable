@@ -318,13 +318,8 @@ class AbstractWindow(HasTraits):
 
     def set_tooltip(self, components):
         "Set the window's tooltip (if necessary)"
-        if self.component:
-            tooltip = self.component.tooltip
-            if tooltip != self.tooltip:
-                self.tooltip = tooltip
-                self._set_tooltip(tooltip)
-        return
-
+        raise NotImplementedError
+    
     def redraw(self):
         """ Requests that the window be redrawn. """
         self._redraw()
