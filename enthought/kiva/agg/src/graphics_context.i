@@ -214,9 +214,6 @@ namespace kiva {
         # Define paths for the two markers that Agg renders incorrectly
         from enthought.kiva.constants import DIAMOND_MARKER, CIRCLE_MARKER, FILL_STROKE
 
-        def diamond_marker_path(path, size):
-            path.lines(array(((0, -size), (-size, 0), (0, size), (size, 0))))
-
         def circle_marker_path(path, size):
             circle_points = array([[ 1.   ,  0.   ],
                                    [ 0.966,  0.259],
@@ -252,7 +249,6 @@ namespace kiva {
             path.lines(pts)
 
         substitute_markers = {
-            DIAMOND_MARKER: (diamond_marker_path, FILL_STROKE),
             CIRCLE_MARKER: (circle_marker_path, FILL_STROKE)
         }
 
@@ -725,7 +721,9 @@ namespace kiva {
                 marker = kiva_marker_to_agg.get(kiva_marker_type, None)
                 if marker is None:
                     success = 0
-                elif kiva_marker_type in (DIAMOND_MARKER, CIRCLE_MARKER):
+                elif kiva_marker_type in (CIRCLE_MARKER,):
+                    # The kiva circle marker is rather jagged so lets
+                    # use our own
                     path_func, mode = substitute_markers[kiva_marker_type]
                     path = self.get_empty_path()
                     path_func(path, size)
