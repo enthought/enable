@@ -75,7 +75,24 @@ class Shape(Component):
     def moving_mouse_move(self, event):
         """ Event handler. """
 
-        self.position = [event.x - self._offset_x, event.y - self._offset_y]
+        top = event.y + self._offset_y
+        bottom = event.y - self._offset_y
+        left = event.x - self._offset_x
+        right = event.x + self._offset_x
+        
+        # Keep the shape fully in the container 
+        
+        if bottom < 0:
+            bottom = 0
+        elif top > self.container.height:
+            bottom = self.container.height - self.height
+                    
+        if left < 0:
+            left = 0
+        elif right > self.container.width:
+            left = self.container.width - self.width
+        
+        self.position = [left, bottom]
         self.request_redraw()
 
         return
