@@ -1,8 +1,7 @@
 """ A moveable box shape. """
 
 
-# Local imports.
-from shape import Shape
+from enthought.enable.primitives.shape import Shape
 
 
 class Box(Shape):

@@ -3,9 +3,7 @@
 
 # Enthought library imports.
 from enthought.traits.api import Float
-
-# Local imports.
-from shape import Shape
+from enthought.enable.primitives.shape import Shape
 
 
 class Circle(Shape):
