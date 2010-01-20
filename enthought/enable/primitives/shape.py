@@ -20,8 +20,8 @@ class Shape(Component):
     
     #### 'Shape' interface ####################################################
 
-    # The coordinates of the centre of the shape.
-    centre = Property(Tuple)
+    # The coordinates of the center of the shape.
+    center = Property(Tuple)
     
     # The fill color.
     fill_color = ColorTrait
@@ -120,7 +120,7 @@ class Shape(Component):
     # 'Shape' interface
     ###########################################################################
 
-    def _get_centre(self):
+    def _get_center(self):
         """ Property getter. """
 
         dx, dy = self.bounds
