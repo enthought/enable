@@ -68,7 +68,12 @@ class Shape(Component):
             self._offset_x = event.x - self.x
             self._offset_y = event.y - self.y
 
-            self.container.bring_to_top(self)
+            # move this shape to the top of the z order. The components are
+            # drawn in order, so the last one will be drawn on top
+            siblings = self.container.components
+            if len(siblings) > 1:
+                siblings.remove(self)
+                siblings.append(self)
 
         return
 

@@ -2,13 +2,12 @@
 
 
 # Enthought library imports.
-from enthought.enable.api import Window
+from enthought.enable.api import Container, Window
 from enthought.enable.example_support import DemoFrame, demo_main
 
 # Local imports
 from box import Box
 from circle import Circle
-from shape_container import ShapeContainer
 
 
 class MyFrame(DemoFrame):
@@ -21,7 +20,7 @@ class MyFrame(DemoFrame):
     def _create_window(self):
         """ Create an enable window. """
 
-        container = ShapeContainer(
+        container = Container(
             auto_size=False, bgcolor='black', *self._create_shapes()
         )
 
