@@ -143,8 +143,8 @@ def configuration(parent_package='',top_path=None):
         f = os.popen("g++ --version")
         line0 = f.readline()
         f.close()
-        m = re.match(r'.+?\s(\d)\.\d+', line0)
-        if m and int(m.group(1)) < 4:
+        m = re.match(r'.+?\s(3|4)\.\d+', line0)
+        if int(m.group(1)) < 4:
             use_32bit_workaround = True
 
     # Enable workaround of agg bug on 64-bit machines with g++ < 4.0
