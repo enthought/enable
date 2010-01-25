@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 import os
-import os.path
+import re
 import platform
 
 
@@ -140,10 +140,11 @@ def configuration(parent_package='',top_path=None):
     use_32bit_workaround = False
 
     if '64bit' in platform.architecture() and sys.platform == 'linux2':
-        gcc_version = os.popen("g++ --version")
-        gcc_version_head = gcc_version.readline().split()
-        gcc_version.close()
-        if int(gcc_version_head[2][0]) < 4:
+        f = os.popen("g++ --version")
+        line0 = f.readline()
+        f.close()
+        m = re.match(r'.+?\s(\d)\.\d+', line0)
+        if m and int(m.group(1)) < 4:
             use_32bit_workaround = True
 
     # Enable workaround of agg bug on 64-bit machines with g++ < 4.0
