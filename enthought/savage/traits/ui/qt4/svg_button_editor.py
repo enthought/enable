@@ -22,6 +22,7 @@
 #  Imports:
 #-------------------------------------------------------------------------------
 
+from enthought.traits.api import Bool, Any
 from enthought.traits.ui.qt4.editor import Editor
 
 from PyQt4 import QtCore, QtGui
@@ -32,6 +33,10 @@ from PyQt4 import QtCore, QtGui
                                
 class SVGButtonEditor(Editor):
 
+    icon = Any
+    toggled_icon = Any
+    toggle_state = Bool
+
     #---------------------------------------------------------------------------
     #  Editor interface
     #---------------------------------------------------------------------------
@@ -40,14 +45,23 @@ class SVGButtonEditor(Editor):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
+        self.icon = QtGui.QIcon(self.factory.filename)
+        if self.factory.toggle_filename:
+            self.toggled_icon = QtGui.QIcon(self.factory.toggle_filename)
+
         control = self.control = QtGui.QToolButton()
         control.setAutoRaise(True)
-        control.setIcon(QtGui.QIcon(self.factory.filename))
+        control.setIcon(self.icon)
         control.setText(self.factory.label)
+        control.setIconSize(QtCore.QSize(self.factory.width, self.factory.height))
+        
         if self.factory.label:
             control.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         else:
             control.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
+        if self.factory.toggle:
+            control.setCheckable(True)
+            control.toggled.connect(self._toggle_button)
 
         QtCore.QObject.connect(control, QtCore.SIGNAL('clicked()'),
                                self.update_object)
@@ -80,3 +94,10 @@ class SVGButtonEditor(Editor):
             editor.
         """
         pass
+
+    def _toggle_button(self):
+        self.toggle_state = not self.toggle_state
+        if self.toggle_state and self.toggled_icon:
+            self.control.setIcon(self.toggled_icon)
+        elif not self.toggle_state and self.toggled_icon:
+            self.control.setIcon(self.icon)

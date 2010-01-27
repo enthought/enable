@@ -21,7 +21,7 @@
 
 from enthought.savage.traits.ui.toolkit import toolkit_object
 
-from enthought.traits.api import Bool, Enum, Event, Int, Property, Range, Str
+from enthought.traits.api import Bool, Enum, Event, Int, Property, Range, Str, Any
 
 from enthought.traits.ui.api import View
 from enthought.traits.ui.basic_editor_factory import BasicEditorFactory
@@ -67,6 +67,9 @@ class SVGButtonEditor(BasicEditorFactory):
 
     # the toggle state displayed
     toggle_state = Bool(False)
+
+    # a file holding the image to display when toggled
+    toggle_filename = Any
 
     traits_view = View( [ 'value', '|[]' ] )
 

@@ -26,6 +26,7 @@ class SVGButton ( Event ):
     def __init__ ( self, label = '', filename = None,
                          tooltip = '', toggle=False,
                          toggle_state=False,
+                         toggle_filename=None,
                          width = 32, height = 32,
                          orientation = 'vertical', width_padding = 4,
                          height_padding = 1, view = None, **metadata ):
@@ -64,6 +65,7 @@ class SVGButton ( Event ):
                                        tooltip        = tooltip,
                                        toggle         = toggle,
                                        toggle_state   = toggle_state,
+                                       toggle_filename   = toggle_filename,
                                        orientation    = orientation,
                                        width_padding  = width_padding,
                                        height_padding = height_padding,

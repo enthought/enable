@@ -80,7 +80,8 @@ class ButtonRenderPanel(RenderPanel):
 
         gc = wx.GraphicsContext_Create(dc)
 
-        if self.toggle_state and self.button.factory.toggle:
+        if self.toggle_state and self.button.factory.toggle and \
+                not self.button.factory.toggle_filename:
             self._draw_toggle(gc)
 
         # Put the icon in the middle of the alotted space. If the text is wider
@@ -94,7 +95,11 @@ class ButtonRenderPanel(RenderPanel):
         gc.Translate(x_offset, y_offset)
         gc.Scale(float(self.zoom_x) / 100, float(self.zoom_y) / 100)
 
-        self.document.render(gc)
+        if self.toggle_state and self.button.factory.toggle and \
+                self.button.factory.toggle_filename:
+            self.toggle_document.render(gc)
+        else:
+            self.document.render(gc)
 
         # Reset the translation and zoom, then draw the text at an offset
         # based on the text width. There is a minor gotcha for supporting
@@ -191,8 +196,11 @@ class SVGButtonEditor ( Editor ):
 
         # load the button toggle document which will be displayed when the
         # button is toggled.
-        tree = etree.parse(os.path.join(os.path.dirname(__file__), 'data', 'button_toggle.svg'))
-        self.toggle_document = SVGDocument(tree.getroot(), renderer=Renderer)
+        if self.factory.toggle_filename:
+            self.toggle_document = SVGDocument.createFromFile(self.factory.toggle_filename, renderer=Renderer)
+        else:
+            tree = etree.parse(os.path.join(os.path.dirname(__file__), 'data', 'button_toggle.svg'))
+            self.toggle_document = SVGDocument(tree.getroot(), renderer=Renderer)
 
         padding = (self.factory.width_padding, self.factory.height_padding)
         self.control = ButtonRenderPanel( parent, self, padding=padding )
