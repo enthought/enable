@@ -16,7 +16,7 @@ US Government           Public Domain             N/A
 Unless stated in this file, icons are the work of Enthought, and are
 released under a 3 clause BSD license.
 
-Files and orginal authors:
+Files and original authors:
 ----------------------------------------------------------------------------
 enthought/enable/images:
                        0_weight.gif | Enthought
