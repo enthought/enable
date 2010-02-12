@@ -6,7 +6,8 @@ TextGrid is a text grid widget that is meant to be used with Numpy.
 from numpy import arange, array, dstack, repeat, newaxis
 
 # Enthought library imports
-from enthought.traits.api import Any, Array, Bool, Int, List, Property, Trait, Tuple
+from enthought.traits.api import Any, Array, Bool, Int, List, Property, \
+    Trait, Tuple, on_trait_change
 from enthought.kiva import font_metrics_provider
 from enthought.kiva.traits.kiva_font_trait import KivaFont
 
@@ -97,6 +98,7 @@ class TextGrid(Component):
         highlight_color = self.highlight_color_
         highlight_bgcolor = self.highlight_bgcolor_
         padding = self.cell_padding
+        border_width = self.cell_border_width
 
         gc.save_state()
         gc.set_stroke_color(text_color)
@@ -114,9 +116,10 @@ class TextGrid(Component):
                 if (i,j) in self.selected_cells:
                     gc.set_fill_color(highlight_bgcolor)
                     ll_x, ll_y = self._cached_cell_coords[i,j+1]
+                    # render this a bit big, but covered by border
                     gc.rect(ll_x, ll_y,
-                        width+2*padding,# + self.cell_border_width,
-                        height+2*padding)# + self.cell_border_width)
+                        width+2*padding + border_width,
+                        height+2*padding + border_width)
                     gc.fill_path()
                     gc.set_fill_color(text_color)
 
@@ -124,7 +127,8 @@ class TextGrid(Component):
 
         for j, row in enumerate(self.string_array):
             for i, text in enumerate(row):
-                x,y = self._cached_cell_coords[i,j+1] + self._text_offset + padding
+                x,y = self._cached_cell_coords[i,j+1] + self._text_offset + \
+                    padding + border_width/2.0
 
                 if (i,j) in self.selected_cells:
                     gc.set_fill_color(highlight_color)
@@ -152,17 +156,17 @@ class TextGrid(Component):
 
         # Skip the leftmost and bottommost cell coords (since Y axis is reversed,
         # the bottommost coord is the last one)
-        x_points = self._cached_cell_coords[:,0,0]# - (self.cell_border_width-1)/2.0
-        y_points = self._cached_cell_coords[0,:,1]# + (self.cell_border_width-1)/2.0
+        x_points = self._cached_cell_coords[:,0,0]
+        y_points = self._cached_cell_coords[0,:,1]
 
         for x in x_points:
-            gc.move_to(x, self.y-self.cell_border_width/2.0)
-            gc.line_to(x, self.y+self.height+self.cell_border_width/2.0)
+            gc.move_to(x, self.y)
+            gc.line_to(x, self.y+self.height)
             gc.stroke_path()
 
         for y in y_points:
-            gc.move_to(self.x-self.cell_border_width/2.0, y)
-            gc.line_to(self.x+self.width+self.cell_border_width/2.0, y)
+            gc.move_to(self.x, y)
+            gc.line_to(self.x+self.width, y)
             gc.stroke_path()
         return
 
@@ -201,8 +205,8 @@ class TextGrid(Component):
         cell_width = width + 2*self.cell_padding + self.cell_border_width
         cell_height = height + 2*self.cell_padding + self.cell_border_width
 
-        x_points = arange(numcols+1) * cell_width + self.x
-        y_points = arange(numrows+1) * cell_height + self.y
+        x_points = arange(numcols+1) * cell_width + self.cell_border_width/2.0 + self.x
+        y_points = arange(numrows+1) * cell_height + self.cell_border_width/2.0 + self.y
 
         tmp = dstack((repeat(x_points[:,newaxis], numrows+1, axis=1),
                       repeat(y_points[:,newaxis].T, numcols+1, axis=0)))
@@ -217,8 +221,8 @@ class TextGrid(Component):
             rows, cols = self.string_array.shape
             margin = 2*self.cell_padding + self.cell_border_width
             width, height = self._get_actual_cell_size()
-            self.bounds = [ cols * (width + margin),# - self.cell_border_width,
-                            rows * (height + margin)]# - self.cell_border_width ]
+            self.bounds = [ cols * (width + margin) + self.cell_border_width,
+                            rows * (height + margin) + self.cell_border_width ]
 
         else:
             self.bounds = [0,0]
@@ -261,6 +265,11 @@ class TextGrid(Component):
         if self._cell_size == "auto":
             self._cache_valid = False
             self._compute_cell_sizes()
+        self._compute_positions()
+        self._update_bounds()
+
+    @on_trait_change('cell_border_width,cell_padding')
+    def cell_properties_changed(self):
         self._compute_positions()
         self._update_bounds()
 
