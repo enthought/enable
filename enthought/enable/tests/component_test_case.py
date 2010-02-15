@@ -49,6 +49,17 @@ class ComponentTestCase(unittest.TestCase):
         c.outer_x = 10
         self.assert_(c.x == 20)
         self.assert_(c.outer_x2 == 79)
+        c.outer_x2 = 99
+        self.assert_(c.outer_x2 == 99)
+        self.assert_(c.outer_x == 30)
+        self.assert_(c.x2 == 89)
+        self.assert_(c.x == 40)
+        c.outer_y2 = 99
+        self.assert_(c.outer_y2 == 99)
+        self.assert_(c.outer_y == 20)
+        self.assert_(c.y2 == 89)
+        self.assert_(c.y == 30)
+        
         return
 
     def test_border(self):
