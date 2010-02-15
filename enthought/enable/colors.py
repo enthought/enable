@@ -259,7 +259,6 @@ elif ETSConfig.toolkit == 'qt4':
             "is red, GG is green, and BB is blue, a list/tuple of (r,g,b) or "
         "(r,g,b,a)")
         
-    from PyQt4 import QtGui
     window_color = QtGui.QApplication.palette().window().color()
     color_table["sys_window"] = (window_color.red()/255.0, 
                                  window_color.green()/255.0,
