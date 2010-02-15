@@ -1194,7 +1194,7 @@ class Component(CoordinateBox, Interactor):
         return self.x2 + self.padding_right + self._get_visible_border()
 
     def _set_outer_x2(self, val):
-        self.x2 = val - self.hpadding
+        self.x2 = val - self.padding_right - self._get_visible_border()
 
     def _get_outer_y(self):
         return self.y - self.padding_bottom - self._get_visible_border()
@@ -1207,7 +1207,7 @@ class Component(CoordinateBox, Interactor):
         return self.y2 + self.padding_top + self._get_visible_border()
 
     def _set_outer_y2(self, val):
-        self.y2 = val - self.vpadding
+        self.y2 = val - self.padding_top - self._get_visible_border()
 
     #------------------------------------------------------------------------
     # Outer bounds setters and getters
