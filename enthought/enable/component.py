@@ -824,9 +824,10 @@ class Component(CoordinateBox, Interactor):
         gc.set_stroke_color(self.border_color_)
         gc.begin_path()
         gc.set_antialias(0)
-        gc.rect(int(self.x+border_width/2.0), int(self.y+border_width/2.0),
-                self.width-2*border_width+1, self.height-2*border_width+1)
-
+        gc.rect(int(self.x+border_width/2.0), 
+                  int(self.y+border_width/2.0),
+                  int(self.width-2*border_width+1), 
+                  int(self.height-2*border_width+1))
         gc.stroke_path()
         gc.restore_state()
 
