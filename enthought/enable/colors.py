@@ -197,6 +197,8 @@ if ETSConfig.toolkit == 'wx':
                 raise TraitError
         else:
             raise TraitError
+        
+        
     convert_from_wx_color.info = ('a wx.Colour instance, an integer which in hex is of '
                              'the form 0xRRGGBB, where RR is red, GG is green, '
                              'and BB is blue, a list/tuple of (r,g,b) or (r,g,b,a)')
@@ -219,6 +221,11 @@ if ETSConfig.toolkit == 'wx':
                 retval = wx.Colour(int(255*retval[0]), int(255*retval[1]),
                                    int(255*retval[2]))
             return retval
+
+        def from_wx_color ( self, color ):
+            """ Gets the application equivalent of a wxPython value.
+            """
+            return convert_from_wx_color(self, 'color', color)
     
         def str_color(self, color):
             if isinstance( color, ( wx.Colour, ColourPtr ) ):
