@@ -234,6 +234,9 @@ class TextGrid(Component):
             return self._cached_cell_size
 
         else:
+            if not self._cache_valid:
+                # actually computing the text offset
+                self._compute_cell_sizes()
             return self._cell_size
 
     #------------------------------------------------------------------------
