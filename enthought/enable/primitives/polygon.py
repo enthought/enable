@@ -44,7 +44,7 @@ class Polygon(Component):
     border_dash = Any
 
     # The thickness of the border of this polygon.
-    border_size = Trait(1.0, border_size_trait)
+    border_size = Trait(1, border_size_trait)
 
     # Event fired when the polygon is "complete".
     complete = Event

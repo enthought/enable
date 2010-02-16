@@ -27,7 +27,7 @@ class Line(Component):
     line_dash = Any
 
     # The width of the line.
-    line_width = Trait(1.0, border_size_trait)
+    line_width = Trait(1, border_size_trait)
 
     # The points that make up this polygon.
     points = List  # List of Tuples
