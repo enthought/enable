@@ -10,6 +10,8 @@
 #include "kiva_compiled_path.h"
 #include "kiva_gradient.h"
 
+#include <iostream>
+
 namespace kiva
 {
     //-----------------------------------------------------------------------
@@ -86,21 +88,13 @@ namespace kiva
 
     inline bool graphics_state::use_rect_clipping()
     {
-        if (device_space_clip_rects.size() > 0)
+        if (clipping_path.total_vertices() > 0)
         {
-            return true;
+        	std::cout << "clipping path has vertices" << std::endl;
+            return false;
         }
-        else
-        {
-            if (clipping_path.total_vertices() == 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+
+        return true;
     }
 
 }

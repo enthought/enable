@@ -168,7 +168,10 @@ class ColorBrush(object):
         """ Set the appropriate properties on the GraphicsContext.
         """
         # translate from 0-255 to 0-1 values.
-        color = tuple([x/255.0 for x in self.color])
+        try:
+            color = tuple([x/255.0 for x in list(self.color)])
+        except:
+            color = (0,0,0,1)
         gc.set_fill_color(color)
 
 class LinearGradientBrush(AbstractGradientBrush):
@@ -487,7 +490,7 @@ class Renderer(NullRenderer):
         gc.save_state()
         gc.add_path(path)
         
-        #gc.clip()
+        gc.clip()
         if hasattr(path, 'get_bounding_box'):
             bbox = path.get_bounding_box()
         else:
@@ -505,12 +508,10 @@ class Renderer(NullRenderer):
         gc.fill_path()
         gc.restore_state()
 
-    #@classmethod
-    #def clipPath(cls, gc, path):
-        #print "clipping!"
-        #return gc.clip_to_rect(100, 10, 100, 60)
-        ##gc.add_path(path)
-        ##return gc.clip()
+    @classmethod
+    def clipPath(cls, gc, path):
+        gc.add_path(path)
+        return gc.clip()
 
     @classmethod
     def translate(cls, gc, *args):

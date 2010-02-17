@@ -26,6 +26,7 @@
 
 #include "agg_scanline_u.h"
 #include "agg_scanline_bin.h"
+#include "agg_scanline_p.h"
 
 #include "agg_renderer_mclip.h"
 #include "agg_renderer_scanline.h"
@@ -738,7 +739,8 @@ namespace kiva
         }
         else
         {
-            throw clipping_path_unsupported;
+        	this->renderer.reset_clipping(true);
+        	this->state.clipping_path = this->path;
         }
     }
 
@@ -749,7 +751,20 @@ namespace kiva
     template <class agg_pixfmt>
     void graphics_context<agg_pixfmt>::clip()
     {
-        throw kiva::not_implemented_error;
+//    	this->state.clipping_path = this->path;
+
+        agg::scanline_p8 scanline;
+
+        agg::renderer_scanline_aa_solid< renderer_base_type >
+                    aa_renderer(this->renderer);
+
+        agg::rgba transparent = this->state.fill_color;
+        transparent.a = 0;
+
+        aa_renderer.color(transparent);
+
+        this->stroke_path_scanline_aa(this->state.clipping_path,
+                                      aa_renderer, scanline);
     }
 
     template <class agg_pixfmt>
