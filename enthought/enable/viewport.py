@@ -194,7 +194,6 @@ class Viewport(Component):
             # coordinates into the coordinates space of the viewed component:
             # scaling, followed by a translation.
             if self.enable_zoom:
-                print "drawing with zoom level:", self.zoom
                 if self.zoom != 0:
                     gc.scale_ctm(self.zoom, self.zoom)
                     gc.translate_ctm(x/self.zoom - view_x, y/self.zoom - view_y)
