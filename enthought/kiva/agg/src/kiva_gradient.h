@@ -66,17 +66,65 @@ namespace kiva
                 if (this->points[0].first == this->points[1].first)
                 {
                     agg::gradient_y grad_func;
-                    this->_apply(pixfmt, ras, rbase, grad_func);
+
+                    // apply the proper fill adapter based on the spread method
+
+                    if (this->spread_method == kiva::reflect)
+                    {
+                    	agg::gradient_reflect_adaptor<agg::gradient_y> adaptor(grad_func);
+                        this->_apply(pixfmt, ras, rbase, adaptor);
+                    }
+                    else if (this->spread_method == kiva::repeat)
+                    {
+                    	agg::gradient_repeat_adaptor<agg::gradient_y> adaptor(grad_func);
+                        this->_apply(pixfmt, ras, rbase, adaptor);
+                    }
+                    else
+                    {
+                    	this->_apply(pixfmt, ras, rbase, grad_func);
+                    }
                 }
                 else if (this->points[0].second == this->points[1].second)
                 {
                     agg::gradient_x grad_func;
-                    this->_apply(pixfmt, ras, rbase, grad_func);
+
+                    // apply the proper fill adapter based on the spread method
+
+                    if (this->spread_method == kiva::reflect)
+                    {
+                    	agg::gradient_reflect_adaptor<agg::gradient_x> adaptor(grad_func);
+                        this->_apply(pixfmt, ras, rbase, adaptor);
+                    }
+                    else if (this->spread_method == kiva::repeat)
+                    {
+                    	agg::gradient_repeat_adaptor<agg::gradient_x> adaptor(grad_func);
+                        this->_apply(pixfmt, ras, rbase, adaptor);
+                    }
+                    else
+                    {
+                        this->_apply(pixfmt, ras, rbase, grad_func);
+                    }
                 }
                 else
                 {
                     agg::gradient_x grad_func;
-                    this->_apply(pixfmt, ras, rbase, grad_func);
+
+                    // apply the proper fill adapter based on the spread method
+
+                    if (this->spread_method == kiva::reflect)
+                    {
+                    	agg::gradient_reflect_adaptor<agg::gradient_x> adaptor(grad_func);
+                        this->_apply(pixfmt, ras, rbase, adaptor);
+                    }
+                    else if (this->spread_method == kiva::repeat)
+                    {
+                    	agg::gradient_repeat_adaptor<agg::gradient_x> adaptor(grad_func);
+                        this->_apply(pixfmt, ras, rbase, adaptor);
+                    }
+                    else
+                    {
+                        this->_apply(pixfmt, ras, rbase, grad_func);
+                    }
                 }
             }
             else
@@ -84,7 +132,21 @@ namespace kiva
                 agg::gradient_radial_focus grad_func(points[1].first,
 										points[2].first - points[0].first,
 										points[2].second - points[0].second);
-                this->_apply(pixfmt, ras, rbase, grad_func);
+
+                if (this->spread_method == kiva::reflect)
+                {
+                	agg::gradient_reflect_adaptor<agg::gradient_radial_focus> adaptor(grad_func);
+                    this->_apply(pixfmt, ras, rbase, adaptor);
+                }
+                else if (this->spread_method == kiva::repeat)
+                {
+                	agg::gradient_repeat_adaptor<agg::gradient_radial_focus> adaptor(grad_func);
+                    this->_apply(pixfmt, ras, rbase, adaptor);
+                }
+                else
+                {
+                	this->_apply(pixfmt, ras, rbase, grad_func);
+                }
             }
         }
 
@@ -139,17 +201,17 @@ namespace kiva
             	kiva::get_translation(this->affine_mtx, &x, &y);
             	kiva::get_scale(this->affine_mtx, &scale_x, &scale_y);
             	double scaled_trans_x = x*scale_x;
-            	double scaled_trans_y = y*scale_y;
+            	double scaled_trans_y = -y*scale_y;
 
-//                double temp[6];
-//                gradient_mtx.store_to(temp);
-//                temp[4] = scaled_trans_x;
-//                temp[5] = scaled_trans_y;
-//                gradient_mtx.load_from(temp);
+//            	std::cout << "translations: " << x << ", " << y << std::endl;
+//            	std::cout << "scaled: " << scale_x << ", " << scale_y << std::endl;
+//            	std::cout << "scaled translations: " << scaled_trans_x << ", " << scaled_trans_y << std::endl;
 
-
-            	gradient_mtx *= agg::trans_affine_translation(-(x-scaled_trans_x),
-    														  -(y-y*scaled_trans_y));
+                double temp[6];
+                gradient_mtx.store_to(temp);
+                temp[4] = scaled_trans_x;
+                temp[5] = scaled_trans_y;
+                gradient_mtx.load_from(temp);
             }
 
 //            std::cout << "starting with affine matrix " << gradient_mtx.m0
@@ -234,22 +296,6 @@ namespace kiva
                     i++;
                     offset = i/double(array.size());
                 }
-            }
-
-            if (this->spread_method == kiva::pad)
-            {
-                for (; i < array.size(); i++)
-                {
-                    array[i] = this->stops.back().color;
-                }
-            }
-            else if (this->spread_method == kiva::reflect)
-            {
-                // TODO: handle 'reflect' spread method
-            }
-            else
-            {
-                // TODO: handle 'repeat' spread method
             }
         }
     };
