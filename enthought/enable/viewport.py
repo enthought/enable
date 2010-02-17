@@ -1,13 +1,14 @@
 """ Defines a Viewport which renders sub-areas of components """
 
 # Standard library imports
-from numpy import array
+from numpy import array, dot
 
 # Enthought library traits
 from enthought.enable.tools.viewport_zoom_tool import ViewportZoomTool
 from enthought.enable.simple_layout import simple_container_get_preferred_size, \
                                             simple_container_do_layout
-from enthought.traits.api import Bool, Delegate, Float, Instance, Enum, List, Any
+from enthought.traits.api import (Bool, Delegate, Float, Instance, Enum, List, 
+        Any, on_trait_change)
 from enthought.kiva import affine
 
 # Local relative imports
@@ -84,8 +85,11 @@ class Viewport(Component):
         """
         if self.is_in(x, y):
             if self.component is not None:
-                x_trans = x + self.view_position[0]
-                y_trans = y + self.view_position[1]
+                # Transform (scale + translate) the incoming X and Y
+                # coordinates from our coordinate system into the coordinate
+                # system of the component we are viewing.
+                x_trans, y_trans = self.viewport_to_component(x, y)
+
                 if isinstance(self.component, Container):
                     return self.component.components_at(x_trans, y_trans)
                 elif self.component.is_in(x_trans, y_trans):
@@ -94,15 +98,6 @@ class Viewport(Component):
                     return []
         else:
             return []
-
-    def is_in(self, x, y):
-        """ Return True if the (x,y) coordinates are within the viewport's
-        native coordinate space.
-        """
-        pos = [0.0, 0.0]
-        bounds = self.view_bounds
-        return (x >= pos[0]) and (x < pos[0] + bounds[0]) and \
-               (y >= pos[1]) and (y < pos[1] + bounds[1])
 
     def invalidate_draw(self, damaged_regions=None, self_relative=False,
                         view_relative=False):
@@ -130,7 +125,46 @@ class Viewport(Component):
         else:
             return super(Viewport, self).get_preferred_size()
 
+    def viewport_to_component(self, x, y):
+        """ Given a coordinate X and Y in the viewport's coordinate system,
+        returns and X and Y in the coordinate system of the viewed
+        component.
+        """
+        transform = self.get_event_transform()
+        return dot(array([x,y,1]), transform)[:2]
+
+    def component_to_viewport(self, x, y):
+        """ Given a coordinate X and Y in the viewed component's coordinate
+        system, returns a coordinate in the coordinate system of the 
+        Viewport.
+        """
+        vx, vy = self.view_position
+        ox, oy = self.outer_position
+        newx = (x - vx) * self.zoom + ox
+        newy = (y - vx) * self.zoom + oy
+        return (newx, newy)
+
     
+    def get_event_transform(self, event=None, suffix=""):
+        transform = affine.affine_identity()
+
+        if isinstance(self.component, Component):
+            # If we have zoom enabled, scale events.  Since affine transforms
+            # multiply from the left, we build up the transform from the
+            # inside of the viewport outwards.
+            if self.enable_zoom and self.zoom != 1.0:
+                transform = affine.translate(transform, *self.view_position)
+                transform = affine.scale(transform, 1/self.zoom, 1/self.zoom)
+                transform = affine.translate(transform, -self.outer_position[0],
+                                                        -self.outer_position[1])
+            else:
+                x_offset = self.view_position[0] - self.outer_position[0]
+                y_offset = self.view_position[1] - self.outer_position[1]
+                transform = affine.translate(transform, x_offset, y_offset)
+            
+        return transform
+
+
         
     #------------------------------------------------------------------------
     # Component interface
@@ -160,6 +194,7 @@ class Viewport(Component):
             # coordinates into the coordinates space of the viewed component:
             # scaling, followed by a translation.
             if self.enable_zoom:
+                print "drawing with zoom level:", self.zoom
                 if self.zoom != 0:
                     gc.scale_ctm(self.zoom, self.zoom)
                     gc.translate_ctm(x/self.zoom - view_x, y/self.zoom - view_y)
@@ -204,6 +239,17 @@ class Viewport(Component):
             super(Viewport, self)._do_layout()
         return
     
+    def _dispatch_stateful_event(self, event, suffix):
+        if isinstance(self.component, Component):
+            transform = self.get_event_transform(event, suffix)
+            event.push_transform(transform, caller=self)
+            try:
+                self.component.dispatch(event, suffix)
+            finally:
+                event.pop(caller=self)
+
+        return
+
 
     #------------------------------------------------------------------------
     # Event handlers
@@ -255,55 +301,15 @@ class Viewport(Component):
     def _bounds_items_changed(self, event):
         return self._bounds_changed(None, self.bounds)
 
-    def _view_bounds_changed(self, old, new):
+    @on_trait_change("view_bounds,view_position")
+    def _handle_view_box_changed(self):
         self._update_component_view_bounds()
-        return
-
-    def _view_bounds_items_changed(self, event):
-        return self._view_bounds_changed(None, self.bounds)
-
-    def _view_position_changed(self):
-        self._update_component_view_bounds()
-
-    def _view_position_items_changed(self):
-        self._view_position_changed()
 
     def _get_position(self):
         return self.view_position
 
     def _get_bounds(self):
         return self.view_bounds
-
-    def get_event_transform(self, event=None, suffix=""):
-        transform = affine.affine_identity()
-
-        if isinstance(self.component, Component):
-            # If we have zoom enabled, scale events.  Since affine transforms
-            # multiply from the left, we build up the transform from the
-            # inside of the viewport outwards.
-            if self.enable_zoom and self.zoom != 1.0:
-                transform = affine.translate(transform, *self.view_position)
-                transform = affine.scale(transform, 1.0/self.zoom, 1.0/self.zoom)
-                transform = affine.translate(transform, -self.outer_position[0],
-                                                        -self.outer_position[1])
-            else:
-                x_offset = self.view_position[0] - self.outer_position[0]
-                y_offset = self.view_position[1] - self.outer_position[1]
-                transform = affine.translate(transform, x_offset, y_offset)
-            
-        return transform
-
-    def _dispatch_stateful_event(self, event, suffix):
-        if isinstance(self.component, Component):
-            transform = self.get_event_transform(event, suffix)
-            event.push_transform(transform, caller=self)
-            try:
-                self.component.dispatch(event, suffix)
-            finally:
-                event.pop(caller=self)
-
-        return
-
 
 # EOF
 
