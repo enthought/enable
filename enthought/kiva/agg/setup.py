@@ -1,19 +1,17 @@
 #!/usr/bin/env python
 import sys
 import os
-import re
 import platform
 
-
-
-
-freetype2_sources =['autohint/autohint.c',
+freetype2_sources =['autofit/autofit.c',
                     'base/ftbase.c','base/ftsystem.c','base/ftinit.c',
                     'base/ftglyph.c','base/ftmm.c','base/ftbdf.c',
                     'base/ftbbox.c','base/ftdebug.c','base/ftxf86.c',
-                    'base/fttype1.c','bdf/bdf.c',
+                    'base/fttype1.c',
+                    'bdf/bdf.c',
                     'cff/cff.c',
                     'cid/type1cid.c',
+                    'lzw/ftlzw.c',
                     'pcf/pcf.c','pfr/pfr.c',
                     'psaux/psaux.c',
                     'pshinter/pshinter.c',
@@ -30,9 +28,29 @@ freetype2_sources =['autohint/autohint.c',
                     ]
 
 freetype2_dirs = [
-    'base','bdf','cache','cff','cid','pcf','pfr',
-    'psaux','pshinter','psnames','raster','sfnt',
-    'smooth','truetype','type1','type42','winfonts',
+    'autofit',
+    'base',
+    'bdf',
+    'cache',
+    'cff',
+    'cid',
+    'gxvalid',
+    'gzip',
+    'lzw',
+    'otvalid',
+    'pcf',
+    'pfr',
+    'psaux',
+    'pshinter',
+    'psnames',
+    'raster',
+    'sfnt',
+    'smooth',
+    'tools',
+    'truetype',
+    'type1',
+    'type42',
+    'winfonts',
     'gzip'
     ]
 
@@ -55,7 +73,7 @@ def configuration(parent_package='',top_path=None):
                                      ('OWN_STRIDES','0')])
 
     #-------------------------------------------------------------------------
-    # Configure the Agg backend to use on ecah platform
+    # Configure the Agg backend to use on each platform
     #-------------------------------------------------------------------------
     if sys.platform=='win32':
         plat = 'win32'
@@ -89,7 +107,15 @@ def configuration(parent_package='',top_path=None):
     config.add_library(freetype_lib,
                        sources = [get_ft2_sources],
                        include_dirs = ft2_incl_dirs,
-                       depends = ['freetype2']
+
+                       # This macro was introduced in Freetype 2.2; if it is
+                       # not defined, then the ftheader.h file (one of the
+                       # primary headers) won't pull in any additional internal
+                       # Freetype headers, and the library will mysteriously
+                       # fail to build.
+                       macros = [("FT2_BUILD_LIBRARY", None)],
+
+                       depends = ['freetype2'],
                        )
 
     #-------------------------------------------------------------------------
@@ -139,12 +165,11 @@ def configuration(parent_package='',top_path=None):
     # Check for g++ < 4.0 on 64-bit Linux
     use_32bit_workaround = False
 
-    if '64bit' in platform.architecture() and sys.platform == 'linux2':
-        f = os.popen("g++ --version")
-        line0 = f.readline()
-        f.close()
-        m = re.match(r'.+?\s(3|4)\.\d+', line0)
-        if int(m.group(1)) < 4:
+    if '64bit' in platform.architecture():
+        gcc_version = os.popen("g++ --version")
+        gcc_version_head = gcc_version.readline().split()
+        gcc_version.close()
+        if int(gcc_version_head[2][0]) < 4:
             use_32bit_workaround = True
 
     # Enable workaround of agg bug on 64-bit machines with g++ < 4.0
