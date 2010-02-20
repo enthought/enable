@@ -1,5 +1,5 @@
 
-from enthought.enable.api import Container, OverlayContainer, Slider, Window
+from enthought.enable.api import OverlayContainer, Slider, Window
 from enthought.enable.example_support import demo_main, DemoFrame
 
 class MyFrame(DemoFrame):

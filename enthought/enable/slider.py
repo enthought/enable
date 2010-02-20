@@ -1,14 +1,13 @@
 
-from numpy import linspace, zeros, zeros_like
+from numpy import linspace, zeros
 
 # Enthought library imports
 from enthought.kiva import STROKE
-from enthought.traits.api import (Any, Bool, Enum, Float, Instance, Int, Property,
+from enthought.traits.api import (Any, Bool, Enum, Float, Int, Property,
                                   on_trait_change, Trait)
 from enthought.traits.ui.api import EnumEditor
 
 # Local, relative imports
-from base_tool import BaseTool
 from colors import ColorTrait
 from component import Component
 from markers import MarkerNameDict, marker_names, CustomMarker
@@ -459,7 +458,7 @@ class Slider(Component):
         elif self.orientation == "h" and (y <= event.y <= y2):
             if not (x <= event.x <= x2):
                 self._offset = (0, event.y - pt[1])
-                self.dragging_mouse_event(event)
+                self.dragging_mouse_move(event)
             else:
                 self._offset = (event.x - pt[0], event.y - pt[1])
         else:
