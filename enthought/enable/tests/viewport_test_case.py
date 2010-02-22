@@ -9,8 +9,11 @@ class ViewportTestCase(unittest.TestCase):
         container = Container(bounds=[100.0, 100.0])
         component = Component(bounds=[50.0, 50.0], position=[5.0, 5.0])
         container.add(component)
-        view = Viewport(component=container, view_position=[10.0, 10.0],
-                        view_bounds=[50.0, 50.0])
+        view = Viewport(component=container,
+                        view_position=[10.0, 10.0],
+                        view_bounds=[50.0, 50.0],
+                        position=[0,0],
+                        bounds=[50,50])
         self.assert_(view.components_at(0.0, 0.0)[0] == component)
         self.assert_(view.components_at(44.9, 0.0)[0] == component)
         self.assert_(view.components_at(0.0, 44.9)[0] == component)
