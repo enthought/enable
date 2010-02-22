@@ -209,8 +209,8 @@
 
 %typemap(argout) double *array6 {
    // Append output value $1 to $result
-   int dims = 6;
-   PyArrayObject* ary_obj = (PyArrayObject*) PyArray_FromDims(1,&dims,PyArray_DOUBLE);
+   npy_intp dims = 6;
+   PyArrayObject* ary_obj = (PyArrayObject*) PyArray_SimpleNew(1,&dims,PyArray_DOUBLE);
    if( ary_obj == NULL )
     return NULL;
    double* data = (double*)ary_obj->data;
