@@ -133,7 +133,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
 
         self._mapper = tvtk.ImageMapper()
         self._mapper.color_window = 255
-        self._mapper.color_level = 128
+        self._mapper.color_level = 255/2.0
         self._actor2d.mapper = self._mapper
 
         #self._size = tuple(self._get_control_size())
