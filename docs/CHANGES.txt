@@ -1,13 +1,18 @@
-Enable 3.2.1 (not yet released)
+Enable 3.3.0 (Feb 24, 2010)
 ===============================
 
 Enhancements
 ------------
-
+ * Moved Shape from examples into enthought.enable.primitives
+ * Improved ability to find the Qt SVG IconEngine for the SVGButtonEditor
+ * Improved painting in Wx by as much as 30%
+ * Added repeat and reflect gradient fill methods
 
 Fixes
 -----
-
+ * Fixed diamond marker to use the native Agg marker
+ * Fixed drawing elliptical curves on OS X
+ * Fixed scaling transforms affecting gradients
 
 
 Enable 3.2.0 (July 15th, 2009)
