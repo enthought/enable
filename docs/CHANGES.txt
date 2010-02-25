@@ -1,8 +1,10 @@
 Enable 3.3.0 (Feb 24, 2010)
-===============================
+===========================
 
 Enhancements
 ------------
+
+ * Updated freetype to 2.3.12.  This makes our text look prettier, and also fixes some compatibility issues with OS X 10.6.
  * Moved Shape from examples into enthought.enable.primitives
  * Improved ability to find the Qt SVG IconEngine for the SVGButtonEditor
  * Improved painting in Wx by as much as 30%
@@ -10,10 +12,21 @@ Enhancements
 
 Fixes
 -----
+
  * Fixed diamond marker to use the native Agg marker
  * Fixed drawing elliptical curves on OS X
  * Fixed scaling transforms affecting gradients
+ * Fixed the "window" property on Enable components to recurse up their container hierarchy to return the default window associated with a component.
+ * Viewports now correctly implement is_in() and components_at(), taking their own boundaries into account.
+ * Removed explicit dependency on TraitsBackendWx in Enable
+ * Fixing logic in enable.example_support, so that it no longer just uses wx if wxPython is installed, but rather looks at ETSConfig.toolkit.
+ * Fixing some math in the computation of setting outer_x2 and outer_y2 attributes of components.
 
+One final note is that the "enable2" legacy backwards compatibility package will
+be removed by the next release.  If you have any code that imports from
+"enthought.enable2" and the DeprecationWarnings haven't been sufficiently
+motivating thus far, please heed them and change your imports to use
+"enthought.enable"!
 
 Enable 3.2.0 (July 15th, 2009)
 ==============================
