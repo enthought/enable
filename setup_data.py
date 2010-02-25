@@ -42,4 +42,3 @@ INFO = {
     'name': 'Enable',
     'version': '3.3.0',
     }
-
