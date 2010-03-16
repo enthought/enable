@@ -119,6 +119,8 @@ class ButtonRenderPanel(RenderPanel):
             gc.Translate(-x_offset, -y_offset)
             dc.DrawText(self.button.factory.label, text_x, text_y)
             
+        if not self.button.enabled:
+            self._draw_disable_mask(gc)
 
     def OnLeftDown(self, evt):
         # if the button is supposed to toggle, set the toggle_state
@@ -146,6 +148,19 @@ class ButtonRenderPanel(RenderPanel):
 
     def OnWheel(self, evt):
         pass
+
+    def _draw_disable_mask(self, gc):
+        """ Draws a mask using the background color with the alpha
+            set to about 33%
+        """
+        best_size = self.DoGetBestSize()
+
+        path = gc.CreatePath()
+        path.AddRectangle(0, 0, best_size.width, best_size.height)
+        bgcolor = self.GetBackgroundColour()
+        bgcolor.Set(bgcolor.red, bgcolor.green, bgcolor.blue, 175)
+        gc.SetBrush(wx.Brush(bgcolor))
+        gc.FillPath(path)
 
     def _draw_toggle(self, gc):
         # the toggle doc and button doc may not be the same

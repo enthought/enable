@@ -2,7 +2,7 @@ from copy import copy
 import os.path
 
 from enthought.savage.traits.ui.svg_button import SVGButton
-from enthought.traits.api import HasTraits, Instance, Str, Int
+from enthought.traits.api import HasTraits, Str
 from enthought.traits.ui.api import Item, View, HGroup
 
 button_size = (64, 64)
@@ -23,7 +23,8 @@ class ButtonDemo(HasTraits):
     clipboard = Str
     
     traits_view = View(HGroup(Item('copy_button', show_label=False),
-                              Item('paste_button', show_label=False)),
+                              Item('paste_button', show_label=False, 
+                                   enabled_when='len(clipboard)>0')),
                        Item('text', width=200),
                        title='SVG Button Demo')
                        
