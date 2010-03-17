@@ -28,8 +28,9 @@ elif ETSConfig.toolkit == 'qt4':
         return (pos.x(), pos.y())
 
 else:
-    raise NotImplementedError, "GetGlobalMousePosition is not defined for" \
-        "toolkit '%s'." % ETSConfig.toolkit
+    def GetGlobalMousePosition():
+        raise NotImplementedError, "GetGlobalMousePosition is not defined for" \
+            "toolkit '%s'." % ETSConfig.toolkit
 
 
 class HoverTool(BaseTool):
