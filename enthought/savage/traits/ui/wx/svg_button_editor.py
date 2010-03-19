@@ -25,7 +25,6 @@ import os.path
 import wx
 
 # ETS imports
-from enthought.pyface.widget import Widget
 from enthought.savage.svg.document import SVGDocument
 from enthought.savage.svg.backends.wx.renderer import Renderer
 from enthought.traits.api import Instance
@@ -76,7 +75,6 @@ class ButtonRenderPanel(RenderPanel):
         dc.SetBackground(wx.Brush(self.GetBackgroundColour()))
         dc.Clear()
         dc.SetFont(wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT))
-        text_width = dc.GetTextExtent(self.button.factory.label)[0]
 
         gc = wx.GraphicsContext_Create(dc)
 
@@ -98,8 +96,10 @@ class ButtonRenderPanel(RenderPanel):
         if self.toggle_state and self.button.factory.toggle and \
                 self.button.factory.toggle_filename:
             self.toggle_document.render(gc)
+            label_text = self.button.factory.toggle_label
         else:
             self.document.render(gc)
+            label_text = self.button.factory.label
 
         # Reset the translation and zoom, then draw the text at an offset
         # based on the text width. There is a minor gotcha for supporting
@@ -107,17 +107,18 @@ class ButtonRenderPanel(RenderPanel):
         # on different platforms. 
         # It would be nice is a cross platform library actually worked the
         # same across platforms...
-
+        
+        text_width = dc.GetTextExtent(label_text)[0]
         text_x = (best_size.width - text_width)/2.0
         text_y = self.button.factory.height
         gc.Scale(100/float(self.zoom_x), 100/float(self.zoom_y))
         
         if sys.platform == 'darwin':
             gc.Translate(-x_offset + text_x, -y_offset + text_y)
-            dc.DrawText(self.button.factory.label, 0, 0)
+            dc.DrawText(label_text, 0, 0)
         else:
             gc.Translate(-x_offset, -y_offset)
-            dc.DrawText(self.button.factory.label, text_x, text_y)
+            dc.DrawText(label_text, text_x, text_y)
             
         if not self.button.enabled:
             self._draw_disable_mask(gc)
@@ -127,6 +128,12 @@ class ButtonRenderPanel(RenderPanel):
         # to the opposite of what it currently is
         if self.button.factory.toggle:
             self.toggle_state = not self.toggle_state
+            
+            if self.toggle_state:
+                tooltip = wx.ToolTip(self.button.factory.toggle_tooltip)
+            else:
+                tooltip = wx.ToolTip(self.button.factory.tooltip)
+            self.button.control.SetToolTip(tooltip)
 
         self.state = 'down'
         evt.Skip()

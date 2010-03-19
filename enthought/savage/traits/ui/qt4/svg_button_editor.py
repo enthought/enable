@@ -23,7 +23,7 @@
 #-------------------------------------------------------------------------------
 import os.path
 
-from enthought.traits.api import Bool, Any
+from enthought.traits.api import Bool, Any, Str
 from enthought.traits.ui.qt4.editor import Editor
 
 from PyQt4 import QtCore, QtGui, Qt
@@ -41,6 +41,8 @@ class SVGButtonEditor(Editor):
 
     icon = Any
     toggled_icon = Any
+    toggle_label = Str
+    toggle_tooltip = Str
     toggle_state = Bool
 
     #---------------------------------------------------------------------------
@@ -54,7 +56,18 @@ class SVGButtonEditor(Editor):
         self.icon = QtGui.QIcon(self.factory.filename)
         if self.factory.toggle_filename:
             self.toggled_icon = QtGui.QIcon(self.factory.toggle_filename)
-
+            
+        if self.factory.toggle_label != '':
+            self.toggle_label = self.factory.toggle_label
+        else:
+            self.toggle_label = self.factory.label
+            
+        if self.factory.toggle_tooltip != '':
+            self.toggle_tooltip = self.factory.toggle_tooltip
+        else:
+            self.toggle_tooltip = self.factory.tooltip
+            
+        
         control = self.control = QtGui.QToolButton()
         control.setAutoRaise(True)
         control.setIcon(self.icon)
@@ -105,5 +118,10 @@ class SVGButtonEditor(Editor):
         self.toggle_state = not self.toggle_state
         if self.toggle_state and self.toggled_icon:
             self.control.setIcon(self.toggled_icon)
+            self.control.setText(self.toggle_label)
+            self.control.setToolTip(self.toggle_tooltip)
+            
         elif not self.toggle_state and self.toggled_icon:
             self.control.setIcon(self.icon)
+            self.control.setText(self.factory.label)
+            self.control.setToolTip(self.factory.tooltip)
