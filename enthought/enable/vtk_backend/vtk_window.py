@@ -2,7 +2,7 @@ import warnings
 
 from enthought.tvtk.api import tvtk
 from enthought.tvtk import messenger
-from enthought.traits.api import HasTraits, Any, Property, Instance, \
+from enthought.traits.api import HasTraits, Any, Callable, Property, Instance, \
         Bool, Enum, Int, on_trait_change
 
 from numpy import arange, zeros, ascontiguousarray, reshape, uint8, any
@@ -17,6 +17,10 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
     # TODO: Eventually when we move to using the Picker, we will change
     # from observing the RenderWindowInteractor
     control = Instance(tvtk.RenderWindowInteractor)
+
+    # A callable that will be called to request a render. If this
+    # is None then we will call render on the control. 
+    request_render = Callable
 
     # If events don't get handled by anything in Enable, do they get passed
     # through to the underlying VTK InteractorStyle?
@@ -317,6 +321,8 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
     def _redraw(self, coordinates=None):
         " Called by the contained component to request a redraw " 
         self._redraw_needed = True
+        if self._actor2d is not None:
+            self._paint()
 
     def _on_size(self):
         pass
@@ -435,7 +441,10 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
         self._vtk_image_data.point_data.scalars = ary_2d
         self._vtk_image_data.modified()
         #self._window_paint(event)
-        self.control.render()
+        if self.request_render is not None:
+            self.request_render()
+        else:
+            self.control.render()
         self._redraw_needed = False
 
 
