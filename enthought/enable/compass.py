@@ -2,7 +2,7 @@
 from numpy import array, pi
 
 # Enthought library imports
-from enthought.traits.api import Enum, Float, Int
+from enthought.traits.api import Bool, Enum, Float, Int
 
 # Local, relative imports
 from component import Component
@@ -15,7 +15,10 @@ class Compass(Component):
     """
 
     # Which triangle was clicked
-    clicked = Enum(None, "n", "e", "s", "w")
+    clicked = Enum(None, "n", "e", "s", "w", "c")
+
+    # Whether or not to allow clicks on the center
+    enable_center = Bool(False)
 
     #------------------------------------------------------------------------
     # Shape and layout
@@ -94,6 +97,8 @@ class Compass(Component):
                   "e": array((near, -half_width, far, half_width)),
                   "s": array((-half_width, -far, half_width, -near)),
                   "w": array((-far, -half_width, -near, half_width)) }
+        if self.enable_center:
+            rects["c"] = array((-near, -near, near, near))
         for direction, rect in rects.items():
             if (rect[0] <= x <= rect[2]) and (rect[1] <= y <= rect[3]):
                 self.event_state = "clicked"
@@ -163,6 +168,18 @@ class Compass(Component):
                 gc.draw_path()
                 gc.rotate_ctm(-angle)
                 gc.translate_ctm(-dx, -dy)
+
+            if self.event_state == "clicked" and self.clicked == 'c':
+                # Fill in the center 
+                gc.set_fill_color(self.clicked_color_)
+                half_width = self.triangle_width / 2
+                gc.begin_path()
+                gc.lines( [(-half_width, -half_width),
+                           (half_width, -half_height), 
+                           (half_width, half_width),
+                           (-half_width, half_width),
+                           (-half_width, -half_width)] )
+                gc.draw_path()
             
         finally:
             gc.restore_state()
