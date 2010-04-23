@@ -23,8 +23,8 @@ namespace kiva
                             double p2x, double p2y)
     {
         bool toggle = false;
-        if(   (p1y < y && p2y >= y)
-           || (p2y<y) && (p1y>=y) )
+        if(   ((p1y<y) && (p2y>=y))
+           || ((p2y<y) && (p1y>=y)) )
         {
             if (p1x + (y-p1y)/(p2y-p1y) * (p2x-p1x) < x)
             {

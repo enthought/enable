@@ -182,7 +182,8 @@ void compiled_path::arc_to(double x1, double y1, double x2, double y2,
 void compiled_path::add_path(compiled_path& other_path)
 {
     container_type& vertices = this->vertices();
-    double x, y;
+    double x=0.0;
+    double y=0.0;
     unsigned cmd;
 
     other_path.rewind(0);

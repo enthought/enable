@@ -73,7 +73,7 @@ kiva::font_type::font_type(std::string _name, int _size, int _family,
 }
 
 kiva::font_type::font_type(const kiva::font_type &font) :
-    size(font.size), name(font.name), filename(font.filename),
+    name(font.name), filename(font.filename), size(font.size),
     _is_loaded(font.is_loaded())
 {
     this->family = font.family;
