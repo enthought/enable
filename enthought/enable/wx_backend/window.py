@@ -596,7 +596,8 @@ class _Window(AbstractWindow):
     
     def _set_focus ( self ):
         "Sets the keyboard focus to this window"
-        self.control.SetFocus()
+        if self.control == self.control.GetCapture():
+            self.control.SetFocus()
         return
 
     def screen_to_window(self, x, y):
