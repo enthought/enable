@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 #
-# Copyright (c) 2008-2009 by Enthought, Inc.
+# Copyright (c) 2008-2010 by Enthought, Inc.
 # All rights reserved.
-
 
 """
 Drawing and interaction packages.
@@ -326,4 +325,3 @@ setup(
     zip_safe = False,
     **config
     )
-
