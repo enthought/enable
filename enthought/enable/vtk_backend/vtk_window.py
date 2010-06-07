@@ -100,8 +100,10 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
     # Private traits for managing redraw
     #------------------------------------------------------------------------
 
-    _redraw_timer = Any()
     _redraw_needed = Bool(True)
+
+    # Flag to keep from recursing in _vtk_render_event
+    _rendering = Bool(False)
 
     def __init__(self, render_window_interactor, renderer, 
             istyle_class=tvtk.InteractorStyle, **traits):
@@ -125,12 +127,11 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
 
         self._add_observer(istyle, "KeyPressEvent", self._vtk_key_updown)
 
-        self._add_observer(istyle, "TimerEvent", self._vtk_timer_event)
-        self._add_observer(istyle, "RenderEvent", self._vtk_render_event)
+        # We want _vtk_render_event to be called before rendering, so we
+        # observe the StartEvent on the RenderWindow.
+        self._add_observer(rwi.render_window, "StartEvent", self._vtk_render_event)
         self._add_observer(istyle, "ExposeEvent", self._vtk_expose_event)
         self.interactor_style = istyle
-
-        self._redraw_timer = rwi.create_repeating_timer(16)
 
         self._actor2d = tvtk.Actor2D()
         self.renderer.add_actor(self._actor2d)
@@ -157,28 +158,20 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
         messenger.connect(tvtk.to_vtk(obj), event, cb)
 
     def _vtk_render_event(self, vtk_obj, eventname):
-        #print "Good gods!  A VTK RenderEvent!"
-        pass
-
-    def _vtk_expose_event(self, vtk_obj, eventname):
-        #print "Good gods!  A VTK ExposeEvent!"
-        pass
-
-    def _vtk_timer_event(self, vtk_obj, eventname):
-        # TODO: how do I check a redraw timer??
-        #if self.control._timer_id == self._redraw_timer:
-        if 1:
-            if self.control.timer_event_id == self._redraw_timer:
-                # Hack for spectrum.py demo
-                if getattr(self.component, "timer_callback", None):
-                    self.component.timer_callback()
-
-                # Check for bounds updates
+        """ Redraw the Enable window, if needed. """
+        if not self._rendering:
+            self._rendering = True
+            try:
                 if self._size != self._get_control_size():
                     self._layout_needed = True
                 if self._redraw_needed or self._layout_needed:
                     self._paint()
-                self.control.reset_timer(self._redraw_timer)
+            finally:
+                self._rendering = False
+
+    def _vtk_expose_event(self, vtk_obj, eventname):
+        #print "Good gods!  A VTK ExposeEvent!"
+        pass
 
     def _pass_event_to_vtk(self, vtk_obj, eventname):
         """ Method to dispatch a particular event name to the appropriate
