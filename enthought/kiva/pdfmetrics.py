@@ -290,7 +290,7 @@ class Encoding:
 
     def makePDFObject(self):
         # XXX Kiva specific change
-        raise "Not Implemented"
+        raise NotImplementedError
 
 #for encName in standardEncodings:
 #    registerEncoding(Encoding(encName))
@@ -354,7 +354,7 @@ class Font:
 
     def addObjects(self, doc):
         # XXX Kiva specific change
-        raise "Not Implemented"
+        raise NotImplementedError
 
 PFB_MARKER=chr(0x80)
 PFB_ASCII=chr(1)
@@ -446,7 +446,7 @@ class EmbeddedType1Face(TypeFace):
 
     def addObjects(self, doc):
         # XXX Kiva specific changes
-        raise "Not Implemented"
+        raise NotImplementedError
 
 def registerTypeFace(face):
     assert isinstance(face, TypeFace), 'Not a TypeFace: %s' % face
