@@ -1153,7 +1153,8 @@ class Component(CoordinateBox, Interactor):
         else:
             # assume padding is some sort of array type
             if len(val) != 4:
-                raise RuntimeError, "Padding must be a 4-element sequence type or an int.  Instead, got" + str(val)
+                raise RuntimeError("Padding must be a 4-element sequence "
+                                   "type or an int.  Instead, got" + str(val))
             self.padding_left = val[0]
             self.padding_right = val[1]
             self.padding_top = val[2]
