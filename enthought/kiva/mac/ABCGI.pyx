@@ -186,7 +186,7 @@ cdef class CGContext:
     cdef CGAffineTransform text_matrix
     cdef object style_cache
 
-    def __new__(self, *args, **kwds):
+    def __cinit__(self, *args, **kwds):
         self.context = NULL
         self.current_style = NULL
         self.can_release = 0
@@ -1366,7 +1366,7 @@ cdef class CGPDFContext(CGContext):
 cdef class CGBitmapContext(CGContext):
     cdef void* data
 
-    def __new__(self, *args, **kwds):
+    def __cinit__(self, *args, **kwds):
         self.data = NULL
 
     def __init__(self, object size_or_array, bool grey_scale=0,
@@ -1572,7 +1572,7 @@ cdef class CGImage:
     cdef void* data
     cdef readonly c_numpy.ndarray bmp_array
 
-    def __new__(self, *args, **kwds):
+    def __cinit__(self, *args, **kwds):
         self.image = NULL
 
     property width:
