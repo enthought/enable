@@ -5,9 +5,8 @@ from collections import defaultdict
 import os
 import pstats
 
-from enthought.developer.tools.universal_inspector import FileInspector
 from enthought.traits.api import (Any, Bool, Constant, Dict, Event, Float,
-    HasTraits, Instance, List, Property, Str, on_trait_change)
+    HasTraits, Instance, Int, List, Property, Str, on_trait_change)
 from enthought.traits.ui import api as tui
 from enthought.traits.ui.tabular_adapter import TabularAdapter
 
@@ -16,10 +15,11 @@ class SuperTuple(tuple):
     """ Generic super-tuple using pre-defined attribute names.
     """
     __names__ = []
-    def __init__(self, *args, **kwds):
-        super(SuperTuple, self).__init__(*args, **kwds)
-        for i, attr in enumerate(self.__class__.__names__):
+    def __new__(cls, *args, **kwds):
+        self = tuple.__new__(cls, *args, **kwds)
+        for i, attr in enumerate(cls.__names__):
             setattr(self, attr, self[i])
+        return self
 
 class Subrecord(SuperTuple):
     """ The records referring to the calls a function makes.
@@ -244,7 +244,9 @@ class Sike(HasTraits):
 
     basenames = Bool(True)
     percentages = Bool(True)
-    file_inspector = Instance(FileInspector, args=())
+    filename = Str()
+    line = Int(1)
+    code = Str()
 
     traits_view = tui.View(
         tui.VGroup(
@@ -253,13 +255,14 @@ class Sike(HasTraits):
                 tui.Item('percentages'),
             ),
             tui.HGroup(
-                tui.Item('main_results', show_label=False),
+                tui.UItem('main_results'),
                 tui.VGroup(
                     tui.Label('Callees'),
-                    tui.Item('callee_results', show_label=False),
+                    tui.UItem('callee_results'),
                     tui.Label('Callers'),
-                    tui.Item('caller_results', show_label=False),
-                    tui.Item('file_inspector', show_label=False),
+                    tui.UItem('caller_results'),
+                    tui.UItem('filename', style='readonly'),
+                    tui.UItem('code', editor=tui.CodeEditor(line='line')),
                 ),
                 style='custom',
             ),
@@ -336,12 +339,17 @@ class Sike(HasTraits):
 
         filename, line, name = new.file_line_name
         if os.path.exists(filename):
-            self.file_inspector.file_name = filename
-            self.file_inspector.line = line
+            with open(filename, 'ru') as f:
+                code = f.read()
+            self.code = code
+            self.filename = filename
+            self.line = line
         else:
-            self.file_inspector.file_name = ''
-            self.file_inspector.line = 0
-            self.file_inspector.text = ''
+            self.trait_set(
+                code = '',
+                filename = '',
+                line = 1,
+            )
 
     @on_trait_change('caller_results:dclicked,'
         'callee_results:dclicked')
