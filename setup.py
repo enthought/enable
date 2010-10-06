@@ -65,8 +65,7 @@ the Enable project:
 
 * `setuptools <http://pypi.python.org/pypi/setuptools/0.6c8>`_
 * `SWIG <http://www.swig.org/>`_ version 1.3.30 or later.
-* `Pyrex <http://pypi.python.org/pypi/Pyrex/0.9.4.1>`_  versions 0.9.6.x or
-  0.9.8.x.
+* `Cython <http://www.cython.org>`_ version 0.12.1 or later
 * `Numpy <http://pypi.python.org/pypi/numpy/1.1.1>`_  version 1.1.0 or later is
   preferred. Version 1.0.4 will work, but some tests may fail.
 * `ReportLab Toolkit <http://www.reportlab.org/rl_toolkit.html/>`_ for PDF
@@ -315,7 +314,7 @@ setup(
     package_data = {'': ['*.zip', '*.svg']},
     platforms = ["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
     setup_requires = [
-        'pyrex',
+        'cython',
         'setupdocs>=1.0',
         ],
     tests_require = [
