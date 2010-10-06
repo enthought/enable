@@ -225,7 +225,7 @@ if sys.platform == 'darwin':
         def __init__(self, parent, id = 01, size = wx.DefaultSize):
             # need to init self.memDC before calling BaseWxCanvas.__init__ 
             self.memDC = wx.MemoryDC()
-            self.size = (size.GetWidth(), size.GetHeight())
+            self._size = (size.GetWidth(), size.GetHeight())
             WidgetClass.__init__(self, parent, id, wx.Point(0, 0), size, 
                                  wx.SUNKEN_BORDER | wx.WANTS_CHARS | \
                                  wx.FULL_REPAINT_ON_RESIZE )
@@ -233,7 +233,7 @@ if sys.platform == 'darwin':
             return
         
         def _create_kiva_gc(self, size):
-            self.size = size
+            self._size = size
             self.bitmap = wx.EmptyBitmap(size[0], size[1])
             self.memDC.SelectObject(self.bitmap)
             gc = gc_for_dc(self.memDC)
@@ -244,7 +244,7 @@ if sys.platform == 'darwin':
         def blit(self, event):
             t1 = now()
             paintdc = wx.PaintDC(self)
-            paintdc.Blit(0, 0, self.size[0], self.size[1],
+            paintdc.Blit(0, 0, self._size[0], self._size[1],
                          self.memDC, 0, 0)
             t2 = now()
             self.blit_time = t2 - t1
