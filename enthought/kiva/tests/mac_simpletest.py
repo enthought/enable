@@ -55,26 +55,36 @@ def glyph_a(gc):
         gc.close_path();
 
 class TestCanvas(Canvas):
+
     def do_draw(self, gc):
         w,h = self.GetClientSizeTuple()
+
+        # Red diagonal line from (0,0) to (w,h)
         gc.move_to(0,0)
         gc.line_to(w,h)
         gc.set_stroke_color((1,0,0))
         gc.stroke_path()
+        
+        # Green diagonal line from (0,h) to (w,0)
         gc.move_to(0,h)
         gc.line_to(w,0)
         gc.set_stroke_color((0,1,0))
         gc.stroke_path()
+
+        # Boundary "line".
         gc.rect(0,0,w,h)
-        gc.set_stroke_color((0,0,0,.5))
+        gc.set_stroke_color((0,0,0,0.5))
         gc.set_line_width(20)
         gc.stroke_path()
-        
-        gc.set_fill_color((0,0,1,0.0))
-        gc.rect(0,0,w,h)
-                
+
+        # Draw a square, filled with blue (with alpha=0.25)
+        gc.set_stroke_color((0,0,0))
+        gc.set_line_width(2)        
+        gc.set_fill_color((0,0,1,0.25))
+        gc.rect(w/8,h/4,w/3,h/3)
         gc.draw_path()
 
+        # Draw the letter 'a'.
         gc.set_line_width(1)
         gc.translate_ctm(w/2.0,h/2.0)
         gc.save_state()
