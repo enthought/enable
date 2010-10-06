@@ -819,7 +819,7 @@ cdef class CGContext:
         """
         """
         try:
-            cgmode = text_mode[mode]
+            cgmode = text_modes[mode]
         except KeyError:
             msg = "Invalid text drawing mode.  See documentation for valid modes"
             raise ValueError(msg)
@@ -1259,7 +1259,7 @@ cdef class CGContextForPort(CGContextInABox):
             self._begun = 1
 
     def end(self):
-        if self.port and self.context and self._begun:
+        if self.port and self.context is not NULL and self._begun:
             CGContextFlush(self.context)
             QDEndCGContext(<CGrafPtr>(self.port), &(self.context))
             self._begun = 0
@@ -1751,7 +1751,7 @@ cdef class CGImageFile(CGImage):
         dims[1] = width
         dims[2] = bits_per_pixel/bits_per_component
 
-        self.bmp_array = c_numpy.PyArray_SimpleNew(3, &(dims[0]), NPY_UBYTE)
+        self.bmp_array = c_numpy.PyArray_SimpleNew(3, &(dims[0]), c_numpy.NPY_UBYTE)
 
         data = self.bmp_array.data
         s = img.tostring()
@@ -2446,7 +2446,7 @@ cdef void shading_callback(object self, float* in_data, float* out_data):
     cdef int i
     out = self(in_data[0])
     for i from 0 <= i < self.n_dims:
-        outData[i] = out[i]
+        out_data[i] = out[i]
 
 cdef class Shading:
     cdef CGShadingRef shading
