@@ -107,8 +107,8 @@ cdef extern from "ATSFont.h":
       Float32             underlineThickness
 
     cdef enum:
-      kATSItalicQDSkew              = (1 << 16) / 4
-      kATSBoldQDStretch             = (1 << 16) * 3 / 2
+      kATSItalicQDSkew              = 16384  # (1 << 16) / 4
+      kATSBoldQDStretch             = 98304  # (1 << 16) * 3 / 2
       kATSRadiansFactor             = 1144
 
 
