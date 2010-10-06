@@ -16,7 +16,7 @@ def configuration(parent_package='',top_path=None):
             release = macro[len('WX_RELEASE_'):].replace('_', '.')
             break
 
-    def generate_c_from_pyrex(extension, build_dir):
+    def generate_c_from_cython(extension, build_dir):
         if not sys.platform == 'darwin':
             print 'No %s will be built for this platform.' % (extension.name)
             return
@@ -45,7 +45,7 @@ def configuration(parent_package='',top_path=None):
         ]
     include_dirs = ['/Developer/Headers/FlatCarbon']
     config.add_extension('ATSFont',
-                         [generate_c_from_pyrex],
+                         [generate_c_from_cython],
                          include_dirs = include_dirs,
                          extra_link_args = extra_link_args,
                          depends=["ATSFont.pyx",
@@ -54,7 +54,7 @@ def configuration(parent_package='',top_path=None):
                                   ],
                          )
     config.add_extension('ABCGI',
-                         [generate_c_from_pyrex],
+                         [generate_c_from_cython],
                          include_dirs = include_dirs,
                          depends = ["ABCGI.pyx",
                                     "ATSUI.pxi",
