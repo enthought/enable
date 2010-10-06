@@ -114,7 +114,6 @@ cdef class FontLookup:
 
     def styles(self, font_name):
         raise NotImplementedError
-        return styles
 
     def list_fonts(self):
         for name in self.names():
