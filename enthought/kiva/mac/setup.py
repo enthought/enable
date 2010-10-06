@@ -26,14 +26,14 @@ def configuration(parent_package='',top_path=None):
         target = os.path.join(build_dir, name+'.c')
 
         if newer_group(extension.depends, target):
-            from Pyrex.Compiler import Main
+            from Cython.Compiler import Main
             options = Main.CompilationOptions(
                 defaults=Main.default_options,
                 output_file=target)
-            pyrex_result = Main.compile(source, options=options)
-            if pyrex_result.num_errors != 0:
-                raise RuntimeError("%d errors in Pyrex compile" % 
-                    pyrex_result.num_errors)
+            cython_result = Main.compile(source, options=options)
+            if cython_result.num_errors != 0:
+                raise RuntimeError("%d errors in Cython compile" % 
+                    cython_result.num_errors)
         return target
 
 
