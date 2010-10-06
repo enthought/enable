@@ -124,7 +124,7 @@ class DashSampler:
         return 170,420
 
     def draw(self,gc):
-        dash_patterns = outer_join(self.dash_values,self.dash_values)
+        dash_patterns = outer_join(self.dash_values[1:], self.dash_values)
         line_length = 120
         gc.save_state()
         gc.set_line_cap(self.line_cap)
