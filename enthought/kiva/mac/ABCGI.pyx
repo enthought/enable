@@ -1483,7 +1483,9 @@ cdef class CGBitmapContext(CGContext):
     def width(self):
         return CGBitmapContextGetWidth(self.context)
 
-    def __getsegcount__(self, int* lenp):
+    def __getsegcount__(self, void* tmp):
+        cdef int *lenp
+        lenp = <int *>tmp
         if lenp != NULL:
             lenp[0] = self.height()*self.bytes_per_row
         return 1
