@@ -102,7 +102,6 @@ class GraphicsContext(object):
             This should always be paired with a restore_state
         """    
         self.gc.CGContextSaveGState()
-        print "boo"
     
     def restore_state(self):
         """ Restore the previous graphics state.
