@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 from math import sin, cos, pi
 
 from numpy import array, arange

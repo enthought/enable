@@ -1,3 +1,4 @@
+from __future__ import with_statement
 
 from numpy import array
 from pyglet.window import key, Window

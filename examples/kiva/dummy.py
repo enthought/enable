@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 from enthought.kiva import constants, Font
 from enthought.kiva import Canvas
 from enthought.kiva.backend_image import GraphicsContext

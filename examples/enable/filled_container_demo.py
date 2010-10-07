@@ -9,6 +9,9 @@ and because containers default to auto-sizing around their components,
 the container stretches to the minimum bounding box of its components
 as the user drags the circles around.
 """
+
+from __future__ import with_statement
+
 from numpy import array
 
 from enthought.enable.example_support import DemoFrame, demo_main

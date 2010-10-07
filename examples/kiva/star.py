@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 from scipy import pi
 from enthought.kiva.backend_image import GraphicsContext
    

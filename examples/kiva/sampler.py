@@ -15,6 +15,7 @@
 Set of visual tests exercising the basic drawing styles.  These should work on 
 every backend.
 """
+from __future__ import with_statement
 
 import time
 

@@ -1,3 +1,4 @@
+from __future__ import with_statement
 
 from numpy import cos, sin, arange, pi, array
 from enthought.kiva.backend_image import GraphicsContext

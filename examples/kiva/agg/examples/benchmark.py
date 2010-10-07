@@ -1,6 +1,7 @@
 """
 Benchmarks Agg rendering times.
 """
+from __future__ import with_statement
 
 import time
 

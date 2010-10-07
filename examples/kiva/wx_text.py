@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 import wx
 from enthought.kiva.backend_wx import Canvas, CanvasWindow
 

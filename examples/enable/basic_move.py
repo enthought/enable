@@ -2,6 +2,8 @@
 This allows a simple component to be moved around the screen.
 """
 
+from __future__ import with_statement
+
 from enthought.enable.example_support import DemoFrame, demo_main
 
 from enthought.traits.api import Float, Tuple

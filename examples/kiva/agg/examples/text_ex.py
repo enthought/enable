@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 import time
 from enthought.kiva import agg, Font, MODERN
 from enthought.kiva.agg import AffineMatrix

@@ -1,5 +1,6 @@
 """ A moveable box shape. """
 
+from __future__ import with_statement
 
 from enthought.enable.primitives.shape import Shape
 

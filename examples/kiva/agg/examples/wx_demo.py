@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 import os, wx
 from enthought.kiva import Canvas
 from enthought.kiva.fonttools import Font, str_to_font

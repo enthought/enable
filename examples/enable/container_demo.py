@@ -1,3 +1,4 @@
+from __future__ import with_statement
 
 import wx
 from enthought.enable.wx_backend.api import Window

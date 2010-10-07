@@ -1,5 +1,6 @@
 """ A moveable circle shape. """
 
+from __future__ import with_statement
 
 # Enthought library imports.
 from enthought.traits.api import Float
