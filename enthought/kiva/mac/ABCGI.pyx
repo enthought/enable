@@ -296,6 +296,16 @@ cdef class CGContext:
         CGContextRestoreGState(self.context)
 
     #----------------------------------------------------------------
+    # context manager interface
+    #----------------------------------------------------------------
+
+    def __enter__(self):
+        self.save_state()
+        
+    def __exit__(self, object type, object value, object traceback):
+        self.restore_state()
+
+    #----------------------------------------------------------------
     # Manipulate graphics state attributes.
     #----------------------------------------------------------------
 

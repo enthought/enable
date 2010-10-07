@@ -50,28 +50,22 @@ class CanvasButton(Component):
         return SVGDocument(root, renderer=KivaRenderer)
 
     def _draw_svg_document(self, gc, document):   
-        gc.save_state()
-        gc.translate_ctm(self.x, self.y+self.height)
-        doc_size = document.getSize()
-        gc.scale_ctm(self.width/float(doc_size[0]), -self.height/float(doc_size[1]))
-                    
-        document.render(gc)
-        gc.restore_state()
+        with gc:
+            gc.translate_ctm(self.x, self.y+self.height)
+            doc_size = document.getSize()
+            gc.scale_ctm(self.width/float(doc_size[0]), -self.height/float(doc_size[1]))                        
+            document.render(gc)
     
-    def _draw_label(self, gc):
-        
-        gc.save_state()
+    def _draw_label(self, gc):        
+        with gc:
+            font = Font(family=MODERN)
+            gc.set_font(font)
 
-        font = Font(family=MODERN)
-        gc.set_font(font)
-
-        x, y, width, height = gc.get_text_extent(self.label)
-        text_x = self.x + (self.width - width)/2.0
-        text_y = self.y - height
-        
-        gc.show_text(self.label, (text_x, text_y))
-        
-        gc.restore_state()
+            x, y, width, height = gc.get_text_extent(self.label)
+            text_x = self.x + (self.width - width)/2.0
+            text_y = self.y - height
+            
+            gc.show_text(self.label, (text_x, text_y))
 
     def perform(self):
         self.callback(*self.callback_args)

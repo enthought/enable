@@ -42,19 +42,15 @@ class Circle(Shape):
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode='default'):
         """ Draw the component. """
-        
-        gc.save_state()
+        with gc:
+            gc.set_fill_color(self._get_fill_color(self.event_state))
+            
+            x, y = self.position
+            gc.arc(x + self.radius, y + self.radius, self.radius, 0, 2*3.14159, False)
+            gc.fill_path()
 
-        gc.set_fill_color(self._get_fill_color(self.event_state))
-        
-        x, y = self.position
-        gc.arc(x + self.radius, y + self.radius, self.radius, 0, 2*3.14159, False)
-        gc.fill_path()
-
-        # Draw the shape's text.
-        self._draw_text(gc)
-        
-        gc.restore_state()
+            # Draw the shape's text.
+            self._draw_text(gc)
 
         return
 

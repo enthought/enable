@@ -300,6 +300,68 @@ class GraphicsContextTestCase(unittest.TestCase):
         self.failUnlessRaises(ValueError,gc.set_text_drawing_mode,(10,))
         
     #-------------------------------------------------------------------------
+    # Use context manager for saving and restoring state. 
+    #-------------------------------------------------------------------------
+
+    def test_state_context_manager(self):
+        gc = basecore2d.GraphicsContextBase()
+
+        # Set an assortment of state properties.
+        gc.set_antialias(0)
+        gc.set_line_width(5)
+        gc.set_fill_color((0,1,0,1))
+
+        with gc:
+            # Change the state properties.
+            gc.set_antialias(1)
+            assert(gc.state.antialias == 1)
+            gc.set_line_width(10)
+            assert(gc.state.line_width == 10)
+            gc.set_fill_color((1,1,1,1))
+            assert(alltrue(gc.state.fill_color == array([1,1,1,1])))
+
+        # Verify that we're back to the earlier settings.
+        assert(gc.state.antialias == 0)
+        assert(gc.state.line_width == 5)
+        assert(alltrue(gc.state.fill_color == array([0,1,0,1])))
+
+    def test_state_context_manager_nested(self):
+        gc = basecore2d.GraphicsContextBase()
+
+        # Set an assortment of state properties.
+        gc.set_antialias(0)
+        gc.set_line_width(5)
+        gc.set_fill_color((0,1,0,1))
+
+        with gc:
+            # Change the state properties.
+            gc.set_antialias(1)
+            assert(gc.state.antialias == 1)
+            gc.set_line_width(10)
+            assert(gc.state.line_width == 10)
+            gc.set_fill_color((1,1,1,1))
+            assert(alltrue(gc.state.fill_color == array([1,1,1,1])))
+
+            with gc:
+                # Change the state properties.
+                gc.set_antialias(0)
+                assert(gc.state.antialias == 0)
+                gc.set_line_width(2)
+                assert(gc.state.line_width == 2)
+                gc.set_fill_color((1,1,0,1))
+                assert(alltrue(gc.state.fill_color == array([1,1,0,1])))
+
+            # Verify that we're back to the earlier settings.
+            assert(gc.state.antialias == 1)
+            assert(gc.state.line_width == 10)
+            assert(alltrue(gc.state.fill_color == array([1,1,1,1])))
+
+        # Verify that we're back to the earlier settings.
+        assert(gc.state.antialias == 0)
+        assert(gc.state.line_width == 5)
+        assert(alltrue(gc.state.fill_color == array([0,1,0,1])))
+
+    #-------------------------------------------------------------------------
     # Begin/End Page
     # These are implemented yet.  The tests are just here to remind me that
     # they need to be.

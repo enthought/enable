@@ -135,11 +135,10 @@ def benchmark_individual_symbols(n_pts=1000,sz=(1000,1000)):
     gc.set_stroke_color((0.0,1.0,0.0,0.6))
     t1 = time.clock()
     for x,y in pts:
-        gc.save_state()
-        gc.translate_ctm(x,y)
-        gc.add_path(star_path)
-        gc.draw_path()
-        gc.restore_state()
+        with gc:
+            gc.translate_ctm(x,y)
+            gc.add_path(star_path)
+            gc.draw_path()
     t2 = time.clock()
     gc.save("benchmark_symbols1.bmp")
     tot_time = t2 - t1
@@ -159,11 +158,10 @@ def benchmark_rect(n_pts=1000,sz=(1000,1000)):
     gc.set_stroke_color((0.0,1.0,0.0,0.6))
     t1 = time.clock()
     for x,y in pts:
-        gc.save_state()
-        gc.translate_ctm(x,y)
-        gc.rect(-2.5,-2.5,5,5)
-        gc.draw_path()
-        gc.restore_state()
+        with gc:
+            gc.translate_ctm(x,y)
+            gc.rect(-2.5,-2.5,5,5)
+            gc.draw_path()
     t2 = time.clock()
     gc.save("benchmark_rect.bmp")
     tot_time = t2 - t1

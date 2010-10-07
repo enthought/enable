@@ -24,11 +24,10 @@ class Region(PlotComponent, DragTool):
             self.bounds = [100,100]
 
     def _draw_plot(self, gc, view_bounds=None, mode="normal"):
-        gc.save_state()
-        gc.set_fill_color(self.color_)
-        gc.rect(self.x, self.y, self.width, self.height)
-        gc.fill_path()
-        gc.restore_state()
+        with gc:
+            gc.set_fill_color(self.color_)
+            gc.rect(self.x, self.y, self.width, self.height)
+            gc.fill_path()
 
     def drag_start(self, event):
         self._offset = (event.x - self.x, event.y - self.y)
@@ -53,8 +52,7 @@ class Overlay(AbstractOverlay):
         self.text = text
 
     def overlay(self, component, gc, view_bounds=None, mode="normal"):
-        gc.save_state()
-        try:
+        with gc:
             gc.set_font(self.font)
             twidth, theight = gc.get_text_extent(self.text)[2:]
             tx = component.x + (component.width - twidth)/2.0
@@ -68,9 +66,6 @@ class Overlay(AbstractOverlay):
 
             gc.set_text_position(tx, ty)
             gc.show_text(self.text)
-        finally:
-            gc.restore_state()
-
 
 
 rect1 = Region("orchid", position=[50,50])

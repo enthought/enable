@@ -48,28 +48,25 @@ for i in range(len(star_points)+1):
     gc.set_line_width(12)
     
     if i > 0:
-        gc.save_state()
-        x,y = star_points[0]
-        gc.translate_ctm(x,y)
-        draw_circle(gc)
-        gc.restore_state()
+        with gc:
+            x,y = star_points[0]
+            gc.translate_ctm(x,y)
+            draw_circle(gc)
             
     if i > 1:
         points = star_points[:i]
-        gc.save_state()
-        x,y = points[0]
-        gc.move_to(x,y)        
-        for x,y in points[1:]:
-            gc.line_to(x,y)                      
-        gc.stroke_path()  
-        gc.restore_state()  
+        with gc:
+            x,y = points[0]
+            gc.move_to(x,y)        
+            for x,y in points[1:]:
+                gc.line_to(x,y)                      
+            gc.stroke_path()  
              
     """
     for x,y in points:
-        gc.save_state()
-        gc.translate_ctm(x,y)
-        draw_circle(gc)
-        gc.restore_state()
+        with gc:
+            gc.translate_ctm(x,y)
+            draw_circle(gc)
     """
     gc.save("star_path%d.bmp" % i)
     
@@ -101,20 +98,19 @@ modes = [FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE]
 pairs = zip(modes, offsets)
 center = array((50,50))
 for mode, offset in pairs:
-    gc.save_state()
-    xo,yo = center+offset
-    gc.translate_ctm(xo,yo)
-    gc.set_stroke_color(line_color)
-    gc.set_fill_color(fill_color)
-    gc.set_line_width(12)
-    x,y = star_points[0]
-    gc.move_to(x,y)
-    for x,y in star_points[1:]:
-        gc.line_to(x,y)    
-    gc.close_path()
-    gc.set_fill_color(fill_color)
-    gc.get_fill_color()
-    gc.draw_path(mode)
-    gc.restore_state()
+    with gc:
+        xo,yo = center+offset
+        gc.translate_ctm(xo,yo)
+        gc.set_stroke_color(line_color)
+        gc.set_fill_color(fill_color)
+        gc.set_line_width(12)
+        x,y = star_points[0]
+        gc.move_to(x,y)
+        for x,y in star_points[1:]:
+            gc.line_to(x,y)    
+        gc.close_path()
+        gc.set_fill_color(fill_color)
+        gc.get_fill_color()
+        gc.draw_path(mode)
 gc.save("star_path8.bmp")
     

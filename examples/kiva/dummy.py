@@ -52,35 +52,32 @@ def test_arc_to2(gc, x2, y2, radiusstep=25.0):
     
 
 def test_arc_curve(gc):
-    gc.save_state()
-    gc.translate_ctm(50.0, 50.0)
-    gc.rotate_ctm(PI/8)
-    gc.set_stroke_color(blue)
-    gc.rect(0.5, 0.5, 210, 210)
-    gc.stroke_path()
-    gc.set_stroke_color(black)
-    gc.set_line_width(1)
-    gc.move_to(50.5, 25.5)
-    gc.arc(50.5, 50.5, 50.0, 0.0, PI/2, False)
-    gc.move_to(100.5, 50.5)
-    gc.arc(100.5, 50.5, 50.0, 0.0, -PI/2*0.8, False)
-    gc.stroke_path()
-    gc.restore_state()
+    with gc:
+        gc.translate_ctm(50.0, 50.0)
+        gc.rotate_ctm(PI/8)
+        gc.set_stroke_color(blue)
+        gc.rect(0.5, 0.5, 210, 210)
+        gc.stroke_path()
+        gc.set_stroke_color(black)
+        gc.set_line_width(1)
+        gc.move_to(50.5, 25.5)
+        gc.arc(50.5, 50.5, 50.0, 0.0, PI/2, False)
+        gc.move_to(100.5, 50.5)
+        gc.arc(100.5, 50.5, 50.0, 0.0, -PI/2*0.8, False)
+        gc.stroke_path()
 
-    gc.save_state()
-    gc.translate_ctm(250.5, 50.5)
-    gc.set_stroke_color(blue)
-    gc.rect(0.5, 0.5, 250.0, 250.0)
-    gc.stroke_path()
-    gc.set_stroke_color(red)
-    gc.move_to(100.0, 100.0)
-    gc.line_to(100.0, 150.0)
-    gc.arc_to(100.0, 200.0, 150.0, 200.0, 50.0)
-    gc.line_to(200.0, 200.0)
-    gc.close_path()
-    gc.stroke_path()
-    gc.restore_state()
-
+    with gc:
+        gc.translate_ctm(250.5, 50.5)
+        gc.set_stroke_color(blue)
+        gc.rect(0.5, 0.5, 250.0, 250.0)
+        gc.stroke_path()
+        gc.set_stroke_color(red)
+        gc.move_to(100.0, 100.0)
+        gc.line_to(100.0, 150.0)
+        gc.arc_to(100.0, 200.0, 150.0, 200.0, 50.0)
+        gc.line_to(200.0, 200.0)
+        gc.close_path()
+        gc.stroke_path()
 
 def test_arc_to(gc):
     # We don't have compiled paths yet, so we simulate them by python functions
@@ -102,55 +99,50 @@ def test_arc_to(gc):
         gc.line_to(40,40)
 
     def whole_shebang(gc):
-        gc.save_state()
-        axes(gc)
-        box(gc)
-        gc.translate_ctm(0.0, 50.5)
-        arc(gc)
+        with gc:
+            axes(gc)
+            box(gc)
+            gc.translate_ctm(0.0, 50.5)
+            arc(gc)
 
-        gc.translate_ctm(50.5, 50.5)
-        gc.rotate_ctm(-PI/2)
-        arc(gc)
-        gc.rotate_ctm(PI/2)
+            gc.translate_ctm(50.5, 50.5)
+            gc.rotate_ctm(-PI/2)
+            arc(gc)
+            gc.rotate_ctm(PI/2)
 
-        gc.translate_ctm(50.5, -50.5)
-        gc.rotate_ctm(-PI)
-        arc(gc)
-        gc.rotate_ctm(PI)
+            gc.translate_ctm(50.5, -50.5)
+            gc.rotate_ctm(-PI)
+            arc(gc)
+            gc.rotate_ctm(PI)
 
-        gc.translate_ctm(-50.5, -50.5)
-        gc.rotate_ctm(-3*PI/2)
-        arc(gc)
-        gc.restore_state()
+            gc.translate_ctm(-50.5, -50.5)
+            gc.rotate_ctm(-3*PI/2)
+            arc(gc)
 
     gc.set_stroke_color(red)
     gc.set_line_width(1.0)
-    gc.save_state()
-    gc.translate_ctm(50.5, 300.5)
-    whole_shebang(gc)
-    gc.stroke_path()
+    with gc:
+        gc.translate_ctm(50.5, 300.5)
+        whole_shebang(gc)
+        gc.stroke_path()
 
-    gc.translate_ctm(130.5, 50.0)
-    gc.save_state()
-    gc.rotate_ctm(PI/6)
-    whole_shebang(gc)
-    gc.set_stroke_color(blue)
-    gc.stroke_path()
-    gc.restore_state()
+        gc.translate_ctm(130.5, 50.0)
+        with gc:
+            gc.rotate_ctm(PI/6)
+            whole_shebang(gc)
+            gc.set_stroke_color(blue)
+            gc.stroke_path()
 
-    gc.translate_ctm(130.5, 0.0)
-    gc.save_state()
-    gc.rotate_ctm(PI/3)
-    gc.scale_ctm(1.0, 2.0)
-    whole_shebang(gc)
-    gc.stroke_path()
-    gc.restore_state()
-    gc.restore_state()
+        gc.translate_ctm(130.5, 0.0)
+        with gc:
+            gc.rotate_ctm(PI/3)
+            gc.scale_ctm(1.0, 2.0)
+            whole_shebang(gc)
+            gc.stroke_path()
 
-    gc.save_state()
-    gc.translate_ctm(150.5, 20.5)
-    test_arc_to2(gc, 160.4, 76.5, 50.0)
-    gc.restore_state()
+    with gc:
+        gc.translate_ctm(150.5, 20.5)
+        test_arc_to2(gc, 160.4, 76.5, 50.0)
 
     gc.translate_ctm(120.5, 100.5)
     gc.scale_ctm(-1.0, 1.0)
@@ -195,31 +187,29 @@ def test_clip_stack(gc):
     img.clip_to_rects(main_rects)
     draw_sub_image(img, 200, 200);
     gc.draw_image(img, sub_windows[1])
-    img.save_state()
 
     # Second Clip
-    img.clear()
-    img.clip_to_rects(main_rects)
-    img.clip_to_rect(*vert_rect)
-    draw_sub_image(img, 200, 200)
-    gc.draw_image(img, sub_windows[2])
+    with img:
+        img.clear()
+        img.clip_to_rects(main_rects)
+        img.clip_to_rect(*vert_rect)
+        draw_sub_image(img, 200, 200)
+        gc.draw_image(img, sub_windows[2])
 
     # Pop back to first clip
-    img.restore_state()
     img.clear()
     draw_sub_image(img, 200, 200)
     gc.draw_image(img, sub_windows[3])
 
     # Adding a disjoing set of rects
     img.clear()
-    img.save_state()
-    img.clip_to_rects(main_rects)
-    img.clip_to_rects(disjoint_rects)
-    draw_sub_image(img, 200, 200)
-    gc.draw_image(img, sub_windows[4])
+    with img:
+        img.clip_to_rects(main_rects)
+        img.clip_to_rects(disjoint_rects)
+        draw_sub_image(img, 200, 200)
+        gc.draw_image(img, sub_windows[4])
 
     # Pop back to first clip
-    img.restore_state()
     img.clear()
     draw_sub_image(img, 200, 200)
     gc.draw_image(img, sub_windows[5])
@@ -241,8 +231,6 @@ def test_handling_text(gc):
     gc.set_text_matrix(txtRot)
 
     gc.show_text("inverted")
-    
-    
 
 
 
@@ -255,4 +243,3 @@ if __name__ == "__main__":
         img = GraphicsContext((800, 600))
         test_func(img)
         img.save(filename)
-            

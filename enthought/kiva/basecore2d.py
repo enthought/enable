@@ -423,6 +423,17 @@ class GraphicsContextBase(object):
         self.state = self.state_stack.pop(-1)
         self.active_subpath.append( (LOAD_CTM, (self.state.ctm,)) )                          
         self.path_transform_indices.append(len(self.active_subpath)-1)
+
+    #----------------------------------------------------------------
+    # context manager interface
+    #----------------------------------------------------------------
+
+    def __enter__(self):
+        self.save_state()
+        
+    def __exit__(self, type, value, traceback):
+        self.restore_state()
+
     #----------------------------------------------------------------
     # Manipulate graphics state attributes.
     #----------------------------------------------------------------

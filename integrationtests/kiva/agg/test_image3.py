@@ -33,30 +33,27 @@ def main():
     print '1st:', t2-t1
     
     t1 = time.clock()
-    gc.save_state()
-    gc.translate_ctm(50,50)
-    gc.rotate_ctm(pi/4)
-    draw_text(gc,text,bbox,text_color,bbox_color)
-    gc.restore_state()
+    with gc:
+        gc.translate_ctm(50,50)
+        gc.rotate_ctm(pi/4)
+        draw_text(gc,text,bbox,text_color,bbox_color)
     t2 = time.clock()
     print '2nd:', t2-t1
     
     t1 = time.clock()
-    gc.save_state()
-    gc.translate_ctm(100,100)
-    gc.scale_ctm(4.0,2.0)
-    draw_text(gc,text,bbox,text_color,bbox_color)
-    gc.restore_state()
+    with gc:
+        gc.translate_ctm(100,100)
+        gc.scale_ctm(4.0,2.0)
+        draw_text(gc,text,bbox,text_color,bbox_color)
     t2 = time.clock()
     print '3rd:', t2-t1
     
     t1 = time.clock()
-    gc.save_state()
-    gc.translate_ctm(200,200)
-    gc.scale_ctm(4.0,2.0)
-    gc.rotate_ctm(pi/4)
-    draw_text(gc,text,bbox,text_color,bbox_color)
-    gc.restore_state()
+    with gc:
+        gc.translate_ctm(200,200)
+        gc.scale_ctm(4.0,2.0)
+        gc.rotate_ctm(pi/4)
+        draw_text(gc,text,bbox,text_color,bbox_color)
     t2 = time.clock()
     print '4th:', t2-t1
     print 'tot:', time.clock() - tot1
@@ -126,16 +123,15 @@ def main3():
     gc.show_text("SUN")
     t1 = time.clock()
     for i in range(N):
-        gc.save_state()
-        #gc.rotate_ctm(.2)
-        gc.set_alpha(1.0)
-        gc.draw_image(agg_img)
-        #print pil_img.getpixel((300,300)), img[300,300], gc.bmp_array[300,300]
-        gc.translate_ctm(150,300)
-        gc.scale_ctm(10,10)
-        gc.set_fill_color((0.0,0,1.0,.25))
-        #gc.show_text("SUN")
-        gc.restore_state()
+        with gc:
+            #gc.rotate_ctm(.2)
+            gc.set_alpha(1.0)
+            gc.draw_image(agg_img)
+            #print pil_img.getpixel((300,300)), img[300,300], gc.bmp_array[300,300]
+            gc.translate_ctm(150,300)
+            gc.scale_ctm(10,10)
+            gc.set_fill_color((0.0,0,1.0,.25))
+            #gc.show_text("SUN")
     t2 = time.clock()
     print "images per second: %g" % (N/(t2-t1))
     gc.save('sun3.bmp')
@@ -153,16 +149,15 @@ def main4():
     N = 1
     t1 = time.clock()
     for i in range(N):
-        gc.save_state()
-        #gc.rotate_ctm(.2)
-        #gc.set_alpha(0.5)
-        gc.draw_image(agg_img)
-        #print pil_img.getpixel((300,300)), img[300,300], gc.bmp_array[300,300]
-        gc.translate_ctm(150,300)
-        gc.scale_ctm(10,10)
-        gc.set_fill_color((0.0,0,1.0,.5))
-        #gc.show_text("SUN")
-        gc.restore_state()
+        with gc:
+            #gc.rotate_ctm(.2)
+            #gc.set_alpha(0.5)
+            gc.draw_image(agg_img)
+            #print pil_img.getpixel((300,300)), img[300,300], gc.bmp_array[300,300]
+            gc.translate_ctm(150,300)
+            gc.scale_ctm(10,10)
+            gc.set_fill_color((0.0,0,1.0,.5))
+            #gc.show_text("SUN")
     t2 = time.clock()
     print "images per second: %g" % (N/(t2-t1))
     gc.save('sun2.bmp')

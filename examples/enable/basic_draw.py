@@ -12,13 +12,12 @@ class Box(Component):
     resizable = ""
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
-        gc.save_state()
-        gc.set_fill_color((1.0, 0.0, 0.0, 1.0))
-        dx, dy = self.bounds
-        x, y = self.position
-        gc.rect(x, y, dx, dy)
-        gc.fill_path()
-        gc.restore_state()
+        with gc:
+            gc.set_fill_color((1.0, 0.0, 0.0, 1.0))
+            dx, dy = self.bounds
+            x, y = self.position
+            gc.rect(x, y, dx, dy)
+            gc.fill_path()
 
 class MyFrame(DemoFrame):
     def _create_window(self):

@@ -41,45 +41,43 @@ class FingerCanvas(Canvas):
     def do_draw(self,gc):
         sz = self.GetClientSizeTuple()
         gc.set_font(str_to_font("modern 10"))
-        gc.save_state()
-        
-        t1 = time.clock()
-        self.finger1.set_image_interpolation(self.model.interpolation)
-        img_box = (0, 0, sz[0], sz[1])
-        gc.draw_image(self.finger1, img_box)
-        t2 = time.clock()
-        self.image_time = t2 - t1
-        
-        t1 = time.clock()        
-        # default to centered in window
-        gc.translate_ctm(sz[0]/2,sz[1]/2)
+        with gc:
+            t1 = time.clock()
+            self.finger1.set_image_interpolation(self.model.interpolation)
+            img_box = (0, 0, sz[0], sz[1])
+            gc.draw_image(self.finger1, img_box)
+            t2 = time.clock()
+            self.image_time = t2 - t1
+            
+            t1 = time.clock()        
+            # default to centered in window
+            gc.translate_ctm(sz[0]/2,sz[1]/2)
 
-        # now handle user offsets.
-        gc.translate_ctm(self.model.x*sz[0], self.model.y*sz[1])
+            # now handle user offsets.
+            gc.translate_ctm(self.model.x*sz[0], self.model.y*sz[1])
 
-        # the lion is upside-down to start with -- turn right side up.
-        gc.rotate_ctm(3.1416)
+            # the lion is upside-down to start with -- turn right side up.
+            gc.rotate_ctm(3.1416)
 
-        # now add the user rotation setting
-        gc.rotate_ctm(self.model.rotation * 3.1416/180.)
-        gc.scale_ctm(self.model.scale, self.model.scale)
-        gc.set_alpha(self.model.opacity)
+            # now add the user rotation setting
+            gc.rotate_ctm(self.model.rotation * 3.1416/180.)
+            gc.scale_ctm(self.model.scale, self.model.scale)
+            gc.set_alpha(self.model.opacity)
 
-        self.finger2.set_image_interpolation(self.model.interpolation)
-        gc.draw_image(self.finger2)
-        t2 = time.clock()
-        self.lion_time = t2 - t1
-        gc.restore_state()
-        gc.save_state()
+            self.finger2.set_image_interpolation(self.model.interpolation)
+            gc.draw_image(self.finger2)
+            t2 = time.clock()
+            self.lion_time = t2 - t1
 
-        self.total_paint_time = (self.image_time + self.lion_time + 
-                                 self.blit_time + self.clear_time)
-        text = "total time: %3.3f" % self.total_paint_time
-        gc.set_fill_color((1,1,1))
-        gc.show_text(text, (10, sz[1] - 20))
-        text = "frames/sec: %3.3f" % (1.0/self.total_paint_time)
-        gc.show_text(text, (10, sz[1] - 40))
-        gc.restore_state()
+        with gc:
+            self.total_paint_time = (self.image_time + self.lion_time + 
+                                     self.blit_time + self.clear_time)
+            text = "total time: %3.3f" % self.total_paint_time
+            gc.set_fill_color((1,1,1))
+            gc.show_text(text, (10, sz[1] - 20))
+            text = "frames/sec: %3.3f" % (1.0/self.total_paint_time)
+            gc.show_text(text, (10, sz[1] - 40))
+
         
 class FingerCanvasWindow(wx.Frame):
     def __init__(self, id=-1, title='Kiva wxPython Demo',size=(600,800)):

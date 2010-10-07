@@ -23,8 +23,7 @@ class EventTracer(AbstractOverlay):
         self.component.request_redraw()
 
     def overlay(self, component, gc, view_bounds, mode):
-        gc.save_state()
-        try:
+        with gc:
             gc.translate_ctm(self.x, self.y)
             if self.angle != 0:
                 gc.rotate_ctm(self.angle * 3.14159/180.)
@@ -35,8 +34,6 @@ class EventTracer(AbstractOverlay):
             gc.move_to(0, -self.size)
             gc.line_to(0, self.size)
             gc.stroke_path()
-        finally:
-            gc.restore_state()
 
 
 class MyFrame(DemoFrame):

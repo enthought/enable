@@ -43,45 +43,43 @@ class LionCanvas(Canvas):
 
     def do_draw(self,gc):
         sz = self.GetClientSizeTuple()
-        gc.save_state()
-        #gc.rotate_ctm(3.1416/4)
-        t1 = time.clock()
-        if self.model.use_image:
-            gc.draw_image(self.serengeti,(0,0,sz[0],sz[1]))
-        t2 = time.clock()
-        self.image_time = t2 - t1
-        
-        t1 = time.clock()        
-        # default to centered in window
-        gc.translate_ctm(sz[0]/2,sz[1]/2)
-        # now handle user offsets.
-        gc.translate_ctm(self.model.x*sz[0], self.model.y*sz[1])
-        # the lion is upside-down to start with -- turn right side up.
-        gc.rotate_ctm(3.1416)
-        # now add the user rotation setting
-        gc.rotate_ctm(self.model.rotation * 3.1416/180.)
-        gc.scale_ctm(self.model.scale,self.model.scale)
-        for path,color in self.path_and_color:            
-            gc.begin_path()
-            gc.add_path(path)
-            gc.set_fill_color(color)
-            gc.set_alpha(self.model.opacity)
-            gc.fill_path()       
-        t2 = time.clock()
-        self.lion_time = t2 - t1
-        gc.restore_state()
-        gc.save_state()
-        gc.set_font(self.font)
-        self.total_paint_time = (self.image_time + self.lion_time + 
-                                 self.blit_time + self.clear_time)
-        text = "total time: %3.3f" % self.total_paint_time
-        gc.show_text(text,(10,sz[1] - 20))
-        if self.total_paint_time > 1E-8:
-            text = "frames/sec: %3.3f" % (1.0/self.total_paint_time)
-        else:
-            text = "frames/sec: -----"
-        gc.show_text(text,(10,sz[1] - 40))
-        gc.restore_state()
+        with gc:
+            #gc.rotate_ctm(3.1416/4)
+            t1 = time.clock()
+            if self.model.use_image:
+                gc.draw_image(self.serengeti,(0,0,sz[0],sz[1]))
+            t2 = time.clock()
+            self.image_time = t2 - t1
+            
+            t1 = time.clock()        
+            # default to centered in window
+            gc.translate_ctm(sz[0]/2,sz[1]/2)
+            # now handle user offsets.
+            gc.translate_ctm(self.model.x*sz[0], self.model.y*sz[1])
+            # the lion is upside-down to start with -- turn right side up.
+            gc.rotate_ctm(3.1416)
+            # now add the user rotation setting
+            gc.rotate_ctm(self.model.rotation * 3.1416/180.)
+            gc.scale_ctm(self.model.scale,self.model.scale)
+            for path,color in self.path_and_color:            
+                gc.begin_path()
+                gc.add_path(path)
+                gc.set_fill_color(color)
+                gc.set_alpha(self.model.opacity)
+                gc.fill_path()       
+            t2 = time.clock()
+            self.lion_time = t2 - t1
+        with gc:
+            gc.set_font(self.font)
+            self.total_paint_time = (self.image_time + self.lion_time + 
+                                     self.blit_time + self.clear_time)
+            text = "total time: %3.3f" % self.total_paint_time
+            gc.show_text(text,(10,sz[1] - 20))
+            if self.total_paint_time > 1E-8:
+                text = "frames/sec: %3.3f" % (1.0/self.total_paint_time)
+            else:
+                text = "frames/sec: -----"
+            gc.show_text(text,(10,sz[1] - 40))
         
 class LionCanvasWindow(wx.Frame):
     def __init__(self, id=-1, title='Lion Example',size=(600,800)):

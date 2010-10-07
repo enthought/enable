@@ -25,17 +25,16 @@ class TestWindow(Window):
     
     def draw(self):
         gc = self.gc
-        gc.save_state()
-        gc.clear((0, 1, 0, 1))
-        gc.set_stroke_color((1,1,1,1))
-        gc.set_line_width(2)
-        pts = array([[50, 50], [50,100], [100,100], [100,50]])
-        gc.begin_path()
-        gc.lines(pts)
-        gc.close_path()
-        gc.draw_path(STROKE)
-        gc.flush()
-        gc.restore_state()
+        with gc:
+            gc.clear((0, 1, 0, 1))
+            gc.set_stroke_color((1,1,1,1))
+            gc.set_line_width(2)
+            pts = array([[50, 50], [50,100], [100,100], [100,50]])
+            gc.begin_path()
+            gc.lines(pts)
+            gc.close_path()
+            gc.draw_path(STROKE)
+            gc.flush()
 
 
 def main():

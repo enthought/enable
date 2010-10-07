@@ -19,12 +19,11 @@ gc.set_stroke_color((1.0,0.0,0.0))
 gc.set_fill_color((0.0,1.0,0.0))
 
 for i in range(0,600,5):
-    gc.save_state()
-    gc.translate_ctm(i,i)
-    gc.rotate_ctm(i*pi/180.)
-    add_star(gc)
-    gc.draw_path()
-    gc.restore_state()
+    with gc:
+        gc.translate_ctm(i,i)
+        gc.rotate_ctm(i*pi/180.)
+        add_star(gc)
+        gc.draw_path()
 
 gc.set_fill_color((0.5,0.5,0.5))
 gc.rect(150,150,200,200)

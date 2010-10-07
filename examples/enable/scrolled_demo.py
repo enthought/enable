@@ -34,14 +34,13 @@ class Circle(Component):
         return
     
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
-        gc.save_state()
-        gc.set_fill_color(self.color)
-        dx, dy = self.bounds
-        x, y = self.position
-        radius = min(dx/2.0, dy/2.0)
-        gc.arc(x+dx/2.0, y+dy/2.0, radius, 0.0, 2*3.14159)
-        gc.fill_path()
-        gc.restore_state()
+        with gc:
+            gc.set_fill_color(self.color)
+            dx, dy = self.bounds
+            x, y = self.position
+            radius = min(dx/2.0, dy/2.0)
+            gc.arc(x+dx/2.0, y+dy/2.0, radius, 0.0, 2*3.14159)
+            gc.fill_path()
         return
     
     def normal_left_down(self, event):
@@ -87,14 +86,13 @@ class LightCircle(Component):
     radius = Float(1.0)
     
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
-        gc.save_state()
-        gc.set_fill_color(self.color[0:3] + (self.color[3]*0.3,))
-        dx, dy = self.bounds
-        x, y = self.position
-        radius = min(dx/2.0, dy/2.0)
-        gc.arc(x+dx/2.0, y+dy/2.0, radius, 0.0, 2*3.14159)
-        gc.fill_path()
-        gc.restore_state()
+        with gc:
+            gc.set_fill_color(self.color[0:3] + (self.color[3]*0.3,))
+            dx, dy = self.bounds
+            x, y = self.position
+            radius = min(dx/2.0, dy/2.0)
+            gc.arc(x+dx/2.0, y+dy/2.0, radius, 0.0, 2*3.14159)
+            gc.fill_path()
         return
 
 class DashedCircle(Component):
@@ -105,16 +103,15 @@ class DashedCircle(Component):
     line_dash = array([2.0, 2.0])
     
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
-        gc.save_state()
-        gc.set_fill_color(self.color)
-        dx, dy = self.bounds
-        x, y = self.position
-        radius = min(dx/2.0, dy/2.0)
-        gc.arc(x+dx/2.0, y+dy/2.0, radius, 0.0, 2*3.14159)
-        gc.set_stroke_color(self.color[0:3] + (self.color[3]*0.8,))
-        gc.set_line_dash(self.line_dash)
-        gc.stroke_path()
-        gc.restore_state()
+        with gc:
+            gc.set_fill_color(self.color)
+            dx, dy = self.bounds
+            x, y = self.position
+            radius = min(dx/2.0, dy/2.0)
+            gc.arc(x+dx/2.0, y+dy/2.0, radius, 0.0, 2*3.14159)
+            gc.set_stroke_color(self.color[0:3] + (self.color[3]*0.8,))
+            gc.set_line_dash(self.line_dash)
+            gc.stroke_path()
         return
 
 

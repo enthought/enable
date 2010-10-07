@@ -62,51 +62,46 @@ class CapSampler:
                 
     def draw(self,gc):
         "Draw a bunch of lines with different line cap settings."
-        gc.save_state()    
-        gc.set_stroke_color((0,0,0,1))
+        with gc:
+            gc.set_stroke_color((0,0,0,1))
     
-        widths = [1, 3, 5, 10, 20]
-        caps   = [constants.CAP_ROUND, constants.CAP_BUTT, constants.CAP_SQUARE]
-        gc.translate_ctm(20,20)
-        line_length = 120
+            widths = [1, 3, 5, 10, 20]
+            caps   = [constants.CAP_ROUND, constants.CAP_BUTT, constants.CAP_SQUARE]
+            gc.translate_ctm(20,20)
+            line_length = 120
     
-        gc.save_state()
-        for cap in caps:
-            gc.set_line_cap(cap)
-            for width in widths:    
-                gc.set_line_width(width)
-                gc.translate_ctm(0,10+width)
-                gc.begin_path()
-                gc.move_to(0,0)
-                gc.line_to(line_length,0)
-                gc.stroke_path()            
-                # Need a little more sophisticated text placement tools.
-                gc.set_font_size(6)
-                gc.set_text_position(line_length+13,-3)
-                gc.show_text("%s" % width)
-                
-            gc.set_font_size(10)
-            gc.set_text_position(5,14)
-            gc.show_text("%s" % cap_names[cap])
-            gc.translate_ctm(0,20)
+            with gc:
+                for cap in caps:
+                    gc.set_line_cap(cap)
+                    for width in widths:    
+                        gc.set_line_width(width)
+                        gc.translate_ctm(0,10+width)
+                        gc.begin_path()
+                        gc.move_to(0,0)
+                        gc.line_to(line_length,0)
+                        gc.stroke_path()            
+                        # Need a little more sophisticated text placement tools.
+                        gc.set_font_size(6)
+                        gc.set_text_position(line_length+13,-3)
+                        gc.show_text("%s" % width)
 
-        gc.set_font_size(12)
-        gc.set_text_position(-10,20)
-        gc.show_text("end cap example")
+                    gc.set_font_size(10)
+                    gc.set_text_position(5,14)
+                    gc.show_text("%s" % cap_names[cap])
+                    gc.translate_ctm(0,20)
 
-        # restore state to its original form when it was passed in.
-        gc.restore_state()
+                gc.set_font_size(12)
+                gc.set_text_position(-10,20)
+                gc.show_text("end cap example")
         
-        # draw two vertical lines indicating the ends of our lines.
-        sz = self.size()
-        gc.begin_path()
-        gc.move_to(0          ,     0)
-        gc.line_to(0          , sz[1]-60)
-        gc.move_to(line_length,     0)
-        gc.line_to(line_length, sz[1]-60)
-        gc.stroke_path()
-
-        gc.restore_state()
+            # draw two vertical lines indicating the ends of our lines.
+            sz = self.size()
+            gc.begin_path()
+            gc.move_to(0          ,     0)
+            gc.line_to(0          , sz[1]-60)
+            gc.move_to(line_length,     0)
+            gc.line_to(line_length, sz[1]-60)
+            gc.stroke_path()
 
     
 class DashSampler:
@@ -126,31 +121,30 @@ class DashSampler:
     def draw(self,gc):
         dash_patterns = outer_join(self.dash_values[1:], self.dash_values)
         line_length = 120
-        gc.save_state()
-        gc.set_line_cap(self.line_cap)
-        gc.translate_ctm(10,20)
-        gc.set_stroke_color((0,0,0,1))
-        gc.set_line_width(self.width)
-        
-        for dash in dash_patterns:
-            gc.set_line_dash(dash)        
-            gc.begin_path()
-            gc.move_to(0,  0)
-            gc.line_to(line_length,0)
-            gc.stroke_path()
-
-            #draw dash size next to line
-            gc.set_font_size(6)
-            gc.set_text_position(line_length+7,-3)
-            gc.show_text(str(dash)[1:-1])
+        with gc:
+            gc.set_line_cap(self.line_cap)
+            gc.translate_ctm(10,20)
+            gc.set_stroke_color((0,0,0,1))
+            gc.set_line_width(self.width)
             
-            gc.translate_ctm(0,self.separation)
+            for dash in dash_patterns:
+                gc.set_line_dash(dash)        
+                gc.begin_path()
+                gc.move_to(0,  0)
+                gc.line_to(line_length,0)
+                gc.stroke_path()
 
-        gc.set_font_size(12)
-        gc.set_text_position(-5,10)
-        gc.show_text("dash %s w=%d" % (cap_names[self.line_cap],
-                                                   self.width))
-        gc.restore_state()
+                #draw dash size next to line
+                gc.set_font_size(6)
+                gc.set_text_position(line_length+7,-3)
+                gc.show_text(str(dash)[1:-1])
+                
+                gc.translate_ctm(0,self.separation)
+
+            gc.set_font_size(12)
+            gc.set_text_position(-5,10)
+            gc.show_text("dash %s w=%d" % (cap_names[self.line_cap],
+                                                       self.width))
 
 
 class JoinSampler:
@@ -169,48 +163,44 @@ class JoinSampler:
 
     def draw(self,gc):        
         width = 10
-        gc.save_state()
-    
-        gc.set_line_width(width)
-        gc.set_line_cap(constants.CAP_BUTT)
-        
-        joins = [constants.JOIN_MITER, constants.JOIN_BEVEL, 
-                 constants.JOIN_ROUND]
+        with gc:
+            gc.set_line_width(width)
+            gc.set_line_cap(constants.CAP_BUTT)
+            
+            joins = [constants.JOIN_MITER, constants.JOIN_BEVEL, 
+                     constants.JOIN_ROUND]
 
-        gc.translate_ctm(20,40)                 
-        for join in joins:
-            # we don't want the wedges filled --> alpha=0.
-            # (we could use stroke_path instead draw_path)
-            gc.set_fill_color((0,0,0,0))
-            gc.set_line_join(join)
-            gc.begin_path()
-            gc.move_to(0,  0)
-            gc.line_to(30, 0)
-            gc.line_to(30 , 30)
-            gc.stroke_path()
-            
-            #draw dash size next to line
-            gc.set_fill_color((0,0,0,1)) # fill color defines text color.
-            gc.set_font_size(8)
-            gc.set_text_position(5,40)
-            gc.show_text(join_names[join])
-            
-            gc.translate_ctm(40,0)
+            gc.translate_ctm(20,40)                 
+            for join in joins:
+                # we don't want the wedges filled --> alpha=0.
+                # (we could use stroke_path instead draw_path)
+                gc.set_fill_color((0,0,0,0))
+                gc.set_line_join(join)
+                gc.begin_path()
+                gc.move_to(0,  0)
+                gc.line_to(30, 0)
+                gc.line_to(30 , 30)
+                gc.stroke_path()
+                
+                #draw dash size next to line
+                gc.set_fill_color((0,0,0,1)) # fill color defines text color.
+                gc.set_font_size(8)
+                gc.set_text_position(5,40)
+                gc.show_text(join_names[join])
+                
+                gc.translate_ctm(40,0)
         
-        gc.restore_state()
-        
-        gc.save_state()
-        gc.set_font_size(12)
-        gc.set_text_position(20,150)
-        gc.show_text("Line joins")
-        gc.set_text_position(20,130)
-        gc.show_text("width=%d" % width)
-        #added to show text extents
-        #gc.set_text_position(20,110)
-        #text_w,text_h = gc.get_text_extent("foofoo")
-        #gc.show_text("text extents" + " " + str(text_w) + " " + str(text_h))
-        #end of addition for text extents
-        gc.restore_state()
+        with gc:
+            gc.set_font_size(12)
+            gc.set_text_position(20,150)
+            gc.show_text("Line joins")
+            gc.set_text_position(20,130)
+            gc.show_text("width=%d" % width)
+            #added to show text extents
+            #gc.set_text_position(20,110)
+            #text_w,text_h = gc.get_text_extent("foofoo")
+            #gc.show_text("text extents" + " " + str(text_w) + " " + str(text_h))
+            #end of addition for text extents
 
 
 class StarSampler:
@@ -255,34 +245,31 @@ class StarSampler:
         self.scale = scale
             
     def draw(self,gc):
-        gc.save_state()
-        # The rotation isn't handled correctly on most platforms.
-        
-        # fill stars with red
-        gc.set_fill_color((1.0,0,0,1))
-        
-        # outline stars with a wide black line
-        gc.set_stroke_color((0,0,0,1))
-        gc.set_line_width(self.line_width)
+        with gc:
+            # The rotation isn't handled correctly on most platforms.
+            
+            # fill stars with red
+            gc.set_fill_color((1.0,0,0,1))
+            
+            # outline stars with a wide black line
+            gc.set_stroke_color((0,0,0,1))
+            gc.set_line_width(self.line_width)
 
-        gc.begin_path()
-        for x,y in self.star_pos:
-            gc.save_state()           
-            gc.translate_ctm(x,y)
-            gc.rotate_ctm(self.rotate)
-            gc.scale_ctm(self.scale,self.scale)
-            self.add_symbol(gc) 
-            gc.restore_state()
-        gc.draw_path(constants.FILL_STROKE)
-        
-        gc.set_fill_color((0,0,0,1))
-        gc.set_font_size(12)
-        gc.set_text_position(5,180)
-        gc.show_text("Stars, count=%d" % self.star_count)
-        gc.set_text_position(5,160)
-        gc.show_text("scale=%2.1f" %  self.scale)
-        
-        gc.restore_state()
+            gc.begin_path()
+            for x,y in self.star_pos:
+                with gc:
+                    gc.translate_ctm(x,y)
+                    gc.rotate_ctm(self.rotate)
+                    gc.scale_ctm(self.scale,self.scale)
+                    self.add_symbol(gc) 
+            gc.draw_path(constants.FILL_STROKE)
+            
+            gc.set_fill_color((0,0,0,1))
+            gc.set_font_size(12)
+            gc.set_text_position(5,180)
+            gc.show_text("Stars, count=%d" % self.star_count)
+            gc.set_text_position(5,160)
+            gc.show_text("scale=%2.1f" %  self.scale)
 
 
 class NoiseSampler:
@@ -300,36 +287,35 @@ class NoiseSampler:
         return 170*self.scale,250*self.scale
         
     def draw(self,gc):
-        gc.save_state()
-        gc.translate_ctm(20,20)
-        gc.scale_ctm(self.scale,self.scale)
-        # transparent fill
-        gc.set_fill_color((0,0,0,0))
-        
-        # draw green line.
-        gc.set_stroke_color((0,1,0,1))
-        gc.set_line_width(1)
-        
-        gc.begin_path()
-        gc.lines(self.points)        
-        gc.draw_path(constants.STROKE)
-        
-        #black border
-        # hmm. This doesn't fit around the "plot" on wxPython
-        # like I expected it to.
-        gc.set_stroke_color((0,0,0,1))
-        gc.begin_path()
-        gc.rect(0,0,100,100)
-        gc.draw_path(constants.STROKE)
-        
-        gc.set_fill_color((0,0,0,1))
-        gc.set_font_size(12)
-        gc.set_text_position(5,180)
-        gc.show_text("Noise Plot")
-        gc.set_text_position(5,160)
-        gc.show_text("points=%d" %  self.point_count)
+        with gc:
+            gc.translate_ctm(20,20)
+            gc.scale_ctm(self.scale,self.scale)
+            # transparent fill
+            gc.set_fill_color((0,0,0,0))
+            
+            # draw green line.
+            gc.set_stroke_color((0,1,0,1))
+            gc.set_line_width(1)
+            
+            gc.begin_path()
+            gc.lines(self.points)        
+            gc.draw_path(constants.STROKE)
+            
+            #black border
+            # hmm. This doesn't fit around the "plot" on wxPython
+            # like I expected it to.
+            gc.set_stroke_color((0,0,0,1))
+            gc.begin_path()
+            gc.rect(0,0,100,100)
+            gc.draw_path(constants.STROKE)
+            
+            gc.set_fill_color((0,0,0,1))
+            gc.set_font_size(12)
+            gc.set_text_position(5,180)
+            gc.show_text("Noise Plot")
+            gc.set_text_position(5,160)
+            gc.show_text("points=%d" %  self.point_count)
 
-        gc.restore_state()
     
 class PolygonSampler:
 
@@ -340,35 +326,31 @@ class PolygonSampler:
         return 170,250
 
     def draw(self,gc):
-        gc.save_state()
-        gc.translate_ctm(10,20)
-        # green background
-        # black outline
-        gc.set_stroke_color((0,0,0,1))
-        gc.set_fill_color((0,1,0,1))
-        gc.set_line_width(3)
-        
-        draw_modes = [constants.FILL, constants.EOF_FILL, constants.STROKE, 
-                      constants.FILL_STROKE, constants.EOF_FILL_STROKE]
-        
-        gc.save_state()        
-        for mode in draw_modes:
-            gc.begin_path()
-            gc.lines(self.symbol_pts)
-            gc.draw_path(mode)
-            gc.translate_ctm(0,40)
-        gc.restore_state()
-        
-        gc.translate_ctm(60,0)                    
+        with gc:
+            gc.translate_ctm(10,20)
+            # green background
+            # black outline
+            gc.set_stroke_color((0,0,0,1))
+            gc.set_fill_color((0,1,0,1))
+            gc.set_line_width(3)
+            
+            draw_modes = [constants.FILL, constants.EOF_FILL, constants.STROKE, 
+                          constants.FILL_STROKE, constants.EOF_FILL_STROKE]
+            with gc:
+                for mode in draw_modes:
+                    gc.begin_path()
+                    gc.lines(self.symbol_pts)
+                    gc.draw_path(mode)
+                    gc.translate_ctm(0,40)
+            
+            gc.translate_ctm(60,0)                    
 
-        for mode in draw_modes:
-            gc.begin_path()
-            gc.lines(self.symbol_pts)
-            gc.close_path()
-            gc.draw_path(mode)
-            gc.translate_ctm(0,40)
-
-        gc.restore_state()
+            for mode in draw_modes:
+                gc.begin_path()
+                gc.lines(self.symbol_pts)
+                gc.close_path()
+                gc.draw_path(mode)
+                gc.translate_ctm(0,40)
 
 
 class SamplerCanvas(Canvas):
@@ -395,44 +377,41 @@ class SamplerCanvas(Canvas):
        
     def do_draw(self, gc, vis_rgn=None):
         gc.set_font(self.font)
-        gc.save_state()
-        w,h = self.size()
-        # This approximates a .5 inch or so border so that printers
-        # that need the border will still print the entire image.
-        gc.translate_ctm(.06*w,.06*h)        
-        for row in self.samples:
-            max_sy = 0
-            gc.save_state()
-            for sample in row:            
-                t1 = time.clock()            
-                gc.save_state()
-                sample.draw(gc)
-                gc.restore_state()
-                t2 = time.clock()
-                
-                # stamp the example with a run-time
-                gc.save_state()
-                gc.set_text_position(60,5)
-                gc.set_font_size(8)
-                gc.show_text("draw time: %3.2f" % (t2-t1))
-                
-                # draw border around sample
-                sx,sy = sample.size()
-                gc.begin_path()                
-                gc.rect(0,0,sx,sy)
-                gc.stroke_path()
+        with gc:
+            w,h = self.size()
+            # This approximates a .5 inch or so border so that printers
+            # that need the border will still print the entire image.
+            gc.translate_ctm(.06*w,.06*h)        
+            for row in self.samples:
+                max_sy = 0
+                with gc:
+                    for sample in row:            
+                        t1 = time.clock()            
+                        with gc:
+                            sample.draw(gc)
+                        t2 = time.clock()
+                        
+                        # stamp the example with a run-time
+                        with gc:
+                            gc.set_text_position(60,5)
+                            gc.set_font_size(8)
+                            gc.show_text("draw time: %3.2f" % (t2-t1))
+                            
+                            # draw border around sample
+                            sx,sy = sample.size()
+                            gc.begin_path()                
+                            gc.rect(0,0,sx,sy)
+                            gc.stroke_path()
 
-                gc.restore_state()                                
-                gc.translate_ctm(sx,0)
-                max_sy = max(max_sy,sy)        
-            
-            gc.restore_state()                
-            gc.translate_ctm(0,max_sy)
+                        gc.translate_ctm(sx,0)
+                        max_sy = max(max_sy,sy)        
+                
+                gc.translate_ctm(0,max_sy)
 
-        gc.restore_state()
         gc.flush()
         gc.synchronize()
         return
+
 
 class SamplerWindow(CanvasWindow):
     """

@@ -23,22 +23,21 @@ class Box(Component):
     resizable = ""
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
-        gc.save_state()
-        if self.event_state == "moving":
-            gc.set_fill_color(self.moving_color)
-        else:
-            gc.set_fill_color(self.fill_color)
-        dx, dy = self.bounds
-        x, y = self.position
-        gc.rect(x, y, dx, dy)
-        gc.fill_path()
+        with gc:
+            if self.event_state == "moving":
+                gc.set_fill_color(self.moving_color)
+            else:
+                gc.set_fill_color(self.fill_color)
+            dx, dy = self.bounds
+            x, y = self.position
+            gc.rect(x, y, dx, dy)
+            gc.fill_path()
+            
+            # draw line around outer box
+            gc.set_stroke_color((0,0,0,1))
+            gc.rect(self.outer_x, self.outer_y, self.outer_width, self.outer_height)
+            gc.stroke_path()
         
-        # draw line around outer box
-        gc.set_stroke_color((0,0,0,1))
-        gc.rect(self.outer_x, self.outer_y, self.outer_width, self.outer_height)
-        gc.stroke_path()
-        
-        gc.restore_state()
         return
         
     def normal_key_pressed(self, event):

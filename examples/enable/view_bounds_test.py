@@ -10,13 +10,12 @@ from enthought.enable.base import empty_rectangle, intersect_bounds
 
 class Box(Component):
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
-        gc.save_state()
-        gc.set_fill_color((1.0, 0.0, 0.0, 1.0))
-        dx, dy = self.bounds
-        x, y = self.position
-        gc.rect(x, y, dx, dy)
-        gc.fill_path()
-        gc.restore_state()
+        with gc:
+            gc.set_fill_color((1.0, 0.0, 0.0, 1.0))
+            dx, dy = self.bounds
+            x, y = self.position
+            gc.rect(x, y, dx, dy)
+            gc.fill_path()
         return
 
 class VerboseContainer(Container):
@@ -29,12 +28,11 @@ class VerboseContainer(Container):
     fit_window = False
     
     def _draw_container_mainlayer(self, gc, view_bounds, mode="default"):
-        gc.save_state()
-        gc.set_fill_color((1.0, 1.0, 1.0, 1.0))
-        gc.set_stroke_color((1.0, 1.0, 1.0, 1.0))
-        gc.rect(self.x, self.y, self.width, self.height)
-        gc.fill_path()
-        gc.restore_state()
+        with gc:
+            gc.set_fill_color((1.0, 1.0, 1.0, 1.0))
+            gc.set_stroke_color((1.0, 1.0, 1.0, 1.0))
+            gc.rect(self.x, self.y, self.width, self.height)
+            gc.fill_path()
 
         if view_bounds:
             v = view_bounds
@@ -42,8 +40,7 @@ class VerboseContainer(Container):
         else:
             new_bounds = None
         
-        gc.save_state()
-        try:
+        with gc:
             gc.translate_ctm(*self.position)
             gc.set_stroke_color((0.0, 0.0, 0.0, 1.0))
             for component in self._components:
@@ -55,13 +52,8 @@ class VerboseContainer(Container):
                     print "\tbounds:", component.position, component.bounds
                     continue
                     
-                gc.save_state()
-                try:
+                with gc:
                     component.draw(gc, new_bounds, mode)
-                finally:
-                    gc.restore_state()
-        finally:
-            gc.restore_state()
 
 
 class MyFrame(DemoFrame):

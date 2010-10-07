@@ -1,6 +1,6 @@
 import unittest
 
-from numpy import allclose, array, dtype, pi, ones
+from numpy import all, allclose, array, dtype, pi, ones
 
 from enthought.kiva import agg, Font
 
@@ -23,8 +23,8 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         
     def test_save_restore_state(self):
         gc = agg.GraphicsContextArray((100,100))
-        gc.save_state();
-        gc.restore_state();
+        gc.save_state()
+        gc.restore_state()
 
     def test_save_restore_state_for_ctm(self):
         gc = agg.GraphicsContextArray((100,100))
@@ -55,6 +55,65 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         self.assertNotEqual(m1, m0)
     # !! Need some tests of other graphics state information on
     # !! save/restore state
+
+    def test_context_manager(self):
+        gc = agg.GraphicsContextArray((100,100))
+        
+        # Set some values.
+        gc.set_stroke_color((1,0,0,1))
+        gc.set_antialias(0)
+        gc.set_alpha(0.25)
+
+        with gc:
+            # Change the values in the current context.
+            gc.set_stroke_color((0,0,1,1))
+            self.assert_(all(gc.get_stroke_color() == (0,0,1,1)))
+            gc.set_antialias(1)
+            self.assertEqual(gc.get_antialias(), 1)
+            gc.set_alpha(0.75)
+            self.assertEqual(gc.get_alpha(), 0.75)
+
+        # Verify that we are back to the previous settings.
+        self.assert_(all(gc.get_stroke_color() == (1,0,0,1)))        
+        self.assertEqual(gc.get_antialias(), 0)
+        self.assertEqual(gc.get_alpha(), 0.25)
+
+    def test_context_manager_nested(self):
+        gc = agg.GraphicsContextArray((100,100))
+        
+        # Set some values.
+        gc.set_stroke_color((1,0,0,1))
+        gc.set_antialias(0)
+        gc.set_alpha(0.25)
+
+        with gc:
+            # Change the values in the current context.
+            gc.set_stroke_color((0,0,1,1))
+            self.assert_(all(gc.get_stroke_color() == (0,0,1,1)))
+            gc.set_antialias(1)
+            self.assertEqual(gc.get_antialias(), 1)
+            gc.set_alpha(0.75)
+            self.assertEqual(gc.get_alpha(), 0.75)
+
+            with gc:
+                # Change the values in the current context.
+                gc.set_stroke_color((1,0,1,1))
+                self.assert_(all(gc.get_stroke_color() == (1,0,1,1)))
+                gc.set_antialias(0)
+                self.assertEqual(gc.get_antialias(), 0)
+                gc.set_alpha(1.0)
+                self.assertEqual(gc.get_alpha(), 1.0)
+
+            # Verify that we are back to the previous settings.
+            self.assert_(all(gc.get_stroke_color() == (0,0,1,1)))        
+            self.assertEqual(gc.get_antialias(), 1)
+            self.assertEqual(gc.get_alpha(), 0.75)
+
+        # Verify that we are back to the previous settings.
+        self.assert_(all(gc.get_stroke_color() == (1,0,0,1)))        
+        self.assertEqual(gc.get_antialias(), 0)
+        self.assertEqual(gc.get_alpha(), 0.25)
+
 
     def test_translate_ctm(self):
         gc = agg.GraphicsContextArray((100, 100))

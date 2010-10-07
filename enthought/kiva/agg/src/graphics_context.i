@@ -828,6 +828,17 @@ namespace kiva {
                 img = PilImage.fromstring(pilformat, size, bmp.tostring())
                 img.save(filename, format=file_format, options=pil_options)
 
+
+            #----------------------------------------------------------------
+            # context manager interface
+            #----------------------------------------------------------------
+
+            def __enter__(self):
+                self.save_state()
+                
+            def __exit__(self, type, value, traceback):
+                self.restore_state()
+
             %}
 
             //---------------------------------------------------------------------

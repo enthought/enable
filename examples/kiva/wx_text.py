@@ -73,10 +73,9 @@ class MyCanvas(Canvas):
 
         gc.set_line_width(1)
         gc.translate_ctm(w/2.0,h/2.0)
-        gc.save_state()
-        gc.scale_ctm(2.0,2.0)
-        glyph_a(gc)
-        gc.restore_state()
+        with gc:
+            gc.scale_ctm(2.0,2.0)
+            glyph_a(gc)
         gc.stroke_path()
         
         gc.translate_ctm(0,-20)
