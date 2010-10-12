@@ -4,8 +4,6 @@ from enthought.traits.api import HasTraits
 from enthought.traits.ui.api import View, Item
 from enthought.savage.traits.ui.svg_button import SVGButton
 
-from os.path import dirname, join, abspath
-
 
 pause_icon = os.path.join(os.path.dirname(__file__), 'player_pause.svg')
 resume_icon = os.path.join(os.path.dirname(__file__), 'player_play.svg')
