@@ -1,6 +1,67 @@
-Enable 3.3.1 (not yet released)
+Enable 3.3.2 (October 15, 2010)
 ===============================
 
+Enhancements
+------------
+
+* Context manager methods were added to the Kiva GraphicsContext class, so
+  now, instead of this common pattern for a GraphicsContext gc:
+
+      gc.save_state()
+      try:
+          # Do stuff with gc...
+      except:
+          gc.restore_state()
+
+  one can do this::
+  
+      with gc:
+          # Do stuff with gc...
+
+* Stacked layout containers were added.
+
+* qt4_backend: Added Tony Yu's patch to better handling keypresses in Qt4
+  when modifier keys are pressed (r25644).
+
+* vtk_backend: Added John Wiggins patch which adds key bindings to
+  EnableVTKWindow (r25796).
+
+* The Kiva backend for the Mac, implemented in ABCGI.pyx, is now processed
+  with cython instead of pyrex.
+
+
+Fixes
+-----
+
+* vtk_backend: Got rid of timer that was causing performance problems on
+  the Mac by looking for the "StartEvent" on the RenderWindow to determine
+  when we are about to do a vtk render. (r25605)
+* savage:  Avoid the wx-specific FileInspector in Sike and use the
+  CodeEditor directly. (r25742)
+* Exceptions were updated to use the new Exception classes in several places.
+
+
+Enable 3.3.1 (Feb 24, 2010)
+===============================
+
+Enhancements
+------------
+
+* Added dimming mask to disabled buttons when using wx backend (r25405).
+* Added toggle_label and toggle_tooltip from Brad Buran's patch (r25414).
+* vtk_backend: Made _redraw call _paint to force an immediate draw.
+  Added a request_render callable slot that will be called instead of
+  self.control.render if set. This allows renders to be coordinated to
+  avoid duplicate renders. (r25423)
+* Added option of making center section of compass clickable by setting
+  "enable_center" to True. (r25492)
+* kiva agg backend: fixed minor issues causing compiler warnings (r25498)
+
+Fixes
+-----
+
+* Fixed hover_tool so it imports correctly under the 'null' toolkit, as
+  reported on mailing list (r25407).
 
 
 Enable 3.3.0 (Feb 24, 2010)
@@ -32,6 +93,7 @@ be removed by the next release.  If you have any code that imports from
 "enthought.enable2" and the DeprecationWarnings haven't been sufficiently
 motivating thus far, please heed them and change your imports to use
 "enthought.enable"!
+
 
 Enable 3.2.0 (July 15th, 2009)
 ==============================
