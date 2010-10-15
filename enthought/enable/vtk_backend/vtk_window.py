@@ -10,6 +10,9 @@ from enthought.enable.api import AbstractWindow, MouseEvent, KeyEvent, \
         CoordinateBox
 from enthought.enable.graphics_context import ImageGraphicsContextEnable
 
+# Local imports.
+from constants import KEY_MAP
+
 
 class EnableVTKWindow(AbstractWindow, CoordinateBox):
 
@@ -126,6 +129,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
         self._add_observer(istyle, "MouseWheelBackwardEvent", self._vtk_mouse_wheel)
 
         self._add_observer(istyle, "KeyPressEvent", self._vtk_key_updown)
+        self._add_observer(istyle, "KeyReleaseEvent", self._vtk_key_updown)
 
         # We want _vtk_render_event to be called before rendering, so we
         # observe the StartEvent on the RenderWindow.
@@ -198,6 +202,13 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
             else:
                 meth_name += "Backward"
 
+        elif "Key" in eventname:
+            meth_name = "OnKey"
+            if "Press" in eventname:
+                meth_name += "Press"
+            else:
+                meth_name += "Release"
+
         elif eventname == "MouseMoveEvent":
             meth_name = "OnMouseMove"
 
@@ -266,8 +277,36 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
             self._pass_event_to_vtk(vtk_obj, eventname)
 
     def _vtk_key_updown(self, vtk_obj, eventname):
-        #print "key updown:", self.control.key_sym
-        pass
+        # find out who's going to handle the event
+        focus_owner = self.focus_owner
+        
+        if focus_owner is None:
+            focus_owner = self.component
+
+            if focus_owner is None:
+                return self._pass_event_to_vtk(vtk_obj, eventname)
+            
+        # Convert the keypress to a standard enable key if possible, otherwise
+        # to text.
+        key = KEY_MAP.get(self.control.key_sym, None)
+
+        if key is None:
+            key = unicode(self.control.key_sym)
+
+            if not key:
+                return
+
+        # Use the last-seen mouse position as the coordinates of this event.
+        x, y = self.control.event_position
+
+        enable_event = KeyEvent(character=key, x=x, y=y,
+                alt_down=bool(self.control.alt_key),
+                shift_down=bool(self.control.shift_key),
+                control_down=bool(self.control.control_key),
+                event=eventname,
+                window=self.control)
+
+        focus_owner.dispatch(enable_event, "key_pressed")
 
     def _create_mouse_event(self, event_string):
         """ Returns an enable.MouseEvent that reflects the VTK mouse event.
