@@ -100,7 +100,6 @@ import distutils
 import numpy
 import os
 import shutil
-import zipfile
 
 from numpy.distutils.core import setup
 
