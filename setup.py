@@ -188,31 +188,6 @@ if numpy.__version__[:5] < '1.0.5':
     core.numpy_cmdclass['develop'] = develop
 
 
-class MyDevelop(setuptools.command.develop.develop):
-    '''
-    Subclass to generate our docs when doing a develop.
-
-    This subclasses setuptools' develop since numpy.distutils doesn't have one.
-
-    '''
-    def run(self):
-        setuptools.command.develop.develop.run(self)
-        self.run_command('build_docs')
-
-
-class MyBuild(numpy.distutils.command.build.build):
-    '''
-    Subclass to generate our docs when doing a build.
-
-    This subclasses numpy.distutils' version because we're using the
-    numpy.distutils setup function below.
-
-    '''
-    def run(self):
-        numpy.distutils.command.build.build.run(self)
-        self.run_command('build_docs')
-
-
 class MyClean(distutils.command.clean.clean):
     '''
     Subclass to remove any files created in an inplace build.
@@ -292,9 +267,7 @@ setup(
         'sdist': setuptools.command.sdist.sdist,
 
         # Use our customized commands
-        'build': MyBuild,
         'clean': MyClean,
-        'develop': MyDevelop,
         },
     description = DOCLINES[1],
     download_url = ('http://www.enthought.com/repo/ETS/Enable-%s.tar.gz' %
@@ -314,7 +287,6 @@ setup(
     platforms = ["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
     setup_requires = [
         'cython',
-        'setupdocs>=1.0',
         ],
     tests_require = [
         'nose >= 0.10.3',
