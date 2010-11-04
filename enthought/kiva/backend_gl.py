@@ -38,7 +38,7 @@ class ArrayImage(ArrayInterfaceImage):
     creation.
     """
 
-    def create_texture(self, cls):
+    def create_texture(self, cls, rectangle):
         '''Create a texture containing this image.
 
         If the image's dimensions are not powers of 2, a TextureRegion of
@@ -48,12 +48,23 @@ class ArrayImage(ArrayInterfaceImage):
         :Parameters:
             `cls` : class (subclass of Texture)
                 Class to construct.
+            `rectangle` : bool
+                ``True`` if a rectangle can be created; see
+                `AbstractImage.get_texture`.
 
         :rtype: cls or cls.region_class
         '''
+        
+        _is_pow2 = lambda v: (v & (v - 1)) == 0
+        
+        target = gl.GL_TEXTURE_2D
+        if rectangle and not (_is_pow2(self.width) and _is_pow2(self.height)):
+            if gl.gl_info.have_extension('GL_ARB_texture_rectangle'):
+                target = gl.GL_TEXTURE_RECTANGLE_ARB
+            elif gl.gl_info.have_extension('GL_NV_texture_rectangle'):
+                target = gl.GL_TEXTURE_RECTANGLE_NV
 
-        texture = cls.create_for_size(
-            gl.GL_TEXTURE_2D, self.width, self.height)
+        texture = cls.create_for_size(target, self.width, self.height)
         subimage = False
         if texture.width != self.width or texture.height != self.height:
             texture = texture.get_region(0, 0, self.width, self.height)
@@ -131,7 +142,7 @@ class ArrayImage(ArrayInterfaceImage):
                 format, type = self._get_gl_format_and_type(data_format)
 
         # Workaround: don't use GL_UNPACK_ROW_LENGTH
-        if gl._current_context._workaround_unpack_row_length:
+        if gl.current_context._workaround_unpack_row_length:
             data_pitch = self.width * len(data_format)
 
         # Get data in required format (hopefully will be the same format it's
