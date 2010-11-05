@@ -20,42 +20,55 @@ using namespace kiva;
 
 #define EXPAND_COLOR(c) c->r, c->g, c->b, (c->a * this->state.alpha)
 
+// This should be just double, but as long as we're using C++...
+typedef agg::path_storage::container_type::value_type VertexType;
+struct PointType { VertexType x,y,z; };
+typedef std::vector<PointType> PointListType;
+
+static void _submit_path_points(PointListType const & points,
+                                bool polygon, bool fill);
+static void _combine_callback(GLdouble coords[3], GLdouble *vert_data[4],
+                              GLfloat weight[4], GLdouble **dataOut);
+static void _vertex_callback(GLvoid *vertex);
+
 gl_graphics_context::gl_graphics_context(int width, int height,
-										 kiva::pix_format_e format):
-		graphics_context_base(NULL, width, height, 1, kiva::nearest),
-		m_width(width), m_height(height), m_gl_initialized(false),
-		m_pixfmt(format)
+                                         kiva::pix_format_e format)
+: graphics_context_base(NULL, width, height, 1, kiva::nearest)
+, m_width(width)
+, m_height(height)
+, m_gl_initialized(false)
+, m_pixfmt(format)
 {
 }
 
 
 gl_graphics_context::~gl_graphics_context()
 {
-	if (m_gl_initialized)
-	{
-		this->gl_cleanup();
-	}
+    if (m_gl_initialized)
+    {
+        this->gl_cleanup();
+    }
 }
 
 void gl_graphics_context::gl_init()
 {
 
-	glViewport(0, 0, m_width, m_height);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, m_width, 0, m_height, 1, -1);
-	glMatrixMode(GL_MODELVIEW);
+    glViewport(0, 0, m_width, m_height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, m_width, 0, m_height, 1, -1);
+    glMatrixMode(GL_MODELVIEW);
     //glPushMatrix();
-	glLoadIdentity();
+    glLoadIdentity();
 
-	// Use scissors to implement clipping
-	glEnable(GL_SCISSOR_TEST);
+    // Use scissors to implement clipping
+    glEnable(GL_SCISSOR_TEST);
 
-	// Need to set up blending for antialiasing
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
-	glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);
+    // Need to set up blending for antialiasing
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);
 
     // Clear the clip region
     // This is important.  Since GL maintains a persistent, global context
@@ -79,38 +92,38 @@ kiva::pix_format_e gl_graphics_context::format()
 
 void gl_graphics_context::save_state()
 {
-	graphics_context_base::save_state();
+    graphics_context_base::save_state();
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
 }
 
 void gl_graphics_context::restore_state()
 {
-	if (this->state_stack.size() == 0)
-	{
-		return;
-	}
+    if (this->state_stack.size() == 0)
+    {
+        return;
+    }
 
     this->state = this->state_stack.top();
     this->state_stack.pop();
     this->path.restore_ctm();
 
     // Restore the clip state:
-	// Compute the intersection of all the rects and use those as
-	// the clip box
+    // Compute the intersection of all the rects and use those as
+    // the clip box
     if (this->state.use_rect_clipping())
     {
         if (this->state.device_space_clip_rects.size() > 0)
         {
-			kiva::rect_list_type rects = disjoint_intersect(this->state.device_space_clip_rects);
+            kiva::rect_list_type rects = disjoint_intersect(this->state.device_space_clip_rects);
 
-			// XXX: Right now we don't support disjoint clip rects.  To implement
-			// this, we would probably want to use a mask or stencil, or just
-			// re-render with each clip rect set as the scissor.
-			// XXX: figure out better way to round out the floating-point
-			// dimensions for kiva_rect than just casting to int().
-			kiva::rect_iterator it = rects.begin();
-			glScissor(int(it->x), int(it->y), int(it->w), int(it->h));
+            // XXX: Right now we don't support disjoint clip rects.  To implement
+            // this, we would probably want to use a mask or stencil, or just
+            // re-render with each clip rect set as the scissor.
+            // XXX: figure out better way to round out the floating-point
+            // dimensions for kiva_rect than just casting to int().
+            kiva::rect_iterator it = rects.begin();
+            glScissor(int(it->x), int(it->y), int(it->w), int(it->h));
         }
     }
     else
@@ -118,7 +131,7 @@ void gl_graphics_context::restore_state()
         throw clipping_path_unsupported;
     }
 
-	// Restore the transformation matrices
+    // Restore the transformation matrices
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
 
@@ -142,29 +155,29 @@ void gl_graphics_context::even_odd_clip()
 
 void gl_graphics_context::clip_to_rect(double x, double y, double sx, double sy)
 {
-	kiva::rect_type tmp(x, y, sx, sy);
-	clip_to_rect(tmp);
+    kiva::rect_type tmp(x, y, sx, sy);
+    clip_to_rect(tmp);
 }
 
 void gl_graphics_context::clip_to_rect(kiva::rect_type &rect)
 {
-	this->path.remove_all();
+    this->path.remove_all();
     if (!this->state.use_rect_clipping())
-	{
+    {
         throw clipping_path_unsupported;
-	}
+    }
 
-	kiva::rect_type device_rect(transform_clip_rectangle(rect));
+    kiva::rect_type device_rect(transform_clip_rectangle(rect));
     if (this->state.device_space_clip_rects.size() == 1)
     {
-		kiva::rect_type old(this->state.device_space_clip_rects.back());
+	kiva::rect_type old(this->state.device_space_clip_rects.back());
         this->state.device_space_clip_rects.pop_back();
         kiva::rect_type newrect(kiva::disjoint_intersect(old, device_rect));
         if ((newrect.w < 0) || (newrect.h < 0))
         {
             // new clip rectangle doesn't intersect anything, so we push on
             // an empty rect as the new clipping region.
-			glScissor(0,0,0,0);
+	    glScissor(0,0,0,0);
             //printf("NULL intersection area in clip_to_rect\n");
             this->state.device_space_clip_rects.push_back(kiva::rect_type(0, 0, -1, -1));
         }
@@ -185,18 +198,18 @@ void gl_graphics_context::clip_to_rect(kiva::rect_type &rect)
 
         if (this->state.device_space_clip_rects.size() == 0)
         {
-			glScissor(0,0,0,0);
+	    glScissor(0,0,0,0);
             //printf("NULL intersection area in clip_to_rect\n");
             this->state.device_space_clip_rects.push_back(kiva::rect_type(0, 0, -1, -1));
         }
         else
         {
-			kiva::rect_list_type rects = disjoint_intersect(this->state.device_space_clip_rects);
+            kiva::rect_list_type rects = disjoint_intersect(this->state.device_space_clip_rects);
 
-			// XXX: Right now we don't support disjoint clip rects.
-			// (same problem as in restore_state())
-			kiva::rect_iterator it = rects.begin();
-			glScissor(int(it->x), int(it->y), int(it->w), int(it->h));
+            // XXX: Right now we don't support disjoint clip rects.
+            // (same problem as in restore_state())
+            kiva::rect_iterator it = rects.begin();
+            glScissor(int(it->x), int(it->y), int(it->w), int(it->h));
             if (rects.size() > 1)
             {
                 //printf("Warning: more than 1 clip rect in clip_to_rect()\n");
@@ -266,294 +279,262 @@ kiva::rect_type gl_graphics_context::transform_clip_rectangle(const kiva::rect_t
 
 int gl_graphics_context::get_num_clip_regions()
 {
-	return this->state.device_space_clip_rects.size();
+    return this->state.device_space_clip_rects.size();
 }
 
 kiva::rect_type gl_graphics_context::get_clip_region(unsigned int i)
 {
-	throw kiva::not_implemented_error;
+    throw kiva::not_implemented_error;
 }
 
 
 void gl_graphics_context::clear(agg::rgba value)
 {
-	glClearColor(float(value.r), float(value.g), float(value.b), float(value.a));
-	glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(float(value.r), float(value.g), float(value.b), float(value.a));
+    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void gl_graphics_context::fill_path()
 {
-	draw_path(FILL);
+    draw_path(FILL);
 }
 
 void gl_graphics_context::eof_fill_path()
 {
-	draw_path(EOF_FILL);
+    draw_path(EOF_FILL);
 }
 
 void gl_graphics_context::stroke_path()
 {
-	draw_path(STROKE);
+    draw_path(STROKE);
 }
 
 
 void gl_graphics_context::gl_render_path(kiva::compiled_path *path, bool polygon, bool fill)
 {
+    if ((path == NULL) || (path->total_vertices() == 0))
+        return;
 
-	if ((path == NULL) || (path->total_vertices() == 0))
-		return;
+    unsigned command = 0;
+    PointListType pointList;
+    
+    // Set the matrix mode so we support move_to commands
+    glMatrixMode(GL_MODELVIEW);
+    
+    // Records the last move_to command position so that when
+    // we finally encounter the first line_to, we can use this
+    // vertex as the starting vertex.
+    bool first_vertex_drawn = false;
+    PointType v0 = {0.f, 0.f, 0.f};
+    PointType v = {0.f, 0.f, 0.f};
+    PointType vv = {0.f, 0.f, 0.f};
+    VertexType c1x, c1y, ccx, ccy, c2x, c2y, c3x, c3y;
+    VertexType t, t2, t3, u, u2, u3;
+    unsigned int j;
+    unsigned int _Npoints = 100;
 
-	// This should be just double, but as long as we're using C++...
-	typedef agg::path_storage::container_type::value_type VertexType;
-	typedef std::pair<VertexType, VertexType> PointType;
-	typedef std::vector<PointType> PointListType;
+    // make space for points
+    pointList.reserve(path->total_vertices());
 
-	//PointListType pointlist;
-	VertexType vx, vy;
-	unsigned command = 0;
+    for (unsigned int i=0; i < path->total_vertices(); i++)
+    {
+        command = path->vertex(i, &v.x, &v.y);
 
-	// Set the matrix mode so we support move_to commands
-	glMatrixMode(GL_MODELVIEW);
-
-    // Uncomment this when we turn the glPolygonMode calls back on (below)
-    //glPushAttrib(GL_POLYGON_BIT);
-	if (polygon)
-	{
-		if (fill)
-		{
-			glBegin(GL_POLYGON);
-            // XXX: For some reason setting the polygon mode breaks pyglet's
-            // font rendering.  It doesn't really have an effect on any of
-            // Kiva's rendering right now, so it's commented out for now.
-			//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
-		else
-		{
-			glBegin(GL_LINE_LOOP);
-			//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		}
-	}
-	else
-	{
-		glBegin(GL_LINE_STRIP);
-	}
-
-	// Records the last move_to command position so that when
-	// we finally encounter the first line_to, we can use this
-	// vertex as the starting vertex.
-	VertexType x0=0.f, y0=0.f;
-	bool first_vertex_drawn = false;
-        VertexType c1x, c1y, ccx, ccy, c2x, c2y, c3x, c3y;
-        VertexType t, t2, t3, u, u2, u3;
-        GLfloat vvx, vvy;
-        unsigned int j;
-        unsigned int _Npoints = 100;
-
-	for (unsigned int i=0; i < path->total_vertices(); i++)
-	{
-		// Clear the point list and prepare to accumulate new points
-		//pointlist.clear();
-
-		command = path->vertex(i, &vx, &vy);
-
-		switch (command & agg::path_cmd_mask)
-		{
-		case agg::path_cmd_line_to:
-			if (!first_vertex_drawn)
-			{
-				glVertex2f((GLfloat)x0, (GLfloat)y0);
-				first_vertex_drawn = true;
-			}
-			glVertex2f((GLfloat)vx, (GLfloat)vy);
-			break;
-
-		case agg::path_cmd_end_poly:
-			// We shouldn't need to do anything because if this is a closed path
-			//
-			//if (command & agg::path_flags_close)
-			//	glVertex2f(x0, y0);
-			break;
-
-		case agg::path_cmd_curve3:
-                        // FIXME: refactor!
-                        if (!first_vertex_drawn)
-                        {
-                                glVertex2f((GLfloat)x0, (GLfloat)y0);
-                                first_vertex_drawn = true;
-                        }
-                        path->vertex(i+1, &ccx, &ccy);
-                        path->vertex(i+2, &c3x, &c3y);
-                        i += 2;
-                        c1x = (vx + ccx + ccx) / 3.0;
-                        c1y = (vy + ccy + ccy) / 3.0;
-                        c2x = (c3x + ccx + ccx) / 3.0;
-                        c2y = (c3y + ccy + ccy) / 3.0;
-                        for (j=1; j<=_Npoints; j++) {
-                            t = ((VertexType)j) / _Npoints;
-                            t2 = t*t;
-                            t3 = t2*t;
-                            u = 1 - t;
-                            u2 = u*u;
-                            u3 = u2*u;
-                            vvx = vx * u3 + 3*(c1x*t*u2 + c2x*t2*u) + c3x*t3;
-                            vvy = vy * u3 + 3*(c1y*t*u2 + c2y*t2*u) + c3y*t3;
-                            glVertex2f(vvx, vvy);
-                        }
-			break;
-
-		case agg::path_cmd_curve4:
-                        if (!first_vertex_drawn)
-                        {
-                                glVertex2f((GLfloat)x0, (GLfloat)y0);
-                                first_vertex_drawn = true;
-                        }
-                        path->vertex(i+1, &c1x, &c1y);
-                        path->vertex(i+2, &c2x, &c2y);
-                        path->vertex(i+3, &c3x, &c3y);
-                        i += 3;
-                        for (j=1; j<=_Npoints; j++) {
-                            t = ((VertexType)j) / _Npoints;
-                            t2 = t*t;
-                            t3 = t2*t;
-                            u = 1 - t;
-                            u2 = u*u;
-                            u3 = u2*u;
-                            vvx = vx * u3 + 3*(c1x*t*u2 + c2x*t2*u) + c3x*t3;
-                            vvy = vy * u3 + 3*(c1y*t*u2 + c2y*t2*u) + c3y*t3;
-                            glVertex2f(vvx, vvy);
-                        }
-			break;
-
-		// The following commands are ignored.
-		case agg::path_cmd_move_to:
-            glEnd();
-            if (polygon)
+        switch (command & agg::path_cmd_mask)
+        {
+        case agg::path_cmd_line_to:
+            if (!first_vertex_drawn)
             {
-                if (fill)
-                    glBegin(GL_POLYGON);
-                else
-                    glBegin(GL_LINE_LOOP);
+                pointList.push_back(v0);
+                first_vertex_drawn = true;
             }
-            else
+            pointList.push_back(v);
+            break;
+
+        case agg::path_cmd_end_poly:
+            // We shouldn't need to do anything because if this is a closed path
+            //
+            //if (command & agg::path_flags_close)
+            //	glVertex2f(x0, y0);
+            break;
+
+        case agg::path_cmd_curve3:
+            // FIXME: refactor!
+            if (!first_vertex_drawn)
             {
-                glBegin(GL_LINE_STRIP);
+                pointList.push_back(v0);
+                first_vertex_drawn = true;
             }
-			x0 = vx;
-			y0 = vy;
+            path->vertex(i+1, &ccx, &ccy);
+            path->vertex(i+2, &c3x, &c3y);
+            i += 2;
+            c1x = (v.x + ccx + ccx) / 3.0;
+            c1y = (v.y + ccy + ccy) / 3.0;
+            c2x = (c3x + ccx + ccx) / 3.0;
+            c2y = (c3y + ccy + ccy) / 3.0;
+            for (j=1; j<=_Npoints; j++)
+            {
+                t = ((VertexType)j) / _Npoints;
+                t2 = t*t;
+                t3 = t2*t;
+                u = 1 - t;
+                u2 = u*u;
+                u3 = u2*u;
+                vv.x = v.x * u3 + 3*(c1x*t*u2 + c2x*t2*u) + c3x*t3;
+                vv.y = v.y * u3 + 3*(c1y*t*u2 + c2y*t2*u) + c3y*t3;
+                pointList.push_back(vv);
+            }
+            break;
+
+        case agg::path_cmd_curve4:
+            if (!first_vertex_drawn)
+            {
+                pointList.push_back(v0);
+                first_vertex_drawn = true;
+            }
+            path->vertex(i+1, &c1x, &c1y);
+            path->vertex(i+2, &c2x, &c2y);
+            path->vertex(i+3, &c3x, &c3y);
+            i += 3;
+            for (j=1; j<=_Npoints; j++)
+            {
+                t = ((VertexType)j) / _Npoints;
+                t2 = t*t;
+                t3 = t2*t;
+                u = 1 - t;
+                u2 = u*u;
+                u3 = u2*u;
+                vv.x = v.x * u3 + 3*(c1x*t*u2 + c2x*t2*u) + c3x*t3;
+                vv.y = v.y * u3 + 3*(c1y*t*u2 + c2y*t2*u) + c3y*t3;
+                pointList.push_back(vv);
+            }
+            break;
+
+        // The following commands are ignored.
+        case agg::path_cmd_move_to:
+            if (!pointList.empty())
+            {
+                // do a full glBegin/glEnd sequence for the points in the buffer
+                _submit_path_points(pointList, polygon, fill);
+                // flush
+                pointList.clear();
+            }
+            v0.x = v.x;
+            v0.y = v.y;
             first_vertex_drawn = false;
-			break;
+            break;
 
-		case agg::path_cmd_ubspline:
-			break;
+        case agg::path_cmd_ubspline:
+            break;
 
-		// XXX: This case number is already used??
-		//case agg::path_cmd_mask:
-		//	break;
+        // XXX: This case number is already used??
+        //case agg::path_cmd_mask:
+        //	break;
 
-		// Unsupported
-		// XXX: We need to have better error handling/reporting from the C++
-		// layer up to the Python layer.
-		case agg::path_cmd_catrom:
-		case agg::path_cmd_curveN:
-			break;
+        // Unsupported
+        // XXX: We need to have better error handling/reporting from the C++
+        // layer up to the Python layer.
+        case agg::path_cmd_catrom:
+        case agg::path_cmd_curveN:
+            break;
 
-		}
-	}
-	glEnd();
-    //glPopAttrib();
+        }
+    }
+    
+    // submit the points
+    if (!pointList.empty())
+        _submit_path_points(pointList, polygon, fill);
 }
 
-void gl_graphics_context::gl_render_points(double** points, bool polygon, bool fill,
-										   kiva::draw_mode_e mode)
+void gl_graphics_context::gl_render_points(double** points, bool polygon,
+                                           bool fill, kiva::draw_mode_e mode)
 {
-
 }
-
 
 
 void gl_graphics_context::draw_path(draw_mode_e mode)
 {
-	// XXX: This is a direct transcription from basecore2d.  The algorithm
-	// and approach can probably be improved tremendously for OpenGL.
+    // XXX: This is a direct transcription from basecore2d.  The algorithm
+    // and approach can probably be improved tremendously for OpenGL.
 
-	agg::rgba *line_color = &this->state.line_color;
-	agg::rgba *fill_color = &this->state.fill_color;
+    agg::rgba *line_color = &this->state.line_color;
+    agg::rgba *fill_color = &this->state.fill_color;
 
-    // CNP
-	if (this->state.should_antialias)
-	{
-		glEnable(GL_LINE_SMOOTH);
-		glEnable(GL_POLYGON_SMOOTH);
-	}
-	else
-	{
-		glDisable(GL_LINE_SMOOTH);
-		glDisable(GL_POLYGON_SMOOTH);
-	}
+// CNP
+    if (this->state.should_antialias)
+    {
+        glEnable(GL_LINE_SMOOTH);
+        glEnable(GL_POLYGON_SMOOTH);
+    }
+    else
+    {
+        glDisable(GL_LINE_SMOOTH);
+        glDisable(GL_POLYGON_SMOOTH);
+    }
 
-	// Check to see if we have closed polygons
-	typedef agg::path_storage::container_type::value_type VertexType;
-	unsigned numvertices = this->path.total_vertices();
-	bool polygon = false;
-	if (numvertices > 1)
-	{
-		// Get the first vertex
-		VertexType x0, y0, xf, yf;
-		this->path.vertex(0, &x0, &y0);
+    // Check to see if we have closed polygons
+    typedef agg::path_storage::container_type::value_type VertexType;
+    unsigned numvertices = this->path.total_vertices();
+    bool polygon = false;
+    if (numvertices > 1)
+    {
+        // Get the first vertex
+        VertexType x0, y0, xf, yf;
+        this->path.vertex(0, &x0, &y0);
 
-		// Go backwards from the last vertex until we find an actual line_to
-		// or curve3 or curve4 comand.
-		for (int i=numvertices-1; i>0; i--)
-		{
-			unsigned cmd = this->path.vertex(i, &xf, &yf);
-			if (((cmd & agg::path_cmd_mask) == agg::path_cmd_curve3) ||
-				((cmd & agg::path_cmd_mask) == agg::path_cmd_curve4) ||
-				((cmd & agg::path_cmd_mask) == agg::path_cmd_line_to))
-			{
-				if ((x0 == xf) && (y0 == yf))
-					polygon = true;
-				break;
-			}
+        // Go backwards from the last vertex until we find an actual line_to
+        // or curve3 or curve4 comand.
+        for (int i=numvertices-1; i>0; i--)
+        {
+            unsigned cmd = this->path.vertex(i, &xf, &yf);
+            if (((cmd & agg::path_cmd_mask) == agg::path_cmd_curve3) ||
+                ((cmd & agg::path_cmd_mask) == agg::path_cmd_curve4) ||
+                ((cmd & agg::path_cmd_mask) == agg::path_cmd_line_to))
+            {
+                if ((x0 == xf) && (y0 == yf))
+                    polygon = true;
+                break;
+            }
 
-			if ((cmd & agg::path_cmd_mask) == agg::path_cmd_end_poly)
-			{
-				polygon = true;
-				break;
-			}
-		}
-	}
+            if ((cmd & agg::path_cmd_mask) == agg::path_cmd_end_poly)
+            {
+                polygon = true;
+                break;
+            }
+        }
+    }
 
-	// Fill the path, if necessary
-	if (mode != STROKE)
-	{
-		// device_update_fill_state
-		//glColor4f(fill_color->r, fill_color->g, fill_color->b, fill_color->a);
-		glColor4f(EXPAND_COLOR(fill_color));
+    // Fill the path, if necessary
+    if (mode != STROKE)
+    {
+        // device_update_fill_state
+        //glColor4f(fill_color->r, fill_color->g, fill_color->b, fill_color->a);
+        glColor4f(EXPAND_COLOR(fill_color));
 
-		// call gl_render_path()
-		gl_render_path(&this->path, true, true);
-	}
+        // call gl_render_path()
+        gl_render_path(&this->path, true, true);
+    }
 
-	// Stroke the path, if necessary
-	if (mode != FILL)
-	{
+    // Stroke the path, if necessary
+    if (mode != FILL)
+    {
         // CNP
-		// device_update_line_state
-		//glColor4f(line_color->r, line_color->g, line_color->b, line_color->a);
-		glColor4f(EXPAND_COLOR(line_color));
-		glLineWidth(this->state.line_width);
+        // device_update_line_state
+        //glColor4f(line_color->r, line_color->g, line_color->b, line_color->a);
+        glColor4f(EXPAND_COLOR(line_color));
+        glLineWidth(this->state.line_width);
 
-		if (this->state.line_dash.is_solid())
-		{
-			glDisable(GL_LINE_STIPPLE);
-		}
-		else
-		{
-			glDisable(GL_LINE_STIPPLE);
-		}
+        if (this->state.line_dash.is_solid())
+        {
+            glDisable(GL_LINE_STIPPLE);
+        }
+        else
+        {
+            glDisable(GL_LINE_STIPPLE);
+        }
 
-		gl_render_path(&this->path, polygon, false);
-	}
+        gl_render_path(&this->path, polygon, false);
+    }
 
     this->path.remove_all();
 }
@@ -561,27 +542,27 @@ void gl_graphics_context::draw_path(draw_mode_e mode)
 
 void gl_graphics_context::draw_rect(double rect[4], draw_mode_e mode)
 {
-	agg::rgba *line_color = &this->state.line_color;
-	agg::rgba *fill_color = &this->state.fill_color;
+    agg::rgba *line_color = &this->state.line_color;
+    agg::rgba *fill_color = &this->state.fill_color;
 
     // CNP
-	if (this->state.should_antialias)
-	{
-		glEnable(GL_LINE_SMOOTH);
-		glEnable(GL_POLYGON_SMOOTH);
-	}
-	else
-	{
-		glDisable(GL_LINE_SMOOTH);
-		glDisable(GL_POLYGON_SMOOTH);
-	}
+    if (this->state.should_antialias)
+    {
+        glEnable(GL_LINE_SMOOTH);
+        glEnable(GL_POLYGON_SMOOTH);
+    }
+    else
+    {
+        glDisable(GL_LINE_SMOOTH);
+        glDisable(GL_POLYGON_SMOOTH);
+    }
 
     this->path.get_ctm().translation(rect, rect+1);
 
     // Fill the rect first
     if (mode != STROKE)
     {
-		glColor4f(EXPAND_COLOR(fill_color));
+        glColor4f(EXPAND_COLOR(fill_color));
         glRectf(rect[0], rect[1], rect[0]+rect[2], rect[1]+rect[3]);
     }
 
@@ -589,17 +570,17 @@ void gl_graphics_context::draw_rect(double rect[4], draw_mode_e mode)
     if (mode != FILL)
     {
         // CNP
-		glColor4f(EXPAND_COLOR(line_color));
-		glLineWidth(this->state.line_width);
+        glColor4f(EXPAND_COLOR(line_color));
+        glLineWidth(this->state.line_width);
 
-		if (this->state.line_dash.is_solid())
-		{
-			glDisable(GL_LINE_STIPPLE);
-		}
-		else
-		{
-			glDisable(GL_LINE_STIPPLE);
-		}
+        if (this->state.line_dash.is_solid())
+        {
+            glDisable(GL_LINE_STIPPLE);
+        }
+        else
+        {
+            glDisable(GL_LINE_STIPPLE);
+        }
 
         glBegin(GL_LINE_LOOP);
         glVertex2f(rect[0], rect[1]);
@@ -612,10 +593,10 @@ void gl_graphics_context::draw_rect(double rect[4], draw_mode_e mode)
 }
 
 
-int gl_graphics_context::draw_marker_at_points(double *pts, int Npts, int size,
-											   agg::marker_e type)
+int gl_graphics_context::draw_marker_at_points(double *pts, int Npts,
+                                               int size, agg::marker_e type)
 {
-	agg::rgba *line_color = &this->state.line_color;
+    agg::rgba *line_color = &this->state.line_color;
     agg::rgba *fill_color = &this->state.fill_color;
     bool do_fill = (fill_color->a != 0);
     bool do_stroke = ((line_color->a != 0) && (this->state.line_width > 0.0));
@@ -641,81 +622,81 @@ int gl_graphics_context::draw_marker_at_points(double *pts, int Npts, int size,
     switch (type)
     {
         // Simple paths that only need to be stroked
-        case agg::marker_x:
-                draw_x_marker(pts, Npts, size, draw_mode, x0, y0); break;
-        case agg::marker_cross:
-                draw_cross(pts, Npts, size, draw_mode, x0, y0); break;
-        case agg::marker_dot:
-                draw_dot(pts, Npts, size, draw_mode, x0, y0); break;
-        case agg::marker_pixel:
-                draw_pixel(pts, Npts, size, draw_mode, x0, y0); break;
+    case agg::marker_x:
+        draw_x_marker(pts, Npts, size, draw_mode, x0, y0); break;
+    case agg::marker_cross:
+        draw_cross(pts, Npts, size, draw_mode, x0, y0); break;
+    case agg::marker_dot:
+        draw_dot(pts, Npts, size, draw_mode, x0, y0); break;
+    case agg::marker_pixel:
+        draw_pixel(pts, Npts, size, draw_mode, x0, y0); break;
 
 
-        // Paths that need to be filled and stroked
-        // There are experimental approaches taken for drawing squares and
-        // diamonds, so they are in their own block here.  There's no reason
-        // why they cannot be treated in the same way as the circle and
-        // triangle markers.
-        case agg::marker_square:
-                draw_square(pts, Npts, size, draw_mode, x0, y0); break;
-        case agg::marker_diamond:
-                draw_diamond(pts, Npts, size, draw_mode, x0, y0); break;
+    // Paths that need to be filled and stroked
+    // There are experimental approaches taken for drawing squares and
+    // diamonds, so they are in their own block here.  There's no reason
+    // why they cannot be treated in the same way as the circle and
+    // triangle markers.
+    case agg::marker_square:
+        draw_square(pts, Npts, size, draw_mode, x0, y0); break;
+    case agg::marker_diamond:
+        draw_diamond(pts, Npts, size, draw_mode, x0, y0); break;
 
 
-        case agg::marker_crossed_circle:
-                draw_crossed_circle(pts, Npts, size, draw_mode, x0, y0); break;
+    case agg::marker_crossed_circle:
+        draw_crossed_circle(pts, Npts, size, draw_mode, x0, y0); break;
 
-        case agg::marker_circle:
-                fill_list = make_marker_lists(&kiva::gl_graphics_context::circle_path_func, draw_mode, size);
-                list_created = true;
-                // Fall through to next case
-        case agg::marker_triangle_up:
-                if (!list_created)
-                {
-                    fill_list = make_marker_lists(&kiva::gl_graphics_context::triangle_up_func, draw_mode, size);
-                    list_created = true;
-                }
-                // Fall through to next case
-        case agg::marker_triangle_down:
-                if (!list_created)
-                {
-                    fill_list = make_marker_lists(&kiva::gl_graphics_context::triangle_down_func, draw_mode, size);
-                    list_created = true;
-                }
-                stroke_list = fill_list + 1;
-                draw_display_list_at_pts(fill_list, stroke_list, pts, Npts, draw_mode, x0, y0);
-                glDeleteLists(fill_list, 2);
-                break;
+    case agg::marker_circle:
+        fill_list = make_marker_lists(&kiva::gl_graphics_context::circle_path_func, draw_mode, size);
+        list_created = true;
+        // Fall through to next case
+    case agg::marker_triangle_up:
+        if (!list_created)
+        {
+            fill_list = make_marker_lists(&kiva::gl_graphics_context::triangle_up_func, draw_mode, size);
+            list_created = true;
+        }
+        // Fall through to next case
+    case agg::marker_triangle_down:
+        if (!list_created)
+        {
+            fill_list = make_marker_lists(&kiva::gl_graphics_context::triangle_down_func, draw_mode, size);
+            list_created = true;
+        }
+        stroke_list = fill_list + 1;
+        draw_display_list_at_pts(fill_list, stroke_list, pts, Npts, draw_mode, x0, y0);
+        glDeleteLists(fill_list, 2);
+        break;
 
-        default:
-                return 0;
-
+    default:
+        return 0;
     }
     // Indicate success
     return 1;
 }
 
 void gl_graphics_context::draw_path_at_points(double *pts, int Npts,
-											  kiva::compiled_path &marker,
-											  draw_mode_e mode)
+                                              kiva::compiled_path &marker,
+                                              draw_mode_e mode)
 {
-	return;
+    return;
 }
 
 
 void gl_graphics_context::draw_glyphs(kiva::graphics_context_base* img,
-									  double tx, double ty)
+                                      double tx, double ty)
 {
 }
 
-int gl_graphics_context::draw_image(kiva::graphics_context_base* img, double rect[4], bool force_copy)
+int gl_graphics_context::draw_image(kiva::graphics_context_base* img,
+                                    double rect[4], bool force_copy)
 {
-	return 0;
+    return 0;
 }
 
 int gl_graphics_context::draw_image(kiva::graphics_context_base* img)
 {
-	return 0;
+    return 0;
 }
 
 
@@ -809,7 +790,7 @@ GLuint gl_graphics_context::make_marker_lists(PathDefinitionFunc path_func,
 void gl_graphics_context::draw_square(double *pts, int Npts, int size,
                                       kiva::draw_mode_e mode, double x0, double y0)
 {
-	agg::rgba *line_color = &this->state.line_color;
+    agg::rgba *line_color = &this->state.line_color;
     agg::rgba *fill_color = &this->state.fill_color;
 
     // We build up a VertexArray of the vertices of all the squares.
@@ -902,7 +883,7 @@ void gl_graphics_context::draw_square(double *pts, int Npts, int size,
 void gl_graphics_context::draw_diamond(double *pts, int Npts, int size,
                                        kiva::draw_mode_e mode, double x0, double y0)
 {
-	agg::rgba *line_color = &this->state.line_color;
+    agg::rgba *line_color = &this->state.line_color;
     agg::rgba *fill_color = &this->state.fill_color;
 
     // Each marker consists of four vertices in this order: left, top, right, bottom.
@@ -1073,4 +1054,76 @@ void gl_graphics_context::draw_pixel(double *pts, int Npts, int size,
 }
 
 
+void _submit_path_points(PointListType const & points, bool polygon, bool fill)
+{
+    // Uncomment this when we turn the glPolygonMode calls back on (below)
+    //glPushAttrib(GL_POLYGON_BIT);
+    if (polygon)
+    {
+        if (fill)
+        {
+            GLUtesselator* pTess = gluNewTess();
+            gluTessCallback(pTess, GLU_TESS_VERTEX, (GLvoid (*)())&_vertex_callback);
+            gluTessCallback(pTess, GLU_TESS_BEGIN, (GLvoid (*)())&glBegin);
+            gluTessCallback(pTess, GLU_TESS_END, (GLvoid (*)())&glEnd);
+            gluTessCallback(pTess, GLU_TESS_COMBINE, (GLvoid (*)())&_combine_callback);
+            gluTessBeginPolygon(pTess, NULL);
+            gluTessBeginContour(pTess);
+            
+            // XXX: For some reason setting the polygon mode breaks pyglet's
+            // font rendering.  It doesn't really have an effect on any of
+            // Kiva's rendering right now, so it's commented out for now.
+            //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            
+            for (int i=0; i < points.size(); ++i)
+            {
+                VertexType * pV = (VertexType *)&points[i];
+                gluTessVertex(pTess, (GLdouble*)pV, (GLvoid*)pV);
+            }
+            
+            gluTessEndContour(pTess);
+            gluTessEndPolygon(pTess);
+            gluDeleteTess(pTess);
+        }
+        else
+        {
+            glBegin(GL_LINE_LOOP);
+            //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            
+            for (int i=0; i < points.size(); ++i)
+                glVertex2dv((VertexType *)&points[i]);
 
+            glEnd();
+        }
+    }
+    else
+    {
+        glBegin(GL_LINE_STRIP);
+        
+        for (int i=0; i < points.size(); ++i)
+            glVertex2dv((VertexType *)&points[i]);
+
+        glEnd();
+    }
+
+    //glPopAttrib();
+}
+
+
+void _combine_callback(GLdouble coords[3], GLdouble *vert_data[4],
+		       GLfloat weight[4], GLdouble **dataOut)
+{
+    GLdouble *vertex = (GLdouble *)malloc(3 * sizeof(GLdouble));
+    vertex[0] = coords[0];
+    vertex[1] = coords[1];
+    vertex[2] = coords[2];
+    
+    *dataOut = vertex;
+}
+
+
+void _vertex_callback(GLvoid *vertex)
+{
+    GLdouble *ptr = (GLdouble *)vertex;
+    glVertex3dv(ptr);
+}
