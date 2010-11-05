@@ -77,7 +77,7 @@ void gl_graphics_context::gl_init()
     // This is important.  Since GL maintains a persistent, global context
     // across the application, we may very well inherit the scissor mask
     // from a clip_to_rect() call on a previous GC.
-    glScissor(0, 0, m_width, m_height);
+    clip_to_rect(0, 0, m_width, m_height);
 }
 
 void gl_graphics_context::gl_cleanup()
