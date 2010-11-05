@@ -14,6 +14,9 @@
 
 using namespace kiva;
 
+#ifndef CALLBACK
+#define CALLBACK
+#endif
 #ifndef M_PI
 #define M_PI 3.1415926535
 #endif
@@ -27,9 +30,9 @@ typedef std::vector<PointType> PointListType;
 
 static void _submit_path_points(PointListType const & points,
                                 bool polygon, bool fill);
-static void _combine_callback(GLdouble coords[3], GLdouble *vert_data[4],
+static void CALLBACK _combine_callback(GLdouble coords[3], GLdouble *vert_data[4],
                               GLfloat weight[4], GLdouble **dataOut);
-static void _vertex_callback(GLvoid *vertex);
+static void CALLBACK _vertex_callback(GLvoid *vertex);
 
 gl_graphics_context::gl_graphics_context(int width, int height,
                                          kiva::pix_format_e format)
@@ -317,10 +320,10 @@ void gl_graphics_context::gl_render_path(kiva::compiled_path *path, bool polygon
 
     unsigned command = 0;
     PointListType pointList;
-    
+
     // Set the matrix mode so we support move_to commands
     glMatrixMode(GL_MODELVIEW);
-    
+
     // Records the last move_to command position so that when
     // we finally encounter the first line_to, we can use this
     // vertex as the starting vertex.
@@ -440,7 +443,7 @@ void gl_graphics_context::gl_render_path(kiva::compiled_path *path, bool polygon
 
         }
     }
-    
+
     // submit the points
     if (!pointList.empty())
         _submit_path_points(pointList, polygon, fill);
@@ -1062,25 +1065,30 @@ void _submit_path_points(PointListType const & points, bool polygon, bool fill)
     {
         if (fill)
         {
+#if defined(_MSC_VER) || defined(__MINGW32__)
+            typedef void (__stdcall*cbFunc)(void);
+#else
+            typedef void (*cbFunc)();
+#endif
             GLUtesselator* pTess = gluNewTess();
-            gluTessCallback(pTess, GLU_TESS_VERTEX, (GLvoid (*)())&_vertex_callback);
-            gluTessCallback(pTess, GLU_TESS_BEGIN, (GLvoid (*)())&glBegin);
-            gluTessCallback(pTess, GLU_TESS_END, (GLvoid (*)())&glEnd);
-            gluTessCallback(pTess, GLU_TESS_COMBINE, (GLvoid (*)())&_combine_callback);
+            gluTessCallback(pTess, GLU_TESS_VERTEX, (cbFunc)&_vertex_callback);
+            gluTessCallback(pTess, GLU_TESS_BEGIN, (cbFunc)&glBegin);
+            gluTessCallback(pTess, GLU_TESS_END, (cbFunc)&glEnd);
+            gluTessCallback(pTess, GLU_TESS_COMBINE, (cbFunc)&_combine_callback);
             gluTessBeginPolygon(pTess, NULL);
             gluTessBeginContour(pTess);
-            
+
             // XXX: For some reason setting the polygon mode breaks pyglet's
             // font rendering.  It doesn't really have an effect on any of
             // Kiva's rendering right now, so it's commented out for now.
             //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            
+
             for (int i=0; i < points.size(); ++i)
             {
                 VertexType * pV = (VertexType *)&points[i];
                 gluTessVertex(pTess, (GLdouble*)pV, (GLvoid*)pV);
             }
-            
+
             gluTessEndContour(pTess);
             gluTessEndPolygon(pTess);
             gluDeleteTess(pTess);
@@ -1089,7 +1097,7 @@ void _submit_path_points(PointListType const & points, bool polygon, bool fill)
         {
             glBegin(GL_LINE_LOOP);
             //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            
+
             for (int i=0; i < points.size(); ++i)
                 glVertex2dv((VertexType *)&points[i]);
 
@@ -1099,7 +1107,7 @@ void _submit_path_points(PointListType const & points, bool polygon, bool fill)
     else
     {
         glBegin(GL_LINE_STRIP);
-        
+
         for (int i=0; i < points.size(); ++i)
             glVertex2dv((VertexType *)&points[i]);
 
@@ -1110,19 +1118,19 @@ void _submit_path_points(PointListType const & points, bool polygon, bool fill)
 }
 
 
-void _combine_callback(GLdouble coords[3], GLdouble *vert_data[4],
+void CALLBACK _combine_callback(GLdouble coords[3], GLdouble *vert_data[4],
 		       GLfloat weight[4], GLdouble **dataOut)
 {
     GLdouble *vertex = (GLdouble *)malloc(3 * sizeof(GLdouble));
     vertex[0] = coords[0];
     vertex[1] = coords[1];
     vertex[2] = coords[2];
-    
+
     *dataOut = vertex;
 }
 
 
-void _vertex_callback(GLvoid *vertex)
+void CALLBACK _vertex_callback(GLvoid *vertex)
 {
     GLdouble *ptr = (GLdouble *)vertex;
     glVertex3dv(ptr);
