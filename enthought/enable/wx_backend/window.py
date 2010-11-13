@@ -522,8 +522,13 @@ class _Window(AbstractWindow):
                            mouse_wheel  = 0,
                            window = self)
     
-    def _create_gc(self, size, pix_format = "bgra32"):
+    def _create_gc(self, size, pix_format=None):
         "Create a Kiva graphics context of a specified size"
+        
+        # Determine a good pixel format
+        if not pix_format:
+            pix_format = "bgra32" if sys.platform == "win32" else "rgb24"
+        
         gc = GraphicsContextEnable((size[0]+1, size[1]+1), pix_format = pix_format, window=self )
         gc.translate_ctm(0.5, 0.5)
         return gc

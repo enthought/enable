@@ -5,6 +5,7 @@
 #include "x11/agg_bmp.h"
 #include "x11/agg_platform_specific.h"
 /* #include <agg_pixfmt_rgba32.h> */
+#include "agg_pixfmt_rgb.h"
 #include "agg_pixfmt_rgba.h"
 #include "agg_color_rgba.h"
 
@@ -144,6 +145,17 @@ namespace agg
 	    }
       }
       break;
+    case pix_format_rgb24:
+      {
+	pixfmt_rgb24 r((rendering_buffer&)m_rbuf_window);
+
+	for (j=0;j<h;++j)
+	{
+	  memcpy(data, r.row_ptr(h-j-1), w*3);
+	  data += w*3;
+	}
+      }
+      break;
     default:
       fprintf(stderr,"pix_format %d not handled!\n",format);
     }
@@ -182,7 +194,6 @@ namespace agg
           }
       }
       break;
-
     default:
       Py_DECREF(str);
       PyErr_Format(PyExc_ValueError, "pix_format %d not handled", format);
