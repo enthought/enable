@@ -62,9 +62,12 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     Simple wrapper around a PDF graphics context.
     """ 
     def __init__(self, pdf_canvas):
+        from backend_image import GraphicsContext as GraphicsContextImage
         self.gc = pdf_canvas
         self.current_pdf_path = None
         self.text_xy = None, None
+        # get an agg backend to assist in measuring text
+        self._agg_gc = GraphicsContextImage((1,1))
         basecore2d.GraphicsContextBase.__init__(self)
 
     #----------------------------------------------------------------
@@ -681,7 +684,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         msg = "show_glyphs not implemented on PDF yet."
         raise NotImplementedError, msg
-        
+
 
     def get_full_text_extent(self,textstring):
         fontname=self.gc._fontname
@@ -693,25 +696,26 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         #descent=(reportlab.pdfbase.pdfmetrics.getFont(fontname).face.descent)
 
         ascent,descent=reportlab.pdfbase._fontdata.ascent_descent[fontname]
-        #print "ascent", ascent, "descent",descent
-        descent = (-descent) * fontsize / 1000.0
+        
+        # get the AGG extent (we just care about the descent)
+        aw,ah,ad,al = self._agg_gc.get_full_text_extent(textstring)
+        
+        # ignore the descent returned by reportlab if AGG returned 0.0 descent
+        descent = 0.0 if ad == 0.0 else descent * fontsize / 1000.0
         ascent = ascent * fontsize / 1000.0
-        #print "ascent", ascent, "descent",descent
-        height=ascent+descent
-        width=self.gc.stringWidth(textstring,fontname,fontsize)
+        height = ascent + abs(descent)
+        width = self.gc.stringWidth(textstring,fontname,fontsize)
+
         #the final return value is defined as leading. do not know
         #how to get that number so returning zero
         return width, height ,descent, 0 
 
 
-
     def get_text_extent(self,textstring):
         w,h,d,l = self.get_full_text_extent(textstring)
         return w,h
-        
-     
-        
-    
+
+
     #----------------------------------------------------------------
     # Painting paths (drawing and filling contours)
     #----------------------------------------------------------------
