@@ -4,7 +4,7 @@ from numpy import dot
 
 # Enthought library imports
 from enthought.traits.api import Any, Bool, Event, HasTraits, Instance, \
-        Property, ReadOnly, Trait, Tuple, List
+        Property, Trait, Tuple, List
 
 
 # Local relative imports
@@ -49,7 +49,6 @@ class AbstractWindow(HasTraits):
     # backwards compatibility but should not be used in new code.
     bg_color = Alias("bgcolor")
 
-    window        = ReadOnly
     alt_pressed   = Bool(False)
     ctrl_pressed  = Bool(False)
     shift_pressed = Bool(False)
@@ -161,7 +160,6 @@ class AbstractWindow(HasTraits):
     #------------------------------------------------------------------------
 
     def __init__(self, **traits):
-        self.window = self
         self._scroll_origin = (0.0, 0.0)
         self._update_region = None
         self._gc = None
