@@ -667,7 +667,10 @@ def createFontList(fontfiles, fontext='ttf'):
             except RuntimeError:
                 verbose.report("Could not parse font file %s"%fpath)
                 continue
-            prop = afmFontProperty(fpath, font)
+            try:
+                prop = afmFontProperty(fpath, font)
+            except:
+                continue
         else:
             try:
                 font = TTFont(str(fpath))
@@ -1388,3 +1391,5 @@ else:
         global fontManager
         font = fontManager.findfont(prop, **kw)
         return font
+    
+_rebuild()
