@@ -144,10 +144,10 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     def set_line_width(self,width):
         """ Sets the line width for drawing
         
-			Parameters
-			----------
+            Parameters
+            ----------
             width : float
-				The new width for lines in user space units.
+                The new width for lines in user space units.
         """
         self.gc.setLineWidth(width)
 
@@ -155,7 +155,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """ Sets style for joining lines in a drawing.
             
             style : join_style 
-				The line joining style.  The available 
+                The line joining style.  The available 
                 styles are JOIN_ROUND, JOIN_BEVEL, JOIN_MITER.
         """    
         try:
@@ -174,20 +174,20 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             the length of the miter.  If the result is greater than the
             limit, the bevel style is used.
             
-			Parameters
-			----------
+            Parameters
+            ----------
             limit : float
-				limit for mitering joins.            
+                limit for mitering joins.            
         """
         self.gc.setMiterLimit(limit)
         
     def set_line_cap(self,style):
         """ Specifies the style of endings to put on line ends.
                   
-			Parameters
-			----------
+            Parameters
+            ----------
             style : cap_style
-				the line cap style to use. Available styles 
+                the line cap style to use. Available styles 
                 are CAP_ROUND, CAP_BUTT, CAP_SQUARE
         """    
         try:
@@ -199,18 +199,19 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
        
     def set_line_dash(self,lengths,phase=0):
         """
-        	Parameters
-			----------
+            Parameters
+            ----------
             lengths : float array 
-				An array of floating point values 
-			    specifing the lengths of on/off painting
-			    pattern for lines.
+                An array of floating point values 
+                specifing the lengths of on/off painting
+                pattern for lines.
             phase : float
-				Specifies how many units into dash pattern
+                Specifies how many units into dash pattern
                 to start.  phase defaults to 0.
         """
         if basecore2d.is_dashed((phase,lengths)):
-            self.gc.setDash(lengths,phase)
+            lengths = list(lengths) if lengths is not None else []
+            self.gc.setDash(lengths, phase)
 
     def set_flatness(self,flatness):
         """ 
@@ -340,6 +341,8 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             Currently implemented by calling rect a zillion times.
                    
         """
+        if self.current_pdf_path is None:
+            self.begin_path()
         for x,y,sx,sy in rects:
             self.current_pdf_path.rect(x,y,sx,sy)
         
