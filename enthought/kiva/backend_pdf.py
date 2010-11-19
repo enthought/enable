@@ -291,6 +291,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         if self.current_pdf_path is None:
             self.begin_path()
+        
         self.current_pdf_path.moveTo(x,y)
         
     def line_to(self,x,y):
@@ -298,6 +299,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         
             The current point is moved to (x,y).
         """
+        if self.current_pdf_path is None:
+            self.begin_path()
+        
         self.current_pdf_path.lineTo(x,y)
             
     def lines(self,points):
@@ -309,11 +313,17 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             
             current_point is moved to the last point in points           
         """
+        if self.current_pdf_path is None:
+            self.begin_path()
+        
         self.current_pdf_path.moveTo(points[0][0],points[0][1])
         for x,y in points[1:]:
             self.current_pdf_path.lineTo(x,y)
 
     def line_set(self, starts, ends):
+        if self.current_pdf_path is None:
+            self.begin_path()
+        
         for start, end in izip(starts, ends):
             self.current_pdf_path.moveTo(start[0], start[1])
             self.current_pdf_path.lineTo(end[0], end[1])
@@ -326,6 +336,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         if self.current_pdf_path is None:
             self.begin_path()
+        
         if len(args) == 1:
             args = args[0]
         self.current_pdf_path.rect(*args)
@@ -343,6 +354,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         if self.current_pdf_path is None:
             self.begin_path()
+        
         for x,y,sx,sy in rects:
             self.current_pdf_path.rect(x,y,sx,sy)
         
@@ -354,6 +366,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     def curve_to(self, cp1x, cp1y, cp2x, cp2y, x, y):
         """ 
         """
+        if self.current_pdf_path is None:
+            self.begin_path()
+        
         self.current_pdf_path.curveTo(cp1x, cp1y, cp2x, cp2y, x, y)
         
     def quad_curve_to(self,cpx,cpy,x,y):
@@ -365,12 +380,18 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     def arc(self, x, y, radius, start_angle, end_angle, clockwise):
         """
         """
+        if self.current_pdf_path is None:
+            self.begin_path()
+        
         self.current_pdf_path.arc(x, y, radius, start_angle, end_angle, 
                                   clockwise)
     
     def arc_to(self, x1, y1, x2, y2, radius):
         """
         """
+        if self.current_pdf_path is None:
+            self.begin_path()
+        
         self.current_pdf_path.arcTo(x1, y1, x2, y2, radius)
                                            
     #----------------------------------------------------------------
