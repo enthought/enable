@@ -441,24 +441,10 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         
             Region should be a 4-tuple or a sequence.            
         """
-        return
+        clip_path = self.gc.beginPath()
+        clip_path.rect(x, y, width, height)
+        self.gc.clipPath(clip_path, stroke=0, fill=0)
 
-        
-        #probably doesn't work until translate between the matrices
-        #a,b,c,d,tx,ty=self.get_ctm()
-        #newctm=affine.affine_from_values(a,b,c,d,tx,ty)
-  #      newpos=affine.transform_point(newctm,(x,y))
-        #self.save_state()
-        self.begin_path()
-        self.current_pdf_path.rect(x,y,width,height)
-        #temppath=copy.copy(self.current_pdf_path)
-        #self.restore_state()
-        #self.gc._fillMode = canvas.FILL_NON_ZERO
-        self.gc.clipPath(self.current_pdf_path, stroke=0, fill=0)
-        self.stroke_path()
-
-
-        
     def clip_to_rects(self):
         """
         """
