@@ -484,30 +484,33 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     #----------------------------------------------------------------
 
     def set_fill_color(self,color):
-        """ PDF currently ignores the alpha value        
+        """
         """
         r,g,b = color[:3]
         try:
             a = color[3]
         except IndexError:
             a = 1.0
-        self.gc.setFillColorRGB(r, g, b)
+        self.gc.setFillColorRGB(r, g, b, a)
     
     def set_stroke_color(self,color):
-        """ PDF currently ignores the alpha value
+        """
         """
         r,g,b = color[:3]
         try:
             a = color[3]
         except IndexError:
             a = 1.0
-        self.gc.setStrokeColorRGB(r, g, b)
+        self.gc.setStrokeColorRGB(r, g, b, a)
     
     def set_alpha(self, alpha):
+        """ Sets alpha globally. Note that this will not affect draw_image
+            because reportlab does not currently support drawing images with
+            alpha.
         """
-        """
-        msg = "set_alpha not implemented on PDF yet."
-        raise NotImplementedError, msg
+        self.gc.setFillAlpha(alpha)
+        self.gc.setStrokeAlpha(alpha)
+        super(GraphicsContext, self).set_alpha(alpha)
     
     #def set_gray_fill_color(self):
     #    """
@@ -564,8 +567,8 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         # GC needs to be converted to RGBA/RGB.  If so, we see if we can
         # do it nicely (using convert_pixel_format), and if not, we do
         # it brute-force using Agg.
-        
-        import Image as PilImage
+        from reportlab.lib.utils import ImageReader
+        from PIL import Image as PilImage
         from enthought.kiva import agg
 
         if type(img) == type(array([])):
@@ -586,14 +589,17 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             return
         
         # converted_img now holds an Agg graphics context with the image
-        pil_img = PilImage.new(format, (converted_img.width(),
-                                        converted_img.height()))
+        pil_img = PilImage.fromstring(format,
+                                      (converted_img.width(), converted_img.height()),
+                                      converted_img.bmp_array.tostring())
         
         if rect == None:
             rect = (0, 0, img.width(), img.height())
         
-        # draw the actual image.
-        self.gc.drawImage(pil_img, rect[0], rect[1], rect[2], rect[3])
+        # Draw the actual image.
+        # Wrap it in an ImageReader object, because that's what reportlab
+        # actually needs.
+        self.gc.drawImage(ImageReader(pil_img), rect[0], rect[1], rect[2], rect[3])
     
     #----------------------------------------------------------------
     # Drawing PDF documents
