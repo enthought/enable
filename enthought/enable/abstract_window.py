@@ -323,6 +323,20 @@ class AbstractWindow(HasTraits):
         self._redraw()
         return
 
+    def cleanup(self):
+        """ Clean up after ourselves.
+        """
+        if self.component is not None:
+            self.component.cleanup(self)
+            self.component.parent = None
+            self.component.window = None
+            self.component = None
+
+        self.control = None
+        if self._gc is not None :
+            self._gc.window = None
+            self._gc = None
+
     def _needs_redraw(self, bounds):
         "Determine if a specified region intersects the update region"
         return does_disjoint_intersect_coordinates( self._update_region,
@@ -415,6 +429,12 @@ class AbstractWindow(HasTraits):
         pass
 
     def _on_window_leave(self, event):
+        if self._size is None:
+            # PZW: Hack!
+            # We need to handle the cases when the window hasn't been painted yet, but
+            # it's gotten a mouse event.  In such a case, we just ignore the mouse event.
+            # If the window has been painted, then _size will have some sensible value.
+            self._prev_event_handler = None
         if self._prev_event_handler:
             mouse_event = self._create_mouse_event(event)
             self._prev_event_handler.dispatch(mouse_event, "mouse_leave")
@@ -422,4 +442,3 @@ class AbstractWindow(HasTraits):
         return
 
 
-# EOF

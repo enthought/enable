@@ -32,10 +32,6 @@ class _ComponentEditor( Editor ):
     # The plot editor is scrollable (overrides Traits UI Editor).
     scrollable = True
 
-    #---------------------------------------------------------------------------
-    #  Finishes initializing the editor by creating the underlying toolkit
-    #  widget:
-    #---------------------------------------------------------------------------
     def init( self, parent ):
         """ Finishes initializing the editor by creating the underlying toolkit
         widget.
@@ -45,9 +41,14 @@ class _ComponentEditor( Editor ):
         self._window.bgcolor = self.factory.bgcolor
         self._parent = parent
 
-    #---------------------------------------------------------------------------
-    #  Updates the editor when the object trait changes externally to the editor:
-    #---------------------------------------------------------------------------
+    def dispose(self):
+        """ Disposes of the contents of an editor.
+        """
+        self._window.cleanup()
+        self._window = None
+        self._parent = None
+        super(_ComponentEditor, self).dispose()
+
     def update_editor( self ):
         """ Updates the editor when the object trait changes externally to the
         editor.

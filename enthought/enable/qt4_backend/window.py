@@ -68,13 +68,9 @@ class _QtWindow(QtGui.QWidget):
                 component.outer_height = dy
 
     def closeEvent(self, event):
-        if self._enable_window.component is not None:
-            self._enable_window.component.cleanup(self)
-            self._enable_window.component.parent = None
-            self._enable_window.component.window = None
-            self._enable_window.component = None
-
-        self._enable_window.control = None
+        self._enable_window.cleanup()
+        self._enable_window = None
+        return super(_QtWindow, self).closeEvent(event)
 
     def keyReleaseEvent(self, event):
         focus_owner = self._enable_window.focus_owner
@@ -179,7 +175,6 @@ class Window(AbstractWindow):
 
     def set_drag_result(self, result):
         # FIXME
-        print "In set_drag_result()"
         raise NotImplementedError
 
     def _capture_mouse ( self ):
@@ -266,7 +261,6 @@ class Window(AbstractWindow):
 
     def _set_timer_interval(self, component, interval):
         # FIXME
-        print "In _set_timer_interval()"
         raise NotImplementedError
 
     def set_tooltip(self, tooltip):
