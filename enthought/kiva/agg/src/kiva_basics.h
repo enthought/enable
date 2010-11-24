@@ -16,7 +16,7 @@ namespace kiva
     #endif
 #endif
 #ifdef __GNUC__
-#define INT64 long long
+    typedef long long INT64;
 #endif
 
 #ifdef max
