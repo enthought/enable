@@ -17,11 +17,14 @@
 
     // The following mechanism is necessary in order to use MultiDrawElements
     // on Windows with mingw.
-    #ifdef __MINGW32__
-        #define GL_GLEXT_PROTOTYPES 1
-        #include <GL/glext.h>
-        #define MULTI_DRAW_ELEMENTS glMultiDrawElementsEXT
-    #endif
+    // 11/24/2010: glMultiDrawElements is not being used right now in the GL
+    // backend, so comment this out for the time being, especially since it
+    // causes build problems with 64-bit mingw.
+    //#ifdef __MINGW32__
+    //    #define GL_GLEXT_PROTOTYPES 1
+    //    #include <GL/glext.h>
+    //    #define MULTI_DRAW_ELEMENTS glMultiDrawElementsEXT
+    //#endif
 #endif
 
 #include "agg_basics.h"

@@ -1,9 +1,9 @@
 
 
 
-#ifndef MULTI_DRAW_ELEMENTS
-    #define MULTI_DRAW_ELEMENTS glMultiDrawElements
-#endif
+// #ifndef MULTI_DRAW_ELEMENTS
+//     #define MULTI_DRAW_ELEMENTS glMultiDrawElements
+// #endif
 
 #include <math.h>
 
@@ -836,7 +836,7 @@ void gl_graphics_context::draw_square(double *pts, int Npts, int size,
         glColor4f(EXPAND_COLOR(line_color));
 
 // To use glMultiDrawElements in a robust manner, we'll need to do a bunch
-// of extention function pointer juggling.  Avoid this for now and just
+// of extension function pointer juggling.  Avoid this for now and just
 // use the more brute-force approach.
 #if 0
         // To use glMultiDrawElements, we need to have a GLvoid** of
