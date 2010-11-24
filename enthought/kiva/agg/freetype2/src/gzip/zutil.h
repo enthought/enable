@@ -182,7 +182,8 @@ typedef unsigned long  ulg;
 #endif
 
 /* Diagnostic functions */
-#ifdef DEBUG
+#if 0 /* this was "#ifdef DEBUG", but the z_verbose symbol is causing problems
+         on mingw64 */
 #  include <stdio.h>
    extern int z_verbose;
    extern void z_error    OF((char *m));
