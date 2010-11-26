@@ -28,17 +28,23 @@ namespace agg
 
 %typemap(in) HDC
 {
-    //$1 = ($1_ltype) PyLong_AsUnsignedLong($input);
+  %#if SIZEOF_SIZE_T == 8
+    $1 = ($1_ltype) PyLong_AsLongLong($input);
+  %#else
     $1 = ($1_ltype) PyLong_AsLong($input);
+  %#endif
     if (PyErr_Occurred()) SWIG_fail;
-}    
+}
 
 %typemap(out) HDC
 {
-    //$result = PyLong_FromUnsignedLong($1);
-    $result = PyLong_FromLong((long)$1);
+  %#if SIZEOF_SIZE_T == 8
+    $result = PyLong_FromLongLong((long long) $1);
+  %#else
+    $result = PyLong_FromLong((long) $1);
+  %#endif
     if (PyErr_Occurred()) SWIG_fail;
-}    
+}
 
 %apply HDC { HWND };
 
