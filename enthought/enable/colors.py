@@ -183,8 +183,6 @@ if ETSConfig.toolkit == 'wx':
     def convert_from_wx_color(obj, name, value):
         if isinstance(value, ColourPtr) or isinstance(value, wx.Colour):
             return (value.Red()/255.0, value.Green()/255.0, value.Blue()/255.0, 1.0)
-        elif isinstance(value, str):
-            return color_table[value]
         elif type(value) is int:
             num = int( value )
             return ((num >> 16)/255.0, ((num>>8) & 0xFF)/255.0, (num & 0xFF)/255.0, 1.0)
@@ -246,8 +244,6 @@ elif ETSConfig.toolkit == 'qt4':
     def convert_from_pyqt_color(obj, name, value):
         if isinstance(value, QtGui.QColor):
             return value.getRgbF()
-        elif isinstance(value, Str):
-            return color_table.get(value, transparent_color)
         elif type(value) is int:
             num = int(value)
             return ((num >> 16)/255.0, ((num>>8) & 0xFF)/255.0, (num & 0xFF)/255.0, 1.0)
@@ -297,7 +293,7 @@ elif ETSConfig.toolkit == 'qt4':
                 color =  fmt % color
             return color
         
-    ColorTrait = Trait("black", Tuple, List, Str, color_table,
+    ColorTrait = Trait("black", Tuple, List, color_table,
                        convert_from_pyqt_color, editor=ColorEditorFactory)
 
 else:
