@@ -428,7 +428,13 @@ def findSystemFonts(fontpaths=None, fontext='ttf'):
             files.extend(glob.glob(os.path.join(path, '*.'+ext)))
             files.extend(glob.glob(os.path.join(path, '*.'+ext.upper())))
         for fname in files:
-            fontfiles[os.path.abspath(fname)] = 1
+            abs_path = os.path.abspath(fname)
+            
+            # Handle dirs which look like font files, but may contain font files
+            if os.path.isdir(abs_path):
+                fontpaths.append(abs_path)
+            else:
+                fontfiles[abs_path] = 1
 
     return [fname for fname in fontfiles.keys() if os.path.exists(fname)]
 
