@@ -10,6 +10,6 @@ gc.clear()
 gc.rect(100,100,300,300)
 gc.linear_gradient(100, 100, 300, 300,
                     numpy.array([starting_color, ending_color]),
-                    2, "")
+                    "pad", 'objectBoundingBox')
 gc.draw_path()
 gc.save("gradient.bmp")
