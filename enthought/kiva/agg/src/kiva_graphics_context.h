@@ -1279,7 +1279,7 @@ namespace kiva
 
         // Concatenate the CTM with the text matrix to get the full transform for the
         // font engine.
-    	agg::trans_affine full_text_xform(this->path.get_ctm() * this->text_matrix);
+    	agg::trans_affine full_text_xform(this->text_matrix * this->path.get_ctm());
 
        // the AGG freetype transform is a per character transform.  We need to remove the
        // offset part of the transform to prevent that offset from occuring between each
