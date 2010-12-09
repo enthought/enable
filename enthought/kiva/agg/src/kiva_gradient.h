@@ -176,7 +176,7 @@ namespace kiva
                                                 span_gradient_type> renderer_gradient_type;
 
 
-            agg::trans_affine   gradient_mtx;                    // Affine transformer
+            agg::trans_affine   gradient_mtx;	 // Affine transformer
             interpolator_type   span_interpolator(gradient_mtx); // Span interpolator
             span_allocator_type span_allocator;                  // Span Allocator
             color_array_type    color_array;                     // Gradient colors
@@ -190,63 +190,38 @@ namespace kiva
             double d1 = 0;
             double d2 = sqrt(dx * dx + dy * dy);
 
-            if (this->units == kiva::user_space)
-            {
-                gradient_mtx *= this->affine_mtx;
-
-                // scale the translation part of the transform, otherwise Agg
-                // will draw the gradient at the wrong location
-
-            	double x, y, scale_x, scale_y;
-            	kiva::get_translation(this->affine_mtx, &x, &y);
-            	kiva::get_scale(this->affine_mtx, &scale_x, &scale_y);
-            	double scaled_trans_x = x*scale_x;
-            	double scaled_trans_y = -y*scale_y;
-
-//            	std::cout << "translations: " << x << ", " << y << std::endl;
-//            	std::cout << "scaled: " << scale_x << ", " << scale_y << std::endl;
-//            	std::cout << "scaled translations: " << scaled_trans_x << ", " << scaled_trans_y << std::endl;
-
-                double temp[6];
-                gradient_mtx.store_to(temp);
-                temp[4] = scaled_trans_x;
-                temp[5] = scaled_trans_y;
-                gradient_mtx.load_from(temp);
-            }
-
-//            std::cout << "starting with affine matrix " << gradient_mtx.m0
-//					  << ", " << gradient_mtx.m1
-//					  << ", " << gradient_mtx.m2
-//					  << ", " << gradient_mtx.m3
-//					  << ", " << gradient_mtx.m4
-//					  << ", " << gradient_mtx.m5 << std::endl;
-
-            gradient_mtx *= agg::trans_affine_translation(-points[0].first, -points[0].second);
-
             if ((this->gradient_type == kiva::grad_radial) && (this->points.size() >2))
             {
             	d2 = points[1].first;
-				// TOOD: apply scaling transform here, determined by dx and dy of the bounding box,
+                // TOOD: apply scaling transform here, determined by dx and dy of the bounding box,
                 // if appropriate
             }
             else if (this->gradient_type == kiva::grad_linear)
             {
                 if (points[0].first == points[1].first)
                 {
-                	gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy) / (d2-d1));
-                	gradient_mtx *= agg::trans_affine_rotation(atan2(dx, dy));
+		    gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy)/d2);
+		    gradient_mtx *= agg::trans_affine_rotation(atan2(dx, dy));
                 }
                 else if (points[0].second == points[1].second)
                 {
-                	// No need to rotate
+		    // No need to rotate
+		    gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy)/d2);
                 }
                 else
                 {
-                	// general case: scale, rotate and translate
-                    gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy) / (d2-d1));
-                    gradient_mtx *= agg::trans_affine_rotation(atan2(-dy, dx));
+                    // general case: scale, rotate and translate
+                    gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy)/d2);
+                    gradient_mtx *= agg::trans_affine_rotation(atan2(dy, dx));
                 }
             }
+	    
+            gradient_mtx *= agg::trans_affine_translation(points[0].first, points[0].second);
+	    if (this->units == kiva::user_space)
+            {
+		gradient_mtx *= this->affine_mtx;
+	    }
+	    gradient_mtx.invert();
 
 //            std::cout << "drawing with affine matrix " << gradient_mtx.m0
 //					  << ", " << gradient_mtx.m1
