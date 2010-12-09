@@ -51,6 +51,39 @@ text_draw_modes = {'FILL': (constants.TEXT_FILL,
                             constants.TEXT_STROKE_CLIP),
                     'INVISIBLE': constants.TEXT_INVISIBLE}
 
+class PixelMap(object):
+    
+    def __init__(self, surface, width, height):
+        self.surface = surface
+        self.width = width
+        self.height = height
+        
+    def draw_to_wxwindow(self, window, x, y):
+        import wx
+        window_dc = getattr(window,'_dc',None)
+        if window_dc is None:
+            window_dc = wx.PaintDC(window)
+        arr = self.convert_to_rgbarray()
+        image = wx.EmptyImage(self.width, self.height)
+        image.SetDataBuffer(arr.data)
+        bmp = wx.BitmapFromImage(image, depth=-1)
+
+        window_dc.BeginDrawing()
+        window_dc.DrawBitmap(bmp,x,y)
+        window_dc.EndDrawing()
+        return
+    
+    def convert_to_rgbarray(self):
+        pixels = numpy.frombuffer(self.surface.get_data(), numpy.uint8)
+        buffer_size = self.width*self.height*4
+
+        alpha = pixels[3::4]
+        red = pixels[2::4]
+        green = pixels[1::4]
+        blue = pixels[0::4]
+        return numpy.vstack((red, green, blue)).T.flatten()
+        
+
 class GraphicsState(object):
     """ Holds information used by a graphics context when drawing.
 
@@ -148,6 +181,8 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
         #the text-matrix includes the text position
         self.text_matrix = cairo.Matrix(1,0,0,-1,0,0) #not part of the graphics state
+        
+        self.pixel_map = PixelMap(self.surface, w, h)
 
     def clear(self, color=(1,1,1)):
         if len(color) == 4:
@@ -578,6 +613,10 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 #        yc2 = (y_to + y_ctrl + y_ctrl) / 3.0
 #        self.curve_to(xc1, yc1, xc2, yc2, x_to, y_to)
 
+    def arc_to(self, x1, y1, x2, y2, radius):
+        pass
+
+
     def arc(self, x, y, radius, start_angle, end_angle, cw=False):
         """ Draw a circular arc.
 
@@ -948,11 +987,11 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         return copy.copy(self.text_matrix)
 
-    def show_text(self,text):
+    def show_text(self,text, point=(0.0,0.0)):
         """ Draws text on the device at the current text position.
             Leaves the current point unchanged.
         """
-        self.show_text_at_point(text, 0.0,0.0)
+        self.show_text_at_point(text, point[0], point[1])
 
     def show_glyphs(self):
         """
