@@ -71,17 +71,17 @@ namespace kiva
 
                     if (this->spread_method == kiva::reflect)
                     {
-                    	agg::gradient_reflect_adaptor<agg::gradient_y> adaptor(grad_func);
+                        agg::gradient_reflect_adaptor<agg::gradient_y> adaptor(grad_func);
                         this->_apply(pixfmt, ras, rbase, adaptor);
                     }
                     else if (this->spread_method == kiva::repeat)
                     {
-                    	agg::gradient_repeat_adaptor<agg::gradient_y> adaptor(grad_func);
+                        agg::gradient_repeat_adaptor<agg::gradient_y> adaptor(grad_func);
                         this->_apply(pixfmt, ras, rbase, adaptor);
                     }
                     else
                     {
-                    	this->_apply(pixfmt, ras, rbase, grad_func);
+                        this->_apply(pixfmt, ras, rbase, grad_func);
                     }
                 }
                 else if (this->points[0].second == this->points[1].second)
@@ -92,12 +92,12 @@ namespace kiva
 
                     if (this->spread_method == kiva::reflect)
                     {
-                    	agg::gradient_reflect_adaptor<agg::gradient_x> adaptor(grad_func);
+                        agg::gradient_reflect_adaptor<agg::gradient_x> adaptor(grad_func);
                         this->_apply(pixfmt, ras, rbase, adaptor);
                     }
                     else if (this->spread_method == kiva::repeat)
                     {
-                    	agg::gradient_repeat_adaptor<agg::gradient_x> adaptor(grad_func);
+                        agg::gradient_repeat_adaptor<agg::gradient_x> adaptor(grad_func);
                         this->_apply(pixfmt, ras, rbase, adaptor);
                     }
                     else
@@ -113,12 +113,12 @@ namespace kiva
 
                     if (this->spread_method == kiva::reflect)
                     {
-                    	agg::gradient_reflect_adaptor<agg::gradient_x> adaptor(grad_func);
+                        agg::gradient_reflect_adaptor<agg::gradient_x> adaptor(grad_func);
                         this->_apply(pixfmt, ras, rbase, adaptor);
                     }
                     else if (this->spread_method == kiva::repeat)
                     {
-                    	agg::gradient_repeat_adaptor<agg::gradient_x> adaptor(grad_func);
+                        agg::gradient_repeat_adaptor<agg::gradient_x> adaptor(grad_func);
                         this->_apply(pixfmt, ras, rbase, adaptor);
                     }
                     else
@@ -130,29 +130,29 @@ namespace kiva
             else
             {
                 agg::gradient_radial_focus grad_func(points[1].first,
-										points[2].first - points[0].first,
-										points[2].second - points[0].second);
+                                                     points[2].first - points[0].first,
+                                                     points[2].second - points[0].second);
 
                 if (this->spread_method == kiva::reflect)
                 {
-                	agg::gradient_reflect_adaptor<agg::gradient_radial_focus> adaptor(grad_func);
+                    agg::gradient_reflect_adaptor<agg::gradient_radial_focus> adaptor(grad_func);
                     this->_apply(pixfmt, ras, rbase, adaptor);
                 }
                 else if (this->spread_method == kiva::repeat)
                 {
-                	agg::gradient_repeat_adaptor<agg::gradient_radial_focus> adaptor(grad_func);
+                    agg::gradient_repeat_adaptor<agg::gradient_radial_focus> adaptor(grad_func);
                     this->_apply(pixfmt, ras, rbase, adaptor);
                 }
                 else
                 {
-                	this->_apply(pixfmt, ras, rbase, grad_func);
+                    this->_apply(pixfmt, ras, rbase, grad_func);
                 }
             }
         }
 
         void set_ctm(const agg::trans_affine& mtx)
         {
-        	this->affine_mtx = mtx;
+            this->affine_mtx = mtx;
         }
 
         protected:
@@ -176,64 +176,61 @@ namespace kiva
                                                 span_gradient_type> renderer_gradient_type;
 
 
-            agg::trans_affine   gradient_mtx;	 // Affine transformer
+            agg::trans_affine   gradient_mtx;                    // Affine transformer
             interpolator_type   span_interpolator(gradient_mtx); // Span interpolator
             span_allocator_type span_allocator;                  // Span Allocator
             color_array_type    color_array;                     // Gradient colors
             agg::scanline_u8 scanline;
 
-            std::vector<point> user_space_points;
-
             double dx = points[1].first - points[0].first;
             double dy = points[1].second - points[0].second;
-
-            double d1 = 0;
-            double d2 = sqrt(dx * dx + dy * dy);
+            double d1 = 0, d2 = 0;
 
             if ((this->gradient_type == kiva::grad_radial) && (this->points.size() >2))
             {
-            	d2 = points[1].first;
-                // TOOD: apply scaling transform here, determined by dx and dy of the bounding box,
-                // if appropriate
+                // length is the radius
+                d2 = points[1].first;
             }
             else if (this->gradient_type == kiva::grad_linear)
             {
+                // length is the distance between the two points
+                d2 = sqrt(dx * dx + dy * dy);
+                
                 if (points[0].first == points[1].first)
                 {
-		    gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy)/d2);
-		    gradient_mtx *= agg::trans_affine_rotation(atan2(dx, dy));
+                    // gradient_y. handle flips
+                    gradient_mtx *= agg::trans_affine_rotation(atan2(0.0, dy));
                 }
                 else if (points[0].second == points[1].second)
                 {
-		    // No need to rotate
-		    gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy)/d2);
+                    // gradient_x. handle flips
+                    gradient_mtx *= agg::trans_affine_rotation(atan2(0.0, dx));
                 }
                 else
                 {
-                    // general case: scale, rotate and translate
-                    gradient_mtx *= agg::trans_affine_scaling(sqrt(dx * dx + dy * dy)/d2);
+                    // general case: arbitrary rotation
                     gradient_mtx *= agg::trans_affine_rotation(atan2(dy, dx));
                 }
             }
-	    
-            gradient_mtx *= agg::trans_affine_translation(points[0].first, points[0].second);
-	    if (this->units == kiva::user_space)
-            {
-		gradient_mtx *= this->affine_mtx;
-	    }
-	    gradient_mtx.invert();
 
-//            std::cout << "drawing with affine matrix " << gradient_mtx.m0
-//					  << ", " << gradient_mtx.m1
-//					  << ", " << gradient_mtx.m2
-//					  << ", " << gradient_mtx.m3
-//					  << ", " << gradient_mtx.m4
-//					  << ", " << gradient_mtx.m5 << std::endl;
+            gradient_mtx *= agg::trans_affine_translation(points[0].first, points[0].second);
+            if (this->units == kiva::user_space)
+            {
+                gradient_mtx *= this->affine_mtx;
+            }
+            gradient_mtx.invert();
+
+            //std::cout << "drawing with affine matrix " << gradient_mtx.m0
+            //                                           << ", " << gradient_mtx.m1
+            //                                           << ", " << gradient_mtx.m2
+            //                                           << ", " << gradient_mtx.m3
+            //                                           << ", " << gradient_mtx.m4
+            //                                           << ", " << gradient_mtx.m5 << std::endl;
 
             span_gradient_type span_gradient(span_interpolator,
-                                            gradient_func,
-                                            color_array,
-                                            d1, d2);
+                                             gradient_func,
+                                             color_array,
+                                             d1, d2);
 
             renderer_gradient_type grad_renderer(*rbase, span_allocator, span_gradient);
 
