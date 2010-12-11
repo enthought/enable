@@ -1080,6 +1080,20 @@ cdef class CGContext:
         self.clip()           
         stops_list = stops.transpose().tolist()
         func = PiecewiseLinearColorFunction(stops_list)
+
+        # 12/11/2010 John Wiggins - In order to avoid a bug in Quartz,
+        # the radius of a radial gradient must be greater than the distance
+        # between the center and the focus. When input runs afoul of this bug,
+        # the focus point will be moved towards the center so that the distance
+        # is less than the radius. This matches the behavior of AGG.
+        cdef double dx = fx-cx
+        cdef double dy = fy-cy
+        cdef double dist = sqrt(dx*dx + dy*dy)
+        if r <= dist:
+            newdist = r-0.001
+            fx = cx+newdist*dx/dist
+            fy = cy+newdist*dy/dist
+
         shading = RadialShading(func, (fx, fy), 0.0, (cx, cy), r,
                                extend_start=1, extend_end=1)
         self.draw_shading(shading)
