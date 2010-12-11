@@ -888,7 +888,7 @@ def init(self, ary_or_size, pix_format="bgra32",
             assert img_depth == sh[2], msg
         else:
             msg = "only 2 or 3 dimensional arrays are supported as images"
-            msg += " but got sh=%r" % (sh)
+            msg += " but got sh=%r" % (sh,)
             raise TypeError, msg
         msg = "Only UnsignedInt8 arrays are supported but got "
         assert ary.dtype == dtype('uint8'), msg + repr(ary.dtype)
