@@ -165,7 +165,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     def __init__(self, size, *args, **kw):
 
         w,h = size
-
+        
         self.surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
         self.surface.set_device_offset(0,h)
 
@@ -1178,6 +1178,9 @@ try:
             WidgetClass.__init__(self, parent, id, wx.Point(0, 0), size,
                                     wx.SUNKEN_BORDER | wx.WANTS_CHARS | \
                                     wx.FULL_REPAINT_ON_RESIZE )
+
+            if size == (-1, -1):
+                size = self.GetClientSizeTuple()
 
             self.gc = None
             self.new_gc(size)
