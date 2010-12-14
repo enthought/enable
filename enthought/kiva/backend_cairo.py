@@ -150,6 +150,7 @@ class GraphicsState(object):
         self.stroke_color = [1,1,1]
         self.alpha = 1.0
         self.text_drawing_mode = constants.TEXT_FILL
+        self.has_gradient = False
 
         #not implemented yet...
         self.text_character_spacing = None
@@ -185,10 +186,14 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.pixel_map = PixelMap(self.surface, w, h)
 
     def clear(self, color=(1,1,1)):
+        self.save_state()
         if len(color) == 4:
             self._ctx.set_source_rgba(*color)
         else:
             self._ctx.set_source_rgb(*color)
+        self.rect(0, 0, self.width(), self.height())
+        self.draw_path(constants.FILL)
+        self.restore_state()
 
     def height(self):
         return self._ctx.get_target().get_height()
@@ -417,16 +422,16 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         pass
 
 
-    def radial_gradient(self, cx, cy, r, stops, fx=None,fy=None, spreadMethod='pad',
+    def radial_gradient(self, cx, cy, r, fx, fy, stops, spreadMethod='pad',
                         transforms=None, units='userSpaceOnUse'):
 
         # TODO: handle transforms
         # TODO: handle units
         # TODO: handle spread
-        gradient = cairo.RadialGradient(cx, cy, r, fx, fx, r)
+        gradient = cairo.RadialGradient(fx, fy, 0.0, cx, cy, r)
 
         for stop in stops:
-            # FIXME: the stops are possibly being generated wrong if the offset is specified
+            #FIXME: the stops are possibly being generated wrong if the offset is specified
             if stop.size == 10:
                 start = tuple(stop[0:5])
                 end = tuple(stop[5:10])
@@ -436,9 +441,8 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
                 start = tuple(stop[0:5])
                 gradient.add_color_stop_rgba(*start)
 
-        # TODO: does the context need to set the surface or mask?
-
-        return gradient
+        self.state.has_gradient = True
+        self._ctx.set_source(gradient)
 
     def linear_gradient(self, x1, y1, x2, y2, stops, spreadMethod='pad',
                         transforms=None, units='userSpaceOnUse'):
@@ -459,9 +463,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
                 start = tuple(stop[0:5])
                 gradient.add_color_stop_rgba(*start)
 
-        # TODO: does the context need to set the surface or mask?
+        self.state.has_gradient = True
+        self._ctx.set_source(gradient)
 
-        return gradient
 
     #----------------------------------------------------------------
     # Building paths (contours that are drawn)
@@ -642,9 +646,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             Whether the arc should be drawn clockwise or not.
         """
         if cw: #not sure if I've got this the right way round
-            self._ctx.arc( x, y, radius, start_angle, end_angle)
-        else:
             self._ctx.arc_negative( x, y, radius, start_angle, end_angle)
+        else:
+            self._ctx.arc( x, y, radius, start_angle, end_angle)
 
 #    def arc_to(self, x1, y1, x2, y2, radius):
 #        """
@@ -775,6 +779,8 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             self._ctx.set_source_rgb(*color)
         else:
             self._ctx.set_source_rgba(*color)
+        # gradients or other source patterns are blown away by set_source_rgb*
+        self.state.has_gradient = False
 
     def set_fill_color(self,color):
         """
@@ -1068,15 +1074,19 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             ctx.set_fill_rule(cairo.FILL_RULE_WINDING)
 
         if mode in [constants.FILL, constants.EOF_FILL]:
-            self._set_source_color(self.state.fill_color)
+            if not self.state.has_gradient:
+                self._set_source_color(self.state.fill_color)
             ctx.fill()
         elif mode == constants.STROKE:
-            self._set_source_color(self.state.stroke_color)
+            if not self.state.has_gradient:
+                self._set_source_color(self.state.stroke_color)
             ctx.stroke()
         elif mode in [constants.FILL_STROKE, constants.EOF_FILL_STROKE]:
-            self._set_source_color(self.state.fill_color)
+            if not self.state.has_gradient:
+                self._set_source_color(self.state.fill_color)
             ctx.fill_preserve()
-            self._set_source_color(self.state.stroke_color)
+            if not self.state.has_gradient:
+                self._set_source_color(self.state.stroke_color)
             ctx.stroke()
 
         ctx.set_fill_rule(fr)
@@ -1152,6 +1162,13 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.translate_ctm(x, y)
         component.draw(self, view_bounds=(0, 0, w, h))
         return
+    
+    def save(self, filename, file_format=None):
+        """ Save the GraphicsContext to a (PNG) file.
+            file_format is ignored.
+        """
+        self.surface.flush()
+        self.surface.write_to_png(filename)
 
 try:
     import wx
