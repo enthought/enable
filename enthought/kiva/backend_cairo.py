@@ -16,6 +16,7 @@ import numpy
 
 import copy
 from itertools import izip
+import warnings
 
 line_join = {constants.JOIN_BEVEL: cairo.LINE_JOIN_BEVEL,
                   constants.JOIN_MITER: cairo.LINE_JOIN_MITER,
@@ -75,14 +76,21 @@ class PixelMap(object):
     
     def convert_to_rgbarray(self):
         pixels = numpy.frombuffer(self.surface.get_data(), numpy.uint8)
-        buffer_size = self.width*self.height*4
 
-        alpha = pixels[3::4]
         red = pixels[2::4]
         green = pixels[1::4]
         blue = pixels[0::4]
         return numpy.vstack((red, green, blue)).T.flatten()
+    
+    def convert_to_argbarray(self):
+        pixels = numpy.frombuffer(self.surface.get_data(), numpy.uint8)
+        shape = (self.height, self.width)
         
+        alpha = numpy.flipud(pixels[0::4].reshape(shape)).flatten()
+        red = numpy.flipud(pixels[1::4].reshape(shape)).flatten()
+        green = numpy.flipud(pixels[2::4].reshape(shape)).flatten()
+        blue = numpy.flipud(pixels[3::4].reshape(shape)).flatten()
+        return numpy.vstack((alpha, red, green, blue)).T.flatten()
 
 class GraphicsState(object):
     """ Holds information used by a graphics context when drawing.
@@ -813,17 +821,34 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         Only works with numpy arrays. What is a "Kiva Image" anyway?
         Not Yet Tested.
         """
-        if img.shape[2]==3:
-            format = cairo.FORMAT_RGB24
-        elif img.shape[2]==4:
-            format = cairo.FORMAT_ARGB32
-        w,h = img.shape[:2]
-        s = cairo.ImageSurface.create_for_data(img.astype(numpy.uint8),
+        from enthought.kiva import agg
+
+        if type(img) == type(numpy.array([])):
+            # Numeric array
+            if img.shape[2]==3:
+                format = cairo.FORMAT_RGB24
+            elif img.shape[2]==4:
+                format = cairo.FORMAT_ARGB32
+            w,h = img.shape[:2]
+            s = cairo.ImageSurface.create_for_data(img.astype(numpy.uint8),
                                                format, w, h)
+        elif isinstance(img, agg.GraphicsContextArray):
+            converted_img = img.convert_pixel_format('rgba32', inplace=0)
+            flipped_array = numpy.flipud(converted_img.bmp_array)
+            w,h = converted_img.width(), converted_img.height()
+            s = cairo.ImageSurface.create_for_data(flipped_array.flatten(),
+                                                   cairo.FORMAT_RGB24, w, h)
+        elif isinstance(img, GraphicsContext):
+            # Another cairo kiva context
+            w,h = img.pixel_map.width, img.pixel_map.height
+            s = cairo.ImageSurface.create_for_data(img.pixel_map.convert_to_argbarray(),
+                                                   cairo.FORMAT_ARGB32, w, h)
+        else:
+            warnings.warn("Cannot render image of type '%r' into cairo context." % \
+                    type(img))
+            return
+        
         ctx = self._ctx
-        ##the cairo state doesn't include the source, so there's no point in
-        ##saving the state here.
-        #ctx.save()
         if rect:
             x,y,sx,sy = rect
             ctx.set_source_surface(s, x, y)
@@ -834,7 +859,6 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         else:
             ctx.set_source_surface(s)
             ctx.paint()
-        #ctx.restore()
 
 
     #-------------------------------------------------------------------------
