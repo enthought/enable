@@ -829,35 +829,43 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
                 format = cairo.FORMAT_RGB24
             elif img.shape[2]==4:
                 format = cairo.FORMAT_ARGB32
-            w,h = img.shape[:2]
-            s = cairo.ImageSurface.create_for_data(img.astype(numpy.uint8),
-                                               format, w, h)
+            img_width, img_height = img.shape[:2]
+            img_surface = cairo.ImageSurface.create_for_data(img.astype(numpy.uint8),
+                                                             format, img_width, img_height)
         elif isinstance(img, agg.GraphicsContextArray):
             converted_img = img.convert_pixel_format('rgba32', inplace=0)
             flipped_array = numpy.flipud(converted_img.bmp_array)
-            w,h = converted_img.width(), converted_img.height()
-            s = cairo.ImageSurface.create_for_data(flipped_array.flatten(),
-                                                   cairo.FORMAT_RGB24, w, h)
+            img_width, img_height = converted_img.width(), converted_img.height()
+            img_surface = cairo.ImageSurface.create_for_data(flipped_array.flatten(),
+                                                             cairo.FORMAT_RGB24,
+                                                             img_width, img_height)
         elif isinstance(img, GraphicsContext):
             # Another cairo kiva context
-            w,h = img.pixel_map.width, img.pixel_map.height
-            s = cairo.ImageSurface.create_for_data(img.pixel_map.convert_to_argbarray(),
-                                                   cairo.FORMAT_ARGB32, w, h)
+            img_width, img_height = img.pixel_map.width, img.pixel_map.height
+            img_surface = cairo.ImageSurface.create_for_data(img.pixel_map.convert_to_argbarray(),
+                                                             cairo.FORMAT_ARGB32,
+                                                             img_width, img_height)
         else:
             warnings.warn("Cannot render image of type '%r' into cairo context." % \
                     type(img))
             return
         
         ctx = self._ctx
+        img_pattern = cairo.SurfacePattern(img_surface)
         if rect:
             x,y,sx,sy = rect
-            ctx.set_source_surface(s, x, y)
-            p = ctx.copy_path() #need to save the path
+            if sx != img_width or sy != img_height:
+                scaler = cairo.Matrix()
+                scaler.scale(img_width/float(sx), img_height/float(sy))
+                img_pattern.set_matrix(scaler)
+                img_pattern.set_filter(cairo.FILTER_BEST)
+            ctx.set_source(img_pattern)
+            #p = ctx.copy_path() #need to save the path
             ctx.new_path()
             ctx.rectangle(x,y,sx,sy)
             ctx.fill()
         else:
-            ctx.set_source_surface(s)
+            ctx.set_source(img_pattern)
             ctx.paint()
 
 
