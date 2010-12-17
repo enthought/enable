@@ -77,6 +77,12 @@ class ProfileAdapter(TabularAdapter):
     func_name_width = Constant(200)
     line_width = Constant(50)
 
+    ncalls_alignment = Constant('right')
+    nonrec_calls_alignment = Constant('right')
+    inline_time_alignment = Constant('right')
+    cum_time_alignment = Constant('right')
+    line_alignment = Constant('right')
+
     file_text = Property(Str)
     inline_time_text = Property(Str)
     cum_time_text = Property(Str)
