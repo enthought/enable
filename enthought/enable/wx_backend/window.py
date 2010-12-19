@@ -558,6 +558,10 @@ class _Window(AbstractWindow):
 
     def _window_paint ( self, event):
         "Do a GUI toolkit specific screen update"
+        if self.control is None:
+            event.Skip()
+            return
+        
         control = self.control
         wdc = control._dc = wx.PaintDC(control)
         self._update_region = None

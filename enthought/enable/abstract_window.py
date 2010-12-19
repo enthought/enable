@@ -346,6 +346,12 @@ class AbstractWindow(HasTraits):
         """ This method is called directly by the UI toolkit's callback
         mechanism on the paint event.
         """
+        if self.control is None:
+            # the window has gone away, but let the window implementation
+            # handle the event as needed
+            self._window_paint(event)
+            return
+        
         # Create a new GC if necessary
         size = self._get_control_size()
         if (self._size != tuple(size)) or (self._gc is None):
