@@ -132,27 +132,17 @@ Graphics state
         # the width of each dash and gap in the dash pattern.
     set_fill_color(color)
     get_fill_color() -> color
+    linear_gradient(x1, y1, x2, y2, stops, spread_method, units)
+    radial_gradient(cx, cy, r, fx, fy, stops, spread_method, units)
+        # The gradient methods modify the current fill color
     set_alpha(float)
     get_alpha() -> float
     set_antialias(bool)
     get_antialias() -> bool
     set_miter_limit(float)
     set_flatness(float)
-
-    set_text_drawing_mode(text_draw_mode)
-    set_text_matrix(AffineMatrix)
-    get_text_matrix() -> AffineMatrix
-    set_text_position(float X, float Y)
-    get_text_position() -> (X, Y)
-    show_text(string)
-    show_text_translate(string, float X, float Y)
-    get_text_extent(string) -> (x,y,w,h)
-    get_full_text_extent(string) -> (w,h,x,y)
-        # deprecated; order has been changed for backwards-compatibility
-        # with existing Enable
-    set_font(FontType)
-    get_font() -> FontType
-    set_font_size(int)
+    get_image_interpolation() -> interpolation
+    set_image_interpolation(interpolation)
 
     translate_ctm(float x, float y)
     rotate_ctm(float angle_in_radians)
@@ -161,11 +151,18 @@ Graphics state
     set_ctm(AffineMatrix)
     get_ctm() -> AffineMatrix
 
+
 -------------------------------------------
 Clipping functions
 -------------------------------------------
     clip_to_rect(rect)
     clip_to_rects(rect_array)
+    clip()
+        # clips using the current path
+    even_odd_clip()
+        # modifies the current clipping path using the even-odd rule to
+        # calculate the intersection of the current path and the current
+        # clipping path.
 
 -------------------------------------------
 Path construction functions
@@ -173,6 +170,8 @@ Path construction functions
     # All coordinates below are floating-point
     begin_path()
     close_path()
+    get_empty_path() -> CompiledPath
+        # returns a blank CompiledPath instance
     add_path(CompiledPath)
 
     move_to(x, y)
@@ -234,6 +233,29 @@ Drawing functions
         # otherwise, img is overlayed exactly on top of this graphics context
 
 -------------------------------------------
+Text functions
+-------------------------------------------
+    set_text_drawing_mode(text_draw_mode)
+    set_text_matrix(AffineMatrix)
+    get_text_matrix() -> AffineMatrix
+    set_text_position(float X, float Y)
+    get_text_position() -> (X, Y)
+    show_text(string)
+    show_text_translate(string, float X, float Y)
+    get_text_extent(string) -> (x,y,w,h)
+    get_full_text_extent(string) -> (w,h,x,y)
+        # deprecated; order has been changed for backwards-compatibility
+        # with existing Enable
+    select_font(name, size, style)
+    set_font(FontType)
+    get_font() -> FontType
+    set_font_size(int)
+    set_character_spacing()
+    get_character_spacing()
+    set_text_drawing_mode()
+    show_text_at_point()
+
+-------------------------------------------
 Misc functions
 -------------------------------------------
     width() -> int
@@ -241,13 +263,20 @@ Misc functions
     stride() -> int
     bottom_up() -> bool
     format() -> pix_format
-    get_image_interpolation() -> interpolation
-    set_image_interpolation(interpolation)
+    
+    flush()
+        # Force all pending drawing operations to be rendered immediately.
+        # This only makes sense in window contexts, ie- the Mac Quartz backend.
+    synchronize()
+        # A deferred version of flush(). Also only relevant in window contexts.
+    begin_page()
+    end_page()
+    
+    clear_rect(rect)
+        # Clears a rect. Not available in PDF context.
 
     convert_pixel_format(pix_format, bool inplace=0)
-    get_empty_path() -> CompiledPath
-        # returns a blank CompiledPath instance
-        
+    
     save(filename, file_format=None, pil_options=None)
         # From the comments in graphics_context.i:
         # Save the GraphicsContext to a file.  Output files are always
@@ -273,16 +302,4 @@ Misc functions
 Functions that are currently stubbed
 out or not implemented
 -------------------------------------------
-    set_character_spacing
-    get_character_spacing
-    set_text_drawing_mode
-    show_text_at_point
-    show_glyphs_at_point
-    clear_rect
-    flush()
-    synchronize()
-    begin_page()
-    end_page()
-    clip()
-    even_odd_clip()
-    
+    show_glyphs_at_point()
