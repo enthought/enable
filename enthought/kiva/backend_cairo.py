@@ -625,10 +625,6 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 #        yc2 = (y_to + y_ctrl + y_ctrl) / 3.0
 #        self.curve_to(xc1, yc1, xc2, yc2, x_to, y_to)
 
-    def arc_to(self, x1, y1, x2, y2, radius):
-        pass
-
-
     def arc(self, x, y, radius, start_angle, end_angle, cw=False):
         """ Draw a circular arc.
 
@@ -658,10 +654,14 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         else:
             self._ctx.arc( x, y, radius, start_angle, end_angle)
 
-#    def arc_to(self, x1, y1, x2, y2, radius):
-#        """
-#        """
-#        raise NotImplementedError, "arc_to is not implemented"
+    def arc_to(self, x1, y1, x2, y2, radius):
+        """
+        """
+        # FIXME: do the right thing:
+        # find the center and the start/end angles, then call arc()
+        self.line_to(x1, y1)
+        self.move_to(x2,y2)
+        
 
     #----------------------------------------------------------------
     # Getting infomration on paths
