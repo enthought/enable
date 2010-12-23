@@ -1,5 +1,5 @@
 Enable Documentation
-===================
+====================
 
 .. toctree::
   :maxdepth: 2
