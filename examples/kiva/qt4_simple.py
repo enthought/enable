@@ -6,7 +6,7 @@ ETSConfig.toolkit = 'qt4'
 import sys
 
 try:
-    from PyQt4 import QtGui
+    from enthought.qt.api import QtGui
 except ImportError:
     raise Exception('PyQt4 needs to be installed to run this example')
 

@@ -20,9 +20,8 @@
 __all__ = ["GraphicsContext", "Canvas", "CompiledPath",
            "font_metrics_provider"]
 
-
 # Major package imports.
-from PyQt4 import QtCore, QtGui
+from enthought.qt.api import QtCore, QtGui
 
 # Local imports.
 from backend_image import GraphicsContextSystem as GraphicsContext

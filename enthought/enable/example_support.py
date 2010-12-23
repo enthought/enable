@@ -71,7 +71,7 @@ if ETSConfig.enable_toolkit == 'wx':
         app.MainLoop()
 
 elif ETSConfig.enable_toolkit == 'qt4':
-    from PyQt4 import QtGui
+    from enthought.qt.api import QtGui
 
     _app = QtGui.QApplication.instance()
 

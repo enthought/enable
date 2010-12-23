@@ -26,12 +26,12 @@ import os.path
 from enthought.traits.api import Bool, Any, Str
 from enthought.traits.ui.qt4.editor import Editor
 
-from PyQt4 import QtCore, QtGui, Qt
+from enthought.qt.api import QtCore, QtGui, QCoreApplication
 
 # add the Qt's installed dir plugins to the library path so the iconengines
 # plugin will be found:
-qt_plugins_dir = os.path.join(os.path.dirname(Qt.__file__), 'plugins')
-Qt.QCoreApplication.addLibraryPath(qt_plugins_dir)
+qt_plugins_dir = os.path.join(os.path.dirname(QtCore.__file__), 'plugins')
+QCoreApplication.addLibraryPath(qt_plugins_dir)
 
 #-------------------------------------------------------------------------------
 #  'SVGButtonEditor' class:

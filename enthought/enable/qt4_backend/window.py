@@ -16,7 +16,7 @@
 
 
 # Qt imports.
-from PyQt4 import QtCore, QtGui
+from enthought.qt.api import QtCore, QtGui
 
 # Enthought library imports.
 from enthought.enable.abstract_window import AbstractWindow

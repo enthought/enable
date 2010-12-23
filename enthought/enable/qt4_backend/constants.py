@@ -1,5 +1,5 @@
 
-from PyQt4.QtCore import Qt
+from enthought.qt.api import Qt
 
 BUTTON_NAME_MAP = {
     Qt.LeftButton: "left",

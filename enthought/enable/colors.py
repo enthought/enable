@@ -237,7 +237,7 @@ if ETSConfig.toolkit == 'wx':
                        convert_from_wx_color, editor=ColorEditorFactory)
 
 elif ETSConfig.toolkit == 'qt4':
-    from PyQt4 import QtGui
+    from enthought.qt.api import QtGui
     from enthought.traits.ui.qt4.color_editor \
                 import ToolkitEditorFactory as StandardColorEditorFactory    
     

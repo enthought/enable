@@ -29,7 +29,7 @@ from enthought.savage.svg.document import SVGDocument
 
 from enthought.traits.ui.qt4.editor import Editor
 
-from PyQt4 import QtCore, QtSvg
+from enthought.qt.api import QtCore, QtSvg
 
 #-------------------------------------------------------------------------------
 #  'SVGEditor' class:
