@@ -67,4 +67,4 @@ class SVGEditor(Editor):
             ElementTree(value.tree).write(string_io)
             value = string_io.getvalue()
 
-        self.control.load(QtCore.QString(value).toAscii())
+        self.control.load(QtCore.QByteArray(value))
