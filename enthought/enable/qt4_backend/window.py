@@ -39,7 +39,8 @@ class _QtWindow(QtGui.QWidget):
         pos = self.mapFromGlobal(QtGui.QCursor.pos())
         self.last_mouse_pos = (pos.x(), pos.y())
 
-        self.setAttribute(QtCore.Qt.WA_OpaquePaintEvent)
+        self.setAutoFillBackground(True)
+#        self.setAttribute(QtCore.Qt.WA_OpaquePaintEvent)
         self.setFocusPolicy(QtCore.Qt.WheelFocus)
         self.setMouseTracking(True)
         self.setSizePolicy(QtGui.QSizePolicy.Expanding,
@@ -51,10 +52,9 @@ class _QtWindow(QtGui.QWidget):
     def resizeEvent(self, event):
         dx = self.width()
         dy = self.height()
-
-        self._enable_window.resized = (dx, dy)
-
         component = self._enable_window.component
+        
+        self._enable_window.resized = (dx, dy)
 
         if hasattr(component, "fit_window") and component.fit_window:
             component.outer_position = [0, 0]
@@ -235,27 +235,31 @@ class Window(AbstractWindow):
 
         return None
 
-    # FIXME
-    #def _create_gc(self, size, pix_format="bgr24"):
     def _create_gc(self, size, pix_format="bgra32"):
         gc = GraphicsContextEnable((size[0]+1, size[1]+1),
-                pix_format=pix_format, window=self,
-
                 # We have to set bottom_up=0 or otherwise the PixelMap will
                 # appear upside down in the QImage.
-                bottom_up = 0)
+                pix_format=pix_format, window=self, bottom_up = 0)
 
         gc.translate_ctm(0.5, 0.5)
 
         return gc
 
     def _window_paint(self, event):
-        s = self._gc.pixel_map.convert_to_argb32string()
-        img = QtGui.QImage(s, self._gc.width(), self._gc.height(),
-                QtGui.QImage.Format_ARGB32)
-        p = QtGui.QPainter(self.control)
-        p.drawPixmap(0, 0, QtGui.QPixmap.fromImage(img))
+        if self.control is None:
+            return
+        
+        w = self._gc.width() 
+        h = self._gc.height()
+        data = QtCore.QByteArray(self._gc.pixel_map.convert_to_argb32string())
 
+        image = QtGui.QImage(w, h, QtGui.QImage.Format_ARGB32)
+        image.loadFromData(data)
+        
+        rect = QtCore.QRect(0,0,w,h)
+        painter = QtGui.QPainter(self.control)
+        painter.drawImage(rect, image)
+        
     def set_pointer(self, pointer):
         self.control.setCursor(POINTER_MAP[pointer])
 
