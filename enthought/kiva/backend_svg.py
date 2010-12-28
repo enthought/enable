@@ -89,8 +89,8 @@ xmltemplate = """<?xml version="1.0"?>
         xmlns:text="http://xmlns.graougraou.com/svg/text/"
         xmlns:a3="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
         a3:scriptImplementation="Adobe"
-        width="100%%"
-        height="100%%"
+        width="%(width)f"
+        height="%(height)f"
         viewBox="0 0 %(width)f %(height)f"
         >
 <g transform="translate(0,%(height)f)">
@@ -141,14 +141,14 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.contents = cStringIO.StringIO()
         self._clipmap = {}
         self.clip_id = None
-
+        
     def render(self, format):
         assert format == 'svg'
         height, width = self.size
         contents = self.contents.getvalue().replace("<svg:", "<").replace("</svg:", "</")
         return xmltemplate % locals()
 
-    def clear(self, size):
+    def clear(self):
         # TODO: clear the contents
         pass
     
@@ -163,10 +163,10 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         ext = os.path.splitext(filename)[1]
         if ext == '.svg':
             template = xmltemplate
-            height, width = self.size
+            width, height = self.size
             contents = self.contents.getvalue().replace("<svg:", "<").replace("</svg:", "</")
         elif ext == '.html':
-            height, width = self.size[0]*3, self.size[1]*3
+            width, height = self.size[0]*3, self.size[1]*3
             contents = self.contents.getvalue()
             template = htmltemplate
         else:
@@ -182,7 +182,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.face_name = font_face_map.get(font.face_name, font.face_name)
         self.font = pdfmetrics.Font(self.face_name, self.face_name, pdfmetrics.defaultEncoding)
         self.font_size = font.size
-
+        
     def device_show_text(self, text):
         x,y = self.get_text_position()
         x,y = self._fixpoints([[x,y]])[0]
@@ -198,6 +198,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
                                                         'font-size': '"'+ str(self.font_size) + '"'})
         self.contents.write('</g>\n')
         self.contents.write('</g>\n')
+        
     def get_full_text_extent(self, text):
         ascent,descent=_fontdata.ascent_descent[self.face_name]
         descent = (-descent) * self.font_size / 1000.0
