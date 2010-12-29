@@ -247,19 +247,31 @@ class Window(AbstractWindow):
 
     def _window_paint(self, event):
         if self.control is None:
-            return
-        
-        w = self._gc.width() 
-        h = self._gc.height()
-        data = QtCore.QByteArray(self._gc.pixel_map.convert_to_argb32string())
+           return
 
-        image = QtGui.QImage(w, h, QtGui.QImage.Format_ARGB32)
-        image.loadFromData(data)
+        if hasattr(self._gc, 'pixel_map'):
+            # self._gc is an image context
+            w = self._gc.width() 
+            h = self._gc.height()
+            data = QtCore.QByteArray(self._gc.pixel_map.convert_to_argb32string())
+
+            image = QtGui.QImage(w, h, QtGui.QImage.Format_ARGB32)
+            image.loadFromData(data)
         
-        rect = QtCore.QRect(0,0,w,h)
-        painter = QtGui.QPainter(self.control)
-        painter.drawImage(rect, image)
-        
+            rect = QtCore.QRect(0,0,w,h)
+            painter = QtGui.QPainter(self.control)
+            painter.drawImage(rect, image)
+
+        if (hasattr(self._gc, 'qt_dc') and
+              isinstance(self._gc.qt_dc, QtGui.QPixmap)):
+            # self._gc is the Qt4 backend
+            w = self._gc.width
+            h = self._gc.height
+            
+            rect = QtCore.QRect(0,0,w,h)
+            painter = QtGui.QPainter(self.control)
+            painter.drawPixmap(rect, self._gc.qt_dc)
+
     def set_pointer(self, pointer):
         self.control.setCursor(POINTER_MAP[pointer])
 
