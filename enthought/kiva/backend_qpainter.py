@@ -1,19 +1,14 @@
 #------------------------------------------------------------------------------
-# Copyright (c) 2007, Riverbank Computing Limited
+# Copyright (c) 2010, Enthought, Inc
 # All rights reserved.
 #
 # This software is provided without warranty under the terms of the BSD
-# license.
-#
-# Author: Riverbank Computing Limited
-# Description: <Enthought kiva PyQt backend>
-#
-# In an e-mail to enthought-dev on 2008.09.12 at 2:49 AM CDT, Phil Thompson said:
-# The advantage is that all of the PyQt code in ETS can now be re-licensed to
-# use the BSD - and I hereby give my permission for that to be done. It's
-# been on my list of things to do.
+# license included in enthought/LICENSE.txt and may be redistributed only
+# under the conditions described in the aforementioned license.  The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+# Thanks for using Enthought open source!
 #------------------------------------------------------------------------------
-""" This is the Qt backend for kiva. """
+""" This is the QPainter backend for kiva. """
 
 
 # These are the symbols that a backend has to define.
@@ -855,57 +850,10 @@ class Canvas(QtGui.QWidget):
 
         return GraphicsContext((width, height), self)
 
-class _FontMetrics(object):
-    def __init__(self):
-        self.font = QtGui.QFont()
-        self.font_metrics = QtGui.QFontMetricsF(self.font)
-    
-    def __enter__(self):
-        pass
-
-    def __exit__(self, type, value, traceback):
-        pass
-    
-    def select_font(self, name, size, textEncoding):
-        """ Set the font
-        """
-        self.font = QtGui.QFont(name, size)
-        self.font_metrics = QtGui.QFontMetricsF(self.font)
-
-    def set_font(self, font):
-        """ Set the font.
-        """
-        self.select_font(font.face_name, font.size, None)
-    
-    def set_font_size(self, size):
-        """
-        """
-        self.font.setPointSizeF(size)
-        self.font_metrics = QtGui.QFontMetricsF(self.font)
-        
-    def set_character_spacing(self, spacing):
-        """
-        """
-        self.font.setLetterSpacing(QtGui.QFont.AbsoluteSpacing, spacing)
-        self.font_metrics = QtGui.QFontMetricsF(self.font)
-
-    def get_text_extent(self, text):
-        """ Returns the width and height of the rendered text
-        """
-        rect = self.font_metrics.boundingRect(text)
-        return rect.width(), rect.height()
-
-    def get_full_text_extent(self, text):
-        """ Returns the width, height, descent and leading of the rendered text.
-        """
-        rect = self.font_metrics.boundingRect(text)
-        return (rect.width(), rect.height(), -self.font_metrics.descent(),
-                self.font_metrics.leading())
-
 
 def font_metrics_provider():
     """ Creates an object to be used for querying font metrics.
     """
-    return _FontMetrics()
+    return GraphicsContext((1,1))
 
 
