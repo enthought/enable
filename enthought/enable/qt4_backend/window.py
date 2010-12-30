@@ -265,8 +265,8 @@ class Window(AbstractWindow):
         if (hasattr(self._gc, 'qt_dc') and
               isinstance(self._gc.qt_dc, QtGui.QPixmap)):
             # self._gc is the Qt4 backend
-            w = self._gc.width
-            h = self._gc.height
+            w = self._gc.width()
+            h = self._gc.height()
             
             rect = QtCore.QRect(0,0,w,h)
             painter = QtGui.QPainter(self.control)
