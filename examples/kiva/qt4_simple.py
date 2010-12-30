@@ -2,7 +2,7 @@
 from enthought.etsconfig.api import ETSConfig
 ETSConfig.toolkit = 'qt4'
 
-
+from numpy import array
 import sys
 
 try:
@@ -22,8 +22,11 @@ class MyCanvas(Canvas):
         gc.rect(w/4, h/4, w/2, h/2)
         gc.set_line_width(5.0)
         gc.set_stroke_color((0.0, 1.0, 0.0, 1.0))
+        
+        start = array([0.0, 1.0, 0.0, 0.0, 1.0])
+        end = array([1.0, 1.0, 1.0, 1.0, 1.0])
         gc.radial_gradient(w/4, h/4, 200, w/4+100, h/4+100,
-                           [(0,1,0,0,1),(1,1,1,1,1)], 'reflect')
+                           array([start, end]), 'reflect')
         gc.draw_path()
         return
 
