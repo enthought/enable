@@ -44,6 +44,15 @@ draw_modes[constants.STROKE]          = 0
 draw_modes[constants.FILL_STROKE]     = QtCore.Qt.OddEvenFill
 draw_modes[constants.EOF_FILL_STROKE] = QtCore.Qt.WindingFill
 
+gradient_coord_modes = {}
+gradient_coord_modes['userSpaceOnUse'] = QtGui.QGradient.LogicalMode
+gradient_coord_modes['objectBoundingBox'] = QtGui.QGradient.ObjectBoundingMode
+
+gradient_spread_modes = {}
+gradient_spread_modes['pad'] = QtGui.QGradient.PadSpread
+gradient_spread_modes['repeat'] = QtGui.QGradient.RepeatSpread
+gradient_spread_modes['reflect'] = QtGui.QGradient.ReflectSpread
+
 
 class GraphicsContext(object):
     """ Simple wrapper around a Qt QPainter object.
@@ -488,6 +497,35 @@ class GraphicsContext(object):
         """
         """
         self.gc.setOpacity(alpha)
+
+    #----------------------------------------------------------------
+    # Gradients
+    #----------------------------------------------------------------
+    
+    def _apply_gradient(self, grad, stops, spread_method, units):
+        """ Configures a gradient object and sets it as the current brush.
+        """
+        grad.setSpread(gradient_spread_modes[spread_method])
+        grad.setCoordinateMode(gradient_coord_modes[units])
+        
+        for stop in stops:
+            grad.setColorAt(stop[0], QtGui.QColor.fromRgbF(*stop[1:]))
+        
+        self.gc.setBrush(QtGui.QBrush(grad))
+    
+    def linear_gradient(self, x1, y1, x2, y2, stops, spread_method,
+                        units='userSpaceOnUse'):
+        """ Sets a linear gradient as the current brush.
+        """
+        grad = QtGui.QLinearGradient(x1, y1,x2, y2)
+        self._apply_gradient(grad, stops, spread_method, units)
+
+    def radial_gradient(self, cx, cy, r, fx, fy, stops, spread_method,
+                        units='userSpaceOnUse'):
+        """ Sets a radial gradient as the current brush.
+        """
+        grad = QtGui.QRadialGradient(cx, cy, r, fx, fy)
+        self._apply_gradient(grad, stops, spread_method, units)
     
     #----------------------------------------------------------------
     # Drawing Images
@@ -641,18 +679,19 @@ class GraphicsContext(object):
         raise NotImplementedError, msg
     
     def get_text_extent(self, text):
-        """ Returns the width and height of the rendered text
+        """ Returns the bounding rect of the rendered text
         """
         fm = self.gc.fontMetrics()
         rect = fm.boundingRect(text)
-        return rect.width(), rect.height()
+        
+        return rect.left(), -fm.descent(), rect.right(), fm.height()
 
     def get_full_text_extent(self, text):
-        """ Returns the width, height, descent and leading of the rendered text.
+        """ Backwards compatibility API over .get_text_extent() for Enable
         """
-        fm = self.gc.fontMetrics()
-        rect = fm.boundingRect(text)
-        return rect.width(), rect.height(), -fm.descent(), fm.leading()
+        x1, y1, x2, y2 = self.get_text_extent(text)
+        
+        return x2, y2, y1, x1
     
     #----------------------------------------------------------------
     # Painting paths (drawing and filling contours)
