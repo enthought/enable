@@ -58,8 +58,8 @@ class GraphicsContext(object):
     """ Simple wrapper around a Qt QPainter object.
     """
     def __init__(self, size, pix_format="", parent=None, bottom_up=0):
-        self.width = size[0]
-        self.height = size[1]
+        self._width = size[0]
+        self._height = size[1]
         
         self.text_pos = [0.0, 0.0]
         
@@ -90,6 +90,20 @@ class GraphicsContext(object):
         if isinstance(self.qt_dc, QtGui.QPixmap):
             self.gc.end()
 
+    #----------------------------------------------------------------
+    # Size info
+    #----------------------------------------------------------------
+
+    def height(self):
+        """ Returns the height of the context.
+        """
+        return self._height
+    
+    def width(self):
+        """ Returns the width of the context.
+        """
+        return self._width
+    
     #----------------------------------------------------------------
     # Coordinate Transform Matrix Manipulation
     #----------------------------------------------------------------
@@ -579,7 +593,7 @@ class GraphicsContext(object):
         
         # create a rect object to draw into
         if rect is None:
-            dest_rect = QtCore.QRectF(0.0, 0.0, self.width, self.height)
+            dest_rect = QtCore.QRectF(0.0, 0.0, self.width(), self.height())
         else:
             dest_rect = QtCore.QRectF(*rect)
         
@@ -749,9 +763,15 @@ class GraphicsContext(object):
         self.gc.eraseRect(QtCore.QRectF(*rect))
     
     def clear(self, clear_color=(1.0,1.0,1.0,1.0)):
-        r,g,b,a = clear_color
+        """
+        """
+        if len(clear_color) == 4:
+            r,g,b,a = clear_color
+        else:
+            r,g,b = clear_color
+            a = 1.0
         self.gc.setBackground(QtGui.QBrush(QtGui.QColor.fromRgbF(r,g,b,a)))
-        self.gc.eraseRect(QtCore.QRectF(0,0,self.width,self.height))
+        self.gc.eraseRect(QtCore.QRectF(0,0,self.width(),self.height()))
     
     def draw_path(self, mode=constants.FILL_STROKE):
         """ Walk through all the drawing subpaths and draw each element.
@@ -887,7 +907,7 @@ class Canvas(QtGui.QWidget):
         else:
             width, height = size
 
-        return GraphicsContext((width, height), self)
+        return GraphicsContext((width, height), parent=self)
 
 
 def font_metrics_provider():
