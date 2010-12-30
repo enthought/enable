@@ -554,13 +554,17 @@ class GraphicsContext(object):
         from enthought.kiva import agg
         
         def copy_padded(array):
-            "pad image rows to multiples of 4 pixels"
+            """ Pad image width to a multiple of 4 pixels, and minimum dims of
+                12x12. QImage is very particular about its data.
+            """
             y,x,d = array.shape
-            pad = 4-(x%4)
-            if pad == 4:
+            pad = lambda v: (4-(v%4))%4
+            nx = max(x+pad(x),12)
+            ny = max(y,12)
+            if x == nx and y == ny:
                 return array
-            ret = np.zeros((y,x+pad,d), dtype=np.uint8)
-            ret[:,:x] = array[:]
+            ret = np.zeros((ny,nx,d), dtype=np.uint8)
+            ret[:y,:x] = array[:]
             return ret
 
         if type(img) == type(np.array([])):
@@ -579,7 +583,8 @@ class GraphicsContext(object):
             copy_array = copy_padded(converted_img.bmp_array)
             width, height = img.width(), img.height()
             draw_img = QtGui.QImage(copy_array.flatten(),
-                                    copy_array.shape[1], height, QtGui.QImage.Format_RGB32)
+                                    copy_array.shape[1], height,
+                                    QtGui.QImage.Format_RGB32)
             pixmap = QtGui.QPixmap.fromImage(draw_img)
         elif (isinstance(img, GraphicsContext) and
               isinstance(img.gc.device(), QtGui.QPixmap)):
