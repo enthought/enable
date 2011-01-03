@@ -18,6 +18,7 @@ class MyCanvas(Canvas):
     def do_draw(self, gc):
         w = gc.width()
         h = gc.height()
+        
         # Draw a red gradient filled box with green border
         gc.rect(w/4, h/4, w/2, h/2)
         gc.set_line_width(5.0)
@@ -28,6 +29,27 @@ class MyCanvas(Canvas):
         gc.radial_gradient(w/4, h/4, 200, w/4+100, h/4+100,
                            array([start, end]), 'reflect')
         gc.draw_path()
+        
+        # draw a black rect with rounded corners
+        r = max(1, min(w,h)/10)
+        gc.set_line_width(2.0)
+        gc.set_stroke_color((0.0, 0.0, 0.0, 1.0))
+        gc.move_to(w/3, h/2)
+        
+        gc.arc_to(w/3, 2*h/3, 
+                  w/2, 2*h/3,
+                  r)
+        gc.arc_to(2*w/3, 2*h/3,
+                  2*w/3, h/2,
+                  r)
+        gc.arc_to(2*w/3, h/3,
+                  w/2, h/3,
+                  r)
+        gc.arc_to(w/3, h/3,
+                  w/3, h/2,
+                  r)
+        gc.line_to(w/3, h/2)
+        gc.stroke_path()
         return
 
 
