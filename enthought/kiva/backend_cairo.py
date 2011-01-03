@@ -8,15 +8,16 @@
 
 """
 
-
 import cairo
-import basecore2d
-import constants
-import numpy
-
 import copy
 from itertools import izip
+import numpy
 import warnings
+
+from arc_conversion import arc_to_tangent_points
+import basecore2d
+import constants
+
 
 line_join = {constants.JOIN_BEVEL: cairo.LINE_JOIN_BEVEL,
                   constants.JOIN_MITER: cairo.LINE_JOIN_MITER,
@@ -655,13 +656,20 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             self._ctx.arc( x, y, radius, start_angle, end_angle)
 
     def arc_to(self, x1, y1, x2, y2, radius):
+        """ Draw an arc between the line segments from the current point
+            to (x1,y1) and from (x1,y1) to (x2,y2). Straight lines are also
+            added from the current point to the start of the curve and from the
+            end of the curve to (x2,y2).
         """
-        """
-        # FIXME: do the right thing:
-        # find the center and the start/end angles, then call arc()
-        self.line_to(x1, y1)
-        self.move_to(x2,y2)
+        current_point = self.get_path_current_point()
         
+        # Get the endpoints on the curve where it touches the line segments
+        t1, t2 = arc_to_tangent_points(current_point, (x1,y1), (x2,y2), radius)
+        
+        # draw!
+        self._ctx.line_to(*t1)
+        self._ctx.curve_to(x1,y1, x1,y1, *t2)
+        self._ctx.line_to(x2,y2)
 
     #----------------------------------------------------------------
     # Getting infomration on paths
