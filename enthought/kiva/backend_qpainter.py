@@ -17,7 +17,6 @@ __all__ = ["GraphicsContext", "Canvas", "CompiledPath",
 
 from functools import partial
 from itertools import izip
-from math import sqrt, acos, sin
 import numpy as np
 import warnings
 
