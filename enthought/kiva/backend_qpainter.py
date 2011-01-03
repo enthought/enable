@@ -72,7 +72,7 @@ class GraphicsContext(object):
             self.qt_dc = parent
         
         self.gc = QtGui.QPainter(self.qt_dc)
-        self.path = QtGui.QPainterPath()
+        self.path = CompiledPath()
         
         # flip y
         trans = QtGui.QTransform()
@@ -312,19 +312,19 @@ class GraphicsContext(object):
     def begin_path(self):
         """ Clear the current drawing path and begin a new one.
         """
-        self.path = QtGui.QPainterPath()
+        self.path = CompiledPath()
 
     def move_to(self,x,y):    
         """ Start a new drawing subpath at place the current point at (x,y).
         """
-        self.path.moveTo(x,y)
+        self.path.move_to(x,y)
 
     def line_to(self,x,y):
         """ Add a line from the current point to the given point (x,y).
         
             The current point is moved to (x,y).
         """
-        self.path.lineTo(x,y)
+        self.path.line_to(x,y)
 
     def lines(self,points):
         """ Add a series of lines as a new subpath.  
@@ -333,30 +333,24 @@ class GraphicsContext(object):
         
             Points is an Nx2 array of x,y pairs.
         """
-        self.path.moveTo(points[0][0],points[0][1])
-        for x,y in points[1:]:
-            self.path.lineTo(x,y)
+        self.path.lines(points)
     
     def line_set(self, starts, ends):
         """ Draw multiple disjoint line segments.
         """
         for start, end in izip(starts, ends):
-            self.path.moveTo(start[0], start[1])
-            self.path.lineTo(end[0], end[1])
+            self.path.path.moveTo(start[0], start[1])
+            self.path.path.lineTo(end[0], end[1])
     
     def rect(self,x,y,sx,sy):
         """ Add a rectangle as a new subpath.
         """
-        self.path.addRect(x,y,sx,sy)
+        self.path.rect(x,y,sx,sy)
     
     def rects(self,rects):
         """ Add multiple rectangles as separate subpaths to the path.
-        
-            Currently implemented by calling rect a zillion times.
-                   
         """
-        for x,y,sx,sy in rects:
-            self.path.addRect(x,y,sx,sy)
+        self.path.rects(rects)
     
     def draw_rect(self, rect, mode=constants.FILL_STROKE):
         """ Draw a rect.
@@ -373,45 +367,32 @@ class GraphicsContext(object):
     def add_path(self, path):
         """ Add a subpath to the current path.
         """
-        self.path.addPath(path.path)
+        self.path.add_path(path)
 
     def close_path(self):
         """ Close the path of the current subpath.
         """
-        self.path.closeSubpath()
+        self.path.close_path()
 
     def curve_to(self, cp1x, cp1y, cp2x, cp2y, x, y):
         """ 
         """
-        self.path.cubicTo(cp1x, cp1y, cp2x, cp2y, x, y)
+        self.path.curve_to(cp1x, cp1y, cp2x, cp2y, x, y)
         
-    def quad_curve_to(self,cpx,cpy,x,y):
+    def quad_curve_to(self, cpx, cpy, x, y):
         """
         """
-        self.path.quadTo(cpx, cpy, x, y)
+        self.path.quad_curve_to(cpx, cpy, x, y)
     
     def arc(self, x, y, radius, start_angle, end_angle, clockwise=False):
         """
         """
-        sweep_angle = end_angle-start_angle if not clockwise else start_angle-end_angle
-        self.path.moveTo(x, y)
-        self.path.arcTo(QtCore.QRectF(x-radius, y-radius, radius*2, radius*2),
-                        np.rad2deg(start_angle), np.rad2deg(sweep_angle))
+        self.path.arc(x, y, radius, start_angle, end_angle, clockwise)
     
     def arc_to(self, x1, y1, x2, y2, radius):
         """
         """
-        # get the current pen position
-        current_point = self.path.currentPosition()
-        current_point = (current_point.x(), current_point.y())
-        
-        # Get the two points on the curve where it touches the line segments
-        t1, t2 = arc_to_tangent_points(current_point, (x1,y1), (x2,y2), radius)
-        
-        # draw!
-        self.path.lineTo(*t1)
-        self.path.quadTo(x1,y1,*t2)
-        self.path.lineTo(x2,y2)
+        self.path.arc_to(x1, y1, x2, y2, radius)
 
     #----------------------------------------------------------------
     # Getting infomration on paths
@@ -420,23 +401,17 @@ class GraphicsContext(object):
     def is_path_empty(self):
         """ Test to see if the current drawing path is empty
         """
-        return self.path.isEmpty()          
+        return self.path.is_empty()          
         
     def get_path_current_point(self):
         """ Return the current point from the graphics context.
-        
-            Note: This should be a tuple or array.
-        
         """
-        result = self.path.pointAtPercent(1.0)
-        return (result.x(), result.y())
+        return self.path.get_current_point()
             
     def get_path_bounding_box(self):
+        """ Return the bounding box for the current path object.
         """
-            should return a tuple or array instead of a strange object.
-        """
-        result = self.path.boundingRect()
-        return (result.x(), result.y(), result.width(), result.height())
+        return self.path.get_bounding_box()
 
     #----------------------------------------------------------------
     # Clipping path manipulation
@@ -445,12 +420,12 @@ class GraphicsContext(object):
     def clip(self):
         """
         """
-        self.gc.setClipPath(self.path)
+        self.gc.setClipPath(self.path.path)
         
     def even_odd_clip(self):
         """
         """
-        self.gc.setClipPath(self.path, operation=QtCore.Qt.IntersectClip)
+        self.gc.setClipPath(self.path.path, operation=QtCore.Qt.IntersectClip)
         
     def clip_to_rect(self, x, y, w, h):
         """ Clip context to the given rectangular region.
@@ -531,8 +506,9 @@ class GraphicsContext(object):
     def _apply_gradient(self, grad, stops, spread_method, units):
         """ Configures a gradient object and sets it as the current brush.
         """
-        grad.setSpread(gradient_spread_modes[spread_method])
-        grad.setCoordinateMode(gradient_coord_modes[units])
+        grad.setSpread(gradient_spread_modes.get(spread_method,
+                                                 QtGui.QGradient.PadSpread))
+        grad.setCoordinateMode(gradient_coord_modes.get(units, QtGui.QGradient.LogicalMode))
         
         for stop in stops:
             grad.setColorAt(stop[0], QtGui.QColor.fromRgbF(*stop[1:]))
@@ -731,20 +707,20 @@ class GraphicsContext(object):
     def stroke_path(self):
         """
         """
-        self.gc.strokePath(self.path, self.gc.pen())
+        self.gc.strokePath(self.path.path, self.gc.pen())
         self.begin_path()
     
     def fill_path(self):
         """
         """
-        self.gc.fillPath(self.path, self.gc.brush())
+        self.gc.fillPath(self.path.path, self.gc.brush())
         self.begin_path()
         
     def eof_fill_path(self):
         """
         """
         self.path.setFillRule(QtCore.Qt.OddEvenFill)
-        self.gc.fillPath(self.path, self.gc.brush())
+        self.gc.fillPath(self.path.path, self.gc.brush())
         self.begin_path()
 
     def stroke_rect(self,rect):
@@ -799,12 +775,12 @@ class GraphicsContext(object):
             self.stroke_path()
         elif mode in [constants.FILL, constants.EOF_FILL]:
             mode = draw_modes[mode]
-            self.path.setFillRule(mode)
+            self.path.path.setFillRule(mode)
             self.fill_path()
         else:
             mode = draw_modes[mode]
-            self.path.setFillRule(mode)
-            self.gc.drawPath(self.path)
+            self.path.path.setFillRule(mode)
+            self.gc.drawPath(self.path.path)
         self.begin_path()
     
     def get_empty_path(self):
@@ -851,19 +827,15 @@ class CompiledPath(object):
 
     def arc_to(self, x1, y1, x2, y2, r):
         # get the current pen position
-        current_point = self.path.currentPosition()
-        current_point = (current_point.x(), current_point.y())
+        current_point = self.get_current_point()
         
         # Get the two points on the curve where it touches the line segments
-        t1, t2 = arc_to_tangent_points(current_point, (x1,y1), (x2,y2), radius)
+        t1, t2 = arc_to_tangent_points(current_point, (x1,y1), (x2,y2), r)
         
         # draw!
         self.path.lineTo(*t1)
         self.path.quadTo(x1,y1,*t2)
         self.path.lineTo(x2,y2)
-
-    def curve_to(self, cx1, cy1, cx2, cy2, x, y):
-        self.path.cubicTo(cx1, cy1, cx2, cy2, x, y)
 
     def line_to(self, x, y):
         self.path.lineTo(x, y)
@@ -873,9 +845,8 @@ class CompiledPath(object):
         for x,y in points[1:]:
             self.path.lineTo(x,y)
 
-    def add_path(self, other_path):
-        if isinstance(other_path, CompiledPath):
-            self.path.addPath(other_path.path)
+    def curve_to(self, cx1, cy1, cx2, cy2, x, y):
+        self.path.cubicTo(cx1, cy1, cx2, cy2, x, y)
 
     def quad_curve_to(self, cx, cy, x, y):
         self.path.quadTo(cx, cy, x, y)
@@ -887,6 +858,10 @@ class CompiledPath(object):
         for x,y,sx,sy in rects:
             self.path.addRect(x,y,sx,sy)
 
+    def add_path(self, other_path):
+        if isinstance(other_path, CompiledPath):
+            self.path.addPath(other_path.path)
+
     def close_path(self):
         self.path.closeSubpath()
 
@@ -894,11 +869,11 @@ class CompiledPath(object):
         return self.path.isEmpty()
 
     def get_current_point(self):
-        point = self.path.pointAtPercent(1.0)
+        point = self.path.currentPosition()
         return point.x(), point.y()
 
     def get_bounding_box(self):
-        rect = self.path.boundingRect(self.path)
+        rect = self.path.boundingRect()
         return rect.x(), rect.y(), rect.width(), rect.height()
 
 
