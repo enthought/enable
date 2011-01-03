@@ -17,6 +17,7 @@ __all__ = ["GraphicsContext", "Canvas", "CompiledPath",
 
 from functools import partial
 from itertools import izip
+from math import sqrt, acos, sin
 import numpy as np
 import warnings
 
@@ -399,7 +400,17 @@ class GraphicsContext(object):
     def arc_to(self, x1, y1, x2, y2, radius):
         """
         """
-        pass
+        # get the current pen position
+        current_point = self.path.currentPosition()
+        current_point = (current_point.x(), current_point.y())
+        
+        # Get the two points on the curve where it touches the line segments
+        t1, t2 = _get_arc_to_tangents(current_point, (x1,y1), (x2,y2), radius)
+        
+        # draw!
+        self.path.lineTo(*t1)
+        self.path.quadTo(x1,y1,*t2)
+        self.path.lineTo(x2,y2)
 
     #----------------------------------------------------------------
     # Getting infomration on paths
@@ -838,7 +849,17 @@ class CompiledPath(object):
                         np.rad2deg(start_angle), np.rad2deg(sweep_angle))
 
     def arc_to(self, x1, y1, x2, y2, r):
-        pass
+        # get the current pen position
+        current_point = self.path.currentPosition()
+        current_point = (current_point.x(), current_point.y())
+        
+        # Get the two points on the curve where it touches the line segments
+        t1, t2 = _get_arc_to_tangents(current_point, (x1,y1), (x2,y2), radius)
+        
+        # draw!
+        self.path.lineTo(*t1)
+        self.path.quadTo(x1,y1,*t2)
+        self.path.lineTo(x2,y2)
 
     def curve_to(self, cx1, cy1, cx2, cy2, x, y):
         self.path.cubicTo(cx1, cy1, cx2, cy2, x, y)
@@ -920,4 +941,32 @@ def font_metrics_provider():
     """
     return GraphicsContext((1,1))
 
+
+def _get_arc_to_tangents(current_point, p1, p2, radius):
+    """ Given a starting point, a line segment, and a radius,
+        calculate the tangent points for arc_to().
+    """
+    # calculate the angle between the two line segments
+    v1 = _normalize_vector(current_point[0]-p1[0], current_point[1]-p1[1])
+    v2 = _normalize_vector(p2[0]-p1[0], p2[1]-p1[1])
+    angle = acos(v1[0]*v2[0]+v1[1]*v2[1])
+    
+    # calculate the distance from p1 to the center of the arc
+    dist_to_center = radius / sin(angle/2)
+    # calculate the distance from p1 to each tangent point
+    dist_to_tangent = sqrt(dist_to_center**2-radius**2)
+    
+    # calculate the tangent points
+    t1 = (p1[0]+v1[0]*dist_to_tangent, p1[1]+v1[1]*dist_to_tangent)
+    t2 = (p1[0]+v2[0]*dist_to_tangent, p1[1]+v2[1]*dist_to_tangent)
+
+    return (t1, t2)
+
+def _normalize_vector(x, y):
+    """ Given a vector, return its unit length representation.
+    """
+    length = sqrt(x**2+y**2)
+    if length <= 1e-6:
+        return (0.0, 0.0)
+    return (x/length, y/length)
 
