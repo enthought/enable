@@ -88,8 +88,8 @@ class GraphicsContext(object):
         self.gc.setBrush(QtGui.QBrush(QtCore.Qt.SolidPattern))
     
     def __del__(self):
-        # stop the painter when drawing to a pixmap
-        if isinstance(self.qt_dc, QtGui.QPixmap):
+        # stop the painter if needed
+        if self.gc.isActive():
             self.gc.end()
 
     #----------------------------------------------------------------
