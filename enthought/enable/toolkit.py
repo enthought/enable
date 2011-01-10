@@ -23,22 +23,18 @@ _toolkit_backend = None
 def _init_toolkit():
     """ Initialise the current toolkit. """
 
-    # If not defined, use the same toolkit as Traits UI
-    if not ETSConfig.enable_toolkit:
-
+    if not ETSConfig.toolkit:
         # Force Traits to decide on its toolkit if it hasn't already
         from enthought.traits.ui.toolkit import toolkit as traits_toolkit
         traits_toolkit()
 
-        ETSConfig.enable_toolkit = ETSConfig.toolkit
-
     # Import the selected backend
-    backend = 'enthought.enable.%s_backend.api' % ETSConfig.enable_toolkit
+    backend = 'enthought.enable.%s_backend.api' % ETSConfig.toolkit
     try:
         __import__(backend)
     except ImportError, SystemExit:
         raise ImportError, "Unable to import an Enable backend for the %s " \
-            "toolkit." % ETSConfig.enable_toolkit
+            "toolkit." % ETSConfig.toolkit
 
     # Save the imported toolkit module.
     global _toolkit_backend
@@ -55,6 +51,7 @@ def toolkit_object(name):
     try:
         be_obj = getattr(sys.modules[_toolkit_backend], name)
     except AttributeError:
-        raise NotImplementedError("the %s enable backend doesn't implement %s" % (ETSConfig.toolkit, name))
+        raise NotImplementedError("the %s enable backend doesn't implement %s" \
+                                  % (ETSConfig.toolkit, name))
 
     return be_obj

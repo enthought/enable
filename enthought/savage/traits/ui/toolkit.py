@@ -33,7 +33,7 @@ def _init_toolkit():
         __import__(backend)
     except ImportError, SystemExit:
         raise ImportError, "Unable to import a Savage backend for the %s " \
-            "toolkit." % ETSConfig.enable_toolkit
+            "toolkit." % ETSConfig.toolkit
 
     # Save the imported toolkit module.
     global _toolkit_backend

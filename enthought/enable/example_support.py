@@ -10,28 +10,19 @@ from enthought.etsconfig.api import ETSConfig
 # early.  Until it is fixed we just assume wx if we can import it.
 # Force the selection of a valid toolkit.
 #import enthought.enable.toolkit 
-if not ETSConfig.enable_toolkit:
-    if ETSConfig.toolkit:
-        # Set the enable_toolkit to the same value as the GUI toolkit
+if not ETSConfig.toolkit:
+    for toolkit, toolkit_module in (('wx', 'wx'), ('qt4', 'PyQt4')):
         try:
-            exec "import enthought.enable.%s_backend" % ETSConfig.toolkit
-            ETSConfig.enable_toolkit = ETSConfig.toolkit
-        except (ImportError, SyntaxError):
-            raise RuntimeError("Can't determine appropriate Enable backend for ETS toolkit '%s'; "
-                 "Please set $ENABLE_TOOLKIT or ETSConfig.enable_toolkit." % ETSConfig.toolkit)
+            exec "import " + toolkit_module
+            ETSConfig.toolkit = toolkit
+            break
+        except ImportError:
+            pass
     else:
-        for toolkit, toolkit_module in (('wx', 'wx'), ('qt4', 'PyQt4')):
-            try:
-                exec "import " + toolkit_module
-                ETSConfig.enable_toolkit = toolkit
-                break
-            except ImportError:
-                pass
-        else:
-            raise RuntimeError("Can't load wx or qt4 backend for Chaco.")
+        raise RuntimeError("Can't load wx or qt4 backend for Chaco.")
 
 
-if ETSConfig.enable_toolkit == 'wx':
+if ETSConfig.toolkit == 'wx':
     import wx
 
     class DemoFrame(wx.Frame):
@@ -70,7 +61,7 @@ if ETSConfig.enable_toolkit == 'wx':
         app.SetTopWindow(frame)
         app.MainLoop()
 
-elif ETSConfig.enable_toolkit == 'qt4':
+elif ETSConfig.toolkit == 'qt4':
     from enthought.qt.api import QtGui
 
     _app = QtGui.QApplication.instance()
@@ -111,7 +102,7 @@ elif ETSConfig.enable_toolkit == 'qt4':
         _app.exec_()
 
 
-elif ETSConfig.enable_toolkit == 'pyglet':
+elif ETSConfig.toolkit == 'pyglet':
 
     from pyglet import app
     from pyglet import clock
