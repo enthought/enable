@@ -6,15 +6,14 @@ See https://www.enthought.com/enthought/wiki/EnableProject
 # Major package imports
 # TODO - Add basic comments for the names being imported from base and enable_traits
 from base import IDroppedOnHandler, TOP, VCENTER, BOTTOM, LEFT, HCENTER, RIGHT, \
-    TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, str_to_font, filled_rectangle, \
+    TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, str_to_font, \
     empty_rectangle, intersect_bounds
 
 from enable_traits import basic_sequence_types, sequence_types, pointer_shapes, \
-     CURSOR_X, CURSOR_Y, cursor_styles, TraitImage, border_size_editor, font_trait, \
+     CURSOR_X, CURSOR_Y, cursor_styles, border_size_editor, font_trait, \
      bounds_trait, ComponentMinSize, ComponentMaxSize, Pointer, cursor_style_trait, \
-     engraving_trait, spacing_trait, padding_trait, margin_trait, border_size_trait, \
-     image_trait, string_image_trait, TimeInterval, Stretch, NoStretch, LineStyle, \
-     LineStyleEditor
+     spacing_trait, padding_trait, margin_trait, border_size_trait, \
+     TimeInterval, Stretch, NoStretch, LineStyle, LineStyleEditor
 
 from colors import color_table, transparent_color, ColorTrait, black_color_trait, \
                    white_color_trait, transparent_color_trait, ColorEditorFactory
@@ -44,7 +43,6 @@ from graphics_context import GraphicsContextEnable, ImageGraphicsContextEnable
 
 # Old Enable classes and widgets
 from abstract_window import AbstractWindow
-#from controls import LabelTraits, Label, CheckBox, Radio
 
 from native_scrollbar import NativeScrollBar
 from compass import Compass
@@ -56,8 +54,4 @@ from text_field_grid import TextFieldGrid
 from viewport import Viewport
 from window import Window
 
-# subpackage imports
-from image.api import Image, DraggableImage, Inspector, ColorChip
-#from image_title import ImageTitle
-#from drawing_canvas import GriddedCanvas, GuideLine, SelectionFrame
 from primitives.api import Annotater, Box, Line, Polygon
