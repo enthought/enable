@@ -5,10 +5,10 @@ from bisect import insort_left
 # Enthought library imports
 from enthought.traits.api import (Bool, Int, Event, Instance, Any, Property,
                                   List, DelegatesTo)
-from enthought.kiva import font_metrics_provider
 
 # Local, relative imports
 from component import Component
+from font_metrics_provider import font_metrics_provider
 from text_field_style import TextFieldStyle
 
 

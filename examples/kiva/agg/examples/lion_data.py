@@ -7,7 +7,7 @@ This module relies on Agg solely for CompiledPath support.
 
 from numpy import amax, amin, array, dtype
 
-from enthought.kiva import CompiledPath
+from enthought.enable.compiled_path import CompiledPath
 
 lion_string = """
 f2cc99

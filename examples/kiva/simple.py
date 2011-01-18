@@ -1,5 +1,5 @@
 from enthought.kiva import constants
-from enthought.kiva.backend_image import GraphicsContext
+from enthought.kiva.image import GraphicsContext
 
 gc = GraphicsContext((100,100))
 

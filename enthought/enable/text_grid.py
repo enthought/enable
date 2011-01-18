@@ -8,13 +8,13 @@ from numpy import arange, array, dstack, repeat, newaxis
 # Enthought library imports
 from enthought.traits.api import Any, Array, Bool, Int, List, Property, \
     Trait, Tuple, on_trait_change
-from enthought.kiva import font_metrics_provider
 from enthought.kiva.traits.kiva_font_trait import KivaFont
 
 # Relative imports
 from component import Component
 from colors import black_color_trait, ColorTrait
 from enable_traits import LineStyle
+from font_metrics_provider import font_metrics_provider
 
 
 

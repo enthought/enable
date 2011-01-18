@@ -1,11 +1,13 @@
 from __future__ import with_statement
 
+from enthought.etsconfig.api import ETSConfig
+ETSConfig.toolkit = 'wx'
+
 import wx
-from enthought.enable.wx_backend.api import Window
-from enthought.enable.api import ColorTrait
+from enthought.enable.api import ColorTrait, Window
 from enthought.chaco.api import *
 from enthought.chaco.tools.api import DragTool
-from enthought.kiva import Font
+from enthought.kiva.fonttools import Font
 from enthought.kiva.traits.kiva_font_trait import KivaFont
 from enthought.traits.api import Enum, Float, Int, Str, Tuple
 

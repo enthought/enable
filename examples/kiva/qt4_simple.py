@@ -1,6 +1,6 @@
 # This is PyQt specific so force the toolkit selection.
 from enthought.etsconfig.api import ETSConfig
-ETSConfig.toolkit = 'qt4'
+ETSConfig.toolkit = 'qt4.qpainter'
 
 from numpy import array
 import sys
@@ -10,7 +10,7 @@ try:
 except ImportError:
     raise Exception('PyQt4 needs to be installed to run this example')
 
-from enthought.kiva import Canvas
+from enthought.enable.example_canvas import Canvas
 
 
 class MyCanvas(Canvas):
@@ -57,8 +57,8 @@ if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
 
     w = MyCanvas()
-    w.resize(500, 500)
-    w.setWindowTitle("Simple Kiva.qt4 example")
-    w.show()
+    w.control.resize(500, 500)
+    w.control.setWindowTitle("Simple Kiva.qt4 example")
+    w.control.show()
 
     app.exec_()

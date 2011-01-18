@@ -1,5 +1,5 @@
 from numpy import array
-from enthought.kiva.backend_image import GraphicsContext, CompiledPath
+from enthought.kiva.image import GraphicsContext, CompiledPath
 from enthought.kiva.constants import STROKE, FILL_STROKE
 
 cross = CompiledPath()

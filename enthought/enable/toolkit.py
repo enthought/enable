@@ -29,12 +29,12 @@ def _init_toolkit():
         traits_toolkit()
 
     # Import the selected backend
-    backend = 'enthought.enable.%s_backend.api' % ETSConfig.toolkit
+    backend = 'enthought.enable.%s.%s' % (ETSConfig.toolkit, ETSConfig.kiva_backend)
     try:
         __import__(backend)
     except ImportError, SystemExit:
-        raise ImportError, "Unable to import an Enable backend for the %s " \
-            "toolkit." % ETSConfig.toolkit
+        raise ImportError, "Unable to import the %s backend for the %s " \
+            "toolkit." % (ETSConfig.kiva_backend, ETSConfig.toolkit)
 
     # Save the imported toolkit module.
     global _toolkit_backend
@@ -51,7 +51,7 @@ def toolkit_object(name):
     try:
         be_obj = getattr(sys.modules[_toolkit_backend], name)
     except AttributeError:
-        raise NotImplementedError("the %s enable backend doesn't implement %s" \
-                                  % (ETSConfig.toolkit, name))
+        raise NotImplementedError("the %s.%s enable backend doesn't implement %s" %
+                                  (ETSConfig.toolkit, ETSConfig.kiva_backend, name))
 
     return be_obj

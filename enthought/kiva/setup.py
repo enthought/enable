@@ -35,7 +35,7 @@ def configuration(parent_package='enthought',top_path=None):
     config.add_subpackage('traits.ui.*')
 
     if sys.platform == 'darwin':
-        config.add_subpackage('mac')
+        config.add_subpackage('quartz')
 
     config.get_version()
 

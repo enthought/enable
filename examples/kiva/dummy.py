@@ -1,11 +1,8 @@
 from __future__ import with_statement
 
-from enthought.kiva import constants, Font
-from enthought.kiva import Canvas
-from enthought.kiva.backend_image import GraphicsContext
-from enthought.kiva import constants
-from enthought.kiva import affine
-from enthought.kiva import agg
+from enthought.kiva import affine, agg, constants
+from enthought.kiva.image import GraphicsContext
+from enthought.kiva.fonttools import Font
 
 # Do some basic drawing tests and write the results out to PNG files.
 # This is mostly a python translation of the tests in kiva/agg/src/dummy.cpp

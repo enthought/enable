@@ -4,8 +4,9 @@ import warnings
 
 import numpy as np
 
-from enthought import kiva
-from enthought.kiva import affine, constants
+from enthought.enable.compiled_path import CompiledPath as KivaCompiledPath
+from enthought.kiva import affine, constants, fonttools
+from enthought.kiva.fonttools import Font
 
 from enthought.savage.svg import svg_extras
 from enthought.savage.svg.backends.null.null_renderer import NullRenderer, AbstractGradientBrush
@@ -18,19 +19,18 @@ def _GetCurrentPoint(gc):
         return (0.0, 0.0)
     return gc.vertex(total_vertices-1)[0]
 
-class CompiledPath(kiva.CompiledPath):
+class CompiledPath(KivaCompiledPath):
 
-    AddPath = kiva.CompiledPath.add_path
-    AddRectangle = kiva.CompiledPath.rect
-    MoveToPoint = kiva.CompiledPath.move_to
-    AddLineToPoint = kiva.CompiledPath.line_to
-    CloseSubpath = kiva.CompiledPath.close_path
-    if sys.platform == 'darwin':
-        from enthought.kiva.backend_wx import CompiledPath
-        GetCurrentPoint = CompiledPath.get_current_point
+    AddPath             = KivaCompiledPath.add_path
+    AddRectangle        = KivaCompiledPath.rect
+    MoveToPoint         = KivaCompiledPath.move_to
+    AddLineToPoint      = KivaCompiledPath.line_to
+    CloseSubpath        = KivaCompiledPath.close_path
+    if hasattr(KivaCompiledPath, 'get_current_point'):
+        GetCurrentPoint = KivaCompiledPath.get_current_point
     else:
         GetCurrentPoint = _GetCurrentPoint
-    AddQuadCurveToPoint = kiva.CompiledPath.quad_curve_to
+    AddQuadCurveToPoint = KivaCompiledPath.quad_curve_to
 
     def AddCurveToPoint(self, ctrl1, ctrl2, endpoint):
          self.curve_to(ctrl1[0], ctrl1[1],
@@ -109,15 +109,12 @@ class CompiledPath(kiva.CompiledPath):
         
 
 
-Canvas = kiva.Canvas
-
-
 class Pen(object):
     def __init__(self, color):
         # fixme: what format is the color passed in? int or float
         self.color = color
-        self.cap = kiva.CAP_BUTT
-        self.join = kiva.JOIN_MITER
+        self.cap = constants.CAP_BUTT
+        self.join = constants.JOIN_MITER
         self.width = 1
         self.dasharray = None
         self.dashoffset = 0.0
@@ -320,18 +317,18 @@ class Renderer(NullRenderer):
     TransparentPen = Pen((1.0, 1.0, 1.0, 0.0))
 
     caps = {
-            'butt':kiva.CAP_BUTT,
-            'round':kiva.CAP_ROUND,
-            'square':kiva.CAP_SQUARE
+            'butt':constants.CAP_BUTT,
+            'round':constants.CAP_ROUND,
+            'square':constants.CAP_SQUARE
             }
 
     joins = {
-            'miter':kiva.JOIN_MITER,
-            'round':kiva.JOIN_ROUND,
-            'bevel':kiva.JOIN_BEVEL
+            'miter':constants.JOIN_MITER,
+            'round':constants.JOIN_ROUND,
+            'bevel':constants.JOIN_BEVEL
             }
 
-    fill_rules = {'nonzero':kiva.FILL, 'evenodd': kiva.EOF_FILL}
+    fill_rules = {'nonzero':constants.FILL, 'evenodd': constants.EOF_FILL}
 
     def __init__(self):
         pass
@@ -387,7 +384,7 @@ class Renderer(NullRenderer):
                 kiva_style += constants.BOLD
             if 'italic' in style:
                 kiva_style += constants.ITALIC
-        return kiva.Font(font_name, style=kiva_style)
+        return Font(font_name, style=kiva_style)
 
     @classmethod
     def makeMatrix(cls, *args):
@@ -415,20 +412,20 @@ class Renderer(NullRenderer):
     @classmethod
     def setFontStyle(cls, font, style):
         if isinstance(style, basestring):
-            if style not in kiva.fonttools.font.font_styles:
+            if style not in fonttools.font.font_styles:
                 warnings.warn('font style "%s" not supported' % style)
             else:
-                font.style = kiva.fonttools.font.font_styles[style]
+                font.style = fonttools.font.font_styles[style]
         else:
             font.style = style
 
     @classmethod
     def setFontWeight(cls, font, weight):
         if isinstance(weight, basestring):
-            if weight not in kiva.fonttools.font.font_weights:
+            if weight not in fonttools.font.font_weights:
                 warnings.warn('font weight "%s" not supported' % weight)
             else:
-                font.weight = kiva.fonttools.font.font_weights[weight]
+                font.weight = fonttools.font.font_weights[weight]
         else:
             font.weight = weight
 

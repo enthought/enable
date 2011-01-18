@@ -3,7 +3,7 @@
 from numpy import array, resize
 
 # Enthought library imports.
-from enthought.kiva import FILL_STROKE, STROKE
+from enthought.kiva.constants import FILL_STROKE, STROKE
 from enthought.traits.api import Any, Event, Float, List, Trait, Bool
 
 # Local imports.

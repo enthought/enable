@@ -6,7 +6,8 @@ import Image
 from numpy import alltrue, array, concatenate, dtype, fromstring, newaxis, \
                   pi, ravel, ones, zeros
 
-from enthought.kiva import agg, Font
+from enthought.kiva import agg
+from enthought.kiva.fonttools import Font
 
 
 # alpha blending is approximate in agg, so we allow some "slop" between

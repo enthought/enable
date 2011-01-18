@@ -4,7 +4,8 @@ import unittest
 
 from numpy import all, allclose, array, dtype, pi, ones
 
-from enthought.kiva import agg, Font
+from enthought.kiva import agg
+from enthought.kiva.fonttools import Font
 
 
 class GraphicsContextArrayTestCase(unittest.TestCase):

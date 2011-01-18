@@ -165,11 +165,11 @@ class MyClean(distutils.command.clean.clean):
             os.path.join("agg", "agg_wrap.cpp"),
 
             # Mac
-            os.path.join("mac", "ABCGI.so"),
-            os.path.join("mac", "macport.so"),
-            os.path.join("mac", "ABCGI.c"),
-            os.path.join("mac", "ATSFont.so"),
-            os.path.join("mac", "ATSFont.c"),
+            os.path.join("quartz", "ABCGI.so"),
+            os.path.join("quartz", "macport.so"),
+            os.path.join("quartz", "ABCGI.c"),
+            os.path.join("quartz", "ATSFont.so"),
+            os.path.join("quartz", "ATSFont.c"),
 
             # Win32 Agg
             os.path.join("agg", "_agg.pyd"),

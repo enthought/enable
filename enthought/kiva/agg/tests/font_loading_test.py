@@ -2,7 +2,7 @@ from string import lowercase, uppercase
 import os
 import time
 
-from enthought.kiva.backend_image import font_metrics_provider as FMP
+from enthought.kiva.image import font_metrics_provider as FMP
 from enthought.kiva.fonttools import Font
 
 counts = (500,)

@@ -7,13 +7,14 @@ from __future__ import with_statement
 import time
 import wx
 
+from enthought.etsconfig.api import ETSConfig
+ETSConfig.toolkit = 'wx'
+
 from enthought.traits.api import Float
-
-from enthought.enable.api import Component, Container, ColorTrait, black_color_trait
-from enthought.enable.wx_backend.api import Window
-
-from enthought.kiva import Font
-from enthought.kiva import SWISS
+from enthought.enable.api import (Component, Container, ColorTrait,
+                                  black_color_trait, Window)
+from enthought.kiva.constants import SWISS
+from enthought.kiva.fonttools import Font
 
 font = Font(family=SWISS)
 

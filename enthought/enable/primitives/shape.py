@@ -6,7 +6,8 @@ import math
 
 # Enthought library imports.
 from enthought.enable.api import ColorTrait, Component, Pointer
-from enthought.kiva import Font, MODERN
+from enthought.kiva.constants import MODERN
+from enthought.kiva.fonttools import Font
 from enthought.traits.api import Float, Property, Str, Tuple
 
 

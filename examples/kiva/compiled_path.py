@@ -2,7 +2,7 @@
 # GC you are using.  In this case, we are using the image GraphicsContext
 # so we can save to disk when we're done, so we grab the CompiledPath 
 # from there as well.
-from enthought.kiva.backend_image import GraphicsContext, CompiledPath
+from enthought.kiva.image import GraphicsContext, CompiledPath
 from enthought.kiva.constants import STROKE
 
 star_points = [(-20,-30),

@@ -4,7 +4,8 @@ import os.path
 import xml.etree.cElementTree as etree
 
 from enthought.enable.api import Container, Component, ComponentEditor, BaseTool
-from enthought.kiva import Font, MODERN
+from enthought.kiva.constants import MODERN
+from enthought.kiva.fonttools import Font
 from enthought.traits.api import Instance, Callable, List, Str, HasTraits, Enum
 from enthought.traits.ui.api import View, Item
 from enthought.savage.svg.document import SVGDocument

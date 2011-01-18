@@ -13,7 +13,9 @@ from enthought.kiva.constants import STROKE, FILL_STROKE, \
             CROSS_MARKER, TRIANGLE_MARKER, \
             INVERTED_TRIANGLE_MARKER, PLUS_MARKER, DOT_MARKER, \
             PIXEL_MARKER, NO_MARKER
-from enthought.kiva import CompiledPath
+
+# Local imports
+from compiled_path import CompiledPath
 
 
 

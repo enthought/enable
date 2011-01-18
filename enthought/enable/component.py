@@ -4,10 +4,10 @@
 from enthought.traits.api \
     import Any, Bool, Delegate, Enum, Float, Instance, Int, List, \
            Property, Str, Trait
-from enthought.kiva import GraphicsContext, FILL
+from enthought.kiva.constants import FILL
 
 try:
-    from enthought.kiva.backend_gl import GraphicsContext as GraphicsContextGL
+    from enthought.kiva.gl import GraphicsContext as GraphicsContextGL
 except (ImportError, TypeError):
     class GraphicsContextGL(object):
         pass
@@ -716,6 +716,8 @@ class Component(CoordinateBox, Interactor):
                 width, height = self.bounds
 
             if not self.draw_valid:
+                # get a reference to the GraphicsContext class from the object
+                GraphicsContext = gc.__class__
                 if hasattr(GraphicsContext, 'create_from_gc'):
                     # For some backends, such as the mac, a much more efficient
                     # backbuffer can be created from the window gc.

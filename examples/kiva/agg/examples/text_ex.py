@@ -1,11 +1,11 @@
 from __future__ import with_statement
 
 import time
-from enthought.kiva import agg, Font, MODERN
-from enthought.kiva.agg import AffineMatrix
-#from enthought.kiva.backend_image import FontType
+from enthought.kiva.fonttools import Font
+from enthought.kiva.constants import MODERN
+from enthought.kiva.agg import AffineMatrix, GraphicsContextArray
 
-gc = agg.GraphicsContextArray((200,200))
+gc = GraphicsContextArray((200,200))
 
 font = Font(family=MODERN)
 #print font.size
@@ -31,7 +31,7 @@ t2 = time.clock()
 print 'aliased:', t2 - t1
 gc.save("text_aliased.bmp")
 
-gc = agg.GraphicsContextArray((200,200))
+gc = GraphicsContextArray((200,200))
 
 font = Font(family=MODERN)
 #print font.size

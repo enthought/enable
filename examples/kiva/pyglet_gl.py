@@ -4,7 +4,7 @@ from numpy import array
 from pyglet.window import key, Window
 
 try:
-    from enthought.kiva.backend_gl import GraphicsContext
+    from enthought.kiva.gl import GraphicsContext
 except ImportError, e:
     raise Exception(e)
 from enthought.kiva.constants import FILL, STROKE, FILL_STROKE

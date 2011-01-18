@@ -1,4 +1,4 @@
-from enthought.kiva.backend_image import GraphicsContext
+from enthought.kiva.image import GraphicsContext
    
 gc = GraphicsContext((500,500))
 gc.set_fill_color( (1, 0, 0) )

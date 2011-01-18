@@ -28,7 +28,6 @@ from __future__ import generators
 # Enthought library imports
 from enthought.traits.api import TraitError
 
-from enthought.kiva import font_metrics_provider
 from enthought.kiva.constants import DEFAULT, DECORATIVE, ROMAN, SCRIPT, SWISS,\
                                      MODERN, NORMAL, BOLD, ITALIC
 from enthought.kiva.fonttools import Font

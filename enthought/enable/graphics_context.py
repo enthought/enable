@@ -1,10 +1,9 @@
 
-# Enthought library imports
-from enthought.kiva import GraphicsContext
 
 # Relative imports
 from abstract_window import AbstractWindow
 from base import bounding_coordinates, coordinates_to_bounds
+from kiva_graphics_context import GraphicsContext
 
 
 class EnableGCMixin(object):
@@ -90,7 +89,7 @@ class GraphicsContextEnable(EnableGCMixin, GraphicsContext):
 # Define an ImageGraphicsContextEnable that is guaranteed to be a subclass of
 # an ImageGraphicsContext, regardless of the actual Kiva backend.  If the kiva
 # backend is already the GraphicsContextImage, then just create an alias.
-from enthought.kiva.backend_image import GraphicsContext as GraphicsContextImage
+from enthought.kiva.image import GraphicsContext as GraphicsContextImage
 if isinstance(GraphicsContext, GraphicsContextImage):
     ImageGraphicsContextEnable = GraphicsContextEnable
 else:

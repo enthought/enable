@@ -2,7 +2,7 @@
 Support class that wraps up the boilerplate toolkit calls that virtually all
 demo programs have to use.
 """
-
+from __future__ import absolute_import
 from enthought.etsconfig.api import ETSConfig
 
 # FIXME - it should be enough to do the following import, but because of the

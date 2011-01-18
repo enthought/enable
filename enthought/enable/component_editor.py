@@ -7,6 +7,7 @@
 #----------------------------------------------------------------------------
 
 from enthought.enable.colors import ColorTrait
+from enthought.enable.window import Window
 
 from enthought.etsconfig.api import ETSConfig
 
@@ -15,13 +16,10 @@ from enthought.traits.ui.api import BasicEditorFactory
 
 if ETSConfig.toolkit == 'wx':
     from enthought.traits.ui.wx.editor import Editor
-    from enthought.enable.wx_backend.api import Window
 elif ETSConfig.toolkit == 'qt4':
     from enthought.traits.ui.qt4.editor import Editor
-    from enthought.enable.qt4_backend.api import Window
 else:
     Editor = object
-    Window = None
 
 class _ComponentEditor( Editor ):
 
