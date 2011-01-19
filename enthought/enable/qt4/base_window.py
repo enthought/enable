@@ -146,14 +146,14 @@ class _QtWindowMixin(object):
 
 class _QtWindow(QtGui.QWidget, _QtWindowMixin):
     """ The Qt widget that implements the enable control. """
-    def __init__(self, enable_window, parent):
-        QtGui.QWidget.__init__(self, parent=parent)
+    def __init__(self, enable_window):
+        QtGui.QWidget.__init__(self)
         _QtWindowMixin.__init__(self, enable_window)
 
 
 class _QtGLWindow(QtOpenGL.QGLWidget, _QtWindowMixin):
-    def __init__(self, enable_window, parent):
-        QtOpenGL.QGLWidget.__init__(self, parent=parent)
+    def __init__(self, enable_window):
+        QtOpenGL.QGLWidget.__init__(self)
         _QtWindowMixin.__init__(self, enable_window)
 
     def paintEvent(self, event):
@@ -174,7 +174,7 @@ class _Window(AbstractWindow):
 
         self._mouse_captured = False
 
-        self.control = self._create_control(self, parent)
+        self.control = self._create_control(self)
 
         if pos is not None:
             self.control.move(*pos)
@@ -280,17 +280,17 @@ class BaseGLWindow(_Window):
     # The toolkit control
     control = Instance(_QtGLWindow)
     
-    def _create_control(self, enable_window, parent):
+    def _create_control(self, enable_window):
         """ Create the toolkit control.
         """
-        return _QtGLWindow(enable_window, parent)
+        return _QtGLWindow(enable_window)
 
 
 class BaseWindow(_Window):
     # The toolkit control
     control = Instance(_QtWindow)
     
-    def _create_control(self, enable_window, parent):
+    def _create_control(self, enable_window):
         """ Create the toolkit control.
         """
-        return _QtWindow(enable_window, parent)
+        return _QtWindow(enable_window)
