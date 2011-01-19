@@ -8,11 +8,23 @@ from enthought.traits.ui.api import Item, View
 
 class MyCanvas(Component):
     def draw(self, gc, **kwargs):
+        w,h = gc.width(), gc.height()
+        
         # colors are 5 doubles: offset, red, green, blue, alpha
         starting_color = np.array([0.0, 1.0, 1.0, 1.0, 1.0])
         ending_color = np.array([1.0, 0.0, 0.0, 0.0, 1.0])
 
         gc.clear()
+
+        # radial reflected background
+        with gc:
+            gc.rect(0, 0, w, h)
+            
+            start = np.array([0.0, 1.0, 0.0, 0.0, 1.0])
+            end = np.array([1.0, 1.0, 1.0, 1.0, 1.0])
+            gc.radial_gradient(w/4, h/4, 200, w/4+100, h/4+100,
+                               np.array([start, end]), 'reflect')
+            gc.draw_path()
 
         # diagonal
         with gc:
