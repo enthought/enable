@@ -6,7 +6,7 @@ import sys
 def configuration(parent_package='',top_path=None):
     from numpy.distutils.misc_util import Configuration
     from numpy.distutils.system_info import dict_append, get_info
-    config = Configuration('mac',parent_package,top_path)
+    config = Configuration('quartz', parent_package, top_path)
 
     wx_info = get_info('wx')
     # Find the version number of wx.
