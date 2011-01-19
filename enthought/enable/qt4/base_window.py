@@ -14,9 +14,8 @@
 # been on my list of things to do.
 #------------------------------------------------------------------------------
 
-
 # Qt imports.
-from enthought.qt.api import QtCore, QtGui
+from enthought.qt.api import QtCore, QtGui, QtOpenGL
 
 # Enthought library imports.
 from enthought.enable.abstract_window import AbstractWindow
@@ -26,13 +25,8 @@ from enthought.traits.api import Instance
 # Local imports.
 from constants import BUTTON_NAME_MAP, KEY_MAP, POINTER_MAP
 
-
-class _QtWindow(QtGui.QWidget):
-    """ The Qt widget that implements the enable control. """
-
-    def __init__(self, enable_window, parent):
-        QtGui.QWidget.__init__(self)
-
+class _QtWindowMixin(object):
+    def __init__(self, enable_window):
         self._enable_window = enable_window
 
         pos = self.mapFromGlobal(QtGui.QCursor.pos())
@@ -43,6 +37,11 @@ class _QtWindow(QtGui.QWidget):
         self.setMouseTracking(True)
         self.setSizePolicy(QtGui.QSizePolicy.Expanding,
                            QtGui.QSizePolicy.Expanding)
+    
+    def closeEvent(self, event):
+        self._enable_window.cleanup()
+        self._enable_window = None
+        return super(_QtWindowMixin, self).closeEvent(event)
 
     def paintEvent(self, event):
         self._enable_window._paint(event)
@@ -64,11 +63,6 @@ class _QtWindow(QtGui.QWidget):
             if "v" in component.resizable:
                 component.outer_y = 0
                 component.outer_height = dy
-
-    def closeEvent(self, event):
-        self._enable_window.cleanup()
-        self._enable_window = None
-        return super(_QtWindow, self).closeEvent(event)
 
     def keyReleaseEvent(self, event):
         focus_owner = self._enable_window.focus_owner
@@ -104,7 +98,7 @@ class _QtWindow(QtGui.QWidget):
                 window=self._enable_window)
 
         focus_owner.dispatch(enable_event, "key_pressed")
-
+    
     #------------------------------------------------------------------------
     # Qt Mouse event handlers
     #------------------------------------------------------------------------
@@ -133,24 +127,6 @@ class _QtWindow(QtGui.QWidget):
     def wheelEvent(self, event):
         self._enable_window._handle_mouse_event("mouse_wheel", event)
 
-
-class BaseWindow(AbstractWindow):
-
-    control = Instance(_QtWindow)
-
-    def __init__(self, parent, wid=-1, pos=None, size=None, **traits):
-        AbstractWindow.__init__(self, **traits)
-
-        self._mouse_captured = False
-
-        self.control = _QtWindow(self, parent)
-
-        if pos is not None:
-            self.control.move(*pos)
-
-        if size is not None:
-            self.control.resize(*size)
-
     #------------------------------------------------------------------------
     # Qt Drag and drop event handlers
     #------------------------------------------------------------------------
@@ -167,10 +143,49 @@ class BaseWindow(AbstractWindow):
     def dropEvent(self, event):
         pass
 
+
+class _QtWindow(QtGui.QWidget, _QtWindowMixin):
+    """ The Qt widget that implements the enable control. """
+    def __init__(self, enable_window, parent):
+        QtGui.QWidget.__init__(self, parent=parent)
+        _QtWindowMixin.__init__(self, enable_window)
+
+
+class _QtGLWindow(QtOpenGL.QGLWidget, _QtWindowMixin):
+    def __init__(self, enable_window, parent):
+        QtOpenGL.QGLWidget.__init__(self, parent=parent)
+        _QtWindowMixin.__init__(self, enable_window)
+
+    def paintEvent(self, event):
+        QtOpenGL.QGLWidget.paintEvent(self, event)
+        _QtWindowMixin.paintEvent(self, event)
+
+    def resizeEvent(self, event):
+        QtOpenGL.QGLWidget.resizeEvent(self, event)
+        _QtWindowMixin.resizeEvent(self, event)
+
+
+class _Window(AbstractWindow):
+
+    control = Instance(_QtWindowMixin)
+
+    def __init__(self, parent, wid=-1, pos=None, size=None, **traits):
+        AbstractWindow.__init__(self, **traits)
+
+        self._mouse_captured = False
+
+        self.control = self._create_control(self, parent)
+
+        if pos is not None:
+            self.control.move(*pos)
+
+        if size is not None:
+            self.control.resize(*size)
+
     #------------------------------------------------------------------------
     # Implementations of abstract methods in AbstractWindow
     #------------------------------------------------------------------------
-
+    
     def set_drag_result(self, result):
         # FIXME
         raise NotImplementedError
@@ -259,3 +274,23 @@ class BaseWindow(AbstractWindow):
     def _flip_y(self, y):
         "Converts between a Kiva and a Qt y coordinate"
         return int(self._size[1] - y - 1)
+
+
+class BaseGLWindow(_Window):
+    # The toolkit control
+    control = Instance(_QtGLWindow)
+    
+    def _create_control(self, enable_window, parent):
+        """ Create the toolkit control.
+        """
+        return _QtGLWindow(enable_window, parent)
+
+
+class BaseWindow(_Window):
+    # The toolkit control
+    control = Instance(_QtWindow)
+    
+    def _create_control(self, enable_window, parent):
+        """ Create the toolkit control.
+        """
+        return _QtWindow(enable_window, parent)
