@@ -146,6 +146,7 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     void CGContextClipToRect(CGContextRef context, CGRect rect)
     void CGContextClipToRects(CGContextRef context, CGRect rects[], size_t count)
     #void CGContextClipToMask(CGContextRef c, CGRect rect, CGImageRef mask)
+    CGRect CGContextGetClipBoundingBox(CGContextRef context)
 
     # Color Spaces
     ctypedef void* CGColorSpaceRef

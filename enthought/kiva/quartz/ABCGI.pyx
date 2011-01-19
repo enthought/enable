@@ -1069,7 +1069,15 @@ cdef class CGContext:
             CGContextRestoreGState(self.context)
             
     def linear_gradient(self, x1, y1, x2, y2, stops, spread_method, units='userSpaceOnUse'):
-        self.clip()           
+        self.clip()
+        cdef CGRect clip_rect
+        if units == 'objectBoundingBox':
+            # transform from relative coordinates
+            clip_rect = CGContextGetClipBoundingBox(self.context)
+            x1 = clip_rect.origin.x + x1 * clip_rect.size.width
+            x2 = clip_rect.origin.x + x2 * clip_rect.size.width
+            y1 = clip_rect.origin.y + y1 * clip_rect.size.height
+            y2 = clip_rect.origin.y + y2 * clip_rect.size.height
         stops_list = stops.transpose().tolist()
         func = PiecewiseLinearColorFunction(stops_list)
         shading = AxialShading(func, (x1,y1), (x2,y2),
@@ -1077,7 +1085,17 @@ cdef class CGContext:
         self.draw_shading(shading)
             
     def radial_gradient(self, cx, cy, r, fx, fy,  stops, spread_method, units='userSpaceOnUse'):
-        self.clip()           
+        self.clip()
+        cdef CGRect clip_rect
+        if units == 'objectBoundingBox':
+            # transform from relative coordinates
+            clip_rect = CGContextGetClipBoundingBox(self.context)
+            r = r * clip_rect.size.width
+            cx = clip_rect.origin.x + cx * clip_rect.size.width
+            fx = clip_rect.origin.x + fx * clip_rect.size.width
+            cy = clip_rect.origin.y + cy * clip_rect.size.height
+            fy = clip_rect.origin.y + fy * clip_rect.size.height
+
         stops_list = stops.transpose().tolist()
         func = PiecewiseLinearColorFunction(stops_list)
 
