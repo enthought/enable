@@ -7,6 +7,7 @@
 #endif
 
 #include <assert.h>
+#include <string.h>
 #include <stack>
 
 #include <iostream>
@@ -463,6 +464,16 @@ namespace kiva
             typedef std::pair<double, double> point_type;
             std::vector<gradient_stop> stops_list;
             std::vector<point_type> points;
+            
+            if (strcmp(units, "objectBoundingBox") == 0)
+            {
+                // Transform from relative coordinates
+                kiva::rect_type const clip_rect = _get_path_bounds();
+                x1 = clip_rect.x + x1 * clip_rect.w;
+                x2 = clip_rect.x + x2 * clip_rect.w;
+                y1 = clip_rect.y + y1 * clip_rect.h;
+                y2 = clip_rect.y + y2 * clip_rect.h;                
+            }
 
             points.push_back(point_type(x1, y1));
             points.push_back(point_type(x2, y2));
@@ -480,6 +491,17 @@ namespace kiva
         {
             typedef std::pair<double, double> point_type;
             std::vector<point_type> points;
+
+            if (strcmp(units, "objectBoundingBox") == 0)
+            {
+                // Transform from relative coordinates
+                kiva::rect_type const clip_rect = _get_path_bounds();
+                r = r * clip_rect.w;
+                cx = clip_rect.x + cx * clip_rect.w;
+                fx = clip_rect.x + fx * clip_rect.w;
+                cy = clip_rect.y + cy * clip_rect.h;
+                fy = clip_rect.y + fy * clip_rect.h;
+            }
 
             points.push_back(point_type(cx, cy));
             points.push_back(point_type(r, 0));

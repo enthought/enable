@@ -245,6 +245,7 @@ namespace kiva
         void close_path();
         void add_path(kiva::compiled_path& other_path);
         compiled_path _get_path();
+        kiva::rect_type _get_path_bounds();
 
         void lines(double* pts, int Npts);
         void line_set(double* start, int Nstart, double* end, int Nend);

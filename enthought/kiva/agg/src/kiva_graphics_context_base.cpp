@@ -463,6 +463,30 @@ kiva::compiled_path graphics_context_base::_get_path()
     return this->path;
 }
 
+kiva::rect_type graphics_context_base::_get_path_bounds()
+{
+    double xmin = 0., ymin = 0., xmax = 0., ymax = 0.;
+    double x = 0., y = 0.;
+    
+    for (unsigned i = 0; i < this->path.total_vertices(); ++i)
+    {
+        this->path.vertex(i, &x, &y);
+        
+        if (i == 0)
+        {
+            xmin = xmax = x;
+            ymin = ymax = y;
+            continue;
+        }
+        
+        if (x < xmin) xmin = x;
+        else if (xmax < x) xmax = x;
+        if (y < ymin) ymin = y;
+        else if (ymax < y) ymax = y;
+    }
+    
+    return kiva::rect_type(xmin, ymin, xmax-xmin, ymax-ymin);
+}
 
 agg::path_storage graphics_context_base::boundary_path(agg::trans_affine& affine_mtx)
 {
