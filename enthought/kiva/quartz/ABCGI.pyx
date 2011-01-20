@@ -177,6 +177,7 @@ cdef class CGImageMask(CGImage)
 cdef class CGAffine
 cdef class CGMutablePath
 cdef class Shading
+cdef class ShadingFunction
 
 cdef class CGContext:
     cdef CGContextRef context
@@ -1112,9 +1113,41 @@ cdef class CGContext:
             fx = cx+newdist*dx/dist
             fy = cy+newdist*dy/dist
 
-        shading = RadialShading(func, (fx, fy), 0.0, (cx, cy), r,
-                               extend_start=1, extend_end=1)
-        self.draw_shading(shading)
+        if spread_method == 'pad':
+            shading = RadialShading(func, (fx, fy), 0.0, (cx, cy), r,
+                                   extend_start=1, extend_end=1)
+            self.draw_shading(shading)
+        else:
+            # 'reflect' and 'repeat' need to iterate
+            self.repeat_radial_shading(cx, cy, r, fx, fy, stops, spread_method, func)
+    
+    def repeat_radial_shading(self, cx, cy, r, fx, fy, stops, spread_method,
+                              ShadingFunction func not None):
+        cdef CGRect clip_rect = CGContextGetClipBoundingBox(self.context)
+        cdef double rad = 0., dirx = 0., diry = 0.
+        cdef double startx, starty, endx, endy
+        cdef int func_index = 0
+        
+        if spread_method == 'reflect':
+            # generate the mirrored color function
+            stops_list = stops[::-1].transpose()
+            stops_list[0] = 1-stops_list[0]
+            funcs = [func, PiecewiseLinearColorFunction(stops_list.tolist())]
+        else:
+            funcs = [func, func]
+        
+        dirx, diry = cx-fx, cy-fy
+        startx, starty = fx,fy
+        endx, endy = cx, cy
+        while not _cgrect_within_circle(clip_rect, endx, endy, rad):
+            shading = RadialShading(funcs[func_index & 1],
+                                    (startx, starty), rad, (endx, endy), rad+r,
+                                    extend_start=0, extend_end=0)
+            self.draw_shading(shading)
+            startx, starty = endx, endy
+            endx, endy = endx+dirx, endy+diry
+            rad += r
+            func_index += 1
 
     def draw_shading(self, Shading shading not None):
         CGContextDrawShading(self.context, shading.shading)
@@ -2679,6 +2712,18 @@ cdef void piecewise_callback(void* obj, float* t, float* out):
    out[1] = f*self.green[i] + g*self.green[i-1]
    out[2] = f*self.blue[i] + g*self.blue[i-1]
    out[3] = f*self.alpha[i] + g*self.alpha[i-1]
+
+cdef double _point_distance(double x1, double y1, double x2, double y2):
+    cdef double dx = x1-x2
+    cdef double dy = y1-y2
+    return sqrt(dx*dx+dy*dy)
+
+cdef bool _cgrect_within_circle(CGRect rect, double cx, double cy, double rad):
+    cdef double d1 = _point_distance(cx,cy, rect.origin.x, rect.origin.y)
+    cdef double d2 = _point_distance(cx,cy, rect.origin.x+rect.size.width, rect.origin.y)
+    cdef double d3 = _point_distance(cx,cy, rect.origin.x+rect.size.width, rect.origin.y+rect.size.height)
+    cdef double d4 = _point_distance(cx,cy, rect.origin.x, rect.origin.y+rect.size.height)
+    return (d1<rad and d2<rad and d3<rad and d4<rad)
 
 
 #### Font utilities ####
