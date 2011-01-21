@@ -437,11 +437,23 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
 
     def radial_gradient(self, cx, cy, r, fx, fy, stops, spreadMethod='pad',
-                        transforms=None, units='userSpaceOnUse'):
-
+                        units='userSpaceOnUse', transforms=None):
+        """ Set a radial gradient as the fill color.
+        """
         # TODO: handle transforms
-        # TODO: handle units
         # TODO: handle spread
+
+        if units == 'objectBoundingBox':
+            # transform from relative coordinates
+            path_rect = self._ctx.path_extents()
+            width = path_rect[2]-path_rect[0]
+            height = path_rect[3]-path_rect[1]
+            r = r * width
+            cx = path_rect[0] + cx * width
+            fx = path_rect[0] + fx * width
+            cy = path_rect[1] + cy * height
+            fy = path_rect[1] + fy * height
+        
         gradient = cairo.RadialGradient(fx, fy, 0.0, cx, cy, r)
 
         for stop in stops:
@@ -459,10 +471,21 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self._ctx.set_source(gradient)
 
     def linear_gradient(self, x1, y1, x2, y2, stops, spreadMethod='pad',
-                        transforms=None, units='userSpaceOnUse'):
+                        units='userSpaceOnUse', transforms=None):
+        """ Set a linear gradient as the fill color.
+        """
         # TODO: handle transforms
         # TODO: handle units
-        # TODO: handle spread
+        
+        if units == 'objectBoundingBox':
+            # transform from relative coordinates
+            path_rect = self._ctx.path_extents()
+            width = path_rect[2]-path_rect[0]
+            height = path_rect[3]-path_rect[1]
+            x1 = path_rect[0] + x1 * width
+            x2 = path_rect[0] + x2 * width
+            y1 = path_rect[1] + y1 * height
+            y2 = path_rect[1] + y2 * height
 
         gradient = cairo.LinearGradient(x1, y1, x2, y2)
 
