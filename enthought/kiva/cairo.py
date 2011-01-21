@@ -40,6 +40,11 @@ font_weight = {"regular":cairo.FONT_WEIGHT_NORMAL,
                "bold italic":cairo.FONT_WEIGHT_BOLD
               }
 
+spread_methods = {"pad":cairo.EXTEND_PAD,
+                  "reflect":cairo.EXTEND_REFLECT,
+                  "repeat":cairo.EXTEND_REPEAT
+                 }
+
 text_draw_modes = {'FILL': (constants.TEXT_FILL,
                             constants.TEXT_FILL_CLIP,
                             constants.TEXT_FILL_STROKE,
@@ -441,7 +446,6 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """ Set a radial gradient as the fill color.
         """
         # TODO: handle transforms
-        # TODO: handle spread
 
         if units == 'objectBoundingBox':
             # transform from relative coordinates
@@ -455,7 +459,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             fy = path_rect[1] + fy * height
         
         gradient = cairo.RadialGradient(fx, fy, 0.0, cx, cy, r)
-
+        
+        gradient.set_extend(spread_methods.get(spreadMethod, cairo.EXTEND_NONE))
+        
         for stop in stops:
             #FIXME: the stops are possibly being generated wrong if the offset is specified
             if stop.size == 10:
@@ -475,7 +481,6 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """ Set a linear gradient as the fill color.
         """
         # TODO: handle transforms
-        # TODO: handle units
         
         if units == 'objectBoundingBox':
             # transform from relative coordinates
@@ -488,6 +493,8 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             y2 = path_rect[1] + y2 * height
 
         gradient = cairo.LinearGradient(x1, y1, x2, y2)
+
+        gradient.set_extend(spread_methods.get(spreadMethod, cairo.EXTEND_NONE))
 
         for stop in stops:
             # FIXME: the stops are possibly being generated wrong if the offset is specified
