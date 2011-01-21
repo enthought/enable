@@ -665,11 +665,12 @@ class GraphicsContext(object):
             pos = tuple(point)
         
         unflip_trans = QtGui.QTransform()
+        unflip_trans.translate(0, self._height)
         unflip_trans.scale(1.0, -1.0)
         
         self.gc.save()
         self.gc.setTransform(unflip_trans, True)
-        self.gc.drawText(QtCore.QPointF(*pos), text)
+        self.gc.drawText(QtCore.QPointF(pos[0], self._flip_y(pos[1])), text)
         self.gc.restore()
         
     def show_text_at_point(self, text, x, y):
@@ -805,6 +806,11 @@ class GraphicsContext(object):
             self.gc.translate(x, y)
             draw_func()
             self.gc.restore()
+    
+    def _flip_y(self, y):
+        "Converts between a Kiva and a Qt y coordinate"
+        return self._height - y - 1
+        
 
 
 class CompiledPath(object):
