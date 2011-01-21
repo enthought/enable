@@ -1071,18 +1071,20 @@ cdef class CGContext:
             CGContextRestoreGState(self.context)
             
     def linear_gradient(self, x1, y1, x2, y2, stops, spread_method, units='userSpaceOnUse'):
-        self.clip()
-        cdef CGRect clip_rect
+        cdef CGRect path_rect
         if units == 'objectBoundingBox':
             # transform from relative coordinates
-            clip_rect = CGContextGetClipBoundingBox(self.context)
-            x1 = clip_rect.origin.x + x1 * clip_rect.size.width
-            x2 = clip_rect.origin.x + x2 * clip_rect.size.width
-            y1 = clip_rect.origin.y + y1 * clip_rect.size.height
-            y2 = clip_rect.origin.y + y2 * clip_rect.size.height
+            path_rect = CGContextGetPathBoundingBox(self.context)
+            x1 = path_rect.origin.x + x1 * path_rect.size.width
+            x2 = path_rect.origin.x + x2 * path_rect.size.width
+            y1 = path_rect.origin.y + y1 * path_rect.size.height
+            y2 = path_rect.origin.y + y2 * path_rect.size.height
+        
         stops_list = stops.transpose().tolist()
         func = PiecewiseLinearColorFunction(stops_list)
-        
+
+        # Shadings fill the current clip path
+        self.clip()
         if spread_method == 'pad':
             shading = AxialShading(func, (x1,y1), (x2,y2),
                                    extend_start=1, extend_end=1)
@@ -1148,16 +1150,15 @@ cdef class CGContext:
             func_index += 1
 
     def radial_gradient(self, cx, cy, r, fx, fy,  stops, spread_method, units='userSpaceOnUse'):
-        self.clip()
-        cdef CGRect clip_rect
+        cdef CGRect path_rect
         if units == 'objectBoundingBox':
             # transform from relative coordinates
-            clip_rect = CGContextGetClipBoundingBox(self.context)
-            r = r * clip_rect.size.width
-            cx = clip_rect.origin.x + cx * clip_rect.size.width
-            fx = clip_rect.origin.x + fx * clip_rect.size.width
-            cy = clip_rect.origin.y + cy * clip_rect.size.height
-            fy = clip_rect.origin.y + fy * clip_rect.size.height
+            path_rect = CGContextGetPathBoundingBox(self.context)
+            r = r * path_rect.size.width
+            cx = path_rect.origin.x + cx * path_rect.size.width
+            fx = path_rect.origin.x + fx * path_rect.size.width
+            cy = path_rect.origin.y + cy * path_rect.size.height
+            fy = path_rect.origin.y + fy * path_rect.size.height
 
         stops_list = stops.transpose().tolist()
         func = PiecewiseLinearColorFunction(stops_list)
@@ -1175,6 +1176,8 @@ cdef class CGContext:
             fx = cx+newdist*dx/dist
             fy = cy+newdist*dy/dist
 
+        # Shadings fill the current clip path
+        self.clip()
         if spread_method == 'pad':
             shading = RadialShading(func, (fx, fy), 0.0, (cx, cy), r,
                                    extend_start=1, extend_end=1)
