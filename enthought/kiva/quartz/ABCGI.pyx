@@ -19,6 +19,7 @@ from ATSFont import default_font_info
 
 cdef extern from "math.h":
     double sqrt(double arg)
+    int isnan(double arg)
 
 
 cdef CFURLRef url_from_filename(char* filename) except NULL:
@@ -1081,10 +1082,71 @@ cdef class CGContext:
             y2 = clip_rect.origin.y + y2 * clip_rect.size.height
         stops_list = stops.transpose().tolist()
         func = PiecewiseLinearColorFunction(stops_list)
-        shading = AxialShading(func, (x1,y1), (x2,y2),
-                               extend_start=1, extend_end=1)
-        self.draw_shading(shading)
-            
+        
+        if spread_method == 'pad':
+            shading = AxialShading(func, (x1,y1), (x2,y2),
+                                   extend_start=1, extend_end=1)
+            self.draw_shading(shading)
+        else:
+            self.repeat_linear_shading(x1, y1, x2, y2, stops, spread_method, func)
+    
+    def repeat_linear_shading(self, x1, y1, x2, y2, stops, spread_method,
+                              ShadingFunction func not None):
+        cdef CGRect clip_rect = CGContextGetClipBoundingBox(self.context)
+        cdef double dirx, diry, slope
+        cdef double startx, starty, endx, endy
+        cdef int func_index = 0
+        
+        if spread_method == 'reflect':
+            # generate the mirrored color function
+            stops_list = stops[::-1].transpose()
+            stops_list[0] = 1-stops_list[0]
+            funcs = [func, PiecewiseLinearColorFunction(stops_list.tolist())]
+        else:
+            funcs = [func, func]
+        
+        dirx, diry = x2-x1, y2-y1
+        startx, starty = x1, y1
+        endx, endy = x2, y2
+        if dirx == 0. and diry == 0.:
+            slope = float('nan')
+            diry = 100.0
+        elif diry == 0.:
+            slope = float('nan')
+        else:
+            # perpendicular slope
+            slope = -dirx/diry
+        while _line_intersects_cgrect(startx, starty, slope, clip_rect):
+            shading = AxialShading(funcs[func_index&1],
+                                   (startx, starty), (endx, endy),
+                                   extend_start=0, extend_end=0)
+            self.draw_shading(shading)
+            startx, starty = endx, endy
+            endx, endy = endx+dirx, endy+diry
+            func_index += 1
+    
+        # reverse direction
+        dirx, diry = x1-x2, y1-y2
+        startx, starty = x1+dirx, y1+diry
+        endx, endy = x1, y1
+        func_index = 1
+        if dirx == 0. and diry == 0.:
+            slope = float('nan')
+            diry = 100.0
+        elif diry == 0.:
+            slope = float('nan')
+        else:
+            # perpendicular slope
+            slope = -dirx/diry
+        while _line_intersects_cgrect(endx, endy, slope, clip_rect):
+            shading = AxialShading(funcs[func_index&1],
+                                   (startx, starty), (endx, endy),
+                                   extend_start=0, extend_end=0)
+            self.draw_shading(shading)
+            endx, endy = startx, starty
+            startx, starty = endx+dirx, endy+diry
+            func_index += 1
+
     def radial_gradient(self, cx, cy, r, fx, fy,  stops, spread_method, units='userSpaceOnUse'):
         self.clip()
         cdef CGRect clip_rect
@@ -2724,6 +2786,26 @@ cdef bool _cgrect_within_circle(CGRect rect, double cx, double cy, double rad):
     cdef double d3 = _point_distance(cx,cy, rect.origin.x+rect.size.width, rect.origin.y+rect.size.height)
     cdef double d4 = _point_distance(cx,cy, rect.origin.x, rect.origin.y+rect.size.height)
     return (d1<rad and d2<rad and d3<rad and d4<rad)
+
+cdef bool _line_intersects_cgrect(double x, double y, double slope, CGRect rect):
+    if slope == 0.:
+        return rect.origin.x <= x <= (rect.origin.x+rect.size.width)
+    elif isnan(slope):
+        return rect.origin.y <= y <= (rect.origin.y+rect.size.height)
+    # intersect the all sides
+    cdef double left = rect.origin.x
+    cdef double right = left + rect.size.width
+    cdef double bottom = rect.origin.y
+    cdef double top = bottom + rect.size.height
+    if bottom <= (y + slope*(left-x)) <= top:
+        return True
+    if bottom <= (y + slope*(right-x)) <= top:
+        return True
+    if left <= (x + 1./slope*(top-y)) <= right:
+        return True
+    if left <= (x + 1./slope*(bottom-y)) <= right:
+        return True
+    return False
 
 
 #### Font utilities ####
