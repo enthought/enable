@@ -38,7 +38,7 @@ class ArrayImage(ArrayInterfaceImage):
     creation.
     """
 
-    def create_texture(self, cls, rectangle):
+    def create_texture(self, cls, rectangle=False, force_rectangle=False):
         '''Create a texture containing this image.
 
         If the image's dimensions are not powers of 2, a TextureRegion of
