@@ -366,6 +366,18 @@ class GraphicsContext(_GCL):
         label.color = (int(c[0]*255), int(c[1]*255), int(c[2]*255), int(c[3]*255))
         label.draw()
         return True
+    
+    def linear_gradient(self, x1, y1, x2, y2, stops, spread_method,
+                        units='userSpaceOnUse'):
+        """ Not implemented.
+        """
+        pass
+
+    def radial_gradient(self, cx, cy, r, fx, fy, stops, spread_method,
+                        units='userSpaceOnUse'):
+        """ Not implemented.
+        """
+        pass
 
     def draw_image(self, img, rect=None, force_copy=False):
         """ Renders a GraphicsContextArray into this GC """
