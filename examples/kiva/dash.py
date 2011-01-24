@@ -2,11 +2,12 @@ import time
 
 import numpy
 
-from enthought import kiva
+from enthought.kiva import constants
+from enthought.kiva.agg import GraphicsContextArray
 
 
 def dash(sz=(1000,1000)):
-    gc = kiva.GraphicsContext(sz)
+    gc = GraphicsContextArray(sz)
     gc.set_fill_color((1.0,0.0,0.0,0.1))
     gc.set_stroke_color((0.0,1.0,0.0,0.6))
     
@@ -16,7 +17,7 @@ def dash(sz=(1000,1000)):
     phase = width * 2.5;
     pattern = width * numpy.array((5,5))
     gc.set_line_dash(pattern,phase)
-    gc.set_line_cap(kiva.CAP_BUTT)
+    gc.set_line_cap(constants.CAP_BUTT)
     t1 = time.clock()
     gc.move_to(10,10)
     gc.line_to(sz[0]-10,sz[1]-10)
