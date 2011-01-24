@@ -41,7 +41,6 @@ class _QtWindowMixin(object):
     def closeEvent(self, event):
         self._enable_window.cleanup()
         self._enable_window = None
-        return super(_QtWindowMixin, self).closeEvent(event)
 
     def paintEvent(self, event):
         self._enable_window._paint(event)
@@ -104,28 +103,35 @@ class _QtWindowMixin(object):
     #------------------------------------------------------------------------
 
     def enterEvent(self, event):
-        self._enable_window._handle_mouse_event("mouse_enter", event)
+        if self._enable_window:
+            self._enable_window._handle_mouse_event("mouse_enter", event)
 
     def leaveEvent(self, event):
-        self._enable_window._handle_mouse_event("mouse_leave", event)
+        if self._enable_window:
+            self._enable_window._handle_mouse_event("mouse_leave", event)
 
     def mouseDoubleClickEvent(self, event):
-        name = BUTTON_NAME_MAP[event.button()]
-        self._enable_window._handle_mouse_event(name + "_dclick", event)
+        if self._enable_window:
+            name = BUTTON_NAME_MAP[event.button()]
+            self._enable_window._handle_mouse_event(name + "_dclick", event)
 
     def mouseMoveEvent(self, event):
-        self._enable_window._handle_mouse_event("mouse_move", event)
+        if self._enable_window:
+            self._enable_window._handle_mouse_event("mouse_move", event)
 
     def mousePressEvent(self, event):
-        name = BUTTON_NAME_MAP[event.button()]
-        self._enable_window._handle_mouse_event(name + "_down", event)
+        if self._enable_window:
+            name = BUTTON_NAME_MAP[event.button()]
+            self._enable_window._handle_mouse_event(name + "_down", event)
 
     def mouseReleaseEvent(self, event):
-        name = BUTTON_NAME_MAP[event.button()]
-        self._enable_window._handle_mouse_event(name + "_up", event)
+        if self._enable_window:
+            name = BUTTON_NAME_MAP[event.button()]
+            self._enable_window._handle_mouse_event(name + "_up", event)
 
     def wheelEvent(self, event):
-        self._enable_window._handle_mouse_event("mouse_wheel", event)
+        if self._enable_window:
+            self._enable_window._handle_mouse_event("mouse_wheel", event)
 
     #------------------------------------------------------------------------
     # Qt Drag and drop event handlers
@@ -149,12 +155,20 @@ class _QtWindow(QtGui.QWidget, _QtWindowMixin):
     def __init__(self, enable_window):
         QtGui.QWidget.__init__(self)
         _QtWindowMixin.__init__(self, enable_window)
+    
+    def closeEvent(self, event):
+        _QtWindowMixin.closeEvent(self, event)
+        return super(_QtWindow, self).closeEvent(event)
 
 
 class _QtGLWindow(QtOpenGL.QGLWidget, _QtWindowMixin):
     def __init__(self, enable_window):
         QtOpenGL.QGLWidget.__init__(self)
         _QtWindowMixin.__init__(self, enable_window)
+    
+    def closeEvent(self, event):
+        _QtWindowMixin.closeEvent(self, event)
+        return super(_QtGLWindow, self).closeEvent(event)
 
     def paintEvent(self, event):
         QtOpenGL.QGLWidget.paintEvent(self, event)
