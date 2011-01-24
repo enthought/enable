@@ -395,10 +395,13 @@ void gl_graphics_context::gl_render_path(kiva::compiled_path *path, bool polygon
                 pointList.push_back(v0);
                 first_vertex_drawn = true;
             }
-            path->vertex(i+1, &c1x, &c1y);
-            path->vertex(i+2, &c2x, &c2y);
-            path->vertex(i+3, &c3x, &c3y);
-            i += 3;
+            // The current point is implicitly the first control point
+            v0 = pointList.back();
+            c1x = v.x; c1y = v.y;
+            v.x = v0.x; v.y = v0.y;
+            path->vertex(i+1, &c2x, &c2y);
+            path->vertex(i+2, &c3x, &c3y);
+            i += 2;
             for (j=1; j<=_Npoints; j++)
             {
                 t = ((VertexType)j) / _Npoints;
