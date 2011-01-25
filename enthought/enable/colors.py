@@ -1,6 +1,6 @@
 # This is a redirection file that determines what constitutes a color trait
 # in Chaco, and what constitutes the standard colors.
-
+from __future__ import absolute_import
 import sys
 
 from enthought.etsconfig.api import ETSConfig
