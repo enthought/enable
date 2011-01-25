@@ -138,7 +138,8 @@ class GraphicsContext(object):
             transform:affine_matrix -- the transform matrix to concatenate with
                                        the current coordinate matrix.
         """
-        self.gc.setTransform(QtGui.QTransform(transform), True)
+        m11,m12,m21,m22,tx,ty = transform
+        self.gc.setTransform(QtGui.QTransform(m11, m12, m21, m22, tx, ty), True)
     
     def get_ctm(self):
         """ Return the current coordinate transform matrix.  
