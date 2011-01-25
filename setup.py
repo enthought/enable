@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (c) 2008-2010 by Enthought, Inc.
+# Copyright (c) 2008-2011 by Enthought, Inc.
 # All rights reserved.
 
 """
@@ -97,7 +97,6 @@ if 'develop' in sys.argv:
 import setuptools
 
 import distutils
-import numpy
 import os
 import shutil
 
@@ -247,4 +246,4 @@ setup(
     version = INFO['version'],
     zip_safe = False,
     **config
-    )
+)
