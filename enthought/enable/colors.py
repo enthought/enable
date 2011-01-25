@@ -169,6 +169,11 @@ color_table = {"aliceblue": (0.941, 0.973, 1.000, 1.0),
     "sys_window" : (0.83137, 0.81569, 0.78431, 1.0),
 }
 
+if not ETSConfig.toolkit:
+    # Force Traits to decide on its toolkit if it hasn't already
+    from enthought.traits.ui.toolkit import toolkit as traits_toolkit
+    traits_toolkit()
+
 if ETSConfig.toolkit == 'wx':
     import wx
     from enthought.traits.ui.wx.color_editor \
