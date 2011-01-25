@@ -1085,7 +1085,7 @@ cdef class CGContext:
 
         # Shadings fill the current clip path
         self.clip()
-        if spread_method == 'pad':
+        if spread_method == 'pad' or spread_method == '':
             shading = AxialShading(func, (x1,y1), (x2,y2),
                                    extend_start=1, extend_end=1)
             self.draw_shading(shading)
@@ -1178,7 +1178,7 @@ cdef class CGContext:
 
         # Shadings fill the current clip path
         self.clip()
-        if spread_method == 'pad':
+        if spread_method == 'pad' or spread_method == '':
             shading = RadialShading(func, (fx, fy), 0.0, (cx, cy), r,
                                    extend_start=1, extend_end=1)
             self.draw_shading(shading)
