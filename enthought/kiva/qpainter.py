@@ -142,12 +142,10 @@ class GraphicsContext(object):
         self.gc.setTransform(QtGui.QTransform(m11, m12, m21, m22, tx, ty), True)
     
     def get_ctm(self):
-        """ Return the current coordinate transform matrix.  
-        
-            XXX: This should really return a 3x3 matrix (or maybe an affine
-                 object?) like the other API's.  Needs thought.
-        """           
-        return self.gc.transform()
+        """ Return the current coordinate transform matrix.
+        """
+        t = self.gc.transform()
+        return (t.m11(), t.m12(), t.m21(), t.m22(), t.dx(), t.dy())
         
     #----------------------------------------------------------------
     # Save/Restore graphics state.
