@@ -48,29 +48,18 @@ class Window(BaseWindow):
         if self.control is None:
             event.Skip()
             return
-        
+
         control = self.control
         pixel_map = self._gc.pixel_map
         wdc = control._dc = wx.PaintDC(control)
-        self._update_region = None
-        if self._update_region is not None:
-            update_bounds = reduce(union_bounds, self._update_region)
-            if hasattr(pixel_map, 'draw_to_wxwindow'):
-                pixel_map.draw_to_wxwindow(control, int(update_bounds[0]), int(update_bounds[1]),
-                                           width=int(update_bounds[2]), height=int(update_bounds[3]))
-            else:
-                # This should just be the Mac OS X code path
-                bmp = _wx_bitmap_from_buffer(pixel_map.convert_to_argb32string(),
-                                             int(update_bounds[2]), int(update_bounds[3]))
-                wdc.DrawBitmap(bmp, int(update_bounds[0]), int(update_bounds[1]))
+        
+        if hasattr(pixel_map, 'draw_to_wxwindow'):
+            pixel_map.draw_to_wxwindow(control, 0, 0)
         else:
-            if hasattr(pixel_map, 'draw_to_wxwindow'):
-                pixel_map.draw_to_wxwindow(control, 0, 0)
-            else:
-                # This should just be the Mac OS X code path
-                bmp = _wx_bitmap_from_buffer(pixel_map.convert_to_argb32string(),
-                                             self._gc.width(), self._gc.height())
-                wdc.DrawBitmap(bmp, 0, 0)
+            # This should just be the Mac OS X code path
+            bmp = _wx_bitmap_from_buffer(pixel_map.convert_to_argb32string(),
+                                         self._gc.width(), self._gc.height())
+            wdc.DrawBitmap(bmp, 0, 0)
                 
         control._dc = None
         return
