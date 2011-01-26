@@ -31,11 +31,12 @@ class Window(BaseWindow):
     def _create_gc(self, size, pix_format=None):
         """ Create a GraphicsContext instance.
         """
-        gc = GraphicsContext(self._size)
+        gc = GraphicsContext((size[0]+1,size[1]+1))
         if self._pyglet_gl_context is None:
             from pyglet.gl import Context
             self._pyglet_gl_context = Context()
         gc.gl_init()
+        gc.translate_ctm(0.5, 0.5)
         return gc
 
     def _init_gc(self):
