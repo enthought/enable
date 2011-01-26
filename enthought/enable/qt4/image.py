@@ -33,7 +33,7 @@ class Window(BaseWindow):
         # self._gc is an image context
         w = self._gc.width() 
         h = self._gc.height()
-        data = QtCore.QByteArray(self._gc.pixel_map.convert_to_argb32string())
+        data = self._gc.pixel_map.convert_to_argb32string()
         image = QtGui.QImage(data, w, h, QtGui.QImage.Format_RGB32)
 
         rect = QtCore.QRect(0,0,w,h)
