@@ -8,8 +8,9 @@ class StaticImageExample(HasTraits):
     svg = Instance(SVGDocument)
 
     traits_view = View(Item('svg', editor=SVGEditor(),
-                            width=350, height=450,
+                            width=450, height=450,
                             show_label=False),
+                       resizable=True,
                        title="StaticImageExample")
 
     def __init__(self, filename, renderer, *args, **kw):
