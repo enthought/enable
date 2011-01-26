@@ -25,18 +25,18 @@ from enthought.traits.api import Instance
 # Local imports.
 from constants import BUTTON_NAME_MAP, KEY_MAP, POINTER_MAP
 
-class _QtWindowMixin(object):
-    def __init__(self, enable_window):
+class _QtWindowHandler(object):
+    def __init__(self, qt_window, enable_window):
         self._enable_window = enable_window
 
-        pos = self.mapFromGlobal(QtGui.QCursor.pos())
+        pos = qt_window.mapFromGlobal(QtGui.QCursor.pos())
         self.last_mouse_pos = (pos.x(), pos.y())
 
-        self.setAutoFillBackground(True)
-        self.setFocusPolicy(QtCore.Qt.WheelFocus)
-        self.setMouseTracking(True)
-        self.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                           QtGui.QSizePolicy.Expanding)
+        qt_window.setAutoFillBackground(True)
+        qt_window.setFocusPolicy(QtCore.Qt.WheelFocus)
+        qt_window.setMouseTracking(True)
+        qt_window.setSizePolicy(QtGui.QSizePolicy.Expanding,
+                                QtGui.QSizePolicy.Expanding)
     
     def closeEvent(self, event):
         self._enable_window.cleanup()
@@ -46,8 +46,8 @@ class _QtWindowMixin(object):
         self._enable_window._paint(event)
 
     def resizeEvent(self, event):
-        dx = self.width()
-        dy = self.height()
+        dx = event.size().width()
+        dy = event.size().height()
         component = self._enable_window.component
         
         self._enable_window.resized = (dx, dy)
@@ -150,38 +150,116 @@ class _QtWindowMixin(object):
         pass
 
 
-class _QtWindow(QtGui.QWidget, _QtWindowMixin):
+class _QtWindow(QtGui.QWidget):
     """ The Qt widget that implements the enable control. """
     def __init__(self, enable_window):
-        QtGui.QWidget.__init__(self)
-        _QtWindowMixin.__init__(self, enable_window)
+        super(_QtWindow, self).__init__()
+        self.handler = _QtWindowHandler(self, enable_window)
     
     def closeEvent(self, event):
-        _QtWindowMixin.closeEvent(self, event)
+        self.handler.closeEvent(event)
         return super(_QtWindow, self).closeEvent(event)
+    
+    def paintEvent(self, event):
+        self.handler.paintEvent(event)
+
+    def resizeEvent(self, event):
+        self.handler.resizeEvent(event)
+
+    def keyReleaseEvent(self, event):
+        self.handler.keyReleaseEvent(event)
+
+    def enterEvent(self, event):
+        self.handler.enterEvent(event)
+
+    def leaveEvent(self, event):
+        self.handler.leaveEvent(event)
+
+    def mouseDoubleClickEvent(self, event):
+        self.handler.mouseDoubleClickEvent(event)
+
+    def mouseMoveEvent(self, event):
+        self.handler.mouseMoveEvent(event)
+
+    def mousePressEvent(self, event):
+        self.handler.mousePressEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        self.handler.mouseReleaseEvent(event)
+
+    def wheelEvent(self, event):
+        self.handler.wheelEvent(event)
+
+    def dragEnterEvent(self, event):
+        self.handler.dragEnterEvent(event)
+
+    def dragLeaveEvent(self, event):
+        self.handler.dragLeaveEvent(event)
+
+    def dragMoveEvent(self, event):
+        self.handler.dragMoveEvent(event)
+
+    def dropEvent(self, event):
+        self.handler.dropEvent(event)
 
 
-class _QtGLWindow(QtOpenGL.QGLWidget, _QtWindowMixin):
+class _QtGLWindow(QtOpenGL.QGLWidget):
     def __init__(self, enable_window):
-        QtOpenGL.QGLWidget.__init__(self)
-        _QtWindowMixin.__init__(self, enable_window)
+        super(_QtGLWindow, self).__init__()
+        self.handler = _QtWindowHandler(self, enable_window)
     
     def closeEvent(self, event):
-        _QtWindowMixin.closeEvent(self, event)
+        self.handler.closeEvent(event)
         return super(_QtGLWindow, self).closeEvent(event)
 
     def paintEvent(self, event):
-        QtOpenGL.QGLWidget.paintEvent(self, event)
-        _QtWindowMixin.paintEvent(self, event)
+        super(_QtGLWindow, self).paintEvent(event)
+        self.handler.paintEvent(event)
 
     def resizeEvent(self, event):
-        QtOpenGL.QGLWidget.resizeEvent(self, event)
-        _QtWindowMixin.resizeEvent(self, event)
+        super(_QtGLWindow, self).resizeEvent(event)
+        self.handler.resizeEvent(event)
+    
+    def keyReleaseEvent(self, event):
+        self.handler.keyReleaseEvent(event)
+
+    def enterEvent(self, event):
+        self.handler.enterEvent(event)
+
+    def leaveEvent(self, event):
+        self.handler.leaveEvent(event)
+
+    def mouseDoubleClickEvent(self, event):
+        self.handler.mouseDoubleClickEvent(event)
+
+    def mouseMoveEvent(self, event):
+        self.handler.mouseMoveEvent(event)
+
+    def mousePressEvent(self, event):
+        self.handler.mousePressEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        self.handler.mouseReleaseEvent(event)
+
+    def wheelEvent(self, event):
+        self.handler.wheelEvent(event)
+
+    def dragEnterEvent(self, event):
+        self.handler.dragEnterEvent(event)
+
+    def dragLeaveEvent(self, event):
+        self.handler.dragLeaveEvent(event)
+
+    def dragMoveEvent(self, event):
+        self.handler.dragMoveEvent(event)
+
+    def dropEvent(self, event):
+        self.handler.dropEvent(event)
 
 
 class _Window(AbstractWindow):
 
-    control = Instance(_QtWindowMixin)
+    control = Instance(QtGui.QWidget)
 
     def __init__(self, parent, wid=-1, pos=None, size=None, **traits):
         AbstractWindow.__init__(self, **traits)
