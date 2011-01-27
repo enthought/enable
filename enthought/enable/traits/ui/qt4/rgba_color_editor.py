@@ -18,7 +18,7 @@
 #  Imports:
 #-------------------------------------------------------------------------------
 
-from enthought.qt.api import QtGui
+from enthought.qt import QtGui
 
 from enthought.traits.trait_base \
     import SequenceTypes

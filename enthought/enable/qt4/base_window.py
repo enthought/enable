@@ -15,7 +15,7 @@
 #------------------------------------------------------------------------------
 
 # Qt imports.
-from enthought.qt.api import QtCore, QtGui, QtOpenGL
+from enthought.qt import QtCore, QtGui, QtOpenGL
 
 # Enthought library imports.
 from enthought.enable.abstract_window import AbstractWindow

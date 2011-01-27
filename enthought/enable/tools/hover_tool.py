@@ -22,7 +22,7 @@ if ETSConfig.toolkit == 'wx':
             raise RuntimeError("Unable to determine mouse position")
 
 elif ETSConfig.toolkit == 'qt4':
-    from enthought.qt.api import QtGui
+    from enthought.qt import QtGui
     def GetGlobalMousePosition():
         pos = QtGui.QCursor.pos()
         return (pos.x(), pos.y())

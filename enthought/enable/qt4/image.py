@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 #------------------------------------------------------------------------------
 
-from enthought.qt.api import QtCore, QtGui
+from enthought.qt import QtCore, QtGui
 from enthought.kiva.agg import CompiledPath, GraphicsContextSystem as GraphicsContext
 
 from base_window import BaseWindow
