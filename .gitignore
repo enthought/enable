@@ -1,5 +1,19 @@
 # File types to ignore
 *.pyc
+*.so
 
-# Ignore the built documentation.
+# SWIG & Cython intermediate files
+enthought/kiva/agg/agg.py
+enthought/kiva/agg/agg_wrap.cpp
+enthought/kiva/agg/plat_support.py
+enthought/kiva/agg/src/gl/plat_support_wrap.cpp
+enthought/kiva/agg/src/gtk1/plat_support_wrap.cpp
+enthought/kiva/agg/src/win32/plat_support_wrap.cpp
+enthought/kiva/agg/src/x11/plat_support_wrap.cpp
+enthought/kiva/quartz/ABCGI.c
+enthought/kiva/quartz/ATSFont.c
+
+# Ignore the build directories.
+*.egg-info/
+build/
 docs/build/
