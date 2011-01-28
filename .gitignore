@@ -1,6 +1,7 @@
 # File types to ignore
 *.pyc
 *.so
+*~
 
 # SWIG & Cython intermediate files
 enthought/kiva/agg/agg.py
@@ -16,4 +17,5 @@ enthought/kiva/quartz/ATSFont.c
 # Ignore the build directories.
 *.egg-info/
 build/
+dist/
 docs/build/
