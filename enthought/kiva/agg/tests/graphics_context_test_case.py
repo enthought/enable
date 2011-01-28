@@ -18,12 +18,12 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         gc2 = agg.GraphicsContextArray((5,5))
         gc2.clear()
         self.assert_((gc.bmp_array == gc2.bmp_array).all())
-        
+
     def test_init_with_bmp_doesnt_clear(self):
         a = ones((5,5,4), dtype('uint8'))
         gc = agg.GraphicsContextArray(a, pix_format='rgba32')
         self.assert_((gc.bmp_array == a).all())
-        
+
     def test_save_restore_state(self):
         gc = agg.GraphicsContextArray((100,100))
         gc.save_state()
@@ -61,7 +61,7 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
 
     def test_context_manager(self):
         gc = agg.GraphicsContextArray((100,100))
-        
+
         # Set some values.
         gc.set_stroke_color((1,0,0,1))
         gc.set_antialias(0)
@@ -77,13 +77,13 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
             self.assertEqual(gc.get_alpha(), 0.75)
 
         # Verify that we are back to the previous settings.
-        self.assert_(all(gc.get_stroke_color() == (1,0,0,1)))        
+        self.assert_(all(gc.get_stroke_color() == (1,0,0,1)))
         self.assertEqual(gc.get_antialias(), 0)
         self.assertEqual(gc.get_alpha(), 0.25)
 
     def test_context_manager_nested(self):
         gc = agg.GraphicsContextArray((100,100))
-        
+
         # Set some values.
         gc.set_stroke_color((1,0,0,1))
         gc.set_antialias(0)
@@ -108,12 +108,12 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
                 self.assertEqual(gc.get_alpha(), 1.0)
 
             # Verify that we are back to the previous settings.
-            self.assert_(all(gc.get_stroke_color() == (0,0,1,1)))        
+            self.assert_(all(gc.get_stroke_color() == (0,0,1,1)))
             self.assertEqual(gc.get_antialias(), 1)
             self.assertEqual(gc.get_alpha(), 0.75)
 
         # Verify that we are back to the previous settings.
-        self.assert_(all(gc.get_stroke_color() == (1,0,0,1)))        
+        self.assert_(all(gc.get_stroke_color() == (1,0,0,1)))
         self.assertEqual(gc.get_antialias(), 0)
         self.assertEqual(gc.get_alpha(), 0.25)
 
@@ -131,7 +131,7 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         actual = gc.get_ctm()
         desired = agg.scaling_matrix(2.0,2.0)
         self.assertEqual(actual, tuple(desired))
-        
+
     def test_rotate_ctm(self):
         gc = agg.GraphicsContextArray((100,100))
         gc.rotate_ctm(pi/4.)
@@ -148,7 +148,7 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         m0.multiply(agg.translation_matrix(2.0,2.0))
         desired = m0
         self.assertEqual(actual, tuple(desired))
-        
+
     def test_begin_path(self):
         gc = agg.GraphicsContextArray((100,100))
         gc.move_to(1.0,1.0)
@@ -175,7 +175,7 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         actual, flag = path._vertex()
         desired = array((2.0, 2.0))
         self.assert_(allclose(actual, desired))
-        
+
     def test_quad_curve_to(self):
         gc = agg.GraphicsContextArray((100, 100))
         ctrl = 1.0, 1.0
@@ -206,7 +206,7 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         actual_to, flag = path._vertex()
         self.assertEqual(actual_to, to)
         self.assertEqual(flag, 4)
-        
+
     def test_add_path(self):
         path1 = agg.CompiledPath()
         path1.move_to(1.0,1.0)
@@ -247,7 +247,7 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
                          (0.0,0.0,agg.path_cmd_stop, agg.path_flags_none),))
         #print 'desired:', desired
         #print 'actual:', actual
-        
+
         self.assert_(allclose(actual,desired))
 
     def test_lines_array(self):
@@ -259,7 +259,7 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         lines = [[3.0,3.0],
                  [4.0,4.0]]
         self.base_lines(lines)
-                
+
 
     def base_rects(self,rects):
         gc = agg.GraphicsContextArray((100, 100))
@@ -317,14 +317,14 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         gc.move_to(0,0)
         gc.line_to(5,5)
         gc.stroke_path()
-        #print 
+        #print
         #print "stroke lower-left to upper-right:"
         #print gc.bmp_array[:,:,0]
         # assert the lower left and upper corner are the same,
         # and have something drawn in them.
         self.assertEqual(gc.bmp_array[-1,0,0], gc.bmp_array[0,-1,0])
         self.assertNotEqual(gc.bmp_array[-1,0,0], 255)
-               
+
     def test_set_get_text_position(self):
         #print 'testing text position'
         gc = agg.GraphicsContextArray((5,5))
@@ -332,8 +332,8 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         actual = gc.get_text_position()
         desired = (1,1)
         self.assertTrue(allclose(actual,desired))
-                   
-                          
+
+
     def test_get_set_font(self):
         gc = agg.GraphicsContextArray((5,5))
         font1 = Font('modern')
@@ -349,7 +349,7 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         gc = agg.GraphicsContextArray((5,5))
         gc.set_line_dash(None)
         # !! need to add an accessor to test result
-        
+
     def test_set_line_dash_list(self):
         gc = agg.GraphicsContextArray((5,5))
         gc.set_line_dash([2,3])
@@ -360,8 +360,8 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         try:
             gc.set_line_dash([[2,3],[2,3]])
         except TypeError:
-            pass    
-        
+            pass
+
 
 if __name__ == "__main__":
     unittest.main()

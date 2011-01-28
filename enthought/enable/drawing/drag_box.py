@@ -40,7 +40,7 @@ class DragBox(Box):
     # Event fired when complete:
     complete = Event
 
-    # Constraints on size: 
+    # Constraints on size:
     x_bounds = Trait(None, None, Tuple(Float, Float))
     y_bounds = Trait(None, None, Tuple(Float, Float))
 
@@ -56,7 +56,7 @@ class DragBox(Box):
     normal_pointer = Pointer('cross')
 
     #### Private traits
-    
+
     # Position of the left down:
     start_x = Float
     start_y = Float
@@ -82,14 +82,14 @@ class DragBox(Box):
         self._set_bounds(event)
 
         return
-    
+
     def normal_mouse_move (self, event):
         """ Handle the mouse moving in the 'normal' state. """
 
         self.pointer = self.normal_pointer
 
         return
-    
+
     #### 'drawing' state #####################################################
 
     def drawing_mouse_move(self, event):

@@ -18,7 +18,7 @@ CompiledPath = ABCGI.CGMutablePath
 
 class GraphicsContext(ABCGI.CGLayerContext):
     def __init__(self, size_or_array, window_gc=None, *args, **kwds):
-        gc = window_gc 
+        gc = window_gc
         if not gc:
             # Create a tiny base context to spawn the CGLayerContext from.
             # We are better off making our Layer from the window gc since
@@ -60,7 +60,7 @@ class _WindowGraphicsContext(ABCGI.CGContextInABox):
         if self._begun:
             self.restore_state()
             self._begun = False
-    
+
     @staticmethod
     def create_from_gc(gc, size_or_array, *args, **kwds):
         return GraphicsContext(size_or_array, window_gc=gc, *args, **kwds)
@@ -84,7 +84,7 @@ class Window(BaseWindow):
 
 
     #### 'AbstractWindow' interface ############################################
- 
+
     def _paint(self, event=None):
         size = self._get_control_size()
         if (self._size != tuple(size)) or (self._gc is None):
@@ -99,7 +99,7 @@ class Window(BaseWindow):
         self._window_paint(event)
         gc.end()
         return
- 
+
 
 def font_metrics_provider():
     gc = GraphicsContext((1, 1))

@@ -30,7 +30,7 @@ cdef class ATSFont:
 #        if self.ats_font == 0:
 #            raise ValueError("could not find font '%s'" % postscript_name)
 #        Actually, I have no idea what the error result is
-        
+
 
     def get_descent_ascent(self, object text):
         """ Get the descent and ascent font metrics for a given string of text.
@@ -39,7 +39,7 @@ cdef class ATSFont:
         cdef ATSFontMetrics metrics
         cdef OSStatus status
 
-        status = ATSFontGetVerticalMetrics(self.ats_font, 0, 
+        status = ATSFontGetVerticalMetrics(self.ats_font, 0,
             &metrics)
 
         return metrics.descent, metrics.ascent
@@ -51,7 +51,7 @@ cdef OSStatus families_callback(ATSFontFamilyRef family, void* data):
     cdef char* c_fam_name
     cdef char buf[256]
     cdef Boolean success
-    
+
     status = ATSFontFamilyGetName(family, kATSOptionFlagsDefault, &cf_fam_name)
 
     family_list = <object>data
@@ -91,12 +91,12 @@ cdef class FontLookup:
         CFRelease(cf_name)
         if not ats_font:
             raise ValueError("could not find font %r" % mac_name)
-        
+
         status = ATSFontGetPostScriptName(ats_font, kATSOptionFlagsDefault, &cf_name)
         if status != noErr:
             msg = "unknown error getting PostScript name for font %r"%mac_name
             raise RuntimeError(msg)
-        
+
         ps_name = PyString_FromString(CFStringGetCStringPtr(cf_name,
             kCFStringEncodingMacRoman))
         CFRelease(cf_name)

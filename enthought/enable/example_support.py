@@ -9,7 +9,7 @@ from enthought.etsconfig.api import ETSConfig
 # PyQt/traits problem (see below) we can't because it would drag in traits too
 # early.  Until it is fixed we just assume wx if we can import it.
 # Force the selection of a valid toolkit.
-#import enthought.enable.toolkit 
+#import enthought.enable.toolkit
 if not ETSConfig.toolkit:
     for toolkit, toolkit_module in (('wx', 'wx'), ('qt4', 'PyQt4')):
         try:
@@ -30,13 +30,13 @@ if ETSConfig.toolkit == 'wx':
             wx.Frame.__init__( *(self,) + args, **kw )
             #self.SetTitle("Enable Demo")
             self.SetAutoLayout( True )
-    
+
             # Create the subclass's window
             self.enable_win = self._create_window()
-        
+
             # Listen for the Activate event so we can restore keyboard focus.
             wx.EVT_ACTIVATE( self, self._on_activate )
-        
+
             sizer = wx.BoxSizer(wx.HORIZONTAL)
             sizer.Add(self.enable_win.control, 1, wx.EXPAND)
             self.SetSizer(sizer)
@@ -142,7 +142,7 @@ elif ETSConfig.toolkit == 'pyglet':
             window.set_caption(title)
 
         app.run()
-        
+
 
 
 # EOF

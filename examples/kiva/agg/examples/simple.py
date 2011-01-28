@@ -25,4 +25,3 @@ gc.draw_path()
 print gc.bmp_array[:7,:7,0]
 
 #gc.save("pr.bmp")
-    

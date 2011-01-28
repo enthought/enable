@@ -12,4 +12,4 @@ gc.rect(0, 0, 30, 30)
 gc.draw_path()
 
 gc.save("simple.bmp")
-   
+

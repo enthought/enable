@@ -11,13 +11,13 @@ class TestEscaped(unittest.TestCase):
                 identifier.escaped.parseString("\\"+char)[0],
                 char
             )
-            
+
     def testEscapeDoesntMatchHexChars(self):
         return
         for char in string.hexdigits:
             self.assertRaises(
                 ParseException,
-                identifier.escaped.parseString, 
+                identifier.escaped.parseString,
                 "\\"+char
             )
 
@@ -53,15 +53,15 @@ class TestHexUnicode(unittest.TestCase):
             [u"&", "  B"],
             list(self.parser.parseString(r"\26   B"))
         )
-        
-        
+
+
 class TestEscape(unittest.TestCase):
     def testEscapeValues(self):
         self.assertEqual(u"&", identifier.escape.parseString(r"\26")[0])
         self.assertEqual(u'\x81', identifier.escape.parseString("\\" + unichr(129))[0])
         self.assertEqual(u"~", identifier.escape.parseString(r'\~')[0])
-        
-        
+
+
 class TestNonAscii(unittest.TestCase):
     def testNoMatchInAsciiRange(self):
         for c in map(unichr, range(128)):
@@ -69,23 +69,23 @@ class TestNonAscii(unittest.TestCase):
                 ParseException,
                 identifier.nonascii.parseString, c
             )
-            
+
     def testMatchesOutsideAsciiRange(self):
         for c in map(unichr, xrange(128, sys.maxunicode+1)):
             self.assertEqual(
                 c,
                 identifier.nonascii.parseString(c)[0]
             )
-            
+
 class TestNmstart(unittest.TestCase):
     def testNmstartValues(self):
         self.assertRaises(
             ParseException,
             identifier.nmstart.parseString,
             "0"
-        )   
-        
-        
+        )
+
+
 class TestIdentifier(unittest.TestCase):
     def testValidIdentifiers(self):
         for ident in ["import","color", "border-left"]:

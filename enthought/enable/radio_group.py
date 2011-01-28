@@ -15,29 +15,29 @@
 #-------------------------------------------------------------------------------
 
 from enthought.traits.api import HasPrivateTraits, Trait
-            
+
 #-------------------------------------------------------------------------------
 #  Trait definitions:
 #-------------------------------------------------------------------------------
-            
+
 # ARadioGroup = Instance( 'RadioGroup' )
-            
+
 #-------------------------------------------------------------------------------
 #  'RadioStyle' class:
 #-------------------------------------------------------------------------------
 
 class RadioStyle ( HasPrivateTraits ):
-    
+
     #---------------------------------------------------------------------------
     #  Trait definitions:
     #---------------------------------------------------------------------------
 
-#    radio_group = ARadioGroup    
-    
+#    radio_group = ARadioGroup
+
     #---------------------------------------------------------------------------
-    #  Handle the group the radio style component belongs to being changed: 
+    #  Handle the group the radio style component belongs to being changed:
     #---------------------------------------------------------------------------
-    
+
     def _group_changed ( self, old, new ):
         if old is not None:
             old.remove( self )
@@ -49,18 +49,18 @@ class RadioStyle ( HasPrivateTraits ):
 #-------------------------------------------------------------------------------
 
 class RadioGroup ( HasPrivateTraits ):
-    
+
     #---------------------------------------------------------------------------
     #  Trait definitions:
     #---------------------------------------------------------------------------
 
     # selection = Instance( RadioStyle )
     selection = Trait(None, RadioStyle)
-    
+
     #---------------------------------------------------------------------------
-    #  Handle elements being added to the group: 
+    #  Handle elements being added to the group:
     #---------------------------------------------------------------------------
-    
+
     def add ( self, *components ):
         for component in components:
             component.radio_group = self
@@ -69,21 +69,21 @@ class RadioGroup ( HasPrivateTraits ):
                     component.selected = False
                 else:
                     self.selection = component
-        
+
     #---------------------------------------------------------------------------
-    #  Handle components being removed from the group: 
+    #  Handle components being removed from the group:
     #---------------------------------------------------------------------------
-    
+
     def remove ( self, *components ):
         for component in components:
             if component is self.selection:
                 self.selection is None
                 break
-                
+
     #---------------------------------------------------------------------------
     #  Handle the selection being changed:
     #---------------------------------------------------------------------------
-    
+
     def _selection_changed ( self, old, new ):
         if old is not None:
             old.selected = False

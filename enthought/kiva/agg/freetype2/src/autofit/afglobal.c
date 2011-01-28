@@ -31,7 +31,7 @@
 
 #ifndef FT_CONFIG_OPTION_PIC
 
-/* when updating this table, don't forget to update 
+/* when updating this table, don't forget to update
   AF_SCRIPT_CLASSES_COUNT and autofit_module_class_pic_init */
 
   /* populate this list when you add new scripts */
@@ -43,7 +43,7 @@
 #endif
     &af_latin_script_class,
     &af_cjk_script_class,
-    &af_indic_script_class, 
+    &af_indic_script_class,
     NULL  /* do not remove */
   };
 

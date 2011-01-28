@@ -3,10 +3,10 @@ A high quality rendering engine for C++
 http://antigrain.com
 
 Anti-Grain Geometry
-Copyright (C) 2002-2005 Maxim Shemanarev (McSeem) 
+Copyright (C) 2002-2005 Maxim Shemanarev (McSeem)
 
-Permission to copy, use, modify, sell and distribute this software 
-is granted provided this copyright notice appears in all copies. 
+Permission to copy, use, modify, sell and distribute this software
+is granted provided this copyright notice appears in all copies.
 This software is provided "as is" without express or implied
 warranty, and with no claim as to its suitability for any purpose.
 

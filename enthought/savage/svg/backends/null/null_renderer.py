@@ -11,32 +11,32 @@ class AbstractGradientBrush(object):
         """ Apply a transformation to make the bbox a unit square.
         """
         x0, y0, w, h = bbox
-        if sys.platform == 'darwin': 
+        if sys.platform == 'darwin':
             gc.concat_ctm(((w, 0, 0), (0, h, 0), (x0, y0, 1)))
         else:
             gc.concat_ctm((w,0,0,h,x0,y0))
 
 
 class NullRenderer(object):
-    NullBrush         = None    
+    NullBrush         = None
     NullGraphicsBrush = None
     NullPen           = None
     TransparentPen    = None
-    
+
     caps = {
             'butt':None,
             'round':None,
             'square':None
             }
-    
+
     joins = {
             'miter':None,
             'round':None,
             'bevel':None
             }
-    
+
     fill_rules = {'nonzero':None, 'evenodd': None}
-    
+
     def __init__(self):
         pass
 
@@ -51,15 +51,15 @@ class NullRenderer(object):
     @classmethod
     def createBrush(cls, color_tuple):
         raise NotImplemented()
-    
+
     @classmethod
     def createNativePen(cls, pen):
         raise NotImplemented()
-        
+
     @classmethod
     def createPen(cls, color_tuple):
         raise NotImplemented()
-    
+
     @classmethod
     def createLinearGradientBrush(cls, x1,y1,x2,y2, stops, spreadMethod='pad',
                                   transforms=None, units='userSpaceOnUse'):
@@ -67,7 +67,7 @@ class NullRenderer(object):
 
     @classmethod
     def createRadialGradientBrush(cls, cx,cy, r, stops, fx=None,fy=None,
-                                  spreadMethod='pad', transforms=None, 
+                                  spreadMethod='pad', transforms=None,
                                   units='userSpaceOnUse'):
         raise NotImplemented()
 
@@ -78,7 +78,7 @@ class NullRenderer(object):
     @classmethod
     def makeMatrix(cls, *args):
         raise NotImplemented()
-    
+
     @classmethod
     def makePath(cls):
         raise NotImplemented()
@@ -86,19 +86,19 @@ class NullRenderer(object):
     @classmethod
     def popState(cls, gc):
         raise NotImplemented()
-    
+
     @classmethod
     def pushState(cls, gc):
         raise NotImplemented()
-    
+
     @classmethod
     def setFontSize(cls, font, size):
         raise NotImplemented()
-    
+
     @classmethod
     def setFontStyle(cls, font, style):
         raise NotImplemented()
-    
+
     @classmethod
     def setFontWeight(cls, font, weight):
         raise NotImplemented()
@@ -106,19 +106,19 @@ class NullRenderer(object):
     @classmethod
     def setFont(cls, gc, font, brush):
         raise NotImplemented()
-            
+
     @classmethod
     def setBrush(cls, gc, brush):
         raise NotImplemented()
 
     @classmethod
     def setPenDash(cls, pen, dasharray, offset):
-        raise NotImplemented()        
-            
+        raise NotImplemented()
+
     @classmethod
     def setPen(cls, gc, pen):
         raise NotImplemented()
-    
+
     @classmethod
     def strokePath(cls, gc, path):
         raise NotImplemented()
@@ -146,7 +146,7 @@ class NullRenderer(object):
     @classmethod
     def scale(cls, gc, sx, sy):
         raise NotImplemented()
-    
+
     @classmethod
     def GetTextExtent(cls, gc, text):
         raise NotImplemented()
@@ -157,7 +157,7 @@ class NullRenderer(object):
             given brush.
         """
         raise NotImplemented()
-    
+
     @classmethod
     def DrawImage(cls, gc, image, x, y, width, height):
         raise NotImplemented()

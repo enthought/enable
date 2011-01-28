@@ -43,7 +43,7 @@ class Window(BaseGLWindow):
         """
         if self.control is None:
             return
-        
+
         size = self._get_control_size()
         self._size = tuple(size)
         self._gc = self._create_gc(size)

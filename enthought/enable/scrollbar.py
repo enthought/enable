@@ -18,7 +18,7 @@ from enable_traits import layout_style_trait
 
 
 #------------------------------------------------------------------------------
-# Constants: 
+# Constants:
 #------------------------------------------------------------------------------
 
 # Scroll bar zones:
@@ -30,13 +30,13 @@ PAGE_DOWN =  3
 SLIDER    =  4
 
 # Scrollbar suffix names by zone:
-zone_suffixes = [ '_line_up_suffix', '', '_line_down_suffix', '', 
+zone_suffixes = [ '_line_up_suffix', '', '_line_down_suffix', '',
                   '_slider_suffix' ]
 
 # Scroll information look-up table:
-scroll_info = [ ( 'line_up',    1.0, 3 ), 
-                ( 'page_up',    1.0, 2 ), 
-                ( 'line_down', -1.0, 3 ), 
+scroll_info = [ ( 'line_up',    1.0, 3 ),
+                ( 'page_up',    1.0, 2 ),
+                ( 'line_down', -1.0, 3 ),
                 ( 'page_down', -1.0, 2 ) ]
 
 # Scroll bar images and sizes:
@@ -69,7 +69,7 @@ def valid_range ( object, name, value ):
     except:
         pass
     raise TraitError
-    
+
 valid_range.info = 'a (low,high,page_size,line_size) range tuple'
 
 
@@ -77,7 +77,7 @@ def valid_position ( object, name, value ):
     "Verify that a specified scroll bar position is valid"
     try:
         low, high, page_size, line_size = object.range
-        return max( min( float( value ), high - page_size ), low ) 
+        return max( min( float( value ), high - page_size ), low )
     except:
         pass
     raise TraitError
@@ -85,11 +85,11 @@ def valid_position ( object, name, value ):
 
 
 class ScrollBar ( Component ):
-    
+
     position    = Trait( 0.0, valid_position )
     range       = Trait( ( 0.0, 100.0, 10.0, 1.0 ), valid_range )
     style       = layout_style_trait
-    
+
     line_up     = Event
     line_down   = Event
     page_up     = Event
@@ -98,50 +98,50 @@ class ScrollBar ( Component ):
 
     traits_view = View( Group( '<component>', id = 'component' ),
                         Group( '<links>',     id = 'links' ),
-                        Group( 'style', ' ', 'position', 'low', 'high', 
-                               'page_size', 'line_size', 
+                        Group( 'style', ' ', 'position', 'low', 'high',
+                               'page_size', 'line_size',
                                id    = 'scrollbar',
                                style = 'custom' ) )
 
     #---------------------------------------------------------------------------
     #  Property definitions:
     #---------------------------------------------------------------------------
-        
+
     def __low_get(self):
         return self.range[0]
-        
+
     def __low_set(self, low):
         ignore, high, page_size, line_size = self.range
         self.range =(low, high, page_size, line_size)
         return
-        
+
     def __high_get(self):
         return self.range[1]
-        
+
     def __high_set(self, high):
         low, ignore, page_size, line_size = self.range
         self.range =(low, high, page_size, line_size)
-        
+
     def __page_size_get(self):
         return self.range[2]
-        
+
     def __page_size_set(self, page_size):
         low, high, ignore, line_size = self.range
         self.range =(low, high, page_size, line_size)
-        
+
     def __line_size_get(self):
         return self.range[3]
-        
+
     def __line_size_set(self, line_size):
         low, high, page_size, ignore = self.range
         self.range =(low, high, page_size, line_size)
-        
+
     # Define 'position, low, high, page_size' properties:
     low       = Property( __low_get,       __low_set)
     high      = Property( __high_get,      __high_set)
     page_size = Property( __page_size_get, __page_size_set)
     line_size = Property( __line_size_get, __line_size_set)
-    
+
     def __init__(self, **traits):
         if v_width == 0:
             self._init_images()
@@ -150,21 +150,21 @@ class ScrollBar ( Component ):
         self._line_up_suffix = self._line_down_suffix = self._slider_suffix = ''
         self._style_changed(self.style)
         return
-    
+
     def _init_images(self):
         "One time initialization of the scrollbar images"
         global sb_image, v_width, v_height, vs_height, h_width, h_height, \
                hs_width
-        
-        for name in [ 'aup' , 'adown', 'aleft', 'aright', 
-                      'vtop',  'vbottom', 'vmid', 'vpad',  
+
+        for name in [ 'aup' , 'adown', 'aleft', 'aright',
+                      'vtop',  'vbottom', 'vmid', 'vpad',
                       'hleft', 'hright',  'hmid', 'hpad' ]:
             sb_image[ name ]           = self.image_for('=sb_%s'      % name)
             sb_image[ name + '_over' ] = self.image_for('=sb_%s_over' % name)
             sb_image[ name + '_down' ] = self.image_for('=sb_%s_down' % name)
         sb_image[ 'vtrack' ] = self.image_for('=sb_vtrack')
         sb_image[ 'htrack' ] = self.image_for('=sb_htrack')
-        v_width   = sb_image[ 'vtrack' ].width()   
+        v_width   = sb_image[ 'vtrack' ].width()
         vs_height = reduce(lambda a, b: a + sb_image[b].height(),
                             [ 'vtop', 'vbottom', 'vmid' ], 0)
         v_height  = reduce(lambda a, b: a + sb_image[b].height(),
@@ -175,18 +175,18 @@ class ScrollBar ( Component ):
                             [ 'aleft', 'aright' ], hs_width)
         h_height  = sb_image[ 'htrack' ].height()
         return
-    
+
     def _range_changed(self):
         "Handle any of the range elements values being changed"
         low, high, page_size, line_size = self.range
-        self.position = max(min(self.position, high - page_size), low) 
+        self.position = max(min(self.position, high - page_size), low)
         self.redraw()
         return
-        
+
     def _position_changed(self):
         self.redraw()
         return
-    
+
     def _style_changed(self, style):
         "Handle the orientation style being changed"
         if style[0] == 'v':
@@ -202,7 +202,7 @@ class ScrollBar ( Component ):
             self.stretch_width  = 1.0
             self.stretch_height = 0.0
         return
-        
+
     def _draw(self, gc):
         "Draw the contents of the control"
         gc.save_state()
@@ -210,9 +210,9 @@ class ScrollBar ( Component ):
             self._draw_vertical(gc)
         else:
             self._draw_horizontal(gc)
-        gc.restore_state() 
+        gc.restore_state()
         return
-        
+
     def _draw_vertical(self, gc):
         "Draw a vertical scrollbar"
         low, high, page_size, line_size = self.range
@@ -242,17 +242,17 @@ class ScrollBar ( Component ):
             vtop_dy    = vtop.height()
             vmid       = sb_image[ 'vmid' + suffix ]
             vmid_dy    = vmid.height()
-            gc.stretch_draw(sb_image[ 'vpad' + suffix ], 
-                             x, s_y + vbottom_dy, 
+            gc.stretch_draw(sb_image[ 'vpad' + suffix ],
+                             x, s_y + vbottom_dy,
                              dx, s_dy - vbottom_dy - vtop_dy)
             gc.draw_image(vbottom,(x, s_y, dx, vbottom_dy))
             gc.draw_image(vtop,(x, s_y + s_dy - vtop_dy, dx, vtop_dy))
-            gc.draw_image(vmid,(x, round(s_y + vbottom_dy + 
-                                 (s_dy - vbottom_dy - vtop_dy - vmid_dy) / 2.0), 
+            gc.draw_image(vmid,(x, round(s_y + vbottom_dy +
+                                 (s_dy - vbottom_dy - vtop_dy - vmid_dy) / 2.0),
                                  dx, vmid_dy))
             self._info =(t_y, s_y, s_y + s_dy, u_y)
         return
-    
+
     def _draw_horizontal(self, gc):
         "Draw a horizontal scroll bar"
         low, high, page_size, line_size = self.range
@@ -282,17 +282,17 @@ class ScrollBar ( Component ):
             hright_dx  = hright.width()
             hmid       = sb_image[ 'hmid' + suffix ]
             hmid_dx    = hmid.width()
-            gc.stretch_draw(sb_image[ 'hpad' + suffix ], 
+            gc.stretch_draw(sb_image[ 'hpad' + suffix ],
                              s_x + hleft_dx, y,
                              s_dx - hleft_dx - hright_dx, dy)
             gc.draw_image(hleft, (s_x, y, hleft_dx, dy))
             gc.draw_image(hright,(s_x + s_dx - hright_dx, y, hright_dx, dy))
-            gc.draw_image(hmid,(round(s_x + hleft_dx + 
-                                 (s_dx - hleft_dx - hright_dx - hmid_dx) / 2.0), 
+            gc.draw_image(hmid,(round(s_x + hleft_dx +
+                                 (s_dx - hleft_dx - hright_dx - hmid_dx) / 2.0),
                                  y, hmid_dx, dy))
             self._info =(t_x, s_x, s_x + s_dx, r_x)
         return
-    
+
     def _get_zone(self, event):
         "Determine which scrollbar zone the mouse pointer is over"
         if not self.xy_in_bounds(event) or (self._info is None):
@@ -308,7 +308,7 @@ class ScrollBar ( Component ):
         if c >= csh:
             return PAGE_UP
         return SLIDER
-    
+
     def _scroll(self):
         "Perform an incremental scroll (line up/down, page up/down)"
         incr = self._scroll_incr
@@ -320,7 +320,7 @@ class ScrollBar ( Component ):
             self.position = position
         setattr(self, self._event_name, True)
         return
-    
+
     def _set_zone_suffix(self, zone, suffix):
         "Set a particular zone's image suffix"
         if zone != NO_SCROLL:
@@ -330,11 +330,11 @@ class ScrollBar ( Component ):
                 self.redraw()
         return
 
-    
+
     #---------------------------------------------------------------------------
-    #  Handle mouse events: 
+    #  Handle mouse events:
     #---------------------------------------------------------------------------
-    
+
     def _left_down_changed(self, event):
         event.handled = True
         if self.range[2] == 0.0:
@@ -360,17 +360,17 @@ class ScrollBar ( Component ):
                 self._in_zone       = True
                 self.timer_interval = 0.5
         return
-        
+
     def _left_dclick_changed(self, event):
         self._left_down_changed(event)
         return
-        
+
     def _left_up_changed(self, event):
         event.handled = True
         scrolling     = self._scrolling
         if scrolling != NO_SCROLL:
             zone = self._get_zone(event)
-            self._set_zone_suffix(scrolling, '') 
+            self._set_zone_suffix(scrolling, '')
             self._set_zone_suffix(zone, '_over')
             if scrolling != SLIDER:
                 self.timer_interval = None
@@ -380,7 +380,7 @@ class ScrollBar ( Component ):
                 self.window.mouse_owner = None
             self.scroll_done = True
         return
-        
+
     def _mouse_move_changed(self, event):
         event.handled = True
         self.pointer  = 'arrow'
@@ -389,7 +389,7 @@ class ScrollBar ( Component ):
         if scrolling == SLIDER:
             xy =(event.x, event.y)[ self.style[0] == 'v' ]
             low, high, page_size, line_size = self.range
-            position = (self._position + 
+            position = (self._position +
                  ((xy - self._xy) * (high - low - page_size) / self._range))
             self.position = max(min(position, high - page_size), low)
         elif scrolling != NO_SCROLL:
@@ -403,13 +403,13 @@ class ScrollBar ( Component ):
             self._zone = zone
             self.window.mouse_owner = [ self, None ][ zone == NO_SCROLL ]
         return
-        
+
     def _mouse_wheel_changed(self, event):
         "Scrolls when the mouse scroll wheel is spun"
         event.handled  = True
         self.position += (event.mouse_wheel * self.page_size) / 20
         return
-    
+
     def _timer_changed(self):
         "Handle timer events"
         if self._scrolling != NO_SCROLL:

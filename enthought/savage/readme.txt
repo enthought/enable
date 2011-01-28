@@ -2,7 +2,7 @@ Kiva/Renderer Tasks
 -------------------
 DONE * Text rendering right side up and positioned correctly.
 DONE * Text colors set correctly
-DONE * Circles 
+DONE * Circles
 DONE [kern] * Ellipse
 DONE [kern] * Ellipse arc.
 * Line Dashing. [not sure if this is being parsed...]
@@ -39,7 +39,7 @@ Architecture
   I *think* the Document should just build a tree that represents the
   SVG scene.  We then write renderers (wx, kiva, whatever) that walk
   the tree and render it appropriately.  This should simplify the
-  separation of the code and improve the modularity of the various 
+  separation of the code and improve the modularity of the various
   pieces.
 
 * It would be interesting if the SVG backend to *kiva* actually used
@@ -54,5 +54,5 @@ Kiva Bugs
 Notes
 -----
 * Should text color be the stroke or fill color?
-	The svg library is using fill color.
-	Kiva uses stroke color...  Check into this.
+        The svg library is using fill color.
+        Kiva uses stroke color...  Check into this.

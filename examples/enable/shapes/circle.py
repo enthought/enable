@@ -21,7 +21,7 @@ class Circle(Shape):
 
     def _bounds_changed(self):
         """ Static trait change handler. """
-        
+
         w, h = self.bounds
 
         radius = min(w, h) / 2.0
@@ -45,7 +45,7 @@ class Circle(Shape):
         """ Draw the component. """
         with gc:
             gc.set_fill_color(self._get_fill_color(self.event_state))
-            
+
             x, y = self.position
             gc.arc(x + self.radius, y + self.radius, self.radius, 0, 2*3.14159, False)
             gc.fill_path()
@@ -61,11 +61,11 @@ class Circle(Shape):
 
     def _radius_changed(self):
         """ Static trait change handler. """
-        
+
         diameter = self.radius * 2
 
         self.bounds = [diameter, diameter]
 
         return
-    
+
 #### EOF ######################################################################

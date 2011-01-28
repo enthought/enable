@@ -56,7 +56,7 @@ class AbstractWindow(HasTraits):
     # A container that gets drawn after & on top of the main component, and
     # which receives events first.
     overlay = Instance(Container)
-    
+
     # When the underlying toolkit control gets resized, this event gets set
     # to the new size of the window, expressed as a tuple (dx, dy).
     resized = Event
@@ -71,10 +71,10 @@ class AbstractWindow(HasTraits):
 
     # (dx, dy) integer size of the Window.
     _size = Trait(None, Tuple)
-    
+
     # The regions to update upon redraw
     _update_region = Any
-    
+
 
 
     #---------------------------------------------------------------------------
@@ -222,7 +222,7 @@ class AbstractWindow(HasTraits):
             self.mouse_owner_transform = transform
             self.mouse_owner_dispatch_history = history
         return
-    
+
     def invalidate_draw(self, damaged_regions=None, self_relative=False):
         if damaged_regions is not None and self._update_region is not None:
             self._update_region += damaged_regions
@@ -300,7 +300,7 @@ class AbstractWindow(HasTraits):
         # component under the mouse pointer that accepts focus as the new focus
         # owner (otherwise, nobody owns the focus):
         if set_focus:
-            # If the mouse event was a click, then we set the toolkit's 
+            # If the mouse event was a click, then we set the toolkit's
             # focus to ourselves
             if mouse_event.left_down or mouse_event.middle_down or \
                     mouse_event.right_down or mouse_event.mouse_wheel != 0:
@@ -317,7 +317,7 @@ class AbstractWindow(HasTraits):
     def set_tooltip(self, components):
         "Set the window's tooltip (if necessary)"
         raise NotImplementedError
-    
+
     def redraw(self):
         """ Requests that the window be redrawn. """
         self._redraw()
@@ -351,13 +351,13 @@ class AbstractWindow(HasTraits):
             # handle the event as needed
             self._window_paint(event)
             return
-        
+
         # Create a new GC if necessary
         size = self._get_control_size()
         if (self._size != tuple(size)) or (self._gc is None):
             self._size = tuple(size)
             self._gc = self._create_gc(size)
-        
+
         # Always give the GC a chance to initialize
         self._init_gc()
 

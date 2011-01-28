@@ -48,7 +48,7 @@ class DragSegment(DrawingTool):
     #------------------------------------------------------------------------
     # "complete" state
     #------------------------------------------------------------------------
-    
+
     def complete_draw(self, gc):
         """ Draw the completed line. """
         self.line.line_dash = None

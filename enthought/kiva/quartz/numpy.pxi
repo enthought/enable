@@ -9,22 +9,22 @@ cdef extern from "numpy/oldnumeric.h":
         PyArray_UBYTE
         PyArray_SBYTE
         PyArray_SHORT
-        PyArray_USHORT 
+        PyArray_USHORT
         PyArray_INT
-        PyArray_UINT 
+        PyArray_UINT
         PyArray_LONG
         PyArray_FLOAT
-        PyArray_DOUBLE 
+        PyArray_DOUBLE
         PyArray_CFLOAT
         PyArray_CDOUBLE
         PyArray_OBJECT
         PyArray_NTYPES
         PyArray_NOTYPE
-        
+
     struct PyArray_Descr:
         int type_num, elsize
         char type
-        
+
     ctypedef class numpy.ndarray [object PyArrayObject]:
         cdef char *data
         cdef int nd

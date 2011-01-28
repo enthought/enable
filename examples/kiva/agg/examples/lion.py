@@ -13,15 +13,15 @@ from lion_data import get_lion
 
 def main():
     sz = (1000,1000)
-    
+
     t1 = now()
     path_and_color, size, center = get_lion()
     t2 = now()
-    print t2 - t1    
-    
+    print t2 - t1
+
     gc = agg.GraphicsContextArray(sz)
     t1 = now()
-    
+
     gc.translate_ctm(sz[0]/2.,sz[1]/2.)
     Nimages = 90
     for i in range(Nimages):

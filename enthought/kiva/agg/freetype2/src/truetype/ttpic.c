@@ -61,7 +61,7 @@
 
     /* initialize pointer table - this is how the module usually expects this data */
     error = FT_Create_Class_tt_services(library, &container->tt_services);
-    if(error) 
+    if(error)
       goto Exit;
 #ifdef TT_CONFIG_OPTION_GX_VAR_SUPPORT
     FT_Init_Class_tt_service_gx_multi_masters(&container->tt_service_gx_multi_masters);

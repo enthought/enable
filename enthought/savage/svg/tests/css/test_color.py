@@ -2,8 +2,8 @@ import unittest
 from pyparsing import ParseException
 
 import enthought.savage.svg.css.colour as colour
-   
-            
+
+
 class testColourValueClamping(unittest.TestCase):
     def testByte(self):
         self.assertEqual(
@@ -18,7 +18,7 @@ class testColourValueClamping(unittest.TestCase):
             255,
             colour.clampColourByte(300)
         )
-        
+
 class TestRGBParsing(unittest.TestCase):
     parser = colour.rgb
     def testRGBByte(self):
@@ -31,7 +31,7 @@ class TestRGBParsing(unittest.TestCase):
             self.parser.parseString("rgb(100%,0%,0.1%)").asList(),
             ["RGB", [255,0,0]]
         )
-        
+
 class TestHexParsing(unittest.TestCase):
     parser = colour.hexLiteral
     def testHexLiteralShort(self):
@@ -54,7 +54,7 @@ class TestHexParsing(unittest.TestCase):
             self.parser.parseString,
             string
         )
-        
+
 class TestNamedColours(unittest.TestCase):
     parser = colour.namedColour
     def testNamedColour(self):
@@ -67,7 +67,6 @@ class TestNamedColours(unittest.TestCase):
             self.parser.parseString("fuchsia").asList(),
             self.parser.parseString("FUCHSIA").asList(),
         )
-        
+
 class TestValueParser(TestNamedColours, TestHexParsing, TestRGBParsing):
     parser = colour.colourValue
-    

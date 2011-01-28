@@ -23,7 +23,7 @@ class ViewportToolbar(Container, AbstractOverlay):
     toolbar_height = Float(30.0)
 
     order = Enum("left-to-right", "right-to-left")
-    
+
     buttons = List(Type(Button))
 
     # Override default values for inherited traits
@@ -45,7 +45,7 @@ class ViewportToolbar(Container, AbstractOverlay):
         if component is not None:
             self.x = component.x
             # FIXME: Adding 2 to the self.y because there is a tiny gap
-            # at the top of the toolbar where components from the block 
+            # at the top of the toolbar where components from the block
             # canvas show through.
             self.y = component.y2 - self.toolbar_height + 2
             self.height = self.toolbar_height
@@ -79,7 +79,7 @@ class ViewportToolbar(Container, AbstractOverlay):
         finally:
             gc.restore_state()
         return
-    
+
     def add_button(self, button):
         self.add(button)
         button.toolbar_overlay = self
@@ -98,7 +98,7 @@ class HoverToolbar(ViewportToolbar):
             if self.is_in(event.x, event.y):
                 event.handled = True
         return
-        
+
     def _container_handle_mouse_event(self, event, suffix):
         if not self.is_in(event.x, event.y) and self.component.auto_hide:
             self.component.remove_toolbar()

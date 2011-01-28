@@ -30,15 +30,15 @@ from enthought.traits.ui.wx.helper import position_window
 #  Constants:
 #-------------------------------------------------------------------------------
 
-# Standard color samples: 
-color_choices = ( 0, 51, 102, 153, 204, 255 ) 
-color_samples = [ None ] * 216 
-i             = 0 
-for r in color_choices: 
-    for g in color_choices: 
-        for b in color_choices: 
-            color_samples[i] = wx.Colour( r, g, b ) 
-            i += 1   
+# Standard color samples:
+color_choices = ( 0, 51, 102, 153, 204, 255 )
+color_samples = [ None ] * 216
+i             = 0
+for r in color_choices:
+    for g in color_choices:
+        for b in color_choices:
+            color_samples[i] = wx.Colour( r, g, b )
+            i += 1
 
 #-------------------------------------------------------------------------------
 #  'ToolkitEditorFactory' class:
@@ -64,38 +64,38 @@ class ToolkitEditorFactory ( EditorFactory ):
     #  'Editor' factory methods:
     #---------------------------------------------------------------------------
 
-    def simple_editor ( self, ui, object, name, description, parent ): 
-        return SimpleColorEditor( parent, 
-                                  factory     = self, 
-                                  ui          = ui, 
-                                  object      = object, 
-                                  name        = name, 
+    def simple_editor ( self, ui, object, name, description, parent ):
+        return SimpleColorEditor( parent,
+                                  factory     = self,
+                                  ui          = ui,
+                                  object      = object,
+                                  name        = name,
                                   description = description)
-        
-    def custom_editor ( self, ui, object, name, description, parent ): 
-        return CustomColorEditor( parent, 
-                                  factory     = self, 
-                                  ui          = ui, 
-                                  object      = object, 
-                                  name        = name, 
+
+    def custom_editor ( self, ui, object, name, description, parent ):
+        return CustomColorEditor( parent,
+                                  factory     = self,
+                                  ui          = ui,
+                                  object      = object,
+                                  name        = name,
                                   description = description )
-        
-    def text_editor ( self, ui, object, name, description, parent ): 
-        return TextColorEditor( parent, 
-                                factory     = self, 
-                                ui          = ui, 
-                                object      = object, 
-                                name        = name, 
+
+    def text_editor ( self, ui, object, name, description, parent ):
+        return TextColorEditor( parent,
+                                factory     = self,
+                                ui          = ui,
+                                object      = object,
+                                name        = name,
                                 description = description )
-        
-    def readonly_editor ( self, ui, object, name, description, parent ): 
-        return ReadonlyColorEditor( parent, 
-                                    factory     = self, 
-                                    ui          = ui, 
-                                    object      = object, 
-                                    name        = name, 
+
+    def readonly_editor ( self, ui, object, name, description, parent ):
+        return ReadonlyColorEditor( parent,
+                                    factory     = self,
+                                    ui          = ui,
+                                    object      = object,
+                                    name        = name,
                                     description = description )
-        
+
     #---------------------------------------------------------------------------
     #  Gets the object trait color:
     #---------------------------------------------------------------------------

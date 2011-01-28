@@ -49,13 +49,13 @@ class RgbaTestCase(unittest.TestCase, Utils):
         first = agg.Rgba(0.,0.,0.,0.)
         second = agg.Rgba(1.,1.,1.,1.)
         actual = first.gradient(second,.5).asarray()
-        desired = array((.5,.5,.5,.5))        
+        desired = array((.5,.5,.5,.5))
         self.assertRavelEqual(actual, desired)
-        
+
     def test_pre(self):
         first = agg.Rgba(1.0,1.0,1.0,0.5)
         actual = first.premultiply().asarray()
-        desired = array((.5,.5,.5,.5))        
+        desired = array((.5,.5,.5,.5))
         self.assertRavelEqual(actual, desired)
 
 if __name__ == "__main__":

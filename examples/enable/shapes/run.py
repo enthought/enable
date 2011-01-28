@@ -12,7 +12,7 @@ from circle import Circle
 
 class MyFrame(DemoFrame):
     """ The top-level frame. """
-    
+
     ###########################################################################
     # 'DemoFrame' interface.
     ###########################################################################
@@ -39,14 +39,14 @@ class MyFrame(DemoFrame):
             fill_color = 'red',
             text       = 'Box 1'
         )
-        
+
         box2 = Box(
             bounds     = [100, 100],
             position   = [150, 150],
             fill_color = 'green',
             text       = 'Box 2'
         )
-        
+
         circle1 = Circle(
             radius     = 50,
             position   = [250,250],

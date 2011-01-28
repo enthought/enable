@@ -105,8 +105,8 @@ class TestPointsInPolygon(unittest.TestCase):
         self.assertEqual(0, w_result[0],
                          "Interior polygon inside: winding")
 
-        
+
 if __name__ == "__main__":
-	  unittest.main()
-            
+          unittest.main()
+
 #### EOF ######################################################################

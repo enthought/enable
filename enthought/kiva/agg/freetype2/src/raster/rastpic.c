@@ -50,7 +50,7 @@
     RasterPIC* container;
     FT_Memory memory = library->memory;
 
-    /* since this function also serve raster5 renderer, 
+    /* since this function also serve raster5 renderer,
        it implements reference counting */
     if(pic_container->raster)
     {

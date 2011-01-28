@@ -23,7 +23,7 @@ class TestWindow(Window):
     def on_key_press(self, symbol, modifiers):
         if symbol in (key.ESCAPE, key.Q):
             self.has_exit = True
-    
+
     def draw(self):
         gc = self.gc
         with gc:

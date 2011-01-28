@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------
 # Copyright (c) 2011, Enthought, Inc.
 # All rights reserved.
-# 
+#
 # This software is provided without warranty under the terms of the BSD
 # license included in enthought/LICENSE.txt and may be redistributed only
 # under the conditions described in the aforementioned license.  The license
@@ -38,7 +38,7 @@ class Window(BaseWindow):
         # appear upside down when blitting. Note that this is not the
         # case on Windows.
         bottom_up = 0 if sys.platform != 'win32' else 1
-        gc = GraphicsContext((size[0]+1, size[1]+1), pix_format = pix_format, 
+        gc = GraphicsContext((size[0]+1, size[1]+1), pix_format = pix_format,
                              bottom_up = bottom_up)
         gc.translate_ctm(0.5, 0.5)
         return gc
@@ -52,7 +52,7 @@ class Window(BaseWindow):
         control = self.control
         pixel_map = self._gc.pixel_map
         wdc = control._dc = wx.PaintDC(control)
-        
+
         if hasattr(pixel_map, 'draw_to_wxwindow'):
             pixel_map.draw_to_wxwindow(control, 0, 0)
         else:
@@ -60,7 +60,7 @@ class Window(BaseWindow):
             bmp = _wx_bitmap_from_buffer(pixel_map.convert_to_argb32string(),
                                          self._gc.width(), self._gc.height())
             wdc.DrawBitmap(bmp, 0, 0)
-                
+
         control._dc = None
         return
 

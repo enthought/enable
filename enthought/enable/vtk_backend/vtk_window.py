@@ -22,7 +22,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
     control = Instance(tvtk.RenderWindowInteractor)
 
     # A callable that will be called to request a render. If this
-    # is None then we will call render on the control. 
+    # is None then we will call render on the control.
     request_render = Callable
 
     # If events don't get handled by anything in Enable, do they get passed
@@ -98,7 +98,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
     _left_down = Bool(False)
     _middle_down = Bool(False)
     _right_down = Bool(False)
-    
+
     #------------------------------------------------------------------------
     # Private traits for managing redraw
     #------------------------------------------------------------------------
@@ -108,7 +108,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
     # Flag to keep from recursing in _vtk_render_event
     _rendering = Bool(False)
 
-    def __init__(self, render_window_interactor, renderer, 
+    def __init__(self, render_window_interactor, renderer,
             istyle_class=tvtk.InteractorStyle, **traits):
         AbstractWindow.__init__(self, **traits)
         self.control = render_window_interactor
@@ -189,7 +189,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
                 meth_name += "RightButton"
             elif "Middle" in eventname:
                 meth_name += "MiddleButton"
-            
+
             if "Press" in eventname:
                 meth_name += "Down"
             elif "Release" in eventname:
@@ -279,13 +279,13 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
     def _vtk_key_updown(self, vtk_obj, eventname):
         # find out who's going to handle the event
         focus_owner = self.focus_owner
-        
+
         if focus_owner is None:
             focus_owner = self.component
 
             if focus_owner is None:
                 return self._pass_event_to_vtk(vtk_obj, eventname)
-            
+
         # Convert the keypress to a standard enable key if possible, otherwise
         # to text.
         key = KEY_MAP.get(self.control.key_sym, None)
@@ -351,7 +351,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
             return (0,0)
 
     def _redraw(self, coordinates=None):
-        " Called by the contained component to request a redraw " 
+        " Called by the contained component to request a redraw "
         self._redraw_needed = True
         if self._actor2d is not None:
             self._paint()
@@ -380,7 +380,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
                 self.bounds[1] = 0
             else:
                 self.bounds[1] = new_height
-        
+
         comp = self.component
         dx, dy = size
         if getattr(comp, "fit_window", False):
@@ -394,7 +394,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
                 comp.outer_y = 0
                 comp.outer_height = dy
         comp.do_layout(force=True)
-        
+
         # Invalidate the GC and the draw flag
         self._gc = None
         self._redraw_needed = True
@@ -430,7 +430,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
                 # Just for safety, drop the reference to the previous bmp_array
                 # so we don't leak it
                 self._vtk_image_data.point_data.scalars = None
-            
+
             self._actor2d.width = width
             self._actor2d.height = height
             self._mapper.input = img
@@ -438,7 +438,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
         return gc
 
     def _paint(self, event=None):
-        
+
         control_size = self._get_control_size()
         size = list(control_size)
         if self._layout_needed or (size != self._size):
@@ -449,7 +449,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
 
         if self._gc is None:
             self._gc = self._create_gc(self.bounds)
-        
+
         # Always give the GC a chance to initialize
         self._init_gc()
 
@@ -505,9 +505,9 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
     #------------------------------------------------------------------------
     # Trait property setters/getters
     #------------------------------------------------------------------------
-   
+
     def _get_padding(self):
-        return [self.padding_left, self.padding_right, 
+        return [self.padding_left, self.padding_right,
                 self.padding_top, self.padding_bottom]
 
     def _set_padding(self, val):
@@ -536,7 +536,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
         return 2*self._get_visible_border() + self.padding_bottom + \
                 self.padding_top
 
- 
+
     #------------------------------------------------------------------------
     # Trait event handlers
     #------------------------------------------------------------------------

@@ -303,7 +303,7 @@ class Sike(HasTraits):
         """ Create a list of records from a stats dictionary.
         """
         records = []
-        for file_line_name, (ncalls, nonrec_calls, inline_time, cum_time, 
+        for file_line_name, (ncalls, nonrec_calls, inline_time, cum_time,
             calls) in stats.items():
             newcalls = []
             for sub_file_line_name, sub_call in calls.items():

@@ -31,10 +31,10 @@ class TestURLParser(unittest.TestCase):
             self.parser.parseString("url(#xpointer(idsomeGradient))").asList(),
             ["URL", [('', '', '', '', "xpointer(idsomeGradient)"), ()]]
         )
-        
+
 class TestPaintValueURL(TestURLParser):
     parser = a.paintValue
-        
+
 class TestPaintValue(TestValueParser):
     parser = a.paintValue
     def testNone(self):
@@ -42,7 +42,7 @@ class TestPaintValue(TestValueParser):
             self.parser.parseString("none").asList(),
             ["NONE", ()]
         )
-        
+
     def testCurrentColor(self):
         self.assertEqual(
             self.parser.parseString("currentColor").asList(),

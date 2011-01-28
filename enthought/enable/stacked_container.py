@@ -10,16 +10,16 @@ from stacked_layout import stacked_preferred_size, stack_layout
 class StackedContainer(Container):
     """ Base class for stacked containers
     """
-    
+
     # The dimension along which to stack components that are added to
     # this container.
     stack_dimension = Enum("h", "v")
-    
+
     # The "other" dimension, i.e., the dual of the stack dimension.
     other_dimension = Enum("v", "h")
-    
-    # The index into obj.position and obj.bounds that corresponds to 
-    # **stack_dimension**.  This is a class-level and not an instance-level 
+
+    # The index into obj.position and obj.bounds that corresponds to
+    # **stack_dimension**.  This is a class-level and not an instance-level
     # attribute. It must be 0 or 1.
     stack_index = 0
 
@@ -28,11 +28,11 @@ class StackedContainer(Container):
 
     def get_preferred_size(self, components=None):
         return stacked_preferred_size(self, components)
-        
+
 
 class HStackedContainer(StackedContainer):
     """
-    A container that stacks components horizontally.  
+    A container that stacks components horizontally.
     """
 
     # Overrides StackedPlotContainer.
@@ -41,12 +41,12 @@ class HStackedContainer(StackedContainer):
     other_dimension = "v"
     # Overrides StackedPlotContainer.
     stack_index = 0
-    
+
     # VPlotContainer attributes
-    
+
     # The horizontal alignment of objects that don't span the full width.
     halign = Enum("bottom", "top", "center")
-    
+
     # The order in which components in the plot container are laid out.
     stack_order = Enum("left_to_right", "right_to_left")
 
@@ -63,27 +63,27 @@ class HStackedContainer(StackedContainer):
             align = "center"
         else:
             align = "max"
-        
+
         #import pdb; pdb.set_trace()
         return stack_layout(self, components, align)
-    
+
 class VStackedContainer(StackedContainer):
     """
-    A container that stacks components vertically.  
+    A container that stacks components vertically.
     """
-    
+
     # Overrides StackedPlotContainer.
     stack_dimension = "v"
     # Overrides StackedPlotContainer.
     other_dimension = "h"
     # Overrides StackedPlotContainer.
     stack_index = 1
-    
+
     # VPlotContainer attributes
-    
+
     # The horizontal alignment of objects that don't span the full width.
     halign = Enum("left", "right", "center")
-    
+
     # The order in which components in the plot container are laid out.
     stack_order = Enum("bottom_to_top", "top_to_bottom")
 
@@ -100,7 +100,6 @@ class VStackedContainer(StackedContainer):
             align = "center"
         else:
             align = "max"
-        
+
         #import pdb; pdb.set_trace()
         return stack_layout(self, components, align)
-    

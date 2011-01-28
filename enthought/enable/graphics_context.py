@@ -11,7 +11,7 @@ class EnableGCMixin(object):
     Subclass of Kiva GraphicsContext that provides a few more utility methods.
     Most importantly, it provides a pointer back to the window that this
     GC is being drawn to.
-    
+
     This will eventually be deprecated as the follow methods are folded into
     Kiva or their use is discontinuted in Enable.
     """
@@ -37,21 +37,21 @@ class EnableGCMixin(object):
 
     def clear_clip(self, color, coordinates):
         "Clip and clear a Kiva graphics context to a specified area and color"
-        bounds = coordinates_to_bounds(coordinates) 
+        bounds = coordinates_to_bounds(coordinates)
         self.clip_to_rect(*bounds)
         self.set_fill_color(color)
         self.begin_path()
         self.rect(*bounds)
         self.fill_path()
         return
-        
+
     def clear_clip_region(self, color, update_region):
         "Clip and clear a Kiva graphics context to a specified region and color"
         bounds = coordinates_to_bounds(bounding_coordinates(update_region))
         self.clip_to_rect(*bounds)
         self.set_fill_color(color)
         for coordinates in update_region:
-            bounds = coordinates_to_bounds(coordinates) 
+            bounds = coordinates_to_bounds(coordinates)
             self.begin_path()
             self.rect(*bounds)
         self.fill_path()
@@ -82,7 +82,7 @@ class EnableGCMixin(object):
         return
 
 # Define a GraphicsContextEnable that subclasses whatever the Kiva backend's
-# GraphicsContext is. 
+# GraphicsContext is.
 class GraphicsContextEnable(EnableGCMixin, GraphicsContext):
     pass
 

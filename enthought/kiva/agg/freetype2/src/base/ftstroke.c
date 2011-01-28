@@ -882,7 +882,7 @@
       delta.x += stroker->center.x;
       delta.y += stroker->center.y;
 
-      error = ft_stroke_border_lineto( border, &delta, FALSE );   
+      error = ft_stroke_border_lineto( border, &delta, FALSE );
     }
 
   Exit:
@@ -1867,8 +1867,8 @@
     return FT_Err_Invalid_Outline;
   }
 
-/* declare an extern to access ft_outline_glyph_class global allocated 
-   in ftglyph.c, and use the FT_OUTLINE_GLYPH_CLASS_GET macro to access 
+/* declare an extern to access ft_outline_glyph_class global allocated
+   in ftglyph.c, and use the FT_OUTLINE_GLYPH_CLASS_GET macro to access
    it when FT_CONFIG_OPTION_PIC is defined */
 #ifndef FT_CONFIG_OPTION_PIC
   extern const FT_Glyph_Class  ft_outline_glyph_class;

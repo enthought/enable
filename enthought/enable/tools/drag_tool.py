@@ -6,8 +6,8 @@ from enthought.enable.base_tool import BaseTool
 
 
 class DragTool(BaseTool):
-    """ Base class for tools that are activated by a drag operation.  
-    
+    """ Base class for tools that are activated by a drag operation.
+
     This tool insulates the drag operation from double clicks and the like, and
     gracefully manages the transition into and out of drag mode.
     """
@@ -17,10 +17,10 @@ class DragTool(BaseTool):
 
     # End the drag operation if the mouse leaves the associated component?
     end_drag_on_leave = Bool(True)
-    
+
     # These keys, if pressed during drag, cause the drag operation to reset.
     cancel_keys = Tuple("Esc")
-    
+
     # The position of the initial mouse click that started the drag.
     # Typically, tools that move things around use this
     # position to do hit-testing to determine what object to "pick up".
@@ -39,7 +39,7 @@ class DragTool(BaseTool):
 
     # The possible states of this tool.
     _drag_state = Enum("nondrag", "dragging")
-    
+
     # Records whether a mouse_down event has been received while in
     # "nondrag" state.  This is a safety check to prevent the tool from suddenly
     # getting mouse focus while the mouse button is down (either from
@@ -53,36 +53,36 @@ class DragTool(BaseTool):
     #------------------------------------------------------------------------
 
     def is_draggable(self, x, y):
-        """ Returns whether the (x,y) position is in a region that is OK to 
-        drag.  
-        
+        """ Returns whether the (x,y) position is in a region that is OK to
+        drag.
+
         Used by the tool to determine when to start a drag.
         """
         return True
 
     def drag_start(self, event):
-        """ Called when the drag operation starts.  
-        
-        The *event* parameter is the mouse event that established the drag 
+        """ Called when the drag operation starts.
+
+        The *event* parameter is the mouse event that established the drag
         operation; its **x** and **y** attributes correspond to the current
-        location of the mouse, and not to the position of the mouse when the 
+        location of the mouse, and not to the position of the mouse when the
         initial left_down or right_down event happened.
         """
         pass
 
     def dragging(self, event):
-        """ This method is called for every mouse_move event that the tool 
-        receives while the user is dragging the mouse.  
-        
+        """ This method is called for every mouse_move event that the tool
+        receives while the user is dragging the mouse.
+
         It is recommended that subclasses do most of their work in this method.
         """
         pass
 
     def drag_cancel(self, event):
         """ Called when the drag is cancelled.
-        
-        A drag is usually cancelled by receiving a mouse_leave event when 
-        end_drag_on_leave is True, or by the user pressing any of the 
+
+        A drag is usually cancelled by receiving a mouse_leave event when
+        end_drag_on_leave is True, or by the user pressing any of the
         **cancel_keys**.
         """
         pass
@@ -113,7 +113,7 @@ class DragTool(BaseTool):
             consume = self._drag_mouse_enter(event)
         elif suffix == "key_pressed":
             consume = self._drag_cancel_keypressed(event)
-        
+
         if not consume:
             BaseTool._dispatch_stateful_event(self, event, suffix)
         else:
@@ -155,7 +155,7 @@ class DragTool(BaseTool):
                 return self.dragging(event)
             else:
                 return self._drag_button_up(event)
-        
+
         # If we don't invoke the subclass drag handler, then don't consume the event.
         return False
 
@@ -173,7 +173,7 @@ class DragTool(BaseTool):
         if state == "dragging":
             self._drag_state = "nondrag"
             return self.drag_end(event)
-        
+
         # If we don't invoke the subclass drag handler, then don't consume the event.
         return False
 

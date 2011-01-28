@@ -26,9 +26,9 @@ class VerboseContainer(Container):
     outside its view_bounds.  This subclass modifies the behavior to report
     what components are not being drawn and what their bounds are.
     """
-    
+
     fit_window = False
-    
+
     def _draw_container_mainlayer(self, gc, view_bounds, mode="default"):
         with gc:
             gc.set_fill_color((1.0, 1.0, 1.0, 1.0))
@@ -41,19 +41,19 @@ class VerboseContainer(Container):
             new_bounds = (v[0]-self.x, v[1]-self.y, v[2], v[3])
         else:
             new_bounds = None
-        
+
         with gc:
             gc.translate_ctm(*self.position)
             gc.set_stroke_color((0.0, 0.0, 0.0, 1.0))
             for component in self._components:
                 # See if the component is visible:
-                tmp = intersect_bounds(component.position + component.bounds, 
+                tmp = intersect_bounds(component.position + component.bounds,
                                        new_bounds)
                 if tmp == empty_rectangle:
                     print "skipping component:", component.__class__.__name__,
                     print "\tbounds:", component.position, component.bounds
                     continue
-                    
+
                 with gc:
                     component.draw(gc, new_bounds, mode)
 
@@ -70,7 +70,7 @@ class MyFrame(DemoFrame):
         container.add(b)
         container.add(c)
         container.add(d)
-        scr = Scrolled(container, bounds=[300,300], position=[50,50], 
+        scr = Scrolled(container, bounds=[300,300], position=[50,50],
                        fit_window=False)
         return Window(self, -1, component=scr)
 

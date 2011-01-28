@@ -11,7 +11,7 @@ class OverlayContainer(Container):
 
     def get_preferred_size(self, components=None):
         """ Returns the size (width,height) that is preferred for this component.
- 
+
         Overrides PlotComponent
         """
         return simple_container_get_preferred_size(self, components=components)

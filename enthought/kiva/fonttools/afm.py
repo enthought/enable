@@ -53,7 +53,7 @@ def _to_bool(s):
     else: return True
 
 
-    
+
 def _parse_header(fh):
     """
     Reads the font metrics header (up to the char metrics) and returns
@@ -107,10 +107,10 @@ def _parse_header(fh):
            val = ''
         #key, val = line.split(' ', 1)
         try: d[key] = headerConverters[key](val)
-        except ValueError: 
+        except ValueError:
             print >>sys.stderr, 'Value error parsing header in AFM:', key, val
             continue
-        except KeyError: 
+        except KeyError:
             print >>sys.stderr, 'Key error converting in AFM'
             continue
         if key=='StartCharMetrics': return d
@@ -161,7 +161,7 @@ def _parse_kern_pairs(fh):
     line = fh.readline()
     if not line.startswith('StartKernPairs'):
         raise RuntimeError('Bad start of kern pairs data: %s'%line)
-    
+
     d = {}
     while 1:
         line = fh.readline()
@@ -173,7 +173,7 @@ def _parse_kern_pairs(fh):
             return d
         vals = line.split()
         if len(vals)!=4 or vals[0]!='KPX':
-            raise RuntimeError('Bad kern pairs line: %s'%line)        
+            raise RuntimeError('Bad kern pairs line: %s'%line)
         c1, c2, val = vals[1], vals[2], _to_float(vals[3])
         d[(c1,c2)] = val
     raise RuntimeError('Bad kern pairs parse')
@@ -190,7 +190,7 @@ def _parse_composites(fh):
     will be represented as
 
       d['Aacute'] = [ ('A', 0, 0), ('acute', 160, 170) ]
-      
+
     """
     d = {}
     while 1:
@@ -232,12 +232,12 @@ def _parse_optional(fh):
         line = line.rstrip()
         if len(line)==0: continue
         key = line.split()[0]
-        
+
         if optional.has_key(key): d[key] = optional[key](fh)
 
     l = ( d['StartKernData'], d['StartComposites'] )
     return l
-    
+
 def parse_afm(fh):
     """
     Parse the Adobe Font Metics file in file handle fh
@@ -271,7 +271,7 @@ class AFM:
         if not isord: c=ord(c)
         wx, name, bbox = self._metrics[c]
         return bbox
-    
+
     def string_width_height(self, s):
         """
         Return the string width (including kerning) and string height
@@ -286,12 +286,12 @@ class AFM:
             if c == '\n': continue
             wx, name, bbox = self._metrics[ord(c)]
             l,b,w,h = bbox
-            
+
             # find the width with kerning
             try: kp = self._kern[ (namelast, name) ]
             except KeyError: kp = 0
             totalw += wx + kp
-            
+
             # find the max y
             thismax = b+h
             if thismax>maxy: maxy = thismax
@@ -321,7 +321,7 @@ class AFM:
             try: kp = self._kern[ (namelast, name) ]
             except KeyError: kp = 0
             totalw += wx + kp
-            
+
             # find the max y
             thismax = b+h
             if thismax>maxy: maxy = thismax
@@ -365,7 +365,7 @@ class AFM:
         """
         name1, name2 = self.get_name_char(c1), self.get_name_char(c2)
         try: return self._kern[ (name1, name2) ]
-        except: return 0        
+        except: return 0
 
     def get_fontname(self):
         "Return the font name, eg, Times-Roman"
@@ -378,7 +378,7 @@ class AFM:
     def get_familyname(self):
         "Return the font family name, eg, Times"
         return self._header['FamilyName']
-    
+
     def get_weight(self):
         "Return the font weight, eg, 'Bold' or 'Roman'"
         return self._header['Weight']
@@ -399,4 +399,4 @@ if __name__=='__main__':
         w,h =  afm.string_width_height('John Hunter is the Man!')
 
 
-            
+

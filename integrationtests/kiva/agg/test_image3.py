@@ -23,9 +23,9 @@ def main():
     bbox_color = [1.0,0.0,0.0]
     text_color = [0.0,0.0,1.0,.5]
     text = "hello"
-        
+
     tot1 = time.clock()
-    
+
     t1 = time.clock()
     gc=agg.GraphicsContextArray((800,800))
     gc.set_font(ArialFont)
@@ -34,7 +34,7 @@ def main():
     draw_text(gc,text,bbox,text_color,bbox_color)
     t2 = time.clock()
     print '1st:', t2-t1
-    
+
     t1 = time.clock()
     with gc:
         gc.translate_ctm(50,50)
@@ -42,7 +42,7 @@ def main():
         draw_text(gc,text,bbox,text_color,bbox_color)
     t2 = time.clock()
     print '2nd:', t2-t1
-    
+
     t1 = time.clock()
     with gc:
         gc.translate_ctm(100,100)
@@ -50,7 +50,7 @@ def main():
         draw_text(gc,text,bbox,text_color,bbox_color)
     t2 = time.clock()
     print '3rd:', t2-t1
-    
+
     t1 = time.clock()
     with gc:
         gc.translate_ctm(200,200)
@@ -61,7 +61,7 @@ def main():
     print '4th:', t2-t1
     print 'tot:', time.clock() - tot1
     gc.save(save_path('text2.bmp'))
-    
+
     import random
     import string
     alpha = list(string.ascii_letters) + list('012345679')
@@ -74,7 +74,7 @@ def main():
     print 'starting:'
     t1 = time.clock()
     for s in strs:
-        gc.show_text(s)    
+        gc.show_text(s)
     t2 = time.clock()
     print
     print '1. %d different 62 letter strings(total,per string):' % N
@@ -83,11 +83,11 @@ def main():
     t1 = time.clock()
     for i in range(N/10):
         for s in strs[:10]:
-            gc.show_text(s)    
+            gc.show_text(s)
     t2 = time.clock()
     print '2. 10 strings with 62 letter rendered %d times (total,per str):' % N
     print '    %f %f' % (t2-t1,((t2-t1)/N))
-    
+
     print "Version 2. above is common in graphs and should be about 10 "
     print "times faster than the first because of caching"
     print
@@ -99,7 +99,7 @@ def main2():
     pil_img = Image.open('doubleprom_soho_full.jpg')
     img = fromstring(pil_img.tostring(),UInt8)
     img = img.resize((pil_img.size[1],pil_img.size[0],3))
-    
+
     alpha = ones(pil_img.size,UInt8) * 255
     img = concatenate((img[:,:,::-1],alpha[:,:,NewAxis]),-1).copy()
     print 'typecode:', typecode(img)    , iscontiguous(img)
@@ -115,7 +115,7 @@ def main3():
     pil_img = Image.open('doubleprom_soho_full.jpg')
     img = fromstring(pil_img.tostring(),UInt8)
     img = img.resize((pil_img.size[1],pil_img.size[0],3))
-    
+
     alpha = ones(pil_img.size,UInt8) * 255
     img = concatenate((img[:,:,::-1],alpha[:,:,NewAxis]),-1).copy()
     print 'typecode:', typecode(img)    , iscontiguous(img)
@@ -144,7 +144,7 @@ def main4():
     import Image
     pil_img = Image.open('doubleprom_soho_full.jpg')
     img = fromstring(pil_img.tostring(),UInt8)
-    img = img.resize((pil_img.size[1],pil_img.size[0],3))    
+    img = img.resize((pil_img.size[1],pil_img.size[0],3))
     print 'typecode:', typecode(img)    , iscontiguous(img)
     print shape(img)
     agg_img = agg.Image(img,"rgb24", interpolation_scheme="simple")
@@ -169,17 +169,17 @@ def main5(gc):
     bbox_color = [1.0,0.0,0.0]
     text_color = [0.0,0.0,1.0,1.0]
     text = "hello"
-        
+
     tot1 = time.clock()
-    
+
     t1 = time.clock()
     gc.set_alpha(1.0)
     bbox = gc.get_text_extent(text)
     draw_text(gc,text,bbox,text_color,bbox_color)
     t2 = time.clock()
     print '1st:', t2-t1
-    
-    
+
+
     import random
     import string
     strs = ['012345679',
@@ -198,7 +198,7 @@ def main5(gc):
     for i in range(N):
         for s in strs:
             #gc.translate_ctm(0,14)
-            gc.show_text(s)    
+            gc.show_text(s)
     t2 = time.clock()
     print
     print ' %d  strings(total,per string):' % (N*10)
@@ -207,11 +207,11 @@ def main5(gc):
 
 import profile
 gc=agg.GraphicsContextArray((800,800))
-#profile.run('main()')    
+#profile.run('main()')
 #main5(gc)
 #main5(gc)
 #main5(gc)
-#profile.run('main5(gc)')    
+#profile.run('main5(gc)')
 #main()
 #main2()
 #main3()

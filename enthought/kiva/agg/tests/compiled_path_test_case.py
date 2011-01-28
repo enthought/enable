@@ -6,7 +6,7 @@ from enthought.kiva import agg
 
 from test_utils import Utils
 
-# UNCOMMENT THIS TO SEE THE IMPORT ISSUES FROM TICKET  
+# UNCOMMENT THIS TO SEE THE IMPORT ISSUES FROM TICKET
 # https://svn.enthought.com/enthought/ticket/537 (agg causes python crash during unit tests)
 #
 #import sys
@@ -16,7 +16,7 @@ from test_utils import Utils
 #    print name, sys.modules[name]
 
 class TestCompiledPath(unittest.TestCase, Utils):
-    
+
     def test_init(self):
         path = agg.CompiledPath()
 
@@ -59,12 +59,12 @@ class TestCompiledPath(unittest.TestCase, Utils):
         actual = path.get_ctm()
         desired = agg.rotation_matrix(angle)
         self.assertRavelEqual(actual, desired)
-    
+
     def test_concat_ctm(self):
-        path = agg.CompiledPath()        
+        path = agg.CompiledPath()
         path.translate_ctm(2.0,2.0)
         m0 = agg.scaling_matrix(2.0,2.0)
-        path.concat_ctm(m0)        
+        path.concat_ctm(m0)
         actual = path.get_ctm()
         # wrapper not working
         #m0 *= agg.translation_matrix(2.0,2.0)
@@ -73,7 +73,7 @@ class TestCompiledPath(unittest.TestCase, Utils):
         des = desired.asarray()
         act = actual.asarray()
         self.assertRavelEqual(actual, desired)
-        
+
     def test_vertex(self):
         # !! should get this value from the agg enum value
         path = agg.CompiledPath()
@@ -83,7 +83,7 @@ class TestCompiledPath(unittest.TestCase, Utils):
         desired_flag = 1
         self.assertRavelEqual(actual,desired)
         self.assertRavelEqual(actual_flag,desired_flag)
-        
+
         #check for end flag
         actual,actual_flag = path._vertex()
         desired_flag = 0
@@ -93,7 +93,7 @@ class TestCompiledPath(unittest.TestCase, Utils):
         # !! should get this value from the agg enum value
         path = agg.CompiledPath()
         path.move_to(1.0,1.0)
-        
+
         desired = array(((1.0,1.0,1.0,0.0),
                          (0.0,0.0,0.0,0.0)))
         actual = path._vertices()
@@ -105,14 +105,14 @@ class TestCompiledPath(unittest.TestCase, Utils):
         path.move_to(1.0,1.0)
         actual,actual_flag = path._vertex()
         actual,actual_flag = path._vertex()
-        
+
         path._rewind()
         actual,actual_flag = path._vertex()
         desired = array((1.0,1.0))
         desired_flag = 1
         self.assertRavelEqual(actual,desired)
         self.assertRavelEqual(actual_flag,desired_flag)
-        
+
     def test_begin_path(self):
         path = agg.CompiledPath()
         path.move_to(1.0,1.0)
@@ -174,21 +174,21 @@ class TestCompiledPath(unittest.TestCase, Utils):
         path1.line_to(2.0,2.0) #actually (3.0,3.0)
         path1.scale_ctm(2.0,2.0)
         path1.line_to(2.0,2.0) # actually (5.0,5.0)
-        
+
         path2 = agg.CompiledPath()
         path2.move_to(1.0,1.0)
         path2.translate_ctm(1.0,1.0)
         path2.line_to(2.0,2.0) #actually (3.0,3.0)
-        
+
         sub_path = agg.CompiledPath()
         sub_path.scale_ctm(2.0,2.0)
         sub_path.line_to(2.0,2.0)
         path2.add_path(sub_path)
-        
+
         desired = path1._vertices()
         actual = path2._vertices()
         self.assertRavelEqual(actual, desired)
-        
+
         desired = path1.get_ctm()
         actual = path2.get_ctm()
         self.assertRavelEqual(actual, desired)
@@ -206,7 +206,7 @@ class TestCompiledPath(unittest.TestCase, Utils):
                          (0.0,0.0,agg.path_cmd_stop, agg.path_flags_none),))
         #print 'desired:', desired
         #print 'actual:', actual
-        
+
         self.assertRavelEqual(actual, desired)
 
     def test_lines_array(self):
@@ -218,7 +218,7 @@ class TestCompiledPath(unittest.TestCase, Utils):
         lines = [[3.0,3.0],
                  [4.0,4.0]]
         self.base_helper_lines(lines)
-                
+
     def test_rect(self):
         path = agg.CompiledPath()
         path.rect(1.0,1.0,1.0,1.0)

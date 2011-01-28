@@ -73,10 +73,10 @@
 
     /* initialize pointer table - this is how the module usually expects this data */
     error = FT_Create_Class_sfnt_services(library, &container->sfnt_services);
-    if(error) 
+    if(error)
       goto Exit;
     error = FT_Create_Class_tt_cmap_classes(library, &container->tt_cmap_classes);
-    if(error) 
+    if(error)
       goto Exit;
     FT_Init_Class_sfnt_service_glyph_dict(library, &container->sfnt_service_glyph_dict);
     FT_Init_Class_sfnt_service_ps_name(library, &container->sfnt_service_ps_name);

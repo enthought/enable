@@ -10,7 +10,7 @@ class CoordinateBoxTestCase(unittest.TestCase):
         self.assert_(c.x == 0.0)
         self.assert_(c.y == 0.0)
         return
-    
+
     def check_bounds(self):
         c = CoordinateBox(bounds=[50.0, 60.0])
         self.assert_(c.width == c.bounds[0])
@@ -20,7 +20,7 @@ class CoordinateBoxTestCase(unittest.TestCase):
         self.assert_(c.x2 == 49.0)
         self.assert_(c.y2 == 59.0)
         return
-    
+
     def check_is_in(self):
         c = CoordinateBox(x=10, y=20)
         c.width=100

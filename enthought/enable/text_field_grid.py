@@ -8,7 +8,7 @@ from colors import black_color_trait
 
 
 class TextFieldGrid(Container):
-    """ A 2D grid of TextFields. 
+    """ A 2D grid of TextFields.
     """
 
     #########################################################################
@@ -128,7 +128,7 @@ class TextFieldGrid(Container):
             self.add(tfield)
             row.insert(index, tfield)
         self.bounds[0] = self.bounds[0] + self.cell_padding + self.cell_width
-            
+
     def _remove_row(self, index):
         removed = self.cells[index]
         self.remove(removed)

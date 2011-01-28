@@ -69,7 +69,7 @@ class CompiledPath(KivaCompiledPath):
             if i == 0:
                 self.move_to(x1,y1)
             self.curve_to(x2,y2, x3,y3, x4,y4)
-            
+
     def AddRoundedRectangleEx(self, x, y, w, h, rx, ry):
         #origin
         self.move_to(x+rx, y)
@@ -106,7 +106,7 @@ class CompiledPath(KivaCompiledPath):
             90,
         )
         self.close_path()
-        
+
 
 
 class Pen(object):
@@ -184,14 +184,14 @@ class LinearGradientBrush(AbstractGradientBrush):
         self.spreadMethod = spreadMethod
         self.transforms = transforms
         self.units = units
-        
+
     def __repr__(self):
         return ('LinearGradientBrush(%r,%r, %r,%r, %r, spreadMethod=%r, '
             'transforms=%r, units=%r)' % (self.x1,self.y1, self.x2,self.y2, self.stops,
                 self.spreadMethod, self.transforms, self.units))
 
     def set_on_gc(self, gc, bbox=None):
-        
+
         # Apply transforms
         if self.transforms is not None:
             for func, f_args in self.transforms:
@@ -199,7 +199,7 @@ class LinearGradientBrush(AbstractGradientBrush):
                     func(gc, *f_args)
                 else:
                     func(gc, f_args)
-                    
+
         x1 = self.x1
         x2 = self.x2
         y1 = self.y1
@@ -218,11 +218,11 @@ class LinearGradientBrush(AbstractGradientBrush):
                 y1 = (bbox[3] + bbox[1])*y1
                 x2 = (bbox[2] + bbox[0])*x2
                 y2 = (bbox[3] + bbox[1])*y2
-                
+
                 self.bbox_transform(gc, bbox)
-            
+
         stops = np.transpose(self.stops)
-        gc.linear_gradient(x1, y1, x2, y2, stops, self.spreadMethod, self.units)            
+        gc.linear_gradient(x1, y1, x2, y2, stops, self.spreadMethod, self.units)
 
 
 class RadialGradientBrush(AbstractGradientBrush):
@@ -251,7 +251,7 @@ class RadialGradientBrush(AbstractGradientBrush):
                 self.transforms, self.units))
 
     def set_on_gc(self, gc, bbox=None):
-        
+
         if self.transforms is not None:
             for func, f_args in self.transforms:
                 if isinstance(f_args, tuple):
@@ -264,14 +264,14 @@ class RadialGradientBrush(AbstractGradientBrush):
         r = self.r
         fx = self.fx
         fy = self.fy
-        
+
         if sys.platform == 'darwin':
             if self.spreadMethod != 'pad':
                 warnings.warn("spreadMethod %r is not supported. Using 'pad'" % self.spreadMethod)
 
             if bbox is not None:
                 gc.clip_to_rect(*bbox)
-                
+
         else:
             if self.units == 'objectBoundingBox' and bbox is not None:
                 cx = (bbox[2] + bbox[0])*cx
@@ -486,7 +486,7 @@ class Renderer(NullRenderer):
     def gradientPath(cls, gc, path, brush):
         gc.save_state()
         gc.add_path(path)
-        
+
         gc.clip()
         if hasattr(path, 'get_bounding_box'):
             bbox = path.get_bounding_box()
@@ -500,7 +500,7 @@ class Renderer(NullRenderer):
                 bbox[3] = max(bbox[3], vertex[0][1])
 
         brush.set_on_gc(gc, bbox=bbox)
-        
+
         gc.close_path()
         gc.fill_path()
         gc.restore_state()

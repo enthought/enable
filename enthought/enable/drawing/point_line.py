@@ -15,7 +15,7 @@ class PointLine(DrawingTool):
 
     # Override the draw_mode value we inherit from DrawingTool
     draw_mode = "overlay"
-    
+
     # The pixel distance from a vertex that is considered 'on' the vertex.
     proximity_distance = Int(4)
 
@@ -29,12 +29,12 @@ class PointLine(DrawingTool):
     _dragged = Int
 
     complete = Event
-    
+
     def add_point(self, point):
         """ Add the point. """
         self.line.points.append(point)
         return
-        
+
     def get_point(self, index):
         """ Get the point at the specified index. """
         return self.line.points[ index ]
@@ -43,7 +43,7 @@ class PointLine(DrawingTool):
         """ Set the point at the specified index to point. """
         self.line.points[index] = point
         return
-    
+
     def remove_point(self, index):
         """ Remove the point with the specified index. """
         del self.line.points[index]
@@ -52,16 +52,16 @@ class PointLine(DrawingTool):
     #------------------------------------------------------------------------
     # DrawingTool interface
     #------------------------------------------------------------------------
-    
+
     def reset(self):
         self.line.points = []
         self.event_state = "normal"
         return
-    
+
     #------------------------------------------------------------------------
     # "complete" state
     #------------------------------------------------------------------------
-    
+
     def complete_draw(self, gc):
         # Draw the completed line
         gc.save_state()
@@ -117,13 +117,13 @@ class PointLine(DrawingTool):
         """ Draw the polygon in the 'drag_point' state. """
         self.line._draw_mainlayer(gc)
         return
-        
+
     def drag_point_left_up(self, event):
         """ Handle the left mouse coming up in the 'drag_point' state. """
         self.event_state = 'complete'
         self.updated = self
         return
-    
+
     def drag_point_mouse_move(self, event):
         """ Handle the mouse moving in the 'drag_point' state. """
         # Only worry about the event if it's inside our bounds.
@@ -133,7 +133,7 @@ class PointLine(DrawingTool):
             self.set_point(self._dragged, (event.x, event.y))
             self.request_redraw()
         return
-    
+
     #------------------------------------------------------------------------
     # "incomplete" state
     #------------------------------------------------------------------------
@@ -169,7 +169,7 @@ class PointLine(DrawingTool):
         """ Handle the mouse moving in incomplete state. """
         # If we move over the initial point, then we change the cursor.
         event.window.set_pointer(self.drawing_cursor)
-            
+
         # If the point has actually changed, then we need to update our model.
         if self.get_point(-1) != (event.x, event.y):
             self.set_point(-1, (event.x, event.y))
@@ -192,12 +192,12 @@ class PointLine(DrawingTool):
         self.updated = self
         self.line_dash = (4.0, 2.0)
         return
-        
+
     def normal_mouse_move(self, event):
         """ Handle the mouse moving in the 'normal' state. """
         event.window.set_pointer(self.drawing_cursor)
         return
-    
+
     #------------------------------------------------------------------------
     # Private interface
     #------------------------------------------------------------------------
@@ -211,7 +211,7 @@ class PointLine(DrawingTool):
     def _is_near_point(self, point, event):
         """ Determine if the pointer is near a specified point. """
         event_point = (event.x, event.y)
-                
+
         return ((abs( point[0] - event_point[0] ) + \
                  abs( point[1] - event_point[1] )) <= self.proximity_distance)
 

@@ -2,7 +2,7 @@
 # Copyright (c) 2005, Enthought, Inc.
 # some parts copyright 2002 by Space Telescope Science Institute
 # All rights reserved.
-# 
+#
 # This software is provided without warranty under the terms of the BSD
 # license included in enthought/LICENSE.txt and may be redistributed only
 # under the conditions described in the aforementioned license.  The license
@@ -11,7 +11,7 @@
 #------------------------------------------------------------------------------
 
 """
-A multi-platform DisplayPDF vector drawing engine. 
+A multi-platform DisplayPDF vector drawing engine.
 Part of the Enable project of the Enthought Tool Suite.
 """
 

@@ -15,20 +15,20 @@ def stacked_preferred_size(container, components=None):
     #if container.resizable == "":
     #    container._cached_preferred_size = container.outer_bounds[:]
     #    return container.outer_bounds
-    
+
     if components is None:
         components = container.components
 
     ndx = container.stack_index
     other_ndx = 1 - ndx
-    
+
     no_visible_components = True
     total_size = 0
     max_other_size = 0
     for component in components:
         if not container._should_layout(component):
             continue
-        
+
         no_visible_components = False
 
         pref_size = component.get_preferred_size()
@@ -36,29 +36,29 @@ def stacked_preferred_size(container, components=None):
         #print container, component, total_size
         if pref_size[other_ndx] > max_other_size:
             max_other_size = pref_size[other_ndx]
-    
+
     if total_size >= container.spacing:
         total_size -= container.spacing
-    
+
     if (container.stack_dimension not in container.resizable) and \
        (container.stack_dimension not in container.fit_components):
         total_size = container.bounds[ndx]
     elif no_visible_components or (total_size == 0):
         total_size = container.default_size[ndx]
-    
+
     if (container.other_dimension not in container.resizable) and \
        (container.other_dimension not in container.fit_components):
         max_other_size = container.bounds[other_ndx]
     elif no_visible_components or (max_other_size == 0):
         max_other_size = container.default_size[other_ndx]
-    
+
     if ndx == 0:
         container._cached_preferred_size = (total_size + container.hpadding,
                                        max_other_size + container.vpadding)
     else:
         container._cached_preferred_size = (max_other_size + container.hpadding,
                                        total_size + container.vpadding)
-    
+
     return container._cached_preferred_size
 
 
@@ -73,7 +73,7 @@ def stack_layout(container, components, align):
             size[0] = container._cached_preferred_size[0] - container.hpadding
         if "v" in container.fit_components:
             size[1] = container._cached_preferred_size[1] - container.vpadding
-    
+
     ndx = container.stack_index
     other_ndx = 1 - ndx
     other_dim = container.other_dimension
@@ -84,7 +84,7 @@ def stack_layout(container, components, align):
     resizable_components = []
     size_prefs = {}
     total_resizable_size = 0
-    
+
     for component in components:
         if not container._should_layout(component):
             continue
@@ -95,7 +95,7 @@ def stack_layout(container, components, align):
             size_prefs[component] = preferred_size
             total_resizable_size += preferred_size[ndx]
             resizable_components.append(component)
-    
+
     new_bounds_dict = {}
 
     # Assign sizes of all the resizable components along the stack dimension
@@ -114,25 +114,25 @@ def stack_layout(container, components, align):
                 tmp = list(component.outer_bounds)
                 tmp[ndx] = each_size
                 new_bounds_dict[component] = tmp
-    
+
     # Loop over all the components, assigning position and computing the
     # size in the other dimension and its position.
     cur_pos = 0
     for component in components:
         if not container._should_layout(component):
             continue
-                
+
         position = list(component.outer_position)
         position[ndx] = cur_pos
 
         bounds = new_bounds_dict.get(component, list(component.outer_bounds))
         cur_pos += bounds[ndx] + container.spacing
-        
+
         if (bounds[other_ndx] > size[other_ndx]) or \
                 (other_dim in component.resizable):
             # If the component is resizable in the other dimension or it exceeds the
             # container bounds, set it to the maximum size of the container
-            
+
             #component.set_outer_position(other_ndx, 0)
             #component.set_outer_bounds(other_ndx, size[other_ndx])
             position[other_ndx] = 0
@@ -151,4 +151,4 @@ def stack_layout(container, components, align):
         component.outer_position = position
         component.outer_bounds = bounds
         component.do_layout()
-    return        
+    return

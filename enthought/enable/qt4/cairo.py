@@ -27,12 +27,12 @@ class Window(BaseWindow):
            return
 
         # self._gc is an image context
-        w = self._gc.width() 
+        w = self._gc.width()
         h = self._gc.height()
         data = self._gc.pixel_map.convert_to_argbarray()
 
         image = QtGui.QImage(data, w, h, QtGui.QImage.Format_ARGB32)
-    
+
         rect = QtCore.QRect(0,0,w,h)
         painter = QtGui.QPainter(self.control)
         painter.drawImage(rect, image)

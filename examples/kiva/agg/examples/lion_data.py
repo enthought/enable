@@ -180,7 +180,7 @@ def build_paths(lion_string):
             pts = map(lambda x: array(eval(x), dtype=float), fields[1::2])
             mins.append(amin(pts,axis=0))
             maxs.append(amax(pts,axis=0))
-            
+
             path_def = zip (cmd,pts)
             for cmd, pt in path_def:
                 pt[0] -= 119
@@ -191,14 +191,14 @@ def build_paths(lion_string):
                     path.line_to(pt[0],pt[1])
     min_pt =  amin(array(mins),axis=0)
     max_pt = amax(array(maxs),axis=0)
-    
+
     sz = max_pt - min_pt
     center = min_pt + sz/2.0
     return zip(paths, colors), sz, center
 
 def get_lion():
     """get_lion() -> path_and_color, size, center
-    
+
         path_and_color: [(path,color), ...]
         size: [width, height]
         center: [x, y]

@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 #
-#  Define the classes used to support the Enable package 'drag_resize' 
+#  Define the classes used to support the Enable package 'drag_resize'
 #  functionality.
 #
 #  Written by: David C. Morrill
@@ -17,25 +17,25 @@ from base import bounds_to_coordinates, TOP, BOTTOM, LEFT, RIGHT
 from interactor import Interactor
 
 from enthought.traits.api import Any
-    
+
 #-------------------------------------------------------------------------------
-#  'DragResizeHandler' class:  
-#-------------------------------------------------------------------------------    
-    
+#  'DragResizeHandler' class:
+#-------------------------------------------------------------------------------
+
 class DragResizeHandler ( Interactor ):
-    
+
     #---------------------------------------------------------------------------
-    #  Trait definitions:  
+    #  Trait definitions:
     #---------------------------------------------------------------------------
-        
+
     # User-supplied drag event validation function:
     drag_validate = Any
-    
+
     #---------------------------------------------------------------------------
     #  Initialize the object:
     #---------------------------------------------------------------------------
-    
-    def init( self, component, bounds_rect, anchor, unconstrain, 
+
+    def init( self, component, bounds_rect, anchor, unconstrain,
                     drag_event, start_event ):
         self.component   = component
         self.bounds_rect = bounds_rect
@@ -45,7 +45,7 @@ class DragResizeHandler ( Interactor ):
         self.start_event = start_event
         self.drag_x      = self.start_x = start_event.x
         self.drag_y      = self.start_y = start_event.y
-        
+
         # Get the coordinates of the anchor point:
         xl, yb, xr, yt = bounds_to_coordinates( component.bounds )
         if (anchor & LEFT) != 0:
@@ -60,27 +60,27 @@ class DragResizeHandler ( Interactor ):
         else:
             self.anchor_y = yt
             self.float_y  = yb
-        
+
         # Set up the drag termination handler:
         self.on_trait_change( self.drag_done, drag_event )
-        
+
     #---------------------------------------------------------------------------
     #  Handle the mouse moving while resizing:
     #---------------------------------------------------------------------------
-        
+
     def _mouse_move_changed ( self, event ):
         # Get the current drag location:
         x = event.x
         y = event.y
-        
+
         # If the mouse did not actually move, then ignore the event:
         if (x == self.drag_x) and (y == self.drag_y):
             return
- 
+
         # Save the new position:
         self.drag_x = x
         self.drag_y = y
-        
+
         # Calculate the new 'floating' point:
         unconstrain = self.unconstrain
         ax, ay      = self.anchor_x, self.anchor_y
@@ -101,7 +101,7 @@ class DragResizeHandler ( Interactor ):
             elif ny < ay:
                 if (unconstrain & BOTTOM) == 0:
                     ny = ay
-        
+
         # Make sure the new point is inside the drag bounds (if required):
         if self.bounds_rect is not None:
             bxl, byb, bxr, byt = self.bounds_rect
@@ -138,26 +138,26 @@ class DragResizeHandler ( Interactor ):
                 ny = ay + mindy
             else:
                 ny = ay - mindy
-        
+
         # Update the bounds of the component:
-        bounds = ( min( nx,  ax ),     min( ny,  ay ), 
+        bounds = ( min( nx,  ax ),     min( ny,  ay ),
                    abs( nx - ax ) + 1, abs( ny - ay ) + 1 )
         if self.drag_validate is not None:
             bounds = self.drag_validate( event, bounds )
         if bounds != component.bounds:
             component.bounds = bounds
-                                  
-            # Tell the 'paint' routine we are doing a drag resize operation:                                  
-            event.window.drag_resize_update()                                  
-        
+
+            # Tell the 'paint' routine we are doing a drag resize operation:
+            event.window.drag_resize_update()
+
     #---------------------------------------------------------------------------
     #  Handle the user releasing the original drag button:
     #---------------------------------------------------------------------------
-    
+
     def drag_done ( self, event ):
         # 'Unhook' the drag done notification handler:
         self.on_trait_change( self.drag_done, self.drag_event, remove = True )
-        
+
         # Inform the component that the resize operation is complete:
         self.component.resized = True
-        
+

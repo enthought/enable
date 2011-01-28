@@ -11,7 +11,7 @@ from base_window import BaseWindow
 from scrollbar import NativeScrollBar
 
 class Window(BaseWindow):
-    
+
     control = Instance(GLCanvas)
 
     def __init__(self, *args, **kw):
@@ -23,7 +23,7 @@ class Window(BaseWindow):
 
         self._gc = None
 
-    def _create_control(self, parent, wid, pos = wx.DefaultPosition, 
+    def _create_control(self, parent, wid, pos = wx.DefaultPosition,
                         size = wx.DefaultSize):
         return GLCanvas(parent, wid, pos, size,
                         style=wx.CLIP_CHILDREN|wx.WANTS_CHARS)
@@ -54,7 +54,7 @@ class Window(BaseWindow):
         if self.control is None:
             event.Skip()
             return
-        
+
         size = self._get_control_size()
         self._size = tuple(size)
         self._gc = self._create_gc(size)

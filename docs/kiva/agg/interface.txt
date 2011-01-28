@@ -37,7 +37,7 @@ Supporting types
         flip_y()   # mirrors around Y
         scale() -> float         # returns the average scale of this matrix
         determinant() -> float   # returns the determinant
-    
+
   The following factory methods are available in the top-level "agg" namespace
   to create specific kinds of AffineMatrix instances:
 
@@ -45,18 +45,18 @@ Supporting types
         rotation_matrix(float angle_in_radians)
         scaling_matrix(float x_scale, float y_scale)
         skewing_matrix(float x_shear, float y_shear)
-  
+
   FontType
   ------------
   (kiva_font_type.h and font_type.i)
   __init__(name, size=12)
-  
+
   CompiledPath
   ------------
   see kiva_compiled_path.h in /kiva/agg/src/;
   interface is very similar to "Path drawing" interface of Graphics Context
-  
-  
+
+
 -------------------------------------------
 Enumerations - see also /kiva/agg/src/kiva_constants.h
 -------------------------------------------
@@ -96,7 +96,7 @@ map between their names and integer values
 
 Path_cmd and path_flags are low-level Agg path attributes.  See the Agg
 documentation for more information about them.  We just pass them through in Kiva.
-    
+
     path_cmd: path_cmd_curve3, path_cmd_curve4, path_cmd_end_poly, path_cmd_line_to
               path_cmd_mask, path_cmd_move_to, path_cmd_stop
     path_flags: path_flags, path_flags_ccw, path_flags_close, path_flags_cw,
@@ -122,7 +122,7 @@ Graphics state
 -------------------------------------------
     save_state()
     restore_state()
-    set_stroke_color(color)  
+    set_stroke_color(color)
     get_stroke_color() -> color
     set_line_width(float)
     set_line_join(line_join)
@@ -217,7 +217,7 @@ Path construction functions
         # corner.  Let "r" be the radius of rounding.  Let the current
         # pen position be (x_left + r, y_top).  Then (x2,y2) would be
         # (x_left, y_top - radius), and (x1,y1) would be (x_left, y_top).
-        
+
 -------------------------------------------
 Drawing functions
 -------------------------------------------
@@ -263,7 +263,7 @@ Misc functions
     stride() -> int
     bottom_up() -> bool
     format() -> pix_format
-    
+
     flush()
         # Force all pending drawing operations to be rendered immediately.
         # This only makes sense in window contexts, ie- the Mac Quartz backend.
@@ -271,12 +271,12 @@ Misc functions
         # A deferred version of flush(). Also only relevant in window contexts.
     begin_page()
     end_page()
-    
+
     clear_rect(rect)
         # Clears a rect. Not available in PDF context.
 
     convert_pixel_format(pix_format, bool inplace=0)
-    
+
     save(filename, file_format=None, pil_options=None)
         # From the comments in graphics_context.i:
         # Save the GraphicsContext to a file.  Output files are always

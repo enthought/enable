@@ -2,7 +2,7 @@
 # Copyright (c) 2005, Enthought, Inc.
 # some parts copyright Space Telescope Science Institute
 # All rights reserved.
-# 
+#
 # This software is provided without warranty under the terms of the BSD
 # license included in enthought/LICENSE.txt and may be redistributed only
 # under the conditions described in the aforementioned license.  The license
@@ -104,7 +104,7 @@ ARC_TO        = 8
 # on the data (its much faster than doing it with Numeric).
 #-----------------------------------------------------------------------------
 
-SCALE_CTM      = 5 
+SCALE_CTM      = 5
 TRANSLATE_CTM  = 6
 ROTATE_CTM     = 7
 CONCAT_CTM     = 8

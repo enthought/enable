@@ -16,7 +16,7 @@ class test_agg(unittest.TestCase):
         garbagecollector.collect()
         post = get_mem_usage()
         assert (pre == post)
-    
+
     def check_wx_mem_leak(self):
         pre = get_mem_usage()
         gc = GraphicsContextSystem((500,500))

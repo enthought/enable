@@ -18,7 +18,7 @@ class DragLine(DrawingTool):
     # Because this class subclasses DrawingTool and not Line, it contains
     # an instance of the Line primitive.
     line = Instance(Line, args=())
-    
+
     # Override the default value of this inherited trait
     draw_mode="overlay"
 
@@ -73,7 +73,7 @@ class DragLine(DrawingTool):
 
     def normal_left_down(self, event):
         """ Handle the left button down in the 'normal' state. """
-    
+
         self.line.points.append((event.x + self.x, event.y - self.y))
         self.event_state = 'drawing'
         event.window.set_pointer('pencil')

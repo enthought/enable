@@ -82,7 +82,7 @@ class DummyWindow(AbstractWindow):
 
 
 class EventTransformTestCase(EnableUnitTest):
-    
+
     def test_simple_container(self):
         """ Tests event handling of nested containers """
         comp = TestComponent(position=[50,50])
@@ -177,7 +177,7 @@ class EventTransformTestCase(EnableUnitTest):
         window._handle_mouse_event("left_down", event)
 
         self.assert_(window.mouse_owner == comp)
-        
+
         # Create the second event
         event = BasicEvent(x=107, y=107, window=window)
         old_pos = comp.captured_event_pos

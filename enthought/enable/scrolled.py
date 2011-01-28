@@ -26,21 +26,21 @@ class Scrolled(Container):
     # Inside padding is a background drawn area between the edges or scrollbars
     # and the scrolled area/left component.
     inside_padding_width = Int(5)
-    
-    # The inside border is a border drawn on the inner edge of the inside 
+
+    # The inside border is a border drawn on the inner edge of the inside
     # padding area to highlight the viewport.
     inside_border_color = ColorTrait("black")
     inside_border_width = Int(0)
 
     # The background color to use for filling in the padding area.
     bgcolor = ColorTrait("white")
-    
+
     # Should the horizontal scrollbar be shown?
     horiz_scrollbar = Bool(True)
-    
+
     # Should the vertical scrollbar be shown?
     vert_scrollbar = Bool(True)
-    
+
     # Should the scrollbars always be shown?
     always_show_sb = Bool(False)
 
@@ -53,18 +53,18 @@ class Scrolled(Container):
 
     # Override the default value of this inherited trait
     auto_size = False
-    
+
     #---------------------------------------------------------------------------
     # Traits for support of geophysics plotting
     #---------------------------------------------------------------------------
-    
+
     # An alternate vertical scroll bar to control this Scrolled, instead of the
     # default one that lives outside the scrolled region.
     alternate_vsb = Instance(Component)
-    
+
     # The size of the left border space
-    leftborder = Float(0) 
-    
+    leftborder = Float(0)
+
     # A component to lay out to the left of the viewport area (e.g. a depth
     # scale track)
     leftcomponent = Any
@@ -76,11 +76,11 @@ class Scrolled(Container):
     _vsb = Instance(NativeScrollBar)
     _hsb = Instance(NativeScrollBar)
 
-    # Stores the last horizontal and vertical scroll positions to avoid 
+    # Stores the last horizontal and vertical scroll positions to avoid
     # multiple updates in update_from_viewport()
     _last_hsb_pos = Float(0.0)
     _last_vsb_pos = Float(0.0)
-    
+
     # Whether or not the viewport region is "locked" from updating via
     # freeze_scroll_bounds()
     _sb_bounds_frozen = Bool(False)
@@ -88,11 +88,11 @@ class Scrolled(Container):
     # Records if the horizontal scroll position has been updated while the
     # Scrolled has been frozen
     _hscroll_position_updated = Bool(False)
-    
+
     # Records if the vertical scroll position has been updated while the
     # Scrolled has been frozen
     _vscroll_position_updated = Bool(False)
-    
+
     # Whether or not to the scroll bars should cause an event
     # update to fire on the viewport's view_position.  This is used to
     # prevent redundant events when update_from_viewport() updates the
@@ -126,7 +126,7 @@ class Scrolled(Container):
         return 15
 
     def sb_width(self):
-        """ Returns the standard scroll bar width 
+        """ Returns the standard scroll bar width
         """
         return 15
 
@@ -139,7 +139,7 @@ class Scrolled(Container):
         """
         if not self.continuous_drag_update:
             self._sb_bounds_frozen = True
-    
+
     def unfreeze_scroll_bounds(self):
         """ Allows the scroll bounds to be updated by various trait changes.
         See freeze_scroll_bounds().
@@ -165,9 +165,9 @@ class Scrolled(Container):
         """
         comp = self.component
         viewport = self.viewport_component
-        
+
         offset = getattr(comp, "bounds_offset", (0,0))
-        
+
         ranges = []
         for ndx in (0,1):
             scrollrange = float(comp.bounds[ndx] - viewport.view_bounds[ndx])
@@ -175,7 +175,7 @@ class Scrolled(Container):
                 ticksize = scrollrange/round(scrollrange/20.0)
             else:
                 ticksize = 1
-            ranges.append( (offset[ndx], offset[ndx] + comp.bounds[ndx], 
+            ranges.append( (offset[ndx], offset[ndx] + comp.bounds[ndx],
                             viewport.view_bounds[ndx], ticksize) )
 
         return ranges
@@ -183,7 +183,7 @@ class Scrolled(Container):
 
     def update_from_viewport(self):
         """ Repositions the scrollbars based on the current position/bounds of
-            viewport_component. 
+            viewport_component.
         """
         if self._sb_bounds_frozen:
             return
@@ -193,7 +193,7 @@ class Scrolled(Container):
 
         modify_hsb = (self._hsb and x != self._last_hsb_pos)
         modify_vsb = (self._vsb and y != self._last_vsb_pos)
-        
+
         if modify_hsb and modify_vsb:
             self._hsb_generates_events = False
         else:
@@ -203,7 +203,7 @@ class Scrolled(Container):
             self._hsb.range = range_x
             self._hsb.scroll_position = x
             self._last_hsb_pos = x
-                
+
         if modify_vsb:
             self._vsb.range = range_y
             self._vsb.scroll_position = y
@@ -211,7 +211,7 @@ class Scrolled(Container):
 
         if not self._hsb_generates_events:
             self._hsb_generates_events = True
-        
+
         return
 
     def _layout_and_draw(self):
@@ -268,7 +268,7 @@ class Scrolled(Container):
     def _component_changed ( self, old, new ):
         if old is not None:
             old.on_trait_change(self._component_bounds_handler, 'bounds', remove=True)
-            old.on_trait_change(self._component_bounds_items_handler, 
+            old.on_trait_change(self._component_bounds_items_handler,
                                 'bounds_items', remove=True)
         if new is None:
             self.component = Container()
@@ -282,13 +282,13 @@ class Scrolled(Container):
 
     def _bgcolor_changed ( self ):
         self._layout_and_draw()
-        
+
     def _inside_border_color_changed ( self ):
         self._layout_and_draw()
-    
+
     def _inside_border_width_changed ( self ):
         self._layout_and_draw()
-    
+
     def _inside_padding_width_changed(self):
         self._layout_needed = True
         self.request_redraw()
@@ -333,14 +333,14 @@ class Scrolled(Container):
     #---------------------------------------------------------------------------
 
     def _do_layout ( self ):
-        """ This is explicitly called by _draw(). 
+        """ This is explicitly called by _draw().
         """
         self.viewport_component.do_layout()
-        
+
         # Window is composed of border + scrollbar + canvas in each direction.
         # To compute the overall geometry, first calculate whether component.x
         # + the border fits in the x size of the window.
-        # If not, add sb, and decrease the y size of the window by the height of 
+        # If not, add sb, and decrease the y size of the window by the height of
         # the scrollbar.
         # Now, check whether component.y + the border is greater than the remaining
         # y size of the window.  If it is not, add a scrollbar and decrease the x size
@@ -365,7 +365,7 @@ class Scrolled(Container):
         need_y_scrollbar = (self.vert_scrollbar and \
                     ((available_y < cont_y_size) or self.always_show_sb)) or \
                     self.alternate_vsb
-        
+
         if need_x_scrollbar:
             available_y -= self.sb_height()
         if need_y_scrollbar:
@@ -488,7 +488,7 @@ class Scrolled(Container):
         if self._sb_bounds_frozen:
             self._vscroll_position_updated = True
             return
-        
+
         c = self.component
         viewport = self.viewport_component
         offsety = getattr(c, "bounds_offset", [0,0])[1]

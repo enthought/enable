@@ -66,7 +66,7 @@
       container->af_script_classes[ss] = &container->af_script_classes_rec[ss];
     }
     container->af_script_classes[AF_SCRIPT_CLASSES_COUNT-1] = NULL;
-    
+
     /* add call to initialization function when you add new scripts */
     ss = 0;
     FT_Init_Class_af_dummy_script_class(&container->af_script_classes_rec[ss++]);
@@ -75,7 +75,7 @@
 #endif
     FT_Init_Class_af_latin_script_class(&container->af_script_classes_rec[ss++]);
     FT_Init_Class_af_cjk_script_class(&container->af_script_classes_rec[ss++]);
-    FT_Init_Class_af_indic_script_class(&container->af_script_classes_rec[ss++]);    
+    FT_Init_Class_af_indic_script_class(&container->af_script_classes_rec[ss++]);
 
     FT_Init_Class_af_autofitter_service(library, &container->af_autofitter_service);
 

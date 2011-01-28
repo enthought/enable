@@ -7,10 +7,10 @@ from enthought.traits.api import Bool, Enum, Float, Tuple
 from drag_tool import DragTool
 
 class ViewportPanTool(DragTool):
-    """ A tool that enables the user to pan around a viewport by clicking a 
+    """ A tool that enables the user to pan around a viewport by clicking a
     mouse button and dragging.
     """
-    
+
     # The cursor to use when panning.
     drag_pointer = Pointer("hand")
 
@@ -23,19 +23,19 @@ class ViewportPanTool(DragTool):
     # direction.  To do so, set constrain=True, constrain_key=None, and
     # constrain_direction to the desired direction.
     constrain_key = Enum(None, "shift", "control", "alt")
-    
+
     # Constrain the panning to one direction?
     constrain = Bool(False)
-    
-    # The direction of constrained draw. A value of None means that the user 
-    # has initiated the drag and pressed the constrain_key, but hasn't moved 
-    # the mouse yet; the magnitude of the components of the next mouse_move 
+
+    # The direction of constrained draw. A value of None means that the user
+    # has initiated the drag and pressed the constrain_key, but hasn't moved
+    # the mouse yet; the magnitude of the components of the next mouse_move
     # event will determine the constrain_direction.
     constrain_direction = Enum(None, "x", "y")
-    
+
     # (x,y) of the point where the mouse button was pressed.
     _original_xy = Tuple
-    
+
     # Data coordinates of **_original_xy**.  This may be either (index,value)
     # or (value,index) depending on the component's orientation.
     _original_data = Tuple
@@ -43,8 +43,8 @@ class ViewportPanTool(DragTool):
     # Was constrain=True triggered by the **contrain_key**? If False, it was
     # set programmatically.
     _auto_constrain = Bool(False)
-    
-    
+
+
     #------------------------------------------------------------------------
     # Inherited BaseTool traits
     #------------------------------------------------------------------------
@@ -65,7 +65,7 @@ class ViewportPanTool(DragTool):
         return
 
     def dragging(self, event):
-        """ Handles the mouse being moved when the tool is in the 'panning' 
+        """ Handles the mouse being moved when the tool is in the 'panning'
         state.
         """
         if self._auto_constrain and self.constrain_direction is None:
@@ -86,14 +86,14 @@ class ViewportPanTool(DragTool):
             if self.component.enable_zoom:
                 delta /= self.component.zoom
             new_position[ndx] -= delta
-        
+
         if self.constrain:
             self.component.view_position[self.constrain_direction] = \
                         new_position[self.constrain_direction]
         else:
             self.component.view_position = new_position
         event.handled = True
-        
+
         self._original_xy = (event.x, event.y)
         self.component.request_redraw()
         return

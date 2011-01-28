@@ -21,21 +21,21 @@ class Circle(Component):
     """
     color = (0.0, 0.0, 1.0, 1.0)
     bgcolor = "none"
-    
+
     normal_pointer = Pointer("arrow")
     moving_pointer = Pointer("hand")
-    
+
     offset_x = Float
     offset_y = Float
-    
+
     shadow_type = Enum("light", "dashed")
     shadow = Instance(Component)
-    
+
     def __init__(self, **traits):
         Component.__init__(self, **traits)
         self.pointer = self.normal_pointer
         return
-    
+
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         with gc:
             gc.set_fill_color(self.color)
@@ -45,11 +45,11 @@ class Circle(Component):
             gc.arc(x+dx/2.0, y+dy/2.0, radius, 0.0, 2*3.14159)
             gc.fill_path()
         return
-    
+
     def normal_left_down(self, event):
         self.event_state = "moving"
         self.pointer = self.moving_pointer
-        
+
         # Create our shadow
         if self.shadow_type == "light":
             klass = LightCircle
@@ -83,11 +83,11 @@ class Circle(Component):
 
 
 class LightCircle(Component):
-    
+
     color = Tuple
     bgcolor = "none"
     radius = Float(1.0)
-    
+
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         with gc:
             gc.set_fill_color(self.color[0:3] + (self.color[3]*0.3,))
@@ -99,12 +99,12 @@ class LightCircle(Component):
         return
 
 class DashedCircle(Component):
-    
+
     color = Tuple
     bgcolor = "none"
     radius = Float(1.0)
     line_dash = array([2.0, 2.0])
-    
+
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         with gc:
             gc.set_fill_color(self.color)
@@ -134,5 +134,5 @@ class MyFrame(DemoFrame):
 
 if __name__ == "__main__":
     demo_main(MyFrame, title="Click and drag to move the circles")
-    
+
 # EOF

@@ -102,7 +102,7 @@ class Circle(Component):
         return
 
     def moving_mouse_move(self, event):
-        self.position = [self.x + (event.x - self.prev_x), 
+        self.position = [self.x + (event.x - self.prev_x),
                          self.y + (event.y - self.prev_y)]
         self.prev_x = event.x
         self.prev_y = event.y

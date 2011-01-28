@@ -6,7 +6,7 @@ from enthought.enable.label import Label
 from enthought.enable.api import Component, Container, Pointer, Window
 
 class MyFrame(DemoFrame):
-    
+
     def _create_window(self):
         label = Label(bounds=[100, 50], position=[50,50], text="HELLO")
         label.bgcolor = "red"

@@ -20,7 +20,7 @@ def main():
     rwi = scene.interactor
 
     # Create the Enable Window
-    window = EnableVTKWindow(rwi, renderer, 
+    window = EnableVTKWindow(rwi, renderer,
             component=container,
             #istyle_class = tvtk.InteractorStyleSwitch,
             istyle_class = tvtk.InteractorStyle,

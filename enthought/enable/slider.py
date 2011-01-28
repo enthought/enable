@@ -13,7 +13,7 @@ from component import Component
 from markers import MarkerNameDict, marker_names, CustomMarker
 
 slider_marker_names = list(marker_names) + ["rect"]
-SliderMarkerTrait = Trait("rect", "rect", MarkerNameDict, 
+SliderMarkerTrait = Trait("rect", "rect", MarkerNameDict,
                     editor=EnumEditor(values=slider_marker_names))
 
 
@@ -23,7 +23,7 @@ class Slider(Component):
     #------------------------------------------------------------------------
     # Model traits
     #------------------------------------------------------------------------
-    
+
     min = Float()
 
     max = Float()
@@ -98,7 +98,7 @@ class Slider(Component):
     #------------------------------------------------------------------------
     # Interaction traits
     #------------------------------------------------------------------------
-    
+
     # Can this slider be interacted with, or is it just a display
     interactive = Bool(True)
 
@@ -159,7 +159,7 @@ class Slider(Component):
         elif self.min == self.max:
             coord[axis_ndx] = (screen_low + screen_high) / 2
             return coord
-        
+
         # Handle normal cases
         coord[axis_ndx] = (val - self.min) / (self.max - self.min) * self.bounds[axis_ndx] + screen_low
         return coord
@@ -204,7 +204,7 @@ class Slider(Component):
 
     def set_slider_pixels(self, pixels):
         """ Sets the width of the slider to be a fixed number of pixels
-        
+
         Parameters
         ==========
         pixels : int
@@ -228,7 +228,7 @@ class Slider(Component):
 
     def set_endcap_pixels(self, pixels):
         """ Sets the width of the endcap to be a fixed number of pixels
-        
+
         Parameters
         ==========
         pixels : int
@@ -252,7 +252,7 @@ class Slider(Component):
 
     def set_tick_pixels(self, pixels):
         """ Sets the width of the tick marks to be a fixed number of pixels
-        
+
         Parameters
         ==========
         pixels : int
@@ -300,7 +300,7 @@ class Slider(Component):
                 end_y = bar_y + self._cached_endcap_size / 2
                 gc.move_to(self.x, start_y)
                 gc.line_to(self.x, end_y)
-                gc.move_to(self.x2, start_y) 
+                gc.move_to(self.x2, start_y)
                 gc.line_to(self.x2, end_y)
             if self.num_ticks > 0:
                 x_pts = linspace(self.x, self.x2, self.num_ticks+2).astype(int)
@@ -506,4 +506,4 @@ class Slider(Component):
                 self._cached_endcap_size = int(self.width * self._endcap_percent)
 
         return
- 
+

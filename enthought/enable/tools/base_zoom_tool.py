@@ -10,7 +10,7 @@ class BaseZoomTool(HasTraits):
     """ Defines traits and methods to actually perform the logic of zooming
     onto a plot.
     """
-    
+
     # If the tool only applies to a particular axis, this attribute is used to
     # determine which range to use.
     axis = Enum("x", "y")
@@ -22,7 +22,7 @@ class BaseZoomTool(HasTraits):
     # The maximum ratio between the zoomed-out data space bounds and the original
     # bounds.  If None, then there is no limit.
     max_zoom_out_factor = Float(1e5, allow_none=True)
-    
+
     def _zoom_limit_reached(self, orig_position, orig_bounds, new_position, new_bounds):
         """ Returns True if the new low and high exceed the maximum zoom
         limits
@@ -33,7 +33,7 @@ class BaseZoomTool(HasTraits):
             # range will certainly exceed whatever zoom factor is set.
             # In this case, we just allow unbounded levels of zoom.
             return False
-        
+
         if allclose(orig_bounds, 0.0):
             return True
         if allclose(new_bounds, 0.0):
@@ -55,7 +55,7 @@ class BaseZoomTool(HasTraits):
             return 0
         else:
             return 1
-    
+
     def _get_axis_coord(self, event, axis="x"):
         """ Returns the coordinate of the event along the axis of interest
         to the tool (or along the orthogonal axis, if axis="value").
@@ -72,7 +72,7 @@ class BaseZoomTool(HasTraits):
         """
         if self.axis == "x":
             return 0
-        else:   
+        else:
             return 1
 
 # EOF

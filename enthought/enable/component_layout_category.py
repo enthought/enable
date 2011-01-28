@@ -28,6 +28,6 @@ class ComponentLayoutCategory(Category, Component):
 
     def set_padding(self, left, right, top, bottom):
         pass
-    
+
     def get_padding(self):
         pass

@@ -485,7 +485,7 @@
                                                     psnames );
         *registry = cff->registry;
       }
-      
+
       if ( ordering )
       {
         if ( cff->ordering == NULL )
@@ -509,7 +509,7 @@
         *supplement = (FT_Int)dict->cid_supplement;
       }
     }
-      
+
   Fail:
     return error;
   }

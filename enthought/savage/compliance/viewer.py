@@ -51,8 +51,8 @@ class XMLTree(wx.TreeCtrl):
         self.addElementToTree(self.tree.getroot(), None)
         self.SetPyData(self.GetRootItem(), self.tree.getroot())
         self.Expand(self.GetRootItem())
-        
-            
+
+
     def addElementToTree(self, element, node):
         """ Recursively adds an element to the tree.
         element is the element being added, node is the parent node.
@@ -85,10 +85,10 @@ class ViewFrame(wx.Frame):
         wx.Frame.__init__(self, parent, style=wx.DEFAULT_FRAME_STYLE | wx.CLIP_CHILDREN)
         self._mgr = wx.aui.AuiManager()
         self._mgr.SetManagedWindow(self)
-        
+
         self.wrap = wx.Panel(self)
         self.profileLoading = True
-        
+
         self.tree = XMLTree(self, None)
         self.profileResults = ProfileResults(self)
         self.render = RenderPanel(self.wrap)
@@ -97,12 +97,12 @@ class ViewFrame(wx.Frame):
         sz.Add(self.render, 1, wx.EXPAND|wx.RIGHT, 1)
         sz.Add(self.reference, 1, wx.EXPAND|wx.LEFT, 1)
         self.wrap.SetSizer(sz)
-        
+
         self.SetMenuBar(self.makeMenus())
         self.SetToolBar(self.makeToolBar())
-        
+
         self._mgr.AddPane(
-            self.tree, 
+            self.tree,
                 wx.aui.AuiPaneInfo().
                     Top().
                     CloseButton(False).
@@ -112,7 +112,7 @@ class ViewFrame(wx.Frame):
             "XML TREE"
         )
         self._mgr.AddPane(
-            self.profileResults, 
+            self.profileResults,
                 wx.aui.AuiPaneInfo().
                     Top().
                     CloseButton(False).
@@ -121,16 +121,16 @@ class ViewFrame(wx.Frame):
                     MinSize(self.tree.GetBestSize()),
             "PROFILE RESULTS"
         )
-        
+
         self._mgr.AddPane(
-            self.wrap, 
+            self.wrap,
             wx.aui.AuiPaneInfo().CentrePane().Caption("SVG Rendering"),
             "VIEWER"
-        )        
+        )
         self.CreateStatusBar(5)
         self.SetSize((800,600))
         self._mgr.Update()
-        
+
         self.Bind(wx.EVT_MENU, self.OnOpenFile, id=wx.ID_OPEN)
         def OnProfileLoading(evt):
             self.profileLoading = bool(evt.Checked())
@@ -140,12 +140,12 @@ class ViewFrame(wx.Frame):
         self.Bind(wx.EVT_CHOICE, self.OnChooseFile)
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnTreeSelectionChange)
         self.Bind(wx.EVT_UPDATE_UI, self.OnUpdateUI)
-        
-        
+
+
         self.filePicker.SetSelection(self.filePicker.FindString('shapes-rect-01-t'))
         self.OnChooseFile(None)
-        
-                
+
+
     def makeMenus(self):
         fileMenu = wx.Menu()
         mi = wx.MenuItem(fileMenu, wx.ID_FORWARD, "Profile loading", kind=wx.ITEM_CHECK)
@@ -154,11 +154,11 @@ class ViewFrame(wx.Frame):
         fileMenu.Append(wx.ID_REFRESH, "&Reload Current File\tF5")
         fileMenu.AppendSeparator()
         fileMenu.Append(wx.ID_EXIT, "E&xit")
-        
-        
+
+
         mb = wx.MenuBar()
         mb.Append(fileMenu, "&File")
-        
+
         return mb
 
     def makeToolBar(self):
@@ -167,27 +167,27 @@ class ViewFrame(wx.Frame):
         tb.AddControl(self.filePicker)
         tb.Realize()
         return tb
-    
+
     def getFileList(self):
         #look for the test files in the w3c dir
         files = os.listdir(self.getSVGDir())
         splitted = map(os.path.splitext, files)
-        
+
         return sorted(fname for fname, ext in splitted)
-    
+
     def getSVGDir(self):
         dir = os.path.dirname(__file__)
         dir = os.path.join(dir, "w3c_svg_11", "svg")
         return dir
-        
+
     def getPNGDir(self):
         dir = os.path.dirname(__file__)
         dir = os.path.join(dir, "w3c_svg_11", "png")
         return dir
-            
+
     def Reload(self, evt):
-        self.openFile(self.currentFile)        
-    
+        self.openFile(self.currentFile)
+
     def openFile(self, filenameOrBuffer):
         start = time.time()
         tree = etree.parse(filenameOrBuffer)
@@ -204,22 +204,22 @@ class ViewFrame(wx.Frame):
                 self.profileResults.SetResults(results)
             else:
                 self.profileResults.SetResults(None)
-                
+
             self.render.document = self.document
         except:
             #pdb.set_trace()
             import traceback
             self.render.document = None
             traceback.print_exc()
-        
+
         amount = time.time() - start
         self.tree.updateTree(tree)
         self.SetStatusText("Loaded in %2f seconds" % amount, self.LOAD_TIME)
         self.SetStatusText(filenameOrBuffer)
         self.currentFile = filenameOrBuffer
-        
+
         self.Refresh()
-    
+
     def OnChooseFile(self, evt):
         fname = self.filePicker.GetString(self.filePicker.GetSelection())
         if fname == '':
@@ -231,13 +231,13 @@ class ViewFrame(wx.Frame):
             self.reference.bmp = wx.Bitmap(png)
         else:
             self.reference.bmp = None
-        
+
     def OnOpenFile(self, evt):
         dlg = wx.FileDialog(self)
         if dlg.ShowModal() == wx.ID_OK:
             self.openFile(dlg.GetPath())
             self.reference.bmp = None
-        
+
     def OnTreeSelectionChange(self, evt):
         item = self.tree.GetSelection()
         element = self.tree.GetItemPyData(item)
@@ -245,14 +245,14 @@ class ViewFrame(wx.Frame):
             return
         path = self.document.paths[element]
         print path
-        
+
     def OnUpdateUI(self, evt):
         if self.render.lastRender is not None:
             self.SetStatusText("Rendered in %2f seconds" % self.render.lastRender, self.RENDER_TIME)
         if evt.Id == wx.ID_FORWARD:
             evt.Checked = self.profileLoading
 
-        
+
 if __name__ == '__main__':
     try:
         import psyco

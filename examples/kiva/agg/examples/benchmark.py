@@ -15,13 +15,13 @@ def benchmark_real_time(cycles=10,n_pts=1000,sz=(1000,1000)):
     """ Render a sin wave to the screen repeatedly.  Clears
         the screen between each rendering.
     """
-    print 'realtime:', 
+    print 'realtime:',
     width,height = sz
     pts = zeros((n_pts,2),Float)
     x = pts[:,0]
     y = pts[:,1]
     interval = width / float(n_pts)
-    x[:] = arange(0,width,interval)    
+    x[:] = arange(0,width,interval)
     t1 = time.clock()
     gc = agg.GraphicsContextBitmap(sz)
     for i in range(cycles):
@@ -44,37 +44,37 @@ def benchmark_compiled_path(cycles=10,n_pts=1000,sz=(1000,1000)):
     x = pts[:,0]
     y = pts[:,1]
     interval = width / float(n_pts)
-    x[:] = arange(0,width,interval)    
+    x[:] = arange(0,width,interval)
     y[:] = height/2. + height/2. * sin(x*2*pi/n_pts)
     path = agg.CompiledPath()
     path.lines(pts)
     #path.move_to(pts[0,0],pts[0,1])
     #for x,y in pts[1:]:
     #    path.line_to(x,y)
-        
+
     t1 = time.clock()
     gc = agg.GraphicsContextBitmap(sz)
-    for i in range(cycles):        
+    for i in range(cycles):
         #gc.clear()
         gc.add_path(path)
-        gc.stroke_path()        
+        gc.stroke_path()
     t2 = time.clock()
-    
+
     tot_time = t2 - t1
     print 'tot,per cycle:', tot_time, tot_time/cycles
     return
 
 
 def benchmark_draw_path_flags(cycles=10,n_pts=1000,sz=(1000,1000)):
-    print 'realtime:', 
+    print 'realtime:',
     width,height = sz
     pts = zeros((n_pts,2),Float)
     x = pts[:,0]
     y = pts[:,1]
     interval = width / float(n_pts)
-    x[:] = arange(0,width,interval)    
-    
-    flags = [kiva.FILL, kiva.EOF_FILL, kiva.STROKE, 
+    x[:] = arange(0,width,interval)
+
+    flags = [kiva.FILL, kiva.EOF_FILL, kiva.STROKE,
              kiva.FILL_STROKE, kiva.EOF_FILL_STROKE]
 
     for flag in flags:
@@ -84,13 +84,13 @@ def benchmark_draw_path_flags(cycles=10,n_pts=1000,sz=(1000,1000)):
             y[:] = height/2. + height/2. * sin(x*2*pi/width+i*interval)
             gc.lines(pts)
             gc.draw_path(flag)
-            
+
         t2 = time.clock()
         agg.write_bmp_rgb24("draw_path%d.bmp" % flag,gc.bitmap)
         tot_time = t2 - t1
         print 'tot,per cycle:', tot_time, tot_time/cycles
     return
-    
+
 
 def star_array(size=40):
     half_size = size * .5
@@ -121,8 +121,8 @@ def star_path_gen(size = 40):
         star_path.line_to(x,y)
     star_path.close_path()
     return star_path
-    
-    
+
+
 def benchmark_individual_symbols(n_pts=1000,sz=(1000,1000)):
     "Draws some stars"
     width,height = sz
@@ -130,7 +130,7 @@ def benchmark_individual_symbols(n_pts=1000,sz=(1000,1000)):
     print pts[5,:]
     print shape(pts)
     star_path = star_path_gen()
-                
+
     gc = agg.GraphicsContextArray(sz)
     gc.set_fill_color((1.0,0.0,0.0,0.1))
     gc.set_stroke_color((0.0,1.0,0.0,0.6))
@@ -145,7 +145,7 @@ def benchmark_individual_symbols(n_pts=1000,sz=(1000,1000)):
     tot_time = t2 - t1
     print 'star count, tot,per shape:', n_pts, tot_time, tot_time / n_pts
     return
-    
+
 
 def benchmark_rect(n_pts=1000,sz=(1000,1000)):
     "Draws a number of randomly-placed renctangles."
@@ -153,7 +153,7 @@ def benchmark_rect(n_pts=1000,sz=(1000,1000)):
     pts = stats.norm.rvs(size=(n_pts,2)) * array(sz)/8. + array(sz)/2.
     print pts[5,:]
     print shape(pts)
-                
+
     gc = agg.GraphicsContextArray(sz)
     gc.set_fill_color((1.0,0.0,0.0,0.1))
     gc.set_stroke_color((0.0,1.0,0.0,0.6))
@@ -168,8 +168,8 @@ def benchmark_rect(n_pts=1000,sz=(1000,1000)):
     tot_time = t2 - t1
     print 'rect count, tot,per shape:', n_pts, tot_time, tot_time / n_pts
     return
-    
-    
+
+
 def benchmark_symbols_all_at_once(n_pts=1000,sz=(1000,1000)):
     """
     Renders all the symbols.
@@ -178,20 +178,20 @@ def benchmark_symbols_all_at_once(n_pts=1000,sz=(1000,1000)):
     pts = stats.norm.rvs(size=(n_pts,2)) * array(sz)/8. + array(sz)/2.
     star_path = agg.CompiledPath()
     star_path.lines(circle_array())
-    
-    
+
+
     gc = agg.GraphicsContextArray(sz)
     gc.set_fill_color((1.0,0.0,0.0,0.1))
     gc.set_stroke_color((0.0,1.0,0.0,0.6))
     path = agg.CompiledPath()
     t1 = time.clock()
-    for x,y in pts:        
+    for x,y in pts:
         path.save_ctm()
         path.translate_ctm(x,y)
         path.add_path(star_path)
         path.restore_ctm()
     gc.add_path(path)
-    t2 = time.clock()    
+    t2 = time.clock()
     gc.draw_path()
     t3 = time.clock()
     gc.save("benchmark_symbols2.bmp")

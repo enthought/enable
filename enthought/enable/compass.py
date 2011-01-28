@@ -74,7 +74,7 @@ class Compass(Component):
 
     def mouse_up(self):
         """ Called when the mouse is released.  This gets called after
-        self.clicked is unset. 
+        self.clicked is unset.
         """
         pass
 
@@ -161,7 +161,7 @@ class Compass(Component):
                 half_width = self.triangle_width / 2
                 gc.begin_path()
                 gc.lines( [(-half_width, -half_height),
-                           (0, half_height), 
+                           (0, half_height),
                            (half_width, -half_height),
                            (-half_width, -half_height),
                            (0, half_height)] )
@@ -170,17 +170,17 @@ class Compass(Component):
                 gc.translate_ctm(-dx, -dy)
 
             if self.event_state == "clicked" and self.clicked == 'c':
-                # Fill in the center 
+                # Fill in the center
                 gc.set_fill_color(self.clicked_color_)
                 half_width = self.triangle_width / 2
                 gc.begin_path()
                 gc.lines( [(-half_width, -half_width),
-                           (half_width, -half_height), 
+                           (half_width, -half_height),
                            (half_width, half_width),
                            (-half_width, half_width),
                            (-half_width, -half_width)] )
                 gc.draw_path()
-            
+
         finally:
             gc.restore_state()
 

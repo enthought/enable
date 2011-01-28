@@ -31,7 +31,7 @@ class test_fill_equal(unittest.TestCase):
         assert(not basecore2d.fill_equal(array([0,0,0,0]),array([0,0,0,1])))
         assert(not basecore2d.fill_equal(array([0,0,0,0]),array([1,0,0,0])))
 
-class LineStateTestCase(unittest.TestCase):    
+class LineStateTestCase(unittest.TestCase):
     def create_ls(self):
         color = array([0,0,0,1])
         width = 2
@@ -42,11 +42,11 @@ class LineStateTestCase(unittest.TestCase):
         dash = (phase,pattern)
         ls = basecore2d.LineState(color,width,cap,join,dash)
         return ls
-                
+
     def test_create(self):
         self.create_ls()
-           
-    def test_color_on_copy(self):        
+
+    def test_color_on_copy(self):
         # The following test to make sure that a copy
         # was actually made of the line_color container(array).
         # If it isn't, both ls1 and ls2 will point at the same
@@ -57,13 +57,13 @@ class LineStateTestCase(unittest.TestCase):
         ls1.line_color[1] = 10
         assert(not basecore2d.line_state_equal(ls1,ls2))
 
-    def test_dash_on_copy(self):        
+    def test_dash_on_copy(self):
         ls1 = self.create_ls()
         ls2 = ls1.copy()
         ls1.line_dash[1][0] = 10
         assert(not basecore2d.line_state_equal(ls1,ls2))
 
-    def test_cmp_for_different_length_dash_patterns(self):        
+    def test_cmp_for_different_length_dash_patterns(self):
         ls1 = self.create_ls()
         ls2 = ls1.copy()
         ls1.line_dash = (ls1.line_dash[0],array([10,10,10,10]))
@@ -75,21 +75,21 @@ class LineStateTestCase(unittest.TestCase):
         assert(basecore2d.line_state_equal(ls1,ls2))
 
     #line_dash no longer allowed to be none.
-    #def test_cmp_with_dash_as_none(self):                
+    #def test_cmp_with_dash_as_none(self):
     #    ls1 = self.create_ls()
     #    ls2 = ls1.copy()
     #    #ls1.line_dash = None
     #    assert(not basecore2d.line_state_equal(ls1,ls2))
-    
+
 class GraphicsContextTestCase(unittest.TestCase):
-    
+
     def test_create_gc(self):
         gc = basecore2d.GraphicsContextBase()
-    
+
     #----------------------------------------------------------------
     # Test ctm transformations
     #----------------------------------------------------------------
-    
+
     def test_get_ctm(self):
         gc = basecore2d.GraphicsContextBase()
         # default ctm should be identity matrix.
@@ -114,7 +114,7 @@ class GraphicsContextTestCase(unittest.TestCase):
         gc.rotate_ctm(angle)
         actual = gc.get_ctm()
         assert(alltrue(ravel(actual == desired)))
-    
+
     def test_translate_ctm(self):
         gc = basecore2d.GraphicsContextBase()
         ident = affine.affine_identity()
@@ -136,8 +136,8 @@ class GraphicsContextTestCase(unittest.TestCase):
 
     #-------------------------------------------------------------------------
     # Setting drawing state variables
-    # 
-    # These tests also check that the value is restored correctly with 
+    #
+    # These tests also check that the value is restored correctly with
     # save/restore state.
     #
     # Checks are only done to see if variables are represented correctly in
@@ -146,11 +146,11 @@ class GraphicsContextTestCase(unittest.TestCase):
     # device_update_line_state and device_update_fill_state routines which
     # access the state variables.
     #
-    # Note: The tests peek into the state object to see if the if state 
-    #       variables are set.  This ain't perfect, but core2d doesn't 
+    # Note: The tests peek into the state object to see if the if state
+    #       variables are set.  This ain't perfect, but core2d doesn't
     #       define accessor functions...
     #-------------------------------------------------------------------------
-    
+
     def test_state_antialias(self):
         gc = basecore2d.GraphicsContextBase()
         # defaults to 1
@@ -172,12 +172,12 @@ class GraphicsContextTestCase(unittest.TestCase):
         assert(gc.state.line_width == 10)
         gc.restore_state()
         assert(gc.state.line_width == 5)
-    
+
     def test_state_line_join(self):
         gc = basecore2d.GraphicsContextBase()
         # defaults to JOIN_MITER
         assert(gc.state.line_join == constants.JOIN_MITER)
-        gc.set_line_join(constants.JOIN_BEVEL)        
+        gc.set_line_join(constants.JOIN_BEVEL)
         gc.save_state()
         gc.set_line_join(constants.JOIN_ROUND)
         assert(gc.state.line_join == constants.JOIN_ROUND)
@@ -209,30 +209,30 @@ class GraphicsContextTestCase(unittest.TestCase):
         assert(gc.state.line_cap == constants.CAP_BUTT)
         # set_line_cap should fail if one attempts to set a bad value.
         self.failUnlessRaises(ValueError,gc.set_line_cap,(100,))
-    
+
     def test_state_line_dash(self):
         gc = basecore2d.GraphicsContextBase()
         # defaults to non-dashed line
         assert(not gc.state.is_dashed())
         gc.set_line_dash([1.0,2.0],phase = 2.0)
         gc.save_state()
-        
+
         gc.set_line_dash([3.0,4.0])
         assert(gc.state.is_dashed())
         assert(gc.state.line_dash[0] == 0)
         assert(alltrue(ravel(gc.state.line_dash[1] == array([3.0,4.0]))))
-        
+
         gc.restore_state()
         assert(gc.state.is_dashed())
         assert(gc.state.line_dash[0] == 2.0)
         assert(alltrue(ravel(gc.state.line_dash[1] == array([1.0,2.0]))))
-        
+
         # pattern must be a container with atleast two values
         self.failUnlessRaises(ValueError,gc.set_line_cap,(100,))
         self.failUnlessRaises(ValueError,gc.set_line_cap,([100],))
         # phase must be positive.
         self.failUnlessRaises(ValueError,gc.set_line_cap,([100,200],-1))
-    
+
     def test_state_flatness(self):
         gc = basecore2d.GraphicsContextBase()
         # defaults to None
@@ -300,9 +300,9 @@ class GraphicsContextTestCase(unittest.TestCase):
         assert(gc.state.text_drawing_mode == constants.TEXT_OUTLINE)
         # try an unacceptable value.
         self.failUnlessRaises(ValueError,gc.set_text_drawing_mode,(10,))
-        
+
     #-------------------------------------------------------------------------
-    # Use context manager for saving and restoring state. 
+    # Use context manager for saving and restoring state.
     #-------------------------------------------------------------------------
 
     def test_state_context_manager(self):
@@ -371,12 +371,12 @@ class GraphicsContextTestCase(unittest.TestCase):
 
     def test_begin_page(self):
         #just to let me know it needs implementation.
-        gc = basecore2d.GraphicsContextBase()       
+        gc = basecore2d.GraphicsContextBase()
         gc.begin_page()
 
     def test_end_page(self):
         #just to let me know it needs implementation.
-        gc = basecore2d.GraphicsContextBase()       
+        gc = basecore2d.GraphicsContextBase()
         gc.end_page()
 
     #-------------------------------------------------------------------------
@@ -384,21 +384,21 @@ class GraphicsContextTestCase(unittest.TestCase):
     # These are implemented yet.  The tests are just here to remind me that
     # they need to be.
     #-------------------------------------------------------------------------
-        
+
     def test_synchronize(self):
         #just to let me know it needs implementation.
-        gc = basecore2d.GraphicsContextBase()       
+        gc = basecore2d.GraphicsContextBase()
         gc.synchronize()
-    
+
     def test_flush(self):
         #just to let me know it needs implementation.
-        gc = basecore2d.GraphicsContextBase()       
-        gc.flush()    
+        gc = basecore2d.GraphicsContextBase()
+        gc.flush()
     #-------------------------------------------------------------------------
     # save/restore state.
     #
-    # Note: These test peek into the state object to see if the if state 
-    #       variables are set.  This ain't perfect, but core2d doesn't 
+    # Note: These test peek into the state object to see if the if state
+    #       variables are set.  This ain't perfect, but core2d doesn't
     #       define accessor functions...
     #
     # items that need to be tested:
@@ -406,7 +406,7 @@ class GraphicsContextTestCase(unittest.TestCase):
     #   clip region (not implemented)
     #   line width
     #   line join
-    #   
+    #
     #-------------------------------------------------------------------------
     def test_save_state_line_width(self):
         gc = basecore2d.GraphicsContextBase()
@@ -420,18 +420,18 @@ class GraphicsContextTestCase(unittest.TestCase):
     #-------------------------------------------------------------------------
     # Test drawing path empty
     #-------------------------------------------------------------------------
-        
+
     def test_is_path_empty1(self):
         """ A graphics context should start with an empty path.
         """
-        gc = basecore2d.GraphicsContextBase()    
+        gc = basecore2d.GraphicsContextBase()
         assert(gc.is_path_empty())
-        
+
     def test_is_path_empty2(self):
         """ A path that has moved to a point, but still hasn't drawn
             anything is empty.
-        """        
-        gc = basecore2d.GraphicsContextBase()    
+        """
+        gc = basecore2d.GraphicsContextBase()
         x,y = 1.,2.
         gc.move_to(x,y)
         assert(gc.is_path_empty())
@@ -439,19 +439,19 @@ class GraphicsContextTestCase(unittest.TestCase):
     def test_is_path_empty3(self):
         """ A path that has moved to a point multiple times, but hasn't drawn
             anything is empty.
-        """        
-        gc = basecore2d.GraphicsContextBase()    
+        """
+        gc = basecore2d.GraphicsContextBase()
         x,y = 1.,2.
         gc.move_to(x,y)
         # this should create another path.
         x,y = 1.,2.5
-        gc.move_to(x,y)        
+        gc.move_to(x,y)
         assert(gc.is_path_empty())
-    
+
     def test_is_path_empty4(self):
         """ We've added a line, so the path is no longer empty.
         """
-        gc = basecore2d.GraphicsContextBase()    
+        gc = basecore2d.GraphicsContextBase()
         x,y = 1.,2.
         gc.move_to(x,y)
         gc.line_to(x,y)
@@ -459,15 +459,15 @@ class GraphicsContextTestCase(unittest.TestCase):
 
     #-------------------------------------------------------------------------
     # Test drawing path add line
-    # 
+    #
     # Testing needed!
     #-------------------------------------------------------------------------
-    
+
     def test_add_line(self):
         """
         """
-        pass                
-        
+        pass
+
 ##################################################
 
 if __name__ == "__main__":

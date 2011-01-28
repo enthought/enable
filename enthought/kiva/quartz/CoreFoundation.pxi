@@ -52,11 +52,11 @@ cdef extern from "CoreFoundation/CoreFoundation.h":
 
     ctypedef CFTypeRef CFURLRef
 
-    CFURLRef CFURLCreateWithFileSystemPath(void* allocator, 
+    CFURLRef CFURLCreateWithFileSystemPath(void* allocator,
         CFStringRef filePath, CFURLPathStyle pathStyle, bool isDirectory)
     void CFShow(CFTypeRef cf)
     CFTypeID CFGetTypeID(CFTypeRef cf)
 
     ctypedef CFTypeRef CFDictionaryRef
-    
-    
+
+

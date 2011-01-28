@@ -105,7 +105,7 @@ cdef extern from "ATSUnicode.h":
     ctypedef enum:
         kFontNoPlatformCode
         kFontNoScriptCode
-        kFontNoLanguageCode     
+        kFontNoLanguageCode
 
     ctypedef void* ATSUAttributeValuePtr
     ctypedef void* ConstATSUAttributeValuePtr
@@ -131,7 +131,7 @@ cdef extern from "ATSUnicode.h":
 
     ctypedef enum:
         kATSUInvalidFontID = 0
-    
+
     ctypedef enum:
         kATSUUseLineControlWidth = 0x7FFFFFFF
 

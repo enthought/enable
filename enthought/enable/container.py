@@ -131,7 +131,7 @@ class Container(Component):
 
     # Used by the resolver to cache previous lookups
     _lookup_cache = Any
-    
+
     # This container can render itself in a different mode than what it asks of
     # its contained components.  This attribute stores the rendering mode that
     # this container requests of its children when it does a _draw(). If the
@@ -293,12 +293,12 @@ class Container(Component):
 
 
     def _dispatch_draw(self, layer, gc, view_bounds, mode):
-        """ Renders the named *layer* of this component. 
+        """ Renders the named *layer* of this component.
         """
         new_bounds = self._transform_view_bounds(view_bounds)
         if new_bounds == empty_rectangle:
             return
-        
+
         if self.layout_needed:
             self.do_layout()
 
@@ -308,7 +308,7 @@ class Container(Component):
             my_handler = getattr(self, "_draw_container_" + layer, None)
             if my_handler:
                 my_handler(gc, view_bounds, mode)
-        
+
         # Now transform coordinates and draw the children
         visible_components = self._get_visible_components(new_bounds)
         if visible_components:
@@ -317,8 +317,8 @@ class Container(Component):
                 gc.translate_ctm(*self.position)
                 for component in visible_components:
                     if component.unified_draw:
-                        # Plot containers that want unified_draw only get 
-                        # called if their draw_layer matches the current layer 
+                        # Plot containers that want unified_draw only get
+                        # called if their draw_layer matches the current layer
                         # we're rendering
                         if component.draw_layer == layer:
                             component._draw(gc, new_bounds, mode)
@@ -326,8 +326,8 @@ class Container(Component):
                         component._dispatch_draw(layer, gc, new_bounds, mode)
             finally:
                 gc.restore_state()
-        
-        # The container's annotation and overlay layers draw over those of 
+
+        # The container's annotation and overlay layers draw over those of
         # its components.
         # FIXME: This needs to be abstracted so that when subclasses override
         # the draw_order list, these are pulled from the subclass list instead
@@ -336,15 +336,15 @@ class Container(Component):
             my_handler = getattr(self, "_draw_container_" + layer, None)
             if my_handler:
                 my_handler(gc, view_bounds, mode)
-        
+
         return
     def _draw_container(self, gc, mode="default"):
         "Draw the container background in a specified graphics context"
         pass
-        
+
     def _draw_container_background(self, gc, view_bounds=None, mode="normal"):
         self._draw_background(gc, view_bounds, mode)
-        
+
     def _draw_container_overlay(self, gc, view_bounds=None, mode="normal"):
         self._draw_overlay(gc, view_bounds, mode)
 
@@ -358,12 +358,12 @@ class Container(Component):
         """ Returns a list of this plot's children that are in the bounds. """
         if bounds is None:
             return [c for c in self.components if c.visible]
-        
+
         visible_components = []
         for component in self.components:
             if not component.visible:
                 continue
-            tmp = intersect_bounds(component.outer_position + 
+            tmp = intersect_bounds(component.outer_position +
                                    component.outer_bounds, bounds)
             if tmp != empty_rectangle:
                 visible_components.append(component)
@@ -421,7 +421,7 @@ class Container(Component):
         # For now, just punt and call compact()
         if self.auto_size:
             self.compact()
-    
+
     def _component_position_changed(self, component):
         "Called by contained objects when their position changes"
         # For now, just punt and call compact()
@@ -580,7 +580,7 @@ class Container(Component):
         return
 
 
-    
+
     #------------------------------------------------------------------------
     # Event handlers
     #------------------------------------------------------------------------
@@ -639,7 +639,7 @@ class Container(Component):
     def _draw_component(self, gc, view_bounds=None, mode="normal"):
         """ Draws the component.
 
-        This method is preserved for backwards compatibility. Overrides 
+        This method is preserved for backwards compatibility. Overrides
         the implementation in Component.
         """
         gc.save_state()
@@ -654,22 +654,22 @@ class Container(Component):
         return
 
     def _draw_children(self, gc, view_bounds=None, mode="normal"):
-        
+
         new_bounds = self._transform_view_bounds(view_bounds)
         if new_bounds == empty_rectangle:
             return
-        
+
         gc.save_state()
         try:
             gc.set_antialias(False)
             gc.translate_ctm(*self.position)
             for component in self.components:
                 if new_bounds:
-                    tmp = intersect_bounds(component.outer_position + 
+                    tmp = intersect_bounds(component.outer_position +
                                            component.outer_bounds, new_bounds)
                     if tmp == empty_rectangle:
                         continue
-                
+
                 gc.save_state()
                 try:
                     component.draw(gc, new_bounds, mode)

@@ -61,12 +61,12 @@ text_draw_modes = {'FILL': (constants.TEXT_FILL,
                   }
 
 class PixelMap(object):
-    
+
     def __init__(self, surface, width, height):
         self.surface = surface
         self.width = width
         self.height = height
-        
+
     def draw_to_wxwindow(self, window, x, y):
         import wx
         window_dc = getattr(window,'_dc',None)
@@ -81,7 +81,7 @@ class PixelMap(object):
         window_dc.DrawBitmap(bmp,x,y)
         window_dc.EndDrawing()
         return
-    
+
     def convert_to_rgbarray(self):
         pixels = numpy.frombuffer(self.surface.get_data(), numpy.uint8)
 
@@ -89,10 +89,10 @@ class PixelMap(object):
         green = pixels[1::4]
         blue = pixels[0::4]
         return numpy.vstack((red, green, blue)).T.flatten()
-    
+
     def convert_to_argbarray(self, flip=False):
         pixels = numpy.frombuffer(self.surface.get_data(), numpy.uint8)
-    
+
         alpha = pixels[0::4]
         red = pixels[1::4]
         green = pixels[2::4]
@@ -184,7 +184,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     def __init__(self, size, *args, **kw):
 
         w,h = size
-        
+
         self.surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
         self.surface.set_device_offset(0,h)
 
@@ -201,7 +201,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
         #the text-matrix includes the text position
         self.text_matrix = cairo.Matrix(1,0,0,-1,0,0) #not part of the graphics state
-        
+
         self.pixel_map = PixelMap(self.surface, w, h)
 
     def clear(self, color=(1,1,1)):
@@ -457,11 +457,11 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             fx = path_rect[0] + fx * width
             cy = path_rect[1] + cy * height
             fy = path_rect[1] + fy * height
-        
+
         gradient = cairo.RadialGradient(fx, fy, 0.0, cx, cy, r)
-        
+
         gradient.set_extend(spread_methods.get(spreadMethod, cairo.EXTEND_NONE))
-        
+
         for stop in stops:
             #FIXME: the stops are possibly being generated wrong if the offset is specified
             if stop.size == 10:
@@ -481,7 +481,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """ Set a linear gradient as the fill color.
         """
         # TODO: handle transforms
-        
+
         if units == 'objectBoundingBox':
             # transform from relative coordinates
             path_rect = self._ctx.path_extents()
@@ -697,10 +697,10 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             end of the curve to (x2,y2).
         """
         current_point = self.get_path_current_point()
-        
+
         # Get the endpoints on the curve where it touches the line segments
         t1, t2 = arc_to_tangent_points(current_point, (x1,y1), (x2,y2), radius)
-        
+
         # draw!
         self._ctx.line_to(*t1)
         self._ctx.curve_to(x1,y1, x1,y1, *t2)
@@ -892,7 +892,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             warnings.warn("Cannot render image of type '%r' into cairo context." % \
                     type(img))
             return
-        
+
         ctx = self._ctx
         img_pattern = cairo.SurfacePattern(img_surface)
         if rect:
@@ -1237,7 +1237,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.translate_ctm(x, y)
         component.draw(self, view_bounds=(0, 0, w, h))
         return
-    
+
     def save(self, filename, file_format=None):
         """ Save the GraphicsContext to a (PNG) file.
             file_format is ignored.

@@ -133,7 +133,7 @@ class CompiledPath(object):
 
 _clip_counter = 0
 class GraphicsContext(basecore2d.GraphicsContextBase):
-    
+
     def __init__(self, size):
         basecore2d.GraphicsContextBase.__init__(self)
         self.size = size
@@ -141,7 +141,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.contents = cStringIO.StringIO()
         self._clipmap = {}
         self.clip_id = None
-        
+
     def render(self, format):
         assert format == 'svg'
         height, width = self.size
@@ -151,13 +151,13 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     def clear(self):
         # TODO: clear the contents
         pass
-    
+
     def width(self):
         return self.size[0]
-    
+
     def height(self):
         return self.size[1]
-    
+
     def save(self, filename):
         f = open(filename, 'w')
         ext = os.path.splitext(filename)[1]
@@ -172,7 +172,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         else:
             raise ValueError, "don't know how to write a %s file" % ext
         f.write(template % locals())
-        
+
 
     # Text handling code
 
@@ -182,7 +182,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.face_name = font_face_map.get(font.face_name, font.face_name)
         self.font = pdfmetrics.Font(self.face_name, self.face_name, pdfmetrics.defaultEncoding)
         self.font_size = font.size
-        
+
     def device_show_text(self, text):
         x,y = self.get_text_position()
         x,y = self._fixpoints([[x,y]])[0]
@@ -198,7 +198,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
                                                         'font-size': '"'+ str(self.font_size) + '"'})
         self.contents.write('</g>\n')
         self.contents.write('</g>\n')
-        
+
     def get_full_text_extent(self, text):
         ascent,descent=_fontdata.ascent_descent[self.face_name]
         descent = (-descent) * self.font_size / 1000.0

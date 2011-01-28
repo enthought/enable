@@ -25,7 +25,7 @@ class AbstractGradientBrush(object):
         """
         x0, y0, w, h = bbox
         gc.concat_ctm(((w, 0, 0), (0, h, 0), (x0, y0, 1)))
-        
+
 class Renderer(NullRenderer):
 
     NullBrush = wx.NullBrush
@@ -113,7 +113,7 @@ class Renderer(NullRenderer):
             fx = cx
         if fy is None:
             fy = cy
-			
+
         wx_renderer = wx.GraphicsRenderer.GetDefaultRenderer()
         return wx_renderer.CreateRadialGradientBrush(fx, fy, cx, cy, r,
                                                      start_color, end_color)
@@ -187,7 +187,7 @@ class Renderer(NullRenderer):
 
     @staticmethod
     def setFont(context, font, brush):
-	return context.SetFont(font, brush.Colour)
+        return context.SetFont(font, brush.Colour)
 
 
     @staticmethod
@@ -210,13 +210,13 @@ class Renderer(NullRenderer):
         #rather than the top as with our API. This function
         #will measure and then re-orient the text as needed.
         w, h = context.GetTextExtent(text)
-        
+
         if anchor != 'start':
             if anchor == 'middle':
                 x -= w/2.0
             elif anchor == 'end':
                 x -= w
-        
+
         y -= h
         context.DrawText(text, x, y)
 

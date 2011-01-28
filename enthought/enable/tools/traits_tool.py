@@ -34,10 +34,10 @@ class Fifo:
 
 def get_nested_components(container):
     """ Returns a list of fundamental plotting components from a container
-    with nested containers.  
-    
+    with nested containers.
+
     Performs a breadth-first search of the containment hierarchy. Each element
-    in the returned list is a tuple (component, (x,y)) where (x,y) is the 
+    in the returned list is a tuple (component, (x,y)) where (x,y) is the
     coordinate frame offset of the component from the top-level container.
     """
     components = []
@@ -59,18 +59,18 @@ class TraitsTool(BaseTool):
     to be clicked.  Handles containers and canvases so that they
     get edited only if their background regions are clicked.
     """
-    
+
     # This tool does not have a visual representation (overrides BaseTool).
     draw_mode = "none"
     # This tool is not visible (overrides BaseTool).
     visible = False
-    
-    
+
+
     def normal_left_dclick(self, event):
         """ Handles the left mouse button being double-clicked when the tool
         is in the 'normal' state.
-        
-        If the event occurred on this tool's component (or any contained 
+
+        If the event occurred on this tool's component (or any contained
         component of that component), the method opens a Traits UI view on the
         component that was double-clicked, setting the tool as the active tool
         for the duration of the view.
@@ -103,7 +103,7 @@ class TraitsTool(BaseTool):
             self.component.active_tool = None
             item.request_redraw()
         return
-    
+
 
 
 # EOF

@@ -60,10 +60,10 @@
 
     /* initialize pointer table - this is how the module usually expects this data */
     error = FT_Create_Class_pscmaps_services(library, &container->pscmaps_services);
-    if(error) 
+    if(error)
       goto Exit;
     FT_Init_Class_pscmaps_interface(library, &container->pscmaps_interface);
-    
+
 Exit:
     if(error)
       psnames_module_class_pic_free(library);

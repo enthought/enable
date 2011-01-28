@@ -39,7 +39,7 @@ Component(CoordinateBox, Interactor)
     border_dash
     border_color
     bgcolor
-    
+
     request_redraw()
     draw(gc)
     is_in(x, y) -> bool
@@ -63,7 +63,7 @@ Container(Component)
     _draw_container(gc, mode)
     _component_bounds_changed(component)
     _component_position_changed(component)
-    
+
 Viewport(Component)
     component
     view_position

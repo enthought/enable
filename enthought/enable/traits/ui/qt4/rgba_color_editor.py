@@ -24,7 +24,7 @@ from enthought.traits.trait_base \
     import SequenceTypes
 
 # Note: The ToolkitEditorFactory class imported from color_editor is a
-# subclass of the abstract ToolkitEditorFactory class 
+# subclass of the abstract ToolkitEditorFactory class
 # (in enthought.traits.ui.api) with qt4-specific methods defined.
 # We need to override the implementations of the qt4-specific methods here.
 from enthought.traits.ui.qt4.color_editor \
@@ -43,19 +43,19 @@ class ToolkitEditorFactory(BaseColorToolkitEditorFactory):
             color = getattr(editor.object, editor.name + '_')
         except AttributeError:
             color = getattr(editor.object, editor.name)
-    
+
         if type(color) in SequenceTypes:
             c = QtGui.QColor()
             c.setRgbF(color[0], color[1], color[2], color[3])
         else:
             c = QtGui.QColor(color)
         return c
-    
+
     def from_qt4_color(self, color):
         """ Gets the application equivalent of a PyQt value.
         """
         return(color.redF(), color.greenF(), color.blueF(), color.alphaF())
-    
+
     def str_color(self, color):
         """ Returns the text representation of a specified color value.
         """

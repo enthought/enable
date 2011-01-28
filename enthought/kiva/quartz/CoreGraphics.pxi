@@ -42,7 +42,7 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
         kCGBlendModeHue
         kCGBlendModeSaturation
         kCGBlendModeColor
-        kCGBlendModeLuminosity 
+        kCGBlendModeLuminosity
 
     ctypedef enum CGLineCap:
         kCGLineCapButt
@@ -108,13 +108,13 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     void CGContextAddLines(CGContextRef context, CGPoint points[], size_t count)
     void CGContextAddCurveToPoint(CGContextRef context, float cp1x, float cp1y,
         float cp2x, float cp2y, float x, float y)
-    void CGContextAddQuadCurveToPoint(CGContextRef context, float cpx, 
+    void CGContextAddQuadCurveToPoint(CGContextRef context, float cpx,
         float cpy, float x, float y)
     void CGContextAddRect(CGContextRef context, CGRect rect)
     void CGContextAddRects(CGContextRef context, CGRect rects[], size_t count)
     void CGContextAddArc(CGContextRef context, float x, float y, float radius,
         float startAngle, float endAngle, int clockwise)
-    void CGContextAddArcToPoint(CGContextRef context, float x1, float y1, 
+    void CGContextAddArcToPoint(CGContextRef context, float x1, float y1,
         float x2, float y2, float radius)
     void CGContextClosePath(CGContextRef context)
     void CGContextAddEllipseInRect(CGContextRef context, CGRect rect)
@@ -133,13 +133,13 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     void CGContextFillEllipseInRect(CGContextRef context, CGRect rect)
     void CGContextStrokeEllipseInRect(CGContextRef context, CGRect rect)
     void CGContextStrokeLineSegments(CGContextRef c, CGPoint points[], size_t count)
- 
+
     # Querying Paths
     int CGContextIsPathEmpty(CGContextRef context)
     CGPoint CGContextGetPathCurrentPoint(CGContextRef context)
     CGRect CGContextGetPathBoundingBox(CGContextRef context)
     bool CGContextPathContainsPoint(CGContextRef context, CGPoint point, CGPathDrawingMode mode)
- 
+
     # Modifying Clipping Paths
     void CGContextClip(CGContextRef context)
     void CGContextEOClip(CGContextRef context)
@@ -174,14 +174,14 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     CGColorSpaceRef CGColorSpaceCreateWithName(FakedEnums name)
     CGColorSpaceRef CGColorSpaceRetain(CGColorSpaceRef cs)
     int CGColorSpaceGetNumberOfComponents(CGColorSpaceRef cs)
-    void CGColorSpaceRelease(CGColorSpaceRef cs) 
+    void CGColorSpaceRelease(CGColorSpaceRef cs)
 
     ctypedef void* CGColorRef
 
     # Color Settings - Partial
     CGColorRef CGColorCreate(CGColorSpaceRef colorspace, float components[])
 #    CGColorRef CGColorCreateWithPattern(CGColorSpaceRef colorspace, CGPatternRef pattern, float components[])
-    CGColorRef CGColorCreateCopy(CGColorRef color) 
+    CGColorRef CGColorCreateCopy(CGColorRef color)
     CGColorRef CGColorCreateCopyWithAlpha(CGColorRef color, float alpha)
     CGColorRef CGColorRetain(CGColorRef color)
     void CGColorRelease(CGColorRef color)
@@ -194,21 +194,21 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
 
     void CGContextSetFillColorSpace(CGContextRef context, CGColorSpaceRef colorspace)
     void CGContextSetFillColor(CGContextRef context, float components[])
-    void CGContextSetStrokeColorSpace(CGContextRef context, 
+    void CGContextSetStrokeColorSpace(CGContextRef context,
         CGColorSpaceRef colorspace)
     void CGContextSetStrokeColor(CGContextRef context, float components[])
     void CGContextSetGrayFillColor(CGContextRef context, float gray, float alpha)
     void CGContextSetGrayStrokeColor(CGContextRef context, float gray, float alpha)
     void CGContextSetRGBFillColor(CGContextRef context, float red, float green,
         float blue, float alpha)
-    void CGContextSetRGBStrokeColor(CGContextRef context, float red, float green, 
+    void CGContextSetRGBStrokeColor(CGContextRef context, float red, float green,
         float blue, float alpha)
     void CGContextSetCMYKFillColor(CGContextRef context, float cyan, float magenta,
         float yellow, float black, float alpha)
     void CGContextSetCMYKStrokeColor(CGContextRef context, float cyan, float magenta,
         float yellow, float black, float alpha)
     void CGContextSetAlpha(CGContextRef context, float alpha)
-    void CGContextSetRenderingIntent(CGContextRef context, 
+    void CGContextSetRenderingIntent(CGContextRef context,
         CGColorRenderingIntent intent)
     void CGContextSetBlendMode(CGContextRef context, CGBlendMode mode)
 
@@ -228,7 +228,7 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     void CGFontRelease(CGFontRef font)
 
     # Drawing Text
-    
+
     ctypedef enum CGTextDrawingMode:
         kCGTextFill
         kCGTextStroke
@@ -243,7 +243,7 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
         kCGEncodingFontSpecific
         kCGEncodingMacRoman
 
-    void CGContextSelectFont(CGContextRef context, char* name, float size, 
+    void CGContextSelectFont(CGContextRef context, char* name, float size,
         CGTextEncoding textEncoding)
     void CGContextSetFontSize(CGContextRef context, float size)
     void CGContextSetCharacterSpacing(CGContextRef context, float spacing)
@@ -254,16 +254,16 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     CGAffineTransform CGContextGetTextMatrix(CGContextRef context)
     void CGContextShowText(CGContextRef context, char* bytes, size_t length)
     void CGContextShowGlyphs(CGContextRef context, CGGlyph glyphs[], size_t count)
-    void CGContextShowTextAtPoint(CGContextRef context, float x, float y, 
+    void CGContextShowTextAtPoint(CGContextRef context, float x, float y,
         char* bytes, size_t length)
-    void CGContextShowGlyphsAtPoint(CGContextRef context, float x, float y, 
+    void CGContextShowGlyphsAtPoint(CGContextRef context, float x, float y,
         CGGlyph g[], size_t count)
     void CGContextShowGlyphsWithAdvances(CGContextRef c, CGGlyph glyphs[],
         CGSize advances[], size_t count)
 
     # Quartz Data Providers
     ctypedef void* CGDataProviderRef
-    CGDataProviderRef CGDataProviderCreateWithData(void* info, void* data, 
+    CGDataProviderRef CGDataProviderCreateWithData(void* info, void* data,
         size_t size, void* callback)
     CGDataProviderRef CGDataProviderRetain(CGDataProviderRef provider)
     void CGDataProviderRelease(CGDataProviderRef provider)
@@ -279,7 +279,7 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     CGRect CGRectIntegral(CGRect rect)
     CGRect CGRectUnion(CGRect r1, CGRect r2)
     CGRect CGRectIntersection(CGRect rect1, CGRect rect2)
-    void CGRectDivide(CGRect rect, CGRect * slice, CGRect * remainder, 
+    void CGRectDivide(CGRect rect, CGRect * slice, CGRect * remainder,
         float amount, CGRectEdge edge)
 
     # Getting Geometric Information
@@ -305,17 +305,17 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
 
     CGAffineTransform CGAffineTransformIdentity
 
-    CGAffineTransform CGAffineTransformMake(float a, float b, float c, float d, 
+    CGAffineTransform CGAffineTransformMake(float a, float b, float c, float d,
         float tx, float ty)
     CGAffineTransform CGAffineTransformMakeTranslation(float tx, float ty)
     CGAffineTransform CGAffineTransformMakeScale(float sx, float sy)
     CGAffineTransform CGAffineTransformMakeRotation(float angle)
-    CGAffineTransform CGAffineTransformTranslate(CGAffineTransform t, float tx, 
+    CGAffineTransform CGAffineTransformTranslate(CGAffineTransform t, float tx,
         float ty)
     CGAffineTransform CGAffineTransformScale(CGAffineTransform t, float sx, float sy)
     CGAffineTransform CGAffineTransformRotate(CGAffineTransform t, float angle)
     CGAffineTransform CGAffineTransformInvert(CGAffineTransform t)
-    CGAffineTransform CGAffineTransformConcat(CGAffineTransform t1, 
+    CGAffineTransform CGAffineTransformConcat(CGAffineTransform t1,
         CGAffineTransform t2)
     CGPoint CGPointApplyAffineTransform(CGPoint point, CGAffineTransform t)
     CGSize CGSizeApplyAffineTransform(CGSize size, CGAffineTransform t)
@@ -339,18 +339,18 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
         kCGInterpolationLow
         kCGInterpolationHigh
 
-    CGImageRef CGImageCreate(size_t width, size_t height, size_t bitsPerComponent, 
-        size_t bitsPerPixel, size_t bytesPerRow, CGColorSpaceRef colorspace, 
-        CGImageAlphaInfo alphaInfo, CGDataProviderRef provider, float decode[], 
+    CGImageRef CGImageCreate(size_t width, size_t height, size_t bitsPerComponent,
+        size_t bitsPerPixel, size_t bytesPerRow, CGColorSpaceRef colorspace,
+        CGImageAlphaInfo alphaInfo, CGDataProviderRef provider, float decode[],
         bool shouldInterpolate, CGColorRenderingIntent intent)
     CGImageRef CGImageMaskCreate(size_t width, size_t height, size_t bitsPerComponent,
-        size_t bitsPerPixel, size_t bytesPerRow, CGDataProviderRef provider, 
+        size_t bitsPerPixel, size_t bytesPerRow, CGDataProviderRef provider,
         float decode[], bool shouldInterpolate)
-    CGImageRef CGImageCreateWithJPEGDataProvider(CGDataProviderRef source, 
+    CGImageRef CGImageCreateWithJPEGDataProvider(CGDataProviderRef source,
         float decode[], bool shouldInterpolate, CGColorRenderingIntent intent)
-    CGImageRef CGImageCreateWithPNGDataProvider(CGDataProviderRef source, 
+    CGImageRef CGImageCreateWithPNGDataProvider(CGDataProviderRef source,
         float decode[], bool shouldInterpolate, CGColorRenderingIntent intent)
-    CGImageRef CGImageCreateCopyWithColorSpace(CGImageRef image, 
+    CGImageRef CGImageCreateCopyWithColorSpace(CGImageRef image,
         CGColorSpaceRef colorspace)
     CGImageRef CGImageRetain(CGImageRef image)
     void CGImageRelease(CGImageRef image)
@@ -367,7 +367,7 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     bool CGImageGetShouldInterpolate(CGImageRef image)
     CGColorRenderingIntent CGImageGetRenderingIntent(CGImageRef image)
     void CGContextDrawImage(CGContextRef context, CGRect rect, CGImageRef image)
-    void CGContextSetInterpolationQuality(CGContextRef context, 
+    void CGContextSetInterpolationQuality(CGContextRef context,
         CGInterpolationQuality quality)
 
     # PDF
@@ -377,7 +377,7 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     CGPDFDocumentRef CGPDFDocumentCreateWithURL(CFURLRef url)
     void CGPDFDocumentRelease(CGPDFDocumentRef document)
     bool CGPDFDocumentUnlockWithPassword(CGPDFDocumentRef document, char *password)
-    void CGContextDrawPDFDocument(CGContextRef context, CGRect rect, 
+    void CGContextDrawPDFDocument(CGContextRef context, CGRect rect,
         CGPDFDocumentRef document, int page)
 
     size_t CGPDFDocumentGetNumberOfPages(CGPDFDocumentRef document)
@@ -394,8 +394,8 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
 
 
     # Bitmap Contexts
-    CGContextRef CGBitmapContextCreate(void * data, size_t width, size_t height, 
-        size_t bitsPerComponent, size_t bytesPerRow, CGColorSpaceRef colorspace, 
+    CGContextRef CGBitmapContextCreate(void * data, size_t width, size_t height,
+        size_t bitsPerComponent, size_t bytesPerRow, CGColorSpaceRef colorspace,
         CGImageAlphaInfo alphaInfo)
     CGImageAlphaInfo CGBitmapContextGetAlphaInfo(CGContextRef context)
     size_t CGBitmapContextGetBitsPerComponent(CGContextRef context)
@@ -424,11 +424,11 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
         float cp1x, float cp1y, float cp2x, float cp2y, float x, float y)
     void CGPathCloseSubpath(CGMutablePathRef path)
     void CGPathAddRect(CGMutablePathRef path, CGAffineTransform *m, CGRect rect)
-    void CGPathAddRects(CGMutablePathRef path, CGAffineTransform *m, 
+    void CGPathAddRects(CGMutablePathRef path, CGAffineTransform *m,
         CGRect rects[], size_t count)
-    void CGPathAddLines(CGMutablePathRef path, CGAffineTransform *m, 
+    void CGPathAddLines(CGMutablePathRef path, CGAffineTransform *m,
         CGPoint points[], size_t count)
-    void CGPathAddArc(CGMutablePathRef path, CGAffineTransform *m, 
+    void CGPathAddArc(CGMutablePathRef path, CGAffineTransform *m,
         float x, float y, float radius, float startAngle, float endAngle, bool clockwise)
     void CGPathAddArcToPoint(CGMutablePathRef path, CGAffineTransform *m,
         float x1, float y1, float x2, float y2, float radius)
@@ -455,11 +455,11 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
 
     void CGPathApply(CGPathRef path, void *info, CGPathApplierFunction function)
 
-    CGContextRef CGGLContextCreate(void *glContext, CGSize size, 
+    CGContextRef CGGLContextCreate(void *glContext, CGSize size,
         CGColorSpaceRef colorspace)
     void CGGLContextUpdateViewportSize(CGContextRef context, CGSize size)
 
-    
+
     ctypedef void* CGFunctionRef
 
     ctypedef void (*CGFunctionEvaluateCallback)(void *info, float *in_data, float *out)
@@ -470,9 +470,9 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
         unsigned int version
         CGFunctionEvaluateCallback evaluate
         CGFunctionReleaseInfoCallback releaseInfo
-    
-    CGFunctionRef CGFunctionCreate(void *info, size_t domainDimension, 
-        float *domain, size_t rangeDimension, float *range, 
+
+    CGFunctionRef CGFunctionCreate(void *info, size_t domainDimension,
+        float *domain, size_t rangeDimension, float *range,
         CGFunctionCallbacks *callbacks)
     CGFunctionRef CGFunctionRetain(CGFunctionRef function)
     void CGFunctionRelease(CGFunctionRef function)
@@ -481,8 +481,8 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
 
     CGShadingRef CGShadingCreateAxial(CGColorSpaceRef colorspace, CGPoint start,
         CGPoint end, CGFunctionRef function, bool extendStart, bool extendEnd)
-    CGShadingRef CGShadingCreateRadial(CGColorSpaceRef colorspace, 
-        CGPoint start, float startRadius, CGPoint end, float endRadius, 
+    CGShadingRef CGShadingCreateRadial(CGColorSpaceRef colorspace,
+        CGPoint start, float startRadius, CGPoint end, float endRadius,
         CGFunctionRef function, bool extendStart, bool extendEnd)
     CGShadingRef CGShadingRetain(CGShadingRef shading)
     void CGShadingRelease(CGShadingRef shading)

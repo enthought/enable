@@ -75,10 +75,10 @@
 
     /* initialize pointer table - this is how the module usually expects this data */
     error = FT_Create_Class_cff_services(library, &container->cff_services);
-    if(error) 
+    if(error)
       goto Exit;
     error = FT_Create_Class_cff_field_handlers(library, &container->cff_field_handlers);
-    if(error) 
+    if(error)
       goto Exit;
     FT_Init_Class_cff_service_ps_info(library, &container->cff_service_ps_info);
     FT_Init_Class_cff_service_glyph_dict(library, &container->cff_service_glyph_dict);

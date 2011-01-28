@@ -18,19 +18,19 @@ class Test_Save(unittest.TestCase):
         "rgba32": [255,255,255,255,255,255,255,255,255,0,0,255,255,0,0,255],
         "bgra32": [255,255,255,255,255,255,255,255,0,0,255,255,0,0,255,255]
         }
-    
+
     def test_rgb24_format(self):
         self.do_check_format('rgb24')
-        
+
     def test_bgr24_format(self):
         self.do_check_format('bgr24')
-        
+
     def test_rgba32_format(self):
         self.do_check_format('rgba32')
-        
+
     def test_bgra32_format(self):
         self.do_check_format('bgra32')
-        
+
     def do_check_format(self,fmt):
         # FIXME:
         raise nose.SkipTest

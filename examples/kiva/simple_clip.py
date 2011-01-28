@@ -45,4 +45,4 @@ t2 = time.clock()
 print 'without clip', t2 - t1
 
 gc_main.save("without_clip.bmp")
-    
+

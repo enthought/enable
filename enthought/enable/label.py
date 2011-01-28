@@ -108,7 +108,7 @@ class Label(Component):
             width = max_width + 2*margin + 2*self.border_width
             height = prev_y_pos + prev_y_height + margin + 2*self.border_width
             self._bounding_box = [width, height]
-            
+
             if self.hjustify == "left":
                 x_pos = x_pos[::-1]
             else:
@@ -128,12 +128,12 @@ class Label(Component):
                 elif self.vjustify == "top":
                     y_pos += self.height - height
             self._line_ypos = y_pos
-            
+
             self._position_cache_valid = True
         return
 
     def get_width_height(self, gc):
-        """ Returns the width and height of the label, in the rotated frame of 
+        """ Returns the width and height of the label, in the rotated frame of
         reference.
         """
         self._calc_line_positions(gc)

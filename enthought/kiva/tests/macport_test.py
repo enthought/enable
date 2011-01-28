@@ -12,7 +12,7 @@ if sys.platform == 'darwin':
         Simple test of get_macport().
         """
         def __init__(self):
-            wx.Frame.__init__(self, parent=None, id=-1, title="foo", 
+            wx.Frame.__init__(self, parent=None, id=-1, title="foo",
                                pos=(100,100),
                                size=(300,300))
             oldstyle = self.GetWindowStyle()

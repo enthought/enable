@@ -2,14 +2,14 @@
 #
 #  Copyright (c) 2009, Enthought, Inc.
 #  All rights reserved.
-# 
+#
 #  This software is provided without warranty under the terms of the BSD
 #  license included in enthought/LICENSE.txt and may be redistributed only
 #  under the conditions described in the aforementioned license.  The license
 #  is also available online at http://www.enthought.com/licenses/BSD.txt
 #
 #  Thanks for using Enthought open source!
-#  
+#
 #------------------------------------------------------------------------------
 
 """ Traits UI button editor for SVG images.
@@ -104,22 +104,22 @@ class ButtonRenderPanel(RenderPanel):
         # Reset the translation and zoom, then draw the text at an offset
         # based on the text width. There is a minor gotcha for supporting
         # multiple platforms here, Translate and DrawText behave differently
-        # on different platforms. 
+        # on different platforms.
         # It would be nice is a cross platform library actually worked the
         # same across platforms...
-        
+
         text_width = dc.GetTextExtent(label_text)[0]
         text_x = (best_size.width - text_width)/2.0
         text_y = self.button.factory.height
         gc.Scale(100/float(self.zoom_x), 100/float(self.zoom_y))
-        
+
         if sys.platform == 'darwin':
             gc.Translate(-x_offset + text_x, -y_offset + text_y)
             dc.DrawText(label_text, 0, 0)
         else:
             gc.Translate(-x_offset, -y_offset)
             dc.DrawText(label_text, text_x, text_y)
-            
+
         if not self.button.enabled:
             self._draw_disable_mask(gc)
 
@@ -128,7 +128,7 @@ class ButtonRenderPanel(RenderPanel):
         # to the opposite of what it currently is
         if self.button.factory.toggle:
             self.toggle_state = not self.toggle_state
-            
+
             if self.toggle_state:
                 tooltip = wx.ToolTip(self.button.factory.toggle_tooltip)
             else:
@@ -213,7 +213,7 @@ class SVGButtonEditor ( Editor ):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
-        
+
         self.document = SVGDocument.createFromFile(self.factory.filename, renderer=Renderer)
 
         # load the button toggle document which will be displayed when the

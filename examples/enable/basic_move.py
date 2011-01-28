@@ -15,13 +15,13 @@ class Box(Component):
     """
     normal_pointer = Pointer("arrow")
     moving_pointer = Pointer("hand")
-    
+
     offset_x = Float
     offset_y = Float
-    
+
     fill_color = (0.8, 0.0, 0.1, 1.0)
     moving_color = (0.0, 0.8, 0.1, 1.0)
-    
+
     resizable = ""
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
@@ -34,14 +34,14 @@ class Box(Component):
             x, y = self.position
             gc.rect(x, y, dx, dy)
             gc.fill_path()
-            
+
             # draw line around outer box
             gc.set_stroke_color((0,0,0,1))
             gc.rect(self.outer_x, self.outer_y, self.outer_width, self.outer_height)
             gc.stroke_path()
-        
+
         return
-        
+
     def normal_key_pressed(self, event):
         print "Key:", event.character
 
@@ -67,14 +67,14 @@ class Box(Component):
         event.handled = True
         self.request_redraw()
         return
-    
+
     def moving_mouse_leave(self, event):
         self.moving_left_up(event)
         event.handled = True
         return
 
 class MyFrame(DemoFrame):
-    
+
     def _create_window(self):
         box = Box(bounds=[100,100], position=[50,50], padding=15)
         return Window(self, -1, component=box)

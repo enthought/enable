@@ -6,11 +6,11 @@ from enthought.enable.example_support import DemoFrame, demo_main
 
 
 class MyFrame(DemoFrame):
-    
+
     def _create_window(self):
 
         label = Label(text="h:\nv:", font="modern 16",
-                      position=[20, 50], 
+                      position=[20, 50],
                       bounds=[100, 100],
                       bgcolor = "red",
                       color = "white",
@@ -36,7 +36,7 @@ class MyFrame(DemoFrame):
         container.add(label, hscroll, vscroll)
         container.on_trait_change(self._update_layout, "bounds")
         container.on_trait_change(self._update_layout, "bounds_items")
-        
+
         self.label = label
         self.hscroll = hscroll
         self.vscroll = vscroll

@@ -37,7 +37,7 @@ class _QtWindowHandler(object):
         qt_window.setMouseTracking(True)
         qt_window.setSizePolicy(QtGui.QSizePolicy.Expanding,
                                 QtGui.QSizePolicy.Expanding)
-    
+
     def closeEvent(self, event):
         self._enable_window.cleanup()
         self._enable_window = None
@@ -49,7 +49,7 @@ class _QtWindowHandler(object):
         dx = event.size().width()
         dy = event.size().height()
         component = self._enable_window.component
-        
+
         self._enable_window.resized = (dx, dy)
 
         if hasattr(component, "fit_window") and component.fit_window:
@@ -97,7 +97,7 @@ class _QtWindowHandler(object):
                 window=self._enable_window)
 
         focus_owner.dispatch(enable_event, "key_pressed")
-    
+
     #------------------------------------------------------------------------
     # Qt Mouse event handlers
     #------------------------------------------------------------------------
@@ -155,11 +155,11 @@ class _QtWindow(QtGui.QWidget):
     def __init__(self, enable_window):
         super(_QtWindow, self).__init__()
         self.handler = _QtWindowHandler(self, enable_window)
-    
+
     def closeEvent(self, event):
         self.handler.closeEvent(event)
         return super(_QtWindow, self).closeEvent(event)
-    
+
     def paintEvent(self, event):
         self.handler.paintEvent(event)
 
@@ -207,7 +207,7 @@ class _QtGLWindow(QtOpenGL.QGLWidget):
     def __init__(self, enable_window):
         super(_QtGLWindow, self).__init__()
         self.handler = _QtWindowHandler(self, enable_window)
-    
+
     def closeEvent(self, event):
         self.handler.closeEvent(event)
         return super(_QtGLWindow, self).closeEvent(event)
@@ -219,7 +219,7 @@ class _QtGLWindow(QtOpenGL.QGLWidget):
     def resizeEvent(self, event):
         super(_QtGLWindow, self).resizeEvent(event)
         self.handler.resizeEvent(event)
-    
+
     def keyReleaseEvent(self, event):
         self.handler.keyReleaseEvent(event)
 
@@ -277,7 +277,7 @@ class _Window(AbstractWindow):
     #------------------------------------------------------------------------
     # Implementations of abstract methods in AbstractWindow
     #------------------------------------------------------------------------
-    
+
     def set_drag_result(self, result):
         # FIXME
         raise NotImplementedError
@@ -341,7 +341,7 @@ class _Window(AbstractWindow):
         return None
 
     def _create_gc(self, size, pix_format="bgra32"):
-        raise NotImplementedError 
+        raise NotImplementedError
 
     def _window_paint(self, event):
         raise NotImplementedError
@@ -371,7 +371,7 @@ class _Window(AbstractWindow):
 class BaseGLWindow(_Window):
     # The toolkit control
     control = Instance(_QtGLWindow)
-    
+
     def _create_control(self, enable_window):
         """ Create the toolkit control.
         """
@@ -381,7 +381,7 @@ class BaseGLWindow(_Window):
 class BaseWindow(_Window):
     # The toolkit control
     control = Instance(_QtWindow)
-    
+
     def _create_control(self, enable_window):
         """ Create the toolkit control.
         """

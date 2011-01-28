@@ -20,7 +20,7 @@ from enthought.etsconfig.api import ETSConfig
 
 
 def _init_toolkit():
-    """ Initialise the current toolkit. 
+    """ Initialise the current toolkit.
     """
 
     # Force Traits to decide on its toolkit if it hasn't already
@@ -51,7 +51,7 @@ def toolkit_object(name, raise_exceptions=False):
     """
 
     mname, oname = name.split(':')
-    
+
     class Unimplemented (object):
         """ This is returned if an object isn't implemented by the selected
             toolkit. It raises an exception if it is ever instantiated.

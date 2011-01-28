@@ -2,14 +2,14 @@
 #
 #  Copyright (c) 2009, Enthought, Inc.
 #  All rights reserved.
-# 
+#
 #  This software is provided without warranty under the terms of the BSD
 #  license included in enthought/LICENSE.txt and may be redistributed only
 #  under the conditions described in the aforementioned license.  The license
 #  is also available online at http://www.enthought.com/licenses/BSD.txt
 #
 #  Thanks for using Enthought open source!
-#  
+#
 #------------------------------------------------------------------------------
 
 """ Traits UI button editor for SVG images.
@@ -32,7 +32,7 @@ from enthought.traits.ui.ui_traits import AView
 #-------------------------------------------------------------------------------
 
 class SVGButtonEditor(BasicEditorFactory):
-    
+
     # The editor class to be created
     klass = Property
 
@@ -70,9 +70,9 @@ class SVGButtonEditor(BasicEditorFactory):
 
     # a file holding the image to display when toggled
     toggle_filename = Any
-    
+
     toggle_label = Str
-    
+
     toggle_tooltip = Str
 
     traits_view = View( [ 'value', '|[]' ] )

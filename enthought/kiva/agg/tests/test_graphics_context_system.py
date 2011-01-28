@@ -12,7 +12,7 @@ class GraphicsContextSystemTestCase(unittest.TestCase):
         for i in range(10):
             gc = GraphicsContextSystem((100,100), "rgba32")
             del gc
-            
+
 #----------------------------------------------------------------------------
 # test setup code.
 #----------------------------------------------------------------------------

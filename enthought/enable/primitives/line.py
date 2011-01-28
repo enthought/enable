@@ -40,7 +40,7 @@ class Line(Component):
 
     # Whether to draw the path closed, with a line back to the first point
     close_path = Bool(True)
-    
+
     #--------------------------------------------------------------------------
     # 'Line' interface
     #--------------------------------------------------------------------------

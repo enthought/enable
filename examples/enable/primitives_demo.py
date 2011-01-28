@@ -13,7 +13,7 @@ from enthought.traits.api import Any, Delegate, Instance
 
 
 class ResetButton(ToolbarButton):
-    
+
     def perform(self, event):
         if self.canvas and self.canvas.active_tool:
             self.canvas.active_tool.reset()
@@ -22,7 +22,7 @@ class ResetButton(ToolbarButton):
 
 
 class ActivateButton(ToolbarButton):
-    
+
     tool = Instance(DrawingTool)
 
     def perform(self, event):
@@ -37,16 +37,16 @@ class ActivateButton(ToolbarButton):
         if new:
             new.reset()
         return
-    
+
 
 class MyFrame(DemoFrame):
     def _create_window(self):
-        
+
         canvas = DrawingCanvas(bounds=[500,500])
         toolbar = DrawingCanvasToolbar(width=500, height=32, fit_window=False, bgcolor="lightgrey")
         canvas.toolbar = toolbar
         toolbar.canvas = canvas
-        
+
         button1 = ResetButton(label="Reset", toolbar=toolbar, bounds=[50,24])
         button2 = ActivateButton(tool=DragLine(container=canvas), label="Path",
                                  toolbar=toolbar, bounds=[50,24])
@@ -64,7 +64,7 @@ class MyFrame(DemoFrame):
         toolbar.add_button(button4)
         toolbar.add_button(button5)
         toolbar.add_button(button6)
-        
+
         return Window(self, -1, component=canvas)
 
 if __name__ == "__main__":

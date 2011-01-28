@@ -21,7 +21,7 @@ def font_metrics_provider():
     from reportlab.pdfgen.canvas import Canvas
     from reportlab.lib.pagesizes import letter
     from enthought.kiva.fonttools import Font
-    
+
     # a file will not be created unless save() is called on the context
     pdf_canvas = Canvas(filename='enable_tmp.pdf', pagesize=letter)
     gc = GraphicsContext(pdf_canvas)

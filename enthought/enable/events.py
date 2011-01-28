@@ -14,10 +14,10 @@ from enthought.traits.api import (Any, Bool, Float, HasTraits, Int,
 
 
 class BasicEvent(HasTraits):
-    
+
     x = Float
     y = Float
-    
+
     # True if the event has been handled.
     handled = Bool(False)
 
@@ -27,7 +27,7 @@ class BasicEvent(HasTraits):
 
     # (x,y) position stack; initialized to an empty list
     _pos_stack = List( () )
-    
+
     # Affine transform stack; initialized to an empty list
     _transform_stack = List( () )
 
@@ -49,7 +49,7 @@ class BasicEvent(HasTraits):
         if caller is not None:
             self.dispatch_history.append(caller)
         return
-    
+
     def pop(self, count=1, caller=None):
         """
         Restores a previous position of the event.  If **count** is provided,
@@ -64,12 +64,12 @@ class BasicEvent(HasTraits):
             if caller == self.dispatch_history[-1]:
                 self.dispatch_history.pop()
         return
-    
+
     def offset_xy(self, origin_x, origin_y, caller=None):
         """
         Shifts this event to be in the coordinate frame whose origin, specified
         in the event's coordinate frame, is (origin_x, origin_y).
-        
+
         Basically, a component calls event.offset_xy(\*self.position) to shift
         the event into its own coordinate frame.
         """
@@ -81,19 +81,19 @@ class BasicEvent(HasTraits):
     def scale_xy(self, scale_x, scale_y, caller=None):
         """
         Scales the event to be in the scale specified.
-    
+
         A component calls event.scale_xy(scale) to scale the event into its own
         coordinate frame when the ctm has been scaled.  This operation is used
         for zooming.
         """
         # Note that the meaning of scale_x and scale_y for Enable
-        # is the inverted from the meaning for Kiva.affine. 
+        # is the inverted from the meaning for Kiva.affine.
         # TODO: Fix this discrepancy.
         self.push_transform(affine.affine_from_scale(1/scale_x, 1/scale_y))
         if caller is not None:
             self.dispatch_history.append(caller)
         return
-        
+
     def net_transform(self):
         """
         Returns a single transformation (currently only (dx,dy)) that reflects
@@ -118,7 +118,7 @@ class MouseEvent(BasicEvent):
     middle_down  = ReadOnly
     right_down   = ReadOnly
     mouse_wheel  = ReadOnly
-    
+
 mouse_event_trait = Event(MouseEvent)
 
 
@@ -129,11 +129,11 @@ class DragEvent(BasicEvent):
     x0   = Float
     y0   = Float
     copy = ReadOnly
-    obj  = ReadOnly 
+    obj  = ReadOnly
     start_event = ReadOnly
 
     def __repr__(self):
-        s = ('%s(x=%r, y=%r, x0=%r, y0=%r, handled=%r)' % 
+        s = ('%s(x=%r, y=%r, x0=%r, y0=%r, handled=%r)' %
             (self.__class__.__name__, self.x, self.y, self.x0, self.y0,
                 self.handled))
         return s
@@ -144,14 +144,14 @@ drag_event_trait = Event(DragEvent)
 class KeyEvent(BasicEvent):
     # 'character' is a single ASCII character or is a string describing the
     # high-bit and control characters.  (See subpackage wx.window.key_map)
-    character    = ReadOnly 
+    character    = ReadOnly
     alt_down     = ReadOnly
     control_down = ReadOnly
     shift_down   = ReadOnly
     event        = ReadOnly    # what is this??
 
     def __repr__(self):
-        s = ('%s(character=%r, alt_down=%r, control_down=%r, shift_down=%r, handled=%r)' % 
+        s = ('%s(character=%r, alt_down=%r, control_down=%r, shift_down=%r, handled=%r)' %
             (self.__class__.__name__, self.character, self.alt_down,
                 self.control_down, self.shift_down, self.handled))
         return s
@@ -170,7 +170,7 @@ class BlobEvent(BasicEvent):
 
     # The ID of the pointer.
     bid = Int(-1)
-    
+
     # If a blob_move event, then these will be the coordinates of the blob at
     # the previous frame.
     x0 = Float(0.0)

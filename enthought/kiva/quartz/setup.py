@@ -32,7 +32,7 @@ def configuration(parent_package='',top_path=None):
                 output_file=target)
             cython_result = Main.compile(source, options=options)
             if cython_result.num_errors != 0:
-                raise RuntimeError("%d errors in Cython compile" % 
+                raise RuntimeError("%d errors in Cython compile" %
                     cython_result.num_errors)
         return target
 
@@ -71,7 +71,7 @@ def configuration(parent_package='',top_path=None):
         macport_cpp = config.paths('macport26.cpp')[0]
     else:
         macport_cpp = config.paths('macport28.cpp')[0]
-    
+
 
     def get_macport_cpp(extension, build_dir):
         if sys.platform != 'darwin':
@@ -84,7 +84,7 @@ def configuration(parent_package='',top_path=None):
             return None
 
         return macport_cpp
-        
+
     info = {}
     dict_append(info, define_macros=[("__WXMAC__", 1)])
     dict_append(info, **wx_info)

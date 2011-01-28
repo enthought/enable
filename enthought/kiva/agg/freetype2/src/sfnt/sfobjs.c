@@ -536,7 +536,7 @@
     FT_UNUSED( face_index );
 
     /* Check parameters */
-    
+
     {
       FT_Int  i;
 

@@ -313,7 +313,7 @@
     if ( load_flags & FT_LOAD_NO_HINTING )
     {
       /* both FT_LOAD_NO_HINTING and FT_LOAD_NO_AUTOHINT   */
-      /* are necessary to disable hinting for tricky fonts */          
+      /* are necessary to disable hinting for tricky fonts */
 
       if ( FT_IS_TRICKY( face ) )
         load_flags &= ~FT_LOAD_NO_HINTING;
@@ -441,8 +441,8 @@
 #endif
 
   FT_DEFINE_DRIVER(tt_driver_class,
-  
-    
+
+
       FT_MODULE_FONT_DRIVER        |
       FT_MODULE_DRIVER_SCALABLE    |
       TT_HINTER_FLAG,

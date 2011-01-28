@@ -20,7 +20,7 @@ try:
     # Define a system-dependent GraphicsContext if there is a PixelMap
     # class defined for the system (i.e. if plat_support was built)
     from plat_support import PixelMap
-    
+
     class GraphicsContextSystem(GraphicsContextArray):
         def __init__(self,
                      size,
@@ -43,7 +43,7 @@ except ImportError, ex:
     # be an ImportWarning, but that is python 2.5+ specific
     import warnings
     warnings.warn("Error initializing Agg: %s" % ex, Warning, 2)
-    
+
     GraphicsContextSystem = None
 
 # EOF

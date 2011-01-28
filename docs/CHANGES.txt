@@ -14,7 +14,7 @@ Enhancements
           gc.restore_state()
 
   one can do this::
-  
+
       with gc:
           # Do stuff with gc...
 

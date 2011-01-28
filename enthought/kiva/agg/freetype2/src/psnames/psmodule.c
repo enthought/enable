@@ -519,7 +519,7 @@
 
 
 #ifdef FT_CONFIG_OPTION_ADOBE_GLYPH_LIST
-  FT_DEFINE_SERVICE_PSCMAPSREC(pscmaps_interface, 
+  FT_DEFINE_SERVICE_PSCMAPSREC(pscmaps_interface,
     (PS_Unicode_ValueFunc)     ps_unicode_value,
     (PS_Unicodes_InitFunc)     ps_unicodes_init,
     (PS_Unicodes_CharIndexFunc)ps_unicodes_char_index,
@@ -534,7 +534,7 @@
 
 #else
 
-  FT_DEFINE_SERVICE_PSCMAPSREC(pscmaps_interface, 
+  FT_DEFINE_SERVICE_PSCMAPSREC(pscmaps_interface,
     0,
     0,
     0,
@@ -550,7 +550,7 @@
 #endif /* FT_CONFIG_OPTION_ADOBE_GLYPH_LIST */
 
 
-  FT_DEFINE_SERVICEDESCREC1(pscmaps_services, 
+  FT_DEFINE_SERVICEDESCREC1(pscmaps_services,
     FT_SERVICE_ID_POSTSCRIPT_CMAPS, &FT_PSCMAPS_INTERFACE_GET
   )
 
@@ -576,7 +576,7 @@
 #endif
 
   FT_DEFINE_MODULE(psnames_module_class,
-  
+
     0,  /* this is not a font driver, nor a renderer */
     sizeof ( FT_ModuleRec ),
 

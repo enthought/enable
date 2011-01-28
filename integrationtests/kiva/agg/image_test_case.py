@@ -31,7 +31,7 @@ def save(img,file_name):
     else:
         raise NotImplementedError(
             "currently only supports writing out bgra32 images")
-    
+
 def test_name():
     f = sys._getframe()
     class_name = f.f_back.f_locals['self'].__class__.__name__.replace('test_','')
@@ -70,7 +70,7 @@ def assert_equal(desired,actual):
     except AssertionError:
         size = sum(array(desired.shape))
         if size < 10:
-            diff = abs(ravel(actual.astype(Int32)) - 
+            diff = abs(ravel(actual.astype(Int32)) -
                        ravel(desired.astype(Int32)))
             msg = '\n'
             msg+= 'desired: %s\n' % ravel(desired)
@@ -98,11 +98,11 @@ def assert_close(desired,actual,diff_allowed=2):
         raise AssertionError(msg)
 
 #----------------------------------------------------------------------------
-# Tests for various alpha blending cases 
+# Tests for various alpha blending cases
 #
-# These include setting an "ambient" alpha value as well as specifying an 
-# image with an alpha channel.  Because of the special casing, different 
-# colors take different paths through the code.  As a result, there are a 
+# These include setting an "ambient" alpha value as well as specifying an
+# image with an alpha channel.  Because of the special casing, different
+# colors take different paths through the code.  As a result, there are a
 # classes to check black, white, and gray images.
 #----------------------------------------------------------------------------
 class test_alpha_black_image(unittest.TestCase):
@@ -128,7 +128,7 @@ class test_alpha_black_image(unittest.TestCase):
         gc_background = solid_bgra32(self.size,1.0)
         orig = solid_bgra32(self.size,self.color,alpha)
         desired = alpha_blend(gc_background,orig)
-        
+
         # also, the alpha channel of the image is not copied into the
         # desination graphics context, so we have to ignore alphas
         assert_close(desired[:,:,:-1],actual[:,:,:-1],diff_allowed=slop_allowed)
@@ -174,7 +174,7 @@ class test_alpha_gray_image(test_alpha_black_image):
 #----------------------------------------------------------------------------
 # Test scaling based on "rect" argument to draw_image function.
 #
-# 
+#
 #----------------------------------------------------------------------------
 class test_rect_scaling_image(unittest.TestCase):
     color = 0.0
@@ -183,14 +183,14 @@ class test_rect_scaling_image(unittest.TestCase):
         orig_sz= (10,10)
         img_ary = solid_bgra32(orig_sz,self.color)
         orig = agg.GraphicsContextArray(img_ary, pix_format="bgra32")
-        
+
         sx,sy = 5,20
         scaled_rect=(0,0,sx,sy)
         gc = agg.GraphicsContextArray((20,20),pix_format = "bgra32")
         gc.draw_image(orig,scaled_rect)
         actual = gc.bmp_array
         save(gc,test_name()+'.bmp')
-                
+
         desired_sz= (sx,sy)
         img_ary = solid_bgra32(desired_sz,self.color)
         img = agg.GraphicsContextArray(img_ary, pix_format="bgra32")
@@ -204,7 +204,7 @@ class test_rect_scaling_image(unittest.TestCase):
         orig_sz= (10,10)
         img_ary = solid_bgra32(orig_sz,self.color)
         orig = agg.GraphicsContextArray(img_ary, pix_format="bgra32")
-        
+
         tx, ty = 5,10
         sx,sy = 5,20
         translate_scale_rect=(tx,ty,sx,sy)
@@ -212,7 +212,7 @@ class test_rect_scaling_image(unittest.TestCase):
         gc.draw_image(orig,translate_scale_rect)
         actual = gc.bmp_array
         save(gc,test_name()+'.bmp')
-                
+
         desired_sz= (sx,sy)
         img_ary = solid_bgra32(desired_sz,self.color)
         img = agg.GraphicsContextArray(img_ary, pix_format="bgra32")
@@ -235,15 +235,15 @@ class test_text_image(unittest.TestCase):
         f = Font('modern')
         gc.set_font(f)
         gc.show_text("hello")
-        save(gc,test_name()+'.bmp')    
-    
+        save(gc,test_name()+'.bmp')
+
     def test_no_antialias(self):
         gc = agg.GraphicsContextArray((200,50),pix_format = "bgra32")
         f = Font('modern')
         gc.set_font(f)
         gc.set_antialias(0)
         gc.show_text("hello")
-        save(gc,test_name()+'.bmp')    
+        save(gc,test_name()+'.bmp')
 
     def test_rotate(self):
         text = "hello"
@@ -259,8 +259,8 @@ class test_text_image(unittest.TestCase):
         gc.set_fill_color([.5,.5,.5])
         gc.rect(tx,ty,sx,sy)
         gc.stroke_path()
-        gc.show_text(text)        
-        save(gc,test_name()+'.bmp')    
+        gc.show_text(text)
+        save(gc,test_name()+'.bmp')
 
 class test_sun(unittest.TestCase):
     def generic_sun(self,scheme):
@@ -271,57 +271,57 @@ class test_sun(unittest.TestCase):
         gc = agg.GraphicsContextArray(tuple(scaled_sz),pix_format = "bgra32")
         gc.draw_image(img,scaled_rect)
         return gc
-        
-    def test_simple(self):        
+
+    def test_simple(self):
         gc = self.generic_sun("nearest")
         save(gc,test_name()+'.bmp')
-        
+
     def test_bilinear(self):
         gc = self.generic_sun("bilinear")
         save(gc,test_name()+'.bmp')
-        
-    def test_bicubic(self):        
+
+    def test_bicubic(self):
         gc = self.generic_sun("bicubic")
         save(gc,test_name()+'.bmp')
-        
-    def test_spline16(self):        
+
+    def test_spline16(self):
         gc = self.generic_sun("spline16")
         save(gc,test_name()+'.bmp')
-        
-    def test_spline36(self):        
+
+    def test_spline36(self):
         gc = self.generic_sun("spline36")
         save(gc,test_name()+'.bmp')
-        
-    def test_sinc64(self):        
+
+    def test_sinc64(self):
         gc = self.generic_sun("sinc64")
         save(gc,test_name()+'.bmp')
-        
-    def test_sinc144(self):        
+
+    def test_sinc144(self):
         gc = self.generic_sun("sinc144")
         save(gc,test_name()+'.bmp')
-        
-    def test_sinc256(self):        
+
+    def test_sinc256(self):
         gc = self.generic_sun("sinc256")
         save(gc,test_name()+'.bmp')
-        
-    def test_blackman100(self):        
+
+    def test_blackman100(self):
         gc = self.generic_sun("blackman100")
         save(gc,test_name()+'.bmp')
-        
-    def test_blackman256(self):        
+
+    def test_blackman256(self):
         gc = self.generic_sun("blackman256")
-        save(gc,test_name()+'.bmp')                            
+        save(gc,test_name()+'.bmp')
 
 #----------------------------------------------------------------------------
 # Tests speed of various interpolation schemes
 #
-# 
+#
 #----------------------------------------------------------------------------
 class test_interpolation_image(unittest.TestCase):
     N = 10
     size = (1000,1000)
     color = 0.0
-    
+
     def generic_timing(self,scheme,size,iters):
         gc = agg.GraphicsContextArray(size,pix_format = "bgra32")
         desired = solid_bgra32(size,self.color)
@@ -341,17 +341,17 @@ class test_interpolation_image(unittest.TestCase):
 
     def test_bilinear_timing(self):
         scheme = "bilinear"
-        iters = self.N/2 # this is slower than simple, so use less iters 
+        iters = self.N/2 # this is slower than simple, so use less iters
         return self.generic_timing(scheme,self.size,iters)
 
     def test_bicubic_timing(self):
         scheme = "bicubic"
-        iters = self.N/2 # this is slower than simple, so use less iters 
+        iters = self.N/2 # this is slower than simple, so use less iters
         return self.generic_timing(scheme,self.size,iters)
 
     def test_sinc144_timing(self):
         scheme = "sinc144"
-        iters = self.N/2 # this is slower than simple, so use less iters 
+        iters = self.N/2 # this is slower than simple, so use less iters
         return self.generic_timing(scheme,self.size,iters)
 
 

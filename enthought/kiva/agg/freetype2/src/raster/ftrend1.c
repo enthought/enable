@@ -230,7 +230,7 @@
 
 
   FT_DEFINE_RENDERER(ft_raster1_renderer_class,
-    
+
       FT_MODULE_RENDERER,
       sizeof( FT_RendererRec ),
 
@@ -261,8 +261,8 @@
   /* used for backwards-compatibility with FT 1.x anyway.              */
   /*                                                                   */
   FT_DEFINE_RENDERER(ft_raster5_renderer_class,
-  
-    
+
+
       FT_MODULE_RENDERER,
       sizeof( FT_RendererRec ),
 

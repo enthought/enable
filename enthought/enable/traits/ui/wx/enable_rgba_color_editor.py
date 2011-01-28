@@ -85,22 +85,22 @@ class ToolkitEditorFactory ( EditorFactory ):
     #  'Editor' factory methods:
     #---------------------------------------------------------------------------
 
-    def simple_editor ( self, ui, object, name, description, parent ): 
-        return ColorEditor( parent, 
-                            factory     = self, 
-                            ui          = ui, 
-                            object      = object, 
-                            name        = name, 
-                            description = description, 
+    def simple_editor ( self, ui, object, name, description, parent ):
+        return ColorEditor( parent,
+                            factory     = self,
+                            ui          = ui,
+                            object      = object,
+                            name        = name,
+                            description = description,
                             style       = 'simple' )
-        
-    def custom_editor ( self, ui, object, name, description, parent ): 
-        return ColorEditor( parent, 
-                            factory     = self, 
-                            ui          = ui, 
-                            object      = object, 
-                            name        = name, 
-                            description = description, 
+
+    def custom_editor ( self, ui, object, name, description, parent ):
+        return ColorEditor( parent,
+                            factory     = self,
+                            ui          = ui,
+                            object      = object,
+                            name        = name,
+                            description = description,
                             style       = 'custom' )
 
 #-------------------------------------------------------------------------------
@@ -177,7 +177,7 @@ class ColorEditor ( Editor ):
             editor.
         """
         self._picker.color = self.value
-    
+
 def EnableRGBAColorEditor ( *args, **traits ):
     return ToolkitEditorFactory( *args, **traits )
 

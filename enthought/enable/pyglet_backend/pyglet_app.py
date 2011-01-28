@@ -1,6 +1,6 @@
 """
 In other backends, we expect the UI toolkit to have a main loop running
-external to Enable. 
+external to Enable.
 
 As of Pyglet 1.1, a new Pyglet App object was introduced which handles
 running a main loop and efficiently dispatching to windows and event

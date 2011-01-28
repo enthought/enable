@@ -53,7 +53,7 @@ def glyph_a(gc):
 class MyCanvas(Component):
     def draw(self, gc, **kwargs):
         w,h = gc.width(), gc.height()
-        
+
         gc.move_to(0,0)
         gc.line_to(w,h)
         gc.set_stroke_color((1,0,0))
@@ -66,10 +66,10 @@ class MyCanvas(Component):
         gc.set_stroke_color((0,0,0,.5))
         gc.set_line_width(20)
         gc.stroke_path()
-        
+
         gc.set_fill_color((0,0,1,0.0))
         gc.rect(0,0,w,h)
-        
+
         gc.draw_path()
 
         gc.set_line_width(1)
@@ -78,7 +78,7 @@ class MyCanvas(Component):
             gc.scale_ctm(2.0,2.0)
             glyph_a(gc)
         gc.stroke_path()
-        
+
         gc.translate_ctm(0,-20)
         gc.scale_ctm(2.0,2.0)
         glyph_a(gc)
@@ -88,11 +88,11 @@ class MyCanvas(Component):
 
 class Demo(HasTraits):
     canvas = Instance(Component)
-    
+
     traits_view = View(Item('canvas', editor=ComponentEditor(bgcolor="lightgray"),
                             show_label=False, width=500, height=500),
                        resizable=True, title="Gradient Example")
-    
+
     def _canvas_default(self):
         return MyCanvas()
 

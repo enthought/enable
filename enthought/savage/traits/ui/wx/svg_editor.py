@@ -23,42 +23,42 @@
 #-------------------------------------------------------------------------------
 
 from enthought.traits.ui.wx.editor import Editor
-    
+
 from enthought.savage.svg.backends.wx.renderer import Renderer as WxRenderer
 from enthought.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
 
 from kiva_render_panel import RenderPanel as KivaRenderPanel
 from wx_render_panel import RenderPanel as WxRenderPanel
-    
+
 #-------------------------------------------------------------------------------
 #  'SVGEditor' class:
 #-------------------------------------------------------------------------------
-                               
+
 class SVGEditor(Editor):
     """ Traits UI 'display only' SVG editor.
     """
-    
+
     scrollable = True
-    
+
     #---------------------------------------------------------------------------
     #  Finishes initializing the editor by creating the underlying toolkit
     #  widget:
     #---------------------------------------------------------------------------
-        
+
     def init(self, parent):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
         document = self.value
-        
+
         # TODO: the document should not know about the renderer, this should
         # be an attribute of the editor
-        
+
         if document.renderer == WxRenderer:
             self.control = WxRenderPanel(parent, document=document)
         else:
             self.control = KivaRenderPanel(parent, document=document)
-                        
+
     #---------------------------------------------------------------------------
     #  Updates the editor when the object trait changes external to the editor:
     #---------------------------------------------------------------------------
@@ -70,4 +70,4 @@ class SVGEditor(Editor):
         if self.control.document != self.value:
             self.control.document = self.value
             self.control.Refresh()
-                    
+

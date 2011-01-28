@@ -31,8 +31,8 @@ class Component(CoordinateBox, Interactor):
     Viewports and has finite bounds.
 
     Since Components can have a border and padding, there is an additional set
-    of bounds and position attributes that define the "outer box" of the 
-    components. These cannot be set, since they are secondary attributes 
+    of bounds and position attributes that define the "outer box" of the
+    components. These cannot be set, since they are secondary attributes
     (computed from the component's "inner" size and margin-area attributes).
     """
 
@@ -124,7 +124,7 @@ class Component(CoordinateBox, Interactor):
     # draw onto the plot area underneath plot itself but above any images and
     # backgrounds of the plot.
     underlays = List  #[AbstractOverlay]
-    
+
     # A list of overlays for the plot.  By default, overlays are drawn above the
     # plot and its annotations.
     overlays = List   #[AbstractOverlay]
@@ -140,7 +140,7 @@ class Component(CoordinateBox, Interactor):
     # An Enable Interactor that all events are deferred to.
     controller = Any
 
-    # Events are *not* automatically considered "handled" if there is a handler 
+    # Events are *not* automatically considered "handled" if there is a handler
     # defined. Overrides an inherited trait from Enable's Interactor class.
     auto_handle_event = False
 
@@ -212,7 +212,7 @@ class Component(CoordinateBox, Interactor):
     #------------------------------------------------------------------------
     # Rendering control traits
     #------------------------------------------------------------------------
-    
+
     # The order in which various rendering classes on this component are drawn.
     # Note that if this component is placed in a container, in most cases
     # the container's draw order is used, since the container calls
@@ -226,9 +226,9 @@ class Component(CoordinateBox, Interactor):
     # #. 'overlay': Legends, selection regions, and other tool-drawn visual
     #     elements
     draw_order = Instance(list, args=(DEFAULT_DRAWING_ORDER,))
-    
+
     # If True, then this component draws as a unified whole,
-    # and its parent container calls this component's _draw() method when 
+    # and its parent container calls this component's _draw() method when
     # drawing the layer indicated  by **draw_layer**.
     # If False, it tries to cooperate in its container's layer-by-layer drawing.
     # Its parent container calls self._dispatch_draw() with the name of each
@@ -240,12 +240,12 @@ class Component(CoordinateBox, Interactor):
     # and external classes, whose drawing loops call this component.
     # If **unified_draw** is False, then this attribute is ignored.
     draw_layer = Str("mainlayer")
-    
-    # Draw the border as part of the overlay layer? If False, draw the 
+
+    # Draw the border as part of the overlay layer? If False, draw the
     # border as part of the background layer.
     overlay_border = Bool(True)
-    
-    # Draw the border inset (on the plot)? If False, draw the border 
+
+    # Draw the border inset (on the plot)? If False, draw the border
     # outside the plot area.
     inset_border = Bool(True)
 
@@ -281,7 +281,7 @@ class Component(CoordinateBox, Interactor):
     # the component will *never* render itself backbuffered, even if asked
     # to do so.
     use_backbuffer = Bool(False)
-    
+
     # Should the backbuffer extend to the pad area?
     backbuffer_padding = Bool(True)
 
@@ -300,7 +300,7 @@ class Component(CoordinateBox, Interactor):
     # drawn_outer_bounds specifies the bounds of this component on the last draw
     # cycle.  Used in conjunction with outer_position_last_draw
     drawn_outer_bounds = bounds_trait
-    
+
     # The backbuffer of this component.  In most cases, this is an
     # instance of GraphicsContext, but this requirement is not enforced.
     _backbuffer = Any
@@ -343,25 +343,25 @@ class Component(CoordinateBox, Interactor):
     #------------------------------------------------------------------------
     # Abstract methods
     #------------------------------------------------------------------------
-    
+
     def _do_layout(self):
         """ Called by do_layout() to do an actual layout call; it bypasses some
         additional logic to handle null bounds and setting **_layout_needed**.
         """
         pass
-    
+
     def _draw_component(self, gc, view_bounds=None, mode="normal"):
-        """ Renders the component. 
-        
+        """ Renders the component.
+
         Subclasses must implement this method to actually render themselves.
         Note: This method is used only by the "old" drawing calls.
         """
         pass
 
     def _draw_selection(self, gc, view_bounds=None, mode="normal"):
-        """ Renders a selected subset of a component's data. 
-        
-        This method is used by some subclasses. The notion of selection doesn't 
+        """ Renders a selected subset of a component's data.
+
+        This method is used by some subclasses. The notion of selection doesn't
         necessarily apply to all subclasses of PlotComponent, but it applies to
         enough of them that it is defined as one of the default draw methods.
         """
@@ -397,7 +397,7 @@ class Component(CoordinateBox, Interactor):
 
     def draw(self, gc, view_bounds=None, mode="default"):
         """ Draws the plot component.
-        
+
         Parameters
         ----------
         gc : Kiva GraphicsContext
@@ -406,8 +406,8 @@ class Component(CoordinateBox, Interactor):
             (x, y, width, height) of the area to draw
         mode : string
             The drawing mode to use; can be one of:
-                
-            'normal' 
+
+            'normal'
                 Normal, antialiased, high-quality rendering
             'overlay'
                 The plot component is being rendered over something else,
@@ -424,16 +424,16 @@ class Component(CoordinateBox, Interactor):
 
         self._draw(gc, view_bounds, mode)
         return
-        
-    def draw_select_box(self, gc, position, bounds, width, dash, 
+
+    def draw_select_box(self, gc, position, bounds, width, dash,
                         inset, color, bgcolor, marker_size):
         """ Renders a selection box around the component.
-        
+
         Subclasses can implement this utility method to render a selection box
-        around themselves. To avoid burdening subclasses with various 
-        selection-box related traits that they might never use, this method 
+        around themselves. To avoid burdening subclasses with various
+        selection-box related traits that they might never use, this method
         takes all of its required data as input parameters.
-        
+
         Parameters
         ----------
         gc : Kiva GraphicsContext
@@ -458,7 +458,7 @@ class Component(CoordinateBox, Interactor):
             Size, in pixels, of "handle" markers on the selection box
         """
         gc.save_state()
-    
+
         gc.set_line_width(width)
         gc.set_antialias(False)
         x,y = position
@@ -468,33 +468,33 @@ class Component(CoordinateBox, Interactor):
         width -= 2*inset
         height -= 2*inset
         rect = (x, y, width, height)
-        
+
         gc.set_stroke_color(bgcolor)
         gc.set_line_dash(None)
         gc.begin_path()
         gc.rect(*rect)
         gc.stroke_path()
-        
+
         gc.set_stroke_color(color)
         gc.set_line_dash(dash)
         gc.rect(*rect)
         gc.stroke_path()
-        
+
         if marker_size > 0:
             gc.set_fill_color(bgcolor)
             half_y = y + height/2.0
             y2 = y + height
             half_x = x + width/2.0
             x2 = x + width
-            marker_positions = ((x,y), (x,half_y), (x,y2), (half_x,y), 
+            marker_positions = ((x,y), (x,half_y), (x,y2), (half_x,y),
                                 (half_x,y2), (x2,y), (x2, half_y), (x2,y2))
             gc.set_line_dash(None)
             gc.set_line_width(1.0)
             for pos in marker_positions:
-                gc.rect(pos[0]-marker_size/2.0, pos[1]-marker_size/2.0, 
+                gc.rect(pos[0]-marker_size/2.0, pos[1]-marker_size/2.0,
                         marker_size, marker_size)
             gc.draw_path()
-        
+
         gc.restore_state()
         return
 
@@ -530,11 +530,11 @@ class Component(CoordinateBox, Interactor):
     def invalidate_draw(self, damaged_regions=None, self_relative=False):
         """ Invalidates any backbuffer that may exist, and notifies our parents
         and viewports of any damaged regions.
-        
+
         Call this method whenever a component's internal state
         changes such that it must be redrawn on the next draw() call."""
         self.draw_valid = False
-        
+
         if damaged_regions is None:
             damaged_regions = self._default_damaged_regions()
 
@@ -608,20 +608,20 @@ class Component(CoordinateBox, Interactor):
     #------------------------------------------------------------------------
 
     def do_layout(self, size=None, force=False):
-        """ Tells this component to do layout at a given size.  
-        
+        """ Tells this component to do layout at a given size.
+
         Parameters
         ----------
         size : (width, height)
-            Size at which to lay out the component; either or both values can 
-            be 0. If it is None, then the component lays itself out using 
+            Size at which to lay out the component; either or both values can
+            be 0. If it is None, then the component lays itself out using
             **bounds**.
         force : Boolean
             Whether to force a layout operation. If False, the component does
             a layout on itself only if **_layout_needed** is True.
             The method always does layout on any underlays or overlays it has,
             even if *force* is False.
-            
+
         """
         if self.layout_needed or force:
             if size is not None:
@@ -638,11 +638,11 @@ class Component(CoordinateBox, Interactor):
 
     def get_preferred_size(self):
         """ Returns the size (width,height) that is preferred for this component
-        
+
         When called on a component that does not contain other components,
         this method just returns the component bounds.  If the component is
         resizable and can draw into any size, the method returns a size that
-        is visually appropriate.  (The component's actual bounds are 
+        is visually appropriate.  (The component's actual bounds are
         determined by its container's do_layout() method.)
         """
         if self.fixed_preferred_size is not None:
@@ -691,8 +691,8 @@ class Component(CoordinateBox, Interactor):
     def _draw(self, gc, view_bounds=None, mode="default"):
         """ Draws the component, paying attention to **draw_order**, including
         overlays, underlays, and the like.
-        
-        This method is the main draw handling logic in plot components. 
+
+        This method is the main draw handling logic in plot components.
         The reason for implementing _draw() instead of overriding the top-level
         draw() method is that the Enable base classes may do things in draw()
         that mustn't be interfered with (e.g., the Viewable mix-in).
@@ -700,13 +700,13 @@ class Component(CoordinateBox, Interactor):
         """
         if not self.visible:
             return
-        
+
         if self.layout_needed:
             self.do_layout()
 
         self.drawn_outer_position = list(self.outer_position[:])
         self.drawn_outer_bounds = list(self.outer_bounds[:])
-        
+
         if self.use_backbuffer and (not isinstance(gc, GraphicsContextGL)):
             if self.backbuffer_padding:
                 x, y = self.outer_position
@@ -725,11 +725,11 @@ class Component(CoordinateBox, Interactor):
                 else:
                     bb = GraphicsContext((int(width), int(height)))
 
-                # if not fill_padding, then we have to fill the backbuffer 
+                # if not fill_padding, then we have to fill the backbuffer
                 # with the window color. This is the only way I've found that
                 # it works- perhaps if we had better blend support we could set
                 # the alpha to 0, but for now doing so causes the backbuffer's
-                # background to be white  
+                # background to be white
                 if not self.fill_padding:
                     bb.save_state()
                     bb.set_antialias(False)
@@ -738,8 +738,8 @@ class Component(CoordinateBox, Interactor):
                         bb.draw_rect((x, y, width, height), FILL)
                     finally:
                         bb.restore_state()
-                   
-                
+
+
                 # Fixme: should there be a +1 here?
                 bb.translate_ctm(-x+0.5, -y+0.5)
                 # There are a couple of strategies we could use here, but we
@@ -747,11 +747,11 @@ class Component(CoordinateBox, Interactor):
                 # if we only partially render the object into the backbuffer,
                 # we will have problems if we then render with different view
                 # bounds.
-                
+
                 for layer in self.draw_order:
                     if layer != "overlay":
                         self._dispatch_draw(layer, bb, view_bounds, mode)
-                
+
                 self._backbuffer = bb
                 self.draw_valid = True
 
@@ -761,12 +761,12 @@ class Component(CoordinateBox, Interactor):
         else:
             for layer in self.draw_order:
                 self._dispatch_draw(layer, gc, view_bounds, mode)
-                
+
         return
 
     def _dispatch_draw(self, layer, gc, view_bounds, mode):
-        """ Renders the named *layer* of this component. 
-        
+        """ Renders the named *layer* of this component.
+
         This method can be used by container classes that group many components
         together and want them to draw cooperatively. The container iterates
         through its components and asks them to draw only certain layers.
@@ -778,16 +778,16 @@ class Component(CoordinateBox, Interactor):
         if self.layout_needed:
             self.do_layout()
 
-        handler = getattr(self, "_draw_" + layer, None) 
+        handler = getattr(self, "_draw_" + layer, None)
         if handler:
             handler(gc, view_bounds, mode)
-        return    
+        return
 
-    def _draw_border(self, gc, view_bounds=None, mode="default", 
+    def _draw_border(self, gc, view_bounds=None, mode="default",
                      force_draw=False):
-        """ Utility method to draw the borders around this component 
+        """ Utility method to draw the borders around this component
 
-        The *force_draw* parameter forces the method to draw the border; if it 
+        The *force_draw* parameter forces the method to draw the border; if it
         is false, the border is drawn only when **overlay_border** is True.
         """
 
@@ -805,20 +805,20 @@ class Component(CoordinateBox, Interactor):
                 gc.set_stroke_color(self.border_color_)
                 gc.begin_path()
                 gc.rect(self.x-border_width/2.0, self.y-border_width/2.0,
-                        self.width+2*border_width-1, 
+                        self.width+2*border_width-1,
                         self.height+2*border_width-1)
                 gc.stroke_path()
                 gc.restore_state()
 
     def _draw_inset_border(self, gc, view_bounds=None, mode="default"):
-        """ Draws the border of a component. 
-        
-        Unlike the default Enable border, this one is drawn on the inside of 
+        """ Draws the border of a component.
+
+        Unlike the default Enable border, this one is drawn on the inside of
         the plot instead of around it.
         """
         if not self.border_visible:
             return
-        
+
         border_width = self.border_width
         gc.save_state()
         gc.set_line_width(border_width)
@@ -826,9 +826,9 @@ class Component(CoordinateBox, Interactor):
         gc.set_stroke_color(self.border_color_)
         gc.begin_path()
         gc.set_antialias(0)
-        gc.rect(self.x+border_width/2.0-0.5, 
+        gc.rect(self.x+border_width/2.0-0.5,
                 self.y+border_width/2.0-0.5,
-                self.width-border_width/2.0, 
+                self.width-border_width/2.0,
                 self.height-border_width/2.0)
         gc.stroke_path()
         gc.restore_state()
@@ -846,7 +846,7 @@ class Component(CoordinateBox, Interactor):
                         (self.outer_width-1, self.outer_height-1)
             else:
                 r = tuple(self.position) + (self.width-1, self.height-1)
-            
+
             gc.save_state()
             gc.set_antialias(False)
             try:
@@ -854,12 +854,12 @@ class Component(CoordinateBox, Interactor):
                 gc.draw_rect(r, FILL)
             finally:
                 gc.restore_state()
-        
+
         # Call the enable _draw_border routine
         if not self.overlay_border and self.border_visible:
             # Tell _draw_border to ignore the self.overlay_border
             self._draw_border(gc, view_bounds, mode, force_draw=True)
-        
+
         return
 
     def _draw_overlay(self, gc, view_bounds=None, mode="normal"):
@@ -893,10 +893,10 @@ class Component(CoordinateBox, Interactor):
     #------------------------------------------------------------------------
     # Tool-related methods and event dispatch
     #------------------------------------------------------------------------
-    
+
     def dispatch(self, event, suffix):
         """ Dispatches a mouse event based on the current event state.
-        
+
         Parameters
         ----------
         event : an Enable MouseEvent
@@ -914,36 +914,36 @@ class Component(CoordinateBox, Interactor):
             self._new_dispatch(event, suffix)
         return
 
-    
+
     def _new_dispatch(self, event, suffix):
         """ Dispatches a mouse event
-        
-        If the component has a **controller**, the method dispatches the event 
-        to it, and returns. Otherwise, the following objects get a chance to 
+
+        If the component has a **controller**, the method dispatches the event
+        to it, and returns. Otherwise, the following objects get a chance to
         handle the event:
-        
+
         1. The component's active tool, if any.
         2. Any overlays, in reverse order that they were added and are drawn.
         3. The component itself.
         4. Any underlays, in reverse order that they were added and are drawn.
         5. Any listener tools.
-        
+
         If any object in this sequence handles the event, the method returns
         without proceeding any further through the sequence. If nothing
         handles the event, the method simply returns.
         """
-        
+
         # Maintain compatibility with .controller for now
         if self.controller is not None:
             self.controller.dispatch(event, suffix)
             return
-        
+
         if self._active_tool is not None:
             self._active_tool.dispatch(event, suffix)
 
         if event.handled:
             return
-        
+
         # Dispatch to overlays in reverse of draw/added order
         for overlay in self.overlays[::-1]:
             overlay.dispatch(event, suffix)
@@ -952,74 +952,74 @@ class Component(CoordinateBox, Interactor):
 
         if not event.handled:
             self._dispatch_stateful_event(event, suffix)
-        
+
         if not event.handled:
             # Dispatch to underlays in reverse of draw/added order
             for underlay in self.underlays[::-1]:
                 underlay.dispatch(event, suffix)
                 if event.handled:
                     break
-        
+
         # Now that everyone who might veto/handle the event has had a chance
         # to receive it, dispatch it to our list of listener tools.
         if not event.handled:
             for tool in self.tools:
                 tool.dispatch(event, suffix)
-        
+
         return
 
     def _old_dispatch(self, event, suffix):
         """ Dispatches a mouse event.
-        
-        If the component has a **controller**, the method dispatches the event 
-        to it and returns. Otherwise, the following objects get a chance to 
+
+        If the component has a **controller**, the method dispatches the event
+        to it and returns. Otherwise, the following objects get a chance to
         handle the event:
-        
+
         1. The component's active tool, if any.
         2. Any listener tools.
         3. The component itself.
-        
+
         If any object in this sequence handles the event, the method returns
         without proceeding any further through the sequence. If nothing
         handles the event, the method simply returns.
-        
+
         """
         if self.controller is not None:
             self.controller.dispatch(event, suffix)
             return
-        
+
         if self._active_tool is not None:
             self._active_tool.dispatch(event, suffix)
 
         if event.handled:
             return
-        
+
         for tool in self.tools:
             tool.dispatch(event, suffix)
             if event.handled:
                 return
-        
+
         if not event.handled:
             self._dispatch_to_enable(event, suffix)
         return
 
     def _get_active_tool(self):
         return self._active_tool
-    
+
     def _set_active_tool(self, tool):
         # Deactivate the existing active tool
         old = self._active_tool
         if old == tool:
             return
-        
+
         self._active_tool = tool
-        
+
         if old is not None:
             old.deactivate(self)
-            
+
         if tool is not None and hasattr(tool, "_activate"):
             tool._activate()
-        
+
         self.invalidate_and_redraw()
         return
 
@@ -1029,7 +1029,7 @@ class Component(CoordinateBox, Interactor):
 
     def _tools_items_changed(self):
         self.invalidate_and_redraw()
-    
+
     #------------------------------------------------------------------------
     # Event handlers
     #------------------------------------------------------------------------
@@ -1037,7 +1037,7 @@ class Component(CoordinateBox, Interactor):
     def _aspect_ratio_changed(self, old, new):
         if new is not None:
             self._enforce_aspect_ratio()
-    
+
     def _enforce_aspect_ratio(self, notify=True):
         """ This method adjusts the width and/or height of the component so
         that the new width and height match the aspect ratio.  It uses the
@@ -1055,7 +1055,7 @@ class Component(CoordinateBox, Interactor):
             self.width = 0
             return
         elif old_h == 0:
-            return 
+            return
         elif int(old_w) == int(ratio * old_h):
             return
 
@@ -1078,7 +1078,7 @@ class Component(CoordinateBox, Interactor):
             if self.auto_center:
                 new_pos = self.position[:]
                 new_pos[0] += (old_w - new_w) / 2.0
-        
+
         self.set(bounds=[new_w, new_h], trait_change_notify=notify)
         if new_pos:
             self.set(position=new_pos, trait_change_notify=notify)
@@ -1142,7 +1142,7 @@ class Component(CoordinateBox, Interactor):
         self.position[1] = val
 
     def _get_padding(self):
-        return [self.padding_left, self.padding_right, 
+        return [self.padding_left, self.padding_right,
                 self.padding_top, self.padding_bottom]
 
     def _set_padding(self, val):

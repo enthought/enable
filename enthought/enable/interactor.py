@@ -66,7 +66,7 @@ class Interactor(HasTraits):
 
     # The tool that is currently active.
     active_tool = Property
-    
+
     # If True, then marks events as "handled" if there is a handler function
     # defined.  This makes it easy to write simple components that respond
     # to events, but more complex tools will probably want this turned off.
@@ -75,7 +75,7 @@ class Interactor(HasTraits):
     # Shadow trait for the **active_tool** property.  Must be an instance of
     # BaseTool or one of its subclasses.
     _active_tool = Any
-    
+
 
     def dispatch(self, event, suffix):
         """ Public method for sending mouse/keyboard events to this interactor.
@@ -99,7 +99,7 @@ class Interactor(HasTraits):
 
     def _dispatch_stateful_event(self, event, suffix):
         """
-        Protected method to dispatch a mouse or keyboard based on the current 
+        Protected method to dispatch a mouse or keyboard based on the current
         event_state.  Subclasses can call this from within customized
         event handling logic in dispatch().
         """

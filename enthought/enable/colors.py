@@ -156,13 +156,13 @@ color_table = {"aliceblue": (0.941, 0.973, 1.000, 1.0),
     "whitesmoke": (0.961, 0.961, 0.961, 1.0),
     "yellow": (1.000, 1.000, 0.000, 1.0),
     "yellowgreen": (0.604, 0.804, 0.196, 1.0),
-        
+
     # Several aliases for transparent
     "clear": transparent_color,
     "transparent": transparent_color,
     "none": transparent_color,
-    
-    # Placeholders for system- and toolkit-specific UI colors; the 
+
+    # Placeholders for system- and toolkit-specific UI colors; the
     # toolkit-dependent code below will fill these with the appropriate
     # values.  These hardcoded defaults are for the Windows Classic
     # theme.
@@ -177,13 +177,13 @@ if not ETSConfig.toolkit:
 if ETSConfig.toolkit == 'wx':
     import wx
     from enthought.traits.ui.wx.color_editor \
-                import ToolkitEditorFactory as StandardColorEditorFactory    
+                import ToolkitEditorFactory as StandardColorEditorFactory
     # Version dependent imports (ColourPtr not defined in wxPython 2.8):
     try:
         ColourPtr = wx.ColourPtr
     except:
         class ColourPtr ( object ): pass
-    
+
     # Mostly copied from traits/ui/wx/color_trait.py
     def convert_from_wx_color(obj, name, value):
         if isinstance(value, ColourPtr) or isinstance(value, wx.Colour):
@@ -200,15 +200,15 @@ if ETSConfig.toolkit == 'wx':
                 raise TraitError
         else:
             raise TraitError
-        
-        
+
+
     convert_from_wx_color.info = ('a wx.Colour instance, an integer which in hex is of '
                              'the form 0xRRGGBB, where RR is red, GG is green, '
                              'and BB is blue, a list/tuple of (r,g,b) or (r,g,b,a)')
-    
+
     # Set the system color
     from enthought.traits.ui.wx.constants import WindowColor
-    color_table["sys_window"] = (WindowColor.Red()/255.0, 
+    color_table["sys_window"] = (WindowColor.Red()/255.0,
                                  WindowColor.Green()/255.0,
                                  WindowColor.Blue()/255.0,
                                  1.0)
@@ -229,7 +229,7 @@ if ETSConfig.toolkit == 'wx':
             """ Gets the application equivalent of a wxPython value.
             """
             return convert_from_wx_color(self, 'color', color)
-    
+
         def str_color(self, color):
             if isinstance( color, ( wx.Colour, ColourPtr ) ):
                 return "(%d,%d,%d)" % ( color.Red(), color.Green(), color.Blue() )
@@ -237,15 +237,15 @@ if ETSConfig.toolkit == 'wx':
                 fmt = "(" + ",".join(["%0.3f"]*len(color)) + ")"
                 return fmt % color
             return color
-    
+
     ColorTrait = Trait("black", Tuple, List, color_table,
                        convert_from_wx_color, editor=ColorEditorFactory)
 
 elif ETSConfig.toolkit == 'qt4':
     from enthought.qt import QtGui
     from enthought.traits.ui.qt4.color_editor \
-                import ToolkitEditorFactory as StandardColorEditorFactory    
-    
+                import ToolkitEditorFactory as StandardColorEditorFactory
+
     def convert_from_pyqt_color(obj, name, value):
         if isinstance(value, QtGui.QColor):
             return value.getRgbF()
@@ -266,16 +266,16 @@ elif ETSConfig.toolkit == 'qt4':
             "name, an integer which in hex is of the form 0xRRGGBB, where RR "
             "is red, GG is green, and BB is blue, a list/tuple of (r,g,b) or "
         "(r,g,b,a)")
-        
+
     window_color = QtGui.QApplication.palette().window().color()
-    color_table["sys_window"] = (window_color.red()/255.0, 
+    color_table["sys_window"] = (window_color.red()/255.0,
                                  window_color.green()/255.0,
                                  window_color.blue()/255.0,
                                  1.0)
-        
+
 
     class ColorEditorFactory(StandardColorEditorFactory):
-        
+
         def to_qt4_color(self, editor):
             if self.mapped:
                 retval = getattr(editor.object, editor.name + '_')
@@ -286,18 +286,18 @@ elif ETSConfig.toolkit == 'qt4':
                 col = QtGui.QColor()
                 col.setRgbF(*retval)
                 retval = col
-    
+
             return retval
-    
+
         def str_color(self, color):
             if isinstance(color, QtGui.QColor):
                 color = color.getRgbF()
-    
+
             if isinstance(color, tuple):
                 fmt = "(" + ",".join(["%0.3f"] * len(color)) + ")"
                 color =  fmt % color
             return color
-        
+
     ColorTrait = Trait("black", Tuple, List, color_table,
                        convert_from_pyqt_color, editor=ColorEditorFactory)
 

@@ -11,17 +11,17 @@ class MyFrame(DemoFrame):
     def _create_window(self):
 
         canvas = Canvas(bgcolor="lightsteelblue", draw_axes=True)
-        
+
         boxgridsize = 8
         boxsize = 50
-        
+
         spacing = boxsize * 2
         offset = spacing / 2
-        
+
         origin_color = array([0.0, 0.0, 1.0])
         x_color = array([0.0, 1.0, 0.0])
         y_color = array([1.0, 0.0, 0.0])
-        
+
         for i in range(boxgridsize):
             for j in range(boxgridsize):
                 color = tuple(x_color / (boxgridsize - 1) * i + \

@@ -36,7 +36,7 @@ cdef extern from "Python.h":
 
     object PyCObject_FromVoidPtr(void* cobj, cobject_destr destr)
     void* PyCObject_AsVoidPtr(object self)
-   
+
 cdef extern from "string.h":
     void *memcpy(void *s1, void *s2, int n)
 

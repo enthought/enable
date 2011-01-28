@@ -44,28 +44,28 @@ def valid_scroll_position(object, name, value):
 
 class NativeScrollBar(Component):
     "An Enable scrollbar component that wraps/embeds the native Qt scrollbar"
-    
+
     #------------------------------------------------------------------------
     # Public Traits
     #------------------------------------------------------------------------
-    
+
     # The current position of the scroll bar.  This must be within the range
     # (self.low, self.high)
     scroll_position = Trait( 0.0, valid_scroll_position )
-    
+
     # A tuple (low, high, page_size, line_size).  Can be accessed using
     # convenience properties (see below).
     range = Trait( ( 0.0, 100.0, 10.0, 1.0 ), valid_range )
-    
+
     # The orientation of the scrollbar
     orientation = Trait("horizontal", "vertical")
 
     # Is y=0 at the top or bottom?
     origin = Trait('bottom', 'top')
-    
+
     # Determines if the scroll bar should be visible and respond to events
     enabled = Bool(True)
-    
+
     # The scroll increment associated with a single mouse wheel increment
     mouse_wheel_speed = Int(3)
 
@@ -91,31 +91,31 @@ class NativeScrollBar(Component):
 
     def _get_low(self):
         return self.range[0]
-        
+
     def _set_low(self, low):
         ignore, high, page_size, line_size = self.range
         self._clean = False
         self.range =(low, high, page_size, line_size)
-        
+
     def _get_high(self):
         return self.range[1]
-        
+
     def _set_high(self, high):
         low, ignore, page_size, line_size = self.range
         self._clean = False
         self.range =(low, high, page_size, line_size)
-        
+
     def _get_page_size(self):
         return self.range[2]
-        
+
     def _set_page_size(self, page_size):
         low, high, ignore, line_size = self.range
         self._clean = False
         self.range =(low, high, page_size, line_size)
-        
+
     def _get_line_size(self):
         return self.range[3]
-        
+
     def _set_line_size(self, line_size):
         low, high, page_size, ignore = self.range
         self._clean = False

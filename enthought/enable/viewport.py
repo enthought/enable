@@ -7,7 +7,7 @@ from numpy import array, dot
 from enthought.enable.tools.viewport_zoom_tool import ViewportZoomTool
 from enthought.enable.simple_layout import simple_container_get_preferred_size, \
                                             simple_container_do_layout
-from enthought.traits.api import (Bool, Delegate, Float, Instance, Enum, List, 
+from enthought.traits.api import (Bool, Delegate, Float, Instance, Enum, List,
         Any, on_trait_change)
 from enthought.kiva import affine
 
@@ -108,7 +108,7 @@ class Viewport(Component):
         super(Viewport, self).invalidate_draw(damaged_regions=damaged_regions,
                                               self_relative=self_relative)
         return
-    
+
     def cleanup(self, window):
         """When a window viewing or containing a component is destroyed,
         cleanup is called on the component to give it the opportunity to
@@ -135,7 +135,7 @@ class Viewport(Component):
 
     def component_to_viewport(self, x, y):
         """ Given a coordinate X and Y in the viewed component's coordinate
-        system, returns a coordinate in the coordinate system of the 
+        system, returns a coordinate in the coordinate system of the
         Viewport.
         """
         vx, vy = self.view_position
@@ -144,7 +144,7 @@ class Viewport(Component):
         newy = (y - vx) * self.zoom + oy
         return (newx, newy)
 
-    
+
     def get_event_transform(self, event=None, suffix=""):
         transform = affine.affine_identity()
 
@@ -161,35 +161,35 @@ class Viewport(Component):
                 x_offset = self.view_position[0] - self.outer_position[0]
                 y_offset = self.view_position[1] - self.outer_position[1]
                 transform = affine.translate(transform, x_offset, y_offset)
-            
+
         return transform
 
 
-        
+
     #------------------------------------------------------------------------
     # Component interface
     #------------------------------------------------------------------------
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="normal"):
-        
+
         # For now, ViewPort ignores the view_bounds that are passed in...
         # Long term, it should be intersected with the view_position to
         # compute a new view_bounds to pass in to our component.
         if self.component is not None:
-            
+
             x, y = self.position
             view_x, view_y = self.view_position
             gc.save_state()
-            
+
             # Clip in the viewport's space (screen space).  This ensures
             # that the half-pixel offsets we us are actually screen pixels,
             # and it's easier/more accurate than transforming the clip
             # rectangle down into the component's space (especially if zoom
             # is involved).
-            gc.clip_to_rect(x-0.5, y-0.5, 
+            gc.clip_to_rect(x-0.5, y-0.5,
                             self.width+1,
                             self.height+1)
-            
+
             # There is a two-step transformation from the viewport's "outer"
             # coordinates into the coordinates space of the viewed component:
             # scaling, followed by a translation.
@@ -201,7 +201,7 @@ class Viewport(Component):
                     raise RuntimeError("Viewport zoomed out too far.")
             else:
                 gc.translate_ctm(x - view_x, y - view_y)
-            
+
             # Now transform the passed-in view_bounds; this is not the same thing as
             # self.view_bounds!
             if view_bounds:
@@ -216,7 +216,7 @@ class Viewport(Component):
                     # view_x and view_y to generate the transformed coordinates
                     # of clipped_view in our component's space.
                     offset = array(clipped_view[:2]) - array(self.position)
-                    new_bounds = ((offset[0]/self.zoom + view_x), 
+                    new_bounds = ((offset[0]/self.zoom + view_x),
                                   (offset[1]/self.zoom + view_y),
                                   clipped_view[2] / self.zoom, clipped_view[3] / self.zoom)
                     self.component.draw(gc, new_bounds, mode=mode)
@@ -233,11 +233,11 @@ class Viewport(Component):
         if self.initiate_layout:
             self.component.bounds = list(self.component.get_preferred_size())
             self.component.do_layout()
-                
+
         else:
             super(Viewport, self)._do_layout()
         return
-    
+
     def _dispatch_stateful_event(self, event, suffix):
         if isinstance(self.component, Component):
             transform = self.get_event_transform(event, suffix)
@@ -276,7 +276,7 @@ class Viewport(Component):
         """
         if isinstance(self.component, Canvas):
             llx, lly = self.view_position
-            self.component.view_bounds = (llx, lly, 
+            self.component.view_bounds = (llx, lly,
                                           llx + self.view_bounds[0]-1,
                                           lly + self.view_bounds[1]-1)
         return

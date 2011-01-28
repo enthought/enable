@@ -54,9 +54,9 @@ class ArrayImage(ArrayInterfaceImage):
 
         :rtype: cls or cls.region_class
         '''
-        
+
         _is_pow2 = lambda v: (v & (v - 1)) == 0
-        
+
         target = gl.GL_TEXTURE_2D
         if rectangle and not (_is_pow2(self.width) and _is_pow2(self.height)):
             if gl.gl_info.have_extension('GL_ARB_texture_rectangle'):
@@ -87,13 +87,13 @@ class ArrayImage(ArrayInterfaceImage):
                          width, height,
                          1,
                          gl.GL_RGBA, gl.GL_UNSIGNED_BYTE,
-                         blank) 
+                         blank)
             internalformat = None
 
-        self.blit_to_texture(texture.target, texture.level, 
+        self.blit_to_texture(texture.target, texture.level,
             0, 0, 0, internalformat)
-        
-        return texture 
+
+        return texture
 
     def blit_to_texture(self, target, level, x, y, z, internalformat=None):
         '''Draw this image to to the currently bound texture at `target`.
@@ -109,7 +109,7 @@ class ArrayImage(ArrayInterfaceImage):
         matrix = None
         format, type = self._get_gl_format_and_type(data_format)
         if format is None:
-            if (len(data_format) in (3, 4) and 
+            if (len(data_format) in (3, 4) and
                 gl.gl_info.have_extension('GL_ARB_imaging')):
                 # Construct a color matrix to convert to GL_RGBA
                 def component_column(component):
@@ -122,7 +122,7 @@ class ArrayImage(ArrayInterfaceImage):
                 lookup_format = data_format + 'XXX'
                 matrix = (component_column(lookup_format[0]) +
                           component_column(lookup_format[1]) +
-                          component_column(lookup_format[2]) + 
+                          component_column(lookup_format[2]) +
                           component_column(lookup_format[3]))
                 format = {
                     3: gl.GL_RGB,
@@ -165,7 +165,7 @@ class ArrayImage(ArrayInterfaceImage):
         gl.glTexParameteri(target, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE)
         gl.glTexParameteri(target, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
         gl.glTexParameteri(target, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
-        
+
 
         if target == gl.GL_TEXTURE_3D:
             assert not internalformat
@@ -192,7 +192,7 @@ class ArrayImage(ArrayInterfaceImage):
         if matrix:
             gl.glPopMatrix()
             gl.glMatrixMode(gl.GL_MODELVIEW)
-    
+
 
 def image_as_array(img):
     """ Adapt an image object into a numpy array.
@@ -352,21 +352,21 @@ class GraphicsContext(_GCL):
         x0 = xform[4]
         y0 = xform[5]
 
-        # The GL backend places the center of a pixel at (0.5, 0.5); however, 
+        # The GL backend places the center of a pixel at (0.5, 0.5); however,
         # for show_text_at_point, we don't actually want to render the text
         # offset by half a pixel.  There is probably a better, more uniform way
         # to handle this across all of Kiva, because this is probably a common
         # issue that will arise, but for now, we just round the position down.
         x = floor(x + x0)
         y = floor(y + y0)
-        
+
         label.x = x
         label.y = y
         c = self.get_fill_color()
         label.color = (int(c[0]*255), int(c[1]*255), int(c[2]*255), int(c[3]*255))
         label.draw()
         return True
-    
+
     def linear_gradient(self, x1, y1, x2, y2, stops, spread_method,
                         units='userSpaceOnUse'):
         """ Not implemented.

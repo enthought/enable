@@ -20,7 +20,7 @@ class TextFieldStyle(HasTraits):
 
     # The background color of highlighted items
     highlight_bgcolor = ColorTrait("lightgray")
-    
+
     # The font for flagged text (must be monospaced!)
     highlight_font = KivaFont("Courier 14 bold")
 

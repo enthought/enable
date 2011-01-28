@@ -34,7 +34,7 @@ def draw_sub_image(gc, width, height):
     gc.line_to(width, 0.0)
     gc.stroke_path()
 
-    
+
 def test_arc_to2(gc, x2, y2, radiusstep=25.0):
     gc.set_stroke_color(lightgray)
     gc.move_to(0,0)
@@ -48,7 +48,7 @@ def test_arc_to2(gc, x2, y2, radiusstep=25.0):
         gc.move_to(0,0)
         gc.arc_to(100, 0, x2, y2, i*radiusstep+20.0)
     gc.stroke_path()
-    
+
 
 def test_arc_curve(gc):
     with gc:
@@ -149,7 +149,7 @@ def test_arc_to(gc):
     gc.translate_ctm(-300.5, 100.5)
     gc.scale_ctm(0.75, -1.0)
     test_arc_to2(gc, 160.5, 76.5, 50.0)
-    
+
 def test_simple_clip_stack(gc):
     gc.clear(white)
     gc.clip_to_rect(100.0, 100.0, 1.0, 1.0)
@@ -223,7 +223,7 @@ def test_handling_text(gc):
     gc.line_to(0,-5)
     gc.move_to(0,0)
     gc.stroke_path()
-    txtRot = agg.rotation_matrix(PI/6) 
+    txtRot = agg.rotation_matrix(PI/6)
     gc.set_text_matrix(txtRot)
     gc.show_text("Hello")
     txtRot.invert()

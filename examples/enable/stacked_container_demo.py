@@ -8,7 +8,7 @@ from enthought.enable.overlay_container import OverlayContainer
 
 class MyFrame(DemoFrame):
     def _create_window(self):
-        
+
         stack = VStackedContainer(position=[0,0], bounds=[500,500],
             halign='center', valign='center', #border_visible=True,
             fit_components='hv', auto_size=True, stack_order='top_to_bottom',
@@ -40,4 +40,4 @@ class MyFrame(DemoFrame):
 
 if __name__ == "__main__":
     demo_main(MyFrame, size=[600,600])
-    
+

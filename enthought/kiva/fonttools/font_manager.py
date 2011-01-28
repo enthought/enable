@@ -158,7 +158,7 @@ preferred_fonts = {
     'serif': ['Bitstream Vera Serif', 'DejaVu Serif', 'New Century Schoolbook', 'Century Schoolbook L', 'Utopia', 'ITC Bookman', 'Bookman', 'Nimbus Roman No9 L', 'Times New Roman', 'Times', 'Palatino', 'Charter', 'serif'],
     'sans-serif': ['Bitstream Vera Sans', 'DejaVu Sans', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', 'sans-serif']
 }
-        
+
 class verbose(object):
     ''' class to fake matplotlibs verbose module. No idea why logging
         module isnt used instead
@@ -167,7 +167,7 @@ class verbose(object):
     def report(text, level='info'):
         return
         #print "kiva font_manager: ", text
-        
+
 def _is_writable_dir(p):
     """
     p is a string pointing to a putative writable dir -- return True p
@@ -184,7 +184,7 @@ def _is_writable_dir(p):
         return False
     else:
         return True
-        
+
 def get_configdir():
     """
     Return the string representing the configuration dir.  If s is the
@@ -209,7 +209,7 @@ def is_string_like(obj):
             return False
         try: obj + ''
         except: return False
-        return True        
+        return True
 
 def getPropDict(font):
     n = font['name']
@@ -398,7 +398,7 @@ def findSystemFonts(fontpaths=None, fontext='ttf'):
     """
     fontfiles = {}
     fontexts = get_fontext_synonyms(fontext)
-    
+
     if fontpaths is None:
         if sys.platform == 'win32':
             fontdir = win32FontDirectory()
@@ -429,7 +429,7 @@ def findSystemFonts(fontpaths=None, fontext='ttf'):
             files.extend(glob.glob(os.path.join(path, '*.'+ext.upper())))
         for fname in files:
             abs_path = os.path.abspath(fname)
-            
+
             # Handle dirs which look like font files, but may contain font files
             if os.path.isdir(abs_path):
                 fontpaths.append(abs_path)
@@ -817,7 +817,7 @@ class FontProperties(object):
         filename = str(fontManager.findfont(self))
         if filename.endswith('.afm'):
             return afm.AFM(file(filename)).get_familyname()
-        
+
         return getPropDict(TTFont(str(fontManager.findfont(self))))[(1,0,0,1)]
 
     def get_style(self):
@@ -1109,7 +1109,7 @@ class FontManager:
         No match will return 1.0.
         """
         global preferred_fonts
-        
+
         family2 = family2.lower()
         for i, family1 in enumerate(families):
             family1 = family1.lower()
@@ -1260,7 +1260,7 @@ class FontManager:
 
         best_score = 1e64
         best_font = None
-        
+
         for font in fontlist:
             if (directory is not None and
                 os.path.commonprefix([font.fname, directory]) != directory):

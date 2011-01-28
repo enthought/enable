@@ -278,8 +278,8 @@ cdef class CGContext:
         x = sqrt(2.0) / 2.0 * (t.a + t.b)
         y = sqrt(2.0) / 2.0 * (t.c + t.d)
         return sqrt(x*x + y*y)
-    
-        
+
+
 
     #----------------------------------------------------------------
     # Save/Restore graphics state.
@@ -303,7 +303,7 @@ cdef class CGContext:
 
     def __enter__(self):
         self.save_state()
-        
+
     def __exit__(self, object type, object value, object traceback):
         self.restore_state()
 
@@ -491,7 +491,7 @@ cdef class CGContext:
         x = (<float*>c_numpy.PyArray_GETPTR2(apoints, 0, 0))[0]
         y = (<float*>c_numpy.PyArray_GETPTR2(apoints, 0, 1))[0]
         CGContextMoveToPoint(self.context, x, y)
-        for i from 1 <= i < n:	
+        for i from 1 <= i < n:
             x = (<float*>c_numpy.PyArray_GETPTR2(apoints, i, 0))[0]
             y = (<float*>c_numpy.PyArray_GETPTR2(apoints, i, 1))[0]
             CGContextAddLineToPoint(self.context, x, y)
@@ -1069,7 +1069,7 @@ cdef class CGContext:
             CGContextAddPath(self.context, marker.path)
             CGContextDrawPath(self.context, cg_mode)
             CGContextRestoreGState(self.context)
-            
+
     def linear_gradient(self, x1, y1, x2, y2, stops, spread_method, units='userSpaceOnUse'):
         cdef CGRect path_rect
         if units == 'objectBoundingBox':
@@ -1079,7 +1079,7 @@ cdef class CGContext:
             x2 = path_rect.origin.x + x2 * path_rect.size.width
             y1 = path_rect.origin.y + y1 * path_rect.size.height
             y2 = path_rect.origin.y + y2 * path_rect.size.height
-        
+
         stops_list = stops.transpose().tolist()
         func = PiecewiseLinearColorFunction(stops_list)
 
@@ -1091,14 +1091,14 @@ cdef class CGContext:
             self.draw_shading(shading)
         else:
             self.repeat_linear_shading(x1, y1, x2, y2, stops, spread_method, func)
-    
+
     def repeat_linear_shading(self, x1, y1, x2, y2, stops, spread_method,
                               ShadingFunction func not None):
         cdef CGRect clip_rect = CGContextGetClipBoundingBox(self.context)
         cdef double dirx, diry, slope
         cdef double startx, starty, endx, endy
         cdef int func_index = 0
-        
+
         if spread_method == 'reflect':
             # generate the mirrored color function
             stops_list = stops[::-1].transpose()
@@ -1106,7 +1106,7 @@ cdef class CGContext:
             funcs = [func, PiecewiseLinearColorFunction(stops_list.tolist())]
         else:
             funcs = [func, func]
-        
+
         dirx, diry = x2-x1, y2-y1
         startx, starty = x1, y1
         endx, endy = x2, y2
@@ -1126,7 +1126,7 @@ cdef class CGContext:
             startx, starty = endx, endy
             endx, endy = endx+dirx, endy+diry
             func_index += 1
-    
+
         # reverse direction
         dirx, diry = x1-x2, y1-y2
         startx, starty = x1+dirx, y1+diry
@@ -1185,14 +1185,14 @@ cdef class CGContext:
         else:
             # 'reflect' and 'repeat' need to iterate
             self.repeat_radial_shading(cx, cy, r, fx, fy, stops, spread_method, func)
-    
+
     def repeat_radial_shading(self, cx, cy, r, fx, fy, stops, spread_method,
                               ShadingFunction func not None):
         cdef CGRect clip_rect = CGContextGetClipBoundingBox(self.context)
         cdef double rad = 0., dirx = 0., diry = 0.
         cdef double startx, starty, endx, endy
         cdef int func_index = 0
-        
+
         if spread_method == 'reflect':
             # generate the mirrored color function
             stops_list = stops[::-1].transpose()
@@ -1200,7 +1200,7 @@ cdef class CGContext:
             funcs = [func, PiecewiseLinearColorFunction(stops_list.tolist())]
         else:
             funcs = [func, func]
-        
+
         dirx, diry = cx-fx, cy-fy
         startx, starty = fx,fy
         endx, endy = cx, cy
@@ -1280,7 +1280,7 @@ cdef class CGContextInABox(CGContext):
     def clear(self, object clear_color=(1.0,1.0,1.0,1.0)):
         self.save_state()
         # Reset the transformation matrix back to the identity.
-        CGContextConcatCTM(self.context, 
+        CGContextConcatCTM(self.context,
             CGAffineTransformInvert(CGContextGetCTM(self.context)))
         self.set_fill_color(clear_color)
         CGContextFillRect(self.context, CGRectMake(0,0,self._width,self._height))
@@ -1654,9 +1654,9 @@ cdef class CGBitmapContext(CGContext):
 
         self.save_state()
         # Reset the transformation matrix back to the identity.
-        CGContextConcatCTM(self.context, 
+        CGContextConcatCTM(self.context,
             CGAffineTransformInvert(CGContextGetCTM(self.context)))
-        
+
         self.set_fill_color(clear_color)
         CGContextFillRect(self.context, CGRectMake(0, 0, self.width(), self.height()))
         self.restore_state()

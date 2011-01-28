@@ -36,7 +36,7 @@ QCoreApplication.addLibraryPath(qt_plugins_dir)
 #-------------------------------------------------------------------------------
 #  'SVGButtonEditor' class:
 #-------------------------------------------------------------------------------
-                               
+
 class SVGButtonEditor(Editor):
 
     icon = Any
@@ -48,7 +48,7 @@ class SVGButtonEditor(Editor):
     #---------------------------------------------------------------------------
     #  Editor interface
     #---------------------------------------------------------------------------
-        
+
     def init(self, parent):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
@@ -56,24 +56,24 @@ class SVGButtonEditor(Editor):
         self.icon = QtGui.QIcon(self.factory.filename)
         if self.factory.toggle_filename:
             self.toggled_icon = QtGui.QIcon(self.factory.toggle_filename)
-            
+
         if self.factory.toggle_label != '':
             self.toggle_label = self.factory.toggle_label
         else:
             self.toggle_label = self.factory.label
-            
+
         if self.factory.toggle_tooltip != '':
             self.toggle_tooltip = self.factory.toggle_tooltip
         else:
             self.toggle_tooltip = self.factory.tooltip
-            
-        
+
+
         control = self.control = QtGui.QToolButton()
         control.setAutoRaise(True)
         control.setIcon(self.icon)
         control.setText(self.factory.label)
         control.setIconSize(QtCore.QSize(self.factory.width, self.factory.height))
-        
+
         if self.factory.label:
             control.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         else:
@@ -120,7 +120,7 @@ class SVGButtonEditor(Editor):
             self.control.setIcon(self.toggled_icon)
             self.control.setText(self.toggle_label)
             self.control.setToolTip(self.toggle_tooltip)
-            
+
         elif not self.toggle_state and self.toggled_icon:
             self.control.setIcon(self.icon)
             self.control.setText(self.factory.label)

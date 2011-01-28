@@ -23,20 +23,20 @@ class AbstractComponent(Interactor):
     # The position relative to the container.  If container is None, then
     # position will be set to (0,0).
     position = coordinate_trait
-    
+
     # X-coordinate of our position
     x = Property
-    
+
     # Y-coordinate of our position
     y = Property
-    
+
     #------------------------------------------------------------------------
     # Object/containment hierarchy traits
     #------------------------------------------------------------------------
-    
+
     # Our container object
-    container = Any    # Instance("Container") 
-    
+    container = Any    # Instance("Container")
+
     # A reference to our top-level Enable Window
     window = Property   # Instance("Window")
 
@@ -46,7 +46,7 @@ class AbstractComponent(Interactor):
     #------------------------------------------------------------------------
     # Other public traits
     #------------------------------------------------------------------------
-    
+
     # How this component should draw itself when draw() is called with
     # a mode of "default".  (If a draw mode is explicitly passed in to
     # draw(), then this is overruled.)
@@ -56,7 +56,7 @@ class AbstractComponent(Interactor):
     #------------------------------------------------------------------------
     # Private traits
     #------------------------------------------------------------------------
-    
+
     # Shadow trait for self.window.  Only gets set if this is the top-level
     # enable component in a Window.
     _window = Any    # Instance("Window")
@@ -82,11 +82,11 @@ class AbstractComponent(Interactor):
         """ Given coordinates relative to this component's origin, returns
         the "absolute" coordinates in the frame of the top-level parent
         Window enclosing this component's ancestor containers.
-        
+
         Can be called in two ways:
             get_absolute_coords(x, y)
             get_absolute_coords( (x,y) )
-        
+
         Returns a tuple (x,y) representing the new coordinates.
         """
         if self.container is not None:
@@ -126,7 +126,7 @@ class AbstractComponent(Interactor):
         elif self._window:
             self._window.redraw()
         return
-    
+
 
     #------------------------------------------------------------------------
     # Event handlers, getters & setters
@@ -146,14 +146,14 @@ class AbstractComponent(Interactor):
 
     def _get_x(self):
         return self.position[0]
-    
+
     def _set_x(self, val):
         self.position[0] = val
         return
 
     def _get_y(self):
         return self.position[1]
-    
+
     def _set_y(self, val):
         self.position[1] = val
         return

@@ -24,7 +24,7 @@ else:
 class _ComponentEditor( Editor ):
 
     #---------------------------------------------------------------------------
-    #  Trait definitions:     
+    #  Trait definitions:
     #---------------------------------------------------------------------------
 
     # The plot editor is scrollable (overrides Traits UI Editor).
@@ -56,10 +56,10 @@ class _ComponentEditor( Editor ):
 
 
 class ComponentEditor( BasicEditorFactory ):
-    """ wxPython editor factory for Enable components. 
+    """ wxPython editor factory for Enable components.
     """
     #---------------------------------------------------------------------------
-    #  Trait definitions:     
+    #  Trait definitions:
     #---------------------------------------------------------------------------
 
     # The class used to create all editor styles (overrides BasicEditorFactory).

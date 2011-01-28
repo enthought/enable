@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------
 # Copyright (c) 2011, Enthought, Inc.
 # All rights reserved.
-# 
+#
 # This software is provided without warranty under the terms of the BSD
 # license included in enthought/LICENSE.txt and may be redistributed only
 # under the conditions described in the aforementioned license.  The license
@@ -28,7 +28,7 @@ class Window(BaseWindow):
         if self.control is None:
             event.Skip()
             return
-        
+
         control = self.control
         pixel_map = self._gc.pixel_map
         wdc = control._dc = wx.PaintDC(control)
@@ -39,7 +39,7 @@ class Window(BaseWindow):
                                        width=int(update_bounds[2]), height=int(update_bounds[3]))
         else:
             pixel_map.draw_to_wxwindow(control, 0, 0)
-        
+
         control._dc = None
         return
 

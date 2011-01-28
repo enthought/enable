@@ -50,7 +50,7 @@ def draw(gc):
                            array([starting_color, ending_color]),
                            "pad")
         gc.draw_path(constants.FILL)
-    
+
     # radial
     with gc:
         gc.arc(325, 75, 50, 0.0, 2*pi)
@@ -80,10 +80,10 @@ def draw(gc):
 
 def main():
     gc = GraphicsContext((500, 500))
-    
+
     gc.scale_ctm(1.25, 1.25)
     draw(gc)
-    
+
     gc.save(splitext(__file__)[0]+'.png', file_format='png')
 
 

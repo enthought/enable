@@ -9,7 +9,7 @@ listed below.
 
 If you wish to obtain the full, original source of the Freetype library, please
 visit one of the following web sites:
-        
+
         http://freetype.sourceforge.net/
         http://www.freetype.org
 

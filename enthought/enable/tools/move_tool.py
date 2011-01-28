@@ -10,7 +10,7 @@ class MoveTool(DragTool):
 
     drag_button = Enum("left", "right")
 
-    # Should the moved component be raised to the top of its container's 
+    # Should the moved component be raised to the top of its container's
     # list of components?  This is only recommended for overlaying containers
     # and canvases, but generally those are the only ones in which the
     # MoveTool will be useful.

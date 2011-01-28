@@ -9,7 +9,7 @@ from enthought.traits.ui.api import Item, View
 class MyCanvas(Component):
     def draw(self, gc, **kwargs):
         w,h = gc.width(), gc.height()
-        
+
         # colors are 5 doubles: offset, red, green, blue, alpha
         starting_color = np.array([0.0, 1.0, 1.0, 1.0, 1.0])
         ending_color = np.array([1.0, 0.0, 0.0, 0.0, 1.0])
@@ -19,7 +19,7 @@ class MyCanvas(Component):
         # radial reflected background
         with gc:
             gc.rect(0, 0, w, h)
-            
+
             start = np.array([0.0, 1.0, 0.0, 0.0, 1.0])
             end = np.array([1.0, 1.0, 1.0, 1.0, 1.0])
             gc.radial_gradient(w/4, h/4, 200, w/4+100, h/4+100,
@@ -49,7 +49,7 @@ class MyCanvas(Component):
                                 np.array([starting_color, ending_color]),
                                 "pad", 'objectBoundingBox')
             gc.fill_path()
-        
+
         # radial
         with gc:
             gc.arc(325, 75, 50, 0.0, 2*np.pi)
@@ -78,11 +78,11 @@ class MyCanvas(Component):
 
 class Demo(HasTraits):
     canvas = Instance(Component)
-    
+
     traits_view = View(Item('canvas', editor=ComponentEditor(bgcolor="lightgray"),
                             show_label=False, width=500, height=500),
                        resizable=True, title="Gradient Example")
-    
+
     def _canvas_default(self):
         return MyCanvas()
 

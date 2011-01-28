@@ -12,12 +12,12 @@ class Viewable(HasTraits):
     #------------------------------------------------------------------------
     # Public methods
     #------------------------------------------------------------------------
-    
+
     def request_redraw(self):
         # This overrides the default Component request_redraw by asking
         # all of the views to redraw themselves.
         return
-    
+
     def draw(self, gc, view_bounds=None, mode="default"):
         if len(self.viewports) > 0:
             for view in self.viewports:

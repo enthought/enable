@@ -18,7 +18,7 @@ class ViewportTestCase(unittest.TestCase):
         self.assert_(view.components_at(44.9, 0.0)[0] == component)
         self.assert_(view.components_at(0.0, 44.9)[0] == component)
         self.assert_(view.components_at(44.9, 44.9)[0] == component)
-        
+
         self.assert_(view.components_at(46.0, 45.0) == [])
         self.assert_(view.components_at(46.0, 0.0) == [])
         self.assert_(view.components_at(45.0, 46.0) == [])
@@ -29,5 +29,5 @@ class ViewportTestCase(unittest.TestCase):
 if __name__ == "__main__":
     import nose
     nose.main()
-    
+
 # EOF

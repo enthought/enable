@@ -2,7 +2,7 @@ import unittest
 from pyparsing import ParseException
 
 from enthought.savage.svg.pathdata import *
-   
+
 
 class TestNumber(unittest.TestCase):
     parser = number
@@ -27,7 +27,7 @@ class TestNumberSequence(unittest.TestCase):
             [0.4, 0.4],
             list(Sequence(number).parseString("0.4.4"))
         )
-    
+
 class TestCoords(unittest.TestCase):
     def testCoordPair(self):
         self.assertEqual(
@@ -43,7 +43,7 @@ class TestCoords(unittest.TestCase):
             coordinatePair.parseString('100-100')[0],
             (100.0, -100.0)
         )
-        
+
     def testCoordPairWithPlus(self):
         self.assertEqual(
             coordinatePair.parseString('100+100')[0],
@@ -127,7 +127,7 @@ class TestCurve(unittest.TestCase):
                 [(100.0,200.0), (300.0,400.0), (500.0, 600.0)]
                 ]
             ]
-            
+
         )
 class TestClosePath(unittest.TestCase):
     def testParse(self):
@@ -162,5 +162,4 @@ class TestSVG(unittest.TestCase):
             self.assertEqual(
                 a, b
             )
-        
-        
+

@@ -43,7 +43,7 @@ class SVGComponent(Component):
         if self.document is None:
             # fixme: The Mac backend doesn't accept style/width as non-integers
             #        in set_font, but does for select_font...
-            if sys.platform == 'darwin':            
+            if sys.platform == 'darwin':
                 gc.select_font("Helvetica", 36)
             else:
                 gc.set_font(Font("Helvetica", 36))
@@ -65,7 +65,7 @@ class SVGComponent(Component):
             gc.scale_ctm(scale, -scale)
             self.document.render(gc)
             self.last_render = now() - start
-            
+
         finally:
             gc.restore_state()
             if self.profile_this is not None:

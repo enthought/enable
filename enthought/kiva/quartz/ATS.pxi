@@ -387,5 +387,5 @@ cdef extern from "Fonts.h":
         outline                       = 8
         shadow                        = 0x10
         condense                      = 0x20
-        extend                        = 0x40  
+        extend                        = 0x40
 

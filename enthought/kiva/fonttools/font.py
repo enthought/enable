@@ -22,7 +22,7 @@ font_weights = { 'bold': BOLD }
 font_noise = [ 'pt', 'point', 'family' ]
 
 def str_to_font(fontspec):
-    """ 
+    """
     Converts a string specification of a font into a Font instance.
     string specifications are of the form: "modern 12", "9 roman italic",
     and so on.
@@ -48,22 +48,22 @@ def str_to_font(fontspec):
                 point_size = int( lword )
             except:
                 facename.append( word )
-    return Font( size=point_size, family=family, weight=weight, style=style, 
+    return Font( size=point_size, family=family, weight=weight, style=style,
                  underline=underline, face_name=' '.join( facename ) )
 
 
 
 class Font(object):
     """ Font class for device independent font specification.
-    
+
         It is primarily based on wxPython, but looks to be similar to
         the needs of Mac OS X, etc.
-        
+
         The family defaults to SWISS so that font rotation will work
         correctly under wxPython.    Revisit as we get more platforms
         defined.
     """
-    
+
     # Maps the constants for font families to names to use when searching for
     # fonts.
     familymap = {DEFAULT : "serif",
@@ -81,18 +81,18 @@ class Font(object):
             (type(underline) != int) or (not isinstance(face_name, basestring)) or \
             (type(encoding) != type(DEFAULT)):
                 raise RuntimeError, "Bad value in Font() constructor."
-        ### HACK:  C++ stuff expects a string (not unicode) for the face_name, so fix 
+        ### HACK:  C++ stuff expects a string (not unicode) for the face_name, so fix
         ###        if needed.  See ticket #2111 in the CP Trac.
         if isinstance(face_name, unicode):
             face_name = face_name.encode("latin1")
         self.size      = size
         self.family    = family
-        self.weight    = weight        
+        self.weight    = weight
         self.style     = style
         self.underline = underline
         self.face_name = face_name
         self.encoding  = encoding
-    
+
     def findfont(self):
         """ Returns the file name containing the font that most closely matches
         our font properties.
@@ -101,7 +101,7 @@ class Font(object):
         return str(fontManager.findfont(fp))
 
     def findfontname(self):
-        """ Returns the name of the font that most closely matches our font 
+        """ Returns the name of the font that most closely matches our font
         properties
         """
         fp = self._make_font_props()
@@ -134,10 +134,10 @@ class Font(object):
 
     def copy(self):
         """ Returns a copy of the font object.
-        
+
         """
         return copy.deepcopy(self)
-        
+
     def __eq__(self, other):
         result = False
         try:

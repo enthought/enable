@@ -22,7 +22,7 @@ class Canvas(Container):
 
     Note: A Canvas has infinite bounds, but its .bounds attribute is
     overloaded to be something more meaningful, namely, the bounding
-    box of its child components and the optional view area of the 
+    box of its child components and the optional view area of the
     viewport that is looking at it.  (TODO: add support for multiple
     viewports.)
     """
@@ -34,7 +34,7 @@ class Canvas(Container):
     view_bounds = Trait(None, None, Tuple)
 
     # The (x,y) position of the lower-left corner of the rectangle corresponding
-    # to the dimensions in self.bounds.  Unlike self.position, this position is 
+    # to the dimensions in self.bounds.  Unlike self.position, this position is
     # in the canvas's space, and not in the coordinate space of the parent.
     bounds_offset = List
 
@@ -71,7 +71,7 @@ class Canvas(Container):
 
     def is_in(self, x, y):
         return True
-    
+
     def remove(self, *components):
         """ Removes components from this container """
         needs_compact = False
@@ -102,7 +102,7 @@ class Canvas(Container):
     #------------------------------------------------------------------------
     # Protected methods
     #------------------------------------------------------------------------
-        
+
     def _should_compact(self):
         if self.auto_size:
             if self.view_bounds is not None:
@@ -116,7 +116,7 @@ class Canvas(Container):
                     return True
         else:
             return False
-            
+
     def _draw_background(self, gc, view_bounds=None, mode="default"):
         if self.bgcolor not in ("clear", "transparent", "none"):
             if self.view_bounds is not None:
@@ -124,16 +124,16 @@ class Canvas(Container):
             else:
                 x, y, x2, y2 = self._bounding_box
             r = (x, y, x2-x+1, y2-y+1)
-            
+
             gc.save_state()
             gc.set_antialias(False)
             try:
                 gc.set_fill_color(self.bgcolor_)
                 gc.draw_rect(r, FILL)
-                
+
             finally:
                 gc.restore_state()
-        
+
         # Call the enable _draw_border routine
         if not self.overlay_border and self.border_visible:
             # Tell _draw_border to ignore the self.overlay_border
@@ -170,7 +170,7 @@ class Canvas(Container):
     #------------------------------------------------------------------------
     # Event handlers
     #------------------------------------------------------------------------
-    
+
     def _bounds_offset_default(self):
         return [0,0]
 
@@ -186,7 +186,7 @@ class Canvas(Container):
         self.bounds = [urx - llx + 1, ury - lly + 1]
 
     # Override Container.bounds_changed so that _layout_needed is not
-    # set.  Containers need to invalidate layout because they act as 
+    # set.  Containers need to invalidate layout because they act as
     # sizers, but the Canvas is unbounded and thus does not need to
     # invalidate layout.
     def _bounds_changed(self, old, new):

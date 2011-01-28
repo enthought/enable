@@ -108,7 +108,7 @@ class Comparator(HasTraits):
 
     # The description of the test.
     description = HTML()
-    
+
     document = Instance(document.SVGDocument)
 
     # The components to view.
@@ -307,27 +307,27 @@ class Comparator(HasTraits):
         self.profile_this.stop()
         try:
             self.profile_this.start('Creating WX document')
-            self.document = document.SVGDocument(self.current_xml, 
+            self.document = document.SVGDocument(self.current_xml,
                                                  resources=resources,
                                                  renderer=WxRenderer)
         except:
             logger.exception('Error parsing document %s', new)
             self.document = None
-            
+
         self.profile_this.stop()
 
         try:
             self.profile_this.start('Creating Kiva document')
-            self.kiva_component.document = document.SVGDocument(self.current_xml, 
-                                                                resources=resources, 
+            self.kiva_component.document = document.SVGDocument(self.current_xml,
+                                                                resources=resources,
                                                                 renderer=KivaRenderer)
         except Exception, e:
             logger.exception('Error parsing document %s', new)
             self.kiva_component.document
-            
+
         self.profile_this.stop()
-            
-            
+
+
         png_file = self.svg_png.get(new, None)
         if png_file is None:
             png_file = self.default_png

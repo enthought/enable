@@ -18,7 +18,7 @@ class Button(Component):
     label_font = KivaFont("modern 12")
 
     label_color = ColorTrait("white")
-    
+
     down_label_color = ColorTrait("white")
 
     button_state = Enum("up", "down")

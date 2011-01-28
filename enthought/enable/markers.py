@@ -1,5 +1,5 @@
 """
-Defines markers classes, used by a variety of renderers.  
+Defines markers classes, used by a variety of renderers.
 """
 
 # Major library imports
@@ -26,21 +26,21 @@ class AbstractMarker(HasTraits):
     # Since this needs to be a class variable, it can't be a trait.
     draw_mode = STROKE
     #draw_mode = Enum(FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE)
-    
+
     # The kiva marker type (from enthought.kiva.constants).
     kiva_marker = NO_MARKER
-    
+
     # Close the path object after drawing this marker?
     close_path = Bool(True)
 
     # Render the marker antialiased?  Some
     # markers render faster and look better if they are not anti-aliased..
     antialias = Bool(True)
-    
+
     def add_to_path(self, path, size):
         """ Adds this marker's representation to *path*, scaled appropriately
         for *size*.
-        
+
         Parameters
         ----------
         path : GraphicsContext
@@ -53,7 +53,7 @@ class AbstractMarker(HasTraits):
             path.close_path()
         else:
             self._add_to_path(path, size)
-            
+
     def get_compiled_path(self, size):
         """ Returns a compiled path object that represents this marker, scaled
         appropriately for *size*.
@@ -74,7 +74,7 @@ class SquareMarker(AbstractMarker):
     kiva_marker = SQUARE_MARKER
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
-    
+
     def _add_to_path ( self, path, size ):
         path.rect( -size, -size, size * 2, size * 2 )
 
@@ -87,7 +87,7 @@ class DiamondMarker(AbstractMarker):
     kiva_marker = DIAMOND_MARKER
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
-    
+
     def _add_to_path ( self, path, size ):
         path.lines( array( ( ( 0, -size ),
                              ( -size, 0 ),
@@ -127,7 +127,7 @@ class CircleMarker(AbstractMarker):
                            [ 0.866, -0.5  ],
                            [ 0.966, -0.259],
                            [ 1.   , 0.    ]])
-    
+
     def _add_to_path ( self, path, size ):
         if size <= 5:
             pts = self.circle_points[::3] * size
@@ -147,7 +147,7 @@ class TriangleMarker(AbstractMarker):
     kiva_marker = TRIANGLE_MARKER
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
-    
+
     def _add_to_path ( self, path, size ):
         path.lines( array( ( ( -size, -size ),
                              (  size, -size ),
@@ -162,7 +162,7 @@ class Inverted_TriangleMarker(AbstractMarker):
     kiva_marker = INVERTED_TRIANGLE_MARKER
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
-    
+
     def _add_to_path ( self, path, size ):
         path.lines( array( ( ( -size, size ),
                              (  size, size ),
@@ -177,7 +177,7 @@ class PlusMarker(AbstractMarker):
     kiva_marker = PLUS_MARKER
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
-    
+
     def _add_to_path ( self, path, size ):
         path.move_to( 0, -size )
         path.line_to( 0,  size )
@@ -193,7 +193,7 @@ class CrossMarker(AbstractMarker):
     kiva_marker = CROSS_MARKER
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
-    
+
     def _add_to_path ( self, path, size ):
         path.move_to( -size, -size )
         path.line_to(  size,  size )
@@ -207,7 +207,7 @@ class DotMarker(AbstractMarker):
     draw_mode = FILL_STROKE
     # The Kiva marker type. (Overrides AbstractMarker.)
     kiva_marker = DOT_MARKER
-    
+
     def _add_to_path ( self, path, size ):
         path.arc(0, 0, size, 0, 2*pi)
 
@@ -220,7 +220,7 @@ class PixelMarker(AbstractMarker):
     kiva_marker = PIXEL_MARKER
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
-    
+
     def _add_to_path ( self, path, size ):
         # It's impossible to emulate a true Pixel Marker in a vector
         # system, so we just draw a sub-pixel square 1.0 unit across.
@@ -233,14 +233,14 @@ class CustomMarker(AbstractMarker):
     draw_mode = STROKE
     # The Kiva marker type. (Overrides AbstractMarker.)
     kiva_marker = NO_MARKER
-    
+
     # The custom path that represents this marker.
     path = Instance(CompiledPath)
-    
+
     # Automatically scale **path** based on the input size parameter?
     # If False, then the path does not respond to the 'size' parameter!
     scale_path = Bool(True)
-    
+
     def _add_to_path( self, path, size ):
         if self.scale_path:
             path.save_ctm()
@@ -248,10 +248,10 @@ class CustomMarker(AbstractMarker):
         path.add_path(path)
         if self.scale_path:
             path.restore_ctm()
-    
+
     def get_compiled_path(self, size):
-        """ Returns a path instance. 
-        
+        """ Returns a path instance.
+
         If **scale_path** is True, then the returned path is a new compiled
         path that is scaled based on *size*. If **scaled_path** is False,
         then this method just returns the current **path**.

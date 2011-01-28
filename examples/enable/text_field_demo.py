@@ -9,10 +9,10 @@ class MyFrame(DemoFrame):
         text = "This a test with a text field\nthat has more text than\n"
         text += "can fit in it."
         text_field2 = TextField(position=[25,200], width=200,
-                                height=50, multiline=True, 
+                                height=50, multiline=True,
                                 text=text, font="Courier New 14")
 
-        text_field3 = TextField(position=[250,50], height=300, 
+        text_field3 = TextField(position=[250,50], height=300,
                                 width=200, multiline=True,
                                 font="Courier New 14")
 

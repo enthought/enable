@@ -256,15 +256,15 @@ class SVGDocument(object):
         self.clippingStack = []
         path, ops = self.processElement(element)
         self.ops = ops
-        
+
     @classmethod
     def createFromFile(cls, filename, renderer):
         if not os.path.exists(filename):
             raise IOError('No such file: ' + filename)
-        
+
         tree = ET.parse(filename)
         root = tree.getroot()
-        
+
         resources = ResourceGetter(os.path.dirname(filename))
         return cls(root, resources, renderer)
 
@@ -644,7 +644,7 @@ class SVGDocument(object):
         ry = node.get('ry')
 
         ops = []
-        
+
         if 'clip-path' in node.keys():
             element = self.dereference(node.get('clip-path'))
 
@@ -680,7 +680,7 @@ class SVGDocument(object):
             #value clamping as per spec section 9.2
             rx = min(rx, w/2)
             ry = min(ry, h/2)
-            
+
             path.AddRoundedRectangleEx(x, y, w, h, rx, ry)
         else:
             if len(self.clippingStack) > 0:

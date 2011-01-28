@@ -17,7 +17,7 @@ class Crosshair(BaseTool):
     line_color = ColorTrait('black')
     line_width = Float(1.0)
     line_style = LineStyle("solid")
-    
+
     # Whether the mouse is currently inside the component or not.
     mouse_in = Bool(False)
 
@@ -25,13 +25,13 @@ class Crosshair(BaseTool):
     draw_mode = 'overlay'
 
     def draw(self, gc, view_bounds=None):
-        """ Draws this tool on a graphics context.  
-        
+        """ Draws this tool on a graphics context.
+
         It is assumed that the graphics context has a coordinate transform that
         matches the origin of its component. (For containers, this is just the
         origin; for components, it is the origin of their containers.)
         """
-        
+
         if not self.mouse_in:
             return
         # Convert from SVG coordinates to Enable coordinates.
@@ -58,7 +58,7 @@ class Crosshair(BaseTool):
 
     def do_layout(self, *args, **kw):
         pass
-    
+
     def normal_mouse_enter(self, event):
         self.mouse_in = True
 
@@ -66,7 +66,7 @@ class Crosshair(BaseTool):
         self.mouse_in = False
 
     def normal_mouse_move(self, event):
-        """ Handles the mouse being moved. 
+        """ Handles the mouse being moved.
         """
         if self.component is None:
             return

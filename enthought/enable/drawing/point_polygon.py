@@ -58,7 +58,7 @@ class PointPolygon(DrawingTool):
 
                 self.request_redraw()
         return
-    
+
     def complete_mouse_move(self, event):
         """ Handle the mouse moving in the 'complete' state. """
 
@@ -83,13 +83,13 @@ class PointPolygon(DrawingTool):
         """ Draw the polygon in the 'drag_point' state. """
         self.complete_draw(gc)
         return
-        
+
     def drag_point_left_up(self, event):
         """ Handle the left mouse coming up in the 'drag_point' state. """
         self.event_state = 'complete'
         self.request_redraw()
         return
-    
+
     def drag_point_mouse_move(self, event):
         """ Handle the mouse moving in the 'drag_point' state. """
         # Only worry about the event if it's inside our bounds.
@@ -102,7 +102,7 @@ class PointPolygon(DrawingTool):
                 (event.x + self.x, event.y - self.y)
             self.request_redraw()
         return
-    
+
     #------------------------------------------------------------------------
     # "incomplete" state
     #------------------------------------------------------------------------
@@ -122,7 +122,7 @@ class PointPolygon(DrawingTool):
         event.window.set_pointer('right arrow')
         self.event_state = 'complete'
         self.complete = True
-        
+
         self.request_redraw()
         return
 
@@ -150,14 +150,14 @@ class PointPolygon(DrawingTool):
             event.window.set_pointer('bullseye')
         else:
             event.window.set_pointer('pencil')
-            
+
         # If the point has actually changed, then we need to update our model.
         if self.polygon.model.points != (event.x + self.x, event.y - self.y):
             self.polygon.model.points[-1] = (event.x + self.x, event.y - self.y)
 
         self.request_redraw()
         return
-    
+
     #------------------------------------------------------------------------
     # "normal" state
     #------------------------------------------------------------------------
@@ -173,12 +173,12 @@ class PointPolygon(DrawingTool):
         self.polygon.model.points.append(pt)
         self.event_state = 'incomplete'
         return
-        
+
     def normal_mouse_move(self, event):
         """ Handle the mouse moving in the 'normal' state. """
         event.window.set_pointer('pencil')
         return
-    
+
     #------------------------------------------------------------------------
     # private methods
     #------------------------------------------------------------------------

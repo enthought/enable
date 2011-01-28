@@ -39,24 +39,24 @@ class PygletMouseEvent(object):
         self.buttons = buttons
         self.scroll_x = scroll_x
         self.scroll_y = scroll_y
-        
+
         if modifiers is not None:
             self.shift_pressed = bool(modifiers & key.MOD_SHIFT)
             self.ctrl_pressed = bool(modifiers & key.MOD_CTRL)
             self.alt_pressed = bool(modifiers & key.MOD_ALT)
         else:
             self.shift_pressed = self.ctrl_pressed = self.alt_pressed = False
-        return 
+        return
 
 
 class PygletWindow(window.Window):
     """ Mix-in class that, when combined with a Pyglet event dispatcher of
     some sort, will allow pyglet events to propagate down to Enable.
 
-    The target class should have an attribute named **enable_window** 
+    The target class should have an attribute named **enable_window**
     that is a reference to the instance of a subclass of AbstractWindow.
     """
- 
+
     VALID_CTOR_KWARGS = ("width", "height", "caption", "resizable", "style",
                          "fullscreen", "visible", "vsync", "display", "screen",
                          "config", "context")
@@ -70,7 +70,7 @@ class PygletWindow(window.Window):
         # This indicates whether or not we should call the Enable window to
         # draw.  If this flag is False, then the draw() method just passes.
         self._dirty = True
-        
+
         #for key in kwargs:
         #    if key not in PygletWindow.VALID_CTOR_KWARGS:
         #        kwargs.pop(key)
@@ -93,7 +93,7 @@ class PygletWindow(window.Window):
         if self._dirty:
             self.enable_window._paint()
             self._dirty = False
-        
+
 
     def request_redraw(self, coordinates=None):
         """ Called by **self.enable_window** to request a redraw
@@ -107,7 +107,7 @@ class PygletWindow(window.Window):
     #-------------------------------------------------------------------------
     # Key/text handling
     #-------------------------------------------------------------------------
-    
+
     def on_key_press(self, symbol, modifiers):
         return self._on_key_updown(symbol, modifiers, down=True)
 
@@ -149,7 +149,7 @@ class PygletWindow(window.Window):
 
         if focus_owner is None:
             return
-        
+
         if len(char_or_keyname) == 1:
             code = ord(char_or_keyname)
             if code in ASCII_CONTROL_KEYS:
@@ -281,11 +281,11 @@ class Window(AbstractWindow):
     # This is set by downstream components to notify us of whether or not
     # the current drag operation should return DragCopy, DragMove, or DragNone.
     _drag_result = Any
-    
+
     def __init__(self, parent=None, id=-1, pos=None, size=None, config=None,
         fullscreen=False, resizable=True, vsync=True, **traits):
         """ **parent** is an unneeded argument with the pyglet backend, but
-        we need to preserve compatibility with other AbstractWindow 
+        we need to preserve compatibility with other AbstractWindow
         subclasses.
         """
         # TODO: Fix fact that other backends' Window classes use positional
@@ -300,7 +300,7 @@ class Window(AbstractWindow):
         # the mouse and use that information instead.  These coordinates are
         # in the wx coordinate space, i.e. pre-self._flip_y().
         self._last_mouse_pos = (0, 0)
-        
+
         # Try to get antialiasing, both for quality rendering and for
         # reproducible results. For example, line widths are measured in the
         # X or Y directions rather than perpendicular to the line unless if
@@ -326,7 +326,7 @@ class Window(AbstractWindow):
         self.control = PygletWindow(enable_window=self, **kwds)
         if pos is not None:
             self.control.set_location(*pos)
-        
+
         return
 
     def _flip_y(self, y):
@@ -334,7 +334,7 @@ class Window(AbstractWindow):
         Since pyglet uses the same convention as Kiva, this is a no-op.
         """
         return y
-   
+
     def _on_erase_background(self, event):
         pass
 
@@ -353,7 +353,7 @@ class Window(AbstractWindow):
                 component.outer_y = 0
                 component.outer_height = height
         return
-    
+
     def _capture_mouse(self):
         "Capture all future mouse events"
         # TODO: Figure out how to do mouse capture.
@@ -366,17 +366,17 @@ class Window(AbstractWindow):
         #    self.control.set_mouse_exclusive(True)
         #    self._mouse_captured = True
         pass
-    
+
     def _release_mouse(self):
         "Release the mouse capture"
         #if self._mouse_captured:
         #    self._mouse_captured = False
         #    self.control.set_mouse_exclusive(False)
         pass
-    
+
     def _create_mouse_event(self, event):
-        """ Convert a Pyglet mouse event into an Enable MouseEvent.  
-        
+        """ Convert a Pyglet mouse event into an Enable MouseEvent.
+
         Since Pyglet doesn't actually have a mouse event object like WX or Qt,
         PygletWindow actually does most of the work of creating an Enable
         MouseEvent when various things happen, and calls
@@ -402,7 +402,7 @@ class Window(AbstractWindow):
                                right_down   = bool(mouse.RIGHT & buttons),
                                mouse_wheel  = event.scroll_y,
                                window = self)
-        else:                               
+        else:
             # If no event specified, make one up:
             x = self.control._mouse_x
             y = self.control._mouse_y
@@ -416,7 +416,7 @@ class Window(AbstractWindow):
                                right_down   = False,
                                mouse_wheel  = 0,
                                window = self)
-    
+
     def _create_gc(self, size, pix_format = "rgba32"):
         "Create a Kiva graphics context of a specified size."
         # Unlike the vector-based Agg and Quartz GraphicsContexts which place
@@ -431,12 +431,12 @@ class Window(AbstractWindow):
         #gc = self._gc
         #gc.gl_init()
         pass
-    
+
     def _redraw(self, coordinates=None):
         "Request a redraw of the window"
         if self.control is not None:
             self.control.request_redraw(coordinates)
-    
+
     def _get_control_size(self):
         "Get the size of the underlying toolkit control"
         if self.control is not None:
@@ -458,22 +458,22 @@ class Window(AbstractWindow):
             cursor = self.control.get_system_mouse_cursor(POINTER_MAP["arrow"])
             self.control.set_mouse_cursor(cursor)
         return
-        
+
     def set_timer_interval(self, component, interval):
         """ Set up or cancel a timer for a specified component.  To cancel the
         timer, set interval=None.
         """
         raise NotImplementedError("set_timer_interval() not implemented yet in Pyglet backend.")
-        
+
     def _set_focus(self):
         """ Sets the keyboard focus to this window.
-        
+
         Since Pyglet is not a windowing system, there are not other windows we
         might lose focus to; the entire application has focus or it doesn't.
         This attempts to make the application regain focus.
         """
         self.control.activate()
-    
+
     #-------------------------------------------------------------------------
     # Unnecessary methods but provided for compatibility
     #-------------------------------------------------------------------------
@@ -515,7 +515,7 @@ class Window(AbstractWindow):
         y -= y0
         y = self.control.height - y
         return (x,y)
-    
+
     #-------------------------------------------------------------------------
     # Unimplemented or unimplementable methods in Pyglet
     # (These are mostly due to the fact that it is an access layer to GL and
@@ -529,7 +529,7 @@ class Window(AbstractWindow):
     def create_menu(self, menu_definition, owner):
         "Create a Menu from a string description"
         raise NotImplementedError("create_menu() is not implemented in Pyglet backend.")
-    
+
     def popup_menu(self, menu, x, y):
         "Pop-up a Menu at a specified location"
         raise NotImplementedError("popup_menu() is not implemented in Pyglet backend.")

@@ -4,7 +4,7 @@ import unittest
 from numpy import array, allclose, ones, alltrue
 
 from enthought.kiva import agg
-    
+
 class AffineMatrixTestCase(unittest.TestCase):
 
     def test_init(self):
@@ -44,7 +44,7 @@ class AffineMatrixTestCase(unittest.TestCase):
         actual = a
         desired = agg.AffineMatrix((4.0,0,0,4.0,0,0))
         assert(alltrue(desired==actual))
-        
+
     def test_asarray(self):
         m = agg.AffineMatrix()
         result = m.asarray()
@@ -120,7 +120,7 @@ class AffineMatrixTestCase(unittest.TestCase):
         val = agg.skewing_matrix(pi/4.,pi/4.)
         desired = array([ 1.0,1.0,1.0,1.0,0.0,0.0])
         actual = val.asarray()
-        assert(allclose(desired,actual))            
+        assert(allclose(desired,actual))
 
 #----------------------------------------------------------------------------
 # test setup code.

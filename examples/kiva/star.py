@@ -2,12 +2,12 @@ from __future__ import with_statement
 
 from scipy import pi
 from enthought.kiva.image import GraphicsContext
-   
+
 def add_star(gc):
     gc.begin_path()
     gc.move_to(-20,-30)
     gc.line_to(0,30)
-    gc.line_to(20,-30)   
+    gc.line_to(20,-30)
     gc.line_to(-30,10)
     gc.line_to(30,10)
     gc.close_path()

@@ -18,12 +18,12 @@ class Shape(Component):
 
     # The background color of this component.
     bgcolor = 'transparent'
-    
+
     #### 'Shape' interface ####################################################
 
     # The coordinates of the center of the shape.
     center = Property(Tuple)
-    
+
     # The fill color.
     fill_color = ColorTrait
 
@@ -35,37 +35,37 @@ class Shape(Component):
 
     # The text color.
     text_color = ColorTrait
-    
+
     # The text displayed in the shape.
     text = Str
-    
+
     #### 'Private' interface ##################################################
 
     # The difference between the location of a mouse-click and the component's
     # origin.
     _offset_x = Float
     _offset_y = Float
-        
+
     ###########################################################################
     # 'Interactor' interface
     ###########################################################################
 
     def normal_key_pressed(self, event):
         """ Event handler. """
-        
+
         print 'normal_key_pressed', event.character
 
         return
-    
+
     def normal_left_down(self, event):
         """ Event handler. """
 
         if self.is_in(event.x, event.y):
             self.event_state = 'moving'
-            
+
             event.window.mouse_owner = self
             event.window.set_pointer(self.moving_pointer)
-            
+
             self._offset_x = event.x - self.x
             self._offset_y = event.y - self.y
 
@@ -85,19 +85,19 @@ class Shape(Component):
         bottom = event.y - self._offset_y
         left = event.x - self._offset_x
         right = event.x + self._offset_x
-        
-        # Keep the shape fully in the container 
-        
+
+        # Keep the shape fully in the container
+
         if bottom < 0:
             bottom = 0
         elif top > self.container.height:
             bottom = self.container.height - self.height
-                    
+
         if left < 0:
             left = 0
         elif right > self.container.width:
             left = self.container.width - self.width
-        
+
         self.position = [left, bottom]
         self.request_redraw()
 
@@ -114,7 +114,7 @@ class Shape(Component):
         self.request_redraw()
 
         return
-    
+
     def moving_mouse_leave(self, event):
         """ Event handler. """
 
@@ -136,12 +136,12 @@ class Shape(Component):
         cy = oy + dy/2
 
         return cx, cy
-    
+
     def _text_default(self):
         """ Trait initializer. """
 
         return type(self).__name__
-    
+
     ###########################################################################
     # Protected 'Shape' interface
     ###########################################################################
@@ -150,7 +150,7 @@ class Shape(Component):
         """ Return the distance between two points. """
 
         return math.sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2))
-        
+
     def _draw_text(self, gc):
         """ Draw the shape's text. """
 
@@ -159,15 +159,15 @@ class Shape(Component):
 
             gc.set_font(Font(family=MODERN, size=16))
             tx, ty, tw, th = gc.get_text_extent(self.text)
-            
+
             dx, dy = self.bounds
             x, y = self.position
             gc.set_text_position(x+(dx-tw)/2, y+(dy-th)/2)
-            
+
             gc.show_text(self.text)
 
         return
-    
+
     def _get_fill_color(self, event_state):
         """ Return the fill color based on the event state. """
 

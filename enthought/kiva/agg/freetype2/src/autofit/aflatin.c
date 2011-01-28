@@ -2209,7 +2209,7 @@
   };
 
 
-  AF_DEFINE_SCRIPT_CLASS(af_latin_script_class,  
+  AF_DEFINE_SCRIPT_CLASS(af_latin_script_class,
     AF_SCRIPT_LATIN,
     af_latin_uniranges,
 

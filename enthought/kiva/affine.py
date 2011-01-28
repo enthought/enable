@@ -1,13 +1,13 @@
 #------------------------------------------------------------------------------
 # Copyright (c) 2005, Enthought, Inc.
 # All rights reserved.
-# 
+#
 # This software is provided without warranty under the terms of the BSD
 # license included in enthought/LICENSE.txt and may be redistributed only
 # under the conditions described in the aforementioned license.  The license
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 # Thanks for using Enthought open source!
-# 
+#
 # Author: Enthought, Inc.
 # Description: <Enthought kiva package component>
 #------------------------------------------------------------------------------
@@ -19,20 +19,20 @@
 
     These affine operations are based coordinate system transformations,
     not translations of pts, etc.  To translate a point, you multiply
-    it by the affine transform matrix:: 
-    
+    it by the affine transform matrix::
+
                          a    b    0
             [x, y, 1] *  c    d    0 = [x',y',1]
                          tx   ty   1
-    
-    This is the opposite order of multiplication from what many are 
+
+    This is the opposite order of multiplication from what many are
     accustomed to.
 
     Here is a useful link:
-        
+
         http://mathworld.wolfram.com/AffineTransformation.html
-    
-    Notes:        
+
+    Notes:
         I'm not using a class because of possible speed implications.
         Currently the affine transform is a 3x3 array.  Other tools use
         a 6-tuple of (a,b,c,d,tx,ty) to represent the transform because
@@ -70,7 +70,7 @@ def affine_from_rotation(angle):
     """
     r = affine_identity()
     return rotate(r,angle)
-    
+
 def affine_from_translation(x,y):
     """ Returns an affine transform with the given translation.
     """
@@ -82,10 +82,10 @@ def affine_from_translation(x,y):
 #-----------------------------------------------------------------------------
 
 def scale(transform,sx,sy):
-    """ Returns a scaled version of the transform by the given values.  
-    
+    """ Returns a scaled version of the transform by the given values.
+
         Scaling is done using the following formula::
-            
+
             sx  0  0     a  b  0      sx*a sx*b  0
             0  sy  0  *  c  d  0  =   sy*c sy*d  0
             0   0  1    tx ty  1       0    0    1
@@ -99,21 +99,21 @@ def scale(transform,sx,sy):
 
 def rotate(transform,angle):
     """ Rotates transform by angle in radians.
-    
+
         Rotation is done using the following formula::
-        
-          cos(x)  sin(x)  0       a  b   0              
-         -sin(x)  cos(x)  0   *   c  d   0 = 
+
+          cos(x)  sin(x)  0       a  b   0
+         -sin(x)  cos(x)  0   *   c  d   0 =
             0       0     1      tx ty   1
 
         ::
-               
+
                  cos(x)*a+sin(x)*b   cos(x)*b+sin(x)*d    0
                 -sin(x)*a+cos(x)*c  -sin(x)*b+cos(x)*d    0
                          tx                  ty           1
-         
-        where x = angle.       
-    """ 
+
+        where x = angle.
+    """
     a = cos(angle)
     b = sin(angle)
     c = -b
@@ -124,12 +124,12 @@ def rotate(transform,angle):
     return dot(rot,transform)
 
 def translate(transform,x,y):
-    """ Returns transform translated by (x,y).  
-    
-        Translation:: 
-        
+    """ Returns transform translated by (x,y).
+
+        Translation::
+
             1  0  0      a   b   0         a          b        0
-            0  1  0   *  c   d   0  =      c          d        0        
+            0  1  0   *  c   d   0  =      c          d        0
             x  y  1     tx  ty   1     x*a+y*c+y  x*b+y*d+ty   1
     """
     r = affine_identity()
@@ -148,15 +148,15 @@ def invert(m):
     """
     inv      = zeros(m.shape, float64)
     det      =  m[0,0] * m[1,1] - m[0,1] * m[1,0]
-    
-    inv[0,0] =  m[1,1] 
-    inv[0,1] = -m[0,1]    
+
+    inv[0,0] =  m[1,1]
+    inv[0,1] = -m[0,1]
     inv[0,2] =  0
-    
-    inv[1,0] = -m[1,0]    
-    inv[1,1] =  m[0,0]    
+
+    inv[1,0] = -m[1,0]
+    inv[1,1] =  m[0,0]
     inv[1,2] =  0
-    
+
     inv[2,0] =  m[1,0]*m[2,1] - m[1,1]*m[2,0]
     inv[2,1] = -m[0,0]*m[2,1] + m[0,1]*m[2,0]
     inv[2,2] =  m[0,0]*m[1,1] - m[0,1]*m[1,0]
@@ -177,7 +177,7 @@ def is_identity(m):
     return alltrue(m1 == m2)
     # numarray return None for .flat...
     #return alltrue(IDENTITY.flat == m.flat)
-        
+
 def affine_params(m):
     """ Returns the a, b, c, d, tx, ty values of an
         affine transform.
@@ -193,27 +193,27 @@ def affine_params(m):
 def trs_factor(m):
     """ Factors a matrix as if it is the product of translate/rotate/scale
         matrices applied (i.e., concatenated) in that order.  It returns:
-        
+
             tx,ty,sx,sy,angle
-        
-        where tx and ty are the translations, sx and sy are the scaling 
+
+        where tx and ty are the translations, sx and sy are the scaling
         values and angle is the rotational angle in radians.
-        
+
         If the input matrix was created in a way other than concatenating
         t/r/s matrices, the results could be wrong.  For example, if there
         is any skew in the matrix, the returned results are wrong.
-        
+
         Needs Test!
     """
 
     #-------------------------------------------------------------------------
     # Extract Values from Matrix
-    # 
+    #
     # Translation values are correct as extracted.  Rotation and
     # scaling need a little massaging.
     #-------------------------------------------------------------------------
     a,b,c,d,tx,ty = affine_params(m)
-    
+
     #-------------------------------------------------------------------------
     # Rotation -- tan(angle) = b/d
     #-------------------------------------------------------------------------
@@ -231,9 +231,9 @@ def trs_factor(m):
         sx,sy = a/cos_ang, d/cos_ang
     else:
         sx,sy = -c/sin_ang, b/sin_ang
-        
+
     return tx,ty,sx,sy,angle
-    
+
 #-----------------------------------------------------------------------------
 # Transforming points and arrays of points
 #-----------------------------------------------------------------------------
@@ -251,7 +251,7 @@ def transform_points(ctm,pts):
     """
     if is_identity(ctm):
         res = pts
-    else:    
+    else:
         x = pts[...,0]
         y = pts[...,1]
         a,b,c,d,tx,ty = affine_params(ctm)

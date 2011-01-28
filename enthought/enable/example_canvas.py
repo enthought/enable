@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------
 # Copyright (c) 2011, Enthought, Inc.
 # All rights reserved.
-# 
+#
 # This software is provided without warranty under the terms of the BSD
 # license included in enthought/LICENSE.txt and may be redistributed only
 # under the conditions described in the aforementioned license.  The license
@@ -17,10 +17,10 @@ class _DummyComponent(Component):
     def __init__(self, draw_func, *args, **kwargs):
         super(_DummyComponent, self).__init__(*args, **kwargs)
         self._draw_func = draw_func
-    
+
     def __del__(self):
         self._draw_func = None
-    
+
     def draw(self, gc, **kwargs):
         """ Call our wrapped draw function.
         """
@@ -31,7 +31,7 @@ class Canvas(Window):
     def __init__(self):
         # Create a component that wraps our do_draw method
         self.component = _DummyComponent(self.do_draw)
-        
+
         # call our base class
         super(Window, self).__init__(None)
 

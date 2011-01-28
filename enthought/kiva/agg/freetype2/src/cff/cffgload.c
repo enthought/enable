@@ -2919,7 +2919,7 @@
         if ( has_vertical_info )
           metrics->vertBearingX = metrics->horiBearingX -
                                     metrics->horiAdvance / 2;
-        else 
+        else
         {
           if ( load_flags & FT_LOAD_VERTICAL_LAYOUT )
             ft_synthesize_vertical_metrics( metrics,

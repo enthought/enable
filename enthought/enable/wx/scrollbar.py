@@ -47,31 +47,31 @@ def valid_scroll_position(object, name, value):
 
 class NativeScrollBar(Component):
     "An Enable scrollbar component that wraps/embeds the standard WX scrollbar"
-    
+
     #------------------------------------------------------------------------
     # Public Traits
     #------------------------------------------------------------------------
-    
+
     # The current position of the scroll bar.  This must be within the range
     # (self.low, self.high)
     scroll_position = Trait( 0.0, valid_scroll_position )
-    
+
     # A tuple (low, high, page_size, line_size).  Can be accessed using
     # convenience properties (see below).  Low and High refer to the conceptual
-    # bounds of the region represented by the full scroll bar.  Note that 
+    # bounds of the region represented by the full scroll bar.  Note that
     # the maximum value of scroll_position is actually (high - page_size), and
     # not just the value of high.
     range = Trait( ( 0.0, 100.0, 10.0, 1.0 ), valid_range )
-    
+
     # The orientation of the scrollbar
     orientation = Trait("horizontal", "vertical")
 
     # The location of y=0
     origin = Trait('bottom', 'top')
-    
+
     # Determines if the scroll bar should be visible and respond to events
     enabled = Bool(True)
-    
+
     # The scroll increment associated with a single mouse wheel increment
     mouse_wheel_speed = Int(3)
 
@@ -80,7 +80,7 @@ class NativeScrollBar(Component):
     high = Property
     page_size = Property
     line_size = Property
-    
+
     # This represents the state of the mouse button on the scrollbar thumb.
     # External classes can monitor this to detect when the user starts and
     # finishes interacting with this scrollbar via the scrollbar thumb.
@@ -94,33 +94,33 @@ class NativeScrollBar(Component):
     _last_widget_y = Int(0)
     _last_widget_height = Int(0)
     _last_widget_width = Int(0)
-    
+
     # Indicates whether or not the widget needs to be re-drawn after being
     # repositioned and resized
     _widget_moved = Bool(True)
-    
+
     # Set to True if something else has updated the scroll position and
     # the widget needs to redraw.  This is not set to True if the widget
     # gets updated via user mouse interaction, since WX is then responsible
     # for updating the scrollbar.
     _scroll_updated = Bool(True)
-    
+
     #------------------------------------------------------------------------
     # Public Methods
     #------------------------------------------------------------------------
 
-    
+
     def destroy(self):
         """ Destroy the native widget associated with this component.
         """
         if self._control:
             self._control.Destroy()
         return
-    
+
     #------------------------------------------------------------------------
     # Protected methods
     #------------------------------------------------------------------------
-    
+
     def __del__(self):
         self.destroy()
         return
@@ -133,7 +133,7 @@ class NativeScrollBar(Component):
         x_size, y_size = self.bounds
 
         wx_xpos, wx_ypos = self._get_abs_coords(x_pos, y_pos+y_size-1)
-        
+
         # We have to do this flip_y business because wx and enable use opposite
         # coordinate systems, and enable defines the component's position as its
         # lower left corner, while wx defines it as the upper left corner.
@@ -155,7 +155,7 @@ class NativeScrollBar(Component):
             controlsize = self._control.GetSize()
             if x_size != controlsize[0] or y_size != controlsize[1]:
                 self._control.SetSize(wx.Size(x_size, y_size))
-        
+
         if self._scroll_updated:
             self._control.SetScrollbar(wxpos, wxthumbsize, wxrange, wxthumbsize, True)
 
@@ -166,7 +166,7 @@ class NativeScrollBar(Component):
         self._scroll_updated = False
         self._widget_moved = False
         return
-    
+
     def _create_control(self, window, wxpos, wxthumbsize, wxrange):
         if self.orientation == 'horizontal':
             wxstyle = wx.HORIZONTAL
@@ -187,7 +187,7 @@ class NativeScrollBar(Component):
     def _thumbtrack(self, event):
         self.mouse_thumb = "down"
         self._wx_scroll_handler(event)
-    
+
     def _thumbreleased(self, event):
         self.mouse_thumb = "up"
         self._wx_scroll_handler(event)
@@ -197,24 +197,24 @@ class NativeScrollBar(Component):
         self.request_redraw()
 
     def _yield_focus(self, event):
-        """ 
+        """
         Yields focus to our window, when we acquire focus via user interaction.
         """
         window = event.GetWindow()
         if window:
             window.SetFocus()
         return
-    
+
     def _wx_scroll_handler(self, event):
         """Handle wx scroll events"""
         # If the user moved the scrollbar, set the scroll position, but don't
         # tell wx to move the scrollbar.  Doing so causes jerkiness
         self.scroll_position = self._wx_to_enable_pos(self._control.GetThumbPosition())
         return
-        
+
     def _enable_to_wx_spec(self, enable_spec):
         """
-        Return the WX equivalent of an enable scroll bar specification from 
+        Return the WX equivalent of an enable scroll bar specification from
         a tuple of (low, high, page_size, line_size, position).
         Returns (position, thumbsize, range)
         """
@@ -265,22 +265,22 @@ class NativeScrollBar(Component):
         self._scroll_updated = True
         self.request_redraw()
         return
-    
+
     def _bounds_changed(self, old, new):
         super(NativeScrollBar, self)._bounds_changed(old, new)
         self._widget_moved = True
         self.request_redraw()
-    
+
     def _bounds_items_changed(self, event):
         super(NativeScrollBar, self)._bounds_items_changed(event)
         self._widget_moved = True
         self.request_redraw()
-    
+
     def _position_changed(self, old, new):
         super(NativeScrollBar, self)._position_changed(old, new)
         self._widget_moved = True
         self.request_redraw()
-    
+
     def _position_items_changed(self, event):
         super(NativeScrollBar, self)._position_items_changed(event)
         self._widget_moved = True
@@ -292,31 +292,31 @@ class NativeScrollBar(Component):
 
     def _get_low(self):
         return self.range[0]
-        
+
     def _set_low(self, low):
         ignore, high, page_size, line_size = self.range
         self._scroll_updated = True
         self.range = (low, high, page_size, line_size)
-        
+
     def _get_high(self):
         return self.range[1]
-        
+
     def _set_high(self, high):
         low, ignore, page_size, line_size = self.range
         self._scroll_updated = True
         self.range = (low, high, page_size, line_size)
-        
+
     def _get_page_size(self):
         return self.range[2]
-        
+
     def _set_page_size(self, page_size):
         low, high, ignore, line_size = self.range
         self._scroll_updated = True
         self.range = (low, high, page_size, line_size)
-        
+
     def _get_line_size(self):
         return self.range[3]
-        
+
     def _set_line_size(self, line_size):
         low, high, page_size, ignore = self.range
         self._scroll_updated = True

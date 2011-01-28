@@ -44,17 +44,17 @@ def arc_to_tangent_points(start, p1, p2, radius):
     v1 = normalize_vector(start[0]-p1[0], start[1]-p1[1])
     v2 = normalize_vector(p2[0]-p1[0], p2[1]-p1[1])
     angle = acos(v1[0]*v2[0]+v1[1]*v2[1])
-    
+
     # punt if the half angle is zero or a multiple of pi
     sin_half_angle = sin(angle/2.0)
     if sin_half_angle == 0.0:
         return (p1, p2)
-    
+
     # calculate the distance from p1 to the center of the arc
     dist_to_center = radius / sin_half_angle
     # calculate the distance from p1 to each tangent point
     dist_to_tangent = sqrt(dist_to_center**2-radius**2)
-    
+
     # calculate the tangent points
     t1 = (p1[0]+v1[0]*dist_to_tangent, p1[1]+v1[1]*dist_to_tangent)
     t2 = (p1[0]+v2[0]*dist_to_tangent, p1[1]+v2[1]*dist_to_tangent)

@@ -8,7 +8,7 @@ from enthought.enable.text_grid import TextGrid
 
 class MyFrame(DemoFrame):
     def _create_window(self):
-        
+
         strings = array([["apple", "banana", "cherry", "durian"],
                          ["eggfruit", "fig", "grape", "honeydew"]])
         grid = TextGrid(string_array=strings)
@@ -18,4 +18,4 @@ class MyFrame(DemoFrame):
 
 if __name__ == "__main__":
     demo_main(MyFrame, size=[500,100])
-    
+

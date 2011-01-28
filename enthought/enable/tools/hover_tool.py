@@ -8,7 +8,7 @@ from enthought.enable.base_tool import BaseTool
 from enthought.etsconfig.api import ETSConfig
 from enthought.pyface.toolkit import toolkit_object
 from enthought.traits.api import Any, Callable, Enum, Float, Int
-	
+
 # Define a toolkit-specific function for determining the global mouse position
 if ETSConfig.toolkit == 'wx':
     import wx
@@ -43,7 +43,7 @@ class HoverTool(BaseTool):
     subclass and override on_hover().
     """
 
-    # Defines the part of the component that the hover tool will listen 
+    # Defines the part of the component that the hover tool will listen
     area_type = Enum("top", "bottom", "left", "right", "borders",   # borders
                      "UL", "UR", "LL", "LR", "corners")             # corners
 
@@ -67,7 +67,7 @@ class HoverTool(BaseTool):
 
     # An optional parameter that gets passed to the callback.
     cb_param = Any
-    
+
     #-------------------------------------------------------------------------
     # Private traits
     #-------------------------------------------------------------------------
@@ -95,7 +95,7 @@ class HoverTool(BaseTool):
                 self.callback(self.cb_param)
             else:
                 self.callback()
-    
+
     def normal_mouse_move(self, event):
         if self._is_in(event.x, event.y):
             # update xy and restart the timer
@@ -104,7 +104,7 @@ class HoverTool(BaseTool):
         else:
             if self._timer:
                 self._timer.Stop()
-        
+
     def restart_hover_timer(self, event):
         if self._timer is None:
             self._create_timer(event)
@@ -115,13 +115,13 @@ class HoverTool(BaseTool):
         position = GetGlobalMousePosition()
         diffx = abs(position[0] - self._start_xy[0])
         diffy = abs(position[1] - self._start_xy[1])
-        
+
         if (diffx < self.hover_threshold) and (diffy < self.hover_threshold):
             self.on_hover()
-            
+
         self._timer.Stop()
 
-        
+
     #-------------------------------------------------------------------------
     # Private methods
     #-------------------------------------------------------------------------
@@ -145,7 +145,7 @@ class HoverTool(BaseTool):
             return (t | b) & (l | r)
         elif area_type == "borders":
             return any((t, b, r, l))
-            
+
     def _create_timer(self, event):
         klass = toolkit_object("timer.timer:Timer")
         self._timer = klass(self.hover_delay, self.on_timer)

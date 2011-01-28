@@ -1,5 +1,5 @@
 """
-Defines the base class for all Chaco tools.  See docs/event_handling.txt for an 
+Defines the base class for all Chaco tools.  See docs/event_handling.txt for an
 overview of how event handling works in Chaco.
 """
 
@@ -15,18 +15,18 @@ class KeySpec(object):
     """
     Creates a key specification to facilitate tools interacting with the
     keyboard.  A tool can declare either a class attribute::
-    
+
         magic_key = KeySpec("Right", "control")
-    
+
     or a trait::
-    
+
         magic_key = Instance(KeySpec, args=("Right", "control"))
-    
+
     and then check to see if the key was pressed by calling::
-    
+
         if self.magic_key.match(event):
             # do stuff...
-    
+
     The names of the keys come from Enable, so both examples above
     are specifying the user pressing Ctrl + Right_arrow.
     """
@@ -38,7 +38,7 @@ class KeySpec(object):
         self.shift = "shift" in mods
         self.control = "control" in mods
         return
-    
+
     def match(self, event):
         """
         Returns True if the given Enable key_pressed event matches this key
@@ -55,14 +55,14 @@ class KeySpec(object):
 
 class BaseTool(Interactor):
     """ The base class for Chaco tools.
-    
+
     Tools are not Enable components, but they can draw.  They do not
     participate in layout, but are instead attached to a Component, which
     dispatches methods to the tool and calls the tools' draw() method.
-    
+
     See docs/event_handling.txt for more information on how tools are structured.
     """
-    
+
     # The component that this tool is attached to.
     component = Instance(Component)
 
@@ -75,13 +75,13 @@ class BaseTool(Interactor):
     # a tool's status on the component, is used by the component to determine
     # how to render itself.  In general, the meanings of the draw modes are:
     #
-    # normal: 
+    # normal:
     #     The appearance of part of the component is modified such that
     #     the component is redrawn even if it has not otherwise
     #     received any indication that its previous rendering is invalid.
     #     The tool controls its own drawing loop, and calls out to this
     #     tool after it is done drawing itself.
-    # overlay: 
+    # overlay:
     #     The component needs to be drawn, but can be drawn after all
     #     of the background and foreground elements in the component.
     #     Furthermore, the tool renders correctly regardless
@@ -89,7 +89,7 @@ class BaseTool(Interactor):
     #     The overlay gets full control of the rendering loop, and must
     #     explicitly call the component's _draw() method; otherwise the
     #     component does not render.
-    # none: 
+    # none:
     #     The tool does not have a visual representation that the component
     #     needs to render.
     draw_mode = Enum("none", "overlay", "normal")
@@ -98,17 +98,17 @@ class BaseTool(Interactor):
     #------------------------------------------------------------------------
     # Concrete methods
     #------------------------------------------------------------------------
-    
+
     def __init__(self, component=None, **kwtraits):
         if "component" in kwtraits:
             component = kwtraits["component"]
         super(BaseTool, self).__init__(**kwtraits)
         self.component = component
         return
-    
+
     def dispatch(self, event, suffix):
         """ Dispatches a mouse event based on the current event state.
-        
+
         Overrides enable.Interactor.
         """
         self._dispatch_stateful_event(event, suffix)
@@ -126,10 +126,10 @@ class BaseTool(Interactor):
     #------------------------------------------------------------------------
     # Abstract methods that subclasses should implement
     #------------------------------------------------------------------------
-    
+
     def draw(self, gc, view_bounds=None):
-        """ Draws this tool on a graphics context.  
-        
+        """ Draws this tool on a graphics context.
+
         It is assumed that the graphics context has a coordinate transform that
         matches the origin of its component. (For containers, this is just the
         origin; for components, it is the origin of their containers.)

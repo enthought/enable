@@ -11,7 +11,7 @@ from enthought.enable.example_support import demo_main, DemoFrame
 
 class EventTracer(AbstractOverlay):
     """ Draws a marker under the mouse cursor where an event is occurring. """
-    
+
     x = Float
     y = Float
 
@@ -68,7 +68,7 @@ class MyFrame(DemoFrame):
             container.padding = 20
             container.add(viewport)
             return Window(self, -1, component=container)
-        
+
         else:
             return Window(self, -1, component=viewport)
 
