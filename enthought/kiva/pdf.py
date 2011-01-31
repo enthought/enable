@@ -21,7 +21,7 @@
 from itertools import izip
 import warnings
 import copy
-from numpy import array
+from numpy import array, pi
 
 # ReportLab PDF imports
 import reportlab.pdfbase.pdfmetrics
@@ -29,6 +29,7 @@ import reportlab.pdfbase._fontdata
 from reportlab.pdfgen import canvas
 
 # Local, relative Kiva imports
+from arc_conversion import arc_to_tangent_points
 import basecore2d
 import constants
 from constants import FILL, STROKE, EOF_FILL
@@ -66,6 +67,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         from image import GraphicsContext as GraphicsContextImage
         self.gc = pdf_canvas
         self.current_pdf_path = None
+        self.current_point = (0,0)
         self.text_xy = None, None
         # get an agg backend to assist in measuring text
         self._agg_gc = GraphicsContextImage((1,1))
@@ -286,6 +288,8 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """ Clears the current drawing path and begins a new one.
         """
         self.current_pdf_path = self.gc.beginPath()
+        self.current_point = (0,0)
+
 
     def move_to(self,x,y):
         """ Starts a new drawing subpath at place the current point at (x,y).
@@ -294,6 +298,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             self.begin_path()
 
         self.current_pdf_path.moveTo(x,y)
+        self.current_point = (x,y)
 
     def line_to(self,x,y):
         """ Adds a line from the current point to the given point (x,y).
@@ -304,6 +309,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             self.begin_path()
 
         self.current_pdf_path.lineTo(x,y)
+        self.current_point = (x,y)
 
     def lines(self,points):
         """ Adds a series of lines as a new subpath.
@@ -320,6 +326,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.current_pdf_path.moveTo(points[0][0],points[0][1])
         for x,y in points[1:]:
             self.current_pdf_path.lineTo(x,y)
+            self.current_point = (x,y)
 
     def line_set(self, starts, ends):
         if self.current_pdf_path is None:
@@ -328,6 +335,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         for start, end in izip(starts, ends):
             self.current_pdf_path.moveTo(start[0], start[1])
             self.current_pdf_path.lineTo(end[0], end[1])
+            self.current_point = (end[0],end[1])
 
     def rect(self, *args):
         """ Adds a rectangle as a new subpath.  Can be called in two ways:
@@ -341,11 +349,13 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         if len(args) == 1:
             args = args[0]
         self.current_pdf_path.rect(*args)
+        self.current_point = (args[0],args[1])
 
     def draw_rect(self, rect, mode=constants.FILL_STROKE):
         self.rect(rect)
         stroke, fill, mode = path_mode[mode]
         self.draw_path(mode)
+        self.current_point = (rect[0],rect[1])
 
     def rects(self,rects):
         """ Adds multiple rectangles as separate subpaths to the path.
@@ -358,6 +368,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
         for x,y,sx,sy in rects:
             self.current_pdf_path.rect(x,y,sx,sy)
+            self.current_point = (x,y)
 
     def close_path(self):
         """ Closes the path of the current subpath.
@@ -371,6 +382,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             self.begin_path()
 
         self.current_pdf_path.curveTo(cp1x, cp1y, cp2x, cp2y, x, y)
+        self.current_point = (x,y)
 
     def quad_curve_to(self,cpx,cpy,x,y):
         """
@@ -378,14 +390,17 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         msg = "quad curve to not implemented yet on PDF"
         raise NotImplementedError, msg
 
-    def arc(self, x, y, radius, start_angle, end_angle, clockwise):
+    def arc(self, x, y, radius, start_angle, end_angle, clockwise=False):
         """
         """
         if self.current_pdf_path is None:
             self.begin_path()
-
-        self.current_pdf_path.arc(x, y, radius, start_angle, end_angle,
-                                  clockwise)
+        
+        self.current_pdf_path.arc(x-radius, y-radius,
+                                  x+radius, y+radius,
+                                  start_angle*180.0/pi,
+                                  (end_angle-start_angle)*180.0/pi)
+        self.current_point = (x,y)
 
     def arc_to(self, x1, y1, x2, y2, radius):
         """
@@ -393,7 +408,14 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         if self.current_pdf_path is None:
             self.begin_path()
 
-        self.current_pdf_path.arcTo(x1, y1, x2, y2, radius)
+        # Get the endpoints on the curve where it touches the line segments
+        t1, t2 = arc_to_tangent_points(self.current_point, (x1,y1), (x2,y2), radius)
+
+        # draw!
+        self.current_pdf_path.lineTo(*t1)
+        self.current_pdf_path.curveTo(x1,y1, x1,y1, *t2)
+        self.current_pdf_path.lineTo(x2,y2)
+        self.current_point = (x2,y2)
 
     #----------------------------------------------------------------
     # Getting infomration on paths
@@ -411,8 +433,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             Note: This should be a tuple or array.
 
         """
-        msg = "get_path_current_point not implemented yet on PDF"
-        raise NotImplementedError, msg
+        return self.current_point
 
     def get_path_bounding_box(self):
         """
