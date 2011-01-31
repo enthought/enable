@@ -66,8 +66,7 @@ the Enable project:
 * `setuptools <http://pypi.python.org/pypi/setuptools/0.6c8>`_
 * `SWIG <http://www.swig.org/>`_ version 1.3.30 or later.
 * `Cython <http://www.cython.org>`_ version 0.13 or later
-* `Numpy <http://pypi.python.org/pypi/numpy/1.1.1>`_  version 1.1.0 or later is
-  preferred. Version 1.0.4 will work, but some tests may fail.
+* `Numpy <http://pypi.python.org/pypi/numpy/1.3.1>`_  version 1.3.1
 * `ReportLab Toolkit <http://www.reportlab.org/rl_toolkit.html/>`_ for PDF
   backend support in Kiva.
 """
