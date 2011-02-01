@@ -1,7 +1,7 @@
 from __future__ import with_statement
 
 from enthought.kiva import affine, agg, constants
-from enthought.kiva.image import GraphicsContext
+from enthought.enable.kiva_graphics_context import GraphicsContext
 from enthought.kiva.fonttools import Font
 
 # Do some basic drawing tests and write the results out to PNG files.
@@ -214,7 +214,7 @@ def test_clip_stack(gc):
     gc.draw_image(img, sub_windows[5])
 
 def test_handling_text(gc):
-    font = Font(face_name="Arial", size = 12)
+    font = Font(face_name="Arial", size = 32)
     gc.set_font(font)
     gc.translate_ctm(100.0, 100.0)
     gc.move_to(-5,0)
@@ -240,5 +240,6 @@ if __name__ == "__main__":
 
     for test_func, filename in tests:
         img = GraphicsContext((800, 600))
+        img.clear(white)
         test_func(img)
         img.save(filename)
