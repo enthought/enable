@@ -852,9 +852,15 @@ cdef class CGContext:
         """
         """
         cdef float a,b,c,d,tx,ty
-        ((a,  b,  _),
-         (c,  d,  _),
-         (tx, ty, _)) = ttm
+        
+        # Handle both matrices that this class returns and agg._AffineMatrix
+        # instances.
+        try:
+            ((a,  b,  _),
+             (c,  d,  _),
+             (tx, ty, _)) = ttm
+        except:
+            a,b,c,d,tx,ty = ttm
 
         cdef CGAffineTransform transform
         transform = CGAffineTransformMake(a,b,c,d,tx,ty)
