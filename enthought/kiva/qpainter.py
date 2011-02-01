@@ -810,6 +810,14 @@ class GraphicsContext(object):
         "Converts between a Kiva and a Qt y coordinate"
         return self._height - y - 1
 
+    def save(self, filename, file_format=None):
+        """ Save the contents of the context to a file
+        """
+        if isinstance(self.qt_dc, QtGui.QPixmap):
+            self.qt_dc.save(filename, format=file_format)
+        else:
+            msg = "save not implemented for window contexts."
+            raise NotImplementedError, msg
 
 
 class CompiledPath(object):
