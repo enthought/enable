@@ -355,7 +355,10 @@ class GraphicsContext(object):
         """
         rect = QtCore.QRectF(*rect)
         if mode == constants.STROKE:
+            save_brush = self.gc.brush()
+            self.gc.setBrush(QtGui.QBrush(QtCore.Qt.NoBrush))
             self.gc.drawRect(rect)
+            self.gc.setBrush(save_brush)
         elif mode in [constants.FILL, constants.EOF_FILL]:
             self.gc.fillRect(rect, self.gc.brush())
         else:
