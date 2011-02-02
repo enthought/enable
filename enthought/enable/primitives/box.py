@@ -4,7 +4,7 @@
 # Parent package imports
 from enthought.enable.api import border_size_trait, Component, transparent_color
 from enthought.enable.colors import ColorTrait
-
+from enthought.kiva.constants import FILL, STROKE
 
 class Box(Component):
 
@@ -28,9 +28,7 @@ class Box(Component):
         color = self.color_
         if color is not transparent_color:
             gc.set_fill_color(color)
-            gc.begin_path()
-            gc.rect(x + bs, y + bs, dx - bsd, dy - bsd)
-            gc.fill_path()
+            gc.draw_rect((x + bs, y + bs, dx - bsd, dy - bsd), FILL)
 
         # Draw the border (if required):
         if bs > 0:
@@ -38,9 +36,7 @@ class Box(Component):
             if border_color is not transparent_color:
                 gc.set_stroke_color(border_color)
                 gc.set_line_width(bs)
-                gc.begin_path()
-                gc.rect(x + bsh, y + bsh, dx - bs, dy - bs)
-                gc.stroke_path()
+                gc.draw_rect((x + bsh, y + bsh, dx - bs, dy - bs), STROKE)
 
         gc.restore_state()
         return

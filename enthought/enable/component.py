@@ -4,7 +4,7 @@
 from enthought.traits.api \
     import Any, Bool, Delegate, Enum, Float, Instance, Int, List, \
            Property, Str, Trait
-from enthought.kiva.constants import FILL
+from enthought.kiva.constants import FILL, STROKE
 
 try:
     from enthought.kiva.gl import GraphicsContext as GraphicsContextGL
@@ -471,14 +471,11 @@ class Component(CoordinateBox, Interactor):
 
         gc.set_stroke_color(bgcolor)
         gc.set_line_dash(None)
-        gc.begin_path()
-        gc.rect(*rect)
-        gc.stroke_path()
+        gc.draw_rect(rect, STROKE)
 
         gc.set_stroke_color(color)
         gc.set_line_dash(dash)
-        gc.rect(*rect)
-        gc.stroke_path()
+        gc.draw_rect(rect, STROKE)
 
         if marker_size > 0:
             gc.set_fill_color(bgcolor)
@@ -803,11 +800,9 @@ class Component(CoordinateBox, Interactor):
                 gc.set_line_width(border_width)
                 gc.set_line_dash(self.border_dash_)
                 gc.set_stroke_color(self.border_color_)
-                gc.begin_path()
-                gc.rect(self.x-border_width/2.0, self.y-border_width/2.0,
-                        self.width+2*border_width-1,
-                        self.height+2*border_width-1)
-                gc.stroke_path()
+                gc.draw_rect((self.x-border_width/2.0, self.y-border_width/2.0,
+                             self.width+2*border_width-1,
+                             self.height+2*border_width-1), STROKE)
                 gc.restore_state()
 
     def _draw_inset_border(self, gc, view_bounds=None, mode="default"):
@@ -824,13 +819,11 @@ class Component(CoordinateBox, Interactor):
         gc.set_line_width(border_width)
         gc.set_line_dash(self.border_dash_)
         gc.set_stroke_color(self.border_color_)
-        gc.begin_path()
         gc.set_antialias(0)
-        gc.rect(self.x+border_width/2.0-0.5,
-                self.y+border_width/2.0-0.5,
-                self.width-border_width/2.0,
-                self.height-border_width/2.0)
-        gc.stroke_path()
+        gc.draw_rect((self.x+border_width/2.0-0.5,
+                     self.y+border_width/2.0-0.5,
+                     self.width-border_width/2.0,
+                     self.height-border_width/2.0), STROKE)
         gc.restore_state()
 
     #------------------------------------------------------------------------

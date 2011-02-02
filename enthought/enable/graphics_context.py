@@ -1,4 +1,5 @@
 
+from enthought.kiva.constants import FILL
 
 # Relative imports
 from abstract_window import AbstractWindow
@@ -40,9 +41,7 @@ class EnableGCMixin(object):
         bounds = coordinates_to_bounds(coordinates)
         self.clip_to_rect(*bounds)
         self.set_fill_color(color)
-        self.begin_path()
-        self.rect(*bounds)
-        self.fill_path()
+        self.draw_rect(bounds, FILL)
         return
 
     def clear_clip_region(self, color, update_region):

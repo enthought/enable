@@ -5,7 +5,7 @@
 from numpy import array
 
 # Enthought library imports.
-from enthought.kiva.constants import EOF_FILL_STROKE, FILL_STROKE
+from enthought.kiva.constants import EOF_FILL_STROKE, FILL, FILL_STROKE
 from enthought.kiva.agg import points_in_polygon
 from enthought.traits.api import Any, Event, Float, HasTraits, Instance, List, \
                              Property, Trait, Tuple
@@ -190,10 +190,8 @@ class Polygon(Component):
 
         else:
             for x, y in offset_points:
-                gc.begin_path()
-                gc.rect(x - offset, y - offset,
-                        self.vertex_size, self.vertex_size)
-                gc.fill_path()
+                gc.draw_rect((x - offset, y - offset,
+                             self.vertex_size, self.vertex_size), FILL)
         return
 
 

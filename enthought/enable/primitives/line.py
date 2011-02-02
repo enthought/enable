@@ -3,7 +3,7 @@
 from numpy import array, resize
 
 # Enthought library imports.
-from enthought.kiva.constants import FILL_STROKE, STROKE
+from enthought.kiva.constants import FILL, FILL_STROKE, STROKE
 from enthought.traits.api import Any, Event, Float, List, Trait, Bool
 
 # Local imports.
@@ -106,10 +106,8 @@ class Line(Component):
                     gc.draw_path_at_points(offset_points, path, FILL_STROKE)
                 else:
                     for x, y in offset_points:
-                        gc.begin_path()
-                        gc.rect(x-offset, y-offset,
-                                self.vertex_size, self.vertex_size)
-                        gc.fill_path()
+                        gc.draw_rect((x-offset, y-offset,
+                                     self.vertex_size, self.vertex_size), FILL)
             finally:
                 gc.restore_state()
         return

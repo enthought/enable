@@ -5,6 +5,7 @@ from math import pi
 from numpy import asarray
 
 # Enthought library imports
+from enthought.kiva.constants import FILL, STROKE
 from enthought.kiva.traits.kiva_font_trait import KivaFont
 from enthought.traits.api import Bool, Enum, Float, HasTraits, Int, \
                                  List, Str
@@ -178,14 +179,13 @@ class Label(Component):
             width, height = self._bounding_box
             if self.bgcolor != "transparent":
                 gc.set_fill_color(self.bgcolor_)
-                gc.rect(0, 0, width, height)
-                gc.fill_path()
+                gc.draw_rect((0, 0, width, height), FILL)
             if self.border_width > 0:
                 gc.set_stroke_color(self.border_color_)
                 gc.set_line_width(self.border_width)
                 border_offset = (self.border_width-1)/2.0
-                gc.rect(border_offset, border_offset, width-2*border_offset, height-2*border_offset)
-                gc.stroke_path()
+                gc.draw_rect((border_offset, border_offset,
+                              width-2*border_offset, height-2*border_offset), STROKE)
 
             gc.set_fill_color(self.color_)
             gc.set_stroke_color(self.color_)
