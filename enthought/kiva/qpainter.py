@@ -429,13 +429,18 @@ class GraphicsContext(object):
 
             Region should be a 4-tuple or a sequence.
         """
-        self.gc.setClipRect(QtCore.QRectF(x,y,w,h))
+        self.gc.setClipRect(QtCore.QRectF(x,y,w,h), operation=QtCore.Qt.IntersectClip)
 
-    def clip_to_rects(self):
+    def clip_to_rects(self, rects):
         """
         """
-        msg = "clip_to_rects not implemented on Qt yet."
-        raise NotImplementedError, msg
+        # Create a region which is a union of all rects.
+        clip_region = QtGui.QRegion()
+        for rect in rects:
+            clip_region = clip_region.unite(QtGui.QRegion(*rect))
+
+        # Then intersect that region with the current clip region.
+        self.gc.setClipRegion(clip_region, operation=QtCore.Qt.IntersectClip)
 
     #----------------------------------------------------------------
     # Color space manipulation
