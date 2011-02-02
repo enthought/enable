@@ -62,6 +62,7 @@ class GraphicsContext(object):
         self._height = size[1]
 
         self.text_pos = [0.0, 0.0]
+        self.text_transform = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
 
         # create some sort of device context
         if parent is None:
@@ -648,14 +649,12 @@ class GraphicsContext(object):
     def set_text_matrix(self,ttm):
         """
         """
-        msg = "Text matrix not available on Qt yet."
-        raise NotImplementedError, msg
+        self.text_transform = ttm
 
     def get_text_matrix(self):
         """
         """
-        msg = "Text matrix not available on Qt yet."
-        raise NotImplementedError, msg
+        return self.text_transform
 
     def show_text(self, text, point=None):
         """ Draw text on the device at current text position.
@@ -668,7 +667,7 @@ class GraphicsContext(object):
         else:
             pos = tuple(point)
 
-        unflip_trans = QtGui.QTransform()
+        unflip_trans = QtGui.QTransform(*self.text_transform)
         unflip_trans.translate(0, self._height)
         unflip_trans.scale(1.0, -1.0)
 
