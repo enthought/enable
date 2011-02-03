@@ -3,6 +3,8 @@ Defines the concrete top-level Enable 'Window' class for the wxPython GUI
 toolkit, based on the kiva agg driver.
 """
 
+from __future__ import absolute_import
+
 import sys
 import time
 import wx
@@ -13,6 +15,8 @@ from enthought.traits.ui.wx.menu import MakeMenu
 # Relative imports
 from enthought.enable.events import MouseEvent, KeyEvent, DragEvent
 from enthought.enable.abstract_window import AbstractWindow
+
+from .constants import DRAG_RESULTS_MAP, POINTER_MAP, KEY_MAP
 
 try:
     from enthought.util.wx.drag_and_drop import clipboard, PythonDropTarget
@@ -26,126 +30,6 @@ except ImportError:
 
 # Number of pixels to scroll at a time:
 scroll_incr = 16
-
-# Map from pointer shape name to pointer shapes:
-pointer_map = {
-   'arrow':             wx.CURSOR_ARROW,
-   'right arrow':       wx.CURSOR_RIGHT_ARROW,
-   'blank':             wx.CURSOR_BLANK,
-   'bullseye':          wx.CURSOR_BULLSEYE,
-   'char':              wx.CURSOR_CHAR,
-   'cross':             wx.CURSOR_CROSS,
-   'hand':              wx.CURSOR_HAND,
-   'ibeam':             wx.CURSOR_IBEAM,
-   'left button':       wx.CURSOR_LEFT_BUTTON,
-   'magnifier':         wx.CURSOR_MAGNIFIER,
-   'middle button':     wx.CURSOR_MIDDLE_BUTTON,
-   'no entry':          wx.CURSOR_NO_ENTRY,
-   'paint brush':       wx.CURSOR_PAINT_BRUSH,
-   'pencil':            wx.CURSOR_PENCIL,
-   'point left':        wx.CURSOR_POINT_LEFT,
-   'point right':       wx.CURSOR_POINT_RIGHT,
-   'question arrow':    wx.CURSOR_QUESTION_ARROW,
-   'right button':      wx.CURSOR_RIGHT_BUTTON,
-   'size top':          wx.CURSOR_SIZENS,
-   'size bottom':       wx.CURSOR_SIZENS,
-   'size left':         wx.CURSOR_SIZEWE,
-   'size right':        wx.CURSOR_SIZEWE,
-   'size top right':    wx.CURSOR_SIZENESW,
-   'size bottom left':  wx.CURSOR_SIZENESW,
-   'size top left':     wx.CURSOR_SIZENWSE,
-   'size bottom right': wx.CURSOR_SIZENWSE,
-   'sizing':            wx.CURSOR_SIZING,
-   'spray can':         wx.CURSOR_SPRAYCAN,
-   'wait':              wx.CURSOR_WAIT,
-   'watch':             wx.CURSOR_WATCH,
-   'arrow wait':        wx.CURSOR_ARROWWAIT
-}
-
-# Map from wxPython special key names into Enable key names:
-key_map = {
-    wx.WXK_BACK:      'Backspace',
-    wx.WXK_TAB:       'Tab',
-    wx.WXK_RETURN:    'Enter',
-    wx.WXK_ESCAPE:    'Esc',
-    wx.WXK_DELETE:    'Delete',
-    wx.WXK_START:     'Start',
-    wx.WXK_LBUTTON:   'Left Button',
-    wx.WXK_RBUTTON:   'Right Button',
-    wx.WXK_CANCEL:    'Cancel',
-    wx.WXK_MBUTTON:   'Middle Button',
-    wx.WXK_CLEAR:     'Clear',
-    wx.WXK_SHIFT:     'Shift',
-    wx.WXK_CONTROL:   'Control',
-    wx.WXK_MENU:      'Menu',
-    wx.WXK_PAUSE:     'Pause',
-    wx.WXK_CAPITAL:   'Capital',
-    wx.WXK_PRIOR:     'Page Up',
-    wx.WXK_NEXT:      'Page Down',
-    wx.WXK_END:       'End',
-    wx.WXK_HOME:      'Home',
-    wx.WXK_LEFT:      'Left',
-    wx.WXK_UP:        'Up',
-    wx.WXK_RIGHT:     'Right',
-    wx.WXK_DOWN:      'Down',
-    wx.WXK_SELECT:    'Select',
-    wx.WXK_PRINT:     'Print',
-    wx.WXK_EXECUTE:   'Execute',
-    wx.WXK_SNAPSHOT:  'Snapshot',
-    wx.WXK_INSERT:    'Insert',
-    wx.WXK_HELP:      'Help',
-    wx.WXK_NUMPAD0:   'Numpad 0',
-    wx.WXK_NUMPAD1:   'Numpad 1',
-    wx.WXK_NUMPAD2:   'Numpad 2',
-    wx.WXK_NUMPAD3:   'Numpad 3',
-    wx.WXK_NUMPAD4:   'Numpad 4',
-    wx.WXK_NUMPAD5:   'Numpad 5',
-    wx.WXK_NUMPAD6:   'Numpad 6',
-    wx.WXK_NUMPAD7:   'Numpad 7',
-    wx.WXK_NUMPAD8:   'Numpad 8',
-    wx.WXK_NUMPAD9:   'Numpad 9',
-    wx.WXK_MULTIPLY:  'Multiply',
-    wx.WXK_ADD:       'Add',
-    wx.WXK_SEPARATOR: 'Separator',
-    wx.WXK_SUBTRACT:  'Subtract',
-    wx.WXK_DECIMAL:   'Decimal',
-    wx.WXK_DIVIDE:    'Divide',
-    wx.WXK_F1:        'F1',
-    wx.WXK_F2:        'F2',
-    wx.WXK_F3:        'F3',
-    wx.WXK_F4:        'F4',
-    wx.WXK_F5:        'F5',
-    wx.WXK_F6:        'F6',
-    wx.WXK_F7:        'F7',
-    wx.WXK_F8:        'F8',
-    wx.WXK_F9:        'F9',
-    wx.WXK_F10:       'F10',
-    wx.WXK_F11:       'F11',
-    wx.WXK_F12:       'F12',
-    wx.WXK_F13:       'F13',
-    wx.WXK_F14:       'F14',
-    wx.WXK_F15:       'F15',
-    wx.WXK_F16:       'F16',
-    wx.WXK_F17:       'F17',
-    wx.WXK_F18:       'F18',
-    wx.WXK_F19:       'F19',
-    wx.WXK_F20:       'F20',
-    wx.WXK_F21:       'F21',
-    wx.WXK_F22:       'F22',
-    wx.WXK_F23:       'F23',
-    wx.WXK_F24:       'F24',
-    wx.WXK_NUMLOCK:   'Num Lock',
-    wx.WXK_SCROLL:    'Scroll Lock'
-}
-
-drag_results_map = { "error": wx.DragError,
-                     "none": wx.DragNone,
-                     "copy": wx.DragCopy,
-                     "move": wx.DragMove,
-                     "link": wx.DragLink,
-                     "cancel": wx.DragCancel }
-
-
 
 # Reusable instance to avoid constructor/destructor overhead:
 wx_rect = wx.Rect( 0, 0, 0, 0 )
@@ -397,8 +281,8 @@ class BaseWindow(AbstractWindow):
                 # Shift Ctrl-A through Ctrl-Z so that the 'key' value of
                 # this event is the ASCII character
                 key = chr(key_code + 96)
-            elif key_map.has_key(key_code):
-                key = key_map.get(key_code)
+            elif key_code in KEY_MAP:
+                key = KEY_MAP.get(key_code)
             if key is None:
                 if key_code >= 0 and key_code < 256:
                     key = chr(key_code)
@@ -543,9 +427,9 @@ class BaseWindow(AbstractWindow):
 
     def set_pointer ( self, pointer ):
         "Set the current pointer (i.e. cursor) shape"
-        ptr = pointer_map[ pointer ]
+        ptr = POINTER_MAP[ pointer ]
         if type( ptr ) is int:
-            pointer_map[ pointer ] = ptr = wx.StockCursor( ptr )
+            POINTER_MAP[ pointer ] = ptr = wx.StockCursor( ptr )
         self.control.SetCursor( ptr )
         return
 
@@ -582,9 +466,9 @@ class BaseWindow(AbstractWindow):
         return x,y
 
     def set_drag_result(self, result):
-        if result not in drag_results_map:
+        if result not in DRAG_RESULTS_MAP:
             raise RuntimeError, "Unknown drag result '%s'" % result
-        self._drag_result = drag_results_map[result]
+        self._drag_result = DRAG_RESULTS_MAP[result]
         return
 
     def wx_dropped_on ( self, x, y, drag_object, drop_result ):
