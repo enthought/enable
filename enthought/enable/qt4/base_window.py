@@ -64,39 +64,8 @@ class _QtWindowHandler(object):
                 component.outer_height = dy
 
     def keyReleaseEvent(self, event):
-        focus_owner = self._enable_window.focus_owner
-
-        if focus_owner is None:
-            focus_owner = self._enable_window.component
-
-            if focus_owner is None:
-                event.ignore()
-                return
-
-        # Convert the keypress to a standard enable key if possible, otherwise
-        # to text.
-        key = KEY_MAP.get(event.key())
-
-        if key is None:
-            key = unicode(event.text())
-
-            if not key:
-                return
-
-        # Use the last-seen mouse position as the coordinates of this event.
-        x, y = self.last_mouse_pos
-
-        modifiers = event.modifiers()
-
-        enable_event = KeyEvent(character=key, x=x,
-                y=self._enable_window._flip_y(y),
-                alt_down=bool(modifiers & QtCore.Qt.AltModifier),
-                shift_down=bool(modifiers & QtCore.Qt.ShiftModifier),
-                control_down=bool(modifiers & QtCore.Qt.ControlModifier),
-                event=event,
-                window=self._enable_window)
-
-        focus_owner.dispatch(enable_event, "key_pressed")
+        if self._enable_window:
+            self._enable_window._handle_key_event(event)
 
     #------------------------------------------------------------------------
     # Qt Mouse event handlers
@@ -291,6 +260,39 @@ class _Window(AbstractWindow):
         "Release the mouse capture"
         # Nothing needed with Qt.
         pass
+    
+    def _create_key_event(self, event):
+        focus_owner = self.focus_owner
+
+        if focus_owner is None:
+            focus_owner = self.component
+
+            if focus_owner is None:
+                event.ignore()
+                return None
+
+        # Convert the keypress to a standard enable key if possible, otherwise
+        # to text.
+        key = KEY_MAP.get(event.key())
+
+        if key is None:
+            key = unicode(event.text())
+
+            if not key:
+                return None
+
+        # Use the last-seen mouse position as the coordinates of this event.
+        x, y = self.control.last_mouse_pos
+
+        modifiers = event.modifiers()
+
+        return KeyEvent(character=key, x=x,
+                        y=self._flip_y(y),
+                        alt_down=bool(modifiers & QtCore.Qt.AltModifier),
+                        shift_down=bool(modifiers & QtCore.Qt.ShiftModifier),
+                        control_down=bool(modifiers & QtCore.Qt.ControlModifier),
+                        event=event,
+                        window=self)
 
     def _create_mouse_event(self, event):
         # If the event (if there is one) doesn't contain the mouse position,

@@ -97,6 +97,10 @@ class AbstractWindow(HasTraits):
         "Release the mouse capture"
         raise NotImplementedError
 
+    def _create_key_event(self, event):
+        "Convert a GUI toolkit mouse event into a KeyEvent"
+        raise NotImplementedError
+    
     def _create_mouse_event(self, event):
         "Convert a GUI toolkit mouse event into a MouseEvent"
         raise NotImplementedError
@@ -231,9 +235,46 @@ class AbstractWindow(HasTraits):
 #        print damaged_regions
 
     #---------------------------------------------------------------------------
+    #  Generic keyboard event handler:
+    #---------------------------------------------------------------------------
+    def _handle_key_event(self, event):
+        """ **event** should be a toolkit-specific opaque object that will
+        be passed in to the backend's _create_key_event() method. It can
+        be None if the the toolkit lacks a native "key event" object.
+        
+        Returns True if the event has been handled within the Enable object
+        hierarchy, or False otherwise.
+        """
+        # Generate the Enable event
+        key_event = self._create_key_event(event)
+        if key_event is None:
+            return False
+        
+        # Dispatch the event to the correct component
+        mouse_owner = self.mouse_owner
+        if mouse_owner is not None:
+            history = self.mouse_owner_dispatch_history
+            if history is not None and len(history) > 0:
+                # Assemble all the transforms
+                transforms = [c.get_event_transform() for c in history]
+                total_transform = reduce(dot, transforms[::-1])
+                key_event.push_transform(total_transform)
+            elif self.mouse_owner_transform is not None:
+                key_event.push_transform(self.mouse_owner_transform)
+
+            mouse_owner.dispatch(key_event, "key_pressed")
+        else:
+            # Normal event handling loop
+            if (not key_event.handled) and (self.component is not None):
+                if self.component.is_in(key_event.x, key_event.y):
+                    # Fire the actual event
+                    self.component.dispatch(key_event, "key_pressed")
+        
+        return key_event.handled
+
+    #---------------------------------------------------------------------------
     #  Generic mouse event handler:
     #---------------------------------------------------------------------------
-
     def _handle_mouse_event(self, event_name, event, set_focus=False):
         """ **event** should be a toolkit-specific opaque object that will
         be passed in to the backend's _create_mouse_event() method.  It can

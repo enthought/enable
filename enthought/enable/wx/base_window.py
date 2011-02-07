@@ -266,47 +266,7 @@ class BaseWindow(AbstractWindow):
 
     def _on_char ( self, event ):
         "Handle keyboard keys being pressed"
-
-        if self.focus_owner is None:
-            focus_owner = self.component
-        else:
-            focus_owner = self.focus_owner
-
-        if focus_owner is not None:
-            control_down = event.ControlDown()
-            key_code     = event.GetKeyCode()
-            key = None
-
-            if control_down and (1 <= key_code <= 26):
-                # Shift Ctrl-A through Ctrl-Z so that the 'key' value of
-                # this event is the ASCII character
-                key = chr(key_code + 96)
-            elif key_code in KEY_MAP:
-                key = KEY_MAP.get(key_code)
-            if key is None:
-                if key_code >= 0 and key_code < 256:
-                    key = chr(key_code)
-
-            # Use the last-seen mouse coordinates instead of GetX/GetY due
-            # to wx bug.
-            x, y = self._last_mouse_pos
-
-            # Someday when wx does this properly, we can use these instead:
-            # x = event.GetX()
-            # y = event.GetY()
-
-            enable_event = KeyEvent( character = key,
-                                     alt_down = event.AltDown(),
-                                     control_down = control_down,
-                                     shift_down = event.ShiftDown(),
-                                     x = x,
-                                     y = self._flip_y(y),
-                                     event = event,
-                                     window = self )
-            focus_owner.dispatch(enable_event, "key_pressed")
-        else:
-            event.Skip()
-        return
+        self._handle_key_event(event)
 
     def _flip_y ( self, y ):
         "Convert from a Kiva to a wxPython y coordinate"
@@ -351,6 +311,50 @@ class BaseWindow(AbstractWindow):
             self._mouse_captured = False
             self.control.ReleaseMouse()
         return
+    
+    def _create_key_event(self, event):
+        """ Convert a GUI toolkit keyboard event into a KeyEvent.
+        """
+        if self.focus_owner is None:
+            focus_owner = self.component
+        else:
+            focus_owner = self.focus_owner
+
+        if focus_owner is not None:
+            control_down = event.ControlDown()
+            key_code     = event.GetKeyCode()
+            key = None
+
+            if control_down and (1 <= key_code <= 26):
+                # Shift Ctrl-A through Ctrl-Z so that the 'key' value of
+                # this event is the ASCII character
+                key = chr(key_code + 96)
+            elif key_code in KEY_MAP:
+                key = KEY_MAP.get(key_code)
+            if key is None:
+                if key_code >= 0 and key_code < 256:
+                    key = chr(key_code)
+
+            # Use the last-seen mouse coordinates instead of GetX/GetY due
+            # to wx bug.
+            x, y = self._last_mouse_pos
+
+            # Someday when wx does this properly, we can use these instead:
+            # x = event.GetX()
+            # y = event.GetY()
+
+            return KeyEvent(character = key,
+                            alt_down = event.AltDown(),
+                            control_down = control_down,
+                            shift_down = event.ShiftDown(),
+                            x = x,
+                            y = self._flip_y(y),
+                            event = event,
+                            window = self)
+        else:
+            event.Skip()
+        
+        return None
 
     def _create_mouse_event ( self, event ):
         "Convert a GUI toolkit mouse event into a MouseEvent"
