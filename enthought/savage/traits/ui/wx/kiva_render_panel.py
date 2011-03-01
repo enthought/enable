@@ -44,15 +44,8 @@ class RenderPanel(wx.Window):
         self._window = Window( parent=self, size=size, component=self.container )
         self.control = self._window.control
         self._parent = parent
-
-        wx.EVT_PAINT(self, self.OnPaint)
-
-    def OnPaint(self, event):
-        # set the bg color of the window to match the container, otherwise
-        # we'll get a border. This might not always be what we want though
-        self.SetBackgroundColour([int(255*c) for c in self.container.bgcolor_])
-
-        self.container.draw(self._window._gc)
+        
+        self.SetBackgroundColour([int(255*c) for c in self.container.bgcolor_])        
 
     def GetBestSize(self):
         if not self.document:
