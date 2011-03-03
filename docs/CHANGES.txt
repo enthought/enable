@@ -1,3 +1,37 @@
+Enable 3.4.1 (March 3, 2011)
+============================
+
+Fixes
+-----
+
+* Removed OnPaint method from KivaRenderPanel in savage. On Windows there 
+  were competing handlers for the paint event. The OnPaint method expected a
+  certain order, which varied by Platform 
+* QImage constructor args were changed to use QByteArray to match changes to
+  PySide API changes in PySide RC1
+
+
+Enable 3.4.0 (Jan 26, 2011)
+===========================
+
+Enhancements
+------------
+
+* Major refactor of kiva backends to make setting the desired backend more 
+  resilient and flexible.
+* Added support for PySide
+* Qt backend no longer uses Agg internally, instead it uses QPainter.
+* Improved gradient support in Quartz backend
+* Improved cairo backend
+* Updated to use variation of rev 8713 of matplotlib font_manager.py
+
+Fixes
+-----
+* Fixed cubic spline rendering in OpenGl backend
+* Fixed gradients using relative coordinates
+* Fixed object-space gradients
+
+
 Enable 3.3.2 (October 15, 2010)
 ===============================
 
