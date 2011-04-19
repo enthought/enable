@@ -38,10 +38,8 @@ class SVGButton ( Event ):
             ----------
             label : string
                 The label for the button
-            image : enthought.pyface.ImageResource
-                An image to display on the button
-            style : one of: 'button', 'radio', 'toolbar', 'checkbox'
-                The style of button to display
+            filename : string
+                Path to SVG file to be displayed on the button
             orientation : one of: 'horizontal', 'vertical'
                 The orientation of the label relative to the image
             width_padding : integer between 0 and 31
