@@ -17,21 +17,18 @@
 #  Imports:
 #-------------------------------------------------------------------------------
 
-from traits.etsconfig.api \
-    import ETSConfig
+from traits.etsconfig.api import ETSConfig
 
 if ETSConfig.toolkit == 'wx':
-    from enthought.kiva.traits.ui.wx.kiva_font_editor import KivaFontEditor
+    from .ui.wx.kiva_font_editor import KivaFontEditor
 elif ETSConfig.toolkit == 'qt4':
     # FIXME
-    #from enthought.kiva.traits.ui.qt4.kiva_font_editor \
-    #    import KivaFontEditor
+    #from .ui.qt4.kiva_font_editor import KivaFontEditor
     KivaFontEditor = None
 else:
     KivaFontEditor = None
 
-from traits.api \
-    import Trait, TraitError, TraitHandler, TraitFactory
+from traits.api import Trait, TraitError, TraitHandler, TraitFactory
 
 
 #-------------------------------------------------------------------------------
