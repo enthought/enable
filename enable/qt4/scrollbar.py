@@ -10,7 +10,7 @@ from types import ListType, TupleType
 from traits.api import Any, Bool, Float, Int, Property, Trait, \
     TraitError
 
-from enthought.enable.component import Component
+from enable.component import Component
 
 
 def valid_range(object, name, value):

@@ -11,7 +11,7 @@ from types import ListType, TupleType
 from traits.api import Property, Trait, TraitError, \
      Any, Enum, Bool, Int
 
-from enthought.enable.component import Component
+from enable.component import Component
 
 
 def valid_range(object, name, value):

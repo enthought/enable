@@ -13,8 +13,8 @@ from traits.api import Any, Instance, Trait
 from traitsui.wx.menu import MakeMenu
 
 # Relative imports
-from enthought.enable.events import MouseEvent, KeyEvent, DragEvent
-from enthought.enable.abstract_window import AbstractWindow
+from enable.events import MouseEvent, KeyEvent, DragEvent
+from enable.abstract_window import AbstractWindow
 
 from .constants import DRAG_RESULTS_MAP, POINTER_MAP, KEY_MAP
 

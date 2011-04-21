@@ -10,7 +10,7 @@
 #------------------------------------------------------------------------------
 
 from traits.qt import QtCore, QtGui
-from enthought.kiva.agg import CompiledPath, GraphicsContextSystem as GraphicsContext
+from enable.kiva.agg import CompiledPath, GraphicsContextSystem as GraphicsContext
 
 from base_window import BaseWindow
 from scrollbar import NativeScrollBar
@@ -42,7 +42,7 @@ class Window(BaseWindow):
         painter.drawImage(rect, image)
 
 def font_metrics_provider():
-    from enthought.kiva.fonttools import Font
+    from enable.kiva.fonttools import Font
     gc = GraphicsContext((1, 1))
     gc.set_font(Font())
     return gc

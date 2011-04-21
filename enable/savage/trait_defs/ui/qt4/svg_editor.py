@@ -25,7 +25,7 @@
 from cStringIO import StringIO
 from xml.etree.cElementTree import ElementTree
 
-from enthought.savage.svg.document import SVGDocument
+from enable.savage.svg.document import SVGDocument
 
 from traitsui.qt4.editor import Editor
 

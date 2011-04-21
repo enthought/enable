@@ -3,7 +3,7 @@ import unittest
 
 from numpy import array, allclose, ones, alltrue
 
-from enthought.kiva import agg
+from enable.kiva import agg
 
 class AffineMatrixTestCase(unittest.TestCase):
 

@@ -7,9 +7,9 @@ from traits.api import Bool, Enum, Float, Instance, Int, List, \
     Trait, Tuple
 
 # Enable imports
-from enthought.enable.base_tool import KeySpec
-from enthought.enable.colors import ColorTrait
-from enthought.enable.abstract_overlay import AbstractOverlay
+from enable.base_tool import KeySpec
+from enable.colors import ColorTrait
+from enable.abstract_overlay import AbstractOverlay
 from base_zoom_tool import BaseZoomTool
 from tool_history_mixin import ToolHistoryMixin
 

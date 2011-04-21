@@ -18,7 +18,7 @@ released under a 3 clause BSD license.
 
 Files and original authors:
 ----------------------------------------------------------------------------
-enthought/enable/images:
+enable/images:
                        0_weight.gif | Enthought
                        1_weight.gif | Enthought
                        2_weight.gif | Enthought
@@ -41,11 +41,12 @@ enthought/enable/images:
               top_left_position.gif | Enthought
              top_right_position.gif | Enthought
 
-enthought/enable/image/images:
+enable/image/images:
                       colorchip.png | Enthought
                           image.png | Enthought
                       inspector.png | Crystal Project
-enthought/savage/traits/ui/wx/data:
+
+enable/savage/traits/ui/wx/data:
                   button_toggle.svg | Enthought
 
 examples/enable:

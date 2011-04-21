@@ -1,10 +1,10 @@
 
 
-from enthought.enable.example_support import DemoFrame, demo_main
+from enable.example_support import DemoFrame, demo_main
 
-from enthought.enable.api import Container, Window, TextField
-from enthought.enable.stacked_container import VStackedContainer, HStackedContainer
-from enthought.enable.overlay_container import OverlayContainer
+from enable.api import Container, Window, TextField
+from enable.stacked_container import VStackedContainer, HStackedContainer
+from enable.overlay_container import OverlayContainer
 
 class MyFrame(DemoFrame):
     def _create_window(self):

@@ -1,7 +1,7 @@
 """ A drag drawn polygon. """
 
-from enthought.enable.primitives.api import Polygon
-from enthought.enable.api import Pointer
+from enable.primitives.api import Polygon
+from enable.api import Pointer
 from pyface.action.api import MenuManager
 from traits.api import Delegate, Instance
 

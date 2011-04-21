@@ -1,5 +1,5 @@
-from enthought.savage.svg.document import SVGDocument
-from enthought.savage.trait_defs.ui.svg_editor import SVGEditor
+from enable.savage.svg.document import SVGDocument
+from enable.savage.trait_defs.ui.svg_editor import SVGEditor
 from traits.api import HasTraits, Instance
 from traitsui.api import Item, View
 
@@ -23,13 +23,13 @@ if __name__ == "__main__":
     import sys
 
     if '--wx' in sys.argv:
-        from enthought.savage.svg.backends.wx.renderer import Renderer
+        from enable.savage.svg.backends.wx.renderer import Renderer
         sys.argv.remove('--wx')
     elif '--kiva' in sys.argv:
-        from enthought.savage.svg.backends.kiva.renderer import Renderer
+        from enable.savage.svg.backends.kiva.renderer import Renderer
         sys.argv.remove('--kiva')
     else:
-        from enthought.savage.svg.backends.kiva.renderer import Renderer
+        from enable.savage.svg.backends.kiva.renderer import Renderer
 
     if len(sys.argv) > 1:
         StaticImageExample(sys.argv[1], Renderer).configure_traits()

@@ -1,6 +1,6 @@
 import unittest
 
-from enthought.kiva.agg import GraphicsContextSystem
+from enable.kiva.agg import GraphicsContextSystem
 
 class GraphicsContextSystemTestCase(unittest.TestCase):
 

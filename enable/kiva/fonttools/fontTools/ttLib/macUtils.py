@@ -32,7 +32,7 @@ def openTTFonts(path):
         but in the case of a Mac font suitcase it will contain as many
         font objects as there are sfnt resources in the file.
         """
-        from enthought.kiva.fonttools.fontTools import ttLib
+        from enable.kiva.fonttools.fontTools import ttLib
         fonts = []
         sfnts = getSFNTResIndices(path)
         if not sfnts:
@@ -78,7 +78,7 @@ class SFNTResourceWriter:
                 familyname = ttFont['name'].getName(1, 1, 0) # Fam. name, mac, default encoding
                 psname = ttFont['name'].getName(6, 1, 0) # PostScript name, etc.
                 if fullname is None or fullname is None or psname is None:
-                        from enthought.kiva.fonttools.fontTools import ttLib
+                        from enable.kiva.fonttools.fontTools import ttLib
                         raise ttLib.TTLibError, "can't make 'sfnt' resource, no Macintosh 'name' table found"
                 self.fullname = fullname.string
                 self.familyname = familyname.string
@@ -125,7 +125,7 @@ class SFNTResourceWriter:
                 fond_res = Res.Resource("")
                 fond_res.AddResource('FOND', self.res_id, self.fullname)
 
-                from enthought.kiva.fonttools.fontTools import fondLib
+                from enable.kiva.fonttools.fontTools import fondLib
                 fond = fondLib.FontFamily(fond_res, "w")
 
                 fond.ffFirstChar = 0

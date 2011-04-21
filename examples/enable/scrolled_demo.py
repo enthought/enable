@@ -6,9 +6,9 @@ from __future__ import with_statement
 
 from numpy import array
 
-from enthought.enable.example_support import DemoFrame, demo_main
+from enable.example_support import DemoFrame, demo_main
 
-from enthought.enable.api import Component, Scrolled, Container, Container,\
+from enable.api import Component, Scrolled, Container, Container,\
                                   Pointer, NativeScrollBar, Viewport, Window
 
 from traits.api import Array, Enum, Float, Instance, Trait, Tuple

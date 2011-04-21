@@ -1,9 +1,9 @@
 from __future__ import with_statement
 
 import time
-from enthought.kiva.fonttools import Font
-from enthought.kiva.constants import MODERN
-from enthought.kiva.agg import AffineMatrix, GraphicsContextArray
+from enable.kiva.fonttools import Font
+from enable.kiva.constants import MODERN
+from enable.kiva.agg import AffineMatrix, GraphicsContextArray
 
 gc = GraphicsContextArray((200,200))
 

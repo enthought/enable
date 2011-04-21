@@ -2,7 +2,7 @@ import unittest
 import string
 import sys
 from pyparsing import ParseException
-import enthought.savage.svg.css.atrule as atrule
+import enable.savage.svg.css.atrule as atrule
 
 class TestAtKeyword(unittest.TestCase):
     def testValidKeywords(self):

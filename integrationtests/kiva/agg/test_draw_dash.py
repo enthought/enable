@@ -5,7 +5,7 @@ import unittest
 import numpy
 import Image
 
-from enthought.kiva import agg
+from enable.kiva import agg
 
 def save(img,file_name):
     """ This only saves the rgb channels of the image

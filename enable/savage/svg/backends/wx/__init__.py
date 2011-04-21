@@ -4,7 +4,7 @@
 import math
 import wx
 
-from enthought.savage.svg import svg_extras
+from enable.savage.svg import svg_extras
 
 def elliptical_arc_to(self, rx, ry, phi, large_arc_flag, sweep_flag, x2, y2):
     x1, y1 = self.GetCurrentPoint()

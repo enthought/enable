@@ -4,12 +4,12 @@
 from numpy import array, dot
 
 # Enthought library traits
-from enthought.enable.tools.viewport_zoom_tool import ViewportZoomTool
-from enthought.enable.simple_layout import simple_container_get_preferred_size, \
+from enable.tools.viewport_zoom_tool import ViewportZoomTool
+from enable.simple_layout import simple_container_get_preferred_size, \
                                             simple_container_do_layout
 from traits.api import (Bool, Delegate, Float, Instance, Enum, List,
         Any, on_trait_change)
-from enthought.kiva import affine
+from enable.kiva import affine
 
 # Local relative imports
 from enable_traits import bounds_trait, coordinate_trait

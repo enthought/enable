@@ -1,7 +1,7 @@
 import DefaultTable
 import struct
-from enthought.kiva.fonttools import sstruct
-from enthought.kiva.fonttools.fontTools.misc.textTools import safeEval
+from enable.kiva.fonttools import sstruct
+from enable.kiva.fonttools.fontTools.misc.textTools import safeEval
 import string
 import types
 

@@ -54,7 +54,7 @@ def points_in_polygon(pts, poly_pts, use_winding=False):
     Example::
     
         >>> from numpy import *
-        >>> from enthought.kiva import agg        
+        >>> from enable.kiva import agg        
         >>> poly = array(((0.0,   0.0),
                           (10.0,  0.0),
                           (10.0, 10.0),

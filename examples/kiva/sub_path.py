@@ -1,6 +1,6 @@
 
 from numpy import array
-from enthought.kiva.image import GraphicsContext
+from enable.kiva.image import GraphicsContext
 
 line_color = (0.0,0.0,0.0)
 fill_color = array((200.,184.,106.))/255.

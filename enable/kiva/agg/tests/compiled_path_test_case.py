@@ -2,7 +2,7 @@ import unittest
 
 from numpy import array, alltrue, ravel, pi
 
-from enthought.kiva import agg
+from enable.kiva import agg
 
 from test_utils import Utils
 

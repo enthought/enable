@@ -25,8 +25,8 @@ import os.path
 import wx
 
 # ETS imports
-from enthought.savage.svg.document import SVGDocument
-from enthought.savage.svg.backends.wx.renderer import Renderer
+from enable.savage.svg.document import SVGDocument
+from enable.savage.svg.backends.wx.renderer import Renderer
 from traits.api import Instance
 from traitsui.wx.constants import WindowColor
 from traitsui.wx.editor import Editor

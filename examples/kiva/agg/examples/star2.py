@@ -1,7 +1,7 @@
 from __future__ import with_statement
 
 from math import pi
-from enthought.kiva import agg
+from enable.kiva import agg
 
 
 def add_star(gc):

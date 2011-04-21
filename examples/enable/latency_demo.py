@@ -11,10 +11,10 @@ from traits.etsconfig.api import ETSConfig
 ETSConfig.toolkit = 'wx'
 
 from traits.api import Float
-from enthought.enable.api import (Component, Container, ColorTrait,
+from enable.api import (Component, Container, ColorTrait,
                                   black_color_trait, Window)
-from enthought.kiva.constants import SWISS
-from enthought.kiva.fonttools import Font
+from enable.kiva.constants import SWISS
+from enable.kiva.fonttools import Font
 
 font = Font(family=SWISS)
 

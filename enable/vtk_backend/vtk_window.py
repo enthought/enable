@@ -6,9 +6,9 @@ from traits.api import HasTraits, Any, Callable, Property, Instance, \
         Bool, Enum, Int, on_trait_change
 
 from numpy import arange, zeros, ascontiguousarray, reshape, uint8, any
-from enthought.enable.api import AbstractWindow, MouseEvent, KeyEvent, \
+from enable.api import AbstractWindow, MouseEvent, KeyEvent, \
         CoordinateBox
-from enthought.enable.graphics_context import ImageGraphicsContextEnable
+from enable.graphics_context import ImageGraphicsContextEnable
 
 # Local imports.
 from constants import KEY_MAP

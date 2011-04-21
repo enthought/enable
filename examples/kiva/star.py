@@ -1,7 +1,7 @@
 from __future__ import with_statement
 
 from scipy import pi
-from enthought.kiva.image import GraphicsContext
+from enable.kiva.image import GraphicsContext
 
 def add_star(gc):
     gc.begin_path()

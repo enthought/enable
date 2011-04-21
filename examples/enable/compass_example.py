@@ -1,6 +1,6 @@
 
-from enthought.enable.api import OverlayContainer, Compass, Window
-from enthought.enable.example_support import demo_main, DemoFrame
+from enable.api import OverlayContainer, Compass, Window
+from enable.example_support import demo_main, DemoFrame
 
 class MyFrame(DemoFrame):
 

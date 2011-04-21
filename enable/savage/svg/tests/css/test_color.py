@@ -1,7 +1,7 @@
 import unittest
 from pyparsing import ParseException
 
-import enthought.savage.svg.css.colour as colour
+import enable.savage.svg.css.colour as colour
 
 
 class testColourValueClamping(unittest.TestCase):

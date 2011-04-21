@@ -1,7 +1,7 @@
 """ Cross-hair tool for measuring SVG rendering results.
 """
 
-from enthought.enable.api import BaseTool, ColorTrait, LineStyle
+from enable.api import BaseTool, ColorTrait, LineStyle
 from traits.api import Bool, Float, HasTraits, List, Tuple, on_trait_change
 
 

@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 #------------------------------------------------------------------------------
 
-from enthought.kiva.agg import CompiledPath, GraphicsContextArray as GraphicsContext
+from enable.kiva.agg import CompiledPath, GraphicsContextArray as GraphicsContext
 
 class NativeScrollBar(object):
     pass

@@ -5,15 +5,15 @@
 from numpy import array
 
 # Enthought library imports.
-from enthought.kiva.constants import EOF_FILL_STROKE, FILL, FILL_STROKE
-from enthought.kiva.agg import points_in_polygon
+from enable.kiva.constants import EOF_FILL_STROKE, FILL, FILL_STROKE
+from enable.kiva.agg import points_in_polygon
 from traits.api import Any, Event, Float, HasTraits, Instance, List, \
                              Property, Trait, Tuple
 from traitsui.api import Group, View
 
 # Local imports.
-from enthought.enable.api import border_size_trait, Component
-from enthought.enable.colors import ColorTrait
+from enable.api import border_size_trait, Component
+from enable.colors import ColorTrait
 
 
 class PolygonModel(HasTraits):

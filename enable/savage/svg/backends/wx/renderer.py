@@ -3,7 +3,7 @@ import numpy
 import warnings
 import wx
 
-from enthought.savage.svg.backends.null.null_renderer import NullRenderer
+from enable.savage.svg.backends.null.null_renderer import NullRenderer
 
 
 def _fixup_path_methods(path):

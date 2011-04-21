@@ -4,7 +4,7 @@
 import warnings
 
 # Enthought library imports
-from enthought.kiva import affine
+from enable.kiva import affine
 from traits.api import Any, Bool, Enum, HasTraits, Instance, List, \
         Property, Tuple
 

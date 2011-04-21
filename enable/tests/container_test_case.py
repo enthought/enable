@@ -1,6 +1,6 @@
 import unittest
 
-from enthought.enable.api import Component, Container
+from enable.api import Component, Container
 
 
 class EnableUnitTest(unittest.TestCase):

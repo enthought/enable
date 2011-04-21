@@ -3,12 +3,12 @@
 from numpy import array, resize
 
 # Enthought library imports.
-from enthought.kiva.constants import FILL, FILL_STROKE, STROKE
+from enable.kiva.constants import FILL, FILL_STROKE, STROKE
 from traits.api import Any, Event, Float, List, Trait, Bool
 
 # Local imports.
-from enthought.enable.api import border_size_trait, Component
-from enthought.enable.colors import ColorTrait
+from enable.api import border_size_trait, Component
+from enable.colors import ColorTrait
 
 
 class Line(Component):

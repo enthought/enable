@@ -27,7 +27,7 @@ from traits.trait_base \
 from traitsui.wx.font_editor \
     import ToolkitEditorFactory as EditorFactory
 
-from enthought.kiva.fonttools.font_manager import fontManager
+from enable.kiva.fonttools.font_manager import fontManager
 
 
 #-------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ class ToolkitEditorFactory ( EditorFactory ):
         """ Returns a wxFont object corresponding to a specified object's font
             trait.
         """
-        import enthought.kiva.constants as kc
+        import enable.kiva.constants as kc
 
         font   = editor.value
         weight = ( wx.NORMAL, wx.BOLD   )[ font.weight == kc.BOLD ]
@@ -80,8 +80,8 @@ class ToolkitEditorFactory ( EditorFactory ):
     def from_wx_font ( self, font ):
         """ Gets the application equivalent of a wxPython value.
         """
-        import enthought.kiva.constants as kc
-        from enthought.kiva.fonttools import Font
+        import enable.kiva.constants as kc
+        from enable.kiva.fonttools import Font
 
         return Font( size = font.GetPointSize(),
                      family = { wx.DEFAULT:    kc.DEFAULT,
@@ -103,7 +103,7 @@ class ToolkitEditorFactory ( EditorFactory ):
     def str_font ( self, font ):
         """ Returns the text representation of the specified object trait value.
         """
-        import enthought.kiva.constants as kc
+        import enable.kiva.constants as kc
 
         weight    = { kc.BOLD:   ' Bold'   }.get( font.weight, '' )
         style     = { kc.ITALIC: ' Italic' }.get( font.style,  '' )

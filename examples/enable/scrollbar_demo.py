@@ -1,8 +1,8 @@
 
 
-from enthought.enable.api import Component, Container, Label, \
+from enable.api import Component, Container, Label, \
         NativeScrollBar, Window
-from enthought.enable.example_support import DemoFrame, demo_main
+from enable.example_support import DemoFrame, demo_main
 
 
 class MyFrame(DemoFrame):

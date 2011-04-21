@@ -4,10 +4,10 @@ Demonstrates how clipping of objects occurs with the view_bounds parameter to dr
 
 from __future__ import with_statement
 
-from enthought.enable.example_support import DemoFrame, demo_main
+from enable.example_support import DemoFrame, demo_main
 
-from enthought.enable.api import Container, Component, Scrolled, Window
-from enthought.enable.base import empty_rectangle, intersect_bounds
+from enable.api import Container, Component, Scrolled, Window
+from enable.base import empty_rectangle, intersect_bounds
 
 
 class Box(Component):

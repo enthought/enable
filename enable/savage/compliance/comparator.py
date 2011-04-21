@@ -16,16 +16,16 @@ import warnings
 import Image
 import numpy as np
 
-from enthought.enable.api import Component
-from enthought.enable.component_editor import ComponentEditor
+from enable.api import Component
+from enable.component_editor import ComponentEditor
 from traits.api import (Any, Button, Dict, HasTraits, HTML, Instance,
     List, Property, Str, on_trait_change)
 from traitsui import api as tui
 
-from enthought.savage.svg import document
-from enthought.savage.trait_defs.ui.svg_editor import SVGEditor
-from enthought.savage.svg.backends.wx.renderer import Renderer as WxRenderer
-from enthought.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
+from enable.savage.svg import document
+from enable.savage.trait_defs.ui.svg_editor import SVGEditor
+from enable.savage.svg.backends.wx.renderer import Renderer as WxRenderer
+from enable.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
 
 from crosshair import Crosshair, MultiController
 from profile_this import ProfileThis

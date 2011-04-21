@@ -1,6 +1,6 @@
 """ A drag drawn line. """
 
-from enthought.enable.api import Line
+from enable.api import Line
 from traits.api import Instance
 
 from drawing_tool import DrawingTool

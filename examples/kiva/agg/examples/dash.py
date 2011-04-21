@@ -2,7 +2,7 @@ import time
 
 from numpy import array
 
-from enthought.kiva import agg
+from enable.kiva import agg
 from enthought import kiva
 
 def dash(sz=(1000,1000)):

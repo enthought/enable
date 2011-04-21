@@ -19,7 +19,7 @@
 #  Imports:
 #-------------------------------------------------------------------------------
 
-from enthought.savage.trait_defs.ui.toolkit import toolkit_object
+from enable.savage.trait_defs.ui.toolkit import toolkit_object
 
 from traits.api import Bool, Enum, Int, Property, Range, Str, Any
 

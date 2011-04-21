@@ -1,5 +1,5 @@
 
-from enthought.kiva.constants import FILL
+from enable.kiva.constants import FILL
 
 # Relative imports
 from abstract_window import AbstractWindow
@@ -88,7 +88,7 @@ class GraphicsContextEnable(EnableGCMixin, GraphicsContext):
 # Define an ImageGraphicsContextEnable that is guaranteed to be a subclass of
 # an ImageGraphicsContext, regardless of the actual Kiva backend.  If the kiva
 # backend is already the GraphicsContextImage, then just create an alias.
-from enthought.kiva.image import GraphicsContext as GraphicsContextImage
+from enable.kiva.image import GraphicsContext as GraphicsContextImage
 if isinstance(GraphicsContext, GraphicsContextImage):
     ImageGraphicsContextEnable = GraphicsContextEnable
 else:

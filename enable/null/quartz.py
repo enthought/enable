@@ -11,8 +11,8 @@
 
 import numpy as np
 
-from enthought.kiva.fonttools import Font
-from enthought.kiva.quartz import ABCGI
+from enable.kiva.fonttools import Font
+from enable.kiva.quartz import ABCGI
 
 class NativeScrollBar(object):
     pass

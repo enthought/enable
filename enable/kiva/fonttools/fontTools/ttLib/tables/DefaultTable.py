@@ -27,8 +27,8 @@ class DefaultTable:
                 writer.newline()
 
         def fromXML(self, (name, attrs, content), ttFont):
-                from enthought.kiva.fonttools.fontTools.misc.textTools import readHex
-                from enthought.kiva.fonttools.fontTools import ttLib
+                from enable.kiva.fonttools.fontTools.misc.textTools import readHex
+                from enable.kiva.fonttools.fontTools import ttLib
                 if name <> "hexdata":
                         raise ttLib.TTLibError, "can't handle '%s' element" % name
                 self.decompile(readHex(content), ttFont)

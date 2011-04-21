@@ -134,7 +134,7 @@ class URLPathStyle:
 c_numpy.import_array()
 import numpy
 
-from enthought.kiva import constants
+from enable.kiva import constants
 
 cap_style = {}
 cap_style[constants.CAP_ROUND]  = kCGLineCapRound
@@ -2476,7 +2476,7 @@ cdef class _Markers:
         Parameters
         ----------
         marker_type : int
-            One of the enumerated marker types in enthought.kiva.constants.
+            One of the enumerated marker types in enable.kiva.constants.
         size : float, optional
             The linear size in points of the marker. Some markers (e.g. dot)
             ignore this.

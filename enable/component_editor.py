@@ -6,8 +6,8 @@
 #  (c) Copyright 2007 by Enthought, Inc.
 #----------------------------------------------------------------------------
 
-from enthought.enable.colors import ColorTrait
-from enthought.enable.window import Window
+from enable.colors import ColorTrait
+from enable.window import Window
 
 from traits.etsconfig.api import ETSConfig
 

@@ -2,8 +2,8 @@
 """
 
 # Enthought library imports
-from enthought.enable.base_tool import BaseTool
-from enthought.enable.container import Container
+from enable.base_tool import BaseTool
+from enable.container import Container
 
 
 

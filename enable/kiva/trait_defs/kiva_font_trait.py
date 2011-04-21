@@ -49,7 +49,7 @@ def init_constants ( ):
     if font_families is not None:
         return
 
-    import enthought.kiva.constants as kc
+    import enable.kiva.constants as kc
 
     DEFAULT = kc.DEFAULT
     NORMAL  = kc.NORMAL
@@ -101,7 +101,7 @@ class TraitKivaFont ( TraitHandler ):
     def validate ( self, object, name, value ):
         """ Validates that the value is a valid font.
         """
-        from enthought.kiva.fonttools import Font
+        from enable.kiva.fonttools import Font
 
         if isinstance( value, Font ):
             return value
@@ -165,7 +165,7 @@ def KivaFontFunc ( *args, **metadata ):
     -----------
     For wxPython, the returned trait accepts any of the following:
 
-    * an enthought.kiva.fonttools.Font instance
+    * an enable.kiva.fonttools.Font instance
     * a string describing the font, including one or more of the font family,
       size, weight, style, and typeface name.
 

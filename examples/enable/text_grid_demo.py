@@ -1,10 +1,10 @@
 
 from numpy import array
 
-from enthought.enable.example_support import DemoFrame, demo_main
+from enable.example_support import DemoFrame, demo_main
 
-from enthought.enable.api import Container, Window
-from enthought.enable.text_grid import TextGrid
+from enable.api import Container, Window
+from enable.text_grid import TextGrid
 
 class MyFrame(DemoFrame):
     def _create_window(self):

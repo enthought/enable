@@ -14,7 +14,7 @@ import unittest
 import sys
 from numpy import arctan2, alltrue, array, identity, dot, ravel, allclose, pi,cos
 
-from enthought.kiva import affine
+from enable.kiva import affine
 
 class AffineConstructorsTestCase(unittest.TestCase):
 

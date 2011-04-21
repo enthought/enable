@@ -13,7 +13,7 @@ import pyglet
 pyglet.options['shadow_window'] = False
 
 from traits.api import Bool, Instance
-from enthought.kiva.gl import CompiledPath, GraphicsContext
+from enable.kiva.gl import CompiledPath, GraphicsContext
 
 from base_window import BaseGLWindow
 from scrollbar import NativeScrollBar
@@ -55,7 +55,7 @@ class Window(BaseGLWindow):
         self._update_region = []
 
 def font_metrics_provider():
-    from enthought.kiva.fonttools import Font
+    from enable.kiva.fonttools import Font
     gc = GraphicsContext((1, 1))
     gc.set_font(Font())
     return gc

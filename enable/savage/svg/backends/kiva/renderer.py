@@ -4,12 +4,12 @@ import warnings
 
 import numpy as np
 
-from enthought.enable.compiled_path import CompiledPath as KivaCompiledPath
-from enthought.kiva import affine, constants, fonttools
-from enthought.kiva.fonttools import Font
+from enable.compiled_path import CompiledPath as KivaCompiledPath
+from enable.kiva import affine, constants, fonttools
+from enable.kiva.fonttools import Font
 
-from enthought.savage.svg import svg_extras
-from enthought.savage.svg.backends.null.null_renderer import NullRenderer, AbstractGradientBrush
+from enable.savage.svg import svg_extras
+from enable.savage.svg.backends.null.null_renderer import NullRenderer, AbstractGradientBrush
 
 # Get the Canvas class for drawing on...
 

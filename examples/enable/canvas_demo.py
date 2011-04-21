@@ -1,9 +1,9 @@
 
 
-from enthought.enable.api import Canvas, Viewport, Window
-from enthought.enable.tools.api import ViewportPanTool
-from enthought.enable.primitives.api import Box
-from enthought.enable.example_support import demo_main, DemoFrame
+from enable.api import Canvas, Viewport, Window
+from enable.tools.api import ViewportPanTool
+from enable.primitives.api import Box
+from enable.example_support import demo_main, DemoFrame
 
 class MyFrame(DemoFrame):
 

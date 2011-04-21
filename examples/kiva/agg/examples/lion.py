@@ -1,7 +1,7 @@
 import time
 import sys
 
-from enthought.kiva import agg
+from enable.kiva import agg
 
 
 if sys.platform == 'win32':

@@ -2,11 +2,11 @@
 import sys
 from enthought.tvtk.api import tvtk
 from enthought.mayavi import mlab
-from enthought.enable.vtk_backend.vtk_window import EnableVTKWindow
+from enable.vtk_backend.vtk_window import EnableVTKWindow
 
 def main():
     from basic_move import Box
-    from enthought.enable.api import Container
+    from enable.api import Container
     container = Container()
     box = Box(bounds=[30,30], position=[20,20], padding=5)
     container.add(box)

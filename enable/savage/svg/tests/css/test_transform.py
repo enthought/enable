@@ -1,7 +1,7 @@
 import unittest
 from pyparsing import ParseException
 
-from enthought.savage.svg.css.transform import *
+from enable.savage.svg.css.transform import *
 
 #list of tuples: parser, string, result
 transformTestsGood = [

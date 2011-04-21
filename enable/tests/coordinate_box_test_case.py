@@ -1,6 +1,6 @@
 import unittest
 
-from enthought.enable.api import CoordinateBox
+from enable.api import CoordinateBox
 
 class CoordinateBoxTestCase(unittest.TestCase):
     def check_position(self):

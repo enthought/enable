@@ -15,7 +15,7 @@ the wxPython user interface toolkit.
 
 import wx
 
-from enthought.enable.colors import color_table
+from enable.colors import color_table
 
 from traits.api import Bool
 from traits.trait_base import SequenceTypes
@@ -164,8 +164,8 @@ class SimpleColorEditor ( Editor ):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
-        from enthought.enable.api import Label
-        from enthought.enable.wx_backend import Window
+        from enable.api import Label
+        from enable.wx_backend import Window
         window = Window( parent,
                     component = Label( '', border_size = 1, font = 'modern 9' ) )
         self._swatch = window.component
@@ -314,8 +314,8 @@ class ReadonlyColorEditor ( ReadonlyEditor ):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
-        from enthought.enable.api import Label
-        from enthought.enable.wx_backend import Window
+        from enable.api import Label
+        from enable.wx_backend import Window
         window = Window( parent,
                     component = Label( '', border_size = 1, font = 'modern 9' ) )
         self._swatch = window.component

@@ -29,7 +29,7 @@ def _init_toolkit():
         traits_toolkit()
 
     # Import the selected backend
-    backend = 'enthought.enable.%s.%s' % (ETSConfig.toolkit, ETSConfig.kiva_backend)
+    backend = 'enable.%s.%s' % (ETSConfig.toolkit, ETSConfig.kiva_backend)
     try:
         __import__(backend)
     except ImportError, SystemExit:

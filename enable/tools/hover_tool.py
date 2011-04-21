@@ -4,7 +4,7 @@ components.
 """
 
 # Enthought library imports
-from enthought.enable.base_tool import BaseTool
+from enable.base_tool import BaseTool
 from traits.etsconfig.api import ETSConfig
 from pyface.toolkit import toolkit_object
 from traits.api import Any, Callable, Enum, Float, Int

@@ -1,1 +1,1 @@
-include enthought/kiva/mac/macport*.cpp
+include enable/kiva/mac/macport*.cpp

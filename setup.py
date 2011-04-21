@@ -121,8 +121,7 @@ def configuration(parent_package='', top_path=None):
         quiet=True,
     )
 
-    config.add_subpackage('enthought.kiva')
-    config.add_subpackage('enthought')
+    config.add_subpackage('enable.kiva')
 
     return config
 
@@ -133,7 +132,7 @@ def configuration(parent_package='', top_path=None):
 config = configuration().todict()
 packages = setuptools.find_packages(exclude=config['packages'] +
     ['docs', 'examples'])
-packages += ['enthought.savage.trait_defs.ui.wx.data']
+packages += ['enable.savage.trait_defs.ui.wx.data']
 config['packages'] += packages
 
 
@@ -155,7 +154,7 @@ class MyClean(distutils.command.clean.clean):
             shutil.rmtree("dist", ignore_errors=True)
 
         # Clean out any files produced by an in-place build.  Note that our
-        # code assumes the files are relative to the 'enthought/kiva' dir.
+        # code assumes the files are relative to the 'enable/kiva' dir.
         INPLACE_FILES = (
             # Common AGG
             os.path.join("agg", "agg.py"),
@@ -184,7 +183,7 @@ class MyClean(distutils.command.clean.clean):
             os.path.join("agg", "src", "gl", "plat_support.py"),
             )
         for f in INPLACE_FILES:
-            f = os.path.join("enthought", "kiva", f)
+            f = os.path.join("enable", "kiva", f)
             if os.path.isfile(f):
                 os.remove(f)
 
@@ -219,7 +218,7 @@ setup(
         'clean': MyClean,
         },
     description = DOCLINES[1],
-    download_url = ('http://www.enthought.com/repo/ETS/Enable-%s.tar.gz' %
+    download_url = ('http://www.enthought.com/repo/ets/enable-%s.tar.gz' %
                     INFO['version']),
     include_package_data = True,
     install_requires = INFO['install_requires'],
@@ -228,9 +227,6 @@ setup(
     maintainer = 'ETS Developers',
     maintainer_email = 'enthought-dev@enthought.com',
     name = INFO['name'],
-    namespace_packages = [
-        "enthought",
-        ],
     package_data = {'': ['*.zip', '*.svg']},
     platforms = ["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
     setup_requires = [

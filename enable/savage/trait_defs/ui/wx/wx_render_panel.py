@@ -1,7 +1,7 @@
 import time
 import wx
 
-from enthought.savage.svg.backends.wx import renderer
+from enable.savage.svg.backends.wx import renderer
 from traitsui.wx.constants import WindowColor
 
 class RenderPanel(wx.PyPanel):

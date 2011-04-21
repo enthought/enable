@@ -18,7 +18,7 @@ from css import values
 from attributes import paintValue
 from svg_regex import svg_parser
 
-from enthought.savage.svg.backends.null.null_renderer import NullRenderer, AbstractGradientBrush
+from enable.savage.svg.backends.null.null_renderer import NullRenderer, AbstractGradientBrush
 
 
 class XMLNS(object):

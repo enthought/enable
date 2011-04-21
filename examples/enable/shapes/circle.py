@@ -4,7 +4,7 @@ from __future__ import with_statement
 
 # Enthought library imports.
 from traits.api import Float
-from enthought.enable.primitives.shape import Shape
+from enable.primitives.shape import Shape
 
 
 class Circle(Shape):

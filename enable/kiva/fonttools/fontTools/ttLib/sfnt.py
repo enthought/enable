@@ -13,7 +13,7 @@ a table's length chages you need to rewrite the whole file anyway.
 """
 
 import struct
-from enthought.kiva.fonttools import sstruct
+from enable.kiva.fonttools import sstruct
 import numpy
 import os
 
@@ -29,11 +29,11 @@ class SFNTReader:
                 self.checkChecksums = checkChecksums
                 data = self.file.read(sfntDirectorySize)
                 if len(data) <> sfntDirectorySize:
-                        from enthought.kiva.fonttools.fontTools import ttLib
+                        from enable.kiva.fonttools.fontTools import ttLib
                         raise ttLib.TTLibError, "Not a TrueType or OpenType font (not enough data)"
                 sstruct.unpack(sfntDirectoryFormat, data, self)
                 if self.sfntVersion not in ("\000\001\000\000", "OTTO", "true"):
-                        from enthought.kiva.fonttools.fontTools import ttLib
+                        from enable.kiva.fonttools.fontTools import ttLib
                         raise ttLib.TTLibError, "Not a TrueType or OpenType font (bad sfntVersion)"
                 self.tables = {}
                 for i in range(self.numTables):
@@ -101,7 +101,7 @@ class SFNTWriter:
                         # of the data is still the same, we allow overwriting it.
                         entry = self.tables[tag]
                         if len(data) <> entry.length:
-                                from enthought.kiva.fonttools.fontTools import ttLib
+                                from enable.kiva.fonttools.fontTools import ttLib
                                 raise ttLib.TTLibError, "cannot rewrite '%s' table: length does not match directory entry" % tag
                 else:
                         entry = SFNTDirectoryEntry()
@@ -128,7 +128,7 @@ class SFNTWriter:
                 tables = self.tables.items()
                 tables.sort()
                 if len(tables) <> self.numTables:
-                        from enthought.kiva.fonttools.fontTools import ttLib
+                        from enable.kiva.fonttools.fontTools import ttLib
                         raise ttLib.TTLibError, "wrong number of tables; expected %d, found %d" % (self.numTables, len(tables))
 
                 directory = sstruct.pack(sfntDirectoryFormat, self)
@@ -212,7 +212,7 @@ def calcChecksum(data, start=0):
         If the data length is not a multiple of four, it assumes
         it is to be padded with null byte.
         """
-        from enthought.kiva.fonttools.fontTools import ttLib
+        from enable.kiva.fonttools.fontTools import ttLib
         remainder = len(data) % 4
         if remainder:
                 data = data + '\0' * (4-remainder)

@@ -1,6 +1,6 @@
 
 from traits.api import Enum
-from enthought.enable.api import Component
+from enable.api import Component
 
 
 class DrawingTool(Component):

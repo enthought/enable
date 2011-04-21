@@ -2,7 +2,7 @@ from __future__ import with_statement
 
 import numpy as np
 
-from enthought.enable.api import Component, ComponentEditor
+from enable.api import Component, ComponentEditor
 from traits.api import HasTraits, Instance
 from traitsui.api import Item, View
 

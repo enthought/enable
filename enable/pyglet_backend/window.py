@@ -14,9 +14,9 @@ from pyglet.window import key
 from traits.api import Any, Bool
 
 # Enable imports
-from enthought.enable.events import MouseEvent, KeyEvent
-from enthought.enable.graphics_context import GraphicsContextEnable
-from enthought.enable.abstract_window import AbstractWindow
+from enable.events import MouseEvent, KeyEvent
+from enable.graphics_context import GraphicsContextEnable
+from enable.abstract_window import AbstractWindow
 
 # local, relative imports
 from constants import ASCII_CONTROL_KEYS, KEY_MAP, \

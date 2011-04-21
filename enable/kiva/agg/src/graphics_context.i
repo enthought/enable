@@ -212,7 +212,7 @@ namespace kiva {
         import numpy
 
         # Define paths for the two markers that Agg renders incorrectly
-        from enthought.kiva.constants import DIAMOND_MARKER, CIRCLE_MARKER, FILL_STROKE
+        from enable.kiva.constants import DIAMOND_MARKER, CIRCLE_MARKER, FILL_STROKE
 
         def circle_marker_path(path, size):
             circle_points = array([[ 1.   ,  0.   ],
@@ -256,7 +256,7 @@ namespace kiva {
         #from enthought import freetype
         #ft_engine = freetype.FreeType(dpi=120.0)
 
-        from enthought.kiva import fonttools
+        from enable.kiva import fonttools
 
         def handle_unicode(text):
             "Returns a latin1 encoded 8-bit string from 'text'"

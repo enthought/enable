@@ -1,8 +1,8 @@
 import wx
 
-from enthought.savage.svg.backends.kiva import renderer
-from enthought.savage.svg.document import SVGDocument
-from enthought.enable.api import Container, Window
+from enable.savage.svg.backends.kiva import renderer
+from enable.savage.svg.document import SVGDocument
+from enable.api import Container, Window
 from traits.api import Instance, Float
 
 class KivaContainer(Container):

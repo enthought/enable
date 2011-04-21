@@ -10,7 +10,7 @@
 #------------------------------------------------------------------------------
 
 from traits.qt import QtCore, QtGui
-from enthought.kiva.cairo import CompiledPath, GraphicsContext, font_metrics_provider
+from enable.kiva.cairo import CompiledPath, GraphicsContext, font_metrics_provider
 
 from base_window import BaseWindow
 from scrollbar import NativeScrollBar

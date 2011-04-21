@@ -7,7 +7,7 @@ from pyparsing import (Literal, Word, CaselessLiteral,
 
 #some shared definitions from pathdata
 
-from enthought.savage.svg.pathdata import number, maybeComma
+from enable.savage.svg.pathdata import number, maybeComma
 
 paren = Literal("(").suppress()
 cparen = Literal(")").suppress()

@@ -4,7 +4,7 @@ from math import pi
 
 import numpy
 
-from enthought.kiva import agg
+from enable.kiva import agg
 
 def save_path(filename):
     return filename

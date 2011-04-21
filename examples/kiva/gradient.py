@@ -1,9 +1,9 @@
 from numpy import array, pi
 from os.path import splitext
 
-from enthought.enable.kiva_graphics_context import GraphicsContext
-from enthought.kiva.fonttools import Font
-from enthought.kiva import constants
+from enable.kiva_graphics_context import GraphicsContext
+from enable.kiva.fonttools import Font
+from enable.kiva import constants
 
 
 def draw(gc):

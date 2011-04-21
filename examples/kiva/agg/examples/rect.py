@@ -1,4 +1,4 @@
-from enthought.kiva import agg
+from enable.kiva import agg
 
 gc = agg.GraphicsContextArray((500,500))
 gc.clear()

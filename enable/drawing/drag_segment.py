@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------------
 
 # Enthought library imports
-from enthought.enable.api import Line, Pointer
+from enable.api import Line, Pointer
 from traits.api import Event, Instance
 
 from drawing_tool import DrawingTool

@@ -18,8 +18,8 @@
 from traits.qt import QtCore, QtGui, QtOpenGL
 
 # Enthought library imports.
-from enthought.enable.abstract_window import AbstractWindow
-from enthought.enable.events import KeyEvent, MouseEvent
+from enable.abstract_window import AbstractWindow
+from enable.events import KeyEvent, MouseEvent
 from traits.api import Instance
 
 # Local imports.

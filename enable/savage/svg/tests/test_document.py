@@ -1,9 +1,9 @@
 import unittest
-import enthought.savage.svg.document as document
+import enable.savage.svg.document as document
 import xml.etree.cElementTree as etree
 from cStringIO import StringIO
 
-from enthought.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
+from enable.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
 
 minimalSVG = etree.parse(StringIO(r"""<?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"

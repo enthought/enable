@@ -7,7 +7,7 @@ import unittest
 from traits.api import Any, Tuple
 
 # Enable imports
-from enthought.enable.api import BasicEvent, Canvas, Component, Container, \
+from enable.api import BasicEvent, Canvas, Component, Container, \
         Viewport, AbstractWindow
 
 

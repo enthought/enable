@@ -11,7 +11,7 @@
 """ A suitable replacement for the old Canvas class in Kiva.
 """
 
-from enthought.enable.api import Component, Window
+from enable.api import Component, Window
 
 class _DummyComponent(Component):
     def __init__(self, draw_func, *args, **kwargs):

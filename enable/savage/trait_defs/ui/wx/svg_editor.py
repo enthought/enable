@@ -24,8 +24,8 @@
 
 from traitsui.wx.editor import Editor
 
-from enthought.savage.svg.backends.wx.renderer import Renderer as WxRenderer
-from enthought.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
+from enable.savage.svg.backends.wx.renderer import Renderer as WxRenderer
+from enable.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
 
 from kiva_render_panel import RenderPanel as KivaRenderPanel
 from wx_render_panel import RenderPanel as WxRenderPanel

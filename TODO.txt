@@ -1,8 +1,8 @@
 * Clean-up the failing import of enthought.freetype in
-  enthought.kiva.trait_defs.ui.wx.kiva_font_editor.
+  enable.kiva.trait_defs.ui.wx.kiva_font_editor.
 
-* Clean-up imports of enthought.enable (I mean NOT enthought.enable2) done
+* Clean-up imports of enable (I mean NOT enable2) done
   in:
-    enthought/enable2/traits/ui/wx/enable_rgba_color_editor.py
+    enable2/traits/ui/wx/enable_rgba_color_editor.py
 
 * Clean-up direct imports of traitsui.wx

@@ -1,5 +1,5 @@
 import unittest
-from enthought.savage.svg.css import block
+from enable.savage.svg.css import block
 
 class TestBlockParsing(unittest.TestCase):
     def testBlock(self):

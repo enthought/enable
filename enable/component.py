@@ -4,10 +4,10 @@
 from traits.api \
     import Any, Bool, Delegate, Enum, Float, Instance, Int, List, \
            Property, Str, Trait
-from enthought.kiva.constants import FILL, STROKE
+from enable.kiva.constants import FILL, STROKE
 
 try:
-    from enthought.kiva.gl import GraphicsContext as GraphicsContextGL
+    from enable.kiva.gl import GraphicsContext as GraphicsContextGL
 except (ImportError, TypeError):
     class GraphicsContextGL(object):
         pass
@@ -62,7 +62,7 @@ class Component(CoordinateBox, Interactor):
     window = Property   # Instance("Window")
 
     # The list of viewport that are viewing this component
-    viewports = List(Instance("enthought.enable.viewport.Viewport"))
+    viewports = List(Instance("enable.viewport.Viewport"))
 
 
     #------------------------------------------------------------------------

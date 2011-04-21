@@ -6,8 +6,8 @@ component
 from traits.api import Event, Trait, TraitPrefixList
 from traitsui.api import Group, View
 
-from enthought.enable.api import Component
-from enthought.enable.colors import ColorTrait
+from enable.api import Component
+from enable.colors import ColorTrait
 
 
 class Annotater(Component):

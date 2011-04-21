@@ -598,7 +598,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         # it brute-force using Agg.
         from reportlab.lib.utils import ImageReader
         from PIL import Image as PilImage
-        from enthought.kiva import agg
+        from enable.kiva import agg
 
         if type(img) == type(array([])):
             # Numeric array

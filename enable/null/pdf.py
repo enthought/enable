@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 #------------------------------------------------------------------------------
 
-from enthought.kiva.pdf import CompiledPath, GraphicsContext
+from enable.kiva.pdf import CompiledPath, GraphicsContext
 
 class NativeScrollBar(object):
     pass
@@ -20,7 +20,7 @@ class Window(object):
 def font_metrics_provider():
     from reportlab.pdfgen.canvas import Canvas
     from reportlab.lib.pagesizes import letter
-    from enthought.kiva.fonttools import Font
+    from enable.kiva.fonttools import Font
 
     # a file will not be created unless save() is called on the context
     pdf_canvas = Canvas(filename='enable_tmp.pdf', pagesize=letter)

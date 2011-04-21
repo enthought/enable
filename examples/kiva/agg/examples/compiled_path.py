@@ -1,6 +1,6 @@
 from numpy import array
-from enthought.kiva.image import GraphicsContext, CompiledPath
-from enthought.kiva.constants import STROKE, FILL_STROKE
+from enable.kiva.image import GraphicsContext, CompiledPath
+from enable.kiva.constants import STROKE, FILL_STROKE
 
 cross = CompiledPath()
 cross.scale_ctm(10.0, 10.0)

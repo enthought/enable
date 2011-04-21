@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 #------------------------------------------------------------------------------
 
-from enthought.kiva.qpainter import CompiledPath, GraphicsContext, font_metrics_provider
+from enable.kiva.qpainter import CompiledPath, GraphicsContext, font_metrics_provider
 
 from base_window import BaseWindow
 from scrollbar import NativeScrollBar

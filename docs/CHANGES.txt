@@ -105,7 +105,7 @@ Enhancements
 ------------
 
  * Updated freetype to 2.3.12.  This makes our text look prettier, and also fixes some compatibility issues with OS X 10.6.
- * Moved Shape from examples into enthought.enable.primitives
+ * Moved Shape from examples into enable.primitives
  * Improved ability to find the Qt SVG IconEngine for the SVGButtonEditor
  * Improved painting in Wx by as much as 30%
  * Added repeat and reflect gradient fill methods
@@ -124,15 +124,15 @@ Fixes
 
 One final note is that the "enable2" legacy backwards compatibility package will
 be removed by the next release.  If you have any code that imports from
-"enthought.enable2" and the DeprecationWarnings haven't been sufficiently
+"enable2" and the DeprecationWarnings haven't been sufficiently
 motivating thus far, please heed them and change your imports to use
-"enthought.enable"!
+"enable"!
 
 
 Enable 3.2.0 (July 15th, 2009)
 ==============================
 
-enthought.enable Enhancements
+enable Enhancements
 -----------------------------
 
  * Added Slider and Compass widgets
@@ -156,7 +156,7 @@ enthought.enable Enhancements
  * Adding a "fixed_preferred_size" trait to Components, so that relative size preferences can be expressed amongst different components in a container
 
 
-enthought.enable Fixes
+enable Fixes
 ----------------------
 
  * Improved the backend selection to match the Traits UI backend unless ETSConfig.enable_toolkit is explicitly set
@@ -170,13 +170,13 @@ enthought.enable Fixes
  * Fixed backend_cairo's get_text_extent() implementation to match other backends
 
 
-enthought.kiva Enhancements
+enable.kiva Enhancements
 ---------------------------
 
  * Added basic gradients to Kiva
 
 
-enthought.kiva Fixes
+enable.kiva Fixes
 --------------------
 
  * Fixed Python 2.6 datatype errors

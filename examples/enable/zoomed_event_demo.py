@@ -3,10 +3,10 @@ from __future__ import with_statement
 
 from traits.api import Float
 
-from enthought.enable.api import AbstractOverlay, Canvas, Viewport, \
+from enable.api import AbstractOverlay, Canvas, Viewport, \
         Window, ColorTrait, Scrolled, Container
-from enthought.enable.tools.api import ViewportPanTool
-from enthought.enable.example_support import demo_main, DemoFrame
+from enable.tools.api import ViewportPanTool
+from enable.example_support import demo_main, DemoFrame
 
 
 class EventTracer(AbstractOverlay):

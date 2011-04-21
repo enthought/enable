@@ -1,8 +1,8 @@
 from __future__ import with_statement
 
 from numpy import cos, sin, arange, pi, array
-from enthought.kiva.image import GraphicsContext
-from enthought.kiva.constants import *
+from enable.kiva.image import GraphicsContext
+from enable.kiva.constants import *
 
 def draw_circle(gc,radius=2):
     gc.begin_path()

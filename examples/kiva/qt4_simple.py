@@ -10,7 +10,7 @@ try:
 except ImportError:
     raise Exception('PyQt4 needs to be installed to run this example')
 
-from enthought.enable.example_canvas import Canvas
+from enable.example_canvas import Canvas
 
 
 class MyCanvas(Canvas):

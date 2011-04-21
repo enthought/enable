@@ -4,7 +4,7 @@ from numpy import pi
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.pagesizes import letter
 
-from enthought.kiva.pdf import GraphicsContext
+from enable.kiva.pdf import GraphicsContext
 
 def draw_ellipse(gc, x, y, major, minor, angle):
     """ Draws an ellipse given major and minor axis lengths.  **angle** is

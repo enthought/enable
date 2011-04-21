@@ -9,7 +9,7 @@ from traits.etsconfig.api import ETSConfig
 # PyQt/traits problem (see below) we can't because it would drag in traits too
 # early.  Until it is fixed we just assume wx if we can import it.
 # Force the selection of a valid toolkit.
-#import enthought.enable.toolkit
+#import enable.toolkit
 if not ETSConfig.toolkit:
     for toolkit, toolkit_module in (('wx', 'wx'), ('qt4', 'PyQt4')):
         try:

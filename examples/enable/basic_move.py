@@ -4,10 +4,10 @@ This allows a simple component to be moved around the screen.
 
 from __future__ import with_statement
 
-from enthought.enable.example_support import DemoFrame, demo_main
+from enable.example_support import DemoFrame, demo_main
 
 from traits.api import Float, Tuple
-from enthought.enable.api import Component, Container, Pointer, Window
+from enable.api import Component, Container, Pointer, Window
 
 class Box(Component):
     """

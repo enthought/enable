@@ -28,9 +28,9 @@ from __future__ import generators
 # Enthought library imports
 from traits.api import TraitError
 
-from enthought.kiva.constants import DEFAULT, DECORATIVE, ROMAN, SCRIPT, SWISS,\
+from enable.kiva.constants import DEFAULT, DECORATIVE, ROMAN, SCRIPT, SWISS,\
                                      MODERN, NORMAL, BOLD, ITALIC
-from enthought.kiva.fonttools import Font
+from enable.kiva.fonttools import Font
 
 from colors import color_table, transparent_color
 

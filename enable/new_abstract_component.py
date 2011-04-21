@@ -41,7 +41,7 @@ class AbstractComponent(Interactor):
     window = Property   # Instance("Window")
 
     # The list of viewport that are viewing this component
-    viewports = List(Instance("enthought.enable.Viewport"))
+    viewports = List(Instance("enable.Viewport"))
 
     #------------------------------------------------------------------------
     # Other public traits

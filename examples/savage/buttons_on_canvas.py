@@ -3,13 +3,13 @@ from __future__ import with_statement
 import os.path
 import xml.etree.cElementTree as etree
 
-from enthought.enable.api import Container, Component, ComponentEditor, BaseTool
-from enthought.kiva.constants import MODERN
-from enthought.kiva.fonttools import Font
+from enable.api import Container, Component, ComponentEditor, BaseTool
+from enable.kiva.constants import MODERN
+from enable.kiva.fonttools import Font
 from traits.api import Instance, Callable, List, Str, HasTraits, Enum
 from traitsui.api import View, Item
-from enthought.savage.svg.document import SVGDocument
-from enthought.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
+from enable.savage.svg.document import SVGDocument
+from enable.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
 
 
 class CanvasButton(Component):

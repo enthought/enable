@@ -1,7 +1,7 @@
 # Enthought library imports
 from traits.api import HasTraits, Int, Bool
-from enthought.kiva.trait_defs.api import KivaFont
-from enthought.enable.colors import ColorTrait
+from enable.kiva.trait_defs.api import KivaFont
+from enable.colors import ColorTrait
 
 
 class TextFieldStyle(HasTraits):

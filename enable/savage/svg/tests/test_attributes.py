@@ -1,5 +1,5 @@
 import unittest
-import enthought.savage.svg.attributes as a
+import enable.savage.svg.attributes as a
 
 from css.test_color import TestValueParser
 

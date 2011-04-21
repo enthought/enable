@@ -1,6 +1,6 @@
 import unittest
 
-from enthought.enable.api import Component, Container, Viewport
+from enable.api import Component, Container, Viewport
 
 
 class ViewportTestCase(unittest.TestCase):

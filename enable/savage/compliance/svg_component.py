@@ -4,9 +4,9 @@
 import sys
 import time
 
-from enthought.enable.api import Component
+from enable.api import Component
 from traits.api import Any, Array, Bool, Float
-from enthought.kiva.fonttools import Font
+from enable.kiva.fonttools import Font
 
 
 if sys.platform == 'win32':

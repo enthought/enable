@@ -1,12 +1,12 @@
 """ Defines the Interactor class """
 
 # Enthought library imports
-from enthought.kiva.affine import affine_identity
+from enable.kiva.affine import affine_identity
 from traits.api import Any, Bool, HasTraits, List, Property, Str, Trait
 
 # Local relative imports
 from enable_traits import cursor_style_trait, Pointer
-from enthought.enable.colors import ColorTrait
+from enable.colors import ColorTrait
 
 class Interactor(HasTraits):
     """

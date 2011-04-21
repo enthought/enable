@@ -5,9 +5,9 @@ import xml.etree.cElementTree as etree
 
 import wx
 import wx.aui
-import enthought.savage.svg.document as document
+import enable.savage.svg.document as document
 
-from enthought.savage.trait_defs.ui.wx.wx_render_panel import RenderPanel
+from enable.savage.trait_defs.ui.wx.wx_render_panel import RenderPanel
 
 class ReferencePanel(wx.Panel):
     def __init__(self, parent, bmp):

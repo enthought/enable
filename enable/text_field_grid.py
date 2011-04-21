@@ -1,5 +1,5 @@
 # Enthought library imports
-from enthought.enable.api import Container, TextField
+from enable.api import Container, TextField
 from traits.api import Float, Int, List
 
 # Local imports
@@ -171,9 +171,9 @@ class TextFieldGrid(Container):
 
 # Test
 if __name__ == '__main__':
-    from enthought.enable.wx_backend.api import Window
-    from enthought.enable.api import Container
-    from enthought.enable.example_support import DemoFrame, demo_main
+    from enable.wx_backend.api import Window
+    from enable.api import Container
+    from enable.example_support import DemoFrame, demo_main
 
     class MyFrame(DemoFrame):
         def _create_window(self):

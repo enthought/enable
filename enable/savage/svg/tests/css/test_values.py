@@ -1,7 +1,7 @@
 import unittest
 from pyparsing import ParseException
 
-import enthought.savage.svg.css.values as values
+import enable.savage.svg.css.values as values
 
 class FailTest(Exception):
     pass

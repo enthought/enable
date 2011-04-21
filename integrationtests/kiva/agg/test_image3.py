@@ -4,8 +4,8 @@ import os
 import time
 from math import pi
 
-from enthought.kiva import agg
-from enthought.kiva.fonttools import Font
+from enable.kiva import agg
+from enable.kiva.fonttools import Font
 
 ArialFont = Font('arial')
 

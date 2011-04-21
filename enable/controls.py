@@ -19,7 +19,7 @@
 import os.path
 
 # Enthought library imports
-from enthought.enable.colors import ColorTrait
+from enable.colors import ColorTrait
 from traits.api import Bool, Delegate, HasTraits, Str, Trait, \
                                  TraitPrefixList
 from traitsui.api import View, Group

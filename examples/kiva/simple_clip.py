@@ -1,5 +1,5 @@
 import time
-from enthought.kiva.image import GraphicsContext
+from enable.kiva.image import GraphicsContext
 
 samples = 1
 pt = (250, 250)

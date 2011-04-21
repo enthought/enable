@@ -2,7 +2,7 @@ import unittest
 
 from numpy import array, allclose
 
-from enthought.kiva import agg
+from enable.kiva import agg
 
 class TestPointsInPolygon(unittest.TestCase):
 

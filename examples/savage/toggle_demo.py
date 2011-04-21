@@ -2,7 +2,7 @@ import os
 
 from traits.api import HasTraits
 from traitsui.api import View, Item
-from enthought.savage.trait_defs.ui.svg_button import SVGButton
+from enable.savage.trait_defs.ui.svg_button import SVGButton
 
 
 pause_icon = os.path.join(os.path.dirname(__file__), 'player_pause.svg')
