@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 #------------------------------------------------------------------------------
 
-from enthought.qt import QtCore, QtGui
+from traits.qt import QtCore, QtGui
 from enthought.kiva.cairo import CompiledPath, GraphicsContext, font_metrics_provider
 
 from base_window import BaseWindow

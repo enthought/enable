@@ -9,7 +9,7 @@
 from enthought.enable.colors import ColorTrait
 from enthought.enable.window import Window
 
-from enthought.etsconfig.api import ETSConfig
+from traits.etsconfig.api import ETSConfig
 
 from enthought.traits.api import Property, Tuple
 from enthought.traits.ui.api import BasicEditorFactory

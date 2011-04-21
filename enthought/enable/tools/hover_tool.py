@@ -5,7 +5,7 @@ components.
 
 # Enthought library imports
 from enthought.enable.base_tool import BaseTool
-from enthought.etsconfig.api import ETSConfig
+from traits.etsconfig.api import ETSConfig
 from enthought.pyface.toolkit import toolkit_object
 from enthought.traits.api import Any, Callable, Enum, Float, Int
 
@@ -22,7 +22,7 @@ if ETSConfig.toolkit == 'wx':
             raise RuntimeError("Unable to determine mouse position")
 
 elif ETSConfig.toolkit == 'qt4':
-    from enthought.qt import QtGui
+    from traits.qt import QtGui
     def GetGlobalMousePosition():
         pos = QtGui.QCursor.pos()
         return (pos.x(), pos.y())

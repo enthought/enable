@@ -3,7 +3,7 @@ Support class that wraps up the boilerplate toolkit calls that virtually all
 demo programs have to use.
 """
 from __future__ import absolute_import
-from enthought.etsconfig.api import ETSConfig
+from traits.etsconfig.api import ETSConfig
 
 # FIXME - it should be enough to do the following import, but because of the
 # PyQt/traits problem (see below) we can't because it would drag in traits too
@@ -62,7 +62,7 @@ if ETSConfig.toolkit == 'wx':
         app.MainLoop()
 
 elif ETSConfig.toolkit == 'qt4':
-    from enthought.qt import QtGui
+    from traits.qt import QtGui
 
     _app = QtGui.QApplication.instance()
 

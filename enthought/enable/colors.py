@@ -3,7 +3,7 @@
 from __future__ import absolute_import
 import sys
 
-from enthought.etsconfig.api import ETSConfig
+from traits.etsconfig.api import ETSConfig
 from enthought.traits.api import List, Str, Trait, Tuple, TraitError
 
 # Color definitions
@@ -242,7 +242,7 @@ if ETSConfig.toolkit == 'wx':
                        convert_from_wx_color, editor=ColorEditorFactory)
 
 elif ETSConfig.toolkit == 'qt4':
-    from enthought.qt import QtGui
+    from traits.qt import QtGui
     from enthought.traits.ui.qt4.color_editor \
                 import ToolkitEditorFactory as StandardColorEditorFactory
 

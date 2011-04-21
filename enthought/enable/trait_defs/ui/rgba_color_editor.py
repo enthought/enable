@@ -1,4 +1,4 @@
-from enthought.etsconfig.api import ETSConfig
+from traits.etsconfig.api import ETSConfig
 
 if ETSConfig.toolkit == 'wx':
     from .wx.rgba_color_editor import RGBAColorEditor

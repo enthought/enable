@@ -18,7 +18,7 @@
   RR is red, GG is green, and BB is blue.
 """
 
-from enthought.etsconfig.api import ETSConfig
+from traits.etsconfig.api import ETSConfig
 from enthought.traits.api import Trait, TraitError, TraitFactory
 from enthought.traits.trait_base import SequenceTypes
 
