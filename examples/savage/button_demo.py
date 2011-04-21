@@ -1,7 +1,7 @@
 from copy import copy
 import os.path
 
-from enthought.savage.traits.ui.svg_button import SVGButton
+from enthought.savage.trait_defs.ui.svg_button import SVGButton
 from traits.api import HasTraits, Str
 from traitsui.api import Item, View, HGroup
 

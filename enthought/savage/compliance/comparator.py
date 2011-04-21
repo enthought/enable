@@ -23,7 +23,7 @@ from traits.api import (Any, Button, Dict, HasTraits, HTML, Instance,
 from traitsui import api as tui
 
 from enthought.savage.svg import document
-from enthought.savage.traits.ui.svg_editor import SVGEditor
+from enthought.savage.trait_defs.ui.svg_editor import SVGEditor
 from enthought.savage.svg.backends.wx.renderer import Renderer as WxRenderer
 from enthought.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
 

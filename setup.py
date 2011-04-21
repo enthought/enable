@@ -133,7 +133,7 @@ def configuration(parent_package='', top_path=None):
 config = configuration().todict()
 packages = setuptools.find_packages(exclude=config['packages'] +
     ['docs', 'examples'])
-packages += ['enthought.savage.traits.ui.wx.data']
+packages += ['enthought.savage.trait_defs.ui.wx.data']
 config['packages'] += packages
 
 

@@ -28,7 +28,7 @@ def _init_toolkit():
     traits_toolkit()
 
     # Import the selected backend
-    backend = 'enthought.savage.traits.ui.%s' % ETSConfig.toolkit
+    backend = 'enthought.savage.trait_defs.ui.%s' % ETSConfig.toolkit
     try:
         __import__(backend)
     except ImportError, SystemExit:
