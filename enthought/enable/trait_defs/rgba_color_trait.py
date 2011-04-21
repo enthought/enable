@@ -19,9 +19,10 @@
 """
 
 from enthought.etsconfig.api import ETSConfig
-from enthought.enable.traits.ui.api import RGBAColorEditor
 from enthought.traits.api import Trait, TraitError, TraitFactory
 from enthought.traits.trait_base import SequenceTypes
+
+from .ui.api import RGBAColorEditor
 
 if ETSConfig.toolkit == 'wx':
     from enthought.traits.ui.wx.color_trait import standard_colors
