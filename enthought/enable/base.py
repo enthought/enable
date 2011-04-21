@@ -26,7 +26,7 @@ from __future__ import generators
 # Major library imports
 
 # Enthought library imports
-from enthought.traits.api import TraitError
+from traits.api import TraitError
 
 from enthought.kiva.constants import DEFAULT, DECORATIVE, ROMAN, SCRIPT, SWISS,\
                                      MODERN, NORMAL, BOLD, ITALIC

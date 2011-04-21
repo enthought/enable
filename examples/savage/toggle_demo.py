@@ -1,7 +1,7 @@
 import os
 
-from enthought.traits.api import HasTraits
-from enthought.traits.ui.api import View, Item
+from traits.api import HasTraits
+from traitsui.api import View, Item
 from enthought.savage.traits.ui.svg_button import SVGButton
 
 

@@ -2,8 +2,8 @@ from copy import copy
 import os.path
 
 from enthought.savage.traits.ui.svg_button import SVGButton
-from enthought.traits.api import HasTraits, Str
-from enthought.traits.ui.api import Item, View, HGroup
+from traits.api import HasTraits, Str
+from traitsui.api import Item, View, HGroup
 
 button_size = (64, 64)
 

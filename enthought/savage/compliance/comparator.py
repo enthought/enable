@@ -18,9 +18,9 @@ import numpy as np
 
 from enthought.enable.api import Component
 from enthought.enable.component_editor import ComponentEditor
-from enthought.traits.api import (Any, Button, Dict, HasTraits, HTML, Instance,
+from traits.api import (Any, Button, Dict, HasTraits, HTML, Instance,
     List, Property, Str, on_trait_change)
-from enthought.traits.ui import api as tui
+from traitsui import api as tui
 
 from enthought.savage.svg import document
 from enthought.savage.traits.ui.svg_editor import SVGEditor

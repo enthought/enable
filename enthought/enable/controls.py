@@ -20,9 +20,9 @@ import os.path
 
 # Enthought library imports
 from enthought.enable.colors import ColorTrait
-from enthought.traits.api import Bool, Delegate, HasTraits, Str, Trait, \
+from traits.api import Bool, Delegate, HasTraits, Str, Trait, \
                                  TraitPrefixList
-from enthought.traits.ui.api import View, Group
+from traitsui.api import View, Group
 
 # Local relative imports
 from component import Component

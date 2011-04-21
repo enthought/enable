@@ -6,8 +6,8 @@ Defines markers classes, used by a variety of renderers.
 from numpy import array, pi
 
 # Enthought library imports
-from enthought.traits.api import HasTraits, Bool, Instance, Trait
-from enthought.traits.ui.api import EnumEditor
+from traits.api import HasTraits, Bool, Instance, Trait
+from traitsui.api import EnumEditor
 from enthought.kiva.constants import STROKE, FILL_STROKE, \
             SQUARE_MARKER, DIAMOND_MARKER, CIRCLE_MARKER, \
             CROSS_MARKER, TRIANGLE_MARKER, \

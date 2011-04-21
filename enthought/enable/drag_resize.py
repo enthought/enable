@@ -16,7 +16,7 @@
 from base import bounds_to_coordinates, TOP, BOTTOM, LEFT, RIGHT
 from interactor import Interactor
 
-from enthought.traits.api import Any
+from traits.api import Any
 
 #-------------------------------------------------------------------------------
 #  'DragResizeHandler' class:

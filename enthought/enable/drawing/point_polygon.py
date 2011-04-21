@@ -2,7 +2,7 @@
 
 # Enthought library imports.
 from enthought.enable.primitives.api import Polygon
-from enthought.traits.api import Int, Instance
+from traits.api import Int, Instance
 
 from drawing_tool import DrawingTool
 

@@ -2,7 +2,7 @@
 from numpy import array, pi
 
 # Enthought library imports
-from enthought.traits.api import Bool, Enum, Float, Int
+from traits.api import Bool, Enum, Float, Int
 
 # Local, relative imports
 from component import Component

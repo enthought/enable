@@ -4,7 +4,7 @@ from numpy import array, resize
 
 # Enthought library imports.
 from enthought.kiva.constants import FILL, FILL_STROKE, STROKE
-from enthought.traits.api import Any, Event, Float, List, Trait, Bool
+from traits.api import Any, Event, Float, List, Trait, Bool
 
 # Local imports.
 from enthought.enable.api import border_size_trait, Component

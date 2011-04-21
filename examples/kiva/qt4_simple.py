@@ -1,12 +1,12 @@
 # This is PyQt specific so force the toolkit selection.
-from enthought.etsconfig.api import ETSConfig
+from traits.etsconfig.api import ETSConfig
 ETSConfig.toolkit = 'qt4.qpainter'
 
 from numpy import array
 import sys
 
 try:
-    from enthought.qt import QtGui
+    from traits.qt import QtGui
 except ImportError:
     raise Exception('PyQt4 needs to be installed to run this example')
 

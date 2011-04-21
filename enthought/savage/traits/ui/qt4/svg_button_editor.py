@@ -23,10 +23,10 @@
 #-------------------------------------------------------------------------------
 import os.path
 
-from enthought.traits.api import Bool, Any, Str
-from enthought.traits.ui.qt4.editor import Editor
+from traits.api import Bool, Any, Str
+from traitsui.qt4.editor import Editor
 
-from enthought.qt import QtCore, QtGui
+from traits.qt import QtCore, QtGui
 
 # add the Qt's installed dir plugins to the library path so the iconengines
 # plugin will be found:

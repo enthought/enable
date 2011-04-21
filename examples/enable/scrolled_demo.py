@@ -11,7 +11,7 @@ from enthought.enable.example_support import DemoFrame, demo_main
 from enthought.enable.api import Component, Scrolled, Container, Container,\
                                   Pointer, NativeScrollBar, Viewport, Window
 
-from enthought.traits.api import Array, Enum, Float, Instance, Trait, Tuple
+from traits.api import Array, Enum, Float, Instance, Trait, Tuple
 
 
 class Circle(Component):

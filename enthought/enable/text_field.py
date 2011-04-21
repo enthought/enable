@@ -3,7 +3,7 @@ from math import floor, sqrt
 from bisect import insort_left
 
 # Enthought library imports
-from enthought.traits.api import (Bool, Int, Event, Instance, Any, Property,
+from traits.api import (Bool, Int, Event, Instance, Any, Property,
                                   List, DelegatesTo)
 
 # Local, relative imports

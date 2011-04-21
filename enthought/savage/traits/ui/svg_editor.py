@@ -24,9 +24,9 @@
 
 from enthought.savage.traits.ui.toolkit import toolkit_object
 
-from enthought.traits.api import Property
+from traits.api import Property
 
-from enthought.traits.ui.basic_editor_factory import BasicEditorFactory
+from traitsui.basic_editor_factory import BasicEditorFactory
 
 #-------------------------------------------------------------------------------
 #  'SVGEditor' editor factory class:

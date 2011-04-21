@@ -1,6 +1,6 @@
 
 # Enthought library imports
-from enthought.traits.api import Bool, Instance, Int, Any, Float
+from traits.api import Bool, Instance, Int, Any, Float
 
 # Local, relative imports
 from base import intersect_bounds, empty_rectangle

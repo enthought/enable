@@ -2,7 +2,7 @@
 """
 
 from enthought.enable.api import BaseTool, ColorTrait, LineStyle
-from enthought.traits.api import Bool, Float, HasTraits, List, Tuple, on_trait_change
+from traits.api import Bool, Float, HasTraits, List, Tuple, on_trait_change
 
 
 

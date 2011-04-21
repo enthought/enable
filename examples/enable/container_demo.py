@@ -1,6 +1,6 @@
 from __future__ import with_statement
 
-from enthought.etsconfig.api import ETSConfig
+from traits.etsconfig.api import ETSConfig
 ETSConfig.toolkit = 'wx'
 
 import wx
@@ -9,7 +9,7 @@ from enthought.chaco.api import *
 from enthought.chaco.tools.api import DragTool
 from enthought.kiva.fonttools import Font
 from enthought.kiva.traits.kiva_font_trait import KivaFont
-from enthought.traits.api import Enum, Float, Int, Str, Tuple
+from traits.api import Enum, Float, Int, Str, Tuple
 
 class Region(PlotComponent, DragTool):
 

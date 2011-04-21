@@ -7,7 +7,7 @@ from numpy import asarray
 # Enthought library imports
 from enthought.kiva.constants import FILL, STROKE
 from enthought.kiva.traits.kiva_font_trait import KivaFont
-from enthought.traits.api import Bool, Enum, Float, HasTraits, Int, \
+from traits.api import Bool, Enum, Float, HasTraits, Int, \
                                  List, Str
 
 # Local, relative imports

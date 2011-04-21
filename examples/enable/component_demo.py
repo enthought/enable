@@ -1,8 +1,8 @@
 from __future__ import with_statement
 
 from enthought.enable.api import Component, ComponentEditor
-from enthought.traits.api import HasTraits, Instance
-from enthought.traits.ui.api import Item, View
+from traits.api import HasTraits, Instance
+from traitsui.api import Item, View
 
 class MyComponent(Component):
     def draw(self, gc, **kwargs):

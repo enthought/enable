@@ -12,7 +12,7 @@
 import pyglet
 pyglet.options['shadow_window'] = False
 
-from enthought.traits.api import Bool, Instance
+from traits.api import Bool, Instance
 from enthought.kiva.gl import CompiledPath, GraphicsContext
 
 from base_window import BaseGLWindow

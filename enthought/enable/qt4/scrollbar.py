@@ -7,7 +7,7 @@ the standard Qt one.
 from types import ListType, TupleType
 
 # Enthought library imports
-from enthought.traits.api import Any, Bool, Float, Int, Property, Trait, \
+from traits.api import Any, Bool, Float, Int, Property, Trait, \
     TraitError
 
 from enthought.enable.component import Component

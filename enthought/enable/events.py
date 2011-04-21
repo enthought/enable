@@ -9,7 +9,7 @@ from numpy import array, dot
 
 # Enthought imports
 from enthought.kiva import affine
-from enthought.traits.api import (Any, Bool, Float, HasTraits, Int,
+from traits.api import (Any, Bool, Float, HasTraits, Int,
     Event, List, ReadOnly)
 
 

@@ -1,7 +1,7 @@
 from enthought.savage.svg.document import SVGDocument
 from enthought.savage.traits.ui.svg_editor import SVGEditor
-from enthought.traits.api import HasTraits, Instance
-from enthought.traits.ui.api import Item, View
+from traits.api import HasTraits, Instance
+from traitsui.api import Item, View
 
 
 class StaticImageExample(HasTraits):

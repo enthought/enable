@@ -19,27 +19,27 @@
 """
 
 from traits.etsconfig.api import ETSConfig
-from enthought.traits.api import Trait, TraitError, TraitFactory
-from enthought.traits.trait_base import SequenceTypes
+from traits.api import Trait, TraitError, TraitFactory
+from traits.trait_base import SequenceTypes
 
 from .ui.api import RGBAColorEditor
 
 if ETSConfig.toolkit == 'wx':
-    from enthought.traits.ui.wx.color_trait import standard_colors
+    from traitsui.wx.color_trait import standard_colors
     def rgba_color(color):
         return ( color.Red() / 255.0,
                  color.Green() / 255.0,
                  color.Blue() / 255.0,
                  1.0 )
 elif ETSConfig.toolkit == 'qt4':
-    from enthought.traits.ui.qt4.color_trait import standard_colors
+    from traitsui.qt4.color_trait import standard_colors
     def rgba_color(color):
         return ( color.red() / 255.0,
                  color.green() / 255.0,
                  color.blue() / 255.0,
                  1.0 )
 else:
-    from enthought.traits.ui.null.color_trait import standard_colors
+    from traitsui.null.color_trait import standard_colors
     def rgba_color(color):
         return (((color >> 16) & 0xFF) / 255.0,
                 ((color >>  8) & 0xFF) / 255.0,

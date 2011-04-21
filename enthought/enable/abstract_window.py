@@ -3,7 +3,7 @@
 from numpy import dot
 
 # Enthought library imports
-from enthought.traits.api import Any, Bool, Event, HasTraits, Instance, \
+from traits.api import Any, Bool, Event, HasTraits, Instance, \
         Property, Trait, Tuple, List
 
 

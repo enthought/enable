@@ -6,7 +6,7 @@ from __future__ import with_statement
 
 from enthought.enable.example_support import DemoFrame, demo_main
 
-from enthought.traits.api import Float, Tuple
+from traits.api import Float, Tuple
 from enthought.enable.api import Component, Container, Pointer, Window
 
 class Box(Component):

@@ -5,7 +5,7 @@ overview of how event handling works in Chaco.
 
 
 # Enthought library imports
-from enthought.traits.api import Bool, Enum, Instance
+from traits.api import Bool, Enum, Instance
 
 # Local relative imports
 from component import Component

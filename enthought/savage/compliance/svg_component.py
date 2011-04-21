@@ -5,7 +5,7 @@ import sys
 import time
 
 from enthought.enable.api import Component
-from enthought.traits.api import Any, Array, Bool, Float
+from traits.api import Any, Array, Bool, Float
 from enthought.kiva.fonttools import Font
 
 

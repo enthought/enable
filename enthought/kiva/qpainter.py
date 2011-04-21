@@ -20,7 +20,7 @@ import numpy as np
 import warnings
 
 # Major package imports.
-from enthought.qt import QtCore, QtGui
+from traits.qt import QtCore, QtGui
 
 # Local imports.
 from arc_conversion import arc_to_tangent_points

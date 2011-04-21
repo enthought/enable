@@ -2,7 +2,7 @@
 
 # Enthought library imports
 from enthought.kiva.affine import affine_identity
-from enthought.traits.api import Any, Bool, HasTraits, List, Property, Str, Trait
+from traits.api import Any, Bool, HasTraits, List, Property, Str, Trait
 
 # Local relative imports
 from enable_traits import cursor_style_trait, Pointer

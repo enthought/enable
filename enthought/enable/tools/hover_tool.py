@@ -6,8 +6,8 @@ components.
 # Enthought library imports
 from enthought.enable.base_tool import BaseTool
 from traits.etsconfig.api import ETSConfig
-from enthought.pyface.toolkit import toolkit_object
-from enthought.traits.api import Any, Callable, Enum, Float, Int
+from pyface.toolkit import toolkit_object
+from traits.api import Any, Callable, Enum, Float, Int
 
 # Define a toolkit-specific function for determining the global mouse position
 if ETSConfig.toolkit == 'wx':

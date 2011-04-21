@@ -9,8 +9,8 @@ import sys
 import time
 import wx
 
-from enthought.traits.api import Any, Instance, Trait
-from enthought.traits.ui.wx.menu import MakeMenu
+from traits.api import Any, Instance, Trait
+from traitsui.wx.menu import MakeMenu
 
 # Relative imports
 from enthought.enable.events import MouseEvent, KeyEvent, DragEvent

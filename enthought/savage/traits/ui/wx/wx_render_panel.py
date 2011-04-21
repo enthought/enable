@@ -2,7 +2,7 @@ import time
 import wx
 
 from enthought.savage.svg.backends.wx import renderer
-from enthought.traits.ui.wx.constants import WindowColor
+from traitsui.wx.constants import WindowColor
 
 class RenderPanel(wx.PyPanel):
     def __init__(self, parent, document=None):

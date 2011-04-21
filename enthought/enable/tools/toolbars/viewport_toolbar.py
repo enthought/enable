@@ -3,7 +3,7 @@
 # Enthought Library imports
 from enthought.enable.api import AbstractOverlay, Container, ColorTrait
 from enthought.enable.font_metrics_provider import font_metrics_provider
-from enthought.traits.api import Enum, Bool, Float, Int, Type, List
+from traits.api import Enum, Bool, Float, Int, Type, List
 
 # Local imports
 from toolbar_buttons import Button

@@ -27,9 +27,9 @@ from xml.etree.cElementTree import ElementTree
 
 from enthought.savage.svg.document import SVGDocument
 
-from enthought.traits.ui.qt4.editor import Editor
+from traitsui.qt4.editor import Editor
 
-from enthought.qt import QtCore, QtSvg
+from traits.qt import QtCore, QtSvg
 
 #-------------------------------------------------------------------------------
 #  'SVGEditor' class:

@@ -3,7 +3,7 @@
 from __future__ import with_statement
 
 # Enthought library imports.
-from enthought.traits.api import Float
+from traits.api import Float
 from enthought.enable.primitives.shape import Shape
 
 

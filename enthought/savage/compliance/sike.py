@@ -5,10 +5,10 @@ from collections import defaultdict
 import os
 import pstats
 
-from enthought.traits.api import (Any, Bool, Constant, Dict, Event, Float,
+from traits.api import (Any, Bool, Constant, Dict, Event, Float,
     HasTraits, Instance, Int, List, Property, Str, on_trait_change)
-from enthought.traits.ui import api as tui
-from enthought.traits.ui.tabular_adapter import TabularAdapter
+from traitsui import api as tui
+from traitsui.tabular_adapter import TabularAdapter
 
 
 class SuperTuple(tuple):

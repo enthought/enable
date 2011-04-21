@@ -7,10 +7,10 @@ from __future__ import with_statement
 import time
 import wx
 
-from enthought.etsconfig.api import ETSConfig
+from traits.etsconfig.api import ETSConfig
 ETSConfig.toolkit = 'wx'
 
-from enthought.traits.api import Float
+from traits.api import Float
 from enthought.enable.api import (Component, Container, ColorTrait,
                                   black_color_trait, Window)
 from enthought.kiva.constants import SWISS

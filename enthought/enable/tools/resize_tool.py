@@ -1,5 +1,5 @@
 
-from enthought.traits.api import Bool, Enum, Tuple
+from traits.api import Bool, Enum, Tuple
 
 from drag_tool import DragTool
 

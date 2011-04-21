@@ -7,9 +7,9 @@ from numpy import array
 # Enthought library imports.
 from enthought.kiva.constants import EOF_FILL_STROKE, FILL, FILL_STROKE
 from enthought.kiva.agg import points_in_polygon
-from enthought.traits.api import Any, Event, Float, HasTraits, Instance, List, \
+from traits.api import Any, Event, Float, HasTraits, Instance, List, \
                              Property, Trait, Tuple
-from enthought.traits.ui.api import Group, View
+from traitsui.api import Group, View
 
 # Local imports.
 from enthought.enable.api import border_size_trait, Component

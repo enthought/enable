@@ -11,7 +11,7 @@ from pyglet import gl, window
 from pyglet.window import key
 
 # Enthought library imports
-from enthought.traits.api import Any, Bool
+from traits.api import Any, Bool
 
 # Enable imports
 from enthought.enable.events import MouseEvent, KeyEvent

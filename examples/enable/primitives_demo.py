@@ -9,7 +9,7 @@ from enthought.enable.drawing.api import DragLine, DragPolygon, DragSegment, \
     DrawingTool, PointLine, PointPolygon, DrawingCanvas, ToolbarButton, \
     DrawingCanvasToolbar
 
-from enthought.traits.api import Any, Delegate, Instance
+from traits.api import Any, Delegate, Instance
 
 
 class ResetButton(ToolbarButton):

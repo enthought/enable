@@ -1,7 +1,7 @@
 
 from __future__ import with_statement
 
-from enthought.traits.api import Float
+from traits.api import Float
 
 from enthought.enable.api import AbstractOverlay, Canvas, Viewport, \
         Window, ColorTrait, Scrolled, Container

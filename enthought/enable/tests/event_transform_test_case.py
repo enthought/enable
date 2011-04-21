@@ -4,7 +4,7 @@ import copy
 import unittest
 
 # Enthought library imports
-from enthought.traits.api import Any, Tuple
+from traits.api import Any, Tuple
 
 # Enable imports
 from enthought.enable.api import BasicEvent, Canvas, Component, Container, \

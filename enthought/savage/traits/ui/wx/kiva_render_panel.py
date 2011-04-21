@@ -3,7 +3,7 @@ import wx
 from enthought.savage.svg.backends.kiva import renderer
 from enthought.savage.svg.document import SVGDocument
 from enthought.enable.api import Container, Window
-from enthought.traits.api import Instance, Float
+from traits.api import Instance, Float
 
 class KivaContainer(Container):
 

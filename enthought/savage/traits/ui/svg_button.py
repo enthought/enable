@@ -13,7 +13,7 @@
 #------------------------------------------------------------------------------
 
 # ETS imports
-from enthought.traits.api import Event
+from traits.api import Event
 
 # Local imports
 from svg_button_editor import SVGButtonEditor

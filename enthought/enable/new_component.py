@@ -4,7 +4,7 @@ FIXME: this appears to be unfinished and unworking as of 2008-08-03.
 """
 
 # Enthought library imports
-from enthought.traits.api import Any, Bool, Delegate, HasTraits, Instance, \
+from traits.api import Any, Bool, Delegate, HasTraits, Instance, \
     Int, List, Property
 
 # Local relative imports

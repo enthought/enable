@@ -1,6 +1,6 @@
 from cProfile import Profile
 
-from enthought.traits.api import Any, Dict, Event, HasTraits, Str
+from traits.api import Any, Dict, Event, HasTraits, Str
 
 
 class ProfileThis(HasTraits):

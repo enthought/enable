@@ -4,7 +4,7 @@ from __future__ import absolute_import
 import sys
 
 from traits.etsconfig.api import ETSConfig
-from enthought.traits.api import List, Str, Trait, Tuple, TraitError
+from traits.api import List, Str, Trait, Tuple, TraitError
 
 # Color definitions
 transparent_color = (0.0, 0.0, 0.0, 0.0)
@@ -171,12 +171,12 @@ color_table = {"aliceblue": (0.941, 0.973, 1.000, 1.0),
 
 if not ETSConfig.toolkit:
     # Force Traits to decide on its toolkit if it hasn't already
-    from enthought.traits.ui.toolkit import toolkit as traits_toolkit
+    from traitsui.toolkit import toolkit as traits_toolkit
     traits_toolkit()
 
 if ETSConfig.toolkit == 'wx':
     import wx
-    from enthought.traits.ui.wx.color_editor \
+    from traitsui.wx.color_editor \
                 import ToolkitEditorFactory as StandardColorEditorFactory
     # Version dependent imports (ColourPtr not defined in wxPython 2.8):
     try:
@@ -207,7 +207,7 @@ if ETSConfig.toolkit == 'wx':
                              'and BB is blue, a list/tuple of (r,g,b) or (r,g,b,a)')
 
     # Set the system color
-    from enthought.traits.ui.wx.constants import WindowColor
+    from traitsui.wx.constants import WindowColor
     color_table["sys_window"] = (WindowColor.Red()/255.0,
                                  WindowColor.Green()/255.0,
                                  WindowColor.Blue()/255.0,
@@ -243,7 +243,7 @@ if ETSConfig.toolkit == 'wx':
 
 elif ETSConfig.toolkit == 'qt4':
     from traits.qt import QtGui
-    from enthought.traits.ui.qt4.color_editor \
+    from traitsui.qt4.color_editor \
                 import ToolkitEditorFactory as StandardColorEditorFactory
 
     def convert_from_pyqt_color(obj, name, value):

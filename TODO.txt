@@ -5,4 +5,4 @@
   in:
     enthought/enable2/traits/ui/wx/enable_rgba_color_editor.py
 
-* Clean-up direct imports of enthought.traits.ui.wx
+* Clean-up direct imports of traitsui.wx

@@ -3,9 +3,9 @@ from numpy import linspace, zeros
 
 # Enthought library imports
 from enthought.kiva.constants import STROKE
-from enthought.traits.api import (Any, Bool, Enum, Float, Int, Property,
+from traits.api import (Any, Bool, Enum, Float, Int, Property,
                                   on_trait_change, Trait)
-from enthought.traits.ui.api import EnumEditor
+from traitsui.api import EnumEditor
 
 # Local, relative imports
 from colors import ColorTrait

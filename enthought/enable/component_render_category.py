@@ -8,7 +8,7 @@ not directly from component.py.
 """
 
 # Enthought library imports
-from enthought.traits.api import Any, Bool, Category, Enum, Instance, \
+from traits.api import Any, Bool, Category, Enum, Instance, \
                                  Int, List
 
 # Local relative imports

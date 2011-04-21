@@ -16,7 +16,7 @@
 import sys
 
 # ETS imports
-from enthought.etsconfig.api import ETSConfig
+from traits.etsconfig.api import ETSConfig
 
 
 def _init_toolkit():
@@ -24,7 +24,7 @@ def _init_toolkit():
     """
 
     # Force Traits to decide on its toolkit if it hasn't already
-    from enthought.traits.ui.toolkit import toolkit as traits_toolkit
+    from traitsui.toolkit import toolkit as traits_toolkit
     traits_toolkit()
 
     # Import the selected backend

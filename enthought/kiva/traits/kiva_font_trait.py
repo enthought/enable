@@ -17,7 +17,7 @@
 #  Imports:
 #-------------------------------------------------------------------------------
 
-from enthought.etsconfig.api \
+from traits.etsconfig.api \
     import ETSConfig
 
 if ETSConfig.toolkit == 'wx':
@@ -30,7 +30,7 @@ elif ETSConfig.toolkit == 'qt4':
 else:
     KivaFontEditor = None
 
-from enthought.traits.api \
+from traits.api \
     import Trait, TraitError, TraitHandler, TraitFactory
 
 

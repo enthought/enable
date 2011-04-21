@@ -20,7 +20,7 @@ from traits.qt import QtCore, QtGui, QtOpenGL
 # Enthought library imports.
 from enthought.enable.abstract_window import AbstractWindow
 from enthought.enable.events import KeyEvent, MouseEvent
-from enthought.traits.api import Instance
+from traits.api import Instance
 
 # Local imports.
 from constants import BUTTON_NAME_MAP, KEY_MAP, POINTER_MAP

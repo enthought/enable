@@ -1,7 +1,7 @@
 """ Defines the AbstractComponent class """
 
 # Enthought library imports
-from enthought.traits.api import Any, Enum, Instance, List, Property
+from traits.api import Any, Enum, Instance, List, Property
 
 # Local relative imports
 from enable_traits import coordinate_trait

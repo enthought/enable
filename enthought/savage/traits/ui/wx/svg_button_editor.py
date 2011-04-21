@@ -27,9 +27,9 @@ import wx
 # ETS imports
 from enthought.savage.svg.document import SVGDocument
 from enthought.savage.svg.backends.wx.renderer import Renderer
-from enthought.traits.api import Instance
-from enthought.traits.ui.wx.constants import WindowColor
-from enthought.traits.ui.wx.editor import Editor
+from traits.api import Instance
+from traitsui.wx.constants import WindowColor
+from traitsui.wx.editor import Editor
 
 # Local imports
 from wx_render_panel import RenderPanel

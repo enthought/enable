@@ -8,7 +8,7 @@ import math
 from enthought.enable.api import ColorTrait, Component, Pointer
 from enthought.kiva.constants import MODERN
 from enthought.kiva.fonttools import Font
-from enthought.traits.api import Float, Property, Str, Tuple
+from traits.api import Float, Property, Str, Tuple
 
 
 class Shape(Component):

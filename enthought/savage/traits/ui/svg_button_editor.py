@@ -21,11 +21,11 @@
 
 from enthought.savage.traits.ui.toolkit import toolkit_object
 
-from enthought.traits.api import Bool, Enum, Int, Property, Range, Str, Any
+from traits.api import Bool, Enum, Int, Property, Range, Str, Any
 
-from enthought.traits.ui.api import View
-from enthought.traits.ui.basic_editor_factory import BasicEditorFactory
-from enthought.traits.ui.ui_traits import AView
+from traitsui.api import View
+from traitsui.basic_editor_factory import BasicEditorFactory
+from traitsui.ui_traits import AView
 
 #-------------------------------------------------------------------------------
 #  'SVGEditor' editor factory class:

@@ -3,7 +3,7 @@
 from numpy import inf
 
 # Enthought library imports
-from enthought.traits.api import Bool, Enum, Float, Instance, Int, List, \
+from traits.api import Bool, Enum, Float, Instance, Int, List, \
     Trait, Tuple
 
 # Enable imports

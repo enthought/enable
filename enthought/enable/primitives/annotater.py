@@ -3,8 +3,8 @@ Define an Annotater component that allows a user to annotate an underlying
 component
 """
 
-from enthought.traits.api import Event, Trait, TraitPrefixList
-from enthought.traits.ui.api import Group, View
+from traits.api import Event, Trait, TraitPrefixList
+from traitsui.api import Group, View
 
 from enthought.enable.api import Component
 from enthought.enable.colors import ColorTrait

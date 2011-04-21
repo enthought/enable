@@ -11,13 +11,13 @@ from enthought.enable.window import Window
 
 from traits.etsconfig.api import ETSConfig
 
-from enthought.traits.api import Property, Tuple
-from enthought.traits.ui.api import BasicEditorFactory
+from traits.api import Property, Tuple
+from traitsui.api import BasicEditorFactory
 
 if ETSConfig.toolkit == 'wx':
-    from enthought.traits.ui.wx.editor import Editor
+    from traitsui.wx.editor import Editor
 elif ETSConfig.toolkit == 'qt4':
-    from enthought.traits.ui.qt4.editor import Editor
+    from traitsui.qt4.editor import Editor
 else:
     Editor = object
 

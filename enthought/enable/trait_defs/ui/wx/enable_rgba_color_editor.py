@@ -23,10 +23,10 @@ import wx
 from enthought.enable import ColorPicker
 from enthought.enable.wx import Window
 from enthought.kiva.traits.kiva_font_trait import KivaFont
-from enthought.traits.api import Bool, Enum, Str
-from enthought.traits.ui.api import View
-from enthought.traits.ui.wx.editor import Editor
-from enthought.traits.ui.wx.helper import position_window
+from traits.api import Bool, Enum, Str
+from traitsui.api import View
+from traitsui.wx.editor import Editor
+from traitsui.wx.helper import position_window
 
 from .rgba_color_editor import ToolkitEditorFactory as EditorFactory
 

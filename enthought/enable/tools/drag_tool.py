@@ -1,7 +1,7 @@
 """ Defines the base DragTool class.
 """
 # Enthought library imports
-from enthought.traits.api import Bool, Enum, Tuple
+from traits.api import Bool, Enum, Tuple
 from enthought.enable.base_tool import BaseTool
 
 

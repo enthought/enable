@@ -1,5 +1,5 @@
 
-from enthought.traits.api import Enum
+from traits.api import Enum
 from enthought.enable.api import Component
 
 

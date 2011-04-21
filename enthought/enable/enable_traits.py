@@ -8,13 +8,13 @@ from types import ListType, TupleType
 
 # Enthought library imports
 from enthought.kiva.traits.kiva_font_trait import KivaFont
-from enthought.traits.api import Trait, Range, TraitPrefixList, TraitPrefixMap, \
+from traits.api import Trait, Range, TraitPrefixList, TraitPrefixMap, \
     List, TraitFactory
-from enthought.traits.ui.api import ImageEnumEditor, EnumEditor
+from traitsui.api import ImageEnumEditor, EnumEditor
 # Try to get the CList trait; for traits 2 backwards compatibility, fall back
 # to a normal List trait if we can't import it
 try:
-    from enthought.traits.api import CList
+    from traits.api import CList
 except ImportError:
     CList = List
 

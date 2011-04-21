@@ -4,7 +4,7 @@ Tentative implementation of a new layout mechanism. Unused and unworking.
 
 
 # Enthought library imports
-from enthought.traits.api import Any, Category, Enum
+from traits.api import Any, Category, Enum
 
 # Singleton representing the default Enable layout manager
 DefaultLayoutController = LayoutController()

@@ -21,10 +21,10 @@ interface toolkit.
 
 import wx
 
-from enthought.traits.trait_base \
+from traits.trait_base \
     import SequenceTypes
 
-from enthought.traits.ui.wx.font_editor \
+from traitsui.wx.font_editor \
     import ToolkitEditorFactory as EditorFactory
 
 from enthought.kiva.fonttools.font_manager import fontManager

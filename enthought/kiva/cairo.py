@@ -1289,7 +1289,7 @@ if __name__=="__main__":
     from numpy import fabs, linspace, pi, sin
     from scipy.special import jn
 
-    from enthought.traits.api import false
+    from traits.api import false
     from enthought.chaco.api import ArrayPlotData, Plot, PlotGraphicsContext
     from enthought.chaco.example_support import COLOR_PALETTE
 

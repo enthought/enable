@@ -55,7 +55,7 @@ except NameError:
     from sets import Set as set
 import afm
 
-from enthought.etsconfig.api import ETSConfig
+from traits.etsconfig.api import ETSConfig
 from enthought.kiva.fonttools.fontTools.ttLib import TTFont
 
 try:

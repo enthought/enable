@@ -4,8 +4,8 @@
 """
 
 
-from enthought.traits.api import HasTraits, List, Property, Str
-from enthought.traits.ui import api as tui
+from traits.api import HasTraits, List, Property, Str
+from traitsui import api as tui
 
 
 known_namespaces = {

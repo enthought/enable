@@ -1,6 +1,6 @@
 # Enthought library imports
 from enthought.enable.api import Container, TextField
-from enthought.traits.api import Float, Int, List
+from traits.api import Float, Int, List
 
 # Local imports
 from enable_traits import LineStyle

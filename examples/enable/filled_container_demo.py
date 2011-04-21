@@ -18,7 +18,7 @@ from enthought.enable.example_support import DemoFrame, demo_main
 
 from enthought.enable.api import Container, Component, Container, Pointer, str_to_font, Window
 
-from enthought.traits.api import Any, Array, Enum, Float, Instance, Trait, Tuple
+from traits.api import Any, Array, Enum, Float, Instance, Trait, Tuple
 
 
 class MyFilledContainer(Container):

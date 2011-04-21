@@ -2,8 +2,8 @@
 
 from enthought.enable.primitives.api import Polygon
 from enthought.enable.api import Pointer
-from enthought.pyface.action.api import MenuManager
-from enthought.traits.api import Delegate, Instance
+from pyface.action.api import MenuManager
+from traits.api import Delegate, Instance
 
 from drawing_tool import DrawingTool
 

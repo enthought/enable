@@ -1,6 +1,6 @@
 
 # Enthought library imports
-from enthought.traits.api import HasTraits, Property
+from traits.api import HasTraits, Property
 
 # Local, relative imports
 from enable_traits import bounds_trait, coordinate_trait

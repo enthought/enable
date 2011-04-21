@@ -9,8 +9,8 @@ them appropriately in the draw phase.
 # of drawing our own.
 
 from types import TupleType
-from enthought.traits.api import Event, Property, Trait, TraitError
-from enthought.traits.ui.api import Group, View
+from traits.api import Event, Property, Trait, TraitError
+from traitsui.api import Group, View
 
 # Relative imports
 from component import Component

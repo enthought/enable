@@ -2,7 +2,7 @@ import warnings
 
 from enthought.tvtk.api import tvtk
 from enthought.tvtk import messenger
-from enthought.traits.api import HasTraits, Any, Callable, Property, Instance, \
+from traits.api import HasTraits, Any, Callable, Property, Instance, \
         Bool, Enum, Int, on_trait_change
 
 from numpy import arange, zeros, ascontiguousarray, reshape, uint8, any

@@ -4,7 +4,7 @@ This class is primarily used so that tools can easily distinguish between
 items underneath them.
 """
 
-from enthought.traits.api import Instance
+from traits.api import Instance
 
 from component import Component
 

@@ -2,7 +2,7 @@
 
 
 # Enthought library imports
-from enthought.traits.api import Bool, Trait, Tuple, List
+from traits.api import Bool, Trait, Tuple, List
 from enthought.kiva.constants import FILL
 
 

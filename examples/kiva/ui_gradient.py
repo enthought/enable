@@ -3,8 +3,8 @@ from __future__ import with_statement
 import numpy as np
 
 from enthought.enable.api import Component, ComponentEditor
-from enthought.traits.api import HasTraits, Instance
-from enthought.traits.ui.api import Item, View
+from traits.api import HasTraits, Instance
+from traitsui.api import Item, View
 
 class MyCanvas(Component):
     def draw(self, gc, **kwargs):

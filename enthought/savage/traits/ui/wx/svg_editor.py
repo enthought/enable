@@ -22,7 +22,7 @@
 #  Imports:
 #-------------------------------------------------------------------------------
 
-from enthought.traits.ui.wx.editor import Editor
+from traitsui.wx.editor import Editor
 
 from enthought.savage.svg.backends.wx.renderer import Renderer as WxRenderer
 from enthought.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
