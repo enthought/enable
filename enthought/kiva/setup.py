@@ -30,9 +30,9 @@ def configuration(parent_package='enthought',top_path=None):
     config.add_subpackage('fonttools.*.*')
     config.add_subpackage('fonttools.*.*.*')
     config.add_data_files('fonttools/fontTools/*.txt')
-    config.add_subpackage('traits')
-    config.add_subpackage('traits.ui')
-    config.add_subpackage('traits.ui.*')
+    config.add_subpackage('trait_defs')
+    config.add_subpackage('trait_defs.ui')
+    config.add_subpackage('trait_defs.ui.*')
 
     if sys.platform == 'darwin':
         config.add_subpackage('quartz')
