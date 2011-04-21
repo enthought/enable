@@ -1,6 +1,6 @@
 # Enthought library imports
 from traits.api import HasTraits, Int, Bool
-from enthought.kiva.traits.api import KivaFont
+from enthought.kiva.trait_defs.api import KivaFont
 from enthought.enable.colors import ColorTrait
 
 

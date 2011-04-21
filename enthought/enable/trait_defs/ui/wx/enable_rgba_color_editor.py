@@ -22,7 +22,7 @@ import wx
 
 from enthought.enable import ColorPicker
 from enthought.enable.wx import Window
-from enthought.kiva.traits.kiva_font_trait import KivaFont
+from enthought.kiva.trait_defs.kiva_font_trait import KivaFont
 from traits.api import Bool, Enum, Str
 from traitsui.api import View
 from traitsui.wx.editor import Editor

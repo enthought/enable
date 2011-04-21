@@ -8,7 +8,7 @@ from enthought.enable.api import ColorTrait, Window
 from enthought.chaco.api import *
 from enthought.chaco.tools.api import DragTool
 from enthought.kiva.fonttools import Font
-from enthought.kiva.traits.kiva_font_trait import KivaFont
+from enthought.kiva.trait_defs.kiva_font_trait import KivaFont
 from traits.api import Enum, Float, Int, Str, Tuple
 
 class Region(PlotComponent, DragTool):

@@ -1,7 +1,7 @@
 
 from enthought.enable.api import Container, Component, ColorTrait
 from enthought.kiva.constants import FILL, FILL_STROKE
-from enthought.kiva.traits.kiva_font_trait import KivaFont
+from enthought.kiva.trait_defs.kiva_font_trait import KivaFont
 from traits.api import Any, Bool, Delegate, Enum, Instance, Int, List, Str
 
 

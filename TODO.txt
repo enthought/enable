@@ -1,5 +1,5 @@
 * Clean-up the failing import of enthought.freetype in
-  enthought.kiva.traits.ui.wx.kiva_font_editor.
+  enthought.kiva.trait_defs.ui.wx.kiva_font_editor.
 
 * Clean-up imports of enthought.enable (I mean NOT enthought.enable2) done
   in:
