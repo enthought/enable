@@ -353,7 +353,6 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
     def draw_rect(self, rect, mode=constants.FILL_STROKE):
         self.rect(rect)
-        stroke, fill, mode = path_mode[mode]
         self.draw_path(mode)
         self.current_point = (rect[0],rect[1])
 
