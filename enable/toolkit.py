@@ -11,6 +11,7 @@
 
 # Standard library imports.
 import sys
+from traceback import format_exception_only
 
 # Enthought library imports.
 from traits.etsconfig.api import ETSConfig
@@ -33,8 +34,10 @@ def _init_toolkit():
     try:
         __import__(backend)
     except ImportError, SystemExit:
+        t, v, _tb = sys.exc_info ()
         raise ImportError, "Unable to import the %s backend for the %s " \
-            "toolkit." % (ETSConfig.kiva_backend, ETSConfig.toolkit)
+                "toolkit (reason: %s)." % (ETSConfig.kiva_backend, ETSConfig.toolkit,
+                        format_exception_only (t, v))
 
     # Save the imported toolkit module.
     global _toolkit_backend
