@@ -1120,7 +1120,7 @@ cdef class CGContext:
             slope = float('nan')
             diry = 100.0
         elif diry == 0.:
-            slope = float('nan')
+            slope = 0.
         else:
             # perpendicular slope
             slope = -dirx/diry
@@ -1142,7 +1142,7 @@ cdef class CGContext:
             slope = float('nan')
             diry = 100.0
         elif diry == 0.:
-            slope = float('nan')
+            slope = 0.
         else:
             # perpendicular slope
             slope = -dirx/diry
