@@ -9,8 +9,10 @@
 #include <assert.h>
 #include <string.h>
 #include <stack>
+#include <stdlib.h>
 
 #include <iostream>
+#include <memory>
 
 #include "agg_trans_affine.h"
 #include "agg_path_storage.h"
@@ -1286,7 +1288,18 @@ namespace kiva
         ScanlineRendererType scanlineRenderer(this->renderer);
 
         const agg::glyph_cache *glyph = NULL;
-        unsigned char *p = (unsigned char*) text;
+
+        wchar_t *p = new wchar_t[1024];
+        std::auto_ptr<wchar_t> p_handler(p);
+
+        size_t length = mbstowcs(p, text, 1024);
+        if (length > 1024)
+          {
+            p = new wchar_t[length + 1];
+            p_handler.reset(p);
+            mbstowcs(p, text, length);
+          }
+
         bool retval = true;
 
         // Check to make sure the font's loaded.
