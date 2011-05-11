@@ -1297,15 +1297,19 @@ namespace kiva
         int required = MultiByteToWideChar(CP_UTF8, 0, text, -1, 0, 0);
         std::vector<wchar_t> p_(required + 1);
         MultiByteToWideChar(CP_UTF8, 0, text, -1, &p_[0], required);
-
-#else
-        std::locale loc;
-        size_t length = strlen(text);
-        std::vector<wchar_t> p_(length + 1);
-        std::use_facet<std::ctype<wchar_t> >(loc).widen(text, text + length, &p_[0]);
-#endif
-        
         wchar_t *p = &p_[0];
+#else
+        wchar_t *p = new wchar_t[1024];
+        std::auto_ptr<wchar_t> p_(p);
+        
+        size_t length = mbstowcs(p, text, 1024);
+        if (length > 1024)
+          {
+            p = new wchar_t[length + 1];
+            p_.reset(p);
+            mbstowcs(p, text, length);
+          }
+#endif
         bool retval = true;
 
         // Check to make sure the font's loaded.
