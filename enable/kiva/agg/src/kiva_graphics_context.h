@@ -9,10 +9,14 @@
 #include <assert.h>
 #include <string.h>
 #include <stack>
-#include <stdlib.h>
+
+#if defined(__MSVCRT__) || defined (__MINGW32__)
+#include <windows.h>
+#endif
 
 #include <iostream>
 #include <memory>
+#include <locale>
 
 #include "agg_trans_affine.h"
 #include "agg_path_storage.h"
@@ -1289,17 +1293,19 @@ namespace kiva
 
         const agg::glyph_cache *glyph = NULL;
 
-        wchar_t *p = new wchar_t[1024];
-        std::auto_ptr<wchar_t> p_handler(p);
+#if defined(__MSVCRT__) || defined (__MINGW32__)
+        int required = MultiByteToWideChar(CP_UTF8, 0, text, -1, 0, 0);
+        std::vector<wchar_t> p_(required + 1);
+        MultiByteToWideChar(CP_UTF8, 0, text, -1, &p_[0], required);
 
-        size_t length = mbstowcs(p, text, 1024);
-        if (length > 1024)
-          {
-            p = new wchar_t[length + 1];
-            p_handler.reset(p);
-            mbstowcs(p, text, length);
-          }
-
+#else
+        std::locale loc;
+        size_t length = strlen(text);
+        std::vector<wchar_t> p_(length + 1);
+        std::use_facet<std::ctype<wchar_t> >(loc).widen(text, text + length, &p_[0]);
+#endif
+        
+        wchar_t *p = &p_[0];
         bool retval = true;
 
         // Check to make sure the font's loaded.
