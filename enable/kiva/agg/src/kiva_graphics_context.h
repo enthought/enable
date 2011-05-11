@@ -1299,16 +1299,14 @@ namespace kiva
         MultiByteToWideChar(CP_UTF8, 0, text, -1, &p_[0], required);
         wchar_t *p = &p_[0];
 #else
-        wchar_t *p = new wchar_t[1024];
-        std::auto_ptr<wchar_t> p_(p);
-        
-        size_t length = mbstowcs(p, text, 1024);
+        std::vector <wchar_t> p_(1024);
+        size_t length = mbstowcs(&p_[0], text, 1024);
         if (length > 1024)
           {
-            p = new wchar_t[length + 1];
-            p_.reset(p);
-            mbstowcs(p, text, length);
+            p_.resize (length + 1);
+            mbstowcs(&p_[0], text, length);
           }
+        wchar_t *p = &p_[0];
 #endif
         bool retval = true;
 
