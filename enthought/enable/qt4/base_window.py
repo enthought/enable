@@ -63,7 +63,7 @@ class _QtWindowHandler(object):
                 component.outer_y = 0
                 component.outer_height = dy
 
-    def keyReleaseEvent(self, event):
+    def keyPressEvent(self, event):
         if self._enable_window:
             self._enable_window._handle_key_event(event)
 
@@ -135,8 +135,8 @@ class _QtWindow(QtGui.QWidget):
     def resizeEvent(self, event):
         self.handler.resizeEvent(event)
 
-    def keyReleaseEvent(self, event):
-        self.handler.keyReleaseEvent(event)
+    def keyPressEvent(self, event):
+        self.handler.keyPressEvent(event)
 
     def enterEvent(self, event):
         self.handler.enterEvent(event)
@@ -189,8 +189,8 @@ class _QtGLWindow(QtOpenGL.QGLWidget):
         super(_QtGLWindow, self).resizeEvent(event)
         self.handler.resizeEvent(event)
 
-    def keyReleaseEvent(self, event):
-        self.handler.keyReleaseEvent(event)
+    def keyPressEvent(self, event):
+        self.handler.keyPressEvent(event)
 
     def enterEvent(self, event):
         self.handler.enterEvent(event)
