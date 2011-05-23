@@ -304,7 +304,7 @@ class _Window(AbstractWindow):
 
         modifiers = event.modifiers()
 
-        return KeyEvent(character=key, x=x,
+        return KeyEvent(event_type=event_type, character=key, x=x,
                         y=self._flip_y(y),
                         alt_down=bool(modifiers & QtCore.Qt.AltModifier),
                         shift_down=bool(modifiers & QtCore.Qt.ShiftModifier),

@@ -330,7 +330,7 @@ class BaseWindow(AbstractWindow):
                 x = x,
                 y = self._flip_y(y),
                 event = event,
-                event_name = event_name
+                event_name = event_name,
                 window = self)
         else:
             event.Skip()
