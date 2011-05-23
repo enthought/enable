@@ -276,7 +276,7 @@ class _Window(AbstractWindow):
         # Nothing needed with Qt.
         pass
     
-    def _create_key_event(self, event_name, event):
+    def _create_key_event(self, event_type, event):
         focus_owner = self.focus_owner
 
         if focus_owner is None:
@@ -286,7 +286,7 @@ class _Window(AbstractWindow):
                 event.ignore()
                 return None
 
-        if event_name == 'character':
+        if event_type == 'character':
             key = unicode(event.text())
         else:
             # Convert the keypress to a standard enable key if possible, otherwise

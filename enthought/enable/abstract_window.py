@@ -237,7 +237,7 @@ class AbstractWindow(HasTraits):
     #---------------------------------------------------------------------------
     #  Generic keyboard event handler:
     #---------------------------------------------------------------------------
-    def _handle_key_event(self, event_name, event):
+    def _handle_key_event(self, event_type, event):
         """ **event** should be a toolkit-specific opaque object that will
         be passed in to the backend's _create_key_event() method. It can
         be None if the the toolkit lacks a native "key event" object.
@@ -246,7 +246,7 @@ class AbstractWindow(HasTraits):
         hierarchy, or False otherwise.
         """
         # Generate the Enable event
-        key_event = self._create_key_event(event_name, event)
+        key_event = self._create_key_event(event_type, event)
         if key_event is None:
             return False
         
@@ -266,13 +266,13 @@ class AbstractWindow(HasTraits):
             elif self.mouse_owner_transform is not None:
                 key_event.push_transform(self.mouse_owner_transform)
 
-            mouse_owner.dispatch(key_event, event_name)
+            mouse_owner.dispatch(key_event, event_type)
         else:
             # Normal event handling loop
             if (not key_event.handled) and (self.component is not None):
                 if self.component.is_in(key_event.x, key_event.y):
                     # Fire the actual event
-                    self.component.dispatch(key_event, event_name)
+                    self.component.dispatch(key_event, event_type)
         
         return key_event.handled
 

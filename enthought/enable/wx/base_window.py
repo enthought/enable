@@ -293,7 +293,7 @@ class BaseWindow(AbstractWindow):
             self.control.ReleaseMouse()
         return
     
-    def _create_key_event(self, event_name, event):
+    def _create_key_event(self, event_type, event):
         """ Convert a GUI toolkit keyboard event into a KeyEvent.
         """
         if self.focus_owner is None:
@@ -302,7 +302,7 @@ class BaseWindow(AbstractWindow):
             focus_owner = self.focus_owner
         
         if focus_owner is not None:
-            if event_name == 'character':
+            if event_type == 'character':
                 key = unichr(event.GetUniChar())
                 if not key:
                     return None
@@ -312,7 +312,6 @@ class BaseWindow(AbstractWindow):
                     key = KEY_MAP.get(key_code)
                 else:
                     key = unichr(event.GetUniChar()).lower()
-                print key, key_code
  
             # Use the last-seen mouse coordinates instead of GetX/GetY due
             # to wx bug.
@@ -322,14 +321,17 @@ class BaseWindow(AbstractWindow):
             # x = event.GetX()
             # y = event.GetY()
 
-            return KeyEvent(character = key,
-                            alt_down = event.AltDown(),
-                            control_down = event.ControlDown(),
-                            shift_down = event.ShiftDown(),
-                            x = x,
-                            y = self._flip_y(y),
-                            event = event,
-                            window = self)
+            return KeyEvent(
+                event_type = event_type,
+                character = key,
+                alt_down = event.AltDown(),
+                control_down = event.ControlDown(),
+                shift_down = event.ShiftDown(),
+                x = x,
+                y = self._flip_y(y),
+                event = event,
+                event_name = event_name
+                window = self)
         else:
             event.Skip()
         
