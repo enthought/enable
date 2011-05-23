@@ -292,6 +292,16 @@ class BaseWindow(AbstractWindow):
             self._mouse_captured = False
             self.control.ReleaseMouse()
         return
+
+    def _on_key_pressed(self, event):
+        handled = self._handle_key_event('key_pressed', event)
+        if not handled:
+            event.Skip()
+
+    def _on_key_released(self, event):
+        handled = self._handle_key_event('key_released', event)
+        if not handled:
+            event.Skip()
     
     def _create_key_event(self, event_type, event):
         """ Convert a GUI toolkit keyboard event into a KeyEvent.

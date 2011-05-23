@@ -179,23 +179,34 @@ class TextField(Component):
         event.handled = True
         self.request_redraw()
 
-    def normal_key_pressed(self, event):
+    def normal_character(self, event):
+        "Actual text that we want to add to the buffer as-is."
+        # XXX need to filter unprintables that are not handled in key_pressed
         if not self.can_edit:
             return
 
         # Save for bookkeeping purposes
         self._old_cursor_pos = self._cursor_pos
 
-        # Normal characters
-        if len(event.character) == 1:
-            y, x = self._cursor_pos
-            self._text[y].insert(x, event.character)
-            self._cursor_pos[1] += 1
-            self._desired_cursor_x = self._cursor_pos[1]
-            self._text_changed = True
+        y, x = self._cursor_pos
+        self._text[y].insert(x, event.character)
+        self._cursor_pos[1] += 1
+        self._desired_cursor_x = self._cursor_pos[1]
+        self._text_changed = True
 
-        # Deletion
-        elif event.character == "Backspace":
+        event.handled = True
+        self.invalidate_draw()
+        self.request_redraw()
+
+    def normal_key_pressed(self, event):
+        "Special character handling"
+        if not self.can_edit:
+            return
+
+        # Save for bookkeeping purposes
+        self._old_cursor_pos = self._cursor_pos
+
+        if event.character == "Backspace":
             # Normal delete
             if self._cursor_pos[1] > 0:
                 del self._text[self._cursor_pos[0]][self._cursor_pos[1]-1]
@@ -290,7 +301,10 @@ class TextField(Component):
                 self.accept = event
         elif event.character == "Escape":
             self.cancel = event
-
+        elif len(event.character) == 1:
+            # XXX normal keypress, so let it go through
+            return
+            
         event.handled = True
         self.invalidate_draw()
         self.request_redraw()

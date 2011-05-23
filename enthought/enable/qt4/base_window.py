@@ -69,8 +69,9 @@ class _QtWindowHandler(object):
 
     def keyPressEvent(self, event):
         if self._enable_window:
-            self._enable_window._on_key_pressed(event)
-            self._enable_window._on_character(event)
+            if not self._enable_window._on_key_pressed(event):
+                # for consistency with wx, we only generate character events if key_pressed not handled
+                self._enable_window._on_character(event)
 
     def keyReleaseEvent(self, event):
         if self._enable_window:
@@ -378,6 +379,10 @@ class _Window(AbstractWindow):
 
     def _set_focus(self):
         self.control.setFocus()
+
+    def _on_key_pressed(self, event):
+        return self._handle_key_event('key_pressed', event)
+            
 
     #------------------------------------------------------------------------
     # Private methods
