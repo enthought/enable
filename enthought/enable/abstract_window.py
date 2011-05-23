@@ -98,7 +98,7 @@ class AbstractWindow(HasTraits):
         raise NotImplementedError
 
     def _create_key_event(self, event):
-        "Convert a GUI toolkit mouse event into a KeyEvent"
+        "Convert a GUI toolkit key event into a KeyEvent"
         raise NotImplementedError
     
     def _create_mouse_event(self, event):
@@ -237,7 +237,7 @@ class AbstractWindow(HasTraits):
     #---------------------------------------------------------------------------
     #  Generic keyboard event handler:
     #---------------------------------------------------------------------------
-    def _handle_key_event(self, event):
+    def _handle_key_event(self, event_name, event):
         """ **event** should be a toolkit-specific opaque object that will
         be passed in to the backend's _create_key_event() method. It can
         be None if the the toolkit lacks a native "key event" object.
@@ -246,9 +246,13 @@ class AbstractWindow(HasTraits):
         hierarchy, or False otherwise.
         """
         # Generate the Enable event
-        key_event = self._create_key_event(event)
+        key_event = self._create_key_event(event_name, event)
         if key_event is None:
             return False
+        
+        self.shift_pressed = key_event.shift_down
+        self.alt_pressed = key_event.alt_down
+        self.control_pressed = key_event.control_down
         
         # Dispatch the event to the correct component
         mouse_owner = self.mouse_owner
@@ -262,13 +266,13 @@ class AbstractWindow(HasTraits):
             elif self.mouse_owner_transform is not None:
                 key_event.push_transform(self.mouse_owner_transform)
 
-            mouse_owner.dispatch(key_event, "key_pressed")
+            mouse_owner.dispatch(key_event, event_name)
         else:
             # Normal event handling loop
             if (not key_event.handled) and (self.component is not None):
                 if self.component.is_in(key_event.x, key_event.y):
                     # Fire the actual event
-                    self.component.dispatch(key_event, "key_pressed")
+                    self.component.dispatch(key_event, event_name)
         
         return key_event.handled
 
@@ -487,5 +491,19 @@ class AbstractWindow(HasTraits):
             self._prev_event_handler.dispatch(mouse_event, "mouse_leave")
             self._prev_event_handler = None
         return
+
+
+    #---------------------------------------------------------------------------
+    # Wire up the keyboard event handlers
+    #---------------------------------------------------------------------------
+
+    def _on_key_pressed(self, event):
+        self._handle_key_event('key_pressed', event)
+
+    def _on_key_released(self, event):
+        self._handle_key_event('key_released', event)
+
+    def _on_character(self, event):
+        self._handle_key_event('character', event)
 
 

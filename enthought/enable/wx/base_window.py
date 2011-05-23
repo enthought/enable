@@ -189,9 +189,9 @@ class BaseWindow(AbstractWindow):
         wx.EVT_MOUSEWHEEL(    control, self._on_mouse_wheel )
 
         # Handle key up/down events:
-        wx.EVT_KEY_DOWN( control, self._on_key_updown )
-        wx.EVT_KEY_UP(   control, self._on_key_updown )
-        wx.EVT_CHAR(     control, self._on_char )
+        wx.EVT_KEY_DOWN( control, self._on_key_pressed )
+        wx.EVT_KEY_UP(   control, self._on_key_released )
+        wx.EVT_CHAR(     control, self._on_character )
 
         # Attempt to allow wxPython drag and drop events to be mapped to
         # Enable drag events:
@@ -249,25 +249,6 @@ class BaseWindow(AbstractWindow):
             self.component = None
         return
 
-    def _on_key_updown ( self, event ):
-        "Handle keyboard keys changing their up/down state"
-        k = event.GetKeyCode()
-        t = event.GetEventType()
-
-        if k == wx.WXK_SHIFT:
-            self.shift_pressed = (t == wx.wxEVT_KEY_DOWN)
-        elif k == wx.WXK_ALT:
-            self.alt_pressed   = (t == wx.wxEVT_KEY_DOWN)
-        elif k == wx.WXK_CONTROL:
-            self.ctrl_pressed  = (t == wx.wxEVT_KEY_DOWN)
-
-        event.Skip()
-        return
-
-    def _on_char ( self, event ):
-        "Handle keyboard keys being pressed"
-        self._handle_key_event(event)
-
     def _flip_y ( self, y ):
         "Convert from a Kiva to a wxPython y coordinate"
         return int( self._size[1] - 1 - y )
@@ -312,29 +293,27 @@ class BaseWindow(AbstractWindow):
             self.control.ReleaseMouse()
         return
     
-    def _create_key_event(self, event):
+    def _create_key_event(self, event_name, event):
         """ Convert a GUI toolkit keyboard event into a KeyEvent.
         """
         if self.focus_owner is None:
             focus_owner = self.component
         else:
             focus_owner = self.focus_owner
-
+        
         if focus_owner is not None:
-            control_down = event.ControlDown()
-            key_code     = event.GetKeyCode()
-            key = None
-
-            if control_down and (1 <= key_code <= 26):
-                # Shift Ctrl-A through Ctrl-Z so that the 'key' value of
-                # this event is the ASCII character
-                key = chr(key_code + 96)
-            elif key_code in KEY_MAP:
-                key = KEY_MAP.get(key_code)
-            if key is None:
-                if key_code >= 0 and key_code < 256:
-                    key = chr(key_code)
-
+            if event_name == 'character':
+                key = unichr(event.GetUniChar())
+                if not key:
+                    return None
+            else:
+                key_code = event.GetKeyCode()
+                if key_code in KEY_MAP:
+                    key = KEY_MAP.get(key_code)
+                else:
+                    key = unichr(event.GetUniChar()).lower()
+                print key, key_code
+ 
             # Use the last-seen mouse coordinates instead of GetX/GetY due
             # to wx bug.
             x, y = self._last_mouse_pos
@@ -345,7 +324,7 @@ class BaseWindow(AbstractWindow):
 
             return KeyEvent(character = key,
                             alt_down = event.AltDown(),
-                            control_down = control_down,
+                            control_down = event.ControlDown(),
                             shift_down = event.ShiftDown(),
                             x = x,
                             y = self._flip_y(y),

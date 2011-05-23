@@ -63,9 +63,18 @@ class _QtWindowHandler(object):
                 component.outer_y = 0
                 component.outer_height = dy
 
+    #------------------------------------------------------------------------
+    # Qt Keyboard event handlers
+    #------------------------------------------------------------------------
+
     def keyPressEvent(self, event):
         if self._enable_window:
-            self._enable_window._handle_key_event(event)
+            self._enable_window._on_key_pressed(event)
+            self._enable_window._on_character(event)
+
+    def keyReleaseEvent(self, event):
+        if self._enable_window:
+            self._enable_window._on_key_released(event)
 
     #------------------------------------------------------------------------
     # Qt Mouse event handlers
@@ -138,6 +147,9 @@ class _QtWindow(QtGui.QWidget):
     def keyPressEvent(self, event):
         self.handler.keyPressEvent(event)
 
+    def keyReleaseEvent(self, event):
+        self.handler.keyReleaseEvent(event)
+
     def enterEvent(self, event):
         self.handler.enterEvent(event)
 
@@ -191,6 +203,9 @@ class _QtGLWindow(QtOpenGL.QGLWidget):
 
     def keyPressEvent(self, event):
         self.handler.keyPressEvent(event)
+
+    def keyReleaseEvent(self, event):
+        self.handler.keyReleaseEvent(event)
 
     def enterEvent(self, event):
         self.handler.enterEvent(event)
@@ -261,7 +276,7 @@ class _Window(AbstractWindow):
         # Nothing needed with Qt.
         pass
     
-    def _create_key_event(self, event):
+    def _create_key_event(self, event_name, event):
         focus_owner = self.focus_owner
 
         if focus_owner is None:
@@ -271,15 +286,18 @@ class _Window(AbstractWindow):
                 event.ignore()
                 return None
 
-        # Convert the keypress to a standard enable key if possible, otherwise
-        # to text.
-        key = KEY_MAP.get(event.key())
-
-        if key is None:
+        if event_name == 'character':
             key = unicode(event.text())
+        else:
+            # Convert the keypress to a standard enable key if possible, otherwise
+            # to text.
+            key_code = event.key()
+            key = KEY_MAP.get(key_code)    
+            if key is None:
+                key = unichr(key_code).lower()
 
-            if not key:
-                return None
+        if not key:
+            return None
 
         # Use the last-seen mouse position as the coordinates of this event.
         x, y = self.control.last_mouse_pos
