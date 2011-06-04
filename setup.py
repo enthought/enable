@@ -220,14 +220,13 @@ setup(
     description = DOCLINES[1],
     download_url = ('http://www.enthought.com/repo/ets/enable-%s.tar.gz' %
                     INFO['version']),
-    include_package_data = True,
     install_requires = INFO['install_requires'],
     license = 'BSD',
     long_description = '\n'.join(DOCLINES[3:]),
     maintainer = 'ETS Developers',
     maintainer_email = 'enthought-dev@enthought.com',
     name = INFO['name'],
-    package_data = {'': ['*.zip', '*.svg']},
+    package_data = {'': ['*.zip', '*.svg', 'images/*']},
     platforms = ["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
     setup_requires = [
         'cython',
