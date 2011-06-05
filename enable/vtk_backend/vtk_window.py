@@ -1,7 +1,7 @@
 import warnings
 
-from enthought.tvtk.api import tvtk
-from enthought.tvtk import messenger
+from tvtk.api import tvtk
+from tvtk import messenger
 from traits.api import HasTraits, Any, Callable, Property, Instance, \
         Bool, Enum, Int, on_trait_change
 
