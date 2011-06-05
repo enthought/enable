@@ -1,4 +1,4 @@
-from kiva_graphics_context import GraphicsContext
+from enable.kiva_graphics_context import GraphicsContext
 
 gc = GraphicsContext((500,500))
 gc.clear()

@@ -1,7 +1,7 @@
 from numpy import array, pi
 from os.path import splitext
 
-from kiva_graphics_context import GraphicsContext
+from enable.kiva_graphics_context import GraphicsContext
 from kiva.fonttools import Font
 from kiva import constants
 

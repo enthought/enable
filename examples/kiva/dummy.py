@@ -1,7 +1,7 @@
 from __future__ import with_statement
 
+from enable.kiva_graphics_context import GraphicsContext
 from kiva import affine, agg, constants
-from kiva_graphics_context import GraphicsContext
 from kiva.fonttools import Font
 
 # Do some basic drawing tests and write the results out to PNG files.
