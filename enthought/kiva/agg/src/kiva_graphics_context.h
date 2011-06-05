@@ -10,7 +10,13 @@
 #include <string.h>
 #include <stack>
 
+#if defined(__MSVCRT__) || defined (__MINGW32__)
+#include <windows.h>
+#endif
+
 #include <iostream>
+#include <memory>
+#include <locale>
 
 #include "agg_trans_affine.h"
 #include "agg_path_storage.h"
@@ -1286,7 +1292,21 @@ namespace kiva
         ScanlineRendererType scanlineRenderer(this->renderer);
 
         const agg::glyph_cache *glyph = NULL;
-        unsigned char *p = (unsigned char*) text;
+#if defined(__MSVCRT__) || defined (__MINGW32__)
+        int required = MultiByteToWideChar(CP_UTF8, 0, text, -1, 0, 0);
+        std::vector<wchar_t> p_(required + 1);
+        MultiByteToWideChar(CP_UTF8, 0, text, -1, &p_[0], required);
+        wchar_t *p = &p_[0];
+#else
+        std::vector <wchar_t> p_(1024);
+        size_t length = mbstowcs(&p_[0], text, 1024);
+        if (length > 1024)
+          {
+            p_.resize (length + 1);
+            mbstowcs(&p_[0], text, length);
+          }
+        wchar_t *p = &p_[0];
+#endif
         bool retval = true;
 
         // Check to make sure the font's loaded.
