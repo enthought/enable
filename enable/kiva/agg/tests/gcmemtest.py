@@ -6,7 +6,7 @@ import unittest, sys
 import gc as garbagecollector
 
 from enable.kiva.image import GraphicsContext, GraphicsContextSystem
-from enthought.debug.memusage import get_mem_usage
+from etsdevtools.debug.memusage import get_mem_usage
 
 class test_agg(unittest.TestCase):
     def check_agg_mem_leak(self):

@@ -5,8 +5,8 @@ ETSConfig.toolkit = 'wx'
 
 import wx
 from enable.api import ColorTrait, Window
-from enthought.chaco.api import *
-from enthought.chaco.tools.api import DragTool
+from chaco.api import *
+from chaco.tools.api import DragTool
 from enable.kiva.fonttools import Font
 from enable.kiva.trait_defs.kiva_font_trait import KivaFont
 from traits.api import Enum, Float, Int, Str, Tuple

@@ -1290,8 +1290,8 @@ if __name__=="__main__":
     from scipy.special import jn
 
     from traits.api import false
-    from enthought.chaco.api import ArrayPlotData, Plot, PlotGraphicsContext
-    from enthought.chaco.example_support import COLOR_PALETTE
+    from chaco.api import ArrayPlotData, Plot, PlotGraphicsContext
+    from chaco.example_support import COLOR_PALETTE
 
     from itertools import cycle, izip
 
