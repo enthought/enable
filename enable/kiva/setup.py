@@ -17,10 +17,10 @@ import sys
 import os
 
 
-def configuration(parent_package='enthought',top_path=None):
+def configuration(parent_package='enable', top_path=None):
     from numpy.distutils.misc_util import Configuration
-    config = Configuration('kiva',parent_package,top_path)
 
+    config = Configuration('kiva', parent_package, top_path)
     config.add_data_dir('tests')
     config.add_data_files('*.txt')
 
@@ -40,4 +40,3 @@ def configuration(parent_package='enthought',top_path=None):
     config.get_version()
 
     return config
-
