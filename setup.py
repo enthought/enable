@@ -131,7 +131,7 @@ def configuration(parent_package='', top_path=None):
 # find_packages to those discovered by numpy.distutils.
 config = configuration().todict()
 packages = setuptools.find_packages(exclude=config['packages'] +
-    ['docs', 'examples'])
+                                    ['docs', 'examples'])
 packages += ['enable.savage.trait_defs.ui.wx.data']
 config['packages'] += packages
 
@@ -154,7 +154,7 @@ class MyClean(distutils.command.clean.clean):
             shutil.rmtree("dist", ignore_errors=True)
 
         # Clean out any files produced by an in-place build.  Note that our
-        # code assumes the files are relative to the 'enable/kiva' dir.
+        # code assumes the files are relative to the 'kiva' dir.
         INPLACE_FILES = (
             # Common AGG
             os.path.join("agg", "agg.py"),
@@ -183,7 +183,7 @@ class MyClean(distutils.command.clean.clean):
             os.path.join("agg", "src", "gl", "plat_support.py"),
             )
         for f in INPLACE_FILES:
-            f = os.path.join("enable", "kiva", f)
+            f = os.path.join("kiva", f)
             if os.path.isfile(f):
                 os.remove(f)
 
