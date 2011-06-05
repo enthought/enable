@@ -17,7 +17,7 @@ import sys
 import os
 
 
-def configuration(parent_package='enable', top_path=None):
+def configuration(parent_package=None, top_path=None):
     from numpy.distutils.misc_util import Configuration
 
     config = Configuration('kiva', parent_package, top_path)
