@@ -2,8 +2,8 @@
 # GC you are using.  In this case, we are using the image GraphicsContext
 # so we can save to disk when we're done, so we grab the CompiledPath
 # from there as well.
-from enable.kiva.image import GraphicsContext, CompiledPath
-from enable.kiva.constants import STROKE
+from kiva.image import GraphicsContext, CompiledPath
+from kiva.constants import STROKE
 
 star_points = [(-20,-30),
                (0, 30),

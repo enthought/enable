@@ -56,7 +56,7 @@ except NameError:
 import afm
 
 from traits.etsconfig.api import ETSConfig
-from enable.kiva.fonttools.fontTools.ttLib import TTFont
+from kiva.fonttools.fontTools.ttLib import TTFont
 
 try:
     import cPickle as pickle

@@ -1,7 +1,7 @@
 from __future__ import with_statement
 
 from scipy import pi
-from enable.kiva.image import GraphicsContext
+from kiva.image import GraphicsContext
 
 def draw_ellipse(gc, x, y, major, minor, angle):
     """ Draws an ellipse given major and minor axis lengths.  **angle** is

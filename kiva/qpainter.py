@@ -545,7 +545,7 @@ class GraphicsContext(object):
 
         rect - a tuple (x,y,w,h)
         """
-        from enable.kiva import agg
+        from kiva import agg
 
         def copy_padded(array):
             """ Pad image width to a multiple of 4 pixels, and minimum dims of

@@ -4,8 +4,8 @@ import os.path
 import xml.etree.cElementTree as etree
 
 from enable.api import Container, Component, ComponentEditor, BaseTool
-from enable.kiva.constants import MODERN
-from enable.kiva.fonttools import Font
+from kiva.constants import MODERN
+from kiva.fonttools import Font
 from traits.api import Instance, Callable, List, Str, HasTraits, Enum
 from traitsui.api import View, Item
 from enable.savage.svg.document import SVGDocument

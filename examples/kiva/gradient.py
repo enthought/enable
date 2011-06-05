@@ -1,9 +1,9 @@
 from numpy import array, pi
 from os.path import splitext
 
-from enable.kiva_graphics_context import GraphicsContext
-from enable.kiva.fonttools import Font
-from enable.kiva import constants
+from kiva_graphics_context import GraphicsContext
+from kiva.fonttools import Font
+from kiva import constants
 
 
 def draw(gc):

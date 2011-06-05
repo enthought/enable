@@ -3,7 +3,7 @@
 
 # Enthought library imports
 from traits.api import Bool, Trait, Tuple, List
-from enable.kiva.constants import FILL
+from kiva.constants import FILL
 
 
 # Local relative imports

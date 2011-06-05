@@ -121,7 +121,7 @@ def configuration(parent_package='', top_path=None):
         quiet=True,
     )
 
-    config.add_subpackage('enable.kiva')
+    config.add_subpackage('kiva')
 
     return config
 

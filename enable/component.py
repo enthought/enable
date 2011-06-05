@@ -4,10 +4,10 @@
 from traits.api \
     import Any, Bool, Delegate, Enum, Float, Instance, Int, List, \
            Property, Str, Trait
-from enable.kiva.constants import FILL, STROKE
+from kiva.constants import FILL, STROKE
 
 try:
-    from enable.kiva.gl import GraphicsContext as GraphicsContextGL
+    from kiva.gl import GraphicsContext as GraphicsContextGL
 except (ImportError, TypeError):
     class GraphicsContextGL(object):
         pass

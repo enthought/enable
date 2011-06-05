@@ -5,7 +5,7 @@ pyglet.options['shadow_window'] = False
 from wx.glcanvas import GLCanvas
 
 from traits.api import Instance
-from enable.kiva.gl import CompiledPath, GraphicsContext
+from kiva.gl import CompiledPath, GraphicsContext
 
 from base_window import BaseWindow
 from scrollbar import NativeScrollBar
@@ -67,7 +67,7 @@ class Window(BaseWindow):
         self.control.SwapBuffers()
 
 def font_metrics_provider():
-    from enable.kiva.fonttools import Font
+    from kiva.fonttools import Font
     gc = GraphicsContext((1, 1))
     gc.set_font(Font())
     return gc

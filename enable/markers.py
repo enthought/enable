@@ -8,7 +8,7 @@ from numpy import array, pi
 # Enthought library imports
 from traits.api import HasTraits, Bool, Instance, Trait
 from traitsui.api import EnumEditor
-from enable.kiva.constants import STROKE, FILL_STROKE, \
+from kiva.constants import STROKE, FILL_STROKE, \
             SQUARE_MARKER, DIAMOND_MARKER, CIRCLE_MARKER, \
             CROSS_MARKER, TRIANGLE_MARKER, \
             INVERTED_TRIANGLE_MARKER, PLUS_MARKER, DOT_MARKER, \
@@ -27,7 +27,7 @@ class AbstractMarker(HasTraits):
     draw_mode = STROKE
     #draw_mode = Enum(FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE)
 
-    # The kiva marker type (from enable.kiva.constants).
+    # The kiva marker type (from kiva.constants).
     kiva_marker = NO_MARKER
 
     # Close the path object after drawing this marker?

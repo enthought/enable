@@ -8,7 +8,7 @@ Example interactive session:
 
 Python 1.5.2c1 (#43, Mar  9 1999, 13:06:43)  [CW PPC w/GUSI w/MSL]
 Copyright 1991-1995 Stichting Mathematisch Centrum, Amsterdam
->>> from enable.kiva.fonttools.fontTools import ttLib
+>>> from kiva.fonttools.fontTools import ttLib
 >>> tt = ttLib.TTFont("afont.ttf")
 >>> tt['maxp'].numGlyphs
 242
@@ -140,7 +140,7 @@ class TTFont:
                 On the Mac, if makeSuitcase is true, a suitcase (resource fork)
                 file will we made instead of a flat .ttf file.
                 """
-                from enable.kiva.fonttools.fontTools.ttLib import sfnt
+                from kiva.fonttools.fontTools.ttLib import sfnt
                 if isinstance(file, basestring):
                         closeStream = 1
                         if os.name == "mac" and makeSuitcase:
@@ -176,7 +176,7 @@ class TTFont:
                 list of tables to dump. The 'skipTables' argument may be a list of tables
                 to skip, but only when the 'tables' argument is false.
                 """
-                from enable.kiva.fonttools.fontTools import version
+                from kiva.fonttools.fontTools import version
                 import xmlWriter
 
                 self.disassembleInstructions = disassembleInstructions
@@ -419,7 +419,7 @@ class TTFont:
                 tempcmap = self['cmap'].getcmap(3, 1)
                 if tempcmap is not None:
                         # we have a unicode cmap
-                        from enable.kiva.fonttools.fontTools import agl
+                        from kiva.fonttools.fontTools import agl
                         cmap = tempcmap.cmap
                         # create a reverse cmap dict
                         reversecmap = {}
@@ -465,7 +465,7 @@ class TTFont:
                 """Get a list of glyph names, sorted alphabetically,
                 but not case sensitive.
                 """
-                from enable.kiva.fonttools.fontTools.misc import textTools
+                from kiva.fonttools.fontTools.misc import textTools
                 return textTools.caselessSort(self.getGlyphOrder())
 
         def getGlyphName(self, glyphID):
@@ -585,7 +585,7 @@ def getTableModule(tag):
         import tables
         pyTag = tagToIdentifier(tag)
         try:
-                module = __import__("enable.kiva.fonttools.fontTools.ttLib.tables." + pyTag)
+                module = __import__("kiva.fonttools.fontTools.ttLib.tables." + pyTag)
         except ImportError:
                 return None
         else:

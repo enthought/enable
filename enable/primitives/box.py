@@ -4,7 +4,7 @@
 # Parent package imports
 from enable.api import border_size_trait, Component, transparent_color
 from enable.colors import ColorTrait
-from enable.kiva.constants import FILL, STROKE
+from kiva.constants import FILL, STROKE
 
 class Box(Component):
 

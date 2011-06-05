@@ -4,7 +4,7 @@ from math import pi
 
 import numpy
 
-from enable.kiva import agg
+from kiva import agg
 
 def save_path(filename):
     return filename

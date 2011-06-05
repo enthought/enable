@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 #------------------------------------------------------------------------------
 
-from enable.kiva.cairo import CompiledPath, GraphicsContext, font_metrics_provider
+from kiva.cairo import CompiledPath, GraphicsContext, font_metrics_provider
 
 class NativeScrollBar(object):
     pass

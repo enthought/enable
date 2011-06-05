@@ -864,7 +864,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         Only works with numpy arrays. What is a "Kiva Image" anyway?
         Not Yet Tested.
         """
-        from enable.kiva import agg
+        from kiva import agg
 
         if type(img) == type(numpy.array([])):
             # Numeric array

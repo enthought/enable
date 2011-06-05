@@ -2,7 +2,7 @@
 from numpy import linspace, zeros
 
 # Enthought library imports
-from enable.kiva.constants import STROKE
+from kiva.constants import STROKE
 from traits.api import (Any, Bool, Enum, Float, Int, Property,
                                   on_trait_change, Trait)
 from traitsui.api import EnumEditor

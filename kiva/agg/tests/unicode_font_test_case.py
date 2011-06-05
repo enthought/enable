@@ -1,6 +1,6 @@
 import unittest
-from enable.kiva.agg import AggFontType, GraphicsContextArray
-from enable.kiva.fonttools import Font
+from kiva.agg import AggFontType, GraphicsContextArray
+from kiva.fonttools import Font
 
 class UnicodeTest(unittest.TestCase):
 

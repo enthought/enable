@@ -5,7 +5,7 @@ import sys
 if sys.platform == 'darwin':
     import wx
 
-    from enable.kiva.quartz import get_macport
+    from kiva.quartz import get_macport
 
     class SimpleWindow(wx.Frame):
         """

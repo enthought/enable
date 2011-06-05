@@ -5,7 +5,7 @@ Test for memory leak in the wx image backend.
 import unittest, sys
 import gc as garbagecollector
 
-from enable.kiva.image import GraphicsContext, GraphicsContextSystem
+from kiva.image import GraphicsContext, GraphicsContextSystem
 from etsdevtools.debug.memusage import get_mem_usage
 
 class test_agg(unittest.TestCase):

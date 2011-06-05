@@ -1,5 +1,5 @@
 from enthought import kiva
-from enable.kiva import agg
+from kiva import agg
 
 def add_star(gc):
     gc.begin_path()

@@ -13,7 +13,7 @@ import numpy as np
 import sys
 import wx
 
-from enable.kiva.agg import CompiledPath, GraphicsContextSystem as GraphicsContext
+from kiva.agg import CompiledPath, GraphicsContextSystem as GraphicsContext
 
 from base_window import BaseWindow
 from scrollbar import NativeScrollBar
@@ -66,7 +66,7 @@ class Window(BaseWindow):
 
 
 def font_metrics_provider():
-    from enable.kiva.fonttools import Font
+    from kiva.fonttools import Font
     gc = GraphicsContext((1, 1))
     gc.set_font(Font())
     return gc

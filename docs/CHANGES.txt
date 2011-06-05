@@ -170,13 +170,13 @@ enable Fixes
  * Fixed backend_cairo's get_text_extent() implementation to match other backends
 
 
-enable.kiva Enhancements
+kiva Enhancements
 ---------------------------
 
  * Added basic gradients to Kiva
 
 
-enable.kiva Fixes
+kiva Fixes
 --------------------
 
  * Fixed Python 2.6 datatype errors

@@ -1,5 +1,5 @@
-from enable.kiva import constants
-from enable.kiva.image import GraphicsContext
+from kiva import constants
+from kiva.image import GraphicsContext
 
 gc = GraphicsContext((100,100))
 

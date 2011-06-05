@@ -11,7 +11,7 @@
 
 import wx
 
-from enable.kiva.cairo import CompiledPath, GraphicsContext, font_metrics_provider
+from kiva.cairo import CompiledPath, GraphicsContext, font_metrics_provider
 
 from base_window import BaseWindow
 from scrollbar import NativeScrollBar

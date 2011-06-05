@@ -4,7 +4,7 @@ specification strings into Font instances.
 """
 
 import copy
-from enable.kiva.constants import DEFAULT, DECORATIVE, ROMAN, SCRIPT, \
+from kiva.constants import DEFAULT, DECORATIVE, ROMAN, SCRIPT, \
     SWISS, MODERN, TELETYPE, NORMAL, ITALIC, BOLD, BOLD_ITALIC
 from font_manager import FontProperties, fontManager
 

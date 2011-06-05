@@ -2,8 +2,8 @@ from string import lowercase, uppercase
 import os
 import time
 
-from enable.kiva.image import font_metrics_provider as FMP
-from enable.kiva.fonttools import Font
+from kiva.image import font_metrics_provider as FMP
+from kiva.fonttools import Font
 
 counts = (500,)
 strings = ("hello", ) # lowercase + uppercase)

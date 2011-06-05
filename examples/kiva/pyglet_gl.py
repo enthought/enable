@@ -4,10 +4,10 @@ from numpy import array
 from pyglet.window import key, Window
 
 try:
-    from enable.kiva.gl import GraphicsContext
+    from kiva.gl import GraphicsContext
 except ImportError, e:
     raise Exception(e)
-from enable.kiva.constants import FILL, STROKE, FILL_STROKE
+from kiva.constants import FILL, STROKE, FILL_STROKE
 
 class TestWindow(Window):
     """ Press Q or Escape to exit

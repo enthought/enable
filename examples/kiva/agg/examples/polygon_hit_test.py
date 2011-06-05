@@ -1,6 +1,6 @@
 import numpy
 
-from enable.kiva import agg
+from kiva import agg
 
 poly = numpy.array((( 0.0,  0.0),
                     (10.0,  0.0),

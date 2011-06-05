@@ -4,8 +4,8 @@ import os
 import time
 from math import pi
 
-from enable.kiva import agg
-from enable.kiva.fonttools import Font
+from kiva import agg
+from kiva.fonttools import Font
 
 ArialFont = Font('arial')
 

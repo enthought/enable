@@ -5,8 +5,8 @@
 from numpy import array
 
 # Enthought library imports.
-from enable.kiva.constants import EOF_FILL_STROKE, FILL, FILL_STROKE
-from enable.kiva.agg import points_in_polygon
+from kiva.constants import EOF_FILL_STROKE, FILL, FILL_STROKE
+from kiva.agg import points_in_polygon
 from traits.api import Any, Event, Float, HasTraits, Instance, List, \
                              Property, Trait, Tuple
 from traitsui.api import Group, View

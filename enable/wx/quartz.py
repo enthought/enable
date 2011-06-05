@@ -7,8 +7,8 @@ import numpy as np
 import wx
 
 # Enthought library imports.
-from enable.kiva.fonttools import Font
-from enable.kiva.quartz import get_macport, ABCGI
+from kiva.fonttools import Font
+from kiva.quartz import get_macport, ABCGI
 
 # Local imports.
 from base_window import BaseWindow

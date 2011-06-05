@@ -1,4 +1,4 @@
-from enable.kiva.image import GraphicsContext
+from kiva.image import GraphicsContext
 
 gc = GraphicsContext((500,500))
 gc.set_fill_color( (1, 0, 0) )

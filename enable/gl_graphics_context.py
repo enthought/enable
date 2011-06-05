@@ -1,5 +1,5 @@
 
-from enable.kiva.gl import GraphicsContext
+from kiva.gl import GraphicsContext
 from graphics_context import GraphicsContextEnable
 
 class GLGraphicsContextEnable(GraphicsContextEnable, GraphicsContext):

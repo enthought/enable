@@ -1,5 +1,5 @@
-from enable.kiva.image import GraphicsContext
-from enable.kiva import constants
+from kiva.image import GraphicsContext
+from kiva import constants
 
 def add_star(gc):
     gc.begin_path()

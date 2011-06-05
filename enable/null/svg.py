@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 #------------------------------------------------------------------------------
 
-from enable.kiva.svg import CompiledPath, GraphicsContext, font_metrics_provider
+from kiva.svg import CompiledPath, GraphicsContext, font_metrics_provider
 
 class NativeScrollBar(object):
     pass

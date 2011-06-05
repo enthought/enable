@@ -2,8 +2,8 @@ import time
 
 import numpy
 
-from enable.kiva import constants
-from enable.kiva.agg import GraphicsContextArray
+from kiva import constants
+from kiva.agg import GraphicsContextArray
 
 
 def dash(sz=(1000,1000)):

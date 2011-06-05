@@ -8,7 +8,7 @@ For a list of all the possible event suffixes, see interactor.py.
 from numpy import array, dot
 
 # Enthought imports
-from enable.kiva import affine
+from kiva import affine
 from traits.api import (Any, Bool, Float, HasTraits, Int,
     Event, List, ReadOnly)
 

@@ -874,7 +874,7 @@ class GraphicsContextBase(object):
         changed and not restored to the identity in the compiled path,
         the CTM change will continue in this GC."""
         # Local import to avoid a dependency if we can avoid it.
-        from enable.kiva import agg
+        from kiva import agg
 
         multi_state = 0 #For multi-element path commands we keep the previous
         x_ctrl1 = 0     #information in these variables.

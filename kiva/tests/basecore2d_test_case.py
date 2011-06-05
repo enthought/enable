@@ -15,9 +15,9 @@ import sys
 
 from numpy import alltrue, array, ravel
 
-from enable.kiva import affine
-from enable.kiva import basecore2d
-from enable.kiva import constants
+from kiva import affine
+from kiva import basecore2d
+from kiva import constants
 
 class test_is_fully_transparent(unittest.TestCase):
     def test_simple(self):

@@ -2,7 +2,7 @@ import unittest
 
 from numpy import array, ones
 
-from enable.kiva import agg
+from kiva import agg
 
 from test_utils import Utils
 

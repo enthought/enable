@@ -5,7 +5,7 @@ from numpy import allclose, ravel
 
 import nose
 
-from enable.kiva import agg
+from kiva import agg
 
 
 # FIXME:

@@ -8,7 +8,7 @@ from numpy import arange, array, dstack, repeat, newaxis
 # Enthought library imports
 from traits.api import Any, Array, Bool, Int, List, Property, \
     Trait, Tuple, on_trait_change
-from enable.kiva.trait_defs.kiva_font_trait import KivaFont
+from kiva.trait_defs.kiva_font_trait import KivaFont
 
 # Relative imports
 from component import Component

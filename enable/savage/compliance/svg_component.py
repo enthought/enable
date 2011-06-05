@@ -6,7 +6,7 @@ import time
 
 from enable.api import Component
 from traits.api import Any, Array, Bool, Float
-from enable.kiva.fonttools import Font
+from kiva.fonttools import Font
 
 
 if sys.platform == 'win32':

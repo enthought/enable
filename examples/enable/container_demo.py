@@ -7,8 +7,8 @@ import wx
 from enable.api import ColorTrait, Window
 from chaco.api import *
 from chaco.tools.api import DragTool
-from enable.kiva.fonttools import Font
-from enable.kiva.trait_defs.kiva_font_trait import KivaFont
+from kiva.fonttools import Font
+from kiva.trait_defs.kiva_font_trait import KivaFont
 from traits.api import Enum, Float, Int, Str, Tuple
 
 class Region(PlotComponent, DragTool):

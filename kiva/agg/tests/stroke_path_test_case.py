@@ -51,7 +51,7 @@ import unittest
 
 from numpy import array, alltrue, ravel
 
-from enable.kiva.agg import GraphicsContextArray
+from kiva.agg import GraphicsContextArray
 from enthought import kiva
 
 from test_utils import Utils

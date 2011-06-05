@@ -1,5 +1,5 @@
 import time
-from enable.kiva import agg
+from kiva import agg
 
 samples = 1
 pt = (250, 250)

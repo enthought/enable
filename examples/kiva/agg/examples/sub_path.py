@@ -1,6 +1,6 @@
 import numpy
 
-from enable.kiva import agg
+from kiva import agg
 
 line_color = (0.0,0.0,0.0)
 fill_color = numpy.array((200.,184.,106.))/255.

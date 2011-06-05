@@ -4,8 +4,8 @@ from math import sin, cos, pi
 
 from numpy import array, arange
 
-import enable.kiva
-from enable.kiva import agg
+import kiva
+from kiva import agg
 
 def draw_circle(gc,radius=2):
     gc.begin_path()

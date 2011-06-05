@@ -7,7 +7,7 @@ from numpy import arange, array
 from types import ListType, TupleType
 
 # Enthought library imports
-from enable.kiva.trait_defs.kiva_font_trait import KivaFont
+from kiva.trait_defs.kiva_font_trait import KivaFont
 from traits.api import Trait, Range, TraitPrefixList, TraitPrefixMap, \
     List, TraitFactory
 from traitsui.api import ImageEnumEditor, EnumEditor

@@ -1,5 +1,5 @@
-from enable.kiva import agg
-from enable.kiva import constants
+from kiva import agg
+from kiva import constants
 
 gc = agg.GraphicsContextArray((100,100))
 #gc.bmp_array[:5,:5] = (128,128,128,128)

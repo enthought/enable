@@ -13,8 +13,8 @@ ETSConfig.toolkit = 'wx'
 from traits.api import Float
 from enable.api import (Component, Container, ColorTrait,
                                   black_color_trait, Window)
-from enable.kiva.constants import SWISS
-from enable.kiva.fonttools import Font
+from kiva.constants import SWISS
+from kiva.fonttools import Font
 
 font = Font(family=SWISS)
 

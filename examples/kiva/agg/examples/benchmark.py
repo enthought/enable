@@ -7,8 +7,8 @@ import time
 
 from scipy import stats, array, shape, arange, transpose, sin, cos
 
-from enable.kiva import agg
-import enable.kiva
+from kiva import agg
+import kiva
 
 
 def benchmark_real_time(cycles=10,n_pts=1000,sz=(1000,1000)):
