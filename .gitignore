@@ -5,15 +5,15 @@
 .DS_Store
 
 # SWIG & Cython intermediate files
-enable/kiva/agg/agg.py
-enable/kiva/agg/agg_wrap.cpp
-enable/kiva/agg/plat_support.py
-enable/kiva/agg/src/gl/plat_support_wrap.cpp
-enable/kiva/agg/src/gtk1/plat_support_wrap.cpp
-enable/kiva/agg/src/win32/plat_support_wrap.cpp
-enable/kiva/agg/src/x11/plat_support_wrap.cpp
-enable/kiva/quartz/ABCGI.c
-enable/kiva/quartz/ATSFont.c
+kiva/agg/agg.py
+kiva/agg/agg_wrap.cpp
+kiva/agg/plat_support.py
+kiva/agg/src/gl/plat_support_wrap.cpp
+kiva/agg/src/gtk1/plat_support_wrap.cpp
+kiva/agg/src/win32/plat_support_wrap.cpp
+kiva/agg/src/x11/plat_support_wrap.cpp
+kiva/quartz/ABCGI.c
+kiva/quartz/ATSFont.c
 
 # Ignore the build directories.
 *.egg-info/
