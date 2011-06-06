@@ -61,24 +61,24 @@ class Line(Component):
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         "Draw this line in the specified graphics context"
-
-        with gc:
-            # Set the drawing parameters.
-            gc.set_stroke_color(self.line_color_)
-            gc.set_line_dash(self.line_dash)
-            gc.set_line_width(self.line_width)
-
-            # Draw the path as lines.
-            gc.begin_path()
-            offset_points = [(x, y) for x, y in self.points ]
-            offset_points = resize(array(offset_points), (len(self.points),2))
-            gc.lines(offset_points)
-            if self.close_path:
-                gc.close_path()
-            gc.draw_path(STROKE)
-
-            # Draw the vertices.
-            self._draw_points(gc)
+        if len(self.points) > 1:
+            with gc:
+                # Set the drawing parameters.
+                gc.set_stroke_color(self.line_color_)
+                gc.set_line_dash(self.line_dash)
+                gc.set_line_width(self.line_width)
+    
+                # Draw the path as lines.
+                gc.begin_path()
+                offset_points = [(x, y) for x, y in self.points ]
+                offset_points = resize(array(offset_points), (len(self.points),2))
+                gc.lines(offset_points)
+                if self.close_path:
+                    gc.close_path()
+                gc.draw_path(STROKE)
+    
+                # Draw the vertices.
+                self._draw_points(gc)
 
         return
 
@@ -108,5 +108,3 @@ class Line(Component):
                         gc.draw_rect((x-offset, y-offset,
                                      self.vertex_size, self.vertex_size), FILL)
         return
-
-# EOF

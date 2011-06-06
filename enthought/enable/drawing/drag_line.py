@@ -37,8 +37,7 @@ class DragLine(DrawingTool):
     def complete_draw(self, gc):
         """ Draw the completed line. """
         self.line.line_dash = None
-        with gc:
-            self.line._draw_mainlayer(gc)
+        self.line._draw_mainlayer(gc)
         return
 
     #------------------------------------------------------------------------
@@ -81,5 +80,3 @@ class DragLine(DrawingTool):
         event.handled = True
         self.request_redraw()
         return
-
-# EOF
