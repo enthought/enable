@@ -77,6 +77,8 @@ class Line(Component):
                     gc.close_path()
                 gc.draw_path(STROKE)
     
+        if len(self.points) > 0:
+            with gc:
                 # Draw the vertices.
                 self._draw_points(gc)
 
