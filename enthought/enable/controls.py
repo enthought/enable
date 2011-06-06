@@ -15,6 +15,8 @@
 #
 #-------------------------------------------------------------------------------
 
+from __future__ import with_statement
+
 # Major library imports
 import os.path
 
@@ -317,9 +319,6 @@ class Label ( Component ):
 
     def _draw ( self, gc, view_bounds, mode):
 
-        # Save the current graphics context:
-        gc.save_state()
-
         # Set up all the control variables for quick access:
         ml  = self.margin_left
         mr  = self.margin_right
@@ -339,22 +338,24 @@ class Label ( Component ):
         # Fill the background region (if required);
         bg_color = self.bg_color_
         if bg_color is not transparent_color:
-            gc.set_fill_color( bg_color )
-            gc.begin_path()
-            gc.rect( x + ml + bs, y + mb + bs,
-                     dx - ml - mr - bsd, dy - mb - mt - bsd )
-            gc.fill_path()
+            with gc:
+                gc.set_fill_color( bg_color )
+                gc.begin_path()
+                gc.rect( x + ml + bs, y + mb + bs,
+                         dx - ml - mr - bsd, dy - mb - mt - bsd )
+                gc.fill_path()
 
         # Draw the border (if required):
         if bs > 0:
             border_color = self.border_color_
             if border_color is not transparent_color:
-                gc.set_stroke_color( border_color )
-                gc.set_line_width( bs )
-                gc.begin_path()
-                gc.rect( x + ml + bsh, y + mb + bsh,
-                         dx - ml - mr - bs, dy - mb - mt - bs )
-                gc.stroke_path()
+                with gc:
+                    gc.set_stroke_color( border_color )
+                    gc.set_line_width( bs )
+                    gc.begin_path()
+                    gc.rect( x + ml + bsh, y + mb + bsh,
+                             dx - ml - mr - bs, dy - mb - mt - bs )
+                    gc.stroke_path()
 
         # Calculate the origin of the image/text box:
         text_position = self.text_position_
@@ -403,47 +404,46 @@ class Label ( Component ):
                 if image_position & VCENTER:
                    iy += (dy - mb - mt - bsd - pb - pt - idy) / 2.0
 
-        # Draw the image (if required):
-        image = self._image
-        if image is not None:
-            gc.draw_image( image, ( itx + ix, ity + iy, idx, idy ) )
-
-        # Draw the text (if required):
-        gc.set_font( self.font )
-        _text = self._text
-        _tdx  = self._tdx
-        tx   += itx
-        ty   += ity + tdy * len( _text )
-        style        = self.style_
-        shadow_color = self.shadow_color_
-        text_color   = self.color_
-        for i, text in enumerate( _text ):
-            ty -= tdy
-            _tx = tx
-            if text_position & RIGHT:
-                _tx += tdx - _tdx[i]
-            elif text_position & HCENTER:
-                _tx += (tdx - _tdx[i]) / 2.0
-            # Draw the 'shadow' text, if requested:
-            if (style != 0) and (shadow_color is not transparent_color):
-                if style == EMBOSSED:
-                    gc.set_fill_color( shadow_color )
-                    gc.set_text_position( _tx - 1.0, ty + 1.0 )
-                elif style == ENGRAVED:
-                    gc.set_fill_color( shadow_color )
-                    gc.set_text_position( _tx + 1.0, ty - 1.0 )
-                else:
-                    gc.set_fill_color( shadow_color )
-                    gc.set_text_position( _tx + 2.0, ty - 2.0 )
+        with gc:
+            # Draw the image (if required):
+            image = self._image
+            if image is not None:
+                gc.draw_image( image, ( itx + ix, ity + iy, idx, idy ) )
+    
+            # Draw the text (if required):
+            gc.set_font( self.font )
+            _text = self._text
+            _tdx  = self._tdx
+            tx   += itx
+            ty   += ity + tdy * len( _text )
+            style        = self.style_
+            shadow_color = self.shadow_color_
+            text_color   = self.color_
+            for i, text in enumerate( _text ):
+                ty -= tdy
+                _tx = tx
+                if text_position & RIGHT:
+                    _tx += tdx - _tdx[i]
+                elif text_position & HCENTER:
+                    _tx += (tdx - _tdx[i]) / 2.0
+                # Draw the 'shadow' text, if requested:
+                if (style != 0) and (shadow_color is not transparent_color):
+                    if style == EMBOSSED:
+                        gc.set_fill_color( shadow_color )
+                        gc.set_text_position( _tx - 1.0, ty + 1.0 )
+                    elif style == ENGRAVED:
+                        gc.set_fill_color( shadow_color )
+                        gc.set_text_position( _tx + 1.0, ty - 1.0 )
+                    else:
+                        gc.set_fill_color( shadow_color )
+                        gc.set_text_position( _tx + 2.0, ty - 2.0 )
+                    gc.show_text( text )
+    
+                # Draw the normal text:
+                gc.set_fill_color( text_color )
+                gc.set_text_position( _tx, ty )
                 gc.show_text( text )
 
-            # Draw the normal text:
-            gc.set_fill_color( text_color )
-            gc.set_text_position( _tx, ty )
-            gc.show_text( text )
-
-        # Restore the graphics context:
-        gc.restore_state()
 
 #-- Pickling Protocol ----------------------------------------------------------
 

@@ -1,4 +1,6 @@
 
+from __future__ import with_statement
+
 from numpy import array, pi
 
 # Enthought library imports
@@ -138,8 +140,7 @@ class Compass(Component):
             return [extent + self.hpadding, extent + self.vpadding]
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="normal"):
-        gc.save_state()
-        try:
+        with gc:
             gc.set_stroke_color(self.color_)
             gc.set_line_width(self.line_width)
             gc.translate_ctm(self.x + self.width/2, self.y + self.height/2)
@@ -180,8 +181,3 @@ class Compass(Component):
                            (-half_width, half_width),
                            (-half_width, -half_width)] )
                 gc.draw_path()
-
-        finally:
-            gc.restore_state()
-
-

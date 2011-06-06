@@ -1,4 +1,6 @@
 
+from __future__ import with_statement
+
 from enthought.enable.api import Container, Component, ColorTrait
 from enthought.kiva.constants import FILL, FILL_STROKE
 from enthought.kiva.traits.kiva_font_trait import KivaFont
@@ -49,25 +51,19 @@ class Button(Component):
         return
 
     def draw_up(self, gc, view_bounds):
-        gc.save_state()
-        try:
+        with gc:
             gc.set_fill_color(self.color_)
             gc.set_stroke_color(self.border_color_)
             gc.draw_rect((int(self.x), int(self.y), int(self.width)-1, int(self.height)-1), FILL_STROKE)
             self._draw_label(gc)
-        finally:
-            gc.restore_state()
         return
 
     def draw_down(self, gc, view_bounds):
-        gc.save_state()
-        try:
+        with gc:
             gc.set_fill_color(self.down_color_)
             gc.set_stroke_color(self.border_color_)
             gc.draw_rect((int(self.x), int(self.y), int(self.width)-1, int(self.height)-1), FILL_STROKE)
             self._draw_label(gc, color=self.down_label_color_)
-        finally:
-            gc.restore_state()
         return
 
     def _draw_label(self, gc, color=None):
@@ -230,13 +226,10 @@ class DrawingCanvas(Container):
 
     def _draw_container_background(self, gc, view_bounds=None, mode="default"):
         if self.bgcolor not in ("clear", "transparent", "none"):
-            gc.save_state()
-            gc.set_antialias(False)
-            try:
+            with gc:
+                gc.set_antialias(False)
                 gc.set_fill_color(self.bgcolor_)
                 gc.draw_rect((int(self.x), int(self.y), int(self.width)-1, int(self.height)-1), FILL)
-            finally:
-                gc.restore_state()
         return
 
     #------------------------------------------------------------------------

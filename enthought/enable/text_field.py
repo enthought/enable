@@ -1,3 +1,6 @@
+
+from __future__ import with_statement
+
 # Standard library imports
 from math import floor, sqrt
 from bisect import insort_left
@@ -315,56 +318,52 @@ class TextField(Component):
 
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
-        gc.save_state()
-
-        # Draw the text
-        gc.set_font(self._style.font)
-        gc.set_fill_color(self._style.text_color)
-        char_w, char_h = self.metrics.get_text_extent("T")[2:4]
-        char_h += self._style.line_spacing
-        lines = [ "".join(ln) for ln in self._draw_text ]
-        for i, line in enumerate(lines):
-            x = self.x + self._style.text_offset
-            if i > 0:
-                y_offset = (i+1) * char_h - self._style.line_spacing
-            else:
-                y_offset = char_h - self._style.line_spacing
-            y = self.y2 - y_offset - self._style.text_offset
-
-            # Show text at the same scale as the graphics context
-            ctm = gc.get_ctm()
-            if hasattr(ctm, "__len__") and len(ctm) == 6:
-                scale = sqrt( (ctm[0]+ctm[1]) * (ctm[0]+ctm[1]) / 2.0 + \
-                              (ctm[2]+ctm[3]) * (ctm[2]+ctm[3]) / 2.0 )
-            elif hasattr(gc, "get_ctm_scale"):
-                scale = gc.get_ctm_scale()
-            else:
-                raise RuntimeError("Unable to get scale from GC.")
-            x *= scale
-            y *= scale
-            gc.show_text_at_point(line, x, y)
-
-
-        if self._draw_cursor:
-            j, i = self._cursor_pos
-            j -= self._draw_text_ystart
-            i -= self._draw_text_xstart
-            x_offset = self.metrics.get_text_extent(lines[j][:i])[2]
-            y_offset = char_h * j
-            y = self.y2 - y_offset - self._style.text_offset
-            if not self.multiline:
-                char_h -= float(self._style.line_spacing)*.5
-
-            gc.set_line_width(self._style.cursor_width)
-            gc.set_stroke_color(self._style.cursor_color)
-            gc.begin_path()
-            x_position = self.x + x_offset + self._style.text_offset
-            gc.move_to(x_position, y)
-            gc.line_to(x_position, y - char_h)
-
-            gc.stroke_path()
-
-        gc.restore_state()
+        with gc:
+            # Draw the text
+            gc.set_font(self._style.font)
+            gc.set_fill_color(self._style.text_color)
+            char_w, char_h = self.metrics.get_text_extent("T")[2:4]
+            char_h += self._style.line_spacing
+            lines = [ "".join(ln) for ln in self._draw_text ]
+            for i, line in enumerate(lines):
+                x = self.x + self._style.text_offset
+                if i > 0:
+                    y_offset = (i+1) * char_h - self._style.line_spacing
+                else:
+                    y_offset = char_h - self._style.line_spacing
+                y = self.y2 - y_offset - self._style.text_offset
+    
+                # Show text at the same scale as the graphics context
+                ctm = gc.get_ctm()
+                if hasattr(ctm, "__len__") and len(ctm) == 6:
+                    scale = sqrt( (ctm[0]+ctm[1]) * (ctm[0]+ctm[1]) / 2.0 + \
+                                  (ctm[2]+ctm[3]) * (ctm[2]+ctm[3]) / 2.0 )
+                elif hasattr(gc, "get_ctm_scale"):
+                    scale = gc.get_ctm_scale()
+                else:
+                    raise RuntimeError("Unable to get scale from GC.")
+                x *= scale
+                y *= scale
+                gc.show_text_at_point(line, x, y)
+        
+            if self._draw_cursor:
+                j, i = self._cursor_pos
+                j -= self._draw_text_ystart
+                i -= self._draw_text_xstart
+                x_offset = self.metrics.get_text_extent(lines[j][:i])[2]
+                y_offset = char_h * j
+                y = self.y2 - y_offset - self._style.text_offset
+                if not self.multiline:
+                    char_h -= float(self._style.line_spacing)*.5
+    
+                gc.set_line_width(self._style.cursor_width)
+                gc.set_stroke_color(self._style.cursor_color)
+                gc.begin_path()
+                x_position = self.x + x_offset + self._style.text_offset
+                gc.move_to(x_position, y)
+                gc.line_to(x_position, y - char_h)
+    
+                gc.stroke_path()
 
 
     #------------------------------------------------------------------------

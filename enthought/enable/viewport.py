@@ -1,5 +1,7 @@
 """ Defines a Viewport which renders sub-areas of components """
 
+from __future__ import with_statement
+
 # Standard library imports
 from numpy import array, dot
 
@@ -179,54 +181,47 @@ class Viewport(Component):
 
             x, y = self.position
             view_x, view_y = self.view_position
-            gc.save_state()
-
-            # Clip in the viewport's space (screen space).  This ensures
-            # that the half-pixel offsets we us are actually screen pixels,
-            # and it's easier/more accurate than transforming the clip
-            # rectangle down into the component's space (especially if zoom
-            # is involved).
-            gc.clip_to_rect(x-0.5, y-0.5,
-                            self.width+1,
-                            self.height+1)
-
-            # There is a two-step transformation from the viewport's "outer"
-            # coordinates into the coordinates space of the viewed component:
-            # scaling, followed by a translation.
-            if self.enable_zoom:
-                if self.zoom != 0:
-                    gc.scale_ctm(self.zoom, self.zoom)
-                    gc.translate_ctm(x/self.zoom - view_x, y/self.zoom - view_y)
+            with gc:
+                # Clip in the viewport's space (screen space).  This ensures
+                # that the half-pixel offsets we us are actually screen pixels,
+                # and it's easier/more accurate than transforming the clip
+                # rectangle down into the component's space (especially if zoom
+                # is involved).
+                gc.clip_to_rect(x-0.5, y-0.5,
+                                self.width+1,
+                                self.height+1)
+    
+                # There is a two-step transformation from the viewport's "outer"
+                # coordinates into the coordinates space of the viewed component:
+                # scaling, followed by a translation.
+                if self.enable_zoom:
+                    if self.zoom != 0:
+                        gc.scale_ctm(self.zoom, self.zoom)
+                        gc.translate_ctm(x/self.zoom - view_x, y/self.zoom - view_y)
+                    else:
+                        raise RuntimeError("Viewport zoomed out too far.")
                 else:
-                    raise RuntimeError("Viewport zoomed out too far.")
-            else:
-                gc.translate_ctm(x - view_x, y - view_y)
+                    gc.translate_ctm(x - view_x, y - view_y)
+    
+                # Now transform the passed-in view_bounds; this is not the same thing as
+                # self.view_bounds!
+                if view_bounds:
+                    # Find the intersection rectangle of the viewport with the view_bounds,
+                    # and transform this into the component's space.
+                    clipped_view = intersect_bounds(self.position + self.bounds, view_bounds)
+                    if clipped_view != empty_rectangle:
+                        # clipped_view and self.position are in the space of our parent
+                        # container.  we know that self.position -> view_x,view_y
+                        # in the coordinate space of our component.  So, find the
+                        # vector from self.position to clipped_view, then add this to
+                        # view_x and view_y to generate the transformed coordinates
+                        # of clipped_view in our component's space.
+                        offset = array(clipped_view[:2]) - array(self.position)
+                        new_bounds = ((offset[0]/self.zoom + view_x),
+                                      (offset[1]/self.zoom + view_y),
+                                      clipped_view[2] / self.zoom, clipped_view[3] / self.zoom)
+                        self.component.draw(gc, new_bounds, mode=mode)
 
-            # Now transform the passed-in view_bounds; this is not the same thing as
-            # self.view_bounds!
-            if view_bounds:
-                # Find the intersection rectangle of the viewport with the view_bounds,
-                # and transform this into the component's space.
-                clipped_view = intersect_bounds(self.position + self.bounds, view_bounds)
-                if clipped_view != empty_rectangle:
-                    # clipped_view and self.position are in the space of our parent
-                    # container.  we know that self.position -> view_x,view_y
-                    # in the coordinate space of our component.  So, find the
-                    # vector from self.position to clipped_view, then add this to
-                    # view_x and view_y to generate the transformed coordinates
-                    # of clipped_view in our component's space.
-                    offset = array(clipped_view[:2]) - array(self.position)
-                    new_bounds = ((offset[0]/self.zoom + view_x),
-                                  (offset[1]/self.zoom + view_y),
-                                  clipped_view[2] / self.zoom, clipped_view[3] / self.zoom)
-                    self.component.draw(gc, new_bounds, mode=mode)
-                else:
-                    pass
-
-            gc.restore_state()
-
-        else:
-            pass
         return
 
     def _do_layout(self):

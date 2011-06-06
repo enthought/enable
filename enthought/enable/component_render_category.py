@@ -7,6 +7,8 @@ NOTE: This means that you should import enable.Component from enable.api, and
 not directly from component.py.
 """
 
+from __future__ import with_statement
+
 # Enthought library imports
 from enthought.traits.api import Any, Bool, Category, Enum, Instance, \
                                  Int, List
@@ -153,15 +155,16 @@ class ComponentRenderCategory(Category, AbstractComponent):
             return
 
         border_width = self.border_width
-        gc.save_state()
-        gc.set_line_width(border_width)
-        gc.set_line_dash(self.border_dash_)
-        gc.set_stroke_color(self.border_color_)
-        gc.begin_path()
-        gc.rect(self.x - border_width/2.0, self.y - border_width/2.0,
-                self.width + 2*border_width - 1, self.height + 2*border_width - 1)
-        gc.stroke_path()
-        gc.restore_state()
+        with gc:
+            gc.set_line_width(border_width)
+            gc.set_line_dash(self.border_dash_)
+            gc.set_stroke_color(self.border_color_)
+            gc.begin_path()
+            gc.rect(self.x - border_width/2.0,
+                    self.y - border_width/2.0,
+                    self.width + 2*border_width - 1,
+                    self.height + 2*border_width - 1)
+            gc.stroke_path()
         return
 
     def _draw_background(self, gc, view_bounds=None, mode="default"):
@@ -170,7 +173,3 @@ class ComponentRenderCategory(Category, AbstractComponent):
             gc.rect(*(self.position + self.bounds))
             gc.fill_path()
         return
-
-
-
-# EOF

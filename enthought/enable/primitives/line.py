@@ -1,5 +1,7 @@
 """ A line segment component. """
 
+from __future__ import with_statement
+
 from numpy import array, resize
 
 # Enthought library imports.
@@ -59,9 +61,8 @@ class Line(Component):
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         "Draw this line in the specified graphics context"
-        gc.save_state()
 
-        try:
+        with gc:
             # Set the drawing parameters.
             gc.set_stroke_color(self.line_color_)
             gc.set_line_dash(self.line_dash)
@@ -78,8 +79,7 @@ class Line(Component):
 
             # Draw the vertices.
             self._draw_points(gc)
-        finally:
-            gc.restore_state()
+
         return
 
     #--------------------------------------------------------------------------
@@ -91,8 +91,7 @@ class Line(Component):
 
         # Shortcut out if we would draw transparently.
         if self.vertex_color_[3] != 0:
-            gc.save_state()
-            try:
+            with gc:
                 gc.set_fill_color(self.vertex_color_)
                 gc.set_line_dash(None)
 
@@ -108,8 +107,6 @@ class Line(Component):
                     for x, y in offset_points:
                         gc.draw_rect((x-offset, y-offset,
                                      self.vertex_size, self.vertex_size), FILL)
-            finally:
-                gc.restore_state()
         return
 
 # EOF

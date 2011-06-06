@@ -1,5 +1,7 @@
 """ A drag drawn polygon. """
 
+from __future__ import with_statement
+
 from enthought.enable.primitives.api import Polygon
 from enthought.enable.api import Pointer
 from enthought.pyface.action.api import MenuManager
@@ -57,10 +59,9 @@ class DragPolygon(DrawingTool):
 
     def complete_draw ( self, gc ):
         """ Draw the completed polygon. """
-        gc.save_state()
-        self.poly.border_dash = None
-        self.poly._draw_closed( gc )
-        gc.restore_state()
+        with gc:
+            self.poly.border_dash = None
+            self.poly._draw_closed(gc)
         return
 
     def complete_left_down ( self, event ):
@@ -83,11 +84,9 @@ class DragPolygon(DrawingTool):
     def drawing_draw ( self, gc ):
         """ Draw the polygon while in 'drawing' state. """
 
-        gc.save_state()
-        self.poly.border_dash = (4.0, 2.0)
-        self.poly._draw_open( gc )
-        gc.restore_state()
-
+        with gc:
+            self.poly.border_dash = (4.0, 2.0)
+            self.poly._draw_open(gc)
         return
 
     def drawing_left_up ( self, event ):

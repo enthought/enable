@@ -1,5 +1,7 @@
 """ A drag drawn line. """
 
+from __future__ import with_statement
+
 from enthought.enable.api import Line
 from enthought.traits.api import Instance
 
@@ -35,9 +37,8 @@ class DragLine(DrawingTool):
     def complete_draw(self, gc):
         """ Draw the completed line. """
         self.line.line_dash = None
-        gc.save_state()
-        self.line._draw_mainlayer(gc)
-        gc.restore_state()
+        with gc:
+            self.line._draw_mainlayer(gc)
         return
 
     #------------------------------------------------------------------------
