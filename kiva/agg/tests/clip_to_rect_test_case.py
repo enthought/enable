@@ -23,7 +23,7 @@ from numpy import array, transpose
 import nose
 
 from kiva.agg import GraphicsContextArray
-from enthought import kiva
+import kiva
 
 from test_utils import Utils
 

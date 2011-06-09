@@ -3,7 +3,7 @@ import time
 from numpy import array
 
 from kiva import agg
-from enthought import kiva
+import kiva
 
 def dash(sz=(1000,1000)):
     gc = agg.GraphicsContextArray(sz)

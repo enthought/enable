@@ -1,4 +1,4 @@
-from enthought import kiva
+import kiva
 from kiva import agg
 
 def add_star(gc):

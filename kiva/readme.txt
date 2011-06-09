@@ -8,7 +8,7 @@ import these all together with a wildcard:
 
 If you prefer to get the constants by themselves, you can also do a:
 
-    from enthought import kiva
+    import kiva
 
 and this will allow you to refer to them as kiva.JOIN_MITER, kiva.CAP_ROUND,
 etc.
