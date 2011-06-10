@@ -9,11 +9,11 @@ def configuration(parent_package='',top_path=None):
     config = Configuration('quartz', parent_package, top_path)
 
     wx_info = get_info('wx')
-    # Find the version number of wx.
-    wx_version = '2.6'
+    # Find the release number of wx.
+    wx_release = '2.6'
     for macro, value in wx_info['define_macros']:
         if macro.startswith('WX_RELEASE_'):
-            wx_version = macro[len('WX_RELEASE_'):].replace('_', '.')
+            wx_release = macro[len('WX_RELEASE_'):].replace('_', '.')
             break
 
     def generate_c_from_cython(extension, build_dir):
@@ -66,7 +66,7 @@ def configuration(parent_package='',top_path=None):
                                     ]
                          )
 
-    if wx_version == '2.6':
+    if wx_release == '2.6':
         macport_cpp = config.paths('macport26.cpp')[0]
     else:
         macport_cpp = config.paths('macport28.cpp')[0]
@@ -76,9 +76,9 @@ def configuration(parent_package='',top_path=None):
             print 'No %s will be built for this platform.' % (extension.name)
             return None
 
-        elif wx_version not in ('2.6', '2.8'):
+        elif wx_release not in ('2.6', '2.8'):
             print ('No %s will be built because we do not recognize '
-                   'wx version %s' % (extension.name, wx_version))
+                   'wx version %s' % (extension.name, wx_release))
             return None
 
         return macport_cpp
@@ -91,4 +91,3 @@ def configuration(parent_package='',top_path=None):
                          **wx_info
                          )
     return config
-
