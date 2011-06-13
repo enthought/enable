@@ -29,7 +29,7 @@ from enable.savage.svg.document import SVGDocument
 
 from traitsui.qt4.editor import Editor
 
-from traits.qt import QtCore, QtSvg
+from pyface.qt import QtCore, QtSvg
 
 #-------------------------------------------------------------------------------
 #  'SVGEditor' class:

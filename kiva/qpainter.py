@@ -20,7 +20,7 @@ import numpy as np
 import warnings
 
 # Major package imports.
-from traits.qt import QtCore, QtGui
+from pyface.qt import QtCore, QtGui
 
 # Local imports.
 from arc_conversion import arc_to_tangent_points

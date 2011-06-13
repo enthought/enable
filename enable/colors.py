@@ -242,7 +242,7 @@ if ETSConfig.toolkit == 'wx':
                        convert_from_wx_color, editor=ColorEditorFactory)
 
 elif ETSConfig.toolkit == 'qt4':
-    from traits.qt import QtGui
+    from pyface.qt import QtGui
     from traitsui.qt4.color_editor \
                 import ToolkitEditorFactory as StandardColorEditorFactory
 

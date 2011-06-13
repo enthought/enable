@@ -13,7 +13,7 @@ from __future__ import absolute_import
 
 import warnings
 
-from traits.qt import QtCore
+from pyface.qt import QtCore
 
 from ..toolkit_constants import key_names, pointer_names
 

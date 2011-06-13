@@ -15,7 +15,7 @@
 #------------------------------------------------------------------------------
 
 # Qt imports.
-from traits.qt import QtCore, QtGui, QtOpenGL
+from pyface.qt import QtCore, QtGui, QtOpenGL
 
 # Enthought library imports.
 from enable.abstract_window import AbstractWindow

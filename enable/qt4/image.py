@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 #------------------------------------------------------------------------------
 
-from traits.qt import QtCore, QtGui
+from pyface.qt import QtCore, QtGui
 from kiva.agg import CompiledPath, GraphicsContextSystem as GraphicsContext
 
 from base_window import BaseWindow

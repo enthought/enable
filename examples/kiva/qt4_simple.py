@@ -6,7 +6,7 @@ from numpy import array
 import sys
 
 try:
-    from traits.qt import QtGui
+    from pyface.qt import QtGui
 except ImportError:
     raise Exception('PyQt4 needs to be installed to run this example')
 

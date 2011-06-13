@@ -26,7 +26,7 @@ import os.path
 from traits.api import Bool, Any, Str
 from traitsui.qt4.editor import Editor
 
-from traits.qt import QtCore, QtGui
+from pyface.qt import QtCore, QtGui
 
 # add the Qt's installed dir plugins to the library path so the iconengines
 # plugin will be found:
