@@ -19,7 +19,7 @@ from enable.abstract_window import AbstractWindow
 from .constants import DRAG_RESULTS_MAP, POINTER_MAP, KEY_MAP
 
 try:
-    from traits.util.wx.drag_and_drop import clipboard, PythonDropTarget
+    from pyface.wx.drag_and_drop import clipboard, PythonDropTarget
 except ImportError:
     clipboard = None
     PythonDropTarget = None
