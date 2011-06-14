@@ -109,39 +109,16 @@ class PygletWindow(window.Window):
     #-------------------------------------------------------------------------
 
     def on_key_press(self, symbol, modifiers):
-        return self._on_key_updown(symbol, modifiers, down=True)
+        # use the bare tuple as the event
+        return self._on_key_pressed((symbol, modifiers))
 
     def on_key_release(self, symbol, modifiers):
-        return self._on_key_updown(symbol, modifiers)
-
-    def _on_key_updown(self, symbol, modifiers, down=True):
-        enable_win = self.enable_window
-        # XXX: For some reason, modifiers doesn't seem to be set right on OS X
-        #event = PygletMouseEvent(0, 0, modifiers=modifiers)
-        #enable_win.shift_pressed = bool(down & event.shift_pressed)
-        #enable_win.ctrl_pressed = bool(down & event.ctrl_pressed)
-        #enable_win.alt_pressed = bool(down & event.alt_pressed)
-        keys = self.key_state
-        enable_win.alt_pressed = keys[key.LALT] | keys[key.RALT]
-        enable_win.control_pressed = keys[key.LCTRL] | keys[key.RCTRL]
-        enable_win.shift_pressed = keys[key.LSHIFT] | keys[key.RSHIFT]
-
-        if symbol in KEY_MAP and symbol not in TEXT_KEYS:
-            if down:
-                event_name = "key_pressed"
-            else:
-                event_name = "key_released"
-            self._dispatch_key_event(KEY_MAP[symbol], event_name)
-            # Return True so that the KeyStateHandler doesn't get this event
-            return True
-        else:
-            # Let KeyStateHandler deal with this event
-            return False
+        return self._on_key_released((symbol, modifiers))
 
     def on_text(self, text):
-        self._dispatch_key_event(text)
-
-    def _dispatch_key_event(self, char_or_keyname, event_name="key_pressed"):
+        self._on_character(text)
+        
+    def _create_key_event(self, event_type, event):
         if self.enable_window.focus_owner is None:
             focus_owner = self.enable_window.component
         else:
@@ -150,21 +127,26 @@ class PygletWindow(window.Window):
         if focus_owner is None:
             return
 
-        if len(char_or_keyname) == 1:
-            code = ord(char_or_keyname)
-            if code in ASCII_CONTROL_KEYS:
-                char_or_keyname = ASCII_CONTROL_KEYS[code]
+        if event_type == 'character':
+            key = event
+            if not key:
+                return None
+        else:
+            key_code = event[0]
+            if key_code in KEY_MAP:
+                key = KEY_MAP.get(key_code)
+            else:
+                key = key_code
 
-        keys = self.key_state
-        enable_event = KeyEvent(character = char_or_keyname,
-                          alt_down = keys[key.LALT] | keys[key.RALT],
-                          control_down = keys[key.LCTRL] | keys[key.RCTRL],
-                          shift_down = keys[key.LSHIFT] | keys[key.RSHIFT],
-                          x = self._mouse_x,
-                          y = self._mouse_y,
-                          window = self.enable_window)
-        focus_owner.dispatch(enable_event, event_name)
-        return True
+        return KeyEvent(
+            event_type = event_type,
+            character = key,
+            alt_down = keys[key.LALT] | keys[key.RALT],
+            control_down = keys[key.LCTRL] | keys[key.RCTRL],
+            shift_down = keys[key.LSHIFT] | keys[key.RSHIFT],
+            x = self._mouse_x,
+            y = self._mouse_y,
+            window = self.enable_window)        
 
     def on_text_motion(self, motion):
         # TODO: See notes.

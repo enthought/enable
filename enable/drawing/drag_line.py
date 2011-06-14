@@ -1,5 +1,7 @@
 """ A drag drawn line. """
 
+from __future__ import with_statement
+
 from enable.api import Line
 from traits.api import Instance
 
@@ -35,9 +37,7 @@ class DragLine(DrawingTool):
     def complete_draw(self, gc):
         """ Draw the completed line. """
         self.line.line_dash = None
-        gc.save_state()
         self.line._draw_mainlayer(gc)
-        gc.restore_state()
         return
 
     #------------------------------------------------------------------------
@@ -80,5 +80,3 @@ class DragLine(DrawingTool):
         event.handled = True
         self.request_redraw()
         return
-
-# EOF

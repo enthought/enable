@@ -2,6 +2,8 @@
 TextGrid is a text grid widget that is meant to be used with Numpy.
 """
 
+from __future__ import with_statement
+
 # Major library imports
 from numpy import arange, array, dstack, repeat, newaxis
 
@@ -100,48 +102,47 @@ class TextGrid(Component):
         padding = self.cell_padding
         border_width = self.cell_border_width
 
-        gc.save_state()
-        gc.set_stroke_color(text_color)
-        gc.set_fill_color(text_color)
-        gc.set_font(self.font)
-        gc.set_text_position(0,0)
+        with gc:
+            gc.set_stroke_color(text_color)
+            gc.set_fill_color(text_color)
+            gc.set_font(self.font)
+            gc.set_text_position(0,0)
+    
+            width, height = self._get_actual_cell_size()
+            numrows, numcols = self.string_array.shape
+    
+            # draw selected backgrounds
+            # XXX should this be in the background layer?
+            for j, row in enumerate(self.string_array):
+                for i, text in enumerate(row):
+                    if (i,j) in self.selected_cells:
+                        gc.set_fill_color(highlight_bgcolor)
+                        ll_x, ll_y = self._cached_cell_coords[i,j+1]
+                        # render this a bit big, but covered by border
+                        gc.rect(ll_x, ll_y,
+                            width+2*padding + border_width,
+                            height+2*padding + border_width)
+                        gc.fill_path()
+                        gc.set_fill_color(text_color)
+    
+            self._draw_grid_lines(gc)
+    
+            for j, row in enumerate(self.string_array):
+                for i, text in enumerate(row):
+                    x,y = self._cached_cell_coords[i,j+1] + self._text_offset + \
+                        padding + border_width/2.0
+    
+                    if (i,j) in self.selected_cells:
+                        gc.set_fill_color(highlight_color)
+                        gc.set_stroke_color(highlight_color)
+                        gc.set_text_position(x, y)
+                        gc.show_text(text)
+                        gc.set_stroke_color(text_color)
+                        gc.set_fill_color(text_color)
+                    else:
+                        gc.set_text_position(x, y)
+                        gc.show_text(text)
 
-        width, height = self._get_actual_cell_size()
-        numrows, numcols = self.string_array.shape
-
-        # draw selected backgrounds
-        # XXX should this be in the background layer?
-        for j, row in enumerate(self.string_array):
-            for i, text in enumerate(row):
-                if (i,j) in self.selected_cells:
-                    gc.set_fill_color(highlight_bgcolor)
-                    ll_x, ll_y = self._cached_cell_coords[i,j+1]
-                    # render this a bit big, but covered by border
-                    gc.rect(ll_x, ll_y,
-                        width+2*padding + border_width,
-                        height+2*padding + border_width)
-                    gc.fill_path()
-                    gc.set_fill_color(text_color)
-
-        self._draw_grid_lines(gc)
-
-        for j, row in enumerate(self.string_array):
-            for i, text in enumerate(row):
-                x,y = self._cached_cell_coords[i,j+1] + self._text_offset + \
-                    padding + border_width/2.0
-
-                if (i,j) in self.selected_cells:
-                    gc.set_fill_color(highlight_color)
-                    gc.set_stroke_color(highlight_color)
-                    gc.set_text_position(x, y)
-                    gc.show_text(text)
-                    gc.set_stroke_color(text_color)
-                    gc.set_fill_color(text_color)
-                else:
-                    gc.set_text_position(x, y)
-                    gc.show_text(text)
-
-        gc.restore_state()
         return
 
     #------------------------------------------------------------------------

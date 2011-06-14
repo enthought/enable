@@ -1,4 +1,6 @@
 
+from __future__ import with_statement
+
 from kiva.constants import FILL
 
 # Relative imports
@@ -64,20 +66,19 @@ class EnableGCMixin(object):
         "Draws an image 'stretched' to fit a specified area"
         idx  = image.width()
         idy  = image.height()
-        self.save_state()
-        self.clip_to_rect(x, y, dx, dy)
-        cx, cy, cdx, cdy = x, y, dx, dy
-        yt = cy + cdy
-        xr = cx + cdx
-        x += (int(cx - x) / idx) * idx
-        y += (int(cy - y) / idy) * idy
-        while y < yt:
-            x0 = x
-            while x0 < xr:
-                self.draw_image(image,(x0, y, idx, idy))
-                x0 += idx
-            y += idy
-        self.restore_state()
+        with self:
+            self.clip_to_rect(x, y, dx, dy)
+            cx, cy, cdx, cdy = x, y, dx, dy
+            yt = cy + cdy
+            xr = cx + cdx
+            x += (int(cx - x) / idx) * idx
+            y += (int(cy - y) / idy) * idy
+            while y < yt:
+                x0 = x
+                while x0 < xr:
+                    self.draw_image(image,(x0, y, idx, idy))
+                    x0 += idx
+                y += idy
         return
 
 # Define a GraphicsContextEnable that subclasses whatever the Kiva backend's

@@ -1,5 +1,7 @@
 """ Defines the basic Container class """
 
+from __future__ import with_statement
+
 # Major library imports
 import warnings
 
@@ -312,8 +314,7 @@ class Container(Component):
         # Now transform coordinates and draw the children
         visible_components = self._get_visible_components(new_bounds)
         if visible_components:
-            gc.save_state()
-            try:
+            with gc:
                 gc.translate_ctm(*self.position)
                 for component in visible_components:
                     if component.unified_draw:
@@ -324,8 +325,6 @@ class Container(Component):
                             component._draw(gc, new_bounds, mode)
                     else:
                         component._dispatch_draw(layer, gc, new_bounds, mode)
-            finally:
-                gc.restore_state()
 
         # The container's annotation and overlay layers draw over those of
         # its components.
@@ -338,6 +337,7 @@ class Container(Component):
                 my_handler(gc, view_bounds, mode)
 
         return
+
     def _draw_container(self, gc, mode="default"):
         "Draw the container background in a specified graphics context"
         pass
@@ -642,15 +642,14 @@ class Container(Component):
         This method is preserved for backwards compatibility. Overrides
         the implementation in Component.
         """
-        gc.save_state()
-        gc.set_antialias(False)
-
-        self._draw_container(gc, mode)
-        self._draw_background(gc, view_bounds, mode)
-        self._draw_underlay(gc, view_bounds, mode)
-        self._draw_children(gc, view_bounds, mode) #This was children_draw_mode
-        self._draw_overlays(gc, view_bounds, mode)
-        gc.restore_state()
+        with gc:
+            gc.set_antialias(False)
+    
+            self._draw_container(gc, mode)
+            self._draw_background(gc, view_bounds, mode)
+            self._draw_underlay(gc, view_bounds, mode)
+            self._draw_children(gc, view_bounds, mode) #This was children_draw_mode
+            self._draw_overlays(gc, view_bounds, mode)
         return
 
     def _draw_children(self, gc, view_bounds=None, mode="normal"):
@@ -659,8 +658,7 @@ class Container(Component):
         if new_bounds == empty_rectangle:
             return
 
-        gc.save_state()
-        try:
+        with gc:
             gc.set_antialias(False)
             gc.translate_ctm(*self.position)
             for component in self.components:
@@ -669,15 +667,6 @@ class Container(Component):
                                            component.outer_bounds, new_bounds)
                     if tmp == empty_rectangle:
                         continue
-
-                gc.save_state()
-                try:
+                with gc:
                     component.draw(gc, new_bounds, mode)
-                finally:
-                    gc.restore_state()
-        finally:
-            gc.restore_state()
         return
-
-
-### EOF

@@ -1,5 +1,8 @@
 """ Defines the Label class.
 """
+
+from __future__ import with_statement
+
 # Major library imports
 from math import pi
 from numpy import asarray
@@ -73,38 +76,36 @@ class Label(Component):
 
     def _calc_line_positions(self, gc):
         if not self._position_cache_valid:
-            gc.save_state()
-            gc.set_font(self.font)
-            # The bottommost line starts at postion (0,0).
-            x_pos = []
-            y_pos = []
-            self._bounding_box = [0,0]
-            margin = self.margin
-            prev_y_pos = margin
-            prev_y_height = -self.line_spacing
-            max_width = 0
-            for line in self.text.split("\n")[::-1]:
-                if line != "":
-                    (width, height, descent, leading) = gc.get_full_text_extent(line)
-                    if width > max_width:
-                        max_width = width
-                    new_y_pos = prev_y_pos + prev_y_height - descent + self.line_spacing
-                else:
-                    # For blank lines, we use the height of the previous line, if there
-                    # is one.  The width is 0.
-                    leading = 0
-                    if prev_y_height != -self.line_spacing:
-                        new_y_pos = prev_y_pos + prev_y_height + self.line_spacing
-                        height = prev_y_height
+            with gc:
+                gc.set_font(self.font)
+                # The bottommost line starts at postion (0,0).
+                x_pos = []
+                y_pos = []
+                self._bounding_box = [0,0]
+                margin = self.margin
+                prev_y_pos = margin
+                prev_y_height = -self.line_spacing
+                max_width = 0
+                for line in self.text.split("\n")[::-1]:
+                    if line != "":
+                        (width, height, descent, leading) = gc.get_full_text_extent(line)
+                        if width > max_width:
+                            max_width = width
+                        new_y_pos = prev_y_pos + prev_y_height - descent + self.line_spacing
                     else:
-                        new_y_pos = prev_y_pos
-                        height = 0
-                x_pos.append(-leading + margin)
-                y_pos.append(new_y_pos)
-                prev_y_pos = new_y_pos
-                prev_y_height = height
-            gc.restore_state()
-
+                        # For blank lines, we use the height of the previous line, if there
+                        # is one.  The width is 0.
+                        leading = 0
+                        if prev_y_height != -self.line_spacing:
+                            new_y_pos = prev_y_pos + prev_y_height + self.line_spacing
+                            height = prev_y_height
+                        else:
+                            new_y_pos = prev_y_pos
+                            height = 0
+                    x_pos.append(-leading + margin)
+                    y_pos.append(new_y_pos)
+                    prev_y_pos = new_y_pos
+                    prev_y_height = height
 
             width = max_width + 2*margin + 2*self.border_width
             height = prev_y_pos + prev_y_height + margin + 2*self.border_width
@@ -171,8 +172,7 @@ class Label(Component):
         # temp modified for only one line
 
         self._calc_line_positions(gc)
-        try:
-            gc.save_state()
+        with gc:
             gc.translate_ctm(*self.position)
 
             # Draw border and fill background
@@ -219,8 +219,7 @@ class Label(Component):
 
                 gc.show_text(line)
                 gc.translate_ctm(-x_offset, -y_offset)
-        finally:
-            gc.restore_state()
+
         return
 
     def _font_changed(self):

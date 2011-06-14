@@ -1,4 +1,6 @@
 
+from __future__ import with_statement
+
 from numpy import linspace, zeros
 
 # Enthought library imports
@@ -360,45 +362,44 @@ class Slider(Component):
 
 
     def _render_marker(self, gc, point, size, marker, custom_path):
-        gc.save_state()
-        gc.begin_path()
-        if marker.draw_mode == STROKE:
-            gc.set_stroke_color(self.slider_color_)
-            gc.set_line_width(self.slider_thickness)
-        else:
-            gc.set_fill_color(self.slider_color_)
-            gc.set_stroke_color(self.slider_border_)
-            gc.set_line_width(self.slider_outline_width)
-
-        if hasattr(gc, "draw_marker_at_points") and \
-                (marker.__class__ != CustomMarker) and \
-                (gc.draw_marker_at_points([point], size, marker.kiva_marker) != 0):
-                    pass
-        elif hasattr(gc, "draw_path_at_points"):
-            if marker.__class__ != CustomMarker:
-                path = gc.get_empty_path()
-                marker.add_to_path(path, size)
-                mode = marker.draw_mode
+        with gc:
+            gc.begin_path()
+            if marker.draw_mode == STROKE:
+                gc.set_stroke_color(self.slider_color_)
+                gc.set_line_width(self.slider_thickness)
             else:
-                path = custom_path
-                mode = STROKE
-            if not marker.antialias:
-                gc.set_antialias(False)
-            gc.draw_path_at_points([point], path, mode)
-        else:
-            if not marker.antialias:
-                gc.set_antialias(False)
-            if marker.__class__ != CustomMarker:
-                gc.translate_ctm(*point)
-                # Kiva GCs have a path-drawing interface
-                marker.add_to_path(gc, size)
-                gc.draw_path(marker.draw_mode)
+                gc.set_fill_color(self.slider_color_)
+                gc.set_stroke_color(self.slider_border_)
+                gc.set_line_width(self.slider_outline_width)
+    
+            if hasattr(gc, "draw_marker_at_points") and \
+                    (marker.__class__ != CustomMarker) and \
+                    (gc.draw_marker_at_points([point], size, marker.kiva_marker) != 0):
+                        pass
+            elif hasattr(gc, "draw_path_at_points"):
+                if marker.__class__ != CustomMarker:
+                    path = gc.get_empty_path()
+                    marker.add_to_path(path, size)
+                    mode = marker.draw_mode
+                else:
+                    path = custom_path
+                    mode = STROKE
+                if not marker.antialias:
+                    gc.set_antialias(False)
+                gc.draw_path_at_points([point], path, mode)
             else:
-                path = custom_path
-                gc.translate_ctm(*point)
-                gc.add_path(path)
-                gc.draw_path(STROKE)
-        gc.restore_state()
+                if not marker.antialias:
+                    gc.set_antialias(False)
+                if marker.__class__ != CustomMarker:
+                    gc.translate_ctm(*point)
+                    # Kiva GCs have a path-drawing interface
+                    marker.add_to_path(gc, size)
+                    gc.draw_path(marker.draw_mode)
+                else:
+                    path = custom_path
+                    gc.translate_ctm(*point)
+                    gc.add_path(path)
+                    gc.draw_path(STROKE)
 
 
     #------------------------------------------------------------------------

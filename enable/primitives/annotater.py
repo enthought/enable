@@ -3,6 +3,8 @@ Define an Annotater component that allows a user to annotate an underlying
 component
 """
 
+from __future__ import with_statement
+
 from traits.api import Event, Trait, TraitPrefixList
 from traitsui.api import Group, View
 
@@ -62,15 +64,14 @@ class Annotater(Component):
     def _draw (self, gc):
         "Draw the contents of the control"
         if self._start_x is not None:
-            gc.save_state()
-            gc.set_fill_color(self.color_)
-            gc.begin_path()
-            gc.rect(min(self._start_x, self._cur_x),
-                     min(self._start_y, self._cur_y),
-                     abs(self._start_x - self._cur_x),
-                     abs(self._start_y - self._cur_y))
-            gc.fill_path()
-            gc.restore_state()
+            with gc:
+                gc.set_fill_color(self.color_)
+                gc.begin_path()
+                gc.rect(min(self._start_x, self._cur_x),
+                         min(self._start_y, self._cur_y),
+                         abs(self._start_x - self._cur_x),
+                         abs(self._start_y - self._cur_y))
+                gc.fill_path()
         return
 
 # EOF

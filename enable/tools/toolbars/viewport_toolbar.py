@@ -1,3 +1,6 @@
+
+from __future__ import with_statement
+
 # Library imports
 
 # Enthought Library imports
@@ -72,12 +75,9 @@ class ViewportToolbar(Container, AbstractOverlay):
     def overlay(self, other_component, gc, view_bounds=None, mode="normal"):
         c = other_component
         self.do_layout(component=c)
-        gc.save_state()
-        try:
+        with gc:
             gc.clip_to_rect(c.x, c.y, c.width, c.height)
             Container._draw(self, gc, view_bounds)
-        finally:
-            gc.restore_state()
         return
 
     def add_button(self, button):

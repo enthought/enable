@@ -259,16 +259,16 @@ namespace kiva {
         from kiva import fonttools
 
         def handle_unicode(text):
-            "Returns a latin1 encoded 8-bit string from 'text'"
-            # For now we just deal with unicode by converting to latin1
+            "Returns a utf8 encoded 8-bit string from 'text'"
+            # For now we just deal with unicode by converting to utf8
             # Later we can add full-blown support with wchar_t/Py_UNICODE
             # typemaps etc.
             try:
                 if isinstance(text, unicode):
-                    text = text.encode("latin1")
+                    text = text.encode("utf8")
                 return text
             except:
-                raise UnicodeError, "Error encoding text to latin1."
+                raise UnicodeError, "Error encoding text to utf8."
     %}
 
     void cleanup_font_threading_primitives();

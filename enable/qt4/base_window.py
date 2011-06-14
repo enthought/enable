@@ -63,9 +63,19 @@ class _QtWindowHandler(object):
                 component.outer_y = 0
                 component.outer_height = dy
 
+    #------------------------------------------------------------------------
+    # Qt Keyboard event handlers
+    #------------------------------------------------------------------------
+
+    def keyPressEvent(self, event):
+        if self._enable_window:
+            if not self._enable_window._on_key_pressed(event):
+                # for consistency with wx, we only generate character events if key_pressed not handled
+                self._enable_window._on_character(event)
+
     def keyReleaseEvent(self, event):
         if self._enable_window:
-            self._enable_window._handle_key_event(event)
+            self._enable_window._on_key_released(event)
 
     #------------------------------------------------------------------------
     # Qt Mouse event handlers
@@ -135,6 +145,9 @@ class _QtWindow(QtGui.QWidget):
     def resizeEvent(self, event):
         self.handler.resizeEvent(event)
 
+    def keyPressEvent(self, event):
+        self.handler.keyPressEvent(event)
+
     def keyReleaseEvent(self, event):
         self.handler.keyReleaseEvent(event)
 
@@ -188,6 +201,9 @@ class _QtGLWindow(QtOpenGL.QGLWidget):
     def resizeEvent(self, event):
         super(_QtGLWindow, self).resizeEvent(event)
         self.handler.resizeEvent(event)
+
+    def keyPressEvent(self, event):
+        self.handler.keyPressEvent(event)
 
     def keyReleaseEvent(self, event):
         self.handler.keyReleaseEvent(event)
@@ -261,7 +277,7 @@ class _Window(AbstractWindow):
         # Nothing needed with Qt.
         pass
     
-    def _create_key_event(self, event):
+    def _create_key_event(self, event_type, event):
         focus_owner = self.focus_owner
 
         if focus_owner is None:
@@ -271,22 +287,25 @@ class _Window(AbstractWindow):
                 event.ignore()
                 return None
 
-        # Convert the keypress to a standard enable key if possible, otherwise
-        # to text.
-        key = KEY_MAP.get(event.key())
-
-        if key is None:
+        if event_type == 'character':
             key = unicode(event.text())
+        else:
+            # Convert the keypress to a standard enable key if possible, otherwise
+            # to text.
+            key_code = event.key()
+            key = KEY_MAP.get(key_code)    
+            if key is None:
+                key = unichr(key_code).lower()
 
-            if not key:
-                return None
+        if not key:
+            return None
 
         # Use the last-seen mouse position as the coordinates of this event.
         x, y = self.control.last_mouse_pos
 
         modifiers = event.modifiers()
 
-        return KeyEvent(character=key, x=x,
+        return KeyEvent(event_type=event_type, character=key, x=x,
                         y=self._flip_y(y),
                         alt_down=bool(modifiers & QtCore.Qt.AltModifier),
                         shift_down=bool(modifiers & QtCore.Qt.ShiftModifier),
@@ -360,6 +379,10 @@ class _Window(AbstractWindow):
 
     def _set_focus(self):
         self.control.setFocus()
+
+    def _on_key_pressed(self, event):
+        return self._handle_key_event('key_pressed', event)
+            
 
     #------------------------------------------------------------------------
     # Private methods

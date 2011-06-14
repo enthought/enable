@@ -1,5 +1,7 @@
 """ Defines the Component class """
 
+from __future__ import with_statement
+
 # Enthought library imports
 from traits.api \
     import Any, Bool, Delegate, Enum, Float, Instance, Int, List, \
@@ -457,42 +459,41 @@ class Component(CoordinateBox, Interactor):
         marker_size : integer
             Size, in pixels, of "handle" markers on the selection box
         """
-        gc.save_state()
 
-        gc.set_line_width(width)
-        gc.set_antialias(False)
-        x,y = position
-        x += inset
-        y += inset
-        width, height = bounds
-        width -= 2*inset
-        height -= 2*inset
-        rect = (x, y, width, height)
-
-        gc.set_stroke_color(bgcolor)
-        gc.set_line_dash(None)
-        gc.draw_rect(rect, STROKE)
-
-        gc.set_stroke_color(color)
-        gc.set_line_dash(dash)
-        gc.draw_rect(rect, STROKE)
-
-        if marker_size > 0:
-            gc.set_fill_color(bgcolor)
-            half_y = y + height/2.0
-            y2 = y + height
-            half_x = x + width/2.0
-            x2 = x + width
-            marker_positions = ((x,y), (x,half_y), (x,y2), (half_x,y),
-                                (half_x,y2), (x2,y), (x2, half_y), (x2,y2))
+        with gc:
+            gc.set_line_width(width)
+            gc.set_antialias(False)
+            x,y = position
+            x += inset
+            y += inset
+            width, height = bounds
+            width -= 2*inset
+            height -= 2*inset
+            rect = (x, y, width, height)
+    
+            gc.set_stroke_color(bgcolor)
             gc.set_line_dash(None)
-            gc.set_line_width(1.0)
-            for pos in marker_positions:
-                gc.rect(pos[0]-marker_size/2.0, pos[1]-marker_size/2.0,
-                        marker_size, marker_size)
-            gc.draw_path()
+            gc.draw_rect(rect, STROKE)
+    
+            gc.set_stroke_color(color)
+            gc.set_line_dash(dash)
+            gc.draw_rect(rect, STROKE)
+    
+            if marker_size > 0:
+                gc.set_fill_color(bgcolor)
+                half_y = y + height/2.0
+                y2 = y + height
+                half_x = x + width/2.0
+                x2 = x + width
+                marker_positions = ((x,y), (x,half_y), (x,y2), (half_x,y),
+                                    (half_x,y2), (x2,y), (x2, half_y), (x2,y2))
+                gc.set_line_dash(None)
+                gc.set_line_width(1.0)
+                for pos in marker_positions:
+                    gc.rect(pos[0]-marker_size/2.0, pos[1]-marker_size/2.0,
+                            marker_size, marker_size)
+                gc.draw_path()
 
-        gc.restore_state()
         return
 
     def get_absolute_coords(self, *coords):
@@ -728,14 +729,10 @@ class Component(CoordinateBox, Interactor):
                 # the alpha to 0, but for now doing so causes the backbuffer's
                 # background to be white
                 if not self.fill_padding:
-                    bb.save_state()
-                    bb.set_antialias(False)
-                    try:
+                    with bb:
+                        bb.set_antialias(False)
                         bb.set_fill_color(self.window.bgcolor_)
                         bb.draw_rect((x, y, width, height), FILL)
-                    finally:
-                        bb.restore_state()
-
 
                 # Fixme: should there be a +1 here?
                 bb.translate_ctm(-x+0.5, -y+0.5)
@@ -796,14 +793,13 @@ class Component(CoordinateBox, Interactor):
                 self._draw_inset_border(gc, view_bounds, mode)
             else:
                 border_width = self.border_width
-                gc.save_state()
-                gc.set_line_width(border_width)
-                gc.set_line_dash(self.border_dash_)
-                gc.set_stroke_color(self.border_color_)
-                gc.draw_rect((self.x-border_width/2.0, self.y-border_width/2.0,
-                             self.width+2*border_width-1,
-                             self.height+2*border_width-1), STROKE)
-                gc.restore_state()
+                with gc:
+                    gc.set_line_width(border_width)
+                    gc.set_line_dash(self.border_dash_)
+                    gc.set_stroke_color(self.border_color_)
+                    gc.draw_rect((self.x-border_width/2.0, self.y-border_width/2.0,
+                                 self.width+2*border_width-1,
+                                 self.height+2*border_width-1), STROKE)
 
     def _draw_inset_border(self, gc, view_bounds=None, mode="default"):
         """ Draws the border of a component.
@@ -815,16 +811,15 @@ class Component(CoordinateBox, Interactor):
             return
 
         border_width = self.border_width
-        gc.save_state()
-        gc.set_line_width(border_width)
-        gc.set_line_dash(self.border_dash_)
-        gc.set_stroke_color(self.border_color_)
-        gc.set_antialias(0)
-        gc.draw_rect((self.x+border_width/2.0-0.5,
-                     self.y+border_width/2.0-0.5,
-                     self.width-border_width/2.0,
-                     self.height-border_width/2.0), STROKE)
-        gc.restore_state()
+        with gc:
+            gc.set_line_width(border_width)
+            gc.set_line_dash(self.border_dash_)
+            gc.set_stroke_color(self.border_color_)
+            gc.set_antialias(0)
+            gc.draw_rect((self.x+border_width/2.0-0.5,
+                         self.y+border_width/2.0-0.5,
+                         self.width-border_width/2.0,
+                         self.height-border_width/2.0), STROKE)
 
     #------------------------------------------------------------------------
     # Protected methods for subclasses to implement
@@ -840,13 +835,10 @@ class Component(CoordinateBox, Interactor):
             else:
                 r = tuple(self.position) + (self.width-1, self.height-1)
 
-            gc.save_state()
-            gc.set_antialias(False)
-            try:
+            with gc:
+                gc.set_antialias(False)
                 gc.set_fill_color(self.bgcolor_)
                 gc.draw_rect(r, FILL)
-            finally:
-                gc.restore_state()
 
         # Call the enable _draw_border routine
         if not self.overlay_border and self.border_visible:

@@ -119,5 +119,6 @@ key_names = [
     'Subtract',
     'Tab',
     'Up',
+    'Alt',
 ]
 

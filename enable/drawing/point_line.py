@@ -1,5 +1,7 @@
 """ A point-to-point drawn polygon. """
 
+from __future__ import with_statement
+
 from enable.api import cursor_style_trait, Line
 from traits.api import Event, Int, Instance
 
@@ -64,10 +66,9 @@ class PointLine(DrawingTool):
 
     def complete_draw(self, gc):
         # Draw the completed line
-        gc.save_state()
         self.line.line_dash = None
-        self.line._draw_mainlayer(gc)
-        gc.restore_state()
+        with gc:
+            self.line._draw_mainlayer(gc)
         return
 
     def complete_left_down(self, event):
@@ -140,10 +141,9 @@ class PointLine(DrawingTool):
 
     def incomplete_draw(self, gc):
         """ Draw the line in the 'incomplete' state. """
-        gc.save_state()
-        gc.set_fill_color((0, 0, 0, 0))
-        gc.rect(50, 50, 100, 100)
-        gc.restore_state()
+        with gc:
+            gc.set_fill_color((0, 0, 0, 0))
+            gc.rect(50, 50, 100, 100)
         self.line._draw_mainlayer(gc)
         return
 

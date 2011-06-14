@@ -5,6 +5,8 @@ The scrollbar uses images for the pieces of the scrollbar itself and stretches
 them appropriately in the draw phase.
 """
 
+from __future__ import with_statement
+
 # PZW: Define a scrollbar that uses the system/wx-native scrollbar instead
 # of drawing our own.
 
@@ -205,12 +207,11 @@ class ScrollBar ( Component ):
 
     def _draw(self, gc):
         "Draw the contents of the control"
-        gc.save_state()
-        if self.style[0] == 'v':
-            self._draw_vertical(gc)
-        else:
-            self._draw_horizontal(gc)
-        gc.restore_state()
+        with gc:
+            if self.style[0] == 'v':
+                self._draw_vertical(gc)
+            else:
+                self._draw_horizontal(gc)
         return
 
     def _draw_vertical(self, gc):

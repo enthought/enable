@@ -1,4 +1,6 @@
 
+from __future__ import with_statement
+
 # Enthought library imports
 from traits.api import Bool, Instance, Int, Any, Float
 
@@ -510,8 +512,7 @@ class Scrolled(Container):
 
         if self.layout_needed:
             self._do_layout()
-        try:
-            gc.save_state()
+        with gc:
             self._draw_container(gc, mode)
 
             self._draw_inside_border(gc, view_bounds, mode)
@@ -530,14 +531,9 @@ class Scrolled(Container):
             if new_bounds is not empty_rectangle:
                 for component in self.components:
                     if component is not None:
-                        try:
-                            gc.save_state()
+                        with gc:
                             gc.translate_ctm(*self.position)
                             component.draw(gc, new_bounds, mode)
-                        finally:
-                            gc.restore_state()
-        finally:
-            gc.restore_state()
 
     def _draw_inside_border(self, gc, view_bounds=None, mode="default"):
         width_adjustment = self.inside_border_width/2
@@ -546,15 +542,12 @@ class Scrolled(Container):
         bottom_edge = self.viewport_component.y+1 - width_adjustment
         top_edge = self.viewport_component.y2 + width_adjustment
 
-        gc.save_state()
-        try:
+        with gc:
             gc.set_stroke_color(self.inside_border_color_)
             gc.set_line_width(self.inside_border_width)
             gc.rect(left_edge, bottom_edge,
                     right_edge-left_edge, top_edge-bottom_edge)
             gc.stroke_path()
-        finally:
-            gc.restore_state()
 
 
     #---------------------------------------------------------------------------

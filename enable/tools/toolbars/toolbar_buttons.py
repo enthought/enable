@@ -1,3 +1,6 @@
+
+from __future__ import with_statement
+
 # Enthought library imports
 from enable.api import ColorTrait, Component
 from enable.font_metrics_provider import font_metrics_provider
@@ -55,21 +58,15 @@ class Button(Component):
         return
 
     def draw_up(self, gc, view_bounds):
-        gc.save_state()
-        try:
+        with gc:
             gc.set_fill_color(self.color_)
             self._draw_actual_button(gc)
-        finally:
-            gc.restore_state()
         return
 
     def draw_down(self, gc, view_bounds):
-        gc.save_state()
-        try:
+        with gc:
             gc.set_fill_color(self.down_color_)
             self._draw_actual_button(gc)
-        finally:
-            gc.restore_state()
         return
 
     def _draw_actual_button(self, gc):

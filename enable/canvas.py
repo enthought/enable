@@ -1,5 +1,6 @@
 """ Defines the enable Canvas class """
 
+from __future__ import with_statement
 
 # Enthought library imports
 from traits.api import Bool, Trait, Tuple, List
@@ -125,14 +126,10 @@ class Canvas(Container):
                 x, y, x2, y2 = self._bounding_box
             r = (x, y, x2-x+1, y2-y+1)
 
-            gc.save_state()
-            gc.set_antialias(False)
-            try:
+            with gc:
+                gc.set_antialias(False)
                 gc.set_fill_color(self.bgcolor_)
                 gc.draw_rect(r, FILL)
-
-            finally:
-                gc.restore_state()
 
         # Call the enable _draw_border routine
         if not self.overlay_border and self.border_visible:
@@ -142,10 +139,9 @@ class Canvas(Container):
 
     def _draw_underlay(self, gc, view_bounds=None, mode="default"):
         if self.draw_axes:
-            gc.save_state()
-            try:
-                x, y, x2, y2 = self.view_bounds
-                if (x <= 0 <= x2) or (y <= 0 <= y2):
+            x, y, x2, y2 = self.view_bounds
+            if (x <= 0 <= x2) or (y <= 0 <= y2):
+                with gc:
                     gc.set_stroke_color((0,0,0,1))
                     gc.set_line_width(1.0)
                     gc.move_to(0, y)
@@ -153,8 +149,6 @@ class Canvas(Container):
                     gc.move_to(x, 0)
                     gc.line_to(x2, 0)
                     gc.stroke_path()
-            finally:
-                gc.restore_state()
         super(Container, self)._draw_underlay(gc, view_bounds, mode)
 
     def _transform_view_bounds(self, view_bounds):

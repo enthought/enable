@@ -132,7 +132,10 @@ key_symbols = [
     wx.WXK_SUBTRACT,
     wx.WXK_TAB,
     wx.WXK_UP,
+    wx.WXK_ALT,
 ]
+
+
 
 if len(key_symbols) != len(key_names):
     warnings.warn("The WX toolkit backend keymap is out of sync!")
