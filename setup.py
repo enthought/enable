@@ -1,8 +1,6 @@
 # Copyright (c) 2008-2011 by Enthought, Inc.
 # All rights reserved.
 
-# FIXME: Hack to add arguments to setup.py develop
-#
 # These are necessary to get the clib compiled.  The following also adds
 # an additional option --compiler=STR to develop, which usually does not
 # have such an option.  The code below is a bad hack, as it changes
@@ -20,6 +18,7 @@ if 'develop' in sys.argv:
     sys.argv[idx:idx] = ['build_src', '--inplace', 'build_clib'] + compiler + \
         ['build_ext', '--inplace'] + compiler
 
+from os.path import join
 
 # Setuptools must be imported BEFORE numpy.distutils for things to work right!
 import setuptools
@@ -31,12 +30,8 @@ import shutil
 from numpy.distutils.core import setup
 
 
-# FIXME: This works around a setuptools bug which gets setup_data.py metadata
-# from incorrect packages. Ticket #1592
-#from setup_data import INFO
-setup_data = dict(__name__='', __file__='setup_data.py')
-execfile('setup_data.py', setup_data)
-INFO = setup_data['INFO']
+info = {}
+execfile(join('enable', '__init__.py'), info)
 
 
 # Configure python extensions.
@@ -86,40 +81,45 @@ class MyClean(distutils.command.clean.clean):
         # code assumes the files are relative to the 'kiva' dir.
         INPLACE_FILES = (
             # Common AGG
-            os.path.join("agg", "agg.py"),
-            os.path.join("agg", "plat_support.py"),
-            os.path.join("agg", "agg_wrap.cpp"),
+            join("agg", "agg.py"),
+            join("agg", "plat_support.py"),
+            join("agg", "agg_wrap.cpp"),
 
             # Mac
-            os.path.join("quartz", "ABCGI.so"),
-            os.path.join("quartz", "macport.so"),
-            os.path.join("quartz", "ABCGI.c"),
-            os.path.join("quartz", "ATSFont.so"),
-            os.path.join("quartz", "ATSFont.c"),
+            join("quartz", "ABCGI.so"),
+            join("quartz", "macport.so"),
+            join("quartz", "ABCGI.c"),
+            join("quartz", "ATSFont.so"),
+            join("quartz", "ATSFont.c"),
 
             # Win32 Agg
-            os.path.join("agg", "_agg.pyd"),
-            os.path.join("agg", "_plat_support.pyd"),
-            os.path.join("agg", "src", "win32", "plat_support.pyd"),
+            join("agg", "_agg.pyd"),
+            join("agg", "_plat_support.pyd"),
+            join("agg", "src", "win32", "plat_support.pyd"),
 
             # *nix Agg
-            os.path.join("agg", "_agg.so"),
-            os.path.join("agg", "_plat_support.so"),
-            os.path.join("agg", "src", "x11", "plat_support_wrap.cpp"),
+            join("agg", "_agg.so"),
+            join("agg", "_plat_support.so"),
+            join("agg", "src", "x11", "plat_support_wrap.cpp"),
 
             # Misc
-            os.path.join("agg", "src", "gl", "plat_support_wrap.cpp"),
-            os.path.join("agg", "src", "gl", "plat_support.py"),
+            join("agg", "src", "gl", "plat_support_wrap.cpp"),
+            join("agg", "src", "gl", "plat_support.py"),
             )
         for f in INPLACE_FILES:
-            f = os.path.join("kiva", f)
+            f = join("kiva", f)
             if os.path.isfile(f):
                 os.remove(f)
 
 
 setup(
+    name = 'enable',
+    version = info['__version__'],
     author = 'Enthought, Inc',
     author_email = 'info@enthought.com',
+    maintainer = 'ETS Developers',
+    maintainer_email = 'enthought-dev@enthought.com',
+    url = 'http://code.enthought.com/projects/enable',
     classifiers = [c.strip() for c in """\
         Development Status :: 5 - Production/Stable
         Intended Audience :: Developers
@@ -147,23 +147,14 @@ setup(
     description = 'low-level drawing and interaction',
     long_description = open('README.rst').read(),
     download_url = ('http://www.enthought.com/repo/ets/enable-%s.tar.gz' %
-                    INFO['version']),
-    install_requires = INFO['install_requires'],
+                    info['__version__']),
+    install_requires = info['__requires__'],
     license = 'BSD',
-    maintainer = 'ETS Developers',
-    maintainer_email = 'enthought-dev@enthought.com',
-    name = INFO['name'],
     package_data = {'': ['*.zip', '*.svg', 'images/*']},
     platforms = ["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
     setup_requires = [
         'cython',
-        ],
-    tests_require = [
-        'nose >= 0.10.3',
-        ],
-    test_suite = 'nose.collector',
-    url = 'http://code.enthought.com/projects/enable',
-    version = INFO['version'],
+    ],
     zip_safe = False,
     **config
 )

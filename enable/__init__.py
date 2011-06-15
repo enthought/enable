@@ -3,4 +3,8 @@
 """ A multi-platform object drawing library.
     Part of the Enable project of the Enthought Tool Suite.
 """
-__version__ = '3.4.2'
+__version__ = '4.0.0'
+
+__requires__ = [
+    'traitsui',
+]
