@@ -35,16 +35,14 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General substitutions.
-project = 'Enable'
-copyright = '2008, Enthought'
+project = 'enable'
+copyright = '2008-2011, Enthought'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
-#
-# The short X.Y version.
-version = '3.0.0b1'
-# The full version, including alpha/beta/rc tags.
-release = '3.0.0b1'
+d = {}
+execfile(os.path.join('..', '..', 'enable', '__init__.py'), d)
+version = release = d['__version__']
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
