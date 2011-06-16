@@ -1,6 +1,3 @@
-
-import sys
-
 from agg import *
 
 pix_format_string_map = {}
@@ -33,8 +30,8 @@ try:
                                  pix_format_string_map[pix_format],
                                  255,
                                  bottom_up).set_bmp_array()
-            GraphicsContextArray.__init__(self,pixel_map.bmp_array,
-                                          pix_format,interpolation,
+            GraphicsContextArray.__init__(self, pixel_map.bmp_array,
+                                          pix_format, interpolation,
                                           bottom_up)
             self.pixel_map = pixel_map
 
@@ -45,5 +42,3 @@ except ImportError, ex:
     warnings.warn("Error initializing Agg: %s" % ex, Warning, 2)
 
     GraphicsContextSystem = None
-
-# EOF
