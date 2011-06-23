@@ -61,6 +61,12 @@ def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
     from numpy.distutils.system_info import dict_append, get_info
 
+    if sys.platform == 'linux2' and not get_info('x11'):
+        raise Exception("""
+Could not determine X11 configuration.  Please check your numpy.distutils
+installation, in particular the file numpy/distutils/site.cfg
+""")
+
     agg_dir = 'agg-24'
     agg_lib = 'agg24_src'
 
