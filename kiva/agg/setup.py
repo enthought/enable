@@ -61,12 +61,6 @@ def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
     from numpy.distutils.system_info import dict_append, get_info
 
-    if sys.platform == 'linux2' and not get_info('x11'):
-        raise Exception("""
-Could not determine X11 configuration.  Please check your numpy.distutils
-installation, in particular the file numpy/distutils/site.cfg
-""")
-
     agg_dir = 'agg-24'
     agg_lib = 'agg24_src'
 
@@ -234,7 +228,11 @@ installation, in particular the file numpy/distutils/site.cfg
         dict_append(plat_info, libraries = ['gdi32','user32'])
 
     elif plat in ['x11','gtk1']:
-        x11_info = get_info('x11', notfound_action=1)
+        # Make sure we raise an error if the information is not found.
+        # Frequently, the 64-bit libraries are not in a known location and need
+        # manual configuration. From experience, this is usually not detected by
+        # the builder if we do not raise an exception.
+        x11_info = get_info('x11', notfound_action=2)
         dict_append(plat_info, **x11_info)
 
     elif plat=='gdkpixbuf2':
