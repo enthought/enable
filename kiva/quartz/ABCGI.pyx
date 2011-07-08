@@ -1773,13 +1773,14 @@ cdef class CGImage:
             if grey_scale:
                 if (len(shape) == 3 and shape[-1] != 1) or (len(shape) != 2):
                     raise ValueError("with grey_scale, expecting a shape "
-                        "(height, width) or (height, width, 1); got %r" % shape)
+                        "(height, width) or (height, width, 1); got "
+                        "%r" % (shape,))
                 height, width = shape[:2]
                 depth = 1
             else:
                 if len(shape) != 3 or shape[-1] not in (3, 4):
                     raise ValueError("expecting a shape (height, width, depth) "
-                        "with depth either 3 or 4; got %r" % shape)
+                        "with depth either 3 or 4; got %r" % (shape,))
                 height, width, depth = shape
             if depth in (1, 3):
                 alpha_info = kCGImageAlphaNone
