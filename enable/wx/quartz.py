@@ -40,7 +40,7 @@ class GraphicsContext(ABCGI.CGLayerContext):
 
     @classmethod
     def create_from_gc(klass, gc, size_or_array, *args, **kwds):
-        return klass(size_or_array, gc, *args, **kwds)
+        return GraphicsContext(size_or_array, gc, *args, **kwds)
 
 
 class _WindowGraphicsContext(ABCGI.CGContextInABox):
