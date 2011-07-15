@@ -1703,6 +1703,9 @@ cdef class CGBitmapContext(CGContext):
             mode = 'L'
         else:
             raise ValueError("cannot save this pixel format")
+        
+        if file_format is None:
+            file_format = ''
 
         img = Image.fromstring(mode, (self.width(), self.height()), self)
         if 'A' in mode:
