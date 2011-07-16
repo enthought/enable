@@ -63,7 +63,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     """
     Simple wrapper around a PDF graphics context.
     """
-    def __init__(self, pdf_canvas):
+    def __init__(self, pdf_canvas, *args, **kwargs):
         from image import GraphicsContext as GraphicsContextImage
         self.gc = pdf_canvas
         self.current_pdf_path = None
@@ -71,7 +71,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.text_xy = None, None
         # get an agg backend to assist in measuring text
         self._agg_gc = GraphicsContextImage((1, 1))
-        basecore2d.GraphicsContextBase.__init__(self)
+        super(GraphicsContext, self).__init__(self, *args, **kwargs)
 
     #----------------------------------------------------------------
     # Coordinate Transform Matrix Manipulation
