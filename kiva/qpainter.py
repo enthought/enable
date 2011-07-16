@@ -57,7 +57,8 @@ gradient_spread_modes['reflect'] = QtGui.QGradient.ReflectSpread
 class GraphicsContext(object):
     """ Simple wrapper around a Qt QPainter object.
     """
-    def __init__(self, size, parent=None):
+    def __init__(self, size, *args, **kwargs):
+        super(GraphicsContext, self).__init__()
         self._width = size[0]
         self._height = size[1]
 
@@ -65,9 +66,12 @@ class GraphicsContext(object):
         self.text_transform = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
 
         # create some sort of device context
+        parent = kwargs.pop("parent", None)
         if parent is None:
+            # no parent -> offscreen context
             self.qt_dc = QtGui.QPixmap(*size)
         else:
+            # normal windowed context
             self.qt_dc = parent
 
         self.gc = QtGui.QPainter(self.qt_dc)
