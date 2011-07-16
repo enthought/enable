@@ -1273,7 +1273,8 @@ cdef class CGContextInABox(CGContext):
     cdef readonly int _width
     cdef readonly int _height
 
-    def __init__(self, long context, object size, long can_release=0):
+    def __init__(self, object size, long context, long can_release=0,
+                 *args, **kwargs):
         self.context = <CGContextRef>context
 
         self.can_release = can_release
@@ -1303,7 +1304,7 @@ cdef class CGLayerContext(CGContextInABox):
     cdef CGLayerRef layer
     cdef object gc
 
-    def __init__(self, CGContext gc not None, object size):
+    def __init__(self, object size, CGContext gc not None, *args, **kwargs):
         self.gc = <object>gc
         self.layer = CGLayerCreateWithContext(gc.context,
             CGSizeMake(size[0], size[1]), NULL)

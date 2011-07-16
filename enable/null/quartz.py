@@ -23,8 +23,8 @@ class Window(object):
 CompiledPath = ABCGI.CGMutablePath
 
 class GraphicsContext(ABCGI.CGLayerContext):
-    def __init__(self, size_or_array, window_gc=None, *args, **kwds):
-        gc = window_gc
+    def __init__(self, size_or_array, *args, **kwds):
+        gc = kwds.pop('window_gc', None)
         if not gc:
             # Create a tiny base context to spawn the CGLayerContext from.
             # We are better off making our Layer from the window gc since
@@ -40,7 +40,7 @@ class GraphicsContext(ABCGI.CGLayerContext):
             # No initialization.
             image = None
             width, height = size_or_array
-        ABCGI.CGLayerContext.__init__(self, gc, (width, height))
+        super(GraphicsContext, self).__init__((width, height), gc, *args, **kwds)
         if image is not None:
             self.draw_image(image)
 
