@@ -579,7 +579,23 @@ bool graphics_context_base::show_text_at_point(char *text,
 kiva::rect_type graphics_context_base::get_text_extent(char *text)
 {
     const agg::glyph_cache *glyph = NULL;
-    char *p = text;
+
+#if defined(__MSVCRT__) || defined (__MINGW32__)
+        int required = MultiByteToWideChar(CP_UTF8, 0, text, -1, 0, 0);
+        std::vector<wchar_t> p_(required + 1);
+        MultiByteToWideChar(CP_UTF8, 0, text, -1, &p_[0], required);
+        wchar_t *p = &p_[0];
+#else
+        std::vector <wchar_t> p_(1024);
+        size_t length = mbstowcs(&p_[0], text, 1024);
+        if (length > 1024)
+          {
+            p_.resize (length + 1);
+            mbstowcs(&p_[0], text, length);
+          }
+        wchar_t *p = &p_[0];
+#endif
+
     double x1 = 0.0, x2 = 0.0, y1 = 0.0, y2= 0.0;
 
     static font_manager_type *font_manager = GlobalFontManager();
