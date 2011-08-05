@@ -852,7 +852,7 @@ cdef class CGContext:
         """
         """
         cdef float a,b,c,d,tx,ty
-        
+
         # Handle both matrices that this class returns and agg._AffineMatrix
         # instances.
         try:
@@ -1704,7 +1704,7 @@ cdef class CGBitmapContext(CGContext):
             mode = 'L'
         else:
             raise ValueError("cannot save this pixel format")
-        
+
         if file_format is None:
             file_format = ''
 
