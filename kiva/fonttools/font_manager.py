@@ -200,7 +200,10 @@ def get_configdir():
 
 def is_string_like(obj):
     'Return True if *obj* looks like a string'
-    if isinstance(obj, (str, unicode)): return True
+    from numpy import ma
+
+    if isinstance(obj, (str, unicode)):
+        return True
     # numpy strings are subclass of str, ma strings are not
     if ma.isMaskedArray(obj):
         if obj.ndim == 0 and obj.dtype.kind in 'SU':
