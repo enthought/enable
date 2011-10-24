@@ -142,7 +142,8 @@ drag_event_trait = Event(DragEvent)
 
 
 class KeyEvent(BasicEvent):
-    event_type   = ReadOnly    # one of 'key_pressed', 'key_released' or 'character'
+    # one of 'key_pressed', 'key_released' or 'character'
+    event_type   = ReadOnly
 
     # 'character' is a single unicode character or is a string describing the
     # high-bit and control characters.  (See module enable.toolkit_constants)
@@ -153,13 +154,17 @@ class KeyEvent(BasicEvent):
     alt_down     = ReadOnly
     control_down = ReadOnly
     shift_down   = ReadOnly
+    meta_down    = ReadOnly
 
-    event        = ReadOnly    # XXX the underlying toolkit's event object, remove?
+    # the original key event object from the toolkit
+    event        = ReadOnly
 
     def __repr__(self):
-        s = ('%s(event_type=%r, character=%r, alt_down=%r, control_down=%r, shift_down=%r, handled=%r)' %
-            (self.__class__.__name__, self.event_type, self.character, self.alt_down,
-                self.control_down, self.shift_down, self.handled))
+        s = ('%s(event_type=%r, character=%r, alt_down=%r, control_down=%r, '
+             'shift_down=%r, meta_down=%r, handled=%r)' %
+             (self.__class__.__name__, self.event_type, self.character,
+              self.alt_down, self.control_down, self.shift_down,
+              self.meta_down, self.handled))
         return s
 
 key_event_trait = Event( KeyEvent )
