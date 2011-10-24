@@ -14,6 +14,8 @@
 # been on my list of things to do.
 #------------------------------------------------------------------------------
 
+import sys
+
 # Qt imports.
 from pyface.qt import QtCore, QtGui, QtOpenGL
 
@@ -304,12 +306,27 @@ class _Window(AbstractWindow):
         x, y = self.control.last_mouse_pos
 
         modifiers = event.modifiers()
+        control_down = bool(modifiers & QtCore.Qt.ControlModifier)
+        meta_down =  bool(modifiers & QtCore.Qt.MetaModifier)
+
+        # manually swap Meta and Control on Mac OS X
+        import sys
+        if sys.platform == 'darwin':
+            if event_type != 'character':
+                # swap key codes
+                key_code = event.key()
+                if key_code == QtCore.Qt.Key_Control: character = 'Menu'
+                elif key_code == QtCore.Qt.Key_Meta: character = 'Control'
+            # swap flags
+            control_down = bool(modifiers & QtCore.Qt.MetaModifier)
+            meta_down =  bool(modifiers & QtCore.Qt.ControlModifier)
 
         return KeyEvent(event_type=event_type, character=key, x=x,
                         y=self._flip_y(y),
                         alt_down=bool(modifiers & QtCore.Qt.AltModifier),
                         shift_down=bool(modifiers & QtCore.Qt.ShiftModifier),
-                        control_down=bool(modifiers & QtCore.Qt.ControlModifier),
+                        control_down=control_down,
+                        meta_down=meta_down,
                         event=event,
                         window=self)
 
