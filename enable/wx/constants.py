@@ -133,6 +133,7 @@ key_symbols = [
     wx.WXK_TAB,
     wx.WXK_UP,
     wx.WXK_ALT,
+    wx.WXK_COMMAND
 ]
 
 

@@ -319,9 +319,9 @@ class BaseWindow(AbstractWindow):
             else:
                 key_code = event.GetKeyCode()
                 if key_code in KEY_MAP:
-                    key = KEY_MAP.get(key_code)
+                    key = KEY_MAP[key_code]
                 else:
-                    key = unichr(event.GetUniChar()).lower()
+                    key = unichr(key_code).lower()
  
             # Use the last-seen mouse coordinates instead of GetX/GetY due
             # to wx bug.
@@ -337,6 +337,7 @@ class BaseWindow(AbstractWindow):
                 alt_down = event.AltDown(),
                 control_down = event.ControlDown(),
                 shift_down = event.ShiftDown(),
+                meta_down = event.MetaDown(),
                 x = x,
                 y = self._flip_y(y),
                 event = event,
