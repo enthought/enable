@@ -82,7 +82,7 @@ class Window(BaseWindow):
         # linked against. If Qt is using Carbon, the {WId} is actually 
         # an HIViewRef. If Qt is using Cocoa, {WId} is a pointer to an NSView."
         self.winId = self.control.winId()
-        # ABCGI.CGContextInABox expects a CGContextRef in its __init__
+        # get_macport_qt() only works on Cocoa.
         gc = _WindowGraphicsContext(size, get_macport_qt(self.winId))
         gc.begin()
         return gc
@@ -90,22 +90,6 @@ class Window(BaseWindow):
     def _window_paint(self, event):
         self.winId = None
         self._gc = None  # force a new gc to be created for the next paint()
-
-
-    #### 'AbstractWindow' interface ############################################
-
-    def _paint(self, event=None):
-        size = self.control.size().toTuple()
-        if self._gc is None:
-            self._gc = self._create_gc(size)
-        gc = self._gc
-        gc.begin()
-        if hasattr(self.component, "do_layout"):
-            self.component.do_layout()
-        self.component.draw(gc, view_bounds=(0, 0, size[0], size[1]))
-        self._window_paint(event)
-        gc.end()
-        return
 
 
 def font_metrics_provider():
