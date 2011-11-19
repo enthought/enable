@@ -8,7 +8,7 @@ import wx
 
 # Enthought library imports.
 from kiva.fonttools import Font
-from kiva.quartz import get_macport, ABCGI
+from kiva.quartz import get_macport_wx, ABCGI
 
 # Local imports.
 from base_window import BaseWindow
@@ -75,7 +75,8 @@ class Window(BaseWindow):
 
     def _create_gc(self, size, pix_format="bgra32"):
         self.dc = wx.ClientDC(self.control)
-        gc = _WindowGraphicsContext(self.dc.GetSizeTuple(), get_macport(self.dc))
+        gc = _WindowGraphicsContext(self.dc.GetSizeTuple(),
+                                    get_macport_wx(self.dc))
         gc.begin()
         return gc
 
