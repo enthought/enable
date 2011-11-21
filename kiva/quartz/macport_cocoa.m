@@ -3,6 +3,12 @@
 void *
 get_cg_context_ref(void *view_ptr)
 {
-    NSView *view = (NSView *)view_ptr;
-    return [[[view window] graphicsContext] graphicsPort];
+    id object = (id)view_ptr;
+
+    if ([object isKindOfClass:[NSView class]])
+    {
+        NSView *view = (NSView *)object;
+        return [[[view window] graphicsContext] graphicsPort];
+    }
+    return (void *)0;
 }

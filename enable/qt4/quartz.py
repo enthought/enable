@@ -77,18 +77,22 @@ class Window(BaseWindow):
     #### 'BaseWindow' interface ################################################
 
     def _create_gc(self, size, pix_format=None):
-        # From the Qt 4.7 Documentation:
-        # "On Mac OS X, the type returned depends on which framework Qt was 
-        # linked against. If Qt is using Carbon, the {WId} is actually 
-        # an HIViewRef. If Qt is using Cocoa, {WId} is a pointer to an NSView."
-        self.winId = self.control.winId()
-        # get_macport_qt() only works on Cocoa.
-        gc = _WindowGraphicsContext(size, get_macport_qt(self.winId))
-        gc.begin()
-        return gc
+        if hasattr(self.control, 'winId'):
+            # From the Qt 4.7 Documentation:
+            # "On Mac OS X, the type returned depends on which framework Qt was 
+            # linked against. If Qt is using Carbon, the {WId} is actually 
+            # an HIViewRef. If Qt is using Cocoa, {WId} is a pointer to 
+            # an NSView."
+            # get_macport_qt() only works on Cocoa.
+            self.dc = get_macport_qt(self.control.winId())
+            if self.dc:
+                gc = _WindowGraphicsContext(size, self.dc)
+                gc.begin()
+                return gc
+        raise NotImplementedError("Only PySide and Qt using Cocoa is supported")
 
     def _window_paint(self, event):
-        self.winId = None
+        self.dc = None
         self._gc = None  # force a new gc to be created for the next paint()
 
 

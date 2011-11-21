@@ -10,9 +10,7 @@
 
 PyObject* get_macport(PyObject *self, PyObject *args)
 {
-    const char err_string[] = "get_macport() requires an int argument.";
-    
-    // the string representing the address embedded in the SWIG this ptr
+    const char err_string[] = "get_macport() requires a pointer to an NSView.";    
     unsigned long win_id_addr = 0;
     int err = 0;
 
