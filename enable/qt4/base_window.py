@@ -303,7 +303,7 @@ class _Window(AbstractWindow):
             return None
 
         # Use the last-seen mouse position as the coordinates of this event.
-        x, y = self.control.last_mouse_pos
+        x, y = self.control.handler.last_mouse_pos
 
         modifiers = event.modifiers()
 
@@ -330,7 +330,7 @@ class _Window(AbstractWindow):
             modifiers = 0
             buttons = 0
 
-        self.control.last_mouse_pos = (x, y)
+        self.control.handler.last_mouse_pos = (x, y)
 
         # A bit crap, because AbstractWindow was written with wx in mind, and
         # we treat wheel events like mouse events.
