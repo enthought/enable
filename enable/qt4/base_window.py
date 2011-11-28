@@ -131,8 +131,8 @@ class _QtWindowHandler(object):
 
 class _QtWindow(QtGui.QWidget):
     """ The Qt widget that implements the enable control. """
-    def __init__(self, enable_window):
-        super(_QtWindow, self).__init__()
+    def __init__(self, parent, enable_window):
+        super(_QtWindow, self).__init__(parent)
         self.handler = _QtWindowHandler(self, enable_window)
 
     def closeEvent(self, event):
@@ -186,8 +186,8 @@ class _QtWindow(QtGui.QWidget):
 
 
 class _QtGLWindow(QtOpenGL.QGLWidget):
-    def __init__(self, enable_window):
-        super(_QtGLWindow, self).__init__()
+    def __init__(self, parent, enable_window):
+        super(_QtGLWindow, self).__init__(parent)
         self.handler = _QtWindowHandler(self, enable_window)
 
     def closeEvent(self, event):
@@ -251,7 +251,9 @@ class _Window(AbstractWindow):
 
         self._mouse_captured = False
 
-        self.control = self._create_control(self)
+        if isinstance(parent, QtGui.QLayout):
+            parent = parent.parentWidget()
+        self.control = self._create_control(parent, self)
 
         if pos is not None:
             self.control.move(*pos)
@@ -301,7 +303,7 @@ class _Window(AbstractWindow):
             return None
 
         # Use the last-seen mouse position as the coordinates of this event.
-        x, y = self.control.last_mouse_pos
+        x, y = self.control.handler.last_mouse_pos
 
         modifiers = event.modifiers()
 
@@ -328,7 +330,7 @@ class _Window(AbstractWindow):
             modifiers = 0
             buttons = 0
 
-        self.control.last_mouse_pos = (x, y)
+        self.control.handler.last_mouse_pos = (x, y)
 
         # A bit crap, because AbstractWindow was written with wx in mind, and
         # we treat wheel events like mouse events.
@@ -397,17 +399,17 @@ class BaseGLWindow(_Window):
     # The toolkit control
     control = Instance(_QtGLWindow)
 
-    def _create_control(self, enable_window):
+    def _create_control(self, parent, enable_window):
         """ Create the toolkit control.
         """
-        return _QtGLWindow(enable_window)
+        return _QtGLWindow(parent, enable_window)
 
 
 class BaseWindow(_Window):
     # The toolkit control
     control = Instance(_QtWindow)
 
-    def _create_control(self, enable_window):
+    def _create_control(self, parent, enable_window):
         """ Create the toolkit control.
         """
-        return _QtWindow(enable_window)
+        return _QtWindow(parent, enable_window)
