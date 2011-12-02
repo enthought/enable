@@ -10,7 +10,7 @@
 #include <string.h>
 #include <stack>
 
-#if defined(__MSVCRT__) || defined (__MINGW32__)
+#ifdef _WIN32
 #include <windows.h>
 #endif
 
@@ -1292,7 +1292,7 @@ namespace kiva
         ScanlineRendererType scanlineRenderer(this->renderer);
 
         const agg::glyph_cache *glyph = NULL;
-#if defined(__MSVCRT__) || defined (__MINGW32__)
+#ifdef _WIN32
         int required = MultiByteToWideChar(CP_UTF8, 0, text, -1, 0, 0);
         std::vector<wchar_t> p_(required + 1);
         MultiByteToWideChar(CP_UTF8, 0, text, -1, &p_[0], required);
