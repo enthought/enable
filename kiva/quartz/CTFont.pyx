@@ -6,7 +6,6 @@
 include "CoreFoundation.pxi"
 include "CoreGraphics.pxi"
 include "CoreText.pxi"
-include "Python.pxi"
 
 
 cdef object _cf_string_to_pystring(CFStringRef cf_string):
@@ -45,8 +44,23 @@ cdef CFArrayRef _get_system_fonts():
 
         return cf_font_descriptors
 
-
 cdef class CTFont:
+    cdef CTFontRef ct_font
+    def __cinit__(self, *args, **kwargs):
+        self.ct_font = NULL
+
+    def __dealloc__(self):
+        if self.ct_font != NULL:
+            CFRelease(self.ct_font)
+
+    cdef size_t get_pointer(self):
+        return <size_t>self.ct_font
+
+    cdef set_pointer(self, CTFontRef pointer):
+        self.ct_font = pointer
+
+
+cdef class CTFontStyle:
     cdef CTFontDescriptorRef ct_font_descriptor
     cdef CFDictionaryRef attribute_dictionary
     def __cinit__(self, *args, **kwargs):
@@ -60,6 +74,8 @@ cdef class CTFont:
             CFRelease(self.ct_font_descriptor)
 
     def __init__(self, name, style='regular'):
+        self._family_name = name
+        self._style = style
         self.attribute_dictionary = self._build_attribute_dictionary(name, style)
         self.ct_font_descriptor = CTFontDescriptorCreateWithAttributes(self.attribute_dictionary)
 
@@ -77,6 +93,21 @@ cdef class CTFont:
 
         return descent, ascent
 
+    def get_font(self, float font_size):
+        """ Get a CTFont matching the descriptor at the given size.
+        """
+        cdef CTFontRef ct_font
+        
+        ct_font = CTFontCreateWithFontDescriptor(self.ct_font_descriptor,
+                    font_size, NULL)
+        font = CTFont()
+        font.set_pointer(ct_font)
+        return font
+
+    property family_name:
+        def __get__(self):
+            return self._family_name
+    
     property postcript_name:
         def __get__(self):
             cdef CFStringRef cf_ps_name
@@ -86,6 +117,10 @@ cdef class CTFont:
             CFRelease(cf_ps_name)
 
             return retval
+
+    property style:
+        def __get__(self):
+            return self._style
 
     cdef CFDictionaryRef _build_attribute_dictionary(self, name, style):
         cdef CFStringRef cf_name, cf_style
@@ -122,7 +157,7 @@ cdef class FontLookup:
     cdef public object default_font
 
     def lookup(self, name=None, style='regular'):
-        return CTFont(name or self.default_font, style)
+        return CTFontStyle(name or self.default_font, style)
 
     def names(self):
         cdef CFIndex idx, count

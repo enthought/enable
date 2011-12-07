@@ -13,6 +13,28 @@ cdef extern from "CoreText/CoreText.h":
     ctypedef CFTypeRef CTLineRef
 
     # Constants that are used throughout CoreText
+    cdef CFStringRef kCTFontAttributeName
+    cdef CFStringRef kCTKernAttributeName
+    cdef CFStringRef kCTLigatureAttributeName
+    cdef CFStringRef kCTForegroundColorAttributeName
+    cdef CFStringRef kCTParagraphStyleAttributeName
+    cdef CFStringRef kCTUnderlineStyleAttributeName
+    cdef CFStringRef kCTVerticalFormsAttributeName
+    cdef CFStringRef kCTGlyphInfoAttributeName
+    
+    ctypedef enum CTUnderlineStyle:
+        kCTUnderlineStyleNone   = 0x00
+        kCTUnderlineStyleSingle = 0x01
+        kCTUnderlineStyleThick  = 0x02
+        kCTUnderlineStyleDouble = 0x09
+
+    ctypedef enum CTUnderlineStyleModifiers:
+        kCTUnderlinePatternSolid        = 0x0000
+        kCTUnderlinePatternDot          = 0x0100
+        kCTUnderlinePatternDash         = 0x0200
+        kCTUnderlinePatternDashDot      = 0x0300
+        kCTUnderlinePatternDashDotDot   = 0x0400
+
     cdef CFStringRef kCTFontSymbolicTrait
     cdef CFStringRef kCTFontWeightTrait
     cdef CFStringRef kCTFontWidthTrait
