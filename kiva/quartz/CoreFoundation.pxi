@@ -27,9 +27,12 @@ cdef extern from "CoreFoundation/CoreFoundation.h":
     ctypedef void* CFTypeRef
     ctypedef unsigned int CFTypeID
 
+    void CFRelease(CFTypeRef cf)
+
     ctypedef CFTypeRef CFStringRef
 
     ctypedef unsigned int CFIndex
+    ctypedef unsigned long CFHashCode
     ctypedef struct CFRange:
         CFIndex location
         CFIndex length
@@ -41,7 +44,6 @@ cdef extern from "CoreFoundation/CoreFoundation.h":
     char* CFStringGetCStringPtr(CFStringRef string, CFStringEncoding encoding)
     Boolean CFStringGetCString(CFStringRef theString, char* buffer,
         CFIndex bufferSize, CFStringEncoding encoding)
-    void CFRelease(CFTypeRef cf)
     CFIndex CFStringGetLength(CFStringRef theString)
     void CFStringGetCharacters(CFStringRef theString, CFRange range, UniChar *buffer)
 
@@ -56,7 +58,93 @@ cdef extern from "CoreFoundation/CoreFoundation.h":
         CFStringRef filePath, CFURLPathStyle pathStyle, bool isDirectory)
     void CFShow(CFTypeRef cf)
     CFTypeID CFGetTypeID(CFTypeRef cf)
+    
+    ctypedef struct CFArrayCallBacks:
+        CFIndex version
+        #CFArrayRetainCallBack retain
+        #CFArrayReleaseCallBack release
+        #CFArrayCopyDescriptionCallBack copyDescription
+        #CFArrayEqualCallBack equal
+    
+    cdef CFArrayCallBacks kCFTypeArrayCallBacks
+    #ctypedef void (*CFArrayApplierFunction)(void *value, void *context)
+    ctypedef CFTypeRef CFArrayRef
+    ctypedef CFTypeRef CFMutableArrayRef
+    
+    CFArrayRef CFArrayCreate(void* allocator, void **values,
+        CFIndex numValues, CFArrayCallBacks *callBacks)
+    CFArrayRef CFArrayCreateCopy(void* allocator, CFArrayRef theArray)
+    CFMutableArrayRef CFArrayCreateMutable(void* allocator, CFIndex capacity,
+        CFArrayCallBacks *callBacks)
+    CFMutableArrayRef CFArrayCreateMutableCopy(void* allocator, CFIndex capacity,
+        CFArrayRef theArray)
+    CFIndex CFArrayGetCount(CFArrayRef theArray)
+    CFIndex CFArrayGetCountOfValue(CFArrayRef theArray, CFRange range,
+        void *value)
+    Boolean CFArrayContainsValue(CFArrayRef theArray, CFRange range,
+        void *value)
+    void *CFArrayGetValueAtIndex(CFArrayRef theArray, CFIndex idx)
+    void CFArrayGetValues(CFArrayRef theArray, CFRange range, void **values)
+    #void CFArrayApplyFunction(CFArrayRef theArray, CFRange range,
+    #    CFArrayApplierFunction applier, void *context)
+    CFIndex CFArrayGetFirstIndexOfValue(CFArrayRef theArray, CFRange range,
+        void *value)
+    CFIndex CFArrayGetLastIndexOfValue(CFArrayRef theArray, CFRange range,
+        void *value)
+    #CFIndex CFArrayBSearchValues(CFArrayRef theArray, CFRange range,
+    #    void *value, CFComparatorFunction comparator, void *context)
+    void CFArrayAppendValue(CFMutableArrayRef theArray, void *value)
+    void CFArrayInsertValueAtIndex(CFMutableArrayRef theArray, CFIndex idx,
+        void *value)
+    void CFArraySetValueAtIndex(CFMutableArrayRef theArray, CFIndex idx,
+        void *value)
+    void CFArrayRemoveValueAtIndex(CFMutableArrayRef theArray, CFIndex idx)
+    void CFArrayRemoveAllValues(CFMutableArrayRef theArray)
+    void CFArrayReplaceValues(CFMutableArrayRef theArray, CFRange range,
+        void **newValues, CFIndex newCount)
+    void CFArrayExchangeValuesAtIndices(CFMutableArrayRef theArray,
+        CFIndex idx1, CFIndex idx2)
+    #void CFArraySortValues(CFMutableArrayRef theArray, CFRange range,
+    #    CFComparatorFunction comparator, void *context)
+    void CFArrayAppendArray(CFMutableArrayRef theArray, CFArrayRef otherArray,
+        CFRange otherRange)
+
 
     ctypedef CFTypeRef CFDictionaryRef
+    ctypedef CFTypeRef CFMutableDictionaryRef
+
+    ctypedef struct CFDictionaryKeyCallBacks:
+        CFIndex version
+        #CFDictionaryRetainCallBack retain
+        #CFDictionaryReleaseCallBack release
+        #CFDictionaryCopyDescriptionCallBack copyDescription
+        #CFDictionaryEqualCallBack equal
+        #CFDictionaryHashCallBack hash
+    
+    ctypedef struct CFDictionaryValueCallBacks:
+        CFIndex version
+        #CFDictionaryRetainCallBack retain
+        #CFDictionaryReleaseCallBack release
+        #CFDictionaryCopyDescriptionCallBack copyDescription
+        #CFDictionaryEqualCallBack equal
+
+    cdef CFDictionaryKeyCallBacks kCFTypeDictionaryKeyCallBacks
+    cdef CFDictionaryValueCallBacks kCFTypeDictionaryValueCallBacks
+
+    CFDictionaryRef CFDictionaryCreate(void* allocator,
+        void** keys, void** values, CFIndex numValues,
+        CFDictionaryKeyCallBacks* keyCallBacks,
+        CFDictionaryValueCallBacks* valueCallBacks)    
+    CFMutableDictionaryRef CFDictionaryCreateMutable(void* allocator,
+        CFIndex capacity, CFDictionaryKeyCallBacks *keyCallBacks,
+        CFDictionaryValueCallBacks *valueCallBacks)
+    void CFDictionaryAddValue(CFMutableDictionaryRef theDict, void *key, void *value)
+    void CFDictionarySetValue(CFMutableDictionaryRef theDict, void *key, void *value)
+
+    ctypedef CFTypeRef CFAttributedStringRef
+
+    CFAttributedStringRef CFAttributedStringCreate(void* alloc,
+        CFStringRef str, CFDictionaryRef attributes)
+
 
 
