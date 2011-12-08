@@ -11,10 +11,10 @@
 PyObject* get_macport(PyObject *self, PyObject *args)
 {
     const char err_string[] = "get_macport() requires a pointer to an NSView.";    
-    unsigned long win_id_addr = 0;
+    Py_ssize_t win_id_addr = 0;
     int err = 0;
 
-    err = PyArg_ParseTuple(args, "k", &win_id_addr);
+    err = PyArg_ParseTuple(args, "n", &win_id_addr);
     if (err != 1)
     {
         PyErr_SetString(PyExc_ValueError, err_string);
@@ -22,8 +22,8 @@ PyObject* get_macport(PyObject *self, PyObject *args)
     }
     else
     {
-        unsigned long tmp = (unsigned long)get_cg_context_ref((void *)win_id_addr);
-        return Py_BuildValue("k", tmp);
+        Py_ssize_t tmp = (Py_ssize_t)get_cg_context_ref((void *)win_id_addr);
+        return Py_BuildValue("n", tmp);
     }
 }
 
