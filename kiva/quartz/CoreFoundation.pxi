@@ -144,9 +144,16 @@ cdef extern from "CoreFoundation/CoreFoundation.h":
     void CFDictionarySetValue(CFMutableDictionaryRef theDict, void *key, void *value)
 
     ctypedef CFTypeRef CFAttributedStringRef
+    ctypedef CFTypeRef CFMutableAttributedStringRef
 
     CFAttributedStringRef CFAttributedStringCreate(void* alloc,
         CFStringRef str, CFDictionaryRef attributes)
+    CFMutableAttributedStringRef CFAttributedStringCreateMutable(void* alloc,
+        CFIndex maxLength)
+    void CFAttributedStringReplaceString(CFMutableAttributedStringRef aStr,
+        CFRange range, CFStringRef replacement)
+    void CFAttributedStringSetAttribute(CFMutableAttributedStringRef aStr,
+        CFRange range, CFStringRef attrName, CFTypeRef value)
 
     ctypedef CFTypeRef CFNumberRef
     

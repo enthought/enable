@@ -188,6 +188,8 @@ cdef class CGContext:
     cdef object current_style
     cdef CGAffineTransform text_matrix
     cdef object font_cache
+    cdef object fill_color
+    cdef object stroke_color
 
     def __cinit__(self, *args, **kwds):
         self.context = NULL
@@ -198,6 +200,8 @@ cdef class CGContext:
         self.context = <CGContextRef>context
 
         self.can_release = can_release
+        self.fill_color = (0.0, 0.0, 0.0, 1.0)
+        self.stroke_color = (0.0, 0.0, 0.0, 1.0)
 
         self._setup_color_space()
         self._setup_fonts()
@@ -665,6 +669,7 @@ cdef class CGContext:
             a = color[3]
         except IndexError:
             a = 1.0
+        self.fill_color = (r,g,b,a)
         CGContextSetRGBFillColor(self.context, r, g, b, a)
 
     def set_stroke_color(self, object color):
@@ -675,6 +680,7 @@ cdef class CGContext:
             a = color[3]
         except IndexError:
             a = 1.0
+        self.stroke_color = (r,g,b,a)
         CGContextSetRGBStrokeColor(self.context, r, g, b, a)
 
     def set_alpha(self, float alpha):
@@ -871,7 +877,7 @@ cdef class CGContext:
         
         pointer = self.current_font.get_pointer()
         ct_font = <CTFontRef>pointer
-        ct_line = _create_ct_line(text, ct_font)
+        ct_line = _create_ct_line(text, ct_font, None, None)
         if ct_line != NULL:
             width = CTLineGetTypographicBounds(ct_line, &ascent, &descent, NULL)
             CFRelease(ct_line)
@@ -909,7 +915,7 @@ cdef class CGContext:
 
         pointer = self.current_font.get_pointer()
         ct_font = <CTFontRef>pointer
-        ct_line = _create_ct_line(text, ct_font)
+        ct_line = _create_ct_line(text, ct_font, self.stroke_color, self.fill_color)
         if ct_line == NULL:
             return
         
@@ -2731,32 +2737,58 @@ cdef bool _line_intersects_cgrect(double x, double y, double slope, CGRect rect)
 
 #### Font utilities ####
 
-cdef CTLineRef _create_ct_line(object the_string, CTFontRef font):
+cdef CGColorRef _create_cg_color(object color):
+    cdef float color_components[4]
+    cdef CGColorSpaceRef cg_color_space
+    cdef CGColorRef cg_color
+
+    color_components[0] = color[0]
+    color_components[1] = color[1]
+    color_components[2] = color[2]
+    color_components[3] = color[3]
+
+    cg_color_space = CGColorSpaceCreateDeviceRGB()
+    cg_color = CGColorCreate(cg_color_space, color_components)
+    CGColorSpaceRelease(cg_color_space)
+
+    return cg_color
+
+cdef CTLineRef _create_ct_line(object the_string, CTFontRef font,
+                               object stroke_color, object fill_color):
     cdef char* c_string
+    cdef CFIndex text_len
     cdef CFStringRef cf_string
-    cdef CFMutableDictionaryRef cf_attributes
-    cdef CFAttributedStringRef cf_attr_string
+    cdef CFMutableAttributedStringRef cf_attr_string
+    cdef CGColorRef cg_color
     cdef CTLineRef ct_line
 
-    if len(the_string) == 0:
+    text_len = len(the_string)
+    if text_len == 0:
         return NULL
 
     the_string = the_string.encode('utf-8')
     c_string = PyString_AsString(the_string)
 
     cf_string = CFStringCreateWithCString(NULL, c_string, kCFStringEncodingUTF8)
-    cf_attributes = CFDictionaryCreateMutable(NULL, 0,
-                        &kCFTypeDictionaryKeyCallBacks,
-                        &kCFTypeDictionaryValueCallBacks)
-
-    if cf_attributes != NULL:
-        CFDictionaryAddValue(cf_attributes, kCTFontAttributeName, font)
-    else:
-        raise RuntimeError("unknown error building attribute dictionary")
-
-    cf_attr_string = CFAttributedStringCreate(NULL, cf_string, cf_attributes)
+    cf_attr_string = CFAttributedStringCreateMutable(NULL, 0)
+    CFAttributedStringReplaceString(cf_attr_string, CFRangeMake(0, 0), cf_string)
     CFRelease(cf_string)
-    CFRelease(cf_attributes)
+
+    CFAttributedStringSetAttribute(cf_attr_string, CFRangeMake(0, text_len),
+        kCTFontAttributeName, font)
+    
+    if fill_color is not None:
+        cg_color = _create_cg_color(fill_color)
+        CFAttributedStringSetAttribute(cf_attr_string, CFRangeMake(0, text_len),
+            kCTForegroundColorAttributeName, cg_color)
+        CGColorRelease(cg_color)
+    
+    # Stroke Color is supported by OS X 10.6 and greater
+    #if stroke_color is not None:
+    #    cg_color = _create_cg_color(stroke_color)
+    #    CFAttributedStringSetAttribute(cf_attr_string, CFRangeMake(0, text_len),
+    #        kCTStrokeColorAttributeName, cg_color)
+    #    CGColorRelease(cg_color)
 
     ct_line = CTLineCreateWithAttributedString(cf_attr_string)
     CFRelease(cf_attr_string)
