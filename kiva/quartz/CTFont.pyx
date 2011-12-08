@@ -21,7 +21,8 @@ cdef object _cf_string_to_pystring(CFStringRef cf_string):
     return retval
 
 cdef CFArrayRef _get_system_fonts():
-        cdef int value = 1
+        cdef CFIndex value = 1
+        cdef CFNumberRef cf_number
         cdef CFMutableDictionaryRef cf_options_dict
         cdef CTFontCollectionRef cf_font_collection
         cdef CFArrayRef cf_font_descriptors
@@ -31,7 +32,10 @@ cdef CFArrayRef _get_system_fonts():
                             &kCFTypeDictionaryValueCallBacks)
 
         if cf_options_dict != NULL:
-            CFDictionaryAddValue(cf_options_dict, <void*>kCTFontCollectionRemoveDuplicatesOption, &value)
+            cf_number = CFNumberCreate(NULL, kCFNumberCFIndexType, &value)
+            CFDictionaryAddValue(cf_options_dict, <void*>kCTFontCollectionRemoveDuplicatesOption,
+                <void*>cf_number)
+            CFRelease(cf_number)
         else:
             msg = "unknown error building options dictionary for font list"
             raise RuntimeError(msg)
