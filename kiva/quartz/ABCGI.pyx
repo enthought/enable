@@ -877,7 +877,7 @@ cdef class CGContext:
         
         pointer = self.current_font.get_pointer()
         ct_font = <CTFontRef>pointer
-        ct_line = _create_ct_line(text, ct_font, None, None)
+        ct_line = _create_ct_line(text, ct_font, None)
         if ct_line != NULL:
             width = CTLineGetTypographicBounds(ct_line, &ascent, &descent, NULL)
             CFRelease(ct_line)
@@ -915,7 +915,7 @@ cdef class CGContext:
 
         pointer = self.current_font.get_pointer()
         ct_font = <CTFontRef>pointer
-        ct_line = _create_ct_line(text, ct_font, self.stroke_color, self.fill_color)
+        ct_line = _create_ct_line(text, ct_font, self.stroke_color)
         if ct_line == NULL:
             return
         
@@ -2753,8 +2753,7 @@ cdef CGColorRef _create_cg_color(object color):
 
     return cg_color
 
-cdef CTLineRef _create_ct_line(object the_string, CTFontRef font,
-                               object stroke_color, object fill_color):
+cdef CTLineRef _create_ct_line(object the_string, CTFontRef font, object stroke_color):
     cdef char* c_string
     cdef CFIndex text_len
     cdef CFStringRef cf_string
@@ -2777,18 +2776,14 @@ cdef CTLineRef _create_ct_line(object the_string, CTFontRef font,
     CFAttributedStringSetAttribute(cf_attr_string, CFRangeMake(0, text_len),
         kCTFontAttributeName, font)
     
-    if fill_color is not None:
-        cg_color = _create_cg_color(fill_color)
+    if stroke_color is not None:
+        cg_color = _create_cg_color(stroke_color)
         CFAttributedStringSetAttribute(cf_attr_string, CFRangeMake(0, text_len),
             kCTForegroundColorAttributeName, cg_color)
         CGColorRelease(cg_color)
     
-    # Stroke Color is supported by OS X 10.6 and greater
-    #if stroke_color is not None:
-    #    cg_color = _create_cg_color(stroke_color)
-    #    CFAttributedStringSetAttribute(cf_attr_string, CFRangeMake(0, text_len),
-    #        kCTStrokeColorAttributeName, cg_color)
-    #    CGColorRelease(cg_color)
+    # Stroke Color is supported by OS X 10.6 and greater using the 
+    # kCTStrokeColorAttributeName attribute.
 
     ct_line = CTLineCreateWithAttributedString(cf_attr_string)
     CFRelease(cf_attr_string)
