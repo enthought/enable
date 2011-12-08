@@ -6,16 +6,14 @@
 include "Python.pxi"
 include "CoreFoundation.pxi"
 include "CoreGraphics.pxi"
-include "QuickDraw.pxi"
-include "ATS.pxi"
-include "ATSUI.pxi"
+include "CoreText.pxi"
 
 cimport c_numpy
 
 import os
 import warnings
 
-from ATSFont import default_font_info
+from CTFont import default_font_info
 
 cdef extern from "math.h":
     double sqrt(double arg)
@@ -36,6 +34,9 @@ cdef CFURLRef url_from_filename(char* filename) except NULL:
     if cfurl == NULL:
         raise RuntimeError("could not create a CFURLRef")
     return cfurl
+
+cdef CGRect CGRectMakeFromPython(object seq):
+    return CGRectMake(seq[0], seq[1], seq[2], seq[3])
 
 # Enumerations
 
@@ -184,13 +185,12 @@ cdef class CGContext:
     cdef CGContextRef context
     cdef long can_release
     cdef object current_font
-    cdef ATSUStyle current_style
+    cdef object current_style
     cdef CGAffineTransform text_matrix
-    cdef object style_cache
+    cdef object font_cache
 
     def __cinit__(self, *args, **kwds):
         self.context = NULL
-        self.current_style = NULL
         self.can_release = 0
         self.text_matrix = CGAffineTransformMake(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
 
@@ -212,7 +212,9 @@ cdef class CGContext:
         CGColorSpaceRelease(space)
 
     def _setup_fonts(self):
-        self.style_cache = {}
+        self.current_font = None
+        self.current_style = None
+        self.font_cache = {}
         self.select_font("Helvetica", 12)
         CGContextSetShouldSmoothFonts(self.context, 1)
         CGContextSetShouldAntialias(self.context, 1)
@@ -769,22 +771,12 @@ cdef class CGContext:
     def select_font(self, object name, float size, style='regular'):
         """
         """
-        cdef ATSUStyle atsu_style
-
         key = (name, size, style)
-        if key not in self.style_cache:
-            font = default_font_info.lookup(name, style=style)
-            self.current_font = font
-            ps_name = font.postscript_name
+        if key not in self.font_cache:
+            self.current_style = default_font_info.lookup(name, style=style)
+            self.font_cache[key] = self.current_style.get_font(size)
 
-            atsu_style = _create_atsu_style(ps_name, size)
-            if atsu_style == NULL:
-                raise RuntimeError("could not create style for font %r" % ps_name)
-            self.style_cache[key] = PyCObject_FromVoidPtr(<void*>atsu_style,
-                <cobject_destr>ATSUDisposeStyle)
-
-        atsu_style = <ATSUStyle>PyCObject_AsVoidPtr(self.style_cache[key])
-        self.current_style = atsu_style
+        self.current_font = self.font_cache[key]
 
     def set_font(self, font):
         """ Set the font for the current graphics context.
@@ -801,30 +793,25 @@ cdef class CGContext:
         self.select_font(font.face_name, font.size, style=style)
 
     def set_font_size(self, float size):
+        """ Change the size of the currently selected font
         """
-        """
-        cdef ATSUAttributeTag attr_tag
-        cdef ByteCount attr_size
-        cdef ATSUAttributeValuePtr attr_value
-        cdef Fixed fixed_size
-        cdef OSStatus err
-
-        if self.current_style == NULL:
+        if self.current_style is None:
             return
 
-        attr_tag = kATSUSizeTag
-        attr_size = sizeof(Fixed)
-        fixed_size = FloatToFixed(size)
-        attr_value = <ATSUAttributeValuePtr>&fixed_size
-        err = ATSUSetAttributes(self.current_style, 1, &attr_tag, &attr_size, &attr_value)
-        if err:
-            raise RuntimeError("could not set font size on current style")
+        name = self.current_style.family_name
+        style = self.current_style.style
+        key = (name, size, style)
+        if key not in self.font_cache:
+            self.font_cache[key] = self.current_style.get_font(size)
+
+        self.current_font = self.font_cache[key]
 
     def set_character_spacing(self, float spacing):
         """
         """
 
-        # XXX: This does not fit in with ATSUI, really.
+        # XXX: Perhaps this should be handled by the kerning attribute
+        # in the attributed string that is used to make a line of text?
         CGContextSetCharacterSpacing(self.context, spacing)
 
     def set_text_drawing_mode(self, object mode):
@@ -876,43 +863,24 @@ cdef class CGContext:
     def get_text_extent(self, object text):
         """ Measure the space taken up by given text using the current font.
         """
-        cdef CGPoint start
-        cdef CGPoint stop
-        cdef ATSFontMetrics metrics
-        cdef OSStatus status
-        cdef ATSUTextLayout layout
-        cdef double x1, x2, y1, y2
-        cdef ATSUTextMeasurement before, after, ascent, descent
-        cdef ByteCount actual_size
-
-        layout = NULL
-        try:
-            if not text:
-                # ATSUGetUnjustifiedBounds does not handle empty strings.
-                text = " "
-                empty = True
-            else:
-                empty = False
-            _create_atsu_layout(text, self.current_style, &layout)
-            status = ATSUGetUnjustifiedBounds(layout, 0, len(text), &before,
-                &after, &ascent, &descent)
-            if status:
-                raise RuntimeError("could not calculate font metrics")
-
-            if empty:
-                x1 = 0.0
-                x2 = 0.0
-            else:
-                x1 = FixedToFloat(before)
-                x2 = FixedToFloat(after)
-
-            y1 = -FixedToFloat(descent)
-            y2 = -y1 + FixedToFloat(ascent)
-
-        finally:
-            if layout != NULL:
-                ATSUDisposeTextLayout(layout)
-
+        cdef size_t pointer
+        cdef CTFontRef ct_font
+        cdef CTLineRef ct_line
+        cdef float ascent = 0.0, descent = 0.0
+        cdef double width = 0.0, x1,x2,y1,y2
+        
+        pointer = self.current_font.get_pointer()
+        ct_font = <CTFontRef>pointer
+        ct_line = _create_ct_line(text, ct_font)
+        if ct_line != NULL:
+            width = CTLineGetTypographicBounds(ct_line, &ascent, &descent, NULL)
+            CFRelease(ct_line)
+        
+        x1 = 0.0
+        x2 = width
+        y1 = -descent
+        y2 = -y1 + ascent
+            
         return x1, y1, x2, y2
 
     def get_full_text_extent(self, object text):
@@ -930,15 +898,21 @@ cdef class CGContext:
             This is also used for showing text at a particular point
             specified by xy == (x, y).
         """
-        cdef float x
-        cdef float y
-        cdef CGAffineTransform text_matrix
-        cdef ATSUTextLayout layout
-
+        cdef float x, y
+        cdef size_t pointer
+        cdef CTFontRef ct_font
+        cdef CTLineRef ct_line
+        
         if not text:
-            # I don't think we can draw empty strings using the ATSU API.
+            # Nothing to draw
             return
 
+        pointer = self.current_font.get_pointer()
+        ct_font = <CTFontRef>pointer
+        ct_line = _create_ct_line(text, ct_font)
+        if ct_line == NULL:
+            return
+        
         if xy is None:
             x = 0.0
             y = 0.0
@@ -949,13 +923,11 @@ cdef class CGContext:
         self.save_state()
         try:
             CGContextConcatCTM(self.context, self.text_matrix)
-            _create_atsu_layout(text, self.current_style, &layout)
-            _set_cgcontext_for_layout(self.context, layout)
-            ATSUDrawText(layout, 0, len(text), FloatToFixed(x), FloatToFixed(y))
+            CGContextSetTextPosition(self.context, x, y)
+            CTLineDraw(ct_line, self.context)
         finally:
             self.restore_state()
-            if layout != NULL:
-                ATSUDisposeTextLayout(layout)
+            CFRelease(ct_line)
 
     def show_text_at_point(self, object text, float x, float y):
         """ Draw text on the device at a given text position.
@@ -1361,71 +1333,6 @@ cdef class CGContextFromSWIG(CGContext):
         self.can_release = False
         ptr = int(swig_obj.this.split('_')[1], 16)
         CGContext.__init__(self, ptr)
-
-cdef class CGContextForPort(CGContextInABox):
-    cdef readonly long port
-    cdef readonly int _begun
-
-    def __init__(self, long port):
-        cdef OSStatus status
-
-#        status = QDBeginCGContext(<CGrafPtr>port, &(self.context))
-#        if status:
-#            self.port = 0
-#            raise RuntimeError("QuickDraw could not make CGContext")
-
-        self.context = NULL
-        self.can_release = 0
-        self._begun = 0
-
-        self.port = port
-
-        cdef QDRect r
-        GetPortBounds(<CGrafPtr>port, &r)
-
-        self._width = r.right - r.left
-        self._height = r.bottom - r.top
-        self.size = (self._width, self._height)
-
-        #self.begin()
-
-    def begin(self):
-        cdef OSStatus status
-        cdef QDRect port_rect
-        if not self._begun:
-            status = QDBeginCGContext(<CGrafPtr>self.port, &(self.context))
-            if status != noErr:
-                raise RuntimeError("QuickDraw could not make CGContext")
-            SyncCGContextOriginWithPort(self.context, <CGrafPtr>self.port)
-            self._setup_color_space()
-            self._setup_fonts()
-
-            #GetPortBounds(<CGrafPtr>self.port, &port_rect)
-            #CGContextTranslateCTM(self.context, 0, (port_rect.bottom - port_rect.top))
-            #CGContextScaleCTM(self.context, 1.0, -1.0)
-            self._begun = 1
-
-    def end(self):
-        if self.port and self.context is not NULL and self._begun:
-            CGContextFlush(self.context)
-            QDEndCGContext(<CGrafPtr>(self.port), &(self.context))
-            self._begun = 0
-
-    def clear(self, object clear_color=(1.0,1.0,1.0,1.0)):
-        already_begun = self._begun
-        self.begin()
-        CGContextInABox.clear(self, clear_color)
-        if not already_begun:
-            self.end()
-
-    def __dealloc__(self):
-        self.end()
-        #if self.port and self.context and self._begun:
-        #    QDEndCGContext(<CGrafPtr>(self.port), &(self.context))
-        #if self.context and self.can_release:
-        #    CGContextRelease(self.context)
-        #    self.context = NULL
-
 
 
 cdef class CGGLContext(CGContextInABox):
@@ -2824,109 +2731,37 @@ cdef bool _line_intersects_cgrect(double x, double y, double slope, CGRect rect)
 
 #### Font utilities ####
 
-cdef ATSUStyle _create_atsu_style(object postscript_name, float font_size):
-    cdef OSStatus err
-    cdef ATSUStyle atsu_style
-    cdef ATSUFontID atsu_font
-    cdef Fixed atsu_size
-    cdef char* c_ps_name
-
-    # Create the attribute arrays.
-    cdef ATSUAttributeTag attr_tags[2]
-    cdef ByteCount attr_sizes[2]
-    cdef ATSUAttributeValuePtr attr_values[2]
-
-    err = noErr
-    atsu_style = NULL
-    atsu_font = 0
-    atsu_size = FloatToFixed(font_size)
-
-    # Look up the ATSUFontID for the given PostScript name of the font.
-    postscript_name = postscript_name.encode('utf-8')
-    c_ps_name = PyString_AsString(postscript_name)
-    err = ATSUFindFontFromName(<void*>c_ps_name, len(postscript_name),
-        kFontPostscriptName, kFontNoPlatformCode, kFontNoScriptCode,
-        kFontNoLanguageCode, &atsu_font)
-    if err:
-        return NULL
-
-    # Set the ATSU font in the attribute arrays.
-    attr_tags[0] = kATSUFontTag
-    attr_sizes[0] = sizeof(ATSUFontID)
-    attr_values[0] = &atsu_font
-
-    # Set the font size in the attribute arrays.
-    attr_tags[1] = kATSUSizeTag
-    attr_sizes[1] = sizeof(Fixed)
-    attr_values[1] = &atsu_size
-
-    # Create the ATSU style.
-    err = ATSUCreateStyle(&atsu_style)
-    if err:
-        if atsu_style != NULL:
-            ATSUDisposeStyle(atsu_style)
-        return NULL
-
-    # Set the style attributes.
-    err = ATSUSetAttributes(atsu_style, 2, attr_tags, attr_sizes, attr_values)
-    if err:
-        if atsu_style != NULL:
-            ATSUDisposeStyle(atsu_style)
-        return NULL
-
-    return atsu_style
-
-
-cdef object _create_atsu_layout(object the_string, ATSUStyle style, ATSUTextLayout* layout):
-    cdef ATSUTextLayout atsu_layout
-    cdef CFIndex text_length
-    cdef OSStatus err
-    cdef UniChar *uni_buffer
-    cdef CFRange uni_range
-    cdef CFStringRef cf_string
+cdef CTLineRef _create_ct_line(object the_string, CTFontRef font):
     cdef char* c_string
+    cdef CFStringRef cf_string
+    cdef CFMutableDictionaryRef cf_attributes
+    cdef CFAttributedStringRef cf_attr_string
+    cdef CTLineRef ct_line
 
-    layout[0] = atsu_layout = NULL
     if len(the_string) == 0:
-        return
+        return NULL
 
-    err = noErr
     the_string = the_string.encode('utf-8')
     c_string = PyString_AsString(the_string)
 
     cf_string = CFStringCreateWithCString(NULL, c_string, kCFStringEncodingUTF8)
-    text_length = CFStringGetLength(cf_string)
+    cf_attributes = CFDictionaryCreateMutable(NULL, 0,
+                        &kCFTypeDictionaryKeyCallBacks,
+                        &kCFTypeDictionaryValueCallBacks)
 
-    # Extract the Unicode data from the CFStringRef.
-    uni_range = CFRangeMake(0, text_length)
-    uni_buffer = <UniChar*>PyMem_Malloc(text_length * sizeof(UniChar))
-    if uni_buffer == NULL:
-        raise MemoryError("could not allocate %d bytes of memory" % (text_length * sizeof(UniChar)))
-    CFStringGetCharacters(cf_string, uni_range, uni_buffer)
+    if cf_attributes != NULL:
+        CFDictionaryAddValue(cf_attributes, kCTFontAttributeName, font)
+    else:
+        raise RuntimeError("unknown error building attribute dictionary")
 
-    # Create the ATSUI layout.
-    err = ATSUCreateTextLayoutWithTextPtr(<ConstUniCharArrayPtr>uni_buffer, 0, text_length, text_length, 1, <UniCharCount*>&text_length, &style, &atsu_layout)
-    if err:
-        PyMem_Free(uni_buffer)
-        raise RuntimeError("could not create an ATSUI layout")
+    cf_attr_string = CFAttributedStringCreate(NULL, cf_string, cf_attributes)
+    CFRelease(cf_string)
+    CFRelease(cf_attributes)
 
-    layout[0] = atsu_layout
-    return
+    ct_line = CTLineCreateWithAttributedString(cf_attr_string)
+    CFRelease(cf_attr_string)
 
+    return ct_line
 
-cdef object _set_cgcontext_for_layout(CGContextRef context, ATSUTextLayout layout):
-    cdef ATSUAttributeTag tag
-    cdef ByteCount size
-    cdef ATSUAttributeValuePtr value
-    cdef OSStatus err
-
-    tag = kATSUCGContextTag
-    size = sizeof(CGContextRef)
-    value = &context
-
-    err = ATSUSetLayoutControls(layout, 1, &tag, &size, &value)
-    if err:
-        raise RuntimeError("could not assign the CGContextRef to the ATSUTextLayout")
-    return
 
 #### EOF #######################################################################

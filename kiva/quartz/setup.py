@@ -31,32 +31,33 @@ def configuration(parent_package='', top_path=None):
     extra_link_args=[
         '-Wl,-framework', '-Wl,CoreFoundation',
         '-Wl,-framework', '-Wl,ApplicationServices',
-        '-Wl,-framework', '-Wl,Carbon',
         '-Wl,-framework', '-Wl,Foundation',
     ]
     include_dirs = ['/Developer/Headers/FlatCarbon']
-    config.add_extension('ATSFont',
-                         [generate_c_from_cython],
-                         include_dirs = include_dirs,
-                         extra_link_args = extra_link_args,
-                         depends=["ATSFont.pyx",
-                                  "Python.pxi",
-                                  "ATS.pxi",
-                                  ],
-                         )
     config.add_extension('ABCGI',
                          [generate_c_from_cython],
                          include_dirs = include_dirs,
+                         extra_link_args = extra_link_args,
                          depends = ["ABCGI.pyx",
-                                    "ATSUI.pxi",
                                     "Python.pxi",
                                     "numpy.pxi",
                                     "c_numpy.pxd",
                                     "CoreFoundation.pxi",
                                     "CoreGraphics.pxi",
-                                    "QuickDraw.pxi",
+                                    "CoreText.pxi",
                                     ]
                          )
+
+    config.add_extension('CTFont',
+                         [generate_c_from_cython],
+                         include_dirs = include_dirs,
+                         extra_link_args = extra_link_args,
+                         depends=["CTFont.pyx",
+                                  "CoreFoundation.pxi",
+                                  "CoreGraphics.pxi",
+                                  "CoreText.pxi",
+                                  ],
+                        )
 
     wx_info = get_info('wx')
     if wx_info:

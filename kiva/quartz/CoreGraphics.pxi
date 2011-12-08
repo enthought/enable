@@ -506,5 +506,3 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
 
     CFTypeID CGContextGetTypeID()
 
-cdef CGRect CGRectMakeFromPython(object seq):
-    return CGRectMake(seq[0], seq[1], seq[2], seq[3])

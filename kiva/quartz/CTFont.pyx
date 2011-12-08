@@ -53,7 +53,7 @@ cdef class CTFont:
         if self.ct_font != NULL:
             CFRelease(self.ct_font)
 
-    cdef size_t get_pointer(self):
+    cpdef size_t get_pointer(self):
         return <size_t>self.ct_font
 
     cdef set_pointer(self, CTFontRef pointer):
@@ -63,6 +63,9 @@ cdef class CTFont:
 cdef class CTFontStyle:
     cdef CTFontDescriptorRef ct_font_descriptor
     cdef CFDictionaryRef attribute_dictionary
+    cdef readonly object family_name
+    cdef readonly object style
+    
     def __cinit__(self, *args, **kwargs):
         self.ct_font_descriptor = NULL
         self.attribute_dictionary = NULL
@@ -74,8 +77,8 @@ cdef class CTFontStyle:
             CFRelease(self.ct_font_descriptor)
 
     def __init__(self, name, style='regular'):
-        self._family_name = name
-        self._style = style
+        self.family_name = name
+        self.style = style
         self.attribute_dictionary = self._build_attribute_dictionary(name, style)
         self.ct_font_descriptor = CTFontDescriptorCreateWithAttributes(self.attribute_dictionary)
 
@@ -104,10 +107,6 @@ cdef class CTFontStyle:
         font.set_pointer(ct_font)
         return font
 
-    property family_name:
-        def __get__(self):
-            return self._family_name
-    
     property postcript_name:
         def __get__(self):
             cdef CFStringRef cf_ps_name
@@ -117,10 +116,6 @@ cdef class CTFontStyle:
             CFRelease(cf_ps_name)
 
             return retval
-
-    property style:
-        def __get__(self):
-            return self._style
 
     cdef CFDictionaryRef _build_attribute_dictionary(self, name, style):
         cdef CFStringRef cf_name, cf_style

@@ -5,7 +5,7 @@
 include "CoreFoundation.pxi"
 include "CoreGraphics.pxi"
 
-cdef extern from "CoreText/CoreText.h":
+cdef extern from "ApplicationServices/ApplicationServices.h":
 
     ctypedef CFTypeRef CTFontRef
     ctypedef CFTypeRef CTFontCollectionRef
