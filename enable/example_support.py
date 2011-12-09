@@ -78,7 +78,7 @@ elif ETSConfig.toolkit == 'qt4':
             self.enable_win = self._create_window()
 
             layout = QtGui.QVBoxLayout()
-            layout.setMargin(0)
+            layout.setContentsMargins(0, 0, 0, 0)
             layout.addWidget(self.enable_win.control)
 
             self.setLayout(layout)
