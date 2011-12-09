@@ -33,10 +33,8 @@ def configuration(parent_package='', top_path=None):
         '-Wl,-framework', '-Wl,ApplicationServices',
         '-Wl,-framework', '-Wl,Foundation',
     ]
-    include_dirs = ['/Developer/Headers/FlatCarbon']
     config.add_extension('ABCGI',
                          [generate_c_from_cython],
-                         include_dirs = include_dirs,
                          extra_link_args = extra_link_args,
                          depends = ["ABCGI.pyx",
                                     "Python.pxi",
@@ -50,7 +48,6 @@ def configuration(parent_package='', top_path=None):
 
     config.add_extension('CTFont',
                          [generate_c_from_cython],
-                         include_dirs = include_dirs,
                          extra_link_args = extra_link_args,
                          depends=["CTFont.pyx",
                                   "CoreFoundation.pxi",
