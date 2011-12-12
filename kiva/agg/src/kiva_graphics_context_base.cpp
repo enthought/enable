@@ -580,7 +580,7 @@ kiva::rect_type graphics_context_base::get_text_extent(char *text)
 {
     const agg::glyph_cache *glyph = NULL;
 
-#if defined(__MSVCRT__) || defined (__MINGW32__)
+#if defined(_WIN32) || defined(__WIN32__) || defined(__CYGWIN__)
         int required = MultiByteToWideChar(CP_UTF8, 0, text, -1, 0, 0);
         std::vector<wchar_t> p_(required + 1);
         MultiByteToWideChar(CP_UTF8, 0, text, -1, &p_[0], required);
