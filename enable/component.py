@@ -8,12 +8,6 @@ from traits.api \
            Property, Str, Trait
 from kiva.constants import FILL, STROKE
 
-try:
-    from kiva.gl import GraphicsContext as GraphicsContextGL
-except (ImportError, TypeError):
-    class GraphicsContextGL(object):
-        pass
-
 # Local relative imports
 from colors import black_color_trait, white_color_trait
 from coordinate_box import CoordinateBox
@@ -705,7 +699,11 @@ class Component(CoordinateBox, Interactor):
         self.drawn_outer_position = list(self.outer_position[:])
         self.drawn_outer_bounds = list(self.outer_bounds[:])
 
-        if self.use_backbuffer and (not isinstance(gc, GraphicsContextGL)):
+        # OpenGL-based graphics-contexts have a `gl_init()` method. We
+        # test for this to avoid having to import the OpenGL
+        # GraphicsContext just to do an isinstance() check.
+        is_gl = hasattr(gc, 'gl_init')
+        if self.use_backbuffer and (not is_gl):
             if self.backbuffer_padding:
                 x, y = self.outer_position
                 width, height = self.outer_bounds
