@@ -21,6 +21,7 @@ elif ETSConfig.toolkit == 'qt4':
 else:
     Editor = object
 
+
 class _ComponentEditor( Editor ):
 
     #---------------------------------------------------------------------------
@@ -54,6 +55,9 @@ class _ComponentEditor( Editor ):
         self._window.component = self.value
         return
 
+
+# FIXME: remove magic numbers, size = (400, 400) -> initialize to the size of
+#        the corresponding item if available
 
 class ComponentEditor( BasicEditorFactory ):
     """ wxPython editor factory for Enable components.

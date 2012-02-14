@@ -112,6 +112,40 @@ class _QtWindowHandler(object):
         if self._enable_window:
             self._enable_window._handle_mouse_event("mouse_wheel", event)
 
+    def sizeHint(self, qt_size_hint):
+        """ Combine the Qt and enable size hints.
+
+        Combine the size hint coming from the Qt component (usually -1, -1)
+        with the preferred size of the enable component and the size
+        of the enable window.
+
+        The combined size hint is
+        - the Qt size hint if larger than 0
+        - the maximum of the plot's preferred size and the window size
+          (component-wise)
+
+        E.g., if
+        qt size hint = (-1, -1)
+        component preferred size = (500, 200)
+        size of enable window = (400, 400)
+
+        the final size hint will be (500, 400)
+        """
+
+        preferred_size = self._enable_window.component.get_preferred_size()
+        window_size = self._enable_window.control.size().toTuple()
+
+        if qt_size_hint.width() < 0:
+            width = max(preferred_size[0], window_size[0])
+            qt_size_hint.setWidth(width)
+
+        if qt_size_hint.height() < 0:
+            height = max(preferred_size[1], window_size[1])
+            qt_size_hint.setHeight(height)
+
+        return qt_size_hint
+
+
     #------------------------------------------------------------------------
     # Qt Drag and drop event handlers
     #------------------------------------------------------------------------
@@ -131,6 +165,7 @@ class _QtWindowHandler(object):
 
 class _QtWindow(QtGui.QWidget):
     """ The Qt widget that implements the enable control. """
+
     def __init__(self, parent, enable_window):
         super(_QtWindow, self).__init__(parent)
         self.handler = _QtWindowHandler(self, enable_window)
@@ -183,6 +218,10 @@ class _QtWindow(QtGui.QWidget):
 
     def dropEvent(self, event):
         self.handler.dropEvent(event)
+
+    def sizeHint(self):
+        qt_size_hint = super(_QtWindow, self).sizeHint()
+        return self.handler.sizeHint(qt_size_hint)
 
 
 class _QtGLWindow(QtOpenGL.QGLWidget):
@@ -240,6 +279,11 @@ class _QtGLWindow(QtOpenGL.QGLWidget):
 
     def dropEvent(self, event):
         self.handler.dropEvent(event)
+
+    # TODO: by symmetry this belongs here, but we need to test it
+    #def sizeHint(self):
+    #    qt_size_hint = super(_QtGLWindow, self).sizeHint()
+    #    return self.handler.sizeHint(qt_size_hint)
 
 
 class _Window(AbstractWindow):
