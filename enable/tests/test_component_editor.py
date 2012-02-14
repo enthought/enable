@@ -21,14 +21,14 @@ class _ComponentDialog(HasTraits):
     )
 
 
-DIALOG_WIDTH, DIALOG_HEIGHT = 700, 200
+ITEM_WIDTH, ITEM_HEIGHT = 700, 200
 class _ComponentDialogWithSize(HasTraits):
     """ View containing an item with ComponentEditor and given size. """
     thing = Any
 
     traits_view = View(
         Item('thing', editor=ComponentEditor(), show_label=False,
-             width=DIALOG_WIDTH, height=DIALOG_HEIGHT),
+             width=ITEM_WIDTH, height=ITEM_HEIGHT),
         resizable = True
     )
 
@@ -44,6 +44,23 @@ def test_initial_component():
     size = get_dialog_size(ui.control)
     nose.tools.assert_greater(size[0], 0)
     nose.tools.assert_greater(size[1], 0)
+
+
+@skip_if_null
+def test_initial_component_with_item_size():
+    # BEH: the initial component size should respect the size of the
+
+    dialog = _ComponentDialogWithSize()
+    ui = dialog.edit_traits()
+
+    size = get_dialog_size(ui.control)
+
+    # leave a few pixel of margin for wx
+    nose.tools.assert_greater(size[0], ITEM_WIDTH-1)
+    nose.tools.assert_less(size[0], ITEM_WIDTH+30)
+
+    nose.tools.assert_greater(size[1], ITEM_HEIGHT-1)
+    nose.tools.assert_less(size[1], ITEM_HEIGHT+30)
 
 
 
