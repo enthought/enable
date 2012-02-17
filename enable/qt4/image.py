@@ -34,9 +34,7 @@ class Window(BaseWindow):
         w = self._gc.width()
         h = self._gc.height()
         data = self._gc.pixel_map.convert_to_argb32string()
-        byte_data = QtCore.QByteArray(data)
-        image = QtGui.QImage(byte_data, w, h, QtGui.QImage.Format_RGB32)
-
+        image = QtGui.QImage(data, w, h, QtGui.QImage.Format_RGB32)
         rect = QtCore.QRect(0,0,w,h)
         painter = QtGui.QPainter(self.control)
         painter.drawImage(rect, image)
