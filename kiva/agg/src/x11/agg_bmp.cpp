@@ -8,6 +8,8 @@
 #include "agg_pixfmt_rgb.h"
 #include "agg_pixfmt_rgba.h"
 #include "agg_color_rgba.h"
+#include "util/agg_color_conv_rgb8.h"
+#include "util/agg_color_conv.h"
 
 #ifdef NUMPY
 #include "numpy/arrayobject.h"
@@ -133,16 +135,11 @@ namespace agg
     switch (format) {
     case pix_format_bgra32:
       {
-	pixfmt_bgra32 r((rendering_buffer&)m_rbuf_window);
+	      rendering_buffer destination;
+        unsigned int row_len = platform_specific::calc_row_len(w, 4);
 
-	for (j=0;j<h;++j)
-	  for (i=0;i<w;++i)
-	    {
-	      c = r.pixel(i,h-j-1);
-	      *(data++) = (char)c.r;
-	      *(data++) = (char)c.g;
-	      *(data++) = (char)c.b;
-	    }
+        destination.attach((unsigned char*)data, w, h, w * 3);
+        color_conv(&destination, &m_rbuf_window, color_conv_bgra32_to_rgb24());
       }
       break;
     case pix_format_rgb24:
