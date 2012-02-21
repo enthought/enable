@@ -1,8 +1,16 @@
 # File types to ignore
 *.pyc
+*.pyd
 *.so
+*.enamlc
 *~
 .DS_Store
+
+# Ignore the build directories
+*.egg-info/
+build/
+dist/
+docs/build/
 
 # SWIG & Cython intermediate files
 kiva/agg/agg.py
@@ -14,9 +22,3 @@ kiva/agg/src/win32/plat_support_wrap.cpp
 kiva/agg/src/x11/plat_support_wrap.cpp
 kiva/quartz/ABCGI.c
 kiva/quartz/ATSFont.c
-
-# Ignore the build directories.
-*.egg-info/
-build/
-dist/
-docs/build/
