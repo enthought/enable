@@ -111,7 +111,7 @@ them get the event.
   the entire dispatch() mechanism.)
 
 The event handlers that :class:`Component` dispatches to are of the form
-:samp:{event_state}{event_suffix}`, where *event_suffix* corresponds to the
+:samp:`{event_state}{event_suffix}`, where *event_suffix* corresponds to the
 actual kind of event that happened, e.g., :obj:`left_down`, :obj:`left_up`,
 :obj:`left_dclick`, etc. Most objects default to having just a single event
 state, which is the "normal" event state. To make an Enable component that
