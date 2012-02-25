@@ -33,6 +33,8 @@ class Interactor(HasTraits):
     - mouse_enter
     - mouse_leave
     - key_pressed
+    - key_released
+    - character
     - dropped_on
     - drag_over
     - drag_enter

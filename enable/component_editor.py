@@ -21,6 +21,7 @@ elif ETSConfig.toolkit == 'qt4':
 else:
     Editor = object
 
+
 class _ComponentEditor( Editor ):
 
     #---------------------------------------------------------------------------
@@ -34,7 +35,13 @@ class _ComponentEditor( Editor ):
         """ Finishes initializing the editor by creating the underlying toolkit
         widget.
         """
-        self._window = Window( parent, size=self.factory.size, component=self.value )
+
+        size = self._get_initial_size()
+
+        self._window = Window(parent,
+                              size=size,
+                              component=self.value)
+
         self.control = self._window.control
         self._window.bgcolor = self.factory.bgcolor
         self._parent = parent
@@ -53,6 +60,23 @@ class _ComponentEditor( Editor ):
         """
         self._window.component = self.value
         return
+
+    def _get_initial_size(self):
+        """ Compute the initial size of the component.
+
+        Use the item size to set the size of the component;
+        if not specified, use the default size given in ComponentEditor.size
+        """
+
+        width = self.item.width
+        if width < 0:
+            width = self.factory.size[0]
+
+        height = self.item.height
+        if height < 0:
+            height = self.factory.size[1]
+
+        return width, height
 
 
 class ComponentEditor( BasicEditorFactory ):
