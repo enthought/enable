@@ -105,6 +105,14 @@ class BasicEvent(HasTraits):
         else:
             return reduce(dot, self._transform_stack[::-1])
 
+    def current_pointer_position(self):
+        """
+        Returns the current pointer position in the transformed coordinates
+        """
+        window_pos = self.window.get_pointer_position()
+        return tuple(dot(array(window_pos + (1,)), self.net_transform())[:2])
+
+
     def __repr__(self):
         s = '%s(x=%r, y=%r, handled=%r)' % (self.__class__.__name__, self.x,
             self.y, self.handled)
