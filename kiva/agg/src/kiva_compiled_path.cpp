@@ -8,11 +8,11 @@ using namespace kiva;
 
 void compiled_path::remove_all()
 {
-    //agg::path_storage::remove_all();
+    //agg24::path_storage::remove_all();
     // fix me: call to base:: to appease VC++6.0
     this->base::remove_all();
     this->_has_curves = false;
-    //ptm = agg::trans_affine();
+    //ptm = agg24::trans_affine();
 }
 
 void compiled_path::begin_path()
@@ -72,9 +72,9 @@ void compiled_path::arc(double x, double y, double radius, double start_angle,
     double sweep_angle = end_angle - start_angle;
     if (cw)
     {
-        sweep_angle = -(2*agg::pi - sweep_angle);
+        sweep_angle = -(2*agg24::pi - sweep_angle);
     }
-    agg::bezier_arc aggarc(x, y, radius, radius, start_angle, sweep_angle);
+    agg24::bezier_arc aggarc(x, y, radius, radius, start_angle, sweep_angle);
 
     // Now manually transform each vertex and add it.  For some reason, trying
     // to transform aggarc in place and then using this->base::add_path()
@@ -87,7 +87,7 @@ void compiled_path::arc(double x, double y, double radius, double start_angle,
     for (int i = 0; i <= numverts/2; i++)
     {
         cmd = aggarc.vertex(&vx, &vy);
-        if (!agg::is_stop(cmd))
+        if (!agg24::is_stop(cmd))
         {
             this->ptm.transform(&vx, &vy);
             vertices.add_vertex(vx, vy, cmd);
@@ -119,11 +119,11 @@ void compiled_path::arc_to(double x1, double y1, double x2, double y2,
 
     // Calculate the offset and rotation so that x1,y1, is at the origin (0,0),
     // and x0, y0 sites on the positive x axis (right side of x1,y1).
-    agg::trans_affine_translation xform(-x1, -y1);
+    agg24::trans_affine_translation xform(-x1, -y1);
     double xform_angle = -atan2(y0-y1, x0-x1);
-    if (!kiva::almost_equal(fmod(xform_angle, 2*agg::pi), 0.0))
+    if (!kiva::almost_equal(fmod(xform_angle, 2*agg24::pi), 0.0))
     {
-        xform *= agg::trans_affine_rotation(xform_angle);
+        xform *= agg24::trans_affine_rotation(xform_angle);
     }
 
     // Transform and rotate the points.
@@ -159,7 +159,7 @@ void compiled_path::arc_to(double x1, double y1, double x2, double y2,
     x2 *= point2_scale;
     y2 *= point2_scale;
     xform.inverse_transform(&x2, &y2);
-    agg::bezier_arc_svg aggarc(x0, y0, radius, radius, 0.0, false, sweep_flag, x2, y2);
+    agg24::bezier_arc_svg aggarc(x0, y0, radius, radius, 0.0, false, sweep_flag, x2, y2);
 
     int numverts = aggarc.num_vertices();
     double *vertices = aggarc.vertices();
@@ -188,9 +188,9 @@ void compiled_path::add_path(compiled_path& other_path)
 
     other_path.rewind(0);
     cmd = other_path.vertex(&x, &y);
-    while(!agg::is_stop(cmd))
+    while(!agg24::is_stop(cmd))
     {
-        this->_has_curves |= agg::is_curve(cmd);
+        this->_has_curves |= agg24::is_curve(cmd);
         this->ptm.transform(&x,&y);
         vertices.add_vertex(x, y, cmd);
         cmd = other_path.vertex(&x, &y);
@@ -198,8 +198,8 @@ void compiled_path::add_path(compiled_path& other_path)
     this->concat_ctm(other_path.ptm);
 }
 //{
-//    agg::conv_transform<agg::path_storage> trans(p,ptm);
-//    agg::path_storage::add_path(trans);
+//    agg24::conv_transform<agg24::path_storage> trans(p,ptm);
+//    agg24::path_storage::add_path(trans);
 //    concat_ctm(p.ptm);
 //}
 
@@ -252,40 +252,40 @@ void compiled_path::rects(kiva::rect_list_type &rectlist)
     }
 }
 
-void compiled_path::_transform_ctm(agg::trans_affine& m)
+void compiled_path::_transform_ctm(agg24::trans_affine& m)
 {
     this->ptm.premultiply(m);
 }
 void compiled_path::translate_ctm(double x, double y)
 {
-    agg::trans_affine_translation m(x,y);
+    agg24::trans_affine_translation m(x,y);
     this->_transform_ctm(m);
 }
 
 void compiled_path::rotate_ctm(double angle)
 {
-    agg::trans_affine_rotation m(angle);
+    agg24::trans_affine_rotation m(angle);
     this->_transform_ctm(m);
 }
 
 void compiled_path::scale_ctm(double sx, double sy)
 {
-    agg::trans_affine_scaling m(sx,sy);
+    agg24::trans_affine_scaling m(sx,sy);
     this->_transform_ctm(m);
 }
 
-void compiled_path::concat_ctm(agg::trans_affine& m)
+void compiled_path::concat_ctm(agg24::trans_affine& m)
 {
-    agg::trans_affine m_copy(m);
+    agg24::trans_affine m_copy(m);
     this->_transform_ctm(m_copy);
 }
 
-void compiled_path::set_ctm(agg::trans_affine& m)
+void compiled_path::set_ctm(agg24::trans_affine& m)
 {
-    this->ptm = agg::trans_affine(m);
+    this->ptm = agg24::trans_affine(m);
 }
 
-agg::trans_affine compiled_path::get_ctm()
+agg24::trans_affine compiled_path::get_ctm()
 {
     return this->ptm;
 }

@@ -6,7 +6,7 @@
 #include "agg_basics.h"
 #include "agg_rendering_buffer.h"
 
-namespace agg
+namespace agg24
 {
  
     enum pix_format_e
@@ -46,6 +46,7 @@ namespace agg
             static unsigned calc_palette_size(unsigned  clr_used, unsigned bits_per_pixel);
     };
     
+
 
     class platform_specific
     {

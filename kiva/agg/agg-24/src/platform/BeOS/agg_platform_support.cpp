@@ -35,7 +35,7 @@
 
 class AGGView : public BView {
  public:
-                    AGGView(BRect frame, agg::platform_support* agg, agg::pix_format_e format, bool flipY)
+                    AGGView(BRect frame, agg24::platform_support* agg, agg24::pix_format_e format, bool flipY)
                     : BView(frame, "AGG View", B_FOLLOW_ALL,
                             B_FRAME_EVENTS | B_WILL_DRAW),
                       fAGG(agg),
@@ -125,31 +125,31 @@ class AGGView : public BView {
                                 fAGG->on_draw();
                                 fRedraw = false;
                             }
-                            if (fFormat == agg::pix_format_bgra32) {
+                            if (fFormat == agg24::pix_format_bgra32) {
                                 DrawBitmap(fBitmap, updateRect, updateRect);
                             } else {
                                 BBitmap* bitmap = new BBitmap(fBitmap->Bounds(), 0, B_RGBA32);
 
-                                agg::rendering_buffer rbuf_src;
+                                agg24::rendering_buffer rbuf_src;
                                 rbuf_src.attach((uint8*)fBitmap->Bits(), 
                                                 fBitmap->Bounds().IntegerWidth() + 1, 
                                                 fBitmap->Bounds().IntegerHeight() + 1, 
                                                 fFlipY ? -fBitmap->BytesPerRow() : fBitmap->BytesPerRow());
 
-                                agg::rendering_buffer rbuf_dst;
+                                agg24::rendering_buffer rbuf_dst;
                                 rbuf_dst.attach((uint8*)bitmap->Bits(), 
                                                 bitmap->Bounds().IntegerWidth() + 1, 
                                                 bitmap->Bounds().IntegerHeight() + 1, 
                                                 fFlipY ? -bitmap->BytesPerRow() : bitmap->BytesPerRow());
                                 switch(fFormat) {
-                                    case agg::pix_format_rgb555: agg::color_conv(&rbuf_dst, &rbuf_src, agg::color_conv_rgb555_to_bgra32()); break;
-                                    case agg::pix_format_rgb565: agg::color_conv(&rbuf_dst, &rbuf_src, agg::color_conv_rgb565_to_bgra32()); break;
-                                    case agg::pix_format_rgb24:  agg::color_conv(&rbuf_dst, &rbuf_src, agg::color_conv_rgb24_to_bgra32());  break;
-                                    case agg::pix_format_bgr24:  agg::color_conv(&rbuf_dst, &rbuf_src, agg::color_conv_bgr24_to_bgra32());  break;
-                                    case agg::pix_format_rgba32: agg::color_conv(&rbuf_dst, &rbuf_src, agg::color_conv_rgba32_to_bgra32()); break;
-                                    case agg::pix_format_argb32: agg::color_conv(&rbuf_dst, &rbuf_src, agg::color_conv_argb32_to_bgra32()); break;
-                                    case agg::pix_format_abgr32: agg::color_conv(&rbuf_dst, &rbuf_src, agg::color_conv_abgr32_to_bgra32()); break;
-                                    case agg::pix_format_bgra32: agg::color_conv(&rbuf_dst, &rbuf_src, agg::color_conv_bgra32_to_bgra32()); break;
+                                    case agg24::pix_format_rgb555: agg24::color_conv(&rbuf_dst, &rbuf_src, agg24::color_conv_rgb555_to_bgra32()); break;
+                                    case agg24::pix_format_rgb565: agg24::color_conv(&rbuf_dst, &rbuf_src, agg24::color_conv_rgb565_to_bgra32()); break;
+                                    case agg24::pix_format_rgb24:  agg24::color_conv(&rbuf_dst, &rbuf_src, agg24::color_conv_rgb24_to_bgra32());  break;
+                                    case agg24::pix_format_bgr24:  agg24::color_conv(&rbuf_dst, &rbuf_src, agg24::color_conv_bgr24_to_bgra32());  break;
+                                    case agg24::pix_format_rgba32: agg24::color_conv(&rbuf_dst, &rbuf_src, agg24::color_conv_rgba32_to_bgra32()); break;
+                                    case agg24::pix_format_argb32: agg24::color_conv(&rbuf_dst, &rbuf_src, agg24::color_conv_argb32_to_bgra32()); break;
+                                    case agg24::pix_format_abgr32: agg24::color_conv(&rbuf_dst, &rbuf_src, agg24::color_conv_abgr32_to_bgra32()); break;
+                                    case agg24::pix_format_bgra32: agg24::color_conv(&rbuf_dst, &rbuf_src, agg24::color_conv_bgra32_to_bgra32()); break;
                                 }
                                 DrawBitmap(bitmap, updateRect, updateRect);
                                 delete bitmap;
@@ -214,8 +214,8 @@ class AGGView : public BView {
                             }
 
 /*                case key_f2:                        
-                    fAGG->copy_window_to_img(agg::platform_support::max_images - 1);
-                    fAGG->save_img(agg::platform_support::max_images - 1, "screenshot");
+                    fAGG->copy_window_to_img(agg24::platform_support::max_images - 1);
+                    fAGG->save_img(agg24::platform_support::max_images - 1, "screenshot");
                     break;
                 }*/
 
@@ -282,7 +282,7 @@ class AGGView : public BView {
 
                         // pass the event on to AGG
                         if (fAGG->m_ctrls.on_mouse_move(fMouseX, fMouseY,
-                                                        (GetKeyFlags() & agg::mouse_left) != 0)) {
+                                                        (GetKeyFlags() & agg24::mouse_left) != 0)) {
                             fAGG->on_ctrl_change();
                             fAGG->force_redraw();
                         } else {
@@ -357,18 +357,18 @@ class AGGView : public BView {
                         uint32 buttons = fMouseButtons;
                         uint32 mods = modifiers();
                         unsigned flags = 0;
-                        if (buttons & B_PRIMARY_MOUSE_BUTTON)   flags |= agg::mouse_left;
-                        if (buttons & B_SECONDARY_MOUSE_BUTTON) flags |= agg::mouse_right;
-                        if (mods & B_SHIFT_KEY)                 flags |= agg::kbd_shift;
-                        if (mods & B_COMMAND_KEY)               flags |= agg::kbd_ctrl;
+                        if (buttons & B_PRIMARY_MOUSE_BUTTON)   flags |= agg24::mouse_left;
+                        if (buttons & B_SECONDARY_MOUSE_BUTTON) flags |= agg24::mouse_right;
+                        if (mods & B_SHIFT_KEY)                 flags |= agg24::kbd_shift;
+                        if (mods & B_COMMAND_KEY)               flags |= agg24::kbd_ctrl;
                         return flags;
                     }
 
  private:
     BBitmap*            fBitmap;
     uint8               fLastKeyDown;
-    agg::platform_support*  fAGG;
-    agg::pix_format_e       fFormat;
+    agg24::platform_support*  fAGG;
+    agg24::pix_format_e       fFormat;
 
     uint32              fMouseButtons;
     int32               fMouseX;
@@ -394,7 +394,7 @@ class AGGWindow : public BWindow {
                         return true;
                     }
 
-            bool    Init(BRect frame, agg::platform_support* agg, agg::pix_format_e format,
+            bool    Init(BRect frame, agg24::platform_support* agg, agg24::pix_format_e format,
                               bool flipY, uint32 flags)
                     {
                         MoveTo(frame.LeftTop());
@@ -433,15 +433,15 @@ class AGGApplication : public BApplication {
                         }
                     }
 
-    virtual bool    Init(agg::platform_support* agg, int width, int height,
-                         agg::pix_format_e format, bool flipY, uint32 flags)
+    virtual bool    Init(agg24::platform_support* agg, int width, int height,
+                         agg24::pix_format_e format, bool flipY, uint32 flags)
                     {
                         // ignore flip_y for now
                         BRect r(50.0, 50.0,
                                 50.0 + width - 1.0,
                                 50.0 + height - 1.0);
                         uint32 windowFlags = B_ASYNCHRONOUS_CONTROLS;
-                        if (!(flags & agg::window_resize))
+                        if (!(flags & agg24::window_resize))
                             windowFlags |= B_NOT_RESIZABLE;
 
                         return fWindow->Init(r, agg, format, flipY, windowFlags);;
@@ -457,13 +457,13 @@ class AGGApplication : public BApplication {
     AGGWindow*      fWindow;
 };
 
-namespace agg
+namespace agg24
 {
 
 class platform_specific {
  public:
-                    platform_specific(agg::platform_support* agg,
-                                      agg::pix_format_e format, bool flip_y)
+                    platform_specific(agg24::platform_support* agg,
+                                      agg24::pix_format_e format, bool flip_y)
                         : fAGG(agg),
                           fApp(NULL),
                           fFormat(format),
@@ -495,7 +495,7 @@ class platform_specific {
                     }
                     ~platform_specific()
                     {
-                        for (int32 i = 0; i < agg::platform_support::max_images; i++)
+                        for (int32 i = 0; i < agg24::platform_support::max_images; i++)
                             delete fImages[i];
                         delete fApp;
                     }
@@ -541,12 +541,12 @@ class platform_specific {
                     }
 
 
-    agg::platform_support*  fAGG;
+    agg24::platform_support*  fAGG;
     AGGApplication*     fApp;
-    agg::pix_format_e	fFormat;
+    agg24::pix_format_e	fFormat;
     bool                fFlipY;
     bigtime_t           fTimerStart;
-    BBitmap*            fImages[agg::platform_support::max_images];
+    BBitmap*            fImages[agg24::platform_support::max_images];
 
     char				fAppPath[B_PATH_NAME_LENGTH];
     char				fFilePath[B_PATH_NAME_LENGTH];

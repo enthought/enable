@@ -19,7 +19,7 @@
 #include <string.h>
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
 
     //========================================================glyph_raster_bin

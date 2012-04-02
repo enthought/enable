@@ -29,7 +29,7 @@
 #include "agg_color_rgba.h"
 #include "agg_ctrl.h"
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------------------------------------

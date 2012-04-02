@@ -24,7 +24,7 @@ using namespace kiva;
 #define EXPAND_COLOR(c) c->r, c->g, c->b, (c->a * this->state.alpha)
 
 // This should be just double, but as long as we're using C++...
-typedef agg::path_storage::container_type::value_type VertexType;
+typedef agg24::path_storage::container_type::value_type VertexType;
 struct PointType { VertexType x,y,z; };
 typedef std::vector<PointType> PointListType;
 
@@ -252,7 +252,7 @@ kiva::rect_type gl_graphics_context::transform_clip_rectangle(const kiva::rect_t
 {
     // This only works if the ctm doesn't have any rotation.
     // otherwise, we need to use a clipping path. Test for this.
-    agg::trans_affine tmp(this->path.get_ctm());
+    agg24::trans_affine tmp(this->path.get_ctm());
     if ( !only_scale_and_translation(tmp))
     {
         throw kiva::ctm_rotation_error;
@@ -291,7 +291,7 @@ kiva::rect_type gl_graphics_context::get_clip_region(unsigned int i)
 }
 
 
-void gl_graphics_context::clear(agg::rgba value)
+void gl_graphics_context::clear(agg24::rgba value)
 {
     glClearColor(float(value.r), float(value.g), float(value.b), float(value.a));
     glClear(GL_COLOR_BUFFER_BIT);
@@ -343,9 +343,9 @@ void gl_graphics_context::gl_render_path(kiva::compiled_path *path, bool polygon
     {
         command = path->vertex(i, &v.x, &v.y);
 
-        switch (command & agg::path_cmd_mask)
+        switch (command & agg24::path_cmd_mask)
         {
-        case agg::path_cmd_line_to:
+        case agg24::path_cmd_line_to:
             if (!first_vertex_drawn)
             {
                 pointList.push_back(v0);
@@ -354,14 +354,14 @@ void gl_graphics_context::gl_render_path(kiva::compiled_path *path, bool polygon
             pointList.push_back(v);
             break;
 
-        case agg::path_cmd_end_poly:
+        case agg24::path_cmd_end_poly:
             // We shouldn't need to do anything because if this is a closed path
             //
-            //if (command & agg::path_flags_close)
+            //if (command & agg24::path_flags_close)
             //	glVertex2f(x0, y0);
             break;
 
-        case agg::path_cmd_curve3:
+        case agg24::path_cmd_curve3:
             // FIXME: refactor!
             if (!first_vertex_drawn)
             {
@@ -389,7 +389,7 @@ void gl_graphics_context::gl_render_path(kiva::compiled_path *path, bool polygon
             }
             break;
 
-        case agg::path_cmd_curve4:
+        case agg24::path_cmd_curve4:
             if (!first_vertex_drawn)
             {
                 pointList.push_back(v0);
@@ -417,7 +417,7 @@ void gl_graphics_context::gl_render_path(kiva::compiled_path *path, bool polygon
             break;
 
         // The following commands are ignored.
-        case agg::path_cmd_move_to:
+        case agg24::path_cmd_move_to:
             if (!pointList.empty())
             {
                 // do a full glBegin/glEnd sequence for the points in the buffer
@@ -430,18 +430,18 @@ void gl_graphics_context::gl_render_path(kiva::compiled_path *path, bool polygon
             first_vertex_drawn = false;
             break;
 
-        case agg::path_cmd_ubspline:
+        case agg24::path_cmd_ubspline:
             break;
 
         // XXX: This case number is already used??
-        //case agg::path_cmd_mask:
+        //case agg24::path_cmd_mask:
         //	break;
 
         // Unsupported
         // XXX: We need to have better error handling/reporting from the C++
         // layer up to the Python layer.
-        case agg::path_cmd_catrom:
-        case agg::path_cmd_curveN:
+        case agg24::path_cmd_catrom:
+        case agg24::path_cmd_curveN:
             break;
 
         }
@@ -463,8 +463,8 @@ void gl_graphics_context::draw_path(draw_mode_e mode)
     // XXX: This is a direct transcription from basecore2d.  The algorithm
     // and approach can probably be improved tremendously for OpenGL.
 
-    agg::rgba *line_color = &this->state.line_color;
-    agg::rgba *fill_color = &this->state.fill_color;
+    agg24::rgba *line_color = &this->state.line_color;
+    agg24::rgba *fill_color = &this->state.fill_color;
 
 // CNP
     if (this->state.should_antialias)
@@ -479,7 +479,7 @@ void gl_graphics_context::draw_path(draw_mode_e mode)
     }
 
     // Check to see if we have closed polygons
-    typedef agg::path_storage::container_type::value_type VertexType;
+    typedef agg24::path_storage::container_type::value_type VertexType;
     unsigned numvertices = this->path.total_vertices();
     bool polygon = false;
     if (numvertices > 1)
@@ -493,16 +493,16 @@ void gl_graphics_context::draw_path(draw_mode_e mode)
         for (int i=numvertices-1; i>0; i--)
         {
             unsigned cmd = this->path.vertex(i, &xf, &yf);
-            if (((cmd & agg::path_cmd_mask) == agg::path_cmd_curve3) ||
-                ((cmd & agg::path_cmd_mask) == agg::path_cmd_curve4) ||
-                ((cmd & agg::path_cmd_mask) == agg::path_cmd_line_to))
+            if (((cmd & agg24::path_cmd_mask) == agg24::path_cmd_curve3) ||
+                ((cmd & agg24::path_cmd_mask) == agg24::path_cmd_curve4) ||
+                ((cmd & agg24::path_cmd_mask) == agg24::path_cmd_line_to))
             {
                 if ((x0 == xf) && (y0 == yf))
                     polygon = true;
                 break;
             }
 
-            if ((cmd & agg::path_cmd_mask) == agg::path_cmd_end_poly)
+            if ((cmd & agg24::path_cmd_mask) == agg24::path_cmd_end_poly)
             {
                 polygon = true;
                 break;
@@ -548,8 +548,8 @@ void gl_graphics_context::draw_path(draw_mode_e mode)
 
 void gl_graphics_context::draw_rect(double rect[4], draw_mode_e mode)
 {
-    agg::rgba *line_color = &this->state.line_color;
-    agg::rgba *fill_color = &this->state.fill_color;
+    agg24::rgba *line_color = &this->state.line_color;
+    agg24::rgba *fill_color = &this->state.fill_color;
 
     // CNP
     if (this->state.should_antialias)
@@ -600,10 +600,10 @@ void gl_graphics_context::draw_rect(double rect[4], draw_mode_e mode)
 
 
 int gl_graphics_context::draw_marker_at_points(double *pts, int Npts,
-                                               int size, agg::marker_e type)
+                                               int size, agg24::marker_e type)
 {
-    agg::rgba *line_color = &this->state.line_color;
-    agg::rgba *fill_color = &this->state.fill_color;
+    agg24::rgba *line_color = &this->state.line_color;
+    agg24::rgba *fill_color = &this->state.fill_color;
     bool do_fill = (fill_color->a != 0);
     bool do_stroke = ((line_color->a != 0) && (this->state.line_width > 0.0));
 
@@ -628,13 +628,13 @@ int gl_graphics_context::draw_marker_at_points(double *pts, int Npts,
     switch (type)
     {
         // Simple paths that only need to be stroked
-    case agg::marker_x:
+    case agg24::marker_x:
         draw_x_marker(pts, Npts, size, draw_mode, x0, y0); break;
-    case agg::marker_cross:
+    case agg24::marker_cross:
         draw_cross(pts, Npts, size, draw_mode, x0, y0); break;
-    case agg::marker_dot:
+    case agg24::marker_dot:
         draw_dot(pts, Npts, size, draw_mode, x0, y0); break;
-    case agg::marker_pixel:
+    case agg24::marker_pixel:
         draw_pixel(pts, Npts, size, draw_mode, x0, y0); break;
 
 
@@ -643,27 +643,27 @@ int gl_graphics_context::draw_marker_at_points(double *pts, int Npts,
     // diamonds, so they are in their own block here.  There's no reason
     // why they cannot be treated in the same way as the circle and
     // triangle markers.
-    case agg::marker_square:
+    case agg24::marker_square:
         draw_square(pts, Npts, size, draw_mode, x0, y0); break;
-    case agg::marker_diamond:
+    case agg24::marker_diamond:
         draw_diamond(pts, Npts, size, draw_mode, x0, y0); break;
 
 
-    case agg::marker_crossed_circle:
+    case agg24::marker_crossed_circle:
         draw_crossed_circle(pts, Npts, size, draw_mode, x0, y0); break;
 
-    case agg::marker_circle:
+    case agg24::marker_circle:
         fill_list = make_marker_lists(&kiva::gl_graphics_context::circle_path_func, draw_mode, size);
         list_created = true;
         // Fall through to next case
-    case agg::marker_triangle_up:
+    case agg24::marker_triangle_up:
         if (!list_created)
         {
             fill_list = make_marker_lists(&kiva::gl_graphics_context::triangle_up_func, draw_mode, size);
             list_created = true;
         }
         // Fall through to next case
-    case agg::marker_triangle_down:
+    case agg24::marker_triangle_down:
         if (!list_created)
         {
             fill_list = make_marker_lists(&kiva::gl_graphics_context::triangle_down_func, draw_mode, size);
@@ -720,7 +720,7 @@ void gl_graphics_context::draw_display_list_at_pts(GLuint fill_list, GLuint stro
                                     double *pts, int Npts,
                                     kiva::draw_mode_e mode, double x0, double y0)
 {
-    agg::rgba *colors[2] = { &this->state.fill_color, &this->state.line_color };
+    agg24::rgba *colors[2] = { &this->state.fill_color, &this->state.line_color };
     GLuint lists[2] = { fill_list, stroke_list };
     float x = 0.f, y = 0.f;
     for (int pass=0; pass < 2; pass++)
@@ -796,8 +796,8 @@ GLuint gl_graphics_context::make_marker_lists(PathDefinitionFunc path_func,
 void gl_graphics_context::draw_square(double *pts, int Npts, int size,
                                       kiva::draw_mode_e mode, double x0, double y0)
 {
-    agg::rgba *line_color = &this->state.line_color;
-    agg::rgba *fill_color = &this->state.fill_color;
+    agg24::rgba *line_color = &this->state.line_color;
+    agg24::rgba *fill_color = &this->state.fill_color;
 
     // We build up a VertexArray of the vertices of all the squares.
     // We then use glDrawElements with GL_QUADS or GL_LINE_LOOP to fill
@@ -889,8 +889,8 @@ void gl_graphics_context::draw_square(double *pts, int Npts, int size,
 void gl_graphics_context::draw_diamond(double *pts, int Npts, int size,
                                        kiva::draw_mode_e mode, double x0, double y0)
 {
-    agg::rgba *line_color = &this->state.line_color;
-    agg::rgba *fill_color = &this->state.fill_color;
+    agg24::rgba *line_color = &this->state.line_color;
+    agg24::rgba *fill_color = &this->state.fill_color;
 
     // Each marker consists of four vertices in this order: left, top, right, bottom.
     GLdouble *vertices = new GLdouble[Npts * 4 * 2];
@@ -1048,7 +1048,7 @@ void gl_graphics_context::draw_dot(double *pts, int Npts, int size,
 void gl_graphics_context::draw_pixel(double *pts, int Npts, int size,
                                     kiva::draw_mode_e mode, double x0, double y0)
 {
-    agg::rgba *line_color = &this->state.line_color;
+    agg24::rgba *line_color = &this->state.line_color;
     glColor4f(EXPAND_COLOR(line_color));
 
     glBegin(GL_POINTS);

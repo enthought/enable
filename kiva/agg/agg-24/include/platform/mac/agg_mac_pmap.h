@@ -26,7 +26,7 @@
 #include <Carbon.h>
 
 
-namespace agg
+namespace agg24
 {
     enum org_e
     {

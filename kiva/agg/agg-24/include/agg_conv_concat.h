@@ -18,7 +18,7 @@
 
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
     //=============================================================conv_concat
     // Concatenation of two paths. Usually used to combine lines or curves 

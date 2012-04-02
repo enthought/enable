@@ -21,7 +21,7 @@
 #include "agg_basics.h"
 
 
-namespace agg
+namespace agg24
 {
 
     //-----------------------------------------------sbool_combine_spans_bin

@@ -21,7 +21,7 @@
 #include "agg_image_filters.h"
 
 
-namespace agg
+namespace agg24
 {
     //--------------------------------------------------------------------
     void image_filter_lut::realloc_lut(double radius)

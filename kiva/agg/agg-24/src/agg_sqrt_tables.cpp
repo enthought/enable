@@ -19,7 +19,7 @@
 
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
     int16u g_sqrt_table[1024] = 
     {

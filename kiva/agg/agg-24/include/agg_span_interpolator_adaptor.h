@@ -18,7 +18,7 @@
 
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
 
     //===============================================span_interpolator_adaptor

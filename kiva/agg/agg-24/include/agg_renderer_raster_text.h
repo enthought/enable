@@ -18,7 +18,7 @@
 
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
 
     //==============================================renderer_raster_htext_solid
@@ -164,7 +164,7 @@ namespace agg
         class scanline_single_span
         {
         public:
-            typedef agg::cover_type cover_type;
+            typedef agg24::cover_type cover_type;
 
             //----------------------------------------------------------------
             struct const_span

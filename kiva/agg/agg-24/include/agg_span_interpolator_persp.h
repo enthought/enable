@@ -18,7 +18,7 @@
 #include "agg_trans_perspective.h"
 #include "agg_dda_line.h"
 
-namespace agg
+namespace agg24
 {
 
 

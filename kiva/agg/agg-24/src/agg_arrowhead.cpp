@@ -19,7 +19,7 @@
 
 #include "agg_arrowhead.h"
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------------------------------------

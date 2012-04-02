@@ -5,7 +5,7 @@
 
 namespace kiva
 {
-    bool is_identity(agg::trans_affine& mat, double epsilon)
+    bool is_identity(agg24::trans_affine& mat, double epsilon)
     {
         double temp[6];
         mat.store_to(temp);
@@ -18,7 +18,7 @@ namespace kiva
 
     }
 
-    bool only_translation(agg::trans_affine& mat, double epsilon)
+    bool only_translation(agg24::trans_affine& mat, double epsilon)
     {
         double temp[6];
         mat.store_to(temp);
@@ -26,14 +26,14 @@ namespace kiva
 				f_eq(temp[2], 0.0) && f_eq(temp[3], 1.0));
     }
 
-    bool only_scale_and_translation(agg::trans_affine& mat, double epsilon)
+    bool only_scale_and_translation(agg24::trans_affine& mat, double epsilon)
     {
         double temp[6];
         mat.store_to(temp);
         return (f_eq(temp[1], 0.0) && f_eq(temp[2], 0.0));
     }
 
-    void get_translation(agg::trans_affine& m, double* tx, double* ty)
+    void get_translation(agg24::trans_affine& m, double* tx, double* ty)
     {
         double temp[6];
         m.store_to(temp);
@@ -41,7 +41,7 @@ namespace kiva
         *ty = temp[5];
     }
 
-    void get_scale(agg::trans_affine& m, double* dx, double* dy)
+    void get_scale(agg24::trans_affine& m, double* dx, double* dy)
     {
         {
             double temp[6];

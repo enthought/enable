@@ -19,7 +19,7 @@
 #include <string.h>
 #include "agg_array.h"
 
-namespace agg
+namespace agg24
 {
     //---------------------------------------------------------vertex_integer
     template<class T, unsigned CoordShift=6> struct vertex_integer

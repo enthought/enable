@@ -17,7 +17,7 @@
 
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
     //======================================================rasterizer_outline
     template<class Renderer> class rasterizer_outline

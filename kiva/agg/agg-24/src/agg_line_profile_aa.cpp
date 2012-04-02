@@ -15,7 +15,7 @@
 
 #include "agg_renderer_outline_aa.h"
 
-namespace agg
+namespace agg24
 {
 
     //---------------------------------------------------------------------

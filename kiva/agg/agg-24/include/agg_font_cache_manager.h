@@ -19,7 +19,7 @@
 #include <string.h>
 #include "agg_array.h"
 
-namespace agg
+namespace agg24
 {
 
     //---------------------------------------------------------glyph_data_type

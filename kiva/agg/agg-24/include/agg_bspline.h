@@ -22,7 +22,7 @@
 
 #include "agg_array.h"
 
-namespace agg
+namespace agg24
 {
     //----------------------------------------------------------------bspline
     // A very simple class of Bi-cubic Spline interpolation.

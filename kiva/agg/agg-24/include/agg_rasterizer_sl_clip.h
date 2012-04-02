@@ -17,7 +17,7 @@
 
 #include "agg_clip_liang_barsky.h"
 
-namespace agg
+namespace agg24
 {
     //--------------------------------------------------------poly_max_coord_e
     enum poly_max_coord_e

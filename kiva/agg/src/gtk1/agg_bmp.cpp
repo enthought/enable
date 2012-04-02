@@ -30,7 +30,7 @@
 #define DEBUG_MTH5(STR,ARG1,ARG2,ARG3,ARG4,ARG5)
 #endif
 
-namespace agg
+namespace agg24
 {
 
   //------------------------------------------------------------------------

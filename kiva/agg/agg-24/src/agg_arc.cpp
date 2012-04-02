@@ -21,7 +21,7 @@
 #include "agg_arc.h"
 
 
-namespace agg
+namespace agg24
 {
     //------------------------------------------------------------------------
     arc::arc(double x,  double y, 

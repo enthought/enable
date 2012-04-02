@@ -19,7 +19,7 @@
 #include "agg_basics.h"
 #include "agg_math.h"
 
-namespace agg
+namespace agg24
 {
 
     //============================================================span_gouraud

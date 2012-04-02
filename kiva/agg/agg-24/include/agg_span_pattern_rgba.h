@@ -27,7 +27,7 @@
 
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
 
     //======================================================span_pattern_rgba

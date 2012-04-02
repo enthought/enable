@@ -21,7 +21,7 @@
 #include "agg_vcgen_dash.h"
 #include "agg_shorten_path.h"
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------------------------------------

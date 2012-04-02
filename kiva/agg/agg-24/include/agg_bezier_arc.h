@@ -23,7 +23,7 @@
 
 #include "agg_conv_transform.h"
 
-namespace agg
+namespace agg24
 {
 
     //-----------------------------------------------------------------------

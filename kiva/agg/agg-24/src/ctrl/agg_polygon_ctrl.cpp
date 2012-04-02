@@ -19,7 +19,7 @@
 
 #include "ctrl/agg_polygon_ctrl.h"
 
-namespace agg
+namespace agg24
 {
 
     polygon_ctrl_impl::polygon_ctrl_impl(unsigned np, double point_radius) :

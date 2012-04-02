@@ -37,7 +37,7 @@
 #include "util/agg_color_conv_rgb8.h"
 
 
-namespace agg
+namespace agg24
 {
     
 pascal OSStatus DoWindowClose (EventHandlerCallRef nextHandler, EventRef theEvent, void* userData);
@@ -940,8 +940,8 @@ pascal OSStatus DoKeyDown (EventHandlerCallRef nextHandler, EventRef theEvent, v
 
 		//On a Mac, screenshots are handled by the system.
         case key_f2:                        
-            app->copy_window_to_img(agg::platform_support::max_images - 1);
-            app->save_img(agg::platform_support::max_images - 1, "screenshot");
+            app->copy_window_to_img(agg24::platform_support::max_images - 1);
+            app->save_img(agg24::platform_support::max_images - 1, "screenshot");
             break;
         }
 

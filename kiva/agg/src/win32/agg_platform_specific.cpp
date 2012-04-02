@@ -17,7 +17,7 @@
 #define DEBUG_MTH5(STR,ARG1,ARG2,ARG3,ARG4,ARG5)
 #endif
 
-namespace agg
+namespace agg24
 {
 
     dib_display::dib_display() {
@@ -28,6 +28,7 @@ namespace agg
 
     BImage* dib_display::create_image(const rendering_buffer* rbuf,
                                     unsigned bits_per_pixel)
+
     {
         DEBUG_MTH("dib_display::create_image");
         unsigned width = rbuf->width(); 
@@ -73,8 +74,10 @@ namespace agg
     }
 
     void dib_display::destroy_image(BImage* image)
+
     {
         if (image != NULL)
+
         {
             delete [] (unsigned char*)(image->bmp);
             delete [] (unsigned char*)(image->data);  // using XDestroyImage behavior.
@@ -85,20 +88,30 @@ namespace agg
     unsigned dib_display::calc_header_size(BITMAPINFO *bmp)
     {
         if (bmp == NULL)
+
         {
+
             return 0;
+
         } else {
+
             return sizeof(BITMAPINFOHEADER) + sizeof(RGBQUAD) * calc_palette_size(bmp);
+
         }
     }
 
     unsigned dib_display::calc_palette_size(BITMAPINFO *bmp)
     {
         if (bmp == 0)
+
         {
+
             return 0;
+
         } else {
+
             return calc_palette_size(bmp->bmiHeader.biClrUsed, bmp->bmiHeader.biBitCount);
+
         }
     }
     
@@ -121,6 +134,7 @@ namespace agg
     bool dib_display::put_image(HDC dc, BImage *image,
     		                    int draw_x, int draw_y,
     		                    int draw_width, int draw_height)
+
     {
         DEBUG_MTH("dib_display::put_image");
         // If specified, only do a partial blit of the image
@@ -212,9 +226,11 @@ namespace agg
     }
 
     void platform_specific::destroy()
+
     {
         DEBUG_MTH("platform_specific::destroy");
         if (m_bimage != NULL)
+
         {
             dib.destroy_image(m_bimage);
             m_bimage = 0;
@@ -230,6 +246,7 @@ namespace agg
         if(m_sys_format == m_format)
         {
             if (m_bimage == 0)
+
             {
                 m_bimage = dib.create_image(rbuf, m_bpp);
             }

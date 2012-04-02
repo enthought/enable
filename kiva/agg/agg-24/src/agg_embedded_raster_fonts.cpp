@@ -15,7 +15,7 @@
 
 #include "agg_embedded_raster_fonts.h"
 
-namespace agg
+namespace agg24
 {
 
     const int8u gse4x6[] = 

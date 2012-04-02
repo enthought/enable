@@ -16,7 +16,7 @@
 #include <math.h>
 #include "agg_trans_warp_magnifier.h"
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------------------------------------

@@ -23,7 +23,7 @@
 #include "agg_basics.h"
 #include <math.h>
 
-namespace agg
+namespace agg24
 {
 
     //----------------------------------------------------------------ellipse

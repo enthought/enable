@@ -4,7 +4,7 @@
 #include "Python.h"
 #include "gtk1/agg_platform_specific.h"
 
-namespace agg
+namespace agg24
 {
 
   class pixel_map

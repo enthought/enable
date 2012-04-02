@@ -25,7 +25,7 @@
 #include "agg_trans_affine.h"
 
 
-namespace agg
+namespace agg24
 {
 
     enum aspect_ratio_e

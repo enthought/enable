@@ -18,7 +18,7 @@
 #include <stdlib.h>
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
 
     // See Implementation agg_line_aa_basics.cpp 

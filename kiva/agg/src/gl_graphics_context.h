@@ -85,7 +85,7 @@ namespace kiva
         //---------------------------------------------------------------
         // Painting paths (drawing and filling contours)
         //---------------------------------------------------------------
-        void clear(agg::rgba value=agg::rgba(1,1,1,1));
+        void clear(agg24::rgba value=agg24::rgba(1,1,1,1));
 		void fill_path();
 		void eof_fill_path();
 		void stroke_path();
@@ -97,7 +97,7 @@ namespace kiva
                        draw_mode_e mode=FILL_STROKE);
 
         int draw_marker_at_points(double* pts,int Npts,int size,
-                                   agg::marker_e type=agg::marker_square);
+                                   agg24::marker_e type=agg24::marker_square);
 
         void draw_path_at_points(double* pts,int Npts,
                                   kiva::compiled_path& marker,
