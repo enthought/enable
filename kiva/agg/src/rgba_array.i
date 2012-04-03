@@ -21,7 +21,7 @@
 %typemap(in) rgba_as_array (int must_free=0)
 {
   must_free = 0;  
-  if ((SWIG_ConvertPtr($input,(void **) &$1, SWIGTYPE_p_agg__rgba,
+  if ((SWIG_ConvertPtr($input,(void **) &$1, SWIGTYPE_p_agg24__rgba,
                        SWIG_POINTER_EXCEPTION | 0 )) == -1) 
   {
       PyErr_Clear();
