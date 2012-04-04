@@ -17,7 +17,7 @@ potentially be used as the basis for many different interactions,
 """
 
 
-from traits.api import Str, Float, Set, Enum, Tuple, Any
+from traits.api import Str, Float, Set, Enum, Bool, Tuple, Dict, Event, Any, Either
 from enable.tools.api import DragTool
 
 keys = set(['shift', 'alt', 'control'])
@@ -67,6 +67,12 @@ class ValueDragTool(DragTool):
     #: initial underlying value
     original_value = Any
     
+    #: new_value event for inspector overlay
+    new_value = Event(Dict)
+    
+    #: visibility for inspector overlay
+    visible = Bool(False)
+    
     def get_value(self):
         """ Return the current value that is being modified
         
@@ -92,6 +98,7 @@ class ValueDragTool(DragTool):
         data_y = self.y_mapper.map_data(event.y)
         self.original_data_point = (data_x, data_y)
         self.original_value = self.get_value()
+        self.visible = True
         return True
     
     def dragging(self, event):
@@ -103,16 +110,21 @@ class ValueDragTool(DragTool):
     
     def drag_end(self, event):
         event.window.set_pointer("arrow")
+        self.visible = False
         return True
 
     def _drag_button_down(self, event):
         # override button down to handle modifier keys correctly
-        if self._drag_state == "nondrag":
+        if not event.handled and self._drag_state == "nondrag":
             key_states = dict((key, key in self.modifier_keys) for key in keys)
             if not all(getattr(event, key+'_down') == state for key, state in key_states.items()):
                 return False
             self.mouse_down_position = (event.x, event.y)
+            if not self.is_draggable(*self.mouse_down_position):
+                self._mouse_down_recieved = False
+                return False
             self._mouse_down_received = True
+            return True
         return False
 
     # traits default handlers
@@ -146,6 +158,16 @@ class AttributeDragTool(ValueDragTool):
     #: the name of the attributes that is modified by vertical motion
     y_attr = Str
     
+    #: max and min values for x value
+    x_bounds = Tuple(Either(Float, Str, None), Either(Float, Str, None))
+    
+    #: max and min values for y value
+    y_bounds = Tuple(Either(Float,Str,  None), Either(Float, Str, None))
+    
+    x_name = Str
+    
+    y_name = Str
+    
     # ValueDragTool API
     
     def get_value(self):
@@ -176,7 +198,43 @@ class AttributeDragTool(ValueDragTool):
         two trait notification events.
         
         """
+        inspector_value = {}
         if self.x_attr:
-            setattr(self.model, self.x_attr, value[0] + delta_x)
+            x_value =  value[0] + delta_x
+            if self.x_bounds[0] is not None:
+                if isinstance(self.x_bounds[0], basestring):
+                    m = getattr(self.model, self.x_bounds[0])
+                else:
+                    m = self.x_bounds[0]
+                x_value = max(x_value, m)
+            if self.x_bounds[1] is not None:
+                if isinstance(self.x_bounds[1], basestring):
+                    M = getattr(self.model, self.x_bounds[1])
+                else:
+                    M = self.x_bounds[1]
+                x_value = min(x_value, M)
+            setattr(self.model, self.x_attr, x_value)
+            inspector_value[self.x_name] = x_value 
         if self.y_attr:
-            setattr(self.model, self.y_attr, value[1] + delta_x)
+            y_value = value[1] + delta_y
+            if self.y_bounds[0] is not None:
+                if isinstance(self.y_bounds[0], basestring):
+                    m = getattr(self.model, self.y_bounds[0])
+                else:
+                    m = self.y_bounds[0]
+                y_value = max(y_value, m)
+            if self.y_bounds[1] is not None:
+                if isinstance(self.y_bounds[1], basestring):
+                    M = getattr(self.model, self.y_bounds[1])
+                else:
+                    M = self.y_bounds[1]
+                y_value = min(y_value, M)
+            setattr(self.model, self.y_attr, y_value)
+            inspector_value[self.y_name] = y_value 
+        self.new_value = inspector_value
+
+    def _x_name_default(self):
+        return self.x_attr.replace('_', ' ').capitalize()
+
+    def _y_name_default(self):
+        return self.y_attr.replace('_', ' ').capitalize()
