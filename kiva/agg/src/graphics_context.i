@@ -41,9 +41,9 @@
 %include "sequence_to_array.i"
 
 %include "rgba_array.i"
-%apply rgba_as_array {agg::rgba&};
+%apply rgba_as_array {agg24::rgba&};
 %{
-    agg::rgba _clear_color = agg::rgba(1,1,1,1);
+    agg24::rgba _clear_color = agg24::rgba(1,1,1,1);
 %}
 
 %include "numeric_ext.i"
@@ -385,7 +385,7 @@ namespace kiva {
             void set_image_interpolation(
                     kiva::interpolation_e interpolation);
 
-            %feature("shadow") set_stroke_color(agg::rgba& rgba_in)
+            %feature("shadow") set_stroke_color(agg24::rgba& rgba_in)
             %{
             def set_stroke_color(self,color):
                 if is_array(color) and len(color) == 3:
@@ -398,9 +398,9 @@ namespace kiva {
                     color = Rgba(r,g,b,a)
                 _agg.GraphicsContextArray_set_stroke_color(self,color)
             %}
-            void set_stroke_color(agg::rgba& rgba_in);
+            void set_stroke_color(agg24::rgba& rgba_in);
 
-            agg::rgba& get_stroke_color();
+            agg24::rgba& get_stroke_color();
             void set_line_width(double value);
             void set_line_join(kiva::line_join_e value);
             void set_line_cap(kiva::line_cap_e value);
@@ -408,7 +408,7 @@ namespace kiva {
             void set_blend_mode(kiva::blend_mode_e value);
             kiva::blend_mode_e get_blend_mode();
 
-            %feature("shadow") set_fill_color(agg::rgba& rgba_in)
+            %feature("shadow") set_fill_color(agg24::rgba& rgba_in)
             %{
             def set_fill_color(self,color):
                 if is_array(color) and len(color) == 3:
@@ -421,9 +421,9 @@ namespace kiva {
                     color = Rgba(r,g,b,a)
                 _agg.GraphicsContextArray_set_fill_color(self,color)
             %}
-            void set_fill_color(agg::rgba& rgba_in);
+            void set_fill_color(agg24::rgba& rgba_in);
 
-            agg::rgba& get_fill_color();
+            agg24::rgba& get_fill_color();
             void set_alpha(double value);
             double get_alpha();
             void set_antialias(int value);
@@ -492,9 +492,9 @@ namespace kiva {
 
             bool is_font_initialized();
 
-            void set_text_matrix(agg::trans_affine& value);
+            void set_text_matrix(agg24::trans_affine& value);
 
-            agg::trans_affine get_text_matrix();
+            agg24::trans_affine get_text_matrix();
             void set_character_spacing(double value);
             double get_character_spacing();
             void set_text_drawing_mode(kiva::text_draw_mode_e value);
@@ -553,7 +553,7 @@ namespace kiva {
             void rotate_ctm(double angle);
             void scale_ctm(double sx, double sy);
 
-            %feature("shadow") concat_ctm(agg::trans_affine& m)
+            %feature("shadow") concat_ctm(agg24::trans_affine& m)
             %{
             def concat_ctm(self, m):
                 if isinstance(m, tuple):
@@ -561,9 +561,9 @@ namespace kiva {
                 else:
                     _agg.GraphicsContextArray_concat_ctm(self, m)
             %}
-            void concat_ctm(agg::trans_affine& m);
+            void concat_ctm(agg24::trans_affine& m);
 
-            %feature("shadow") set_ctm(agg::trans_affine& m)
+            %feature("shadow") set_ctm(agg24::trans_affine& m)
             %{
             def set_ctm(self, m):
                 if isinstance(m, tuple):
@@ -571,7 +571,7 @@ namespace kiva {
                 else:
                     _agg.GraphicsContextArray_set_ctm(self, m)
             %}
-            void set_ctm(agg::trans_affine& m);
+            void set_ctm(agg24::trans_affine& m);
 
             %feature("shadow") get_ctm()
             %{
@@ -579,7 +579,7 @@ namespace kiva {
                 tmp = _agg.GraphicsContextArray_get_ctm(self)
                 return (tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5])
             %}
-            agg::trans_affine get_ctm();
+            agg24::trans_affine get_ctm();
 
             void get_freetype_text_matrix(double* out);
 
@@ -681,7 +681,7 @@ namespace kiva {
             %exception;  // clear exception handlers
 
             void clear_clip_path();
-            void clear(agg::rgba& value=_clear_color);
+            void clear(agg24::rgba& value=_clear_color);
             void stroke_path();
             void fill_path();
             void eof_fill_path();
@@ -715,7 +715,7 @@ namespace kiva {
             //int copy_image(kiva::graphics_context_base* img, int tx, int ty);
 
             %feature("shadow") draw_marker_at_points(double* pts,int Npts, int size,
-                                       agg::marker_e type = agg::marker_square)
+                                       agg24::marker_e type = agg24::marker_square)
             %{
             def draw_marker_at_points(self, pts, size, kiva_marker_type):
                 marker = kiva_marker_to_agg.get(kiva_marker_type, None)
@@ -735,7 +735,7 @@ namespace kiva {
                 return success
             %}
             int draw_marker_at_points(double* pts,int Npts, int size,
-                                       agg::marker_e type = agg::marker_square);
+                                       agg24::marker_e type = agg24::marker_square);
 
             void draw_path_at_points(double* pts,int Npts,
                                   kiva::compiled_path& marker,
@@ -1042,7 +1042,7 @@ namespace kiva {
 
         // Declare clear() to pass by reference so that the typemap applies,
         // even though it is pass by value in the actual C++ class
-        void clear(agg::rgba& value=_clear_color);
+        void clear(agg24::rgba& value=_clear_color);
 
         void fill_path();
         void eof_fill_path();
@@ -1055,7 +1055,7 @@ namespace kiva {
                        draw_mode_e mode=FILL_STROKE);
 
         %feature("shadow") draw_marker_at_points(double* pts,int Npts, int size,
-                                   agg::marker_e type = agg::marker_square)
+                                   agg24::marker_e type = agg24::marker_square)
         %{
         def draw_marker_at_points(self,pts,size,kiva_marker_type):
             marker = kiva_marker_to_agg.get(kiva_marker_type, None)
@@ -1068,7 +1068,7 @@ namespace kiva {
             return success
         %}
         int draw_marker_at_points(double* pts,int Npts,int size,
-                                   agg::marker_e type=agg::marker_square);
+                                   agg24::marker_e type=agg24::marker_square);
 
         void draw_path_at_points(double* pts,int Npts,
                                   kiva::compiled_path& marker,

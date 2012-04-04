@@ -22,7 +22,7 @@
 #include "agg_basics.h"
 #include "agg_simul_eq.h"
 
-namespace agg
+namespace agg24
 {
     //=======================================================trans_perspective
     class trans_perspective

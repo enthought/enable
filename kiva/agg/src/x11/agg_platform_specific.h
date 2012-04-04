@@ -6,7 +6,7 @@
 #include "agg_basics.h"
 #include "agg_rendering_buffer.h"
 
-namespace agg
+namespace agg24
 {
 
   enum pix_format_e

@@ -29,7 +29,7 @@
 #include "agg_dda_line.h"
 #include "agg_span_gouraud.h"
 
-namespace agg
+namespace agg24
 {
 
     //=======================================================span_gouraud_rgba

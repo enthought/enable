@@ -20,7 +20,7 @@
 #include <string.h>
 #include "ctrl/agg_rbox_ctrl.h"
 
-namespace agg
+namespace agg24
 {
   
     //------------------------------------------------------------------------

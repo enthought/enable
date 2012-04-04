@@ -22,7 +22,7 @@
 #include "agg_array.h"
 #include "agg_bezier_arc.h"
 
-namespace agg
+namespace agg24
 {
 
 
@@ -1470,7 +1470,7 @@ namespace agg
 // Example of declarations path_storage with std::vector as a container
 //---------------------------------------------------------------------------
 //#include <vector>
-//namespace agg
+//namespace agg24
 //{
 //    typedef path_base<vertex_stl_storage<std::vector<vertex_d> > > stl_path_storage; 
 //}

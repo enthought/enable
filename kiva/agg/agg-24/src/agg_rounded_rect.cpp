@@ -21,7 +21,7 @@
 #include "agg_rounded_rect.h"
 
 
-namespace agg
+namespace agg24
 {
     //------------------------------------------------------------------------
     rounded_rect::rounded_rect(double x1, double y1, double x2, double y2, double r) :

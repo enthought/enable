@@ -20,7 +20,7 @@
 #include "ctrl/agg_spline_ctrl.h"
 
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------------------------------------

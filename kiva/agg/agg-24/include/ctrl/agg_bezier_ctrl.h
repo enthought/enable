@@ -29,7 +29,7 @@
 #include "agg_polygon_ctrl.h"
 
 
-namespace agg
+namespace agg24
 {
 
     //--------------------------------------------------------bezier_ctrl_impl

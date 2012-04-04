@@ -21,7 +21,7 @@
 #include "agg_math.h"
 #include "ctrl/agg_gamma_ctrl.h"
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------------------------------------

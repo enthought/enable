@@ -11,7 +11,7 @@
 #include "platform/win32/agg_win32_bmp.h"
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------------------------------------

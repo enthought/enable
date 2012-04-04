@@ -22,7 +22,7 @@
 #include "agg_rendering_buffer.h"
 
 
-namespace agg
+namespace agg24
 {
     //==================================================pixfmt_amask_adaptor
     template<class PixFmt, class AlphaMask> class pixfmt_amask_adaptor

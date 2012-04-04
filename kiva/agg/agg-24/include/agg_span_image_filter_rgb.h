@@ -28,7 +28,7 @@
 #include "agg_span_image_filter.h"
 
 
-namespace agg
+namespace agg24
 {
 
     //===============================================span_image_filter_rgb_nn

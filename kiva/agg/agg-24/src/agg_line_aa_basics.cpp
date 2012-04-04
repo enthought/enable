@@ -16,7 +16,7 @@
 #include <math.h>
 #include "agg_line_aa_basics.h"
 
-namespace agg
+namespace agg24
 {
     //-------------------------------------------------------------------------
     // The number of the octant is determined as a 3-bit value as follows:

@@ -24,9 +24,9 @@ namespace kiva
     {
         public:
         double offset;
-        agg::rgba8 color;
+        agg24::rgba8 color;
 
-        gradient_stop(double offset, agg::rgba8& color) :
+        gradient_stop(double offset, agg24::rgba8& color) :
             offset(offset),
             color(color)
         {
@@ -45,7 +45,7 @@ namespace kiva
         gradient_units_e units;
 
         private:
-        agg::trans_affine affine_mtx;
+        agg24::trans_affine affine_mtx;
 
         public:
         gradient(gradient_type_e gradient_type);
@@ -58,25 +58,25 @@ namespace kiva
 
         template <typename pixfmt_type>
         void apply(pixfmt_type pixfmt,
-                   agg::rasterizer_scanline_aa<>* ras,
-                   agg::renderer_mclip<pixfmt_type>* rbase)
+                   agg24::rasterizer_scanline_aa<>* ras,
+                   agg24::renderer_mclip<pixfmt_type>* rbase)
         {
             if (this->gradient_type == kiva::grad_linear)
             {
                 if (this->points[0].first == this->points[1].first)
                 {
-                    agg::gradient_y grad_func;
+                    agg24::gradient_y grad_func;
 
                     // apply the proper fill adapter based on the spread method
 
                     if (this->spread_method == kiva::reflect)
                     {
-                        agg::gradient_reflect_adaptor<agg::gradient_y> adaptor(grad_func);
+                        agg24::gradient_reflect_adaptor<agg24::gradient_y> adaptor(grad_func);
                         this->_apply(pixfmt, ras, rbase, adaptor);
                     }
                     else if (this->spread_method == kiva::repeat)
                     {
-                        agg::gradient_repeat_adaptor<agg::gradient_y> adaptor(grad_func);
+                        agg24::gradient_repeat_adaptor<agg24::gradient_y> adaptor(grad_func);
                         this->_apply(pixfmt, ras, rbase, adaptor);
                     }
                     else
@@ -86,18 +86,18 @@ namespace kiva
                 }
                 else if (this->points[0].second == this->points[1].second)
                 {
-                    agg::gradient_x grad_func;
+                    agg24::gradient_x grad_func;
 
                     // apply the proper fill adapter based on the spread method
 
                     if (this->spread_method == kiva::reflect)
                     {
-                        agg::gradient_reflect_adaptor<agg::gradient_x> adaptor(grad_func);
+                        agg24::gradient_reflect_adaptor<agg24::gradient_x> adaptor(grad_func);
                         this->_apply(pixfmt, ras, rbase, adaptor);
                     }
                     else if (this->spread_method == kiva::repeat)
                     {
-                        agg::gradient_repeat_adaptor<agg::gradient_x> adaptor(grad_func);
+                        agg24::gradient_repeat_adaptor<agg24::gradient_x> adaptor(grad_func);
                         this->_apply(pixfmt, ras, rbase, adaptor);
                     }
                     else
@@ -107,18 +107,18 @@ namespace kiva
                 }
                 else
                 {
-                    agg::gradient_x grad_func;
+                    agg24::gradient_x grad_func;
 
                     // apply the proper fill adapter based on the spread method
 
                     if (this->spread_method == kiva::reflect)
                     {
-                        agg::gradient_reflect_adaptor<agg::gradient_x> adaptor(grad_func);
+                        agg24::gradient_reflect_adaptor<agg24::gradient_x> adaptor(grad_func);
                         this->_apply(pixfmt, ras, rbase, adaptor);
                     }
                     else if (this->spread_method == kiva::repeat)
                     {
-                        agg::gradient_repeat_adaptor<agg::gradient_x> adaptor(grad_func);
+                        agg24::gradient_repeat_adaptor<agg24::gradient_x> adaptor(grad_func);
                         this->_apply(pixfmt, ras, rbase, adaptor);
                     }
                     else
@@ -129,18 +129,18 @@ namespace kiva
             }
             else
             {
-                agg::gradient_radial_focus grad_func(points[1].first,
+                agg24::gradient_radial_focus grad_func(points[1].first,
                                                      points[2].first - points[0].first,
                                                      points[2].second - points[0].second);
 
                 if (this->spread_method == kiva::reflect)
                 {
-                    agg::gradient_reflect_adaptor<agg::gradient_radial_focus> adaptor(grad_func);
+                    agg24::gradient_reflect_adaptor<agg24::gradient_radial_focus> adaptor(grad_func);
                     this->_apply(pixfmt, ras, rbase, adaptor);
                 }
                 else if (this->spread_method == kiva::repeat)
                 {
-                    agg::gradient_repeat_adaptor<agg::gradient_radial_focus> adaptor(grad_func);
+                    agg24::gradient_repeat_adaptor<agg24::gradient_radial_focus> adaptor(grad_func);
                     this->_apply(pixfmt, ras, rbase, adaptor);
                 }
                 else
@@ -150,7 +150,7 @@ namespace kiva
             }
         }
 
-        void set_ctm(const agg::trans_affine& mtx)
+        void set_ctm(const agg24::trans_affine& mtx)
         {
             this->affine_mtx = mtx;
         }
@@ -159,28 +159,28 @@ namespace kiva
 
         template <class pixfmt_type, class gradient_func_type>
         void _apply(pixfmt_type pixfmt,
-                   agg::rasterizer_scanline_aa<>* ras,
-                   agg::renderer_mclip<pixfmt_type>* rbase,
+                   agg24::rasterizer_scanline_aa<>* ras,
+                   agg24::renderer_mclip<pixfmt_type>* rbase,
                    gradient_func_type gradient_func)
         {
-            typedef agg::renderer_mclip<pixfmt_type> renderer_base_type;
-            typedef agg::span_interpolator_linear<> interpolator_type;
-            typedef agg::span_allocator<agg::rgba8> span_allocator_type;
-            typedef agg::pod_auto_array<agg::rgba8, 256> color_array_type;
-            typedef agg::span_gradient<agg::rgba8,
+            typedef agg24::renderer_mclip<pixfmt_type> renderer_base_type;
+            typedef agg24::span_interpolator_linear<> interpolator_type;
+            typedef agg24::span_allocator<agg24::rgba8> span_allocator_type;
+            typedef agg24::pod_auto_array<agg24::rgba8, 256> color_array_type;
+            typedef agg24::span_gradient<agg24::rgba8,
                                     interpolator_type,
                                     gradient_func_type,
                                     color_array_type> span_gradient_type;
-            typedef agg::renderer_scanline_aa<renderer_base_type,
+            typedef agg24::renderer_scanline_aa<renderer_base_type,
                                                 span_allocator_type,
                                                 span_gradient_type> renderer_gradient_type;
 
 
-            agg::trans_affine   gradient_mtx;                    // Affine transformer
+            agg24::trans_affine   gradient_mtx;                    // Affine transformer
             interpolator_type   span_interpolator(gradient_mtx); // Span interpolator
             span_allocator_type span_allocator;                  // Span Allocator
             color_array_type    color_array;                     // Gradient colors
-            agg::scanline_u8 scanline;
+            agg24::scanline_u8 scanline;
 
             double dx = points[1].first - points[0].first;
             double dy = points[1].second - points[0].second;
@@ -199,21 +199,21 @@ namespace kiva
                 if (points[0].first == points[1].first)
                 {
                     // gradient_y. handle flips
-                    gradient_mtx *= agg::trans_affine_rotation(atan2(0.0, dy));
+                    gradient_mtx *= agg24::trans_affine_rotation(atan2(0.0, dy));
                 }
                 else if (points[0].second == points[1].second)
                 {
                     // gradient_x. handle flips
-                    gradient_mtx *= agg::trans_affine_rotation(atan2(0.0, dx));
+                    gradient_mtx *= agg24::trans_affine_rotation(atan2(0.0, dx));
                 }
                 else
                 {
                     // general case: arbitrary rotation
-                    gradient_mtx *= agg::trans_affine_rotation(atan2(dy, dx));
+                    gradient_mtx *= agg24::trans_affine_rotation(atan2(dy, dx));
                 }
             }
 
-            gradient_mtx *= agg::trans_affine_translation(points[0].first, points[0].second);
+            gradient_mtx *= agg24::trans_affine_translation(points[0].first, points[0].second);
             if (this->units == kiva::user_space)
             {
                 gradient_mtx *= this->affine_mtx;
@@ -237,14 +237,14 @@ namespace kiva
 
             this->fill_color_array(color_array);
 
-            agg::render_scanlines(*ras, scanline, grad_renderer);
+            agg24::render_scanlines(*ras, scanline, grad_renderer);
         }
 
 
         template <class Array>
         void fill_color_array(Array& array)
         {
-            // The agg::rgb::gradient function is not documented, so here's
+            // The agg24::rgb::gradient function is not documented, so here's
             // my guess at what it does: the first argument is obvious,
             // since we are constructing a gradient from one color to another.
             // The 2nd argument is a float, which must be between 0 and 1, and

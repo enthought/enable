@@ -17,7 +17,7 @@
 #define AGG_WARP_MAGNIFIER_INCLUDED
 
 
-namespace agg
+namespace agg24
 {
 
     //----------------------------------------------------trans_warp_magnifier

@@ -23,7 +23,7 @@
 #include "agg_vcgen_contour.h"
 #include "agg_conv_adaptor_vcgen.h"
 
-namespace agg
+namespace agg24
 {
 
     //-----------------------------------------------------------conv_contour

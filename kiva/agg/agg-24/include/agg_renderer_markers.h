@@ -23,7 +23,7 @@
 #include "agg_basics.h"
 #include "agg_renderer_primitives.h"
 
-namespace agg
+namespace agg24
 {
 
     //---------------------------------------------------------------marker_e

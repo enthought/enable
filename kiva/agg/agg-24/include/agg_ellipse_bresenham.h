@@ -24,7 +24,7 @@
 #include "agg_basics.h"
 
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------ellipse_bresenham_interpolator

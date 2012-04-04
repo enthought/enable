@@ -23,7 +23,7 @@
 #include "agg_basics.h"
 #include "agg_rendering_buffer.h"
 
-namespace agg
+namespace agg24
 {
 
     //-----------------------------------------------------------renderer_base
@@ -331,7 +331,7 @@ namespace agg
         void blend_color_hspan(int x, int y, int len, 
                                const color_type* colors, 
                                const cover_type* covers,
-                               cover_type cover = agg::cover_full)
+                               cover_type cover = agg24::cover_full)
         {
             if(y > ymax()) return;
             if(y < ymin()) return;
@@ -357,7 +357,7 @@ namespace agg
         void blend_color_vspan(int x, int y, int len, 
                                const color_type* colors, 
                                const cover_type* covers,
-                               cover_type cover = agg::cover_full)
+                               cover_type cover = agg24::cover_full)
         {
             if(x > xmax()) return;
             if(x < xmin()) return;
@@ -475,7 +475,7 @@ namespace agg
                         const rect_i* rect_src_ptr = 0, 
                         int dx = 0, 
                         int dy = 0,
-                        cover_type cover = agg::cover_full)
+                        cover_type cover = agg24::cover_full)
         {
             rect_i rsrc(0, 0, src.width(), src.height());
             if(rect_src_ptr)

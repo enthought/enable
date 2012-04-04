@@ -30,7 +30,7 @@
 #include "agg_conv_adaptor_vpgen.h"
 #include "agg_vpgen_clip_polygon.h"
 
-namespace agg
+namespace agg24
 {
 
     //=======================================================conv_clip_polygon

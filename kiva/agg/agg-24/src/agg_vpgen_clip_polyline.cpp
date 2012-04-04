@@ -16,7 +16,7 @@
 #include "agg_vpgen_clip_polyline.h"
 #include "agg_clip_liang_barsky.h"
 
-namespace agg
+namespace agg24
 {
     //----------------------------------------------------------------------------
     void vpgen_clip_polyline::reset()

@@ -26,7 +26,7 @@ typedef struct _XRegion {
 
 
 
-namespace agg
+namespace agg24
 {
 
   x11_display::x11_display():

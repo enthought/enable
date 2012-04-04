@@ -7,7 +7,7 @@
 #include <wx/image.h>
 #endif
 
-namespace agg
+namespace agg24
 {
 
   class pixel_map

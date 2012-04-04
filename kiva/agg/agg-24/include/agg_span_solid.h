@@ -22,7 +22,7 @@
 
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
     //--------------------------------------------------------------span_solid
     template<class ColorT> class span_solid

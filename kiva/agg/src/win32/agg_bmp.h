@@ -5,7 +5,7 @@
 #include "Python.h"
 #include "win32/agg_platform_specific.h"
 
-namespace agg
+namespace agg24
 {
     class pixel_map
     {

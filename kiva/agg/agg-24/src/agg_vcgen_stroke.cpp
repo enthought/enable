@@ -20,7 +20,7 @@
 #include "agg_vcgen_stroke.h"
 #include "agg_shorten_path.h"
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------------------------------------

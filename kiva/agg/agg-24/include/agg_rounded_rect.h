@@ -23,7 +23,7 @@
 #include "agg_basics.h"
 #include "agg_arc.h"
 
-namespace agg
+namespace agg24
 {
     //------------------------------------------------------------rounded_rect
     //

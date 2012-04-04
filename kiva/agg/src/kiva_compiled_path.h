@@ -14,11 +14,11 @@
 namespace kiva
 {
    
-    class compiled_path : public agg::path_storage
+    class compiled_path : public agg24::path_storage
     {
         
         /*-------------------------------------------------------------------
-         This extends the standard agg::path_storage class to include
+         This extends the standard agg24::path_storage class to include
          matrix transforms within the path definition.  Doing so requires
 		 overriding a number of methods to apply the matrix transformation
 		 to vertices added to the path.
@@ -46,7 +46,7 @@ namespace kiva
 
         
 		// hack to get VC++ 6.0 to compile correctly
-        typedef agg::path_storage base;
+        typedef agg24::path_storage base;
         
 
         /*-------------------------------------------------------------------
@@ -61,18 +61,18 @@ namespace kiva
 
 		 Todo: Should this default to the identity matrix or the current ctm?
         -------------------------------------------------------------------*/
-        agg::trans_affine ptm;
+        agg24::trans_affine ptm;
         
         
         // ptm_stack is used for save/restore of the ptm
-        std::stack<agg::trans_affine> ptm_stack;
+        std::stack<agg24::trans_affine> ptm_stack;
 
         // If the path contains curves, this value is true;
         bool _has_curves;
                 
         public:        
             // constructor        
-            compiled_path() : base(), ptm(agg::trans_affine())        
+            compiled_path() : base(), ptm(agg24::trans_affine())        
             {}
             
             //---------------------------------------------------------------
@@ -109,13 +109,13 @@ namespace kiva
             //---------------------------------------------------------------
 
 
-			void _transform_ctm(agg::trans_affine& m);
+			void _transform_ctm(agg24::trans_affine& m);
 			void translate_ctm(double x, double y);
 			void rotate_ctm(double angle);
 			void scale_ctm(double sx, double sy);
-			void concat_ctm(agg::trans_affine& m);
-			void set_ctm(agg::trans_affine& m);
-			agg::trans_affine get_ctm();
+			void concat_ctm(agg24::trans_affine& m);
+			void set_ctm(agg24::trans_affine& m);
+			agg24::trans_affine get_ctm();
 
             //---------------------------------------------------------------
             // save/restore ptm methods

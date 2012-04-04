@@ -29,7 +29,7 @@
 #include "agg_color_rgba.h"
 #include "agg_rendering_buffer.h"
 
-namespace agg
+namespace agg24
 {
 
     //=====================================================apply_gamma_dir_rgb

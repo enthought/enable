@@ -25,7 +25,7 @@
 // These functors can convert images with up to 8 bits per component.
 // Use convertors in the following way:
 //
-// agg::color_conv(dst, src, agg::color_conv_XXXX_to_YYYY());
+// agg24::color_conv(dst, src, agg24::color_conv_XXXX_to_YYYY());
 //----------------------------------------------------------------------------
 
 #ifndef AGG_COLOR_CONV_RGB16_INCLUDED
@@ -34,7 +34,7 @@
 #include "agg_basics.h"
 #include "agg_color_conv.h"
 
-namespace agg
+namespace agg24
 {
 
     //-------------------------------------------------color_conv_gray16_to_gray8

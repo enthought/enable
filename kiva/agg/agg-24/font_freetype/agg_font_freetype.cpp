@@ -20,7 +20,7 @@
 #include "agg_renderer_scanline.h"
 
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------------------------------------------

@@ -24,7 +24,7 @@
 #include "agg_gamma_functions.h"
 #include "agg_clip_liang_barsky.h"
 
-namespace agg
+namespace agg24
 {
 
     //===================================================distance_interpolator0
@@ -493,9 +493,9 @@ namespace agg
             m_max_extent((m_width + line_subpixel_mask) >> line_subpixel_shift),
             m_step(0)
         {
-            agg::dda2_line_interpolator li(0, lp.vertical ? 
-                                              (lp.dy << agg::line_subpixel_shift) :
-                                              (lp.dx << agg::line_subpixel_shift),
+            agg24::dda2_line_interpolator li(0, lp.vertical ? 
+                                              (lp.dy << agg24::line_subpixel_shift) :
+                                              (lp.dx << agg24::line_subpixel_shift),
                                            lp.len);
 
             unsigned i;

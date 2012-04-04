@@ -34,7 +34,7 @@
 #include "agg_gamma_functions.h"
 
 
-namespace agg
+namespace agg24
 {
 
 

@@ -84,7 +84,7 @@ int graphics_context_base::bottom_up()
 }
 
 
-agg::rendering_buffer* graphics_context_base::rendering_buffer_ptr()
+agg24::rendering_buffer* graphics_context_base::rendering_buffer_ptr()
 {
     return &(this->buf);
 }
@@ -108,13 +108,13 @@ void graphics_context_base::set_image_interpolation(kiva::interpolation_e interp
 //---------------------------------------------------------------
 
 
-void graphics_context_base::set_stroke_color(agg::rgba& value)
+void graphics_context_base::set_stroke_color(agg24::rgba& value)
 {
     this->state.line_color = value;
 }
 
 
-agg::rgba& graphics_context_base::get_stroke_color()
+agg24::rgba& graphics_context_base::get_stroke_color()
 {
     return this->state.line_color;
 }
@@ -152,12 +152,12 @@ kiva::blend_mode_e graphics_context_base::get_blend_mode()
     return this->state.blend_mode;
 }
 
-void graphics_context_base::set_fill_color(agg::rgba& value)
+void graphics_context_base::set_fill_color(agg24::rgba& value)
 {
     this->state.fill_color = value;
 }
 
-agg::rgba& graphics_context_base::get_fill_color()
+agg24::rgba& graphics_context_base::get_fill_color()
 {
     return this->state.fill_color;
 }
@@ -224,7 +224,7 @@ void graphics_context_base::set_text_position(double tx, double ty)
 void graphics_context_base::get_text_position(double* tx, double* ty)
 {
     double temp[6];
-    agg::trans_affine result = this->get_text_matrix();
+    agg24::trans_affine result = this->get_text_matrix();
     result.store_to(temp);
     *tx = temp[4];
     *ty = temp[5];
@@ -239,13 +239,13 @@ bool graphics_context_base::is_font_initialized()
     return true;
 }
 
-void graphics_context_base::set_text_matrix(agg::trans_affine& value)
+void graphics_context_base::set_text_matrix(agg24::trans_affine& value)
 {
     this->text_matrix = value;
 }
 
 
-agg::trans_affine graphics_context_base::get_text_matrix()
+agg24::trans_affine graphics_context_base::get_text_matrix()
 {
     return this->text_matrix;
 }
@@ -305,19 +305,19 @@ void graphics_context_base::scale_ctm(double sx, double sy)
 }
 
 
-void graphics_context_base::concat_ctm(agg::trans_affine& m)
+void graphics_context_base::concat_ctm(agg24::trans_affine& m)
 {
     this->path.concat_ctm(m);
 }
 
 
-void graphics_context_base::set_ctm(agg::trans_affine& m)
+void graphics_context_base::set_ctm(agg24::trans_affine& m)
 {
     this->path.set_ctm(m);
 }
 
 
-agg::trans_affine graphics_context_base::get_ctm()
+agg24::trans_affine graphics_context_base::get_ctm()
 {
     return this->path.get_ctm();
 }
@@ -325,7 +325,7 @@ agg::trans_affine graphics_context_base::get_ctm()
 
 void graphics_context_base::get_freetype_text_matrix(double* out)
 {
-    agg::trans_affine result =  this->get_ctm();
+    agg24::trans_affine result =  this->get_ctm();
     result.multiply(this->get_text_matrix());
     result.store_to(out);
     // freetype and agg transpose their matrix conventions
@@ -488,12 +488,12 @@ kiva::rect_type graphics_context_base::_get_path_bounds()
     return kiva::rect_type(xmin, ymin, xmax-xmin, ymax-ymin);
 }
 
-agg::path_storage graphics_context_base::boundary_path(agg::trans_affine& affine_mtx)
+agg24::path_storage graphics_context_base::boundary_path(agg24::trans_affine& affine_mtx)
 {
     // Return the path that outlines the image in device space
     // This is used in _draw to specify the device area
     // that should be rendered.
-    agg::path_storage clip_path;
+    agg24::path_storage clip_path;
     double p0x = 0;
     double p0y = 0;
     double p1x = this->width();
@@ -578,7 +578,7 @@ bool graphics_context_base::show_text_at_point(char *text,
 
 kiva::rect_type graphics_context_base::get_text_extent(char *text)
 {
-    const agg::glyph_cache *glyph = NULL;
+    const agg24::glyph_cache *glyph = NULL;
 
 #if defined(_WIN32) || defined(__WIN32__) || defined(__CYGWIN__)
         int required = MultiByteToWideChar(CP_UTF8, 0, text, -1, 0, 0);
@@ -605,7 +605,7 @@ kiva::rect_type graphics_context_base::get_text_extent(char *text)
 
     this->_grab_font_manager();
 
-    //typedef agg::glyph_raster_bin<agg::rgba8> GlyphGeneratorType;
+    //typedef agg24::glyph_raster_bin<agg24::rgba8> GlyphGeneratorType;
     //GlyphGeneratorType glyphGen(this->font_manager.glyph(*p)->data);
 
     while (*p)
@@ -672,18 +672,18 @@ void graphics_context_base::_grab_font_manager()
     if (font->filename != "")
     {
         font_engine->load_font(font->filename.c_str(), 0,
-                               agg::glyph_ren_agg_gray8);
+                               agg24::glyph_ren_agg_gray8);
     }
     else
     {
         font_engine->load_font(font->name.c_str(), 0,
-                               agg::glyph_ren_agg_gray8);
+                               agg24::glyph_ren_agg_gray8);
     }
 #endif
 
 #ifdef KIVA_USE_WIN32
     font_engine->create_font(font->name,
-                             agg::glyph_ren_native_gray8,
+                             agg24::glyph_ren_native_gray8,
                              font->size);
 #endif
 

@@ -23,7 +23,7 @@
 #include "agg_basics.h"
 #include "agg_curves.h"
 
-namespace agg
+namespace agg24
 {
 
 

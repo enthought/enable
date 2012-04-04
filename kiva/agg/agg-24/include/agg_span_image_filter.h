@@ -23,7 +23,7 @@
 #include "agg_image_filters.h"
 #include "agg_span_interpolator_linear.h"
 
-namespace agg
+namespace agg24
 {
 
     //-------------------------------------------------------span_image_filter

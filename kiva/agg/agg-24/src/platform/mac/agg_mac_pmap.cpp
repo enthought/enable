@@ -16,7 +16,7 @@
 #include "platform/mac/agg_mac_pmap.h"
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------------------------------------

@@ -25,7 +25,7 @@
 #include "agg_dda_line.h"
 #include "agg_ellipse_bresenham.h"
 
-namespace agg
+namespace agg24
 {
     //-----------------------------------------------------renderer_primitives
     template<class BaseRenderer> class renderer_primitives

@@ -22,7 +22,7 @@
 #ifdef AGG_CUSTOM_ALLOCATOR
 #include "agg_allocator.h"
 #else
-namespace agg
+namespace agg24
 {
     // The policy of all AGG containers and memory allocation strategy 
     // in general is that no allocated data requires explicit construction.
@@ -112,7 +112,7 @@ namespace agg
 #define AGG_INLINE inline
 #endif
 
-namespace agg
+namespace agg24
 {
     //-------------------------------------------------------------------------
     typedef AGG_INT8   int8;         //----int8
@@ -191,7 +191,7 @@ namespace agg
         {
             if(v < double(-Limit)) return -Limit;
             if(v > double( Limit)) return  Limit;
-            return agg::iround(v);
+            return agg24::iround(v);
         }
     };
 
