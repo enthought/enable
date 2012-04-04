@@ -23,11 +23,11 @@
 #include "agg_array.h"
 #include "agg_math.h"
 
-namespace agg
+namespace agg24
 {
 
     //----------------------------------------------------------vertex_sequence
-    // Modified agg::pod_bvector. The data is interpreted as a sequence 
+    // Modified agg24::pod_bvector. The data is interpreted as a sequence 
     // of vertices. It means that the type T must expose:
     //
     // bool T::operator() (const T& val)

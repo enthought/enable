@@ -23,7 +23,7 @@
 #include "agg_math.h"
 #include "agg_vertex_sequence.h"
 
-namespace agg
+namespace agg24
 {
     //-------------------------------------------------------------line_cap_e
     enum line_cap_e

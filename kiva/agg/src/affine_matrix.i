@@ -57,43 +57,43 @@
 // and easier to maintain Python interface.
 
 
-agg::trans_affine* trans_affine_rotation(double a)
+agg24::trans_affine* trans_affine_rotation(double a)
 {
-    return new agg::trans_affine(cos(a), sin(a), -sin(a), cos(a), 0.0, 0.0);
+    return new agg24::trans_affine(cos(a), sin(a), -sin(a), cos(a), 0.0, 0.0);
 }
 
-agg::trans_affine* trans_affine_scaling(double sx, double sy)
+agg24::trans_affine* trans_affine_scaling(double sx, double sy)
 {
-    return new agg::trans_affine(sx, 0.0, 0.0, sy, 0.0, 0.0);
+    return new agg24::trans_affine(sx, 0.0, 0.0, sy, 0.0, 0.0);
 }
 
-agg::trans_affine* trans_affine_translation(double tx, double ty)
+agg24::trans_affine* trans_affine_translation(double tx, double ty)
 {
-    return new agg::trans_affine(1.0, 0.0, 0.0, 1.0, tx, ty);
+    return new agg24::trans_affine(1.0, 0.0, 0.0, 1.0, tx, ty);
 }
 
-agg::trans_affine* trans_affine_skewing(double sx, double sy)
+agg24::trans_affine* trans_affine_skewing(double sx, double sy)
 {
-    return new agg::trans_affine(1.0, tan(sy), tan(sx), 1.0, 0.0, 0.0);
+    return new agg24::trans_affine(1.0, tan(sy), tan(sx), 1.0, 0.0, 0.0);
 }
 
 %}
 
 %newobject trans_affine_rotation;
 %rename(rotation_matrix) trans_affine_rotation(double);
-agg::trans_affine* trans_affine_rotation(double a);
+agg24::trans_affine* trans_affine_rotation(double a);
 
 %newobject trans_affine_scaling;
 %rename(scaling_matrix) trans_affine_scaling(double, double);
-agg::trans_affine* trans_affine_scaling(double sx, double sy);
+agg24::trans_affine* trans_affine_scaling(double sx, double sy);
 
 %newobject trans_affine_translation;
 %rename(translation_matrix) trans_affine_translation(double, double);
-agg::trans_affine* trans_affine_translation(double tx, double ty);
+agg24::trans_affine* trans_affine_translation(double tx, double ty);
 
 %newobject trans_affine_skewing;
 %rename(skewing_matrix) trans_affine_skewing(double, double);
-agg::trans_affine* trans_affine_skewing(double sx, double sy);
+agg24::trans_affine* trans_affine_skewing(double sx, double sy);
 
 
 %include "agg_typemaps.i"
@@ -110,10 +110,10 @@ agg::trans_affine* trans_affine_skewing(double sx, double sy);
     }
 }
 
-%apply owned_pointer { agg::trans_affine* };
+%apply owned_pointer { agg24::trans_affine* };
 
 
-namespace agg
+namespace agg24
 {
     %rename(_AffineMatrix) trans_affine;
     %rename(asarray) trans_affine::store_to(double*) const;
@@ -186,7 +186,7 @@ class AffineMatrix(_AffineMatrix):
         return self
 }
 
-%extend agg::trans_affine
+%extend agg24::trans_affine
 {
     char *__repr__()
     {
@@ -206,7 +206,7 @@ class AffineMatrix(_AffineMatrix):
         self->store_to(ary);
         return ary[affine_index];
     }
-    int __eq__(agg::trans_affine& other)
+    int __eq__(agg24::trans_affine& other)
     {
         double ary1[6], ary2[6];
         self->store_to(ary1);

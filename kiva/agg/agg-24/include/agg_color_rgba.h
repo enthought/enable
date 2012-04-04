@@ -27,7 +27,7 @@
 #include <math.h>
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
     // Supported byte orders for RGB and RGBA pixel formats
     //=======================================================================

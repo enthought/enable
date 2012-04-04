@@ -19,7 +19,7 @@
 #include "agg_basics.h"
 #include "agg_renderer_base.h"
 
-namespace agg
+namespace agg24
 {
 
     //================================================render_scanline_aa_solid

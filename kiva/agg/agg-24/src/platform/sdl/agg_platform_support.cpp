@@ -23,7 +23,7 @@
 #include "SDL_byteorder.h"
 
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------------------------------------

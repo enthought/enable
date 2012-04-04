@@ -27,7 +27,7 @@
 #include "agg_trans_affine.h"
 #include "agg_font_cache_manager.h"
 
-namespace agg
+namespace agg24
 {
 
     //-----------------------------------------------font_engine_win32_tt_base
@@ -76,7 +76,7 @@ namespace agg
         }
 
         //--------------------------------------------------------------------
-        void transform(const agg::trans_affine& mtx)
+        void transform(const agg24::trans_affine& mtx)
         {
             m_affine = mtx;
         }

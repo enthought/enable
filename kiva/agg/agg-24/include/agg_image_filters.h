@@ -23,7 +23,7 @@
 #include "agg_array.h"
 #include "agg_math.h"
 
-namespace agg
+namespace agg24
 {
 
     // See Implementation agg_image_filters.cpp 

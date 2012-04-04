@@ -20,7 +20,7 @@
 #include "agg_conv_adaptor_vcgen.h"
 #include "agg_vcgen_vertex_sequence.h"
 
-namespace agg
+namespace agg24
 {
 
     //=======================================================conv_shorten_path

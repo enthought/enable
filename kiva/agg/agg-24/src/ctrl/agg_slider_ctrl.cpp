@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include "ctrl/agg_slider_ctrl.h"
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------------------------------------

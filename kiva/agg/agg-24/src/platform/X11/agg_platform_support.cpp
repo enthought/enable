@@ -31,7 +31,7 @@
 #include "platform/agg_platform_support.h"
 
 
-namespace agg
+namespace agg24
 {
     //------------------------------------------------------------------------
     class platform_specific

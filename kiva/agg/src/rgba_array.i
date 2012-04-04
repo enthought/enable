@@ -1,8 +1,8 @@
 // --------------------------------------------------------------------------
 // 
-// Convert agg::rgba types to/from Numeric arrays.  The rgba_as_array 
+// Convert agg24::rgba types to/from Numeric arrays.  The rgba_as_array 
 // typemap will accept any 3 or 4 element sequence of float compatible 
-// objects and convert them into an agg::rgba object.
+// objects and convert them into an agg24::rgba object.
 // 
 // The typemap also converts any rgba output value back to a numeric array
 // in python.  This is a more useful representation for numerical 
@@ -21,7 +21,7 @@
 %typemap(in) rgba_as_array (int must_free=0)
 {
   must_free = 0;  
-  if ((SWIG_ConvertPtr($input,(void **) &$1, SWIGTYPE_p_agg__rgba,
+  if ((SWIG_ConvertPtr($input,(void **) &$1, SWIGTYPE_p_agg24__rgba,
                        SWIG_POINTER_EXCEPTION | 0 )) == -1) 
   {
       PyErr_Clear();
@@ -66,7 +66,7 @@
               return NULL;
           }         
       }
-      $1 = new agg::rgba(temp[0],temp[1],temp[2],temp[3]);
+      $1 = new agg24::rgba(temp[0],temp[1],temp[2],temp[3]);
       must_free = 1;
    }   
 }

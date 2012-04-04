@@ -51,7 +51,7 @@ Class* RequesterClass = 0;
 Class* WindowClass = 0;
 
 
-namespace agg
+namespace agg24
 {
 	void handle_idcmp(Hook* hook, APTR win, IntuiMessage* msg);
 
@@ -507,7 +507,7 @@ namespace agg
 				WA_NoCareRefresh, TRUE,
 				WA_CloseGadget, TRUE,
 				WA_DepthGadget, TRUE,
-				WA_SizeGadget, (flags & agg::window_resize) ? TRUE : FALSE,
+				WA_SizeGadget, (flags & agg24::window_resize) ? TRUE : FALSE,
 				WA_DragBar, TRUE,
 				WA_AutoAdjust, TRUE,
 				WA_ReportMouse, TRUE,

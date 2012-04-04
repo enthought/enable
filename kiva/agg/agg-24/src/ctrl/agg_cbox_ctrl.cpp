@@ -21,7 +21,7 @@
 #include "ctrl/agg_cbox_ctrl.h"
 
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------------------------------------

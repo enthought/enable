@@ -25,7 +25,7 @@
 #include "agg_conv_curve.h"
 
 
-namespace agg
+namespace agg24
 {
 
     //-------------------------------------------------------conv_smooth_poly1

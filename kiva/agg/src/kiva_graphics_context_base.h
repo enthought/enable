@@ -38,12 +38,12 @@ namespace kiva
 {
 
 #ifdef KIVA_USE_FREETYPE
-    typedef agg::font_engine_freetype_int32 font_engine_type;
+    typedef agg24::font_engine_freetype_int32 font_engine_type;
 #endif
 #ifdef KIVA_USE_WIN32
-    typedef agg::font_engine_win32_tt_int32 font_engine_type;
+    typedef agg24::font_engine_win32_tt_int32 font_engine_type;
 #endif
-    typedef agg::font_cache_manager<font_engine_type> font_manager_type;
+    typedef agg24::font_cache_manager<font_engine_type> font_manager_type;
 
     font_engine_type* GlobalFontEngine();
     font_manager_type* GlobalFontManager();
@@ -56,12 +56,12 @@ namespace kiva
         kiva::compiled_path path;
 
         // The text matrix is *not* part of the graphics state.
-        agg::trans_affine text_matrix;
+        agg24::trans_affine text_matrix;
 
         kiva::graphics_state state;
         std::stack<kiva::graphics_state> state_stack;
 
-        agg::rendering_buffer buf;
+        agg24::rendering_buffer buf;
 
         // fix me: Not sure this should be here, but, putting it here completely
         //         unifies images and graphics contexts.
@@ -83,7 +83,7 @@ namespace kiva
 
 		virtual kiva::pix_format_e format() = 0;
 
-        agg::rendering_buffer* rendering_buffer_ptr();
+        agg24::rendering_buffer* rendering_buffer_ptr();
         kiva::interpolation_e get_image_interpolation();
         void set_image_interpolation(interpolation_e interpolation);
 
@@ -91,8 +91,8 @@ namespace kiva
         // set graphics_state values
         //---------------------------------------------------------------
 
-        void set_stroke_color(agg::rgba& value);
-        agg::rgba& get_stroke_color();
+        void set_stroke_color(agg24::rgba& value);
+        agg24::rgba& get_stroke_color();
 
         // TODO-PZW: do we need corresponding get() functions for
         // all of the following?
@@ -107,11 +107,11 @@ namespace kiva
         void set_blend_mode(blend_mode_e value);
         kiva::blend_mode_e get_blend_mode();
 
-        void set_fill_color(agg::rgba& value);
+        void set_fill_color(agg24::rgba& value);
 
         // need get method for freetype renderer.
         // should I return a reference??
-        agg::rgba& get_fill_color();
+        agg24::rgba& get_fill_color();
 
         // need get method for freetype renderer.
         // fix me: Is the get method still needed?
@@ -135,8 +135,8 @@ namespace kiva
         void set_text_position(double tx, double ty);
         void get_text_position(double* tx, double* ty);
 
-        void set_text_matrix(agg::trans_affine& value);
-        agg::trans_affine get_text_matrix();
+        void set_text_matrix(agg24::trans_affine& value);
+        agg24::trans_affine get_text_matrix();
 
         void set_character_spacing(double value);
         double get_character_spacing();
@@ -180,9 +180,9 @@ namespace kiva
         void translate_ctm(double x, double y);
         void rotate_ctm(double angle);
         void scale_ctm(double sx, double sy);
-        void concat_ctm(agg::trans_affine& m);
-        void set_ctm(agg::trans_affine& m);
-        agg::trans_affine get_ctm();
+        void concat_ctm(agg24::trans_affine& m);
+        void set_ctm(agg24::trans_affine& m);
+        agg24::trans_affine get_ctm();
         void get_freetype_text_matrix(double* out);
 
         //---------------------------------------------------------------
@@ -255,7 +255,7 @@ namespace kiva
         void rects(double* all_rects, int Nrects);
         void rects(kiva::rect_list_type &rectlist);
 
-		agg::path_storage boundary_path(agg::trans_affine& affine_mtx);
+		agg24::path_storage boundary_path(agg24::trans_affine& affine_mtx);
 
         //---------------------------------------------------------------
         // Clipping path manipulation
@@ -276,7 +276,7 @@ namespace kiva
         //---------------------------------------------------------------
         // Painting paths (drawing and filling contours)
         //---------------------------------------------------------------
-        virtual void clear(agg::rgba value=agg::rgba(1,1,1,1)) = 0;
+        virtual void clear(agg24::rgba value=agg24::rgba(1,1,1,1)) = 0;
         //virtual void clear(double alpha) = 0;
 
         virtual void fill_path() = 0;
@@ -303,7 +303,7 @@ namespace kiva
         //          0 on failure
         //          1 on success
         virtual int draw_marker_at_points(double* pts,int Npts,int size,
-                                   agg::marker_e type=agg::marker_square) = 0;
+                                   agg24::marker_e type=agg24::marker_square) = 0;
 
         virtual void draw_path_at_points(double* pts,int Npts,
                                   kiva::compiled_path& marker,

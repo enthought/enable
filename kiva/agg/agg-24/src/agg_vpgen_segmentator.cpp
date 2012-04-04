@@ -16,7 +16,7 @@
 #include <math.h>
 #include "agg_vpgen_segmentator.h"
 
-namespace agg
+namespace agg24
 {
 
     void vpgen_segmentator::move_to(double x, double y)

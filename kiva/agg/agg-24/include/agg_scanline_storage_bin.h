@@ -31,7 +31,7 @@
 #include "agg_array.h"
 
 
-namespace agg
+namespace agg24
 {
 
     //-----------------------------------------------scanline_storage_bin

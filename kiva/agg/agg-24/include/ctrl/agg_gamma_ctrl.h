@@ -29,7 +29,7 @@
 #include "agg_color_rgba.h"
 #include "agg_ctrl.h"
 
-namespace agg
+namespace agg24
 {
     //------------------------------------------------------------------------
     // Class that can be used to create an interactive control to set up 
@@ -59,7 +59,7 @@ namespace agg
 
         void change_active_point();
 
-        // A copy of agg::gamma_spline interface
+        // A copy of agg24::gamma_spline interface
         void  values(double kx1, double ky1, double kx2, double ky2);
         void  values(double* kx1, double* ky1, double* kx2, double* ky2) const;
         const unsigned char* gamma() const { return m_gamma_spline.gamma(); }

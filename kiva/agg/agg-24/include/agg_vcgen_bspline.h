@@ -21,7 +21,7 @@
 #include "agg_bspline.h"
 
 
-namespace agg
+namespace agg24
 {
 
     //==========================================================vcgen_bspline

@@ -22,7 +22,7 @@
 #include "agg_basics.h"
 #include "agg_vertex_sequence.h"
 
-namespace agg
+namespace agg24
 {
 
     //---------------------------------------------------------------vcgen_dash

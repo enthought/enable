@@ -24,7 +24,7 @@
 #include <stdio.h>
 
 
-namespace agg
+namespace agg24
 {
     enum org_e
     {

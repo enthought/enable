@@ -24,7 +24,7 @@
 #include "agg_array.h"
 #include "agg_renderer_base.h"
 
-namespace agg
+namespace agg24
 {
 
     //----------------------------------------------------------renderer_mclip

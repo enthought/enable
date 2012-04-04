@@ -19,7 +19,7 @@
 
 #include "ctrl/agg_scale_ctrl.h"
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------------------------------------

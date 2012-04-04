@@ -23,7 +23,7 @@
 #include "agg_bezier_arc.h"
 
 
-namespace agg
+namespace agg24
 {
 
     // This epsilon is used to prevent us from adding degenerate curves 

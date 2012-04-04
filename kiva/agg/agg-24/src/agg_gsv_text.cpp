@@ -21,7 +21,7 @@
 #include "agg_gsv_text.h"
 
 
-namespace agg
+namespace agg24
 {
     int8u gsv_default_font[] = 
     {

@@ -17,7 +17,7 @@
 
 #include "agg_math.h"
 
-namespace agg
+namespace agg24
 {
     template<class VertexSource> 
     double path_length(VertexSource& vs, unsigned path_id = 0)

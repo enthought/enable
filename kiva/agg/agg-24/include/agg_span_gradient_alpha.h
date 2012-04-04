@@ -18,7 +18,7 @@
 
 #include "agg_span_gradient.h"
 
-namespace agg
+namespace agg24
 {
     //======================================================span_gradient_alpha
     template<class ColorT, 

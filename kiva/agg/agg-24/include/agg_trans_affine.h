@@ -22,7 +22,7 @@
 #include <math.h>
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
     const double affine_epsilon = 1e-14; // About of precision of doubles
 
@@ -70,19 +70,19 @@ namespace agg
     // So, how to use it? Very easy - literally as it's shown above. Not quite,
     // let us write a correct example:
     //
-    // agg::trans_affine m;
-    // m *= agg::trans_affine_rotation(30.0 * 3.1415926 / 180.0);
-    // m *= agg::trans_affine_scaling(2.0, 1.5);
-    // m *= agg::trans_affine_translation(100.0, 100.0);
+    // agg24::trans_affine m;
+    // m *= agg24::trans_affine_rotation(30.0 * 3.1415926 / 180.0);
+    // m *= agg24::trans_affine_scaling(2.0, 1.5);
+    // m *= agg24::trans_affine_translation(100.0, 100.0);
     // m.transform(&x, &y);
     //
     // The affine matrix is all you need to perform any linear transformation,
     // but all transformations have origin point (0,0). It means that we need to 
     // use 2 translations if we want to rotate someting around (100,100):
     // 
-    // m *= agg::trans_affine_translation(-100.0, -100.0);         // move to (0,0)
-    // m *= agg::trans_affine_rotation(30.0 * 3.1415926 / 180.0);  // rotate
-    // m *= agg::trans_affine_translation(100.0, 100.0);           // move back to (100,100)
+    // m *= agg24::trans_affine_translation(-100.0, -100.0);         // move to (0,0)
+    // m *= agg24::trans_affine_rotation(30.0 * 3.1415926 / 180.0);  // rotate
+    // m *= agg24::trans_affine_translation(100.0, 100.0);           // move back to (100,100)
     //----------------------------------------------------------------------
     class trans_affine
     {

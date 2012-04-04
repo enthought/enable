@@ -23,7 +23,7 @@
 #include <math.h>
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
 
     //=====================================================================arc

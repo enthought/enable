@@ -16,7 +16,7 @@
 #include "agg_math.h"
 #include "agg_trans_double_path.h"
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------------------------------------

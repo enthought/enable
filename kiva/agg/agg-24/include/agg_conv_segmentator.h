@@ -20,7 +20,7 @@
 #include "agg_conv_adaptor_vpgen.h"
 #include "agg_vpgen_segmentator.h"
 
-namespace agg
+namespace agg24
 {
 
     //========================================================conv_segmentator

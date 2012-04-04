@@ -34,7 +34,7 @@
 #include "agg_font_cache_manager.h"
 #include "agg_trans_affine.h"
 
-namespace agg
+namespace agg24
 {
 
 

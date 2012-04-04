@@ -54,31 +54,31 @@ namespace kiva
     //      }
     //
     //
-    inline kiva::pix_format_e agg_pix_to_kiva(agg::pixfmt_gray8 *msvc6_dummy = NULL)
+    inline kiva::pix_format_e agg_pix_to_kiva(agg24::pixfmt_gray8 *msvc6_dummy = NULL)
     {
         return kiva::pix_format_gray8;
     }
-    inline kiva::pix_format_e agg_pix_to_kiva(agg::pixfmt_rgb24 *msvc6_dummy = NULL)
+    inline kiva::pix_format_e agg_pix_to_kiva(agg24::pixfmt_rgb24 *msvc6_dummy = NULL)
     {
         return kiva::pix_format_rgb24;
     }
-    inline kiva::pix_format_e agg_pix_to_kiva(agg::pixfmt_bgr24 *msvc6_dummy = NULL)
+    inline kiva::pix_format_e agg_pix_to_kiva(agg24::pixfmt_bgr24 *msvc6_dummy = NULL)
     {
         return kiva::pix_format_bgr24;
     }
-    inline kiva::pix_format_e agg_pix_to_kiva(agg::pixfmt_bgra32 *msvc6_dummy = NULL)
+    inline kiva::pix_format_e agg_pix_to_kiva(agg24::pixfmt_bgra32 *msvc6_dummy = NULL)
     {
         return kiva::pix_format_bgra32;
     }
-    inline kiva::pix_format_e agg_pix_to_kiva(agg::pixfmt_rgba32 *msvc6_dummy = NULL)
+    inline kiva::pix_format_e agg_pix_to_kiva(agg24::pixfmt_rgba32 *msvc6_dummy = NULL)
     {
         return kiva::pix_format_rgba32;
     }
-    inline kiva::pix_format_e agg_pix_to_kiva(agg::pixfmt_argb32 *msvc6_dummy = NULL)
+    inline kiva::pix_format_e agg_pix_to_kiva(agg24::pixfmt_argb32 *msvc6_dummy = NULL)
     {
         return kiva::pix_format_argb32;
     }
-    inline kiva::pix_format_e agg_pix_to_kiva(agg::pixfmt_abgr32 *msvc6_dummy = NULL)
+    inline kiva::pix_format_e agg_pix_to_kiva(agg24::pixfmt_abgr32 *msvc6_dummy = NULL)
     {
         return kiva::pix_format_abgr32;
     }

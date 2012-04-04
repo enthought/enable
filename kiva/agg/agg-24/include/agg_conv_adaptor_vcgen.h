@@ -18,7 +18,7 @@
 
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
     //------------------------------------------------------------null_markers
     struct null_markers

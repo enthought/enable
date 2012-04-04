@@ -18,7 +18,7 @@
 
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
     //====================================================conv_unclose_polygon
     template<class VertexSource> class conv_unclose_polygon

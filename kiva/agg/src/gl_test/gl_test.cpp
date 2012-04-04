@@ -38,8 +38,8 @@ int KivaDrawGLScene(GLvoid)
 	// XXX: Verify antialiasing from python
 	//gc.set_antialias(1);
 
-	gc.set_fill_color(agg::rgba(1.0, 0.0, 0.0));
-	gc.set_stroke_color(agg::rgba(0.0, 1.0, 0.0));
+	gc.set_fill_color(agg24::rgba(1.0, 0.0, 0.0));
+	gc.set_stroke_color(agg24::rgba(0.0, 1.0, 0.0));
 	gc.set_line_width(1.0);
 	gc.move_to(100.0, 100.0);
 	gc.line_to(100.0, 200.0);

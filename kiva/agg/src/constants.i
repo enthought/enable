@@ -28,14 +28,14 @@
 %include "agg_renderer_markers.h"
 
 %{
-    inline unsigned path_cmd(unsigned c) { return c & agg::path_cmd_mask; }
-    inline unsigned path_flags(unsigned c) { return c & agg::path_flags_mask; }
+    inline unsigned path_cmd(unsigned c) { return c & agg24::path_cmd_mask; }
+    inline unsigned path_flags(unsigned c) { return c & agg24::path_flags_mask; }
 %}
 
 %include "agg_typemaps.i"
 
-%apply(kiva_enum_typemap) { agg::path_flags_e };
-%apply(kiva_enum_typemap) { agg::marker_e };
+%apply(kiva_enum_typemap) { agg24::path_flags_e };
+%apply(kiva_enum_typemap) { agg24::marker_e };
 %apply(kiva_enum_typemap) { kiva::draw_mode_e mode, kiva::text_draw_mode_e,
                             kiva::line_join_e, kiva::line_cap_e, kiva::blend_mode_e };
 %apply(kiva_enum_typemap) { kiva::pix_format_e, kiva::interpolation_e };

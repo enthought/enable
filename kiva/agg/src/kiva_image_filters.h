@@ -14,7 +14,7 @@
 namespace kiva
 {
 
-    typedef agg::span_interpolator_linear<> interpolator_type;
+    typedef agg24::span_interpolator_linear<> interpolator_type;
     
     template<class pixel_format>
     class image_filters
@@ -22,86 +22,86 @@ namespace kiva
     };
     
     template<>
-    class image_filters<agg::pixfmt_rgba32>
+    class image_filters<agg24::pixfmt_rgba32>
     {
         public:
-        typedef agg::image_accessor_clip<agg::pixfmt_rgba32> source_type;
+        typedef agg24::image_accessor_clip<agg24::pixfmt_rgba32> source_type;
         
-        typedef agg::span_image_filter_rgba_nn<source_type, 
+        typedef agg24::span_image_filter_rgba_nn<source_type, 
                                            interpolator_type> nearest_type;
-        typedef agg::span_image_filter_rgba_bilinear<source_type, 
+        typedef agg24::span_image_filter_rgba_bilinear<source_type, 
                                            interpolator_type> bilinear_type;
-        typedef agg::span_image_filter_rgba<source_type, 
+        typedef agg24::span_image_filter_rgba<source_type, 
                                            interpolator_type> general_type;                   
     };
 
     template<>
-    class image_filters<agg::pixfmt_bgra32>
+    class image_filters<agg24::pixfmt_bgra32>
     {
         public:
-        typedef agg::image_accessor_clip<agg::pixfmt_bgra32> source_type;
+        typedef agg24::image_accessor_clip<agg24::pixfmt_bgra32> source_type;
         
-        typedef agg::span_image_filter_rgba_nn<source_type, 
+        typedef agg24::span_image_filter_rgba_nn<source_type, 
                                            interpolator_type> nearest_type;
-        typedef agg::span_image_filter_rgba_bilinear<source_type, 
+        typedef agg24::span_image_filter_rgba_bilinear<source_type, 
                                            interpolator_type> bilinear_type;
-        typedef agg::span_image_filter_rgba<source_type, 
+        typedef agg24::span_image_filter_rgba<source_type, 
                                            interpolator_type> general_type;                   
     };
     
     template<>
-    class image_filters<agg::pixfmt_argb32>
+    class image_filters<agg24::pixfmt_argb32>
     {
         public:
-        typedef agg::image_accessor_clip<agg::pixfmt_argb32> source_type;
+        typedef agg24::image_accessor_clip<agg24::pixfmt_argb32> source_type;
         
-        typedef agg::span_image_filter_rgba_nn<source_type, 
+        typedef agg24::span_image_filter_rgba_nn<source_type, 
                                            interpolator_type> nearest_type;
-        typedef agg::span_image_filter_rgba_bilinear<source_type, 
+        typedef agg24::span_image_filter_rgba_bilinear<source_type, 
                                            interpolator_type> bilinear_type;
-        typedef agg::span_image_filter_rgba<source_type, 
+        typedef agg24::span_image_filter_rgba<source_type, 
                                            interpolator_type> general_type;                   
     };
     
     template<>
-    class image_filters<agg::pixfmt_abgr32>
+    class image_filters<agg24::pixfmt_abgr32>
     {
         public:
-        typedef agg::image_accessor_clip<agg::pixfmt_abgr32> source_type;
+        typedef agg24::image_accessor_clip<agg24::pixfmt_abgr32> source_type;
         
-        typedef agg::span_image_filter_rgba_nn<source_type, 
+        typedef agg24::span_image_filter_rgba_nn<source_type, 
                                            interpolator_type> nearest_type;
-        typedef agg::span_image_filter_rgba_bilinear<source_type, 
+        typedef agg24::span_image_filter_rgba_bilinear<source_type, 
                                            interpolator_type> bilinear_type;
-        typedef agg::span_image_filter_rgba<source_type, 
+        typedef agg24::span_image_filter_rgba<source_type, 
                                            interpolator_type> general_type;                   
     };
     
     template<>
-    class image_filters<agg::pixfmt_rgb24>
+    class image_filters<agg24::pixfmt_rgb24>
     {
         public:
-        typedef agg::image_accessor_clip<agg::pixfmt_rgb24> source_type;
+        typedef agg24::image_accessor_clip<agg24::pixfmt_rgb24> source_type;
         
-        typedef agg::span_image_filter_rgb_nn<source_type, 
+        typedef agg24::span_image_filter_rgb_nn<source_type, 
                                            interpolator_type> nearest_type;
-        typedef agg::span_image_filter_rgb_bilinear<source_type, 
+        typedef agg24::span_image_filter_rgb_bilinear<source_type, 
                                            interpolator_type> bilinear_type;
-        typedef agg::span_image_filter_rgb<source_type, 
+        typedef agg24::span_image_filter_rgb<source_type, 
                                            interpolator_type> general_type;                   
     };
     
     template<>
-    class image_filters<agg::pixfmt_bgr24>
+    class image_filters<agg24::pixfmt_bgr24>
     {
         public:
-        typedef agg::image_accessor_clip<agg::pixfmt_bgr24> source_type;
+        typedef agg24::image_accessor_clip<agg24::pixfmt_bgr24> source_type;
         
-        typedef agg::span_image_filter_rgb_nn<source_type, 
+        typedef agg24::span_image_filter_rgb_nn<source_type, 
                                            interpolator_type> nearest_type;
-        typedef agg::span_image_filter_rgb_bilinear<source_type, 
+        typedef agg24::span_image_filter_rgb_bilinear<source_type, 
                                            interpolator_type> bilinear_type;
-        typedef agg::span_image_filter_rgb<source_type, 
+        typedef agg24::span_image_filter_rgb<source_type, 
                                            interpolator_type> general_type;                   
     };
 }

@@ -18,11 +18,11 @@ namespace kiva
         inline rect_type(): x(0), y(0), w(-1), h(-1) { }
         inline rect_type(double newx, double newy, double neww, double newh):
                         x(newx), y(newy), w(neww), h(newh) { }
-        inline rect_type(agg::rect_i r) { *this = r; }
-        inline rect_type(agg::rect_d r) { *this = r; }
+        inline rect_type(agg24::rect_i r) { *this = r; }
+        inline rect_type(agg24::rect_d r) { *this = r; }
 
-        // conversion from agg::rect
-        inline rect_type& operator=(agg::rect_i &r)
+        // conversion from agg24::rect
+        inline rect_type& operator=(agg24::rect_i &r)
         {
             x = int(r.x1);
             y = int(r.y1);
@@ -31,7 +31,7 @@ namespace kiva
             return *this;
         }
 
-        inline rect_type& operator=(agg::rect_d &r)
+        inline rect_type& operator=(agg24::rect_d &r)
         {
             x = r.x1;
             y = r.y1;
@@ -50,9 +50,9 @@ namespace kiva
             return !(*this == other);
         }
 
-        // conversion to agg::rect
-        inline operator agg::rect_i() const { return agg::rect_i(int(x), int(y), int(w), int(h)); }
-        inline operator agg::rect_d() const { return agg::rect_d(x, y, w, h); }
+        // conversion to agg24::rect
+        inline operator agg24::rect_i() const { return agg24::rect_i(int(x), int(y), int(w), int(h)); }
+        inline operator agg24::rect_d() const { return agg24::rect_d(x, y, w, h); }
 
         // conversion to double[4]
         inline double operator[](unsigned int ndx) const

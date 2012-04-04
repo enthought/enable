@@ -19,7 +19,7 @@
 #include "agg_line_aa_basics.h"
 #include "agg_vertex_sequence.h"
 
-namespace agg
+namespace agg24
 {
 
     //-------------------------------------------------------------------------

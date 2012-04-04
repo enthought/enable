@@ -23,7 +23,7 @@
 #include "agg_trans_affine.h"
 #include "agg_renderer_scanline.h"
 
-namespace agg
+namespace agg24
 {
 
     //--------------------------------------------------------------------ctrl
