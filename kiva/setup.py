@@ -13,8 +13,8 @@
 # Description: <Enthought kiva package project>
 #------------------------------------------------------------------------------
 
-import sys
 import os
+import platform
 
 
 def configuration(parent_package=None, top_path=None):
@@ -34,7 +34,7 @@ def configuration(parent_package=None, top_path=None):
     config.add_subpackage('trait_defs.ui')
     config.add_subpackage('trait_defs.ui.*')
 
-    if sys.platform == 'darwin':
+    if platform.system() == 'Darwin' and platform.architecture()[0]=='32bit':
         config.add_subpackage('quartz')
 
     config.get_version()
