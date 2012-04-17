@@ -18,7 +18,7 @@
 
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
     extern const int8u gse4x6[];
     extern const int8u gse4x8[];

@@ -25,7 +25,7 @@
 #include "util/agg_color_conv_rgb16.h"
 
 
-namespace agg
+namespace agg24
 {
     
     //------------------------------------------------------------------------
@@ -887,8 +887,8 @@ namespace agg
                     break;
 
                 case key_f2:                        
-                    app->copy_window_to_img(agg::platform_support::max_images - 1);
-                    app->save_img(agg::platform_support::max_images - 1, "screenshot");
+                    app->copy_window_to_img(agg24::platform_support::max_images - 1);
+                    app->save_img(agg24::platform_support::max_images - 1, "screenshot");
                     break;
                 }
 
@@ -1204,7 +1204,7 @@ namespace agg
 
 
 
-namespace agg
+namespace agg24
 {
     // That's ridiculous. I have to parse the command line by myself
     // because Windows doesn't provide a method of getting the command
@@ -1433,8 +1433,8 @@ int PASCAL WinMain(HINSTANCE hInstance,
                    LPSTR lpszCmdLine,
                    int nCmdShow)
 {
-    agg::g_windows_instance = hInstance;
-    agg::g_windows_cmd_show = nCmdShow;
+    agg24::g_windows_instance = hInstance;
+    agg24::g_windows_cmd_show = nCmdShow;
 
     char* argv_str = new char [strlen(lpszCmdLine) + 3];
     char* argv_ptr = argv_str;
@@ -1442,7 +1442,7 @@ int PASCAL WinMain(HINSTANCE hInstance,
     char* argv[64];
     memset(argv, 0, sizeof(argv));
 
-    agg::tokenizer cmd_line(" ", "\"' ", "\"'", '\\', agg::tokenizer::multiple);
+    agg24::tokenizer cmd_line(" ", "\"' ", "\"'", '\\', agg24::tokenizer::multiple);
     cmd_line.set_str(lpszCmdLine);
 
     int argc = 0;
@@ -1451,7 +1451,7 @@ int PASCAL WinMain(HINSTANCE hInstance,
 
     while(argc < 64)
     {
-        agg::tokenizer::token tok = cmd_line.next_token();
+        agg24::tokenizer::token tok = cmd_line.next_token();
         if(tok.ptr == 0) break;
         if(tok.len)
         {

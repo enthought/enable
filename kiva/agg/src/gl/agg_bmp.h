@@ -16,7 +16,7 @@
 #endif
 
 
-namespace agg
+namespace agg24
 {
     enum pix_format_e
     {

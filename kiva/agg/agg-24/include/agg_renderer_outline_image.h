@@ -23,7 +23,7 @@
 #include "agg_clip_liang_barsky.h"
 
 
-namespace agg
+namespace agg24
 {
     //========================================================line_image_scale
     template<class Source> class line_image_scale
@@ -505,9 +505,9 @@ namespace agg
             m_start(pattern_start + (m_max_extent + 2) * ren.pattern_width()),
             m_step(0)
         {
-            agg::dda2_line_interpolator li(0, lp.vertical ? 
-                                              (lp.dy << agg::line_subpixel_shift) :
-                                              (lp.dx << agg::line_subpixel_shift),
+            agg24::dda2_line_interpolator li(0, lp.vertical ? 
+                                              (lp.dy << agg24::line_subpixel_shift) :
+                                              (lp.dx << agg24::line_subpixel_shift),
                                            lp.len);
 
             unsigned i;

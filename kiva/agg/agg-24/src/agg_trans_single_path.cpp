@@ -17,7 +17,7 @@
 #include "agg_vertex_sequence.h"
 #include "agg_trans_single_path.h"
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------------------------------------

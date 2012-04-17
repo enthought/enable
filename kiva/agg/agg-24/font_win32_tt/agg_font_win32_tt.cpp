@@ -24,7 +24,7 @@
 #define GetGlyphOutlineX GetGlyphOutlineW
 #endif
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------------------------------------------

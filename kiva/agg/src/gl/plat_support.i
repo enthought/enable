@@ -18,9 +18,9 @@
 %{
 
 #include "gl/agg_bmp.h"
-namespace agg
+namespace agg24
 {
-    PyObject* pixel_map_as_unowned_array(agg::pixel_map& pix_map)
+    PyObject* pixel_map_as_unowned_array(agg24::pixel_map& pix_map)
     {
         npy_intp dims[3];
         npy_intp rows = pix_map.height();
@@ -62,7 +62,7 @@ namespace agg
     if (PyErr_Occurred()) SWIG_fail;
 }   
 
-namespace agg
+namespace agg24
 {
     enum pix_format_e
     {

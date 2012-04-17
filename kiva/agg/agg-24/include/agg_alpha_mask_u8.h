@@ -23,7 +23,7 @@
 #include "agg_basics.h"
 #include "agg_rendering_buffer.h"
 
-namespace agg
+namespace agg24
 {
     //===================================================one_component_mask_u8
     struct one_component_mask_u8

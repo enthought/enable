@@ -22,7 +22,7 @@
 #include "agg_basics.h"
 #include "agg_trans_affine.h"
 
-namespace agg
+namespace agg24
 {
     //-------------------------------------------------------------conv_marker
     template<class MarkerLocator, class MarkerShapes>

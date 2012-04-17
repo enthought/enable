@@ -29,7 +29,7 @@
 #include "agg_color_gray.h"
 #include "agg_rendering_buffer.h"
 
-namespace agg
+namespace agg24
 {
  
     //============================================================blender_gray

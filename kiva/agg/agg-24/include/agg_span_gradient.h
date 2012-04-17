@@ -24,7 +24,7 @@
 #include "agg_array.h"
 
 
-namespace agg
+namespace agg24
 {
 
     enum gradient_subpixel_scale_e

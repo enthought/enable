@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
 
     //===================================================dda_line_interpolator

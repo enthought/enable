@@ -23,7 +23,7 @@
 
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
     //=================================================span_interpolator_trans
     template<class Transformer, unsigned SubpixelShift = 8> 

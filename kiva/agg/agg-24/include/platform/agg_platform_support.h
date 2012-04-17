@@ -61,7 +61,7 @@
 #include "agg_trans_viewport.h"
 #include "ctrl/agg_ctrl.h"
 
-namespace agg
+namespace agg24
 {
 
     //----------------------------------------------------------window_flag_e
@@ -358,7 +358,7 @@ namespace agg
     // This class is a base one to the apllication classes. It can be used 
     // as follows:
     //
-    //  class the_application : public agg::platform_support
+    //  class the_application : public agg24::platform_support
     //  {
     //  public:
     //      the_application(unsigned bpp, bool flip_y) :
@@ -392,7 +392,7 @@ namespace agg
     //      the_application app(pix_format_rgb24, true);
     //      app.caption("AGG Example. Lion");
     //
-    //      if(app.init(500, 400, agg::window_resize))
+    //      if(app.init(500, 400, agg24::window_resize))
     //      {
     //          return app.run();
     //      }

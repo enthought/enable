@@ -29,7 +29,7 @@
 
 
 
-namespace agg
+namespace agg24
 {
 
     //----------------------------------------------------------cbox_ctrl_impl

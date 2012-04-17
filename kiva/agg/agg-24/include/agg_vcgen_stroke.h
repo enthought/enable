@@ -19,7 +19,7 @@
 #include "agg_math_stroke.h"
 
 
-namespace agg
+namespace agg24
 {
 
     //============================================================vcgen_stroke

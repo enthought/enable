@@ -20,7 +20,7 @@
 #include "agg_dda_line.h"
 #include "agg_trans_affine.h"
 
-namespace agg
+namespace agg24
 {
 
     //================================================span_interpolator_linear

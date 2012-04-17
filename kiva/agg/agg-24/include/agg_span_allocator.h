@@ -18,7 +18,7 @@
 
 #include "agg_array.h"
 
-namespace agg
+namespace agg24
 {
     //----------------------------------------------------------span_allocator
     template<class ColorT> class span_allocator

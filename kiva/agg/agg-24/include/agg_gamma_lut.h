@@ -19,7 +19,7 @@
 #include <math.h>
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
     template<class LoResT=int8u, 
              class HiResT=int8u, 

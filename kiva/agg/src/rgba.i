@@ -33,7 +33,7 @@
 %apply (double r) {double g, double b, double a};  
 
 
-namespace agg
+namespace agg24
 {
     %rename(_Rgba) rgba;
     struct rgba
@@ -51,7 +51,7 @@ namespace agg
     };
 }
 
-%extend agg::rgba
+%extend agg24::rgba
 {    
     char *__repr__()
     {
@@ -59,7 +59,7 @@ namespace agg
         sprintf(tmp,"Rgba(%g,%g,%g,%g)", self->r,self->g,self->b,self->a);
         return tmp;
     }
-    int __eq__(agg::rgba& o)
+    int __eq__(agg24::rgba& o)
     {
         return (self->r == o.r && self->g == o.g && 
                 self->b == o.b && self->a == o.a);

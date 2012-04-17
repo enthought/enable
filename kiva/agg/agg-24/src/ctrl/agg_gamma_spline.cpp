@@ -19,7 +19,7 @@
 
 #include "ctrl/agg_gamma_spline.h"
 
-namespace agg
+namespace agg24
 {
 
     //------------------------------------------------------------------------

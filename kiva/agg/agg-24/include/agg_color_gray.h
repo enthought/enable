@@ -31,7 +31,7 @@
 #include "agg_basics.h"
 #include "agg_color_rgba.h"
 
-namespace agg
+namespace agg24
 {
 
     //===================================================================gray8

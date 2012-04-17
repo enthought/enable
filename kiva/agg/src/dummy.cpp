@@ -24,16 +24,16 @@ bool write_ppm(const unsigned char* buf,
     return false;
 }
 
-agg::rgba black(0.0, 0.0, 0.0);
-agg::rgba white(1.0, 1.0, 1.0);
-agg::rgba lightgray(0.2, 0.2, 0.2);
-agg::rgba red(1.0, 0.0, 0.0);
-agg::rgba green(0.0, 1.0, 0.0);
-agg::rgba blue(0.0, 0.0, 1.0);
-agg::rgba niceblue(0.411, 0.584, 0.843);
+agg24::rgba black(0.0, 0.0, 0.0);
+agg24::rgba white(1.0, 1.0, 1.0);
+agg24::rgba lightgray(0.2, 0.2, 0.2);
+agg24::rgba red(1.0, 0.0, 0.0);
+agg24::rgba green(0.0, 1.0, 0.0);
+agg24::rgba blue(0.0, 0.0, 1.0);
+agg24::rgba niceblue(0.411, 0.584, 0.843);
 
 
-typedef  agg::pixfmt_rgb24                     AGG_PIX_TYPE;
+typedef  agg24::pixfmt_rgb24                     AGG_PIX_TYPE;
 typedef  kiva::graphics_context<AGG_PIX_TYPE>  GC_TYPE;
 typedef  std::vector<kiva::rect_type>          rect_list_type;
 
@@ -158,17 +158,17 @@ void test_arc_to(GC_TYPE &gc)
     whole_shebang.add_path(arc);
 
     whole_shebang.translate_ctm(50.5, 50.5);
-    whole_shebang.rotate_ctm(-agg::pi/2);
+    whole_shebang.rotate_ctm(-agg24::pi/2);
     whole_shebang.add_path(arc);
-    whole_shebang.rotate_ctm(agg::pi/2);
+    whole_shebang.rotate_ctm(agg24::pi/2);
 
     whole_shebang.translate_ctm(50.5, -50.5);
-    whole_shebang.rotate_ctm(-agg::pi);
+    whole_shebang.rotate_ctm(-agg24::pi);
     whole_shebang.add_path(arc);
-    whole_shebang.rotate_ctm(agg::pi);
+    whole_shebang.rotate_ctm(agg24::pi);
 
     whole_shebang.translate_ctm(-50.5, -50.5);
-    whole_shebang.rotate_ctm(-3*agg::pi/2);
+    whole_shebang.rotate_ctm(-3*agg24::pi/2);
     whole_shebang.add_path(arc);
     whole_shebang.restore_ctm();
 
@@ -182,7 +182,7 @@ void test_arc_to(GC_TYPE &gc)
 
     gc.translate_ctm(130.5, 50.0);
     gc.path.save_ctm();
-    gc.rotate_ctm(-agg::pi/6);
+    gc.rotate_ctm(-agg24::pi/6);
     gc.add_path(whole_shebang);
     gc.set_stroke_color(blue);
     gc.stroke_path();
@@ -190,7 +190,7 @@ void test_arc_to(GC_TYPE &gc)
 
     gc.translate_ctm(130.5, 0.0);
     gc.path.save_ctm();
-    gc.rotate_ctm(-agg::pi/3);
+    gc.rotate_ctm(-agg24::pi/3);
     gc.scale_ctm(1.0, 2.0);
     gc.add_path(whole_shebang);
     gc.stroke_path();
@@ -329,7 +329,7 @@ void test_disjoint_union(GC_TYPE &gc)
     double color_delta = 0.0;
     for (kiva::rect_iterator it=actual_rects.begin(); it != actual_rects.end(); it++)
     {
-        agg::rgba tmpcolor(0.0, 0.4+color_delta, 0.0);
+        agg24::rgba tmpcolor(0.0, 0.4+color_delta, 0.0);
         gc.set_fill_color(tmpcolor);
         gc.rect(*it);
         gc.fill_path();
@@ -382,7 +382,7 @@ void test_compiled_path(GC_TYPE &gc)
     mypath.line_to(0.0, 20.0);
     mypath.line_to(0.0, 10.0);
     mypath.close_path();
-    agg::rgba tmpcolor(0.0, 0.0, 1.0);
+    agg24::rgba tmpcolor(0.0, 0.0, 1.0);
     gc.set_stroke_color(tmpcolor);
     gc.add_path(mypath);
     gc.stroke_path();
@@ -413,8 +413,8 @@ void test_handling_text(GC_TYPE &gc)
     gc.line_to(0,-5);
     gc.move_to(0,0);
     gc.stroke_path();
-    //agg::trans_affine_translation txtTrans(200.0,150.0);
-    agg::trans_affine_rotation txtRot(agg::deg2rad(30));
+    //agg24::trans_affine_translation txtTrans(200.0,150.0);
+    agg24::trans_affine_rotation txtRot(agg24::deg2rad(30));
     //txtTrans.premultiply(txtRot);
     //txtTrans *= txtRot;
     gc.set_text_matrix(txtRot);
@@ -554,7 +554,7 @@ void hit_test_example()
     mypath.line_to(0.0, y_max);
     mypath.close_path();
 
-	agg::trans_affine ctm;
+	agg24::trans_affine ctm;
 
 	int x_list[] = {-1, 0, 10, 19, 19, 20, 20, 21};
 	int y_list[] = {-1, 0, 10, 19, 20, 19, 20, 21};
@@ -564,7 +564,7 @@ void hit_test_example()
 		int x = x_list[i];
 		int y = y_list[i];
 
-		res = kiva::hit_test(x, y, mypath, ctm, agg::fill_non_zero);
+		res = kiva::hit_test(x, y, mypath, ctm, agg24::fill_non_zero);
 		
 		if (res)
 			printf("%d: %d, %d is in (0,0)->(20,20) square\n", res, x, y);

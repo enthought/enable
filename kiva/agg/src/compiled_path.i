@@ -3,7 +3,9 @@
 %}
 
 // handle kiva::rect declarations
+
 %include "rect.i"
+
 
 %include "agg_typemaps.i"
 %apply (double* point_array, int point_count) {(double* pts, int Npts)};
@@ -34,8 +36,11 @@ namespace kiva
                           double x_ctrl2, double y_ctrl2, 
                           double x_to,    double y_to);
             void arc(double x, double y, double radius, double start_angle,
+
                      double end_angle, bool cw=false);
+
             void arc_to(double x1, double y1, double x2, double y2, double radius);
+
 
             void add_path(compiled_path& vs);
             void lines(double* pts, int Npts);
@@ -46,10 +51,10 @@ namespace kiva
             void translate_ctm(double x, double y);
             void rotate_ctm(double angle);
             void scale_ctm(double sx, double sy);            
-            %rename(concat_ctm_agg) concat_ctm(agg::trans_affine&);
-            void concat_ctm(agg::trans_affine& m);
-            %rename(set_ctm_agg) set_ctm(agg::trans_affine&);
-            void set_ctm(agg::trans_affine& m);
+            %rename(concat_ctm_agg) concat_ctm(agg24::trans_affine&);
+            void concat_ctm(agg24::trans_affine& m);
+            %rename(set_ctm_agg) set_ctm(agg24::trans_affine&);
+            void set_ctm(agg24::trans_affine& m);
             %pythoncode
             %{
             def kivaaffine_to_aggaffine(self, ctm):
@@ -68,11 +73,11 @@ namespace kiva
                 else:
                     self.set_ctm_agg(self.kivaaffine_to_aggaffine(ctm))
             %}
-            agg::trans_affine get_ctm();
+            agg24::trans_affine get_ctm();
             void save_ctm();           
             void restore_ctm();
             
-            // methods from agg::path_storage that are used in testing
+            // methods from agg24::path_storage that are used in testing
             unsigned total_vertices() const;
             %rename(_rewind) rewind(unsigned);
             void rewind(unsigned start=0);

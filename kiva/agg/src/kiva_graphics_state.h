@@ -23,7 +23,7 @@ namespace kiva
         public:
 
             // line attributes
-            agg::rgba line_color;
+            agg24::rgba line_color;
             double line_width;
             kiva::line_cap_e line_cap;
             kiva::line_join_e line_join;
@@ -33,7 +33,7 @@ namespace kiva
             // other attributes
             kiva::blend_mode_e blend_mode;
             kiva::font_type font;
-            agg::rgba fill_color;
+            agg24::rgba fill_color;
             gradient gradient_fill;
             double alpha;
 
@@ -67,10 +67,10 @@ namespace kiva
             // double rendering_intent; // !! I know this type is wrong...
 
             graphics_state():
-                line_color(agg::rgba(0.0,0.0,0.0)),line_width(1.0),
+                line_color(agg24::rgba(0.0,0.0,0.0)),line_width(1.0),
                 line_cap(kiva::CAP_BUTT), line_join(kiva::JOIN_MITER),
                 blend_mode(kiva::blend_normal), font(kiva::font_type("")),
-                fill_color(agg::rgba(0.0,0.0,0.0)),
+                fill_color(agg24::rgba(0.0,0.0,0.0)),
                 gradient_fill(kiva::grad_none),
                 alpha(1.0), should_antialias(1), text_drawing_mode(kiva::TEXT_FILL)
             {

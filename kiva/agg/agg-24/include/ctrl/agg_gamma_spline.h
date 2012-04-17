@@ -23,7 +23,7 @@
 #include "agg_basics.h"
 #include "agg_bspline.h"
 
-namespace agg
+namespace agg24
 {
     
     //------------------------------------------------------------------------
@@ -31,7 +31,7 @@ namespace agg
     // array is an array of 256 unsigned chars that determine the actual values 
     // of Anti-Aliasing for each pixel coverage value from 0 to 255. If all the 
     // values in the array are equal to its index, i.e. 0,1,2,3,... there's
-    // no gamma-correction. Class agg::polyfill allows you to use custom 
+    // no gamma-correction. Class agg24::polyfill allows you to use custom 
     // gamma-correction arrays. You can calculate it using any approach, and
     // class gamma_spline allows you to calculate almost any reasonable shape 
     // of the gamma-curve with using only 4 values - kx1, ky1, kx2, ky2.

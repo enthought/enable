@@ -19,7 +19,7 @@
 
 #include "agg_array.h"
 
-namespace agg
+namespace agg24
 {
 
     // See Implementation agg_curves.cpp

@@ -18,7 +18,7 @@
 
 #include "agg_basics.h"
 
-namespace agg
+namespace agg24
 {
     //----------------------------------------------------------span_converter
     template<class SpanGenerator, class SpanConverter> class span_converter

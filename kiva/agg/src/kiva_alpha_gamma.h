@@ -14,8 +14,8 @@ namespace kiva
         {
             return m_alpha(m_gamma(x));
         }
-        agg::gamma_multiply m_alpha;
-        agg::gamma_power    m_gamma;
+        agg24::gamma_multiply m_alpha;
+        agg24::gamma_power    m_gamma;
     };
 }
 

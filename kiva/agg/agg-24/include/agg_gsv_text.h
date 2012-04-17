@@ -24,7 +24,7 @@
 #include "agg_conv_stroke.h"
 #include "agg_conv_transform.h"
 
-namespace agg
+namespace agg24
 {
 
 

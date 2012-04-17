@@ -7,9 +7,9 @@
 // to just pass an integer.  this generic converter can be used in to
 // allow this.
 //
-// To apply it to a type, for example agg::marker_e, do the following
+// To apply it to a type, for example agg24::marker_e, do the following
 //
-//      %apply(kiva_enum_typemap) { agg::marker_e }
+//      %apply(kiva_enum_typemap) { agg24::marker_e }
 //
 // Now any function that expects a marker_e will accept integer values as
 // input.
@@ -330,7 +330,7 @@
     {
         // the stop is offset, red, green, blue, alpha
         double* data = (double*)(ary->data);
-        agg::rgba8 color(data[5*i+1]*255, data[5*i+2]*255, data[5*i+3]*255, data[5*i+4]*255);
+        agg24::rgba8 color(data[5*i+1]*255, data[5*i+2]*255, data[5*i+3]*255, data[5*i+4]*255);
         stops.push_back(kiva::gradient_stop(data[5*i], color));
     }
     
