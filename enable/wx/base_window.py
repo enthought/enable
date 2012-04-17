@@ -459,6 +459,11 @@ class BaseWindow(AbstractWindow):
         y = self._flip_y(y)
         return x,y
 
+    def get_pointer_position(self):
+        "Returns the current pointer position in local window coordinates"
+        pos = wx.GetMousePosition()
+        return self.screen_to_window(pos.x, pos.y)
+
     def set_drag_result(self, result):
         if result not in DRAG_RESULTS_MAP:
             raise RuntimeError, "Unknown drag result '%s'" % result
