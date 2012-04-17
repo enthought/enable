@@ -428,6 +428,12 @@ class _Window(AbstractWindow):
 
     def _on_key_pressed(self, event):
         return self._handle_key_event('key_pressed', event)
+    
+    def get_pointer_position(self):
+        pos = self.control.mapFromGlobal(QtGui.QCursor.pos())
+        x = pos.x()
+        y = self._flip_y(pos.y())
+        return x, y
             
 
     #------------------------------------------------------------------------
