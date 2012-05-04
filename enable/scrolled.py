@@ -277,6 +277,7 @@ class Scrolled(Container):
         else:
             if self.viewport_component:
                 self.viewport_component.component = new
+            new.container = self
         new.on_trait_change(self._component_bounds_handler, 'bounds')
         new.on_trait_change(self._component_bounds_items_handler, 'bounds_items')
         self._layout_needed = True
