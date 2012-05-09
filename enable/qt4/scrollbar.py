@@ -130,9 +130,9 @@ class NativeScrollBar(Component):
 
         qt_xpos, qt_ypos = self._get_abs_coords(x_pos, y_pos+y_size-1)
 
-        # We have to do this flip_y business because wx and enable use opposite
+        # We have to do this flip_y business because Qt and enable use opposite
         # coordinate systems, and enable defines the component's position as its
-        # lower left corner, while wx defines it as the upper left corner.
+        # lower left corner, while Qt defines it as the upper left corner.
         window = self.window
         if window is None:
             return
