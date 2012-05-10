@@ -120,5 +120,6 @@ key_names = [
     'Tab',
     'Up',
     'Alt',
+    'Menu'
 ]
 
