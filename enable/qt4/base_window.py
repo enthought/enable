@@ -14,6 +14,8 @@
 # been on my list of things to do.
 #------------------------------------------------------------------------------
 
+import warnings
+
 # Qt imports.
 from pyface.qt import QtCore, QtGui, QtOpenGL
 
@@ -401,6 +403,8 @@ class _Window(AbstractWindow):
     def _redraw(self, coordinates=None):
         if self.control:
             if self.control.handler.in_paint_event:
+                warnings.warn("Qt Backend: _redraw() called during paintEvent",
+                              RuntimeWarning)
                 return
             if coordinates is None:
                 self.control.update()
