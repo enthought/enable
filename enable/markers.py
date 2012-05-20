@@ -18,11 +18,10 @@ from kiva.constants import STROKE, FILL_STROKE, \
 from compiled_path import CompiledPath
 
 
-
 class AbstractMarker(HasTraits):
     """ Abstract class for markers.
     """
-    # How this marker is to be stroked (from enthouhgt.kiva.constants).
+    # How this marker is to be stroked (from kiva.constants).
     # Since this needs to be a class variable, it can't be a trait.
     draw_mode = STROKE
     #draw_mode = Enum(FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE)
@@ -75,8 +74,9 @@ class SquareMarker(AbstractMarker):
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
 
-    def _add_to_path ( self, path, size ):
-        path.rect( -size, -size, size * 2, size * 2 )
+    def _add_to_path(self, path, size):
+        path.rect(-size, -size, size * 2, size * 2)
+
 
 class DiamondMarker(AbstractMarker):
     """ A marker that is a diamond.
@@ -88,11 +88,12 @@ class DiamondMarker(AbstractMarker):
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
 
-    def _add_to_path ( self, path, size ):
-        path.lines( array( ( ( 0, -size ),
-                             ( -size, 0 ),
-                             ( 0, size ),
-                             ( size, 0 ) ) ) )
+    def _add_to_path(self, path, size):
+        path.lines(array(((0, -size),
+                          (-size, 0),
+                          (0, size),
+                          (size, 0))))
+
 
 class CircleMarker(AbstractMarker):
     """ A marker that is a circle.
@@ -126,9 +127,9 @@ class CircleMarker(AbstractMarker):
                            [ 0.707, -0.707],
                            [ 0.866, -0.5  ],
                            [ 0.966, -0.259],
-                           [ 1.   , 0.    ]])
+                           [ 1.   ,  0.   ]])
 
-    def _add_to_path ( self, path, size ):
+    def _add_to_path(self, path, size):
         if size <= 5:
             pts = self.circle_points[::3] * size
         elif size <= 10:
@@ -148,10 +149,11 @@ class TriangleMarker(AbstractMarker):
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
 
-    def _add_to_path ( self, path, size ):
-        path.lines( array( ( ( -size, -size ),
-                             (  size, -size ),
-                             (    0,  0.732 * size ) ) ) )
+    def _add_to_path(self, path, size):
+        path.lines(array(((-size, -size),
+                          (size, -size),
+                          (0,  0.732 * size))))
+
 
 class Inverted_TriangleMarker(AbstractMarker):
     """ A marker that is a triangle with one apex pointing down.
@@ -163,10 +165,11 @@ class Inverted_TriangleMarker(AbstractMarker):
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
 
-    def _add_to_path ( self, path, size ):
-        path.lines( array( ( ( -size, size ),
-                             (  size, size ),
-                             (  0, -0.732 * size ) ) ) )
+    def _add_to_path(self, path, size):
+        path.lines(array(((-size, size),
+                          (size, size),
+                          (0, -0.732 * size))))
+
 
 class PlusMarker(AbstractMarker):
     """ A marker that is a plus-sign.
@@ -178,11 +181,12 @@ class PlusMarker(AbstractMarker):
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
 
-    def _add_to_path ( self, path, size ):
-        path.move_to( 0, -size )
-        path.line_to( 0,  size )
-        path.move_to( -size, 0 )
-        path.line_to(  size, 0 )
+    def _add_to_path(self, path, size):
+        path.move_to(0, -size)
+        path.line_to(0,  size)
+        path.move_to(-size, 0)
+        path.line_to(size, 0)
+
 
 class CrossMarker(AbstractMarker):
     """ A marker that is an X.
@@ -194,11 +198,12 @@ class CrossMarker(AbstractMarker):
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
 
-    def _add_to_path ( self, path, size ):
-        path.move_to( -size, -size )
-        path.line_to(  size,  size )
-        path.move_to(  size, -size )
-        path.line_to( -size,  size )
+    def _add_to_path(self, path, size):
+        path.move_to(-size, -size)
+        path.line_to(size,  size)
+        path.move_to(size, -size)
+        path.line_to(-size,  size)
+
 
 class DotMarker(AbstractMarker):
     """ A marker that is a dot.
@@ -208,8 +213,9 @@ class DotMarker(AbstractMarker):
     # The Kiva marker type. (Overrides AbstractMarker.)
     kiva_marker = DOT_MARKER
 
-    def _add_to_path ( self, path, size ):
-        path.arc(0, 0, size, 0, 2*pi)
+    def _add_to_path(self, path, size):
+        path.arc(0, 0, size, 0, 2 * pi)
+
 
 class PixelMarker(AbstractMarker):
     """ A marker that is a pixel.
@@ -221,10 +227,11 @@ class PixelMarker(AbstractMarker):
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
 
-    def _add_to_path ( self, path, size ):
+    def _add_to_path(self, path, size):
         # It's impossible to emulate a true Pixel Marker in a vector
         # system, so we just draw a sub-pixel square 1.0 unit across.
         path.rect(-0.5, -0.5, 1.0, 1.0)
+
 
 class CustomMarker(AbstractMarker):
     """ A marker that is a custom shape.
@@ -241,7 +248,7 @@ class CustomMarker(AbstractMarker):
     # If False, then the path does not respond to the 'size' parameter!
     scale_path = Bool(True)
 
-    def _add_to_path( self, path, size ):
+    def _add_to_path(self, path, size):
         if self.scale_path:
             path.save_ctm()
             path.scale_ctm(size)
@@ -278,11 +285,10 @@ MarkerNameDict = {"square": SquareMarker,
                   "diamond": DiamondMarker,
                   "dot": DotMarker,
                   "pixel": PixelMarker,
-                  "custom": CustomMarker }
+                  "custom": CustomMarker}
 
 # A mapped trait that allows string naming of marker classes.
 MarkerTrait = Trait("square", MarkerNameDict,
                      editor=EnumEditor(values=marker_names))
 
 marker_trait = MarkerTrait
-
