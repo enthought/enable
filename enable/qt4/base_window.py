@@ -14,6 +14,7 @@
 # been on my list of things to do.
 #------------------------------------------------------------------------------
 
+
 # Qt imports.
 from pyface.qt import QtCore, QtGui, QtOpenGL
 
@@ -32,6 +33,8 @@ class _QtWindowHandler(object):
         pos = qt_window.mapFromGlobal(QtGui.QCursor.pos())
         self.last_mouse_pos = (pos.x(), pos.y())
 
+        self.in_paint_event = False
+
         qt_window.setAutoFillBackground(True)
         qt_window.setFocusPolicy(QtCore.Qt.WheelFocus)
         qt_window.setMouseTracking(True)
@@ -43,7 +46,9 @@ class _QtWindowHandler(object):
         self._enable_window = None
 
     def paintEvent(self, event):
+        self.in_paint_event = True
         self._enable_window._paint(event)
+        self.in_paint_event = False
 
     def resizeEvent(self, event):
         dx = event.size().width()
@@ -396,6 +401,10 @@ class _Window(AbstractWindow):
 
     def _redraw(self, coordinates=None):
         if self.control:
+            if self.control.handler.in_paint_event:
+                # Code further up the stack is behaving badly and calling
+                # request_redraw() inside drawing code.
+                return
             if coordinates is None:
                 self.control.update()
             else:
