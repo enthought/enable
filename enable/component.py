@@ -507,6 +507,24 @@ class Component(CoordinateBox, Interactor):
         else:
             offset_x, offset_y = self.position
         return (offset_x + coords[0], offset_y + coords[1])
+ 
+    def get_relative_coords(self, *coords):
+        """ Given absolute coordinates (where the origin is the top-left corner
+        of the frame in the top-level parent Window) return coordinates relative
+        to this component's origin.
+
+        Can be called in two ways:
+            get_relative_coords(x, y)
+            get_relative_coords( (x,y) )
+
+        Returns a tuple (x,y) representing the new coordinates.
+        """
+        if self.container is not None:
+            offset_x, offset_y = \
+                    self.container.get_relative_coords(*self.position)
+        else:
+            offset_x, offset_y = self.position
+        return (coords[0] - offset_x, coords[1] - offset_y)
 
     def request_redraw(self):
         """
