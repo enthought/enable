@@ -114,7 +114,8 @@ class NativeScrollBar(Component):
         """ Destroy the native widget associated with this component.
         """
         if self._control is not None:
-            self._control.Destroy()
+            self._control.hide()
+            self._control.deleteLater()
         return
 
     def __del__(self):
