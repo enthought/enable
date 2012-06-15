@@ -138,7 +138,8 @@ class _QtWindowHandler(object):
         """
 
         preferred_size = self._enable_window.component.get_preferred_size()
-        window_size = self._enable_window.control.size().toTuple()
+        q_size = self._enable_window.control.size()
+        window_size = (q_size.width(), q_size.height())
 
         if qt_size_hint.width() < 0:
             width = max(preferred_size[0], window_size[0])
