@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import platform
 import sys
 
 def configuration(parent_package='', top_path=None):
@@ -57,7 +58,8 @@ def configuration(parent_package='', top_path=None):
                         )
 
     wx_info = get_info('wx')
-    if wx_info:
+    if wx_info and '64bit' not in platform.architecture():
+        # Avoid WX on 64-bit due to immature cocoa support
         # Find the release number of wx.
         wx_release = '2.6'
         for macro, value in wx_info['define_macros']:
