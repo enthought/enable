@@ -196,7 +196,7 @@ cdef class CGContext:
         self.can_release = 0
         self.text_matrix = CGAffineTransformMake(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
 
-    def __init__(self, long context, long can_release=0):
+    def __init__(self, size_t context, long can_release=0):
         self.context = <CGContextRef>context
 
         self.can_release = can_release
@@ -222,7 +222,7 @@ cdef class CGContext:
         self.select_font("Helvetica", 12)
         CGContextSetShouldSmoothFonts(self.context, 1)
         CGContextSetShouldAntialias(self.context, 1)
-
+        CGContextSetTextMatrix(self.context, CGAffineTransformIdentity);
     #----------------------------------------------------------------
     # Coordinate Transform Matrix Manipulation
     #----------------------------------------------------------------
@@ -1251,7 +1251,7 @@ cdef class CGContextInABox(CGContext):
     cdef readonly int _width
     cdef readonly int _height
 
-    def __init__(self, object size, long context, long can_release=0,
+    def __init__(self, object size, size_t context, long can_release=0,
                  *args, **kwargs):
         self.context = <CGContextRef>context
 
@@ -1342,9 +1342,9 @@ cdef class CGContextFromSWIG(CGContext):
 
 
 cdef class CGGLContext(CGContextInABox):
-    cdef readonly long glcontext
+    cdef readonly size_t glcontext
 
-    def __init__(self, long glcontext, int width, int height):
+    def __init__(self, size_t glcontext, int width, int height):
         if glcontext == 0:
             raise ValueError("Need a valid pointer")
 
@@ -1456,7 +1456,7 @@ cdef class CGBitmapContext(CGContext):
                 arr = numpy.dstack([arr, alpha])
                 depth = 4
             ptr, readonly = arr.__array_interface__['data']
-            dataptr = <void*><long>ptr
+            dataptr = <void*><size_t>ptr
         else:
             # It's a size tuple.
             width, height = size_or_array
@@ -2739,7 +2739,6 @@ cdef bool _line_intersects_cgrect(double x, double y, double slope, CGRect rect)
 
 cdef CGColorRef _create_cg_color(object color):
     cdef float color_components[4]
-    cdef CGColorSpaceRef cg_color_space
     cdef CGColorRef cg_color
 
     color_components[0] = color[0]
@@ -2747,10 +2746,8 @@ cdef CGColorRef _create_cg_color(object color):
     color_components[2] = color[2]
     color_components[3] = color[3]
 
-    cg_color_space = CGColorSpaceCreateDeviceRGB()
-    cg_color = CGColorCreate(cg_color_space, color_components)
-    CGColorSpaceRelease(cg_color_space)
-
+    cg_color = CGColorCreateGenericRGB(color_components[0], color_components[1],
+                                       color_components[2], color_components[3])
     return cg_color
 
 cdef CTLineRef _create_ct_line(object the_string, CTFontRef font, object stroke_color):
