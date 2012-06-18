@@ -179,7 +179,7 @@ def configuration(parent_package='', top_path=None):
         define_macros.append(("ALWAYS_32BIT_WORKAROUND", 1))
 
     # Options to make OS X link OpenGL
-    if '64bit' in platform.architecture():
+    if '64bit' not in platform.architecture():
         darwin_frameworks = ['Carbon', 'ApplicationServices', 'OpenGL']
     else:
         darwin_frameworks = ['ApplicationServices', 'OpenGL']    
