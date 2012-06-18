@@ -2,7 +2,9 @@
 # :Copyright: 2004, Enthought, Inc.
 # :License:   BSD Style
 
+from mac_context import get_mac_context
 from macport import get_macport as _get_macport
+
 
 def get_macport(dc):
     """
