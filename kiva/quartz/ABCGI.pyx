@@ -872,21 +872,21 @@ cdef class CGContext:
         cdef size_t pointer
         cdef CTFontRef ct_font
         cdef CTLineRef ct_line
-        cdef float ascent = 0.0, descent = 0.0
-        cdef double width = 0.0, x1,x2,y1,y2
-        
+        cdef CGRect text_rect
+        cdef double x1,x2,y1,y2
+
         pointer = self.current_font.get_pointer()
         ct_font = <CTFontRef>pointer
         ct_line = _create_ct_line(text, ct_font, None)
         if ct_line != NULL:
-            width = CTLineGetTypographicBounds(ct_line, &ascent, &descent, NULL)
+            text_rect = CTLineGetImageBounds(ct_line, self.context)
             CFRelease(ct_line)
-        
-        x1 = 0.0
-        x2 = width
-        y1 = -descent
-        y2 = -y1 + ascent
-            
+
+        x1 = text_rect.origin.x
+        x2 = text_rect.size.width
+        y1 = text_rect.origin.y
+        y2 = text_rect.size.height
+
         return x1, y1, x2, y2
 
     def get_full_text_extent(self, object text):
