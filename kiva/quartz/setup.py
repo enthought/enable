@@ -29,11 +29,13 @@ def configuration(parent_package='', top_path=None):
                     cython_result.num_errors)
         return target
 
-    extra_link_args=[
-        '-Wl,-framework', '-Wl,CoreFoundation',
-        '-Wl,-framework', '-Wl,ApplicationServices',
-        '-Wl,-framework', '-Wl,Foundation',
+    frameworks = ['CoreFoundation','ApplicationServices','Foundation']
+    extra_link_args=['-framework %s' % x for x in frameworks]
+    include_dirs = [
+        '/System/Library/Frameworks/%s.framework/Versions/A/Headers' % x
+        for x in frameworks
     ]
+
     config.add_extension('ABCGI',
                          [generate_c_from_cython],
                          extra_link_args = extra_link_args,
@@ -56,6 +58,13 @@ def configuration(parent_package='', top_path=None):
                                   "CoreText.pxi",
                                   ],
                         )
+
+    config.add_extension("mac_context",
+                         ["mac_context.c", "mac_context_cocoa.m"],
+                         include_dirs = include_dirs,
+                         extra_link_args = extra_link_args,
+                         depends = ["mac_context.h"],
+                         )
 
     wx_info = get_info('wx')
     if wx_info and '64bit' not in platform.architecture():
