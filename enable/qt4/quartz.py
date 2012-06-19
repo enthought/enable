@@ -88,11 +88,15 @@ class Window(BaseWindow):
                 gc = _WindowGraphicsContext(size, self.dc)
                 gc.begin()
                 return gc
-        raise NotImplementedError("Only PySide and Qt using Cocoa is supported")
+        raise NotImplementedError("Only Qt built against Cocoa is supported")
 
     def _window_paint(self, event):
+        # Make sure end() is called so that the window's GC is not left in an
+        # odd state.
+        self._gc.end()
+        # Force a new gc to be created for the next paint()
+        self._gc = None
         self.dc = None
-        self._gc = None  # force a new gc to be created for the next paint()
 
 
 def font_metrics_provider():
