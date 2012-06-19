@@ -183,6 +183,7 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
 #    CGColorRef CGColorCreateWithPattern(CGColorSpaceRef colorspace, CGPatternRef pattern, float components[])
     CGColorRef CGColorCreateCopy(CGColorRef color)
     CGColorRef CGColorCreateCopyWithAlpha(CGColorRef color, float alpha)
+    CGColorRef CGColorCreateGenericRGB(float red, float green, float blue, float alpha)
     CGColorRef CGColorRetain(CGColorRef color)
     void CGColorRelease(CGColorRef color)
     bool CGColorEqualToColor(CGColorRef color1, CGColorRef color2)
@@ -506,5 +507,3 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
 
     CFTypeID CGContextGetTypeID()
 
-cdef CGRect CGRectMakeFromPython(object seq):
-    return CGRectMake(seq[0], seq[1], seq[2], seq[3])

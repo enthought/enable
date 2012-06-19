@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import platform
 import sys
 
 def configuration(parent_package='', top_path=None):
@@ -28,38 +29,46 @@ def configuration(parent_package='', top_path=None):
                     cython_result.num_errors)
         return target
 
-    extra_link_args=[
-        '-Wl,-framework', '-Wl,CoreFoundation',
-        '-Wl,-framework', '-Wl,ApplicationServices',
-        '-Wl,-framework', '-Wl,Carbon',
-        '-Wl,-framework', '-Wl,Foundation',
+    frameworks = ['CoreFoundation','ApplicationServices','Foundation']
+    extra_link_args=['-framework %s' % x for x in frameworks]
+    include_dirs = [
+        '/System/Library/Frameworks/%s.framework/Versions/A/Headers' % x
+        for x in frameworks
     ]
-    include_dirs = ['/Developer/Headers/FlatCarbon']
-    config.add_extension('ATSFont',
-                         [generate_c_from_cython],
-                         include_dirs = include_dirs,
-                         extra_link_args = extra_link_args,
-                         depends=["ATSFont.pyx",
-                                  "Python.pxi",
-                                  "ATS.pxi",
-                                  ],
-                         )
+
     config.add_extension('ABCGI',
                          [generate_c_from_cython],
-                         include_dirs = include_dirs,
+                         extra_link_args = extra_link_args,
                          depends = ["ABCGI.pyx",
-                                    "ATSUI.pxi",
                                     "Python.pxi",
                                     "numpy.pxi",
                                     "c_numpy.pxd",
                                     "CoreFoundation.pxi",
                                     "CoreGraphics.pxi",
-                                    "QuickDraw.pxi",
+                                    "CoreText.pxi",
                                     ]
                          )
 
+    config.add_extension('CTFont',
+                         [generate_c_from_cython],
+                         extra_link_args = extra_link_args,
+                         depends=["CTFont.pyx",
+                                  "CoreFoundation.pxi",
+                                  "CoreGraphics.pxi",
+                                  "CoreText.pxi",
+                                  ],
+                        )
+
+    config.add_extension("mac_context",
+                         ["mac_context.c", "mac_context_cocoa.m"],
+                         include_dirs = include_dirs,
+                         extra_link_args = extra_link_args,
+                         depends = ["mac_context.h"],
+                         )
+
     wx_info = get_info('wx')
-    if wx_info:
+    if wx_info and '64bit' not in platform.architecture():
+        # Avoid WX on 64-bit due to immature cocoa support
         # Find the release number of wx.
         wx_release = '2.6'
         for macro, value in wx_info['define_macros']:
