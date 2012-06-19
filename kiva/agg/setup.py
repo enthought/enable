@@ -102,7 +102,7 @@ def configuration(parent_package='', top_path=None):
     ft2_incl_dirs = ['freetype2/src/' + s for s in freetype2_dirs] \
                     + ['freetype2/include', 'freetype2/src']
     ft2_incl_dirs = config.paths(*ft2_incl_dirs)
-    if sys.platform == 'darwin':
+    if sys.platform == 'darwin' and '64bit' not in platform.architecture():
         ft2_incl_dirs.append("/Developer/Headers/FlatCarbon")
 
     config.add_library(freetype_lib,
@@ -179,14 +179,16 @@ def configuration(parent_package='', top_path=None):
         define_macros.append(("ALWAYS_32BIT_WORKAROUND", 1))
 
     # Options to make OS X link OpenGL
+    if '64bit' not in platform.architecture():
+        darwin_frameworks = ['Carbon', 'ApplicationServices', 'OpenGL']
+    else:
+        darwin_frameworks = ['ApplicationServices', 'OpenGL']    
     darwin_opengl_opts = dict(
             include_dirs = [
               '/System/Library/Frameworks/%s.framework/Versions/A/Headers' % x
-              for x in ['Carbon', 'ApplicationServices', 'OpenGL']],
+              for x in darwin_frameworks],
             define_macros = [('__DARWIN__',None)],
-            extra_link_args =
-                ['-framework %s' % x
-                 for x in ['Carbon', 'ApplicationServices', 'OpenGL']]
+            extra_link_args = ['-framework %s' % x for x in darwin_frameworks]
             )
 
     build_info = {}
