@@ -87,8 +87,9 @@ class MyClean(distutils.command.clean.clean):
 
             # Mac
             join("quartz", "ABCGI.so"),
-            join("quartz", "macport.so"),
             join("quartz", "ABCGI.c"),
+            join("quartz", "macport.so"),
+            join("quartz", "mac_context.so"),
             join("quartz", "CTFont.so"),
             join("quartz", "CTFont.c"),
 
