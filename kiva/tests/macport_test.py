@@ -5,11 +5,11 @@ import sys
 if sys.platform == 'darwin':
     import wx
 
-    from kiva.quartz import get_macport
+    from kiva.quartz import get_macport_wx
 
     class SimpleWindow(wx.Frame):
         """
-        Simple test of get_macport().
+        Simple test of get_macport_wx().
         """
         def __init__(self):
             wx.Frame.__init__(self, parent=None, id=-1, title="foo",
@@ -28,9 +28,9 @@ if sys.platform == 'darwin':
         def OnPaint(self, evt):
             dc = wx.PaintDC(self)
             print "paintdc.this:", dc.this
-            print "paintdc.macport:", get_macport(dc)
+            print "paintdc.macport:", get_macport_wx(dc)
             print "memdc.this:", self.memdc.this
-            print "memdc.macport:", get_macport(self.memdc)
+            print "memdc.macport:", get_macport_wx(self.memdc)
 
     class MyApp(wx.App):
         def OnInit(self):

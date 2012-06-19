@@ -58,6 +58,12 @@ def configuration(parent_package='', top_path=None):
                                     ]
                          )
 
+    config.add_extension("macport_qt",
+                         ["macport_qt.c", "macport_cocoa.m"],
+                         include_dirs = include_dirs,
+                         depends = ["macport_cocoa.h"],
+                         )
+
     wx_info = get_info('wx')
     if wx_info:
         # Find the release number of wx.
@@ -87,7 +93,7 @@ def configuration(parent_package='', top_path=None):
         info = {}
         dict_append(info, define_macros=[("__WXMAC__", 1)])
         dict_append(info, **wx_info)
-        config.add_extension('macport', [get_macport_cpp],
+        config.add_extension('macport_wx', [get_macport_cpp],
                              depends = [macport_cpp],
                              **wx_info
                              )

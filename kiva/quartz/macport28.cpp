@@ -13,7 +13,7 @@
 
 extern "C"
 {
-    void initmacport(void);
+    void initmacport_wx(void);
 }
 
 /* This converts a string of hex digits into an unsigned long.  It reads 
@@ -82,7 +82,7 @@ static PyMethodDef macport_methods[] = {
     {NULL, NULL}
 };
 
-void initmacport(void)
+void initmacport_wx(void)
 {
-    Py_InitModule("macport", macport_methods);
+    Py_InitModule("macport_wx", macport_methods);
 }

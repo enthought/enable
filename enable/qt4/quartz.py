@@ -1,16 +1,19 @@
-""" Defines the concrete top-level Enable 'Window' class for the wxPython GUI
-toolkit, based on the Quartz kiva backend for OS X.
-"""
-
-# Major library imports.
+#------------------------------------------------------------------------------
+# Copyright (c) 2011, Enthought, Inc.
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in enthought/LICENSE.txt and may be redistributed only
+# under the conditions described in the aforementioned license.  The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+# Thanks for using Enthought open source!
+#------------------------------------------------------------------------------
 import numpy as np
-import wx
+from pdb import set_trace
 
-# Enthought library imports.
 from kiva.fonttools import Font
-from kiva.quartz import get_macport_wx, ABCGI
+from kiva.quartz import get_macport_qt, ABCGI
 
-# Local imports.
 from base_window import BaseWindow
 from scrollbar import NativeScrollBar
 
@@ -68,39 +71,29 @@ class _WindowGraphicsContext(ABCGI.CGContextInABox):
 
 
 class Window(BaseWindow):
-    """ An Enable Window for wxPython GUIs on OS X.
+    """ An Enable Window for Qt GUIs on OS X.
     """
 
     #### 'BaseWindow' interface ################################################
 
-    def _create_gc(self, size, pix_format="bgra32"):
-        self.dc = wx.ClientDC(self.control)
-        gc = _WindowGraphicsContext(self.dc.GetSizeTuple(),
-                                    get_macport_wx(self.dc))
-        gc.begin()
-        return gc
+    def _create_gc(self, size, pix_format=None):
+        if hasattr(self.control, 'winId'):
+            # From the Qt 4.7 Documentation:
+            # "On Mac OS X, the type returned depends on which framework Qt was 
+            # linked against. If Qt is using Carbon, the {WId} is actually 
+            # an HIViewRef. If Qt is using Cocoa, {WId} is a pointer to 
+            # an NSView."
+            # get_macport_qt() only works on Cocoa.
+            self.dc = get_macport_qt(self.control.winId())
+            if self.dc:
+                gc = _WindowGraphicsContext(size, self.dc)
+                gc.begin()
+                return gc
+        raise NotImplementedError("Only PySide and Qt using Cocoa is supported")
 
     def _window_paint(self, event):
         self.dc = None
         self._gc = None  # force a new gc to be created for the next paint()
-
-
-    #### 'AbstractWindow' interface ############################################
-
-    def _paint(self, event=None):
-        size = self._get_control_size()
-        if (self._size != tuple(size)) or (self._gc is None):
-            self._gc = self._create_gc(size)
-            self._size = tuple(size)
-        gc = self._gc
-        gc.begin()
-        gc.clear(self.bgcolor_)
-        if hasattr(self.component, "do_layout"):
-            self.component.do_layout()
-        self.component.draw(gc, view_bounds=(0, 0, size[0], size[1]))
-        self._window_paint(event)
-        gc.end()
-        return
 
 
 def font_metrics_provider():
