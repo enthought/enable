@@ -15,8 +15,14 @@ A multi-platform DisplayPDF vector drawing engine.
 Part of the Enable project of the Enthought Tool Suite.
 """
 
+from __future__ import absolute_import
+
+from .constants import *
+from .fonttools import Font
+
 import os
 if os.environ.has_key('KIVA_WISHLIST'):
     from warnings import warn
     warn("Use of the KIVA_WISHLIST environment variable to select Kiva backends"
          "is no longer supported.")
+del os
