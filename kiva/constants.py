@@ -17,6 +17,7 @@ from numpy import array
 # Line Dash Constants
 #--------------------------------------------------------------------
 NO_DASH = (0,array([0]))
+del array
 
 #--------------------------------------------------------------------
 # Line Cap Constants
