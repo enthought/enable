@@ -67,37 +67,35 @@ def configuration(parent_package='', top_path=None):
                          )
 
     wx_info = get_info('wx')
-    if wx_info and '64bit' not in platform.architecture():
-        # Avoid WX on 64-bit due to immature cocoa support
-        # Find the release number of wx.
+    if wx_info:
         wx_release = '2.6'
         for macro, value in wx_info['define_macros']:
             if macro.startswith('WX_RELEASE_'):
                 wx_release = macro[len('WX_RELEASE_'):].replace('_', '.')
                 break
 
+        # only build macport for wxPython version 2.6, it's not needed in the
+        # newer releases (see __init__.py)
         if wx_release == '2.6':
             macport_cpp = config.paths('macport26.cpp')[0]
-        else:
-            macport_cpp = config.paths('macport28.cpp')[0]
 
-        def get_macport_cpp(extension, build_dir):
-            if sys.platform != 'darwin':
-                print 'No %s will be built for this platform.'%(extension.name)
-                return None
-
-            elif wx_release not in ('2.6', '2.8'):
-                print ('No %s will be built because we do not recognize '
-                       'wx version %s' % (extension.name, wx_release))
-                return None
-
-            return macport_cpp
-
-        info = {}
-        dict_append(info, define_macros=[("__WXMAC__", 1)])
-        dict_append(info, **wx_info)
-        config.add_extension('macport', [get_macport_cpp],
-                             depends = [macport_cpp],
-                             **wx_info
-                             )
+            def get_macport_cpp(extension, build_dir):
+                if sys.platform != 'darwin':
+                    print 'No %s will be built for this platform.'%(extension.name)
+                    return None
+    
+                elif wx_release not in ('2.6', '2.8'):
+                    print ('No %s will be built because we do not recognize '
+                           'wx version %s' % (extension.name, wx_release))
+                    return None
+    
+                return macport_cpp
+    
+            info = {}
+            dict_append(info, define_macros=[("__WXMAC__", 1)])
+            dict_append(info, **wx_info)
+            config.add_extension('macport', [get_macport_cpp],
+                                 depends = [macport_cpp],
+                                 **wx_info
+                                 )
     return config
