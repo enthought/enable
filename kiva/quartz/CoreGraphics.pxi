@@ -5,6 +5,8 @@
 
 cdef extern from "ApplicationServices/ApplicationServices.h":
     ctypedef void*  CGContextRef
+    
+    ctypedef double CGFloat
 
     ctypedef struct CGPoint:
         float x
@@ -91,8 +93,8 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     # Changing the Current Graphics State
     void CGContextSetFlatness(CGContextRef context, float flatness)
     void CGContextSetLineCap(CGContextRef context, CGLineCap cap)
-    void CGContextSetLineDash(CGContextRef context, float phase,
-        float lengths[], size_t count)
+    void CGContextSetLineDash(CGContextRef context, CGFloat phase,
+        CGFloat lengths[], size_t count)
     void CGContextSetLineJoin(CGContextRef context, CGLineJoin join)
     void CGContextSetLineWidth(CGContextRef context, float width)
     void CGContextSetMiterLimit(CGContextRef context, float limit)

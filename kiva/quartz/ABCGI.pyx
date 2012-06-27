@@ -378,7 +378,7 @@ cdef class CGContext:
         """
         cdef int n
         cdef int i
-        cdef float *flengths
+        cdef CGFloat *flengths
 
         if lengths is None:
             # No dash; solid line.
@@ -386,7 +386,7 @@ cdef class CGContext:
             return
         else:
             n = len(lengths)
-            flengths = <float*>PyMem_Malloc(n*sizeof(float))
+            flengths = <CGFloat*>PyMem_Malloc(n*sizeof(CGFloat))
             if flengths == NULL:
                 raise MemoryError("could not allocate %s floats" % n)
             for i from 0 <= i < n:
