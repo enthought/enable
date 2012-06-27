@@ -872,20 +872,20 @@ cdef class CGContext:
         cdef size_t pointer
         cdef CTFontRef ct_font
         cdef CTLineRef ct_line
-        cdef CGRect text_rect
-        cdef double x1,x2,y1,y2
+        cdef CGFloat ascent = 0.0, descent = 0.0
+        cdef double x1,x2,y1,y2, width = 0.0
 
         pointer = self.current_font.get_pointer()
         ct_font = <CTFontRef>pointer
         ct_line = _create_ct_line(text, ct_font, None)
         if ct_line != NULL:
-            text_rect = CTLineGetImageBounds(ct_line, self.context)
+            width = CTLineGetTypographicBounds(ct_line, &ascent, &descent, NULL)
             CFRelease(ct_line)
 
-        x1 = text_rect.origin.x
-        x2 = text_rect.size.width
-        y1 = text_rect.origin.y
-        y2 = text_rect.size.height
+        x1 = 0.0
+        x2 = width
+        y1 = -descent
+        y2 = -y1 + ascent
 
         return x1, y1, x2, y2
 
@@ -2494,8 +2494,8 @@ cdef class ShadingFunction:
         callbacks.releaseInfo = NULL
         callbacks.evaluate = <CGFunctionEvaluateCallback>callback
 
-        cdef float domain_bounds[2]
-        cdef float range_bounds[8]
+        cdef CGFloat domain_bounds[2]
+        cdef CGFloat range_bounds[8]
 
         domain_bounds[0] = 0.0
         domain_bounds[1] = 1.0
@@ -2508,7 +2508,7 @@ cdef class ShadingFunction:
         if self.function == NULL:
             raise RuntimeError("could not make CGFunctionRef")
 
-cdef void shading_callback(object self, float* in_data, float* out_data):
+cdef void shading_callback(object self, CGFloat* in_data, CGFloat* out_data):
     cdef int i
     out = self(in_data[0])
     for i from 0 <= i < self.n_dims:
@@ -2573,11 +2573,11 @@ cdef void safe_free(void* mem):
 
 cdef class PiecewiseLinearColorFunction(ShadingFunction):
     cdef int num_stops
-    cdef float* stops
-    cdef float* red
-    cdef float* green
-    cdef float* blue
-    cdef float* alpha
+    cdef CGFloat* stops
+    cdef CGFloat* red
+    cdef CGFloat* green
+    cdef CGFloat* blue
+    cdef CGFloat* alpha
 
     def __init__(self, object stop_colors):
         cdef c_numpy.ndarray stop_array
@@ -2595,11 +2595,11 @@ cdef class PiecewiseLinearColorFunction(ShadingFunction):
             raise ValueError("stops must be sorted and unique")
 
         self.num_stops = stop_colors.shape[1]
-        self.stops = <float*>PyMem_Malloc(sizeof(float)*self.num_stops)
-        self.red = <float*>PyMem_Malloc(sizeof(float)*self.num_stops)
-        self.green = <float*>PyMem_Malloc(sizeof(float)*self.num_stops)
-        self.blue = <float*>PyMem_Malloc(sizeof(float)*self.num_stops)
-        self.alpha = <float*>PyMem_Malloc(sizeof(float)*self.num_stops)
+        self.stops = <CGFloat*>PyMem_Malloc(sizeof(CGFloat)*self.num_stops)
+        self.red = <CGFloat*>PyMem_Malloc(sizeof(CGFloat)*self.num_stops)
+        self.green = <CGFloat*>PyMem_Malloc(sizeof(CGFloat)*self.num_stops)
+        self.blue = <CGFloat*>PyMem_Malloc(sizeof(CGFloat)*self.num_stops)
+        self.alpha = <CGFloat*>PyMem_Malloc(sizeof(CGFloat)*self.num_stops)
 
         has_alpha = stop_colors.shape[0] == 5
         for i from 0 <= i < self.num_stops:
@@ -2647,9 +2647,9 @@ cdef class PiecewiseLinearColorFunction(ShadingFunction):
         safe_free(self.alpha)
 
 
-cdef int bisect_left(PiecewiseLinearColorFunction self, float t):
+cdef int bisect_left(PiecewiseLinearColorFunction self, CGFloat t):
     cdef int lo, hi, mid
-    cdef float stop
+    cdef CGFloat stop
 
     hi = self.num_stops
     lo = 0
@@ -2662,9 +2662,9 @@ cdef int bisect_left(PiecewiseLinearColorFunction self, float t):
             lo = mid + 1
     return lo
 
-cdef void piecewise_callback(void* obj, float* t, float* out):
+cdef void piecewise_callback(void* obj, CGFloat* t, CGFloat* out):
    cdef int i
-   cdef float eps
+   cdef CGFloat eps
    cdef PiecewiseLinearColorFunction self
 
    self = <PiecewiseLinearColorFunction>obj
@@ -2687,7 +2687,7 @@ cdef void piecewise_callback(void* obj, float* t, float* out):
 
    i = bisect_left(self, t[0])
 
-   cdef float f, g, dx
+   cdef CGFloat f, g, dx
    dx = self.stops[i] - self.stops[i-1]
 
    if dx > eps:
@@ -2738,7 +2738,7 @@ cdef bool _line_intersects_cgrect(double x, double y, double slope, CGRect rect)
 #### Font utilities ####
 
 cdef CGColorRef _create_cg_color(object color):
-    cdef float color_components[4]
+    cdef CGFloat color_components[4]
     cdef CGColorRef cg_color
 
     color_components[0] = color[0]
