@@ -221,25 +221,25 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
         kCTLineTruncationMiddle = 2
 
     # Fonts
-    CTFontRef CTFontCreateWithName(CFStringRef name, float size,
+    CTFontRef CTFontCreateWithName(CFStringRef name, CGFloat size,
         void *matrix)
     CTFontRef CTFontCreateWithFontDescriptor(CTFontDescriptorRef descriptor,
-        float size, void *matrix)
+        CGFloat size, void *matrix)
     
     #CTFontRef CTFontCreateUIFontForLanguage(CTFontUIFontType uiType,
-    #    float size, CFStringRef language)
-    #CTFontRef CTFontCreateCopyWithAttributes(CTFontRef font, float size,
+    #    CGFloat size, CFStringRef language)
+    #CTFontRef CTFontCreateCopyWithAttributes(CTFontRef font, CGFloat size,
     #    void *matrix, CTFontDescriptorRef attributes)
-    CTFontRef CTFontCreateCopyWithSymbolicTraits(CTFontRef font, float size,
+    CTFontRef CTFontCreateCopyWithSymbolicTraits(CTFontRef font, CGFloat size,
         void *matrix, CTFontSymbolicTraits symTraitValue, 
         CTFontSymbolicTraits symTraitMask)
-    #CTFontRef CTFontCreateCopyWithFamily(CTFontRef font, float size,
+    #CTFontRef CTFontCreateCopyWithFamily(CTFontRef font, CGFloat size,
     #    void *matrix, CFStringRef family)
     #CTFontRef CTFontCreateForString(CTFontRef currentFont, CFStringRef string,
     #    CFRange range)
     CTFontDescriptorRef CTFontCopyFontDescriptor(CTFontRef font)
     CFTypeRef CTFontCopyAttribute(CTFontRef font, CFStringRef attribute)
-    float CTFontGetSize(CTFontRef font)
+    CGFloat CTFontGetSize(CTFontRef font)
     void CTFontGetMatrix(CTFontRef font)
     CTFontSymbolicTraits CTFontGetSymbolicTraits(CTFontRef font)
     CFDictionaryRef CTFontCopyTraits(CTFontRef font)
@@ -255,17 +255,17 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     CFArrayRef CTFontCopySupportedLanguages(CTFontRef font)
     Boolean CTFontGetGlyphsForCharacters(CTFontRef font,
         UniChar characters[], CGGlyph glyphs[], CFIndex count)
-    float CTFontGetAscent(CTFontRef font)
-    float CTFontGetDescent(CTFontRef font)
-    float CTFontGetLeading(CTFontRef font)
+    CGFloat CTFontGetAscent(CTFontRef font)
+    CGFloat CTFontGetDescent(CTFontRef font)
+    CGFloat CTFontGetLeading(CTFontRef font)
     unsigned CTFontGetUnitsPerEm(CTFontRef font)
     CFIndex CTFontGetGlyphCount(CTFontRef font)
     CGRect CTFontGetBoundingBox(CTFontRef font)
-    float CTFontGetUnderlinePosition(CTFontRef font)
-    float CTFontGetUnderlineThickness(CTFontRef font)
-    float CTFontGetSlantAngle(CTFontRef font)
-    float CTFontGetCapHeight(CTFontRef font)
-    float CTFontGetXHeight(CTFontRef font)
+    CGFloat CTFontGetUnderlinePosition(CTFontRef font)
+    CGFloat CTFontGetUnderlineThickness(CTFontRef font)
+    CGFloat CTFontGetSlantAngle(CTFontRef font)
+    CGFloat CTFontGetCapHeight(CTFontRef font)
+    CGFloat CTFontGetXHeight(CTFontRef font)
     CGGlyph CTFontGetGlyphWithName(CTFontRef font, CFStringRef glyphName)
     CGRect CTFontGetBoundingRectsForGlyphs(CTFontRef font,
         CTFontOrientation orientation, CGGlyph glyphs[],
@@ -283,13 +283,13 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     CFArrayRef CTFontCopyFeatures(CTFontRef font)
     CFArrayRef CTFontCopyFeatureSettings(CTFontRef font)
     CGFontRef CTFontCopyGraphicsFont(CTFontRef font, CTFontDescriptorRef *attributes)
-    CTFontRef CTFontCreateWithGraphicsFont(CGFontRef graphicsFont, float size,
+    CTFontRef CTFontCreateWithGraphicsFont(CGFontRef graphicsFont, CGFloat size,
         void *matrix, CTFontDescriptorRef attributes)
     #ATSFontRef CTFontGetPlatformFont(CTFontRef font, CTFontDescriptorRef *attributes)
-    #CTFontRef CTFontCreateWithPlatformFont(ATSFontRef platformFont, float size,
+    #CTFontRef CTFontCreateWithPlatformFont(ATSFontRef platformFont, CGFloat size,
     #    void *matrix, CTFontDescriptorRef attributes)
     #CTFontRef CTFontCreateWithQuickdrawInstance(ConstStr255Param name,
-    #    int16_t identifier, uint8_t style, float size)
+    #    int16_t identifier, uint8_t style, CGFloat size)
     
     #CFArrayRef CTFontCopyAvailableTables(CTFontRef font,
     #    CTFontTableOptions options)
@@ -311,7 +311,7 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
 
     # Font Descriptors
     CTFontDescriptorRef CTFontDescriptorCreateWithNameAndSize(CFStringRef name,
-        float size)
+        CGFloat size)
     CTFontDescriptorRef CTFontDescriptorCreateWithAttributes(
         CFDictionaryRef attributes)
     CTFontDescriptorRef CTFontDescriptorCreateCopyWithAttributes(
@@ -319,7 +319,7 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     
     #CTFontDescriptorRef CTFontDescriptorCreateCopyWithVariation(
     #    CTFontDescriptorRef original, CFNumberRef variationIdentifier,
-    #    float variationValue)
+    #    CGFloat variationValue)
     #CTFontDescriptorRef CTFontDescriptorCreateCopyWithFeature(
     #    CTFontDescriptorRef original, CFNumberRef featureTypeIdentifier,
     #    CFNumberRef featureSelectorIdentifier)
@@ -338,18 +338,18 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     CTLineRef CTLineCreateWithAttributedString(CFAttributedStringRef string)
     CTLineRef CTLineCreateTruncatedLine(CTLineRef line, double width,
         CTLineTruncationType truncationType, CTLineRef truncationToken)
-    CTLineRef CTLineCreateJustifiedLine(CTLineRef line, float justificationFactor,
+    CTLineRef CTLineCreateJustifiedLine(CTLineRef line, CGFloat justificationFactor,
         double justificationWidth)
     CFIndex CTLineGetGlyphCount(CTLineRef line)
     CFArrayRef CTLineGetGlyphRuns(CTLineRef line)
     CFRange CTLineGetStringRange(CTLineRef line)
-    double CTLineGetPenOffsetForFlush(CTLineRef line, float flushFactor,
+    double CTLineGetPenOffsetForFlush(CTLineRef line, CGFloat flushFactor,
         double flushWidth)
     void CTLineDraw(CTLineRef line, CGContextRef context)
     CGRect CTLineGetImageBounds(CTLineRef line, CGContextRef context)
-    double CTLineGetTypographicBounds(CTLineRef line, float* ascent,
-        float* descent, float* leading)
+    double CTLineGetTypographicBounds(CTLineRef line, CGFloat* ascent,
+        CGFloat* descent, CGFloat* leading)
     double CTLineGetTrailingWhitespaceWidth(CTLineRef line)
     CFIndex CTLineGetStringIndexForPosition(CTLineRef line, CGPoint position)
-    float CTLineGetOffsetForStringIndex(CTLineRef line, CFIndex charIndex,
-        float* secondaryOffset)
+    CGFloat CTLineGetOffsetForStringIndex(CTLineRef line, CFIndex charIndex,
+        CGFloat* secondaryOffset)
