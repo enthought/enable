@@ -190,8 +190,8 @@ def affine_params(m):
     ty = m[2,1]
     return a,b,c,d,tx,ty
 
-def trs_factor(m):
-    """ Factors a matrix as if it is the product of translate/rotate/scale
+def tsr_factor(m):
+    """ Factors a matrix as if it is the product of translate/scale/rotate
         matrices applied (i.e., concatenated) in that order.  It returns:
 
             tx,ty,sx,sy,angle
@@ -200,7 +200,7 @@ def trs_factor(m):
         values and angle is the rotational angle in radians.
 
         If the input matrix was created in a way other than concatenating
-        t/r/s matrices, the results could be wrong.  For example, if there
+        t/s/r matrices, the results could be wrong.  For example, if there
         is any skew in the matrix, the returned results are wrong.
 
         Needs Test!
@@ -231,6 +231,50 @@ def trs_factor(m):
         sx,sy = a/cos_ang, d/cos_ang
     else:
         sx,sy = -c/sin_ang, b/sin_ang
+
+    return tx,ty,sx,sy,angle
+
+def trs_factor(m):
+    """ Factors a matrix as if it is the product of translate/rotate/scale
+        matrices applied (i.e., concatenated) in that order.  It returns:
+
+            tx,ty,sx,sy,angle
+
+        where tx and ty are the translations, sx and sy are the scaling
+        values and angle is the rotational angle in radians.
+
+        If the input matrix was created in a way other than concatenating
+        t/r/s matrices, the results could be wrong.  For example, if there
+        is any skew in the matrix, the returned results are wrong.
+
+        Needs Test!
+    """
+
+    #-------------------------------------------------------------------------
+    # Extract Values from Matrix
+    #
+    # Translation values are correct as extracted.  Rotation and
+    # scaling need a little massaging.
+    #-------------------------------------------------------------------------
+    a,b,c,d,tx,ty = affine_params(m)
+
+    #-------------------------------------------------------------------------
+    # Rotation -- tan(angle) = -c/d
+    #-------------------------------------------------------------------------
+    angle = arctan2(-c,d)
+
+    #-------------------------------------------------------------------------
+    # Scaling
+    #
+    # sx = a/cos(angle) or sx =  b/sin(angle)
+    # sy = d/cos(angle) or sy =  -c/sin(angle)
+    #-------------------------------------------------------------------------
+    cos_ang = cos(angle)
+    sin_ang = sin(angle)
+    if cos_ang != 0.0:
+        sx,sy = a/cos_ang, d/cos_ang
+    else:
+        sx,sy = b/sin_ang, -c/sin_ang
 
     return tx,ty,sx,sy,angle
 
