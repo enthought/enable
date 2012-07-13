@@ -1219,7 +1219,6 @@ class Component(CoordinateBox, Interactor):
     #------------------------------------------------------------------------
 
     def _get_outer_bounds(self):
-        border = self._get_visible_border()
         bounds = self.bounds
         return (bounds[0] + self.hpadding, bounds[1] + self.vpadding)
 
