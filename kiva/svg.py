@@ -37,23 +37,26 @@ Miscellaneous notes:
 # Major library imports
 import os
 import sys
-import cStringIO
-from numpy import arange, ravel, pi
+from cStringIO import StringIO
+from numpy import arange, ravel, array
+import warnings
 
 # Local, relative Kiva imports
 import affine
 import basecore2d
 import constants
 from constants import FILL, FILL_STROKE, EOF_FILL_STROKE, EOF_FILL, STROKE
+import agg
+from base64 import b64encode
 
 def _strpoints(points):
-    c = cStringIO.StringIO()
+    c = StringIO()
     for x,y in points:
         c.write('%3.2f,%3.2f ' % (x,y))
     return c.getvalue()
 
 def _mkstyle(kw):
-    return '"' + '; '.join([str(k) + ':' + str(v) for k,v in kw.items()]) +'"'
+    return '; '.join([str(k) + ':' + str(v) for k,v in kw.items()])
 
 
 def default_filter(kw1):
@@ -125,7 +128,7 @@ except ImportError:
     import _fontdata
     _reportlab_loaded = 0
 
-font_face_map = {'Arial': 'Helvetica'}
+font_face_map = {'Arial': 'Helvetica', '': 'Helvetica'}
 
 # This backend has no compiled path object, yet.
 class CompiledPath(object):
@@ -138,9 +141,8 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         super(GraphicsContext, self).__init__(self, size, *args, **kwargs)
         self.size = size
         self._height = size[1]
-        self.contents = cStringIO.StringIO()
+        self.contents = StringIO()
         self._clipmap = {}
-        self.clip_id = None
 
     def render(self, format):
         assert format == 'svg'
@@ -149,8 +151,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         return xmltemplate % locals()
 
     def clear(self):
-        # TODO: clear the contents
-        pass
+        self.contents = StringIO()
 
     def width(self):
         return self.size[0]
@@ -177,27 +178,24 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     # Text handling code
 
     def set_font(self, font):
-        if font.face_name == '':
-            font.face_name = 'Arial'
         self.face_name = font_face_map.get(font.face_name, font.face_name)
         self.font = pdfmetrics.Font(self.face_name, self.face_name, pdfmetrics.defaultEncoding)
         self.font_size = font.size
 
+    # actual implementation =)
+
     def device_show_text(self, text):
-        x,y = self.get_text_position()
-        x,y = self._fixpoints([[x,y]])[0]
         ttm = self.get_text_matrix()
         ctm = self.get_ctm()  # not device_ctm!!
         m = affine.concat(ctm,ttm)
-        tx,ty,sx,sy,angle = affine.trs_factor(m)
-        angle = '%3.3f' % (-angle / pi * 180.)
-        height = self.get_full_text_extent(text)[1]
-        self.contents.write('<g transform="translate(%(x)f,%(y)f)">\n' % locals())
-        self.contents.write('<g transform="scale(1,-1)">\n')
-        self._emit('text', contents=text, transform='"rotate('+angle+')"', kw={'font-family':repr(self.font.fontName),
-                                                        'font-size': '"'+ str(self.font_size) + '"'})
-        self.contents.write('</g>\n')
-        self.contents.write('</g>\n')
+        #height = self.get_full_text_extent(text)[1]
+        a,b,c,d,tx,ty = affine.affine_params(m)
+        transform = 'matrix(%(a)f,%(b)f,%(c)f,%(d)f,%(tx)f,%(ty)f) scale(1,-1)' % locals()
+        self._emit('text', contents=text,
+                   kw={'font-family': self.face_name,
+                       'font-size': str(self.font_size),
+                       'xml:space': 'preserve',
+                       'transform': transform})
 
     def get_full_text_extent(self, text):
         ascent,descent=_fontdata.ascent_descent[self.face_name]
@@ -207,7 +205,78 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         width = pdfmetrics.stringWidth(text, self.face_name, self.font_size)
         return width, height, descent, height*1.2 # assume leading of 1.2*height
 
-    # actual implementation =)
+    def device_draw_image(self, img, rect):
+        """
+        draw_image(img_gc, rect=(x,y,w,h))
+
+        Draws another gc into this one.  If 'rect' is not provided, then
+        the image gc is drawn into this one, rooted at (0,0) and at full
+        pixel size.  If 'rect' is provided, then the image is resized
+        into the (w,h) given and drawn into this GC at point (x,y).
+
+        img_gc is either a Numeric array (WxHx3 or WxHx4) or a GC from Kiva's
+        Agg backend (kiva.agg.GraphicsContextArray).
+
+        Requires the Python Imaging Library (PIL).
+        """
+        from PIL import Image as PilImage
+
+        # We turn img into a PIL object, since that is what ReportLab
+        # requires.  To do this, we first determine if the input image
+        # GC needs to be converted to RGBA/RGB.  If so, we see if we can
+        # do it nicely (using convert_pixel_format), and if not, we do
+        # it brute-force using Agg.
+
+
+        if type(img) == type(array([])):
+            # Numeric array
+            converted_img = agg.GraphicsContextArray(img, pix_format='rgba32')
+            format = 'RGBA'
+        elif isinstance(img, agg.GraphicsContextArray):
+            if img.format().startswith('RGBA'):
+                format = 'RGBA'
+            elif img.format().startswith('RGB'):
+                format = 'RGB'
+            else:
+                converted_img = img.convert_pixel_format('rgba32', inplace=0)
+                format = 'RGBA'
+            # Should probably take this into account
+            # interp = img.get_image_interpolation()
+        else:
+            warnings.warn("Cannot render image of type %r into SVG context."
+                          % type(img))
+            return
+
+        # converted_img now holds an Agg graphics context with the image
+        pil_img = PilImage.fromstring(format,
+                                      (converted_img.width(),
+                                       converted_img.height()),
+                                      converted_img.bmp_array.tostring())
+        if rect == None:
+            rect = (0, 0, img.width(), img.height())
+
+        left, top, width, height = rect
+        if width != img.width() or height != img.height():
+            # This is not strictly required.
+            pil_img = pil_img.resize((int(width), int(height)), PilImage.NEAREST)
+
+        png_buffer = StringIO()
+        pil_img.save(png_buffer, 'png')
+        b64_img_data = b64encode(png_buffer.getvalue())
+        png_buffer.close()
+
+        # Draw the actual image.
+        m = self.get_ctm()
+        # Place the image on the page.
+        # Using bottom instead of top here to account for the y-flip.
+        m = affine.translate(m, left, height + top)
+        transform = 'matrix(%f,%f,%f,%f,%f,%f) scale(1,-1)' % affine.affine_params(m)
+        # Flip y to reverse the flip at the start of the document.
+        image_data = 'data:image/png;base64,' + b64_img_data
+        self._emit('image', transform=transform,
+                   width=str(width), height=str(height),
+                   preserveAspectRatio='none',
+                   kw={ 'xlink:href': image_data })
 
     def device_fill_points(self, points, mode):
         points = self._fixpoints(points)
@@ -227,14 +296,18 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         linejoin = line_join_map[self.state.line_join]
         dasharray = self._dasharray()
         width = '%3.3f' % self.state.line_width
-        if self.clip_id:
-            clip = '"url(#' + self.clip_id +')"'
+        clip_id = getattr(self.state, '_clip_id', None)
+        if clip_id:
+            clip = 'url(#' + clip_id +')'
         else:
             clip = None
+        a,b,c,d,tx,ty = affine.affine_params(self.get_ctm())
+        transform = 'matrix(%(a)f,%(b)f,%(c)f,%(d)f,%(tx)f,%(ty)f)' % locals()
         if mode == STROKE:
             opacity = '%1.3f' % self.state.line_color[-1]
             self._emit('polyline',
-                        points='"'+_strpoints(points)+'"',
+                        transform=transform,
+                        points=_strpoints(points),
                         kw=default_filter({'clip-path': (clip, None)}),
                         style=_mkstyle(default_filter({'opacity': (opacity, "1.000"),
                                         'stroke': stroke,
@@ -247,7 +320,8 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         else:
             opacity = '%1.3f' % self.state.fill_color[-1]
             self._emit('polygon',
-                        points='"'+_strpoints(points)+'"',
+                        transform=transform,
+                        points=_strpoints(points),
                         kw=default_filter({'clip-path': (clip, None)}),
                         style=_mkstyle(default_filter({'opacity': (opacity, "1.000"),
                                         'stroke-width': (width, "1.000"),
@@ -262,36 +336,50 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         # handled by device_fill_points
         pass
 
-    def _build(self, elname, **kw):
+    def _build(self, elname, contents=None, **kw):
         x = '<' + elname + ' '
         for k,v in kw.items():
             if type(v) == type(0.0):
-                v = '"%3.3f"' % v
+                v = '%3.3f' % v
             elif type(v) == type(0):
-                v = '"%d"' % v
+                v = '%d' % v
             else:
-                v = '"%s"' % str(v)
-            x += k + '=' + v + ' '
-        x += '/>\n'
+                v = '%s' % str(v)
+            x += k + '="' + v + '" '
+        if contents is None:
+            x += '/>\n'
+        else:
+            x += '>'
+            if elname != 'text':
+                x += '\n'
+            x += contents
+            x += '</'+elname+'>\n'
         return x
 
+    def _debug_draw_clipping_path(self, x, y, width, height):
+        a,b,c,d,tx,ty = affine.affine_params(self.get_ctm())
+        transform = 'matrix(%(a)f,%(b)f,%(c)f,%(d)f,%(tx)f,%(ty)f)' % locals()
+        self._emit('rect', x=x, y=y, width=width, height=height,
+                   transform=transform,
+                   style=_mkstyle({'stroke-width': 5,
+                                   'fill':'none',
+                                   'stroke': 'green'}))
+
     def device_set_clipping_path(self, x, y, width, height):
-        ##x,y,width,height = map(lambda x: '"' + str(x) + '"', [x,y,width,height])
-        ##self._emit('rect', x=x, y=y, width=width, height=height,
-        ##                style=_mkstyle({'stroke-width': 5,
-        ##                                'fill':'none',
-        ##                                'stroke': 'green'}))
-        ##
-        ##return
+        #self._debug_draw_clipping_path(x, y, width, height)
+        #return
         global _clip_counter
-        self.clip_id = 'clip_%d' % _clip_counter
+        self.state._clip_id = 'clip_%d' % _clip_counter
         _clip_counter += 1
         x,y = self._fixpoints([[x,y]])[0]
+        a,b,c,d,tx,ty = affine.affine_params(self.get_ctm())
+        transform = 'matrix(%(a)f,%(b)f,%(c)f,%(d)f,%(tx)f,%(ty)f)' % locals()
         rect = self._build('rect', x=x, y=y, width=width, height=height)
-        self._emit('clipPath', contents=rect, id='"'+self.clip_id + '"')
+        clippath = self._build('clipPath', contents=rect, id=self.state._clip_id)
+        self._emit('g', transform=transform, contents=clippath)
 
     def device_destroy_clipping_path(self):
-        self.clip_id = None
+        self.state._clip_id = None
 
     # utility routines
 
@@ -309,13 +397,15 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     def _emit(self, name, contents=None, kw={}, **otherkw):
         self.contents.write('<svg:%(name)s ' % locals())
         for k, v in kw.items():
-            self.contents.write("%(k)s=%(v)s " % locals())
+            self.contents.write('%(k)s="%(v)s" ' % locals())
         for k, v in otherkw.items():
-            self.contents.write("%(k)s=%(v)s " % locals())
+            self.contents.write('%(k)s="%(v)s" ' % locals())
         if contents is None:
             self.contents.write('/>\n')
         else:
-            self.contents.write('>\n')
+            self.contents.write('>')
+            if name != 'text':
+                self.contents.write('\n')
             self.contents.write(contents)
             self.contents.write('</svg:'+name+'>\n')
 
@@ -347,10 +437,4 @@ def font_metrics_provider():
 
 
 SVGGC = GraphicsContext # for b/w compatibility
-
-
-if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        print "Usage: %s output_file (where output_file ends in .html or .svg" % sys.argv[0]
-        raise SystemExit
 
