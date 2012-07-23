@@ -302,7 +302,7 @@ class Container(Component):
             return
 
         if self.layout_needed:
-            self.do_layout()
+            self.do_layout(force=True)
 
         # Give the container a chance to draw first for the layers that are
         # considered "under" or "at" the main layer level

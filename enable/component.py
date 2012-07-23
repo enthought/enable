@@ -5,7 +5,7 @@ from __future__ import with_statement
 # Enthought library imports
 from traits.api \
     import Any, Bool, Delegate, Enum, Float, Instance, Int, List, \
-           Property, Str, Trait
+           Property, Str, Trait, cached_property
 from kiva.constants import FILL, STROKE
 
 # Local relative imports
@@ -188,7 +188,7 @@ class Component(CoordinateBox, Interactor):
     # will not change the padding or bounds.
     # This returns a tuple because modifying the returned value has no effect.
     # To modify outer_position element-wise, use set_outer_position().
-    outer_position = Property
+    outer_position = Property()
 
     # The number of horizontal and vertical pixels in the padding outer box.
     # Setting these bounds will modify the bounds of the component, but
@@ -196,7 +196,7 @@ class Component(CoordinateBox, Interactor):
     # the padding.
     # This returns a tuple because modifying the returned value has no effect.
     # To modify outer_bounds element-wise, use set_outer_bounds().
-    outer_bounds = Property
+    outer_bounds = Property()
 
     outer_x = Property
     outer_x2 = Property
@@ -416,7 +416,7 @@ class Component(CoordinateBox, Interactor):
                 an aesthetic cost.
         """
         if self.layout_needed:
-            self.do_layout()
+            self.do_layout(force=True)
 
         self._draw(gc, view_bounds, mode)
         return
@@ -543,14 +543,15 @@ class Component(CoordinateBox, Interactor):
 
         Call this method whenever a component's internal state
         changes such that it must be redrawn on the next draw() call."""
-        self.draw_valid = False
 
         if damaged_regions is None:
             damaged_regions = self._default_damaged_regions()
 
+        self.draw_valid = False
+
         if self_relative:
-            damaged_regions = [[region[0] + self.x, region[1] + self.y,
-                                region[2], region[3]] for region in damaged_regions]
+            damaged_regions = [[x + self.x, y + self.y,
+                                w, h] for x,y,w,h in damaged_regions]
         for view in self.viewports:
             view.invalidate_draw(damaged_regions=damaged_regions, self_relative=True,
                                  view_relative=True)
@@ -633,7 +634,7 @@ class Component(CoordinateBox, Interactor):
             even if *force* is False.
 
         """
-        if self.layout_needed or force:
+        if force or self.layout_needed:
             if size is not None:
                 self.bounds = size
             self._do_layout()
@@ -712,7 +713,7 @@ class Component(CoordinateBox, Interactor):
             return
 
         if self.layout_needed:
-            self.do_layout()
+            self.do_layout(force=True)
 
         self.drawn_outer_position = list(self.outer_position[:])
         self.drawn_outer_bounds = list(self.outer_bounds[:])
@@ -786,7 +787,7 @@ class Component(CoordinateBox, Interactor):
         if layer == "selection" and not self.use_selection:
             return
         if self.layout_needed:
-            self.do_layout()
+            self.do_layout(force=True)
 
         handler = getattr(self, "_draw_" + layer, None)
         if handler:
