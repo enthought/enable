@@ -188,7 +188,9 @@ class Component(CoordinateBox, Interactor):
     # will not change the padding or bounds.
     # This returns a tuple because modifying the returned value has no effect.
     # To modify outer_position element-wise, use set_outer_position().
-    outer_position = Property()
+    outer_position = Property(depends_on=["position", "border_visible",
+                                          "inset_border", "border_width",
+                                          "padding_left", "padding_bottom"])
 
     # The number of horizontal and vertical pixels in the padding outer box.
     # Setting these bounds will modify the bounds of the component, but
@@ -196,7 +198,10 @@ class Component(CoordinateBox, Interactor):
     # the padding.
     # This returns a tuple because modifying the returned value has no effect.
     # To modify outer_bounds element-wise, use set_outer_bounds().
-    outer_bounds = Property()
+    outer_bounds = Property(depends_on=["bounds", "border_visible",
+                                        "inset_border", "border_width",
+                                        "padding_left", "padding_right",
+                                        "padding_top", "padding_bottom"])
 
     outer_x = Property
     outer_x2 = Property
@@ -1179,6 +1184,7 @@ class Component(CoordinateBox, Interactor):
     # Outer position setters and getters
     #------------------------------------------------------------------------
 
+    @cached_property
     def _get_outer_position(self):
         border = self._get_visible_border()
         pos = self.position
@@ -1219,6 +1225,7 @@ class Component(CoordinateBox, Interactor):
     # Outer bounds setters and getters
     #------------------------------------------------------------------------
 
+    @cached_property
     def _get_outer_bounds(self):
         bounds = self.bounds
         return (bounds[0] + self.hpadding, bounds[1] + self.vpadding)
