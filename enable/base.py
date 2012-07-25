@@ -138,7 +138,7 @@ def intersect_coordinates ( coordinates1, coordinates2 ):
         return ( xl, yb, xr, yt )
     return empty_rectangle
 
-def intersect_bounds2( bounds1, bounds2 ):
+def intersect_bounds( bounds1, bounds2 ):
     "Compute the intersection of two bounds rectangles"
     if (bounds1 is empty_rectangle) or (bounds2 is empty_rectangle):
         return empty_rectangle
@@ -153,20 +153,6 @@ def intersect_bounds2( bounds1, bounds2 ):
         return empty_rectangle
     else:
         return (x,y,w,h)
-
-
-def intersect_bounds ( bounds1, bounds2 ):
-    "Compute the intersection of two bounds rectangles"
-    if (bounds1 is empty_rectangle) or (bounds2 is empty_rectangle):
-        return empty_rectangle
-
-    intersection = intersect_coordinates(
-                        bounds_to_coordinates( bounds1 ),
-                        bounds_to_coordinates( bounds2 ) )
-    if intersection is empty_rectangle:
-        return empty_rectangle
-    xl, yb, xr, yt = intersection
-    return ( xl, yb, xr - xl, yt - yb )
 
 def union_coordinates ( coordinates1, coordinates2 ):
     "Compute the union of two coordinate based rectangles"
