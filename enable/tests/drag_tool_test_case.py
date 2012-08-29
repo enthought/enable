@@ -31,46 +31,45 @@ class DragToolTestCase(unittest.TestCase):
         self.tool = DummyTool()
         self.window = DummyWindow()
 
-    def test_cancel_key_pressed(self):
-        tool = self.tool
-        tool._drag_state = 'dragging'  # force dragging state
-        event = KeyEvent(character='Esc', event_type='key_pressed',
+    def _press_key(self, character):
+        """ Create a key_pressed event and dispatch it. """
+
+        event = KeyEvent(character=character, event_type='key_pressed',
                          alt_down=False, control_down=False,
                          shift_down=False, window=self.window)
-        tool.dispatch(event, 'key_pressed')
+
+        self.tool.dispatch(event, 'key_pressed')
+
+    def test_default_cancel_key(self):
+        tool = self.tool
+        tool._drag_state = 'dragging'  # force dragging state
+
+        self._press_key('Esc')
+
         self.assertTrue(tool.canceled)
 
-    def test_cancel_keys_pressed(self):
+    def test_multiple_cancel_keys(self):
         tool = self.tool
+
         tool._drag_state = 'dragging'  # force dragging state
         tool.cancel_keys = ['a', 'Left']
-        event = KeyEvent(character='Esc', event_type='key_pressed',
-                         alt_down=False, control_down=False,
-                         shift_down=False, window=self.window)
-        tool.dispatch(event, 'key_pressed')
+        self._press_key('Esc')
         self.assertFalse(tool.canceled)
+
         tool._drag_state = 'dragging'  # force dragging state
         tool.canceled = False
-        event = KeyEvent(character='a', event_type='key_pressed',
-                         alt_down=False, control_down=False,
-                         shift_down=False, window=self.window)
-        tool.dispatch(event, 'key_pressed')
-        self.assertTrue(tool.canceled)
-        tool._drag_state = 'dragging'  # force dragging state
-        tool.canceled = False
-        event = KeyEvent(character='Left', event_type='key_pressed',
-                         alt_down=False, control_down=False,
-                         shift_down=False, window=self.window)
-        tool.dispatch(event, 'key_pressed')
+        self._press_key('a')
         self.assertTrue(tool.canceled)
 
-    def test_any_key_pressed(self):
+        tool._drag_state = 'dragging'  # force dragging state
+        tool.canceled = False
+        self._press_key('Left')
+        self.assertTrue(tool.canceled)
+
+    def test_other_key_pressed(self):
         tool = self.tool
         tool._drag_state = 'dragging'  # force dragging state
-        event = KeyEvent(character='Left', event_type='key_pressed',
-                         alt_down=False, control_down=False,
-                         shift_down=False, window=self.window)
-        tool.dispatch(event, 'key_pressed')
+        self._press_key('Left')
         self.assertFalse(tool.canceled)
 
 if __name__ == '__main__':
