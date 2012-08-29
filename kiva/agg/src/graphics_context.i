@@ -492,6 +492,20 @@ namespace kiva {
 
             bool is_font_initialized();
 
+            %feature("shadow") set_text_matrix(agg24::trans_affine& value)
+            %{
+            def set_text_matrix(self, matrix):
+                """ Set the text matrix.
+
+                `matrix` must be either a kiva.agg.AffineMatrix instance, or
+                a 3x3 numpy array.
+                """
+                if isinstance(matrix, ndarray) and matrix.shape == (3,3):
+                    matrix = AffineMatrix(matrix[0, 0], matrix[0, 1],
+                                          matrix[1, 0], matrix[1, 1],
+                                          matrix[2, 0], matrix[2, 1])
+                _agg.GraphicsContextArray_set_text_matrix(self, matrix)
+            %}
             void set_text_matrix(agg24::trans_affine& value);
 
             agg24::trans_affine get_text_matrix();
