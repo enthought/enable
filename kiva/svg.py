@@ -91,6 +91,7 @@ xmltemplate = """<?xml version="1.0"?>
 <svg xmlns="http://www.w3.org/2000/svg"
         xmlns:text="http://xmlns.graougraou.com/svg/text/"
         xmlns:a3="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
         a3:scriptImplementation="Adobe"
         width="%(width)f"
         height="%(height)f"
@@ -104,7 +105,8 @@ xmltemplate = """<?xml version="1.0"?>
 </svg>
 """
 
-htmltemplate = """<html xmlns:svg="http://www.w3.org/2000/svg">
+htmltemplate = """<html xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
 <object id="AdobeSVG" CLASSID="clsid:78156a80-c6a1-4bbf-8e6a-3cd390eeb4e2">
 </object>
 <?import namespace="svg" implementation="#AdobeSVG"?>
