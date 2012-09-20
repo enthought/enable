@@ -20,7 +20,8 @@
 import os
 import sys
 from cStringIO import StringIO
-from numpy import arange, ravel
+from numpy import arange, ravel, array
+import warnings
 
 # Local, relative Kiva imports
 import affine
