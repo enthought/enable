@@ -19,14 +19,16 @@
 # Major library imports
 import os
 import sys
-import cStringIO
-from numpy import arange, ravel, pi
+from cStringIO import StringIO
+from numpy import arange, ravel, array
+import warnings
 
 # Local, relative Kiva imports
 import affine
 import basecore2d
 import constants
-from constants import FILL, STROKE, FILL_STROKE, EOF_FILL, EOF_FILL_STROKE
+from constants import *
+import agg
 
 # This backend does not have compiled paths, yet.
 CompiledPath = None
@@ -57,7 +59,7 @@ except ImportError:
     log = FakeLogger()
 
 def _strpoints(points):
-    c = cStringIO.StringIO()
+    c = StringIO()
     for x,y in points:
         c.write('%3.2f,%3.2f ' % (x,y))
     return c.getvalue()
@@ -104,7 +106,7 @@ except ImportError:
     import _fontdata
     _reportlab_loaded = 0
 
-font_face_map = {'Arial': 'Helvetica'}
+font_face_map = {'Arial': 'Helvetica', '': 'Helvetica'}
 
 _clip_counter = 0
 
@@ -122,9 +124,18 @@ class PSGC(basecore2d.GraphicsContextBase):
         super(PSGC, self).__init__(size, *args, **kwargs)
         self.size = size
         self._height = size[1]
-        self.contents = cStringIO.StringIO()
+        self.contents = StringIO()
         self._clipmap = {}
         self.clip_id = None
+
+    def clear(self):
+        self.contents = StringIO()
+
+    def width(self):
+        return self.size[0]
+
+    def height(self):
+        return self.size[1]
 
     def save(self, filename):
         f = open(filename, 'w')
@@ -148,21 +159,21 @@ class PSGC(basecore2d.GraphicsContextBase):
         self.contents.write("""/%s findfont %3.3f scalefont setfont\n""" % (self.face_name, self.font_size))
 
     def device_show_text(self, text):
-        x,y = self.get_text_position()
         ttm = self.get_text_matrix()
         ctm = self.get_ctm()  # not device_ctm!!
         m = affine.concat(ctm,ttm)
-        tx,ty,sx,sy,angle = affine.trs_factor(m)
-        angle = '"%3.3f"' % (angle / pi * 180.)
-        height = self.get_full_text_extent(text)[1]
-        self.contents.write('%3.3f %3.3f moveto\n' % (x,y))
+        if self.state.clipping_path:
+            self.contents.write('clipsave\n')
+            self.contents.write('%3.3f %3.3f %3.3f %3.3f rectclip\n' % self.state.clipping_path)
+        self.contents.write('gsave\n')
+        self.device_transform_device_ctm(LOAD_CTM, [m])
+        self.contents.write('%3.3f %3.3f moveto\n' % (0,0))
         r,g,b,a = self.state.line_color
         self.contents.write('%1.3f %1.3f %1.3f setrgbcolor\n' % (r,g,b) )
         self.contents.write('(%s) show\n' % text)
-        #self.contents.write('<g transform="translate(%(x)f,%(y)f)">\n' % locals())
-        #self.contents.write('<g transform="scale(1,-1)">\n')
-        #self._emit('text', contents=text, rotate=angle, kw={'font-family':repr(self.font.fontName),
-        #                                                'font-size': '"'+ str(self.font_size) + '"'})
+        self.contents.write('grestore\n')
+        if self.state.clipping_path:
+            self.contents.write('cliprestore\n')
 
     def get_full_text_extent(self, text):
         ascent,descent=_fontdata.ascent_descent[self.face_name]
@@ -174,8 +185,91 @@ class PSGC(basecore2d.GraphicsContextBase):
 
     # actual implementation =)
 
-    def device_fill_points(self, points, mode):
+    def device_draw_image(self, img, rect):
+        """
+        draw_image(img_gc, rect=(x,y,w,h))
 
+        Draws another gc into this one.  If 'rect' is not provided, then
+        the image gc is drawn into this one, rooted at (0,0) and at full
+        pixel size.  If 'rect' is provided, then the image is resized
+        into the (w,h) given and drawn into this GC at point (x,y).
+
+        img_gc is either a Numeric array (WxHx3 or WxHx4) or a GC from Kiva's
+        Agg backend (kiva.agg.GraphicsContextArray).
+
+        Requires the Python Imaging Library (PIL).
+        """
+        from PIL import Image as PilImage
+
+        if type(img) == type(array([])):
+            # Numeric array
+            converted_img = agg.GraphicsContextArray(img, pix_format='rgba32')
+            format = 'RGBA'
+        elif isinstance(img, agg.GraphicsContextArray):
+            if img.format().startswith('RGBA'):
+                format = 'RGBA'
+            elif img.format().startswith('RGB'):
+                format = 'RGB'
+            else:
+                converted_img = img.convert_pixel_format('rgba32', inplace=0)
+                format = 'RGBA'
+            # Should probably take this into account
+            # interp = img.get_image_interpolation()
+        else:
+            warnings.warn("Cannot render image of type %r into EPS context."
+                          % type(img))
+            return
+
+        # converted_img now holds an Agg graphics context with the image
+        pil_img = PilImage.fromstring(format,
+                                      (converted_img.width(),
+                                       converted_img.height()),
+                                      converted_img.bmp_array.tostring())
+        if rect == None:
+            rect = (0, 0, img.width(), img.height())
+
+        # PIL PS output doesn't support alpha.
+        if format != 'RGB':
+            pil_img = pil_img.convert('RGB')
+
+        left, top, width, height = rect
+        if width != img.width() or height != img.height():
+            # This is not strictly required.
+            pil_img = pil_img.resize((int(width), int(height)), PilImage.NEAREST)
+
+        self.contents.write('gsave\n')
+        self.contents.write('initmatrix\n')
+        m = self.get_ctm()
+        self.contents.write('[%.3f %.3f %.3f %.3f %.3f %.3f] concat\n' % \
+                            affine.affine_params(m))
+        self.contents.write('%.3f %.3f translate\n' % (left, top))
+        # Rely on PIL's EpsImagePlugin to do the hard work here.
+        pil_img.save(self.contents, 'eps', eps=0)
+        self.contents.write('grestore\n')
+
+    def device_transform_device_ctm(self,func,args):
+        if func == LOAD_CTM:
+            self.contents.write('initmatrix\n')
+            func = CONCAT_CTM
+
+        if func == SCALE_CTM:
+            sx, sy = args
+            self.contents.write('%.3f %.3f scale\n' % (sx, sy))
+        elif func == ROTATE_CTM:
+            r, = args
+            self.contents.write('%.3f rotate\n' % r)
+        elif func == TRANSLATE_CTM:
+            tx, ty = args
+            self.contents.write('%.3f %.3f translate\n' % (tx, ty))
+        elif func == CONCAT_CTM:
+            m, = args
+            self.contents.write('[%.3f %.3f %.3f %.3f %.3f %.3f] concat\n' % \
+                                affine.affine_params(m))
+
+    def device_fill_points(self, points, mode):
+        if self.state.clipping_path:
+            self.contents.write('clipsave\n')
+            self.contents.write('%3.3f %3.3f %3.3f %3.3f rectclip\n' % self.state.clipping_path)
         linecap = line_cap_map[self.state.line_cap]
         linejoin = line_join_map[self.state.line_join]
         dasharray = self._dasharray()
@@ -190,7 +284,6 @@ class PSGC(basecore2d.GraphicsContextBase):
         for (x,y) in points[1:]:
             self.contents.write('    %3.3f %3.3f lineto\n' % (x,y))
 
-
         first_pass, second_pass = fill_stroke_map[mode]
 
         if second_pass:
@@ -203,23 +296,25 @@ class PSGC(basecore2d.GraphicsContextBase):
 
             self.contents.write('gsave %s grestore %s\n' % (first_pass, second_pass))
         else:
-            if second_pass in ('fill', 'eofill'):
+            if first_pass in ('fill', 'eofill'):
                 r,g,b,a = self.state.fill_color
                 self.contents.write('%1.3f %1.3f %1.3f setrgbcolor\n' % (r,g,b) )
             else:
                 r,g,b,a = self.state.line_color
                 self.contents.write('%1.3f %1.3f %1.3f setrgbcolor\n' % (r,g,b) )
             self.contents.write(first_pass + '\n')
+        if self.state.clipping_path:
+            self.contents.write('cliprestore\n')
 
     def device_stroke_points(self, points, mode):
         # handled by device_fill_points
         pass
 
     def device_set_clipping_path(self, x, y, width, height):
-        self.contents.write('%3.3f %3.3f %3.3f %3.3f rectclip\n' % (x,y,width*2.,height*2.))
+        pass
 
     def device_destroy_clipping_path(self):
-        self.contents.write('initclip\n')
+        pass
 
     # utility routines
 
@@ -244,11 +339,4 @@ class PSGC(basecore2d.GraphicsContextBase):
 
     def device_update_fill_state(self):
         pass
-
-
-
-if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        print "Usage: %s output_file (where output_file ends in .html or .svg" % sys.argv[0]
-        raise SystemExit
 
