@@ -72,7 +72,8 @@ class DragToolTestCase(unittest.TestCase):
 
     def test_mouse_leave_drag_state(self):
 
-        # check when end_drag_on_leave is true
+        # When end_drag_on_leave is true then the drag_cancel is called
+        # and the _drag_state will be 'nondrag'
         tool = self.tool
         tool.end_drag_on_leave = True
         tool._drag_state = 'dragging'  # force dragging state
@@ -81,7 +82,9 @@ class DragToolTestCase(unittest.TestCase):
         self.assertEqual(tool.canceled, 1)
         self.assertEqual(tool._drag_state, 'nondrag')
 
-        # check when end_drag_on_leave is false
+        # When end_drag_on_leave is false then the drag_cancel is not called
+        # (i.e. counter is not increased) and the _drag_state will still
+        # be 'dragging'
         tool.end_drag_on_leave = False
         tool._drag_state = 'dragging'  # force dragging state
         event = MouseEvent(x=0, y=0, window=self.window)
