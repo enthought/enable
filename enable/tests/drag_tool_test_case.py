@@ -3,7 +3,7 @@ import unittest
 from traits.api import Int
 
 from enable.tools.drag_tool import DragTool
-from enable.events import KeyEvent
+from enable.events import KeyEvent, MouseEvent
 from enable.abstract_window import AbstractWindow
 
 
@@ -14,7 +14,6 @@ class DummyTool(DragTool):
     def drag_cancel(self, event):
         self.canceled += 1
         return True
-
 
 class DummyWindow(AbstractWindow):
 
@@ -69,6 +68,26 @@ class DragToolTestCase(unittest.TestCase):
         tool._drag_state = 'dragging'  # force dragging state
         self._press_key('Left')
         self.assertEqual(tool.canceled, 0)
+
+    def test_mouse_leave_drag_state(self):
+
+        # check when end_drag_on_leave is true
+        tool = self.tool
+        tool.end_drag_on_leave = True
+        tool._drag_state = 'dragging'  # force dragging state
+        event = MouseEvent(x=0, y=0, window=self.window)
+        self.tool.dispatch(event, 'mouse_leave')
+        self.assertEqual(tool.canceled, 1)
+        self.assertEqual(tool._drag_state, 'nondrag')
+
+
+        # check when end_drag_on_leave is false
+        tool.end_drag_on_leave = False
+        tool._drag_state = 'dragging'  # force dragging state
+        event = MouseEvent(x=0, y=0, window=self.window)
+        self.tool.dispatch(event, 'mouse_leave')
+        self.assertEqual(tool.canceled, 1)
+        self.assertEqual(tool._drag_state, 'dragging')
 
 if __name__ == '__main__':
     unittest.main()
