@@ -15,6 +15,7 @@ class DummyTool(DragTool):
         self.canceled += 1
         return True
 
+
 class DummyWindow(AbstractWindow):
 
     mouse_owner = None
@@ -79,7 +80,6 @@ class DragToolTestCase(unittest.TestCase):
         self.tool.dispatch(event, 'mouse_leave')
         self.assertEqual(tool.canceled, 1)
         self.assertEqual(tool._drag_state, 'nondrag')
-
 
         # check when end_drag_on_leave is false
         tool.end_drag_on_leave = False
