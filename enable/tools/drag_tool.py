@@ -135,8 +135,7 @@ class DragTool(BaseTool):
     def _drag_cancel_keypressed(self, event):
         if self._drag_state != "nondrag" and \
                          any(map(lambda x: x.match(event), self._cancel_keys)):
-            self._cancel_drag(event)
-            return True
+            return self._cancel_drag(event)
         else:
             return False
 
@@ -184,15 +183,8 @@ class DragTool(BaseTool):
         return False
 
     def _drag_mouse_leave(self, event):
-        state = self._drag_state
         if self.end_drag_on_leave:
-            self._mouse_down_received = False
-            if state == "dragging":
-                self._drag_state = "nondrag"
-                return self.drag_cancel(event)
-            else:
-                if event.window.mouse_owner == self:
-                    event.window.set_mouse_owner(None)
+            return self._cancel_drag(event)
         return False
 
     def _drag_mouse_enter(self, event):
