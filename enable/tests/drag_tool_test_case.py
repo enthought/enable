@@ -41,34 +41,40 @@ class DragToolTestCase(unittest.TestCase):
                          shift_down=False, window=self.window)
 
         self.tool.dispatch(event, 'key_pressed')
+        return event
 
     def test_default_cancel_key(self):
         tool = self.tool
         tool._drag_state = 'dragging'  # force dragging state
-        self._press_key('Esc')
+        event = self._press_key('Esc')
         self.assertEqual(tool.canceled, 1)
+        self.assertTrue(event.handled)
 
     def test_multiple_cancel_keys(self):
         tool = self.tool
 
         tool._drag_state = 'dragging'  # force dragging state
         tool.cancel_keys = ['a', 'Left']
-        self._press_key('Esc')
+        event = self._press_key('Esc')
         self.assertEqual(tool.canceled, 0)
+        self.assertFalse(event.handled)
 
         tool._drag_state = 'dragging'  # force dragging state
-        self._press_key('a')
-        self.assertTrue(tool.canceled)
+        event = self._press_key('a')
+        self.assertEqual(tool.canceled, 1)
+        self.assertTrue(event.handled)
 
         tool._drag_state = 'dragging'  # force dragging state
-        self._press_key('Left')
+        event = self._press_key('Left')
         self.assertEqual(tool.canceled, 2)
+        self.assertTrue(event.handled)
 
     def test_other_key_pressed(self):
         tool = self.tool
         tool._drag_state = 'dragging'  # force dragging state
-        self._press_key('Left')
+        event = self._press_key('Left')
         self.assertEqual(tool.canceled, 0)
+        self.assertFalse(event.handled)
 
     def test_mouse_leave_drag_state(self):
 
@@ -81,6 +87,7 @@ class DragToolTestCase(unittest.TestCase):
         self.tool.dispatch(event, 'mouse_leave')
         self.assertEqual(tool.canceled, 1)
         self.assertEqual(tool._drag_state, 'nondrag')
+        self.assertTrue(event.handled)
 
         # When end_drag_on_leave is false then the drag_cancel is not called
         # (i.e. counter is not increased) and the _drag_state will still
@@ -91,6 +98,7 @@ class DragToolTestCase(unittest.TestCase):
         self.tool.dispatch(event, 'mouse_leave')
         self.assertEqual(tool.canceled, 1)
         self.assertEqual(tool._drag_state, 'dragging')
+        self.assertFalse(event.handled)
 
 if __name__ == '__main__':
     unittest.main()
