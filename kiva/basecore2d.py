@@ -1117,7 +1117,6 @@ class GraphicsContextBase(object):
                 attention.
         """
         return
-        self.state.font.size = size
 
     def set_character_spacing(self,spacing):
         """ Sets the amount of additional spacing between text characters.
