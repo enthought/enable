@@ -179,7 +179,10 @@ class NativeScrollBar(Component):
     def _update_control(self, enable_range, value):
         minimum, maximum, page_size, line_size = enable_range
         self._control.setMinimum(minimum)
-        self._control.setMaximum(maximum)
+        # The maximum value of a QScrollBar is the maximum position of the
+        # scroll bar, not the document length. We need to subtract the length
+        # of the scroll bar itself.
+        self._control.setMaximum(maximum-page_size)
         self._control.setValue(value)
         self._control.setPageStep(page_size)
         self._control.setSingleStep(line_size)
