@@ -298,6 +298,10 @@ class AbstractWindow(HasTraits):
             return False
 
         mouse_event = self._create_mouse_event(event)
+        # if no mouse event generated for some reason, return
+        if mouse_event is None:
+            return False
+        
         mouse_owner = self.mouse_owner
 
         if mouse_owner is not None:
