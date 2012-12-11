@@ -366,6 +366,9 @@ class _Window(AbstractWindow):
                         window=self)
 
     def _create_mouse_event(self, event):
+        # If the control no longer exists, don't send mouse event
+        if self.control is None:
+            return None
         # If the event (if there is one) doesn't contain the mouse position,
         # modifiers and buttons then get sensible defaults.
         try:
