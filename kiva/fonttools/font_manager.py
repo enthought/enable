@@ -48,7 +48,7 @@ License   : matplotlib license (PSF compatible)
             see license/LICENSE_TTFQUERY.
 """
 
-import os, sys, glob, subprocess, warnings, tempfile
+import os, sys, glob, subprocess, warnings, tempfile, errno
 try:
     set
 except NameError:
@@ -192,8 +192,11 @@ def get_configdir():
     """
 
     p = os.path.join(ETSConfig.application_data, 'kiva')
-    if not os.path.exists(p):
+    try:
         os.makedirs(p)
+    except OSError, e:
+        if e.errno != errno.EEXIST:
+            raise
     if not _is_writable_dir(p):
         raise IOError('Configuration directory %s must be writable' % p)
     return p
