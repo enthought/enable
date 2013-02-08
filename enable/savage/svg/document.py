@@ -875,7 +875,10 @@ class SVGDocument(object):
         if type == "URL":
             url, fallback = details
             url = urlparse.urlunsplit(url)
-            element = self.dereference(url)
+            try:
+                element = self.dereference(url)
+            except:
+                element = None
             if element is None:
                 if fallback:
                     type, details = fallback
