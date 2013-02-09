@@ -70,9 +70,6 @@ class ConstraintsContainer(Container):
     def __components_items_changed(self, event):
         """ Make sure components that are added can be used with constraints.
         """
-        # Check the added components
-        self._check_and_add_components(event.added)
-
         # Remove stale components from the map
         for item in event.removed:
             key = item.id
@@ -80,20 +77,19 @@ class ConstraintsContainer(Container):
             del self._size_constraints_map[key]
             del self._component_map[key]
 
-        # Update the fixed constraints
-        self._update_fixed_constraints()
+        # Check the added components
+        self._check_and_add_components(event.added)
 
     def __components_changed(self, new):
         """ Make sure components that are added can be used with constraints.
         """
-        # Clear the component map
+        # Clear the component maps
         self._component_map = self.__component_map_default()
+        self._hard_constraints_map = {}
+        self._size_constraints_map = {}
 
         # Check the new components
         self._check_and_add_components(new)
-
-        # Update the fixed constraints
-        self._update_fixed_constraints()
 
     def __layout_manager_default(self):
         """ Create the layout manager.
@@ -122,6 +118,9 @@ class ConstraintsContainer(Container):
             self._hard_constraints_map[key] = item.hard_constraints
             self._size_constraints_map[key] = item.size_constraints
             self._component_map[key] = item
+
+        # Update the fixed constraints
+        self._update_fixed_constraints()
 
     def _update_fixed_constraints(self):
         """ Resolve the differences between the list of constraints and the
