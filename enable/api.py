@@ -34,6 +34,7 @@ from component import Component
 from container import Container
 from coordinate_box import CoordinateBox
 from component_editor import ComponentEditor
+from constraints_container import ConstraintsContainer
 from overlay_container import OverlayContainer
 
 # Breaks code that does not use numpy
