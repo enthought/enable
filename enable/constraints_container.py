@@ -8,7 +8,7 @@ from traits.api import Dict
 
 # local imports
 from container import Container
-
+from layout.layout_managet import LayoutManager
 
 class ConstraintsContainer(Container):
     """ A Container which lays out its child components using a
@@ -16,8 +16,14 @@ class ConstraintsContainer(Container):
 
     """
 
+    # The layout constraints for this container.
+    layout_constraints = List
+
     # A dictionary of components added to this container
     _component_map = Dict
+
+    # The casuarius solver
+    _layout_manager = Instance(LayoutManager)
 
     #------------------------------------------------------------------------
     # Public methods
@@ -25,13 +31,23 @@ class ConstraintsContainer(Container):
 
     def relayout(self):
         """ Re-run the constraints solver in response to a resize or
-        component removal.
+        constraints modification.
         """
         pass
 
     #------------------------------------------------------------------------
     # Traits methods
     #------------------------------------------------------------------------
+
+    def _layout_constraints_changed(self):
+        """ Invalidate the layout when constraints change
+        """
+        self.relayout()
+
+    def _layout_constraints_items_changed(self, event):
+        """ Invalidate the layout when constraints change
+        """
+        self.relayout()
 
     def __components_items_changed(self, event):
         """ Make sure components that are added can be used with constraints.
@@ -51,6 +67,13 @@ class ConstraintsContainer(Container):
 
         # Check the new components
         self._check_and_add_components(new)
+
+    def __layout_manager_default(self):
+        """ Create the layout manager.
+        """
+        lm = LayoutManager()
+        lm.initialize([])
+        return lm
 
     #------------------------------------------------------------------------
     # Protected methods

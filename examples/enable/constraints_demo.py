@@ -26,7 +26,7 @@ class Demo(HasTraits):
         container.add(Component(id="three", bgcolor="blue"))
         container.add(Component(id="four", bgcolor="white"))
 
-        container.constraints = [
+        container.layout_constraints = [
             "parent.top == one.top",
             "parent.left == one.left",
             "parent.top == two.top",
