@@ -8,7 +8,7 @@ from traits.api import Dict, Instance, List
 
 # local imports
 from container import Container
-from layout.layout_managet import LayoutManager
+from layout.layout_manager import LayoutManager
 
 class ConstraintsContainer(Container):
     """ A Container which lays out its child components using a
