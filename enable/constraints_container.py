@@ -4,7 +4,7 @@
 #------------------------------------------------------------------------------
 
 # traits imports
-from traits.api import Dict, Instance, List
+from traits.api import Dict, Instance, List, Str
 
 # local imports
 from container import Container
@@ -27,9 +27,11 @@ class ConstraintsContainer(Container):
     _component_map = Dict
 
     # All the hard constraints for child components
+    _hard_constraints_map = Dict(Str, List)
     _hard_constraints = List
 
     # The size constraints for child components
+    _size_constraints_map = Dict(Str, List)
     _size_constraints = List
 
     # The casuarius solver
@@ -59,6 +61,12 @@ class ConstraintsContainer(Container):
         """
         self.relayout()
 
+    def __component_map_default(self):
+        """ The default component map should include this container so that
+        name collisions are avoided.
+        """
+        return {self.id:None}
+
     def __components_items_changed(self, event):
         """ Make sure components that are added can be used with constraints.
         """
@@ -67,16 +75,25 @@ class ConstraintsContainer(Container):
 
         # Remove stale components from the map
         for item in event.removed:
-            del self._component_map[item.id]
+            key = item.id
+            del self._hard_constraints_map[key]
+            del self._size_constraints_map[key]
+            del self._component_map[key]
+
+        # Update the fixed constraints
+        self._update_fixed_constraints()
 
     def __components_changed(self, new):
         """ Make sure components that are added can be used with constraints.
         """
         # Clear the component map
-        self._component_map = {}
+        self._component_map = self.__component_map_default()
 
         # Check the new components
         self._check_and_add_components(new)
+
+        # Update the fixed constraints
+        self._update_fixed_constraints()
 
     def __layout_manager_default(self):
         """ Create the layout manager.
@@ -93,13 +110,33 @@ class ConstraintsContainer(Container):
         """ Make sure components can be used with constraints.
         """
         for item in components:
-            if len(item.id) == 0:
+            key = item.id
+            if len(key) == 0:
                 msg = "Components added to a {0} must have a valid 'id' trait."
                 name = type(self).__name__
                 raise ValueError(msg.format(name))
             elif item.id in self._component_map:
-                msg = "A Component with that id has already been added."
-                raise ValueError(msg)
+                msg = "A Component with id '{0}' has already been added."
+                raise ValueError(msg.format(key))
 
-            self._component_map[item.id] = item
+            self._hard_constraints_map[key] = item.hard_constraints
+            self._size_constraints_map[key] = item.size_constraints
+            self._component_map[key] = item
+
+    def _update_fixed_constraints(self):
+        """ Resolve the differences between the list of constraints and the
+        map of child component constraints for both types of fixed constraints.
+        """
+        old_cns, all_new_cns = [], []
+        for name in ('hard', 'size'):
+            map_attr = getattr(self, '_{0}_constraints_map'.format(name))
+            list_name = '_{0}_constraints'.format(name)
+            old_cns.extend(getattr(self, list_name))
+            new_cns = []
+            for item in map_attr.itervalues():
+                new_cns.extend(item)
+            all_new_cns.extend(new_cns)
+            setattr(self, list_name, new_cns)
+
+        self._layout_manager.replace_constraints(old_cns, all_new_cns)
 

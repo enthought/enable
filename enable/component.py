@@ -1048,7 +1048,7 @@ class Component(CoordinateBox, Interactor):
         """
         primitive = self.layout_box.primitive
         left = primitive('left')
-        top = primitive('top')
+        top = primitive('bottom')
         width = primitive('width')
         height = primitive('height')
         cns = [left >= 0, top >= 0, width >= 0, height >= 0]
