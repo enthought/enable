@@ -4,7 +4,7 @@
 #------------------------------------------------------------------------------
 
 # traits imports
-from traits.api import Dict
+from traits.api import Dict, Instance, List
 
 # local imports
 from container import Container
@@ -16,11 +16,21 @@ class ConstraintsContainer(Container):
 
     """
 
+    # The ID for this component. This ID can be used by the layout constraints
+    # when referencing the container.
+    id = "parent"
+
     # The layout constraints for this container.
     layout_constraints = List
 
     # A dictionary of components added to this container
     _component_map = Dict
+
+    # All the hard constraints for child components
+    _hard_constraints = List
+
+    # The size constraints for child components
+    _size_constraints = List
 
     # The casuarius solver
     _layout_manager = Instance(LayoutManager)
