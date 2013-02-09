@@ -13,7 +13,7 @@ from colors import black_color_trait, white_color_trait
 from coordinate_box import CoordinateBox
 from enable_traits import bounds_trait, coordinate_trait, LineStyle
 from interactor import Interactor
-
+from layout.layout_box import LayoutBox
 
 coordinate_delegate = Delegate("inner", modify=True)
 
@@ -111,6 +111,19 @@ class Component(CoordinateBox, Interactor):
     # specifies a fixed preferred width of 100, then the latter component will
     # always be twice as wide as the former.
     fixed_preferred_size = Trait(None, None, bounds_trait)
+
+    #------------------------------------------------------------------------
+    # Constraints-based layout
+    #------------------------------------------------------------------------
+
+    # The source for constraints variables for this component
+    layout_box = Instance(LayoutBox)
+
+    # The list of hard constraints which must be applied to the widget.
+    hard_constraints = Property
+
+    # The list of size constraints to apply to the widget.
+    size_constraints = Property
 
     #------------------------------------------------------------------------
     # Overlays and underlays
@@ -1027,6 +1040,46 @@ class Component(CoordinateBox, Interactor):
     def _get_layout_needed(self):
         return self._layout_needed
 
+    def _layout_box_default(self):
+        return LayoutBox(type(self).__name__, self.id)
+
+    def _get_hard_constraints(self):
+        """ Generate the constraints which must always be applied.
+        """
+        primitive = self.layout_box.primitive
+        left = primitive('left')
+        top = primitive('top')
+        width = primitive('width')
+        height = primitive('height')
+        cns = [left >= 0, top >= 0, width >= 0, height >= 0]
+        return cns
+
+    def _get_size_constraints(self):
+        """ Creates the list of size hint constraints for this widget.
+        """
+        cns = []
+        push = cns.append
+        width_hint, height_hint = self.get_preferred_size()
+        primitive = self.layout_box.primitive
+        width = primitive('width')
+        height = primitive('height')
+        hug_width, hug_height = ('strong', 'strong')
+        resist_width, resist_height = ('strong', 'strong')
+        if width_hint >= 0:
+            if hug_width != 'ignore':
+                cn = (width == width_hint) | hug_width
+                push(cn)
+            if resist_width != 'ignore':
+                cn = (width >= width_hint) | resist_width
+                push(cn)
+        if height_hint >= 0:
+            if hug_height != 'ignore':
+                cn = (height == height_hint) | hug_height
+                push(cn)
+            if resist_height != 'ignore':
+                cn = (height >= height_hint) | resist_height
+                push(cn)
+        return cns
 
     def _tools_items_changed(self):
         self.invalidate_and_redraw()
