@@ -1084,6 +1084,7 @@ class Component(CoordinateBox, Interactor):
                 cn = (height >= height_hint) | resist_height
                 push(cn)
 
+        # XXX: Should these two be conditionally created?
         top = box.top
         bottom = box.bottom
         left = box.left

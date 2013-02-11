@@ -63,6 +63,10 @@ class ConstraintsContainer(Container):
     #------------------------------------------------------------------------
     # Traits methods
     #------------------------------------------------------------------------
+    def _bounds_changed(self, old, new):
+        super(ConstraintsContainer, self)._bounds_changed(old, new)
+        self.relayout()
+        self.invalidate_draw()
 
     def _layout_constraints_changed(self, name, old, new):
         """ Invalidate the layout when constraints change
@@ -112,7 +116,19 @@ class ConstraintsContainer(Container):
         """ Create the layout manager.
         """
         lm = LayoutManager()
-        lm.initialize(self.hard_constraints)
+
+        constraints = self.hard_constraints
+        box = self.layout_box
+        top = box.top
+        bottom = box.bottom
+        left = box.left
+        right = box.right
+        height = box.height
+        width = box.width
+        constraints.append((top >= bottom + height) | 'strong')
+        constraints.append((right >= left + width) | 'strong')
+
+        lm.initialize(constraints)
         return lm
 
     #------------------------------------------------------------------------
