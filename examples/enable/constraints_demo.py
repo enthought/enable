@@ -19,7 +19,7 @@ class Demo(HasTraits):
                  )
 
     def _canvas_default(self):
-        container = ConstraintsContainer()
+        container = ConstraintsContainer(bounds=(500,500))
 
         container.add(Component(id="one", bgcolor="red"))
         container.add(Component(id="two", bgcolor="green"))

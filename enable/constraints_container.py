@@ -49,7 +49,16 @@ class ConstraintsContainer(Container):
         """ Re-run the constraints solver in response to a resize or
         constraints modification.
         """
-        pass
+        mgr_layout = self._layout_manager.layout
+        box = self.layout_box
+        width_var = box.width
+        height_var = box.height
+        width, height = self.bounds
+        def layout():
+            for name, box in self._component_map.iteritems():
+                print name, ":",
+                print [(n, p.value) for n,p in box._primitives.items()]
+        mgr_layout(layout, width_var, height_var, (width, height))
 
     #------------------------------------------------------------------------
     # Traits methods
@@ -103,7 +112,7 @@ class ConstraintsContainer(Container):
         """ Create the layout manager.
         """
         lm = LayoutManager()
-        lm.initialize([])
+        lm.initialize(self.hard_constraints)
         return lm
 
     #------------------------------------------------------------------------
