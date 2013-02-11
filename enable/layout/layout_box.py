@@ -33,7 +33,7 @@ class LayoutBox(object):
         self._owner = owner
         self._primitives = {}
 
-    def primitive(self, name):
+    def __getattr__(self, name):
         """ Returns a primitive casuarius constraint variable for the
         given name.
 
