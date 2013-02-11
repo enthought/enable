@@ -1048,10 +1048,10 @@ class Component(CoordinateBox, Interactor):
         """
         box = self.layout_box
         left = box.left
-        top = box.bottom
+        bottom = box.bottom
         width = box.width
         height = box.height
-        cns = [left >= 0, top >= 0, width >= 0, height >= 0]
+        cns = [left >= 0, bottom >= 0, width >= 0, height >= 0]
         return cns
 
     def _get_size_constraints(self):

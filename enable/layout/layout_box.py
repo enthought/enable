@@ -6,6 +6,9 @@
 from casuarius import ConstraintVariable
 
 
+KNOWN_CONSTRAINTS = ('left', 'right', 'top', 'bottom', 'width', 'height')
+
+
 class LayoutBox(object):
     """ A class which encapsulates a layout box using casuarius
     constraint variables.
@@ -33,7 +36,7 @@ class LayoutBox(object):
         self._owner = owner
         self._primitives = {}
 
-    def __getattr__(self, name):
+    def primitive(self, name):
         """ Returns a primitive casuarius constraint variable for the
         given name.
 
@@ -50,4 +53,13 @@ class LayoutBox(object):
             label = '{0}|{1}|{2}'.format(self._name, self._owner, name)
             res = primitives[name] = ConstraintVariable(label)
         return res
+
+    def __getattr__(self, name):
+        """ Allow the primitive dictionary to act as an extension to the
+        object's namespace.
+        """
+        if name in KNOWN_CONSTRAINTS:
+            return self.primitive(name)
+
+        return super(LayoutBox, self).__getattr__(name)
 
