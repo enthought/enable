@@ -24,7 +24,7 @@ class Demo(HasTraits):
         container.add(Component(id="one", bgcolor="red", fixed_preferred_size=(250,250)))
         container.add(Component(id="two", bgcolor="green", fixed_preferred_size=(250,250)))
         container.add(Component(id="three", bgcolor="blue", fixed_preferred_size=(250,250)))
-        container.add(Component(id="four", bgcolor="white", fixed_preferred_size=(250,250)))
+        container.add(Component(id="four", bgcolor="black", fixed_preferred_size=(250,250)))
 
         container.layout_constraints = [
             "parent.top == one.top",
