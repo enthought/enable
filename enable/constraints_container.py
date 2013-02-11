@@ -3,12 +3,16 @@
 #  All rights reserved.
 #------------------------------------------------------------------------------
 
+# std library imports
+from copy import copy
+
 # traits imports
 from traits.api import Dict, Instance, List, Str
 
 # local imports
 from container import Container
 from layout.layout_manager import LayoutManager
+
 
 class ConstraintsContainer(Container):
     """ A Container which lays out its child components using a
@@ -51,21 +55,25 @@ class ConstraintsContainer(Container):
     # Traits methods
     #------------------------------------------------------------------------
 
-    def _layout_constraints_changed(self):
+    def _layout_constraints_changed(self, name, old, new):
         """ Invalidate the layout when constraints change
         """
+        new = self._parse_constraint_strs(new)
+        self._layout_manager.replace_constraints(old, new)
         self.relayout()
 
     def _layout_constraints_items_changed(self, event):
         """ Invalidate the layout when constraints change
         """
+        added = self._parse_constraint_strs(event.added)
+        self._layout_manager.replace_constraints(event.removed, added)
         self.relayout()
 
     def __component_map_default(self):
         """ The default component map should include this container so that
         name collisions are avoided.
         """
-        return {self.id:None}
+        return {self.id : self.layout_box}
 
     def __components_items_changed(self, event):
         """ Make sure components that are added can be used with constraints.
@@ -111,16 +119,31 @@ class ConstraintsContainer(Container):
                 msg = "Components added to a {0} must have a valid 'id' trait."
                 name = type(self).__name__
                 raise ValueError(msg.format(name))
-            elif item.id in self._component_map:
+            elif key in self._component_map:
                 msg = "A Component with id '{0}' has already been added."
                 raise ValueError(msg.format(key))
 
             self._hard_constraints_map[key] = item.hard_constraints
             self._size_constraints_map[key] = item.size_constraints
-            self._component_map[key] = item
+            self._component_map[key] = item.layout_box
 
         # Update the fixed constraints
         self._update_fixed_constraints()
+
+    def _parse_constraint_strs(self, constraint_strs):
+        """ Given a list of strings with each describing a constraint,
+        return a list of casuarius constraint objects that can be added to this
+        container's solver.
+        """
+        eval_dict = copy(self._component_map)
+        eval_dict['__builtins__'] = None
+
+        constraints = []
+        push = constraints.append
+        for cns_str in constraint_strs:
+            push(eval(cns_str, eval_dict))
+
+        return constraints
 
     def _update_fixed_constraints(self):
         """ Resolve the differences between the list of constraints and the
