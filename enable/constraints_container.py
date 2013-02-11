@@ -3,9 +3,6 @@
 #  All rights reserved.
 #------------------------------------------------------------------------------
 
-# std library imports
-from copy import copy
-
 # traits imports
 from traits.api import Dict, Instance, List, Str
 
@@ -55,9 +52,12 @@ class ConstraintsContainer(Container):
         height_var = box.height
         width, height = self.bounds
         def layout():
-            for name, box in self._component_map.iteritems():
-                print name, ":",
-                print [(n, p.value) for n,p in box._primitives.items()]
+            for name, component in self._component_map.iteritems():
+                if name == self.id:
+                    continue
+                box = component.layout_box
+                component.position = (box.left.value, box.bottom.value)
+                component.bounds = (box.width.value, box.height.value)
         mgr_layout(layout, width_var, height_var, (width, height))
 
     #------------------------------------------------------------------------
@@ -134,7 +134,7 @@ class ConstraintsContainer(Container):
 
             self._hard_constraints_map[key] = item.hard_constraints
             self._size_constraints_map[key] = item.size_constraints
-            self._component_map[key] = item.layout_box
+            self._component_map[key] = item
 
         # Update the fixed constraints
         self._update_fixed_constraints()
@@ -144,8 +144,14 @@ class ConstraintsContainer(Container):
         return a list of casuarius constraint objects that can be added to this
         container's solver.
         """
-        eval_dict = copy(self._component_map)
+        eval_dict = {}
         eval_dict['__builtins__'] = None
+        components = self._component_map
+        for key in components.iterkeys():
+            if key == self.id:
+                eval_dict[key] = components[key]
+            else:
+                eval_dict[key] = components[key].layout_box
 
         constraints = []
         push = constraints.append
