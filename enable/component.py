@@ -1053,9 +1053,7 @@ class Component(CoordinateBox, Interactor):
         top = box.top
         width = box.width
         height = box.height
-        cns = [left >= 0, right >=0,
-               top >= 0, bottom >= 0,
-               width >= 0, height >= 0]
+        cns = [left >= 0, bottom >= 0, width >= 0, height >= 0]
         return cns
 
     def _get_size_constraints(self):
@@ -1067,7 +1065,7 @@ class Component(CoordinateBox, Interactor):
         box = self.layout_box
         width = box.width
         height = box.height
-        hug_width, hug_height = ('strong', 'strong')
+        hug_width, hug_height = ('ignore', 'ignore')
         resist_width, resist_height = ('strong', 'strong')
         if width_hint >= 0:
             if hug_width != 'ignore':
@@ -1083,15 +1081,6 @@ class Component(CoordinateBox, Interactor):
             if resist_height != 'ignore':
                 cn = (height >= height_hint) | resist_height
                 push(cn)
-
-        # XXX: Should these two be conditionally created?
-        top = box.top
-        bottom = box.bottom
-        left = box.left
-        right = box.right
-
-        push((top >= bottom + height) | 'strong')
-        push((right >= left + width) | 'strong')
 
         return cns
 

@@ -118,16 +118,6 @@ class ConstraintsContainer(Container):
         lm = LayoutManager()
 
         constraints = self.hard_constraints
-        box = self.layout_box
-        top = box.top
-        bottom = box.bottom
-        left = box.left
-        right = box.right
-        height = box.height
-        width = box.width
-        constraints.append((top >= bottom + height) | 'strong')
-        constraints.append((right >= left + width) | 'strong')
-
         lm.initialize(constraints)
         return lm
 
