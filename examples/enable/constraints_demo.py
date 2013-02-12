@@ -21,10 +21,10 @@ class Demo(HasTraits):
     def _canvas_default(self):
         container = ConstraintsContainer(bounds=(500,500))
 
-        container.add(Component(id="one", bgcolor="red", fixed_preferred_size=(250,250)))
-        container.add(Component(id="two", bgcolor="green", fixed_preferred_size=(250,250)))
-        container.add(Component(id="three", bgcolor="blue", fixed_preferred_size=(250,250)))
-        container.add(Component(id="four", bgcolor="black", fixed_preferred_size=(250,250)))
+        container.add(Component(id="one", bgcolor="red"))
+        container.add(Component(id="two", bgcolor="green"))
+        container.add(Component(id="three", bgcolor="blue"))
+        container.add(Component(id="four", bgcolor="black"))
 
         container.layout_constraints = [
             "parent.top == one.top",
@@ -39,6 +39,12 @@ class Demo(HasTraits):
             "three.right == four.left",
             "one.bottom == three.top",
             "two.bottom == four.top",
+            "one.width == two.width",
+            "one.width == three.width",
+            "one.width == four.width",
+            "one.height == three.height",
+            "one.height == two.height",
+            "one.height == four.height",
         ]
 
         return container
