@@ -21,10 +21,11 @@ class Demo(HasTraits):
     def _canvas_default(self):
         container = ConstraintsContainer(bounds=(500,500))
 
-        container.add(Component(id="one", bgcolor="red"))
-        container.add(Component(id="two", bgcolor="green"))
-        container.add(Component(id="three", bgcolor="blue"))
-        container.add(Component(id="four", bgcolor="black"))
+        hugs = {'hug_width':'weak', 'hug_height':'weak'}
+        container.add(Component(id="one", bgcolor="red", **hugs))
+        container.add(Component(id="two", bgcolor="green", **hugs))
+        container.add(Component(id="three", bgcolor="blue", **hugs))
+        container.add(Component(id="four", bgcolor="black", **hugs))
 
         container.layout_constraints = [
             "parent.top == one.top",
