@@ -16,9 +16,11 @@ from interactor import Interactor
 from layout.layout_box import LayoutBox
 
 coordinate_delegate = Delegate("inner", modify=True)
+ConstraintPolicyEnum = Enum('ignore', 'weak', 'medium', 'strong', 'required')
 
 
 DEFAULT_DRAWING_ORDER = ["background", "underlay", "mainlayer", "border", "overlay"]
+
 
 class Component(CoordinateBox, Interactor):
     """
@@ -124,6 +126,18 @@ class Component(CoordinateBox, Interactor):
 
     # The list of size constraints to apply to the widget.
     size_constraints = Property
+
+    # How strongly a component hugs it's width hint.
+    hug_width = ConstraintPolicyEnum('strong')
+
+    # How strongly a component hugs it's height hint.
+    hug_height = ConstraintPolicyEnum('strong')
+
+    # How strongly a component resists clipping its contents.
+    resist_width = ConstraintPolicyEnum('strong')
+
+    # How strongly a component resists clipping its contents.
+    resist_height = ConstraintPolicyEnum('strong')
 
     #------------------------------------------------------------------------
     # Overlays and underlays
@@ -1063,8 +1077,8 @@ class Component(CoordinateBox, Interactor):
         primitive = self.layout_box.primitive
         width = primitive('width')
         height = primitive('height')
-        hug_width, hug_height = ('ignore', 'ignore')
-        resist_width, resist_height = ('strong', 'strong')
+        hug_width, hug_height = self.hug_width, self.hug_height
+        resist_width, resist_height = self.resist_width, self.resist_height
         if width_hint >= 0:
             if hug_width != 'ignore':
                 cn = (width == width_hint) | hug_width
