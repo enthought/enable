@@ -22,10 +22,10 @@ class Demo(HasTraits):
         container = ConstraintsContainer(bounds=(500,500))
 
         hugs = {'hug_width':'weak', 'hug_height':'weak'}
-        container.add(Component(id="one", bgcolor="red", **hugs))
-        container.add(Component(id="two", bgcolor="green", **hugs))
-        container.add(Component(id="three", bgcolor="blue", **hugs))
-        container.add(Component(id="four", bgcolor="black", **hugs))
+        container.add(Component(id="one", bgcolor=0xFF0000, **hugs))
+        container.add(Component(id="two", bgcolor=0x00FF00, **hugs))
+        container.add(Component(id="three", bgcolor=0x0000FF, **hugs))
+        container.add(Component(id="four", bgcolor=0x000000, **hugs))
 
         container.layout_constraints = [
             "parent.top == one.top",

@@ -1,15 +1,8 @@
 #------------------------------------------------------------------------------
-#  Copyright (c) 2012, Enthought, Inc.
+#  Copyright (c) 2013, Enthought, Inc.
 #  All rights reserved.
 #------------------------------------------------------------------------------
-""" An example which demonstrates the use of the `align` layout helper.
-
-In this example, we use the `align` layout helper to align various
-constraints of the children of a container. The layout consists of 
-a Field pinned to the top of the Container. Below the Field are two
-PushButtons each of which have their `left` boundary aligned. The 
-top PushButton is then aligned with the `h_center` of the Field.
-
+""" Implements the constraints_demo in Enaml
 """
 from enaml.widgets.api import Window, Container, Html
 
@@ -17,18 +10,24 @@ from enaml.widgets.api import Window, Container, Html
 enamldef Main(Window):
     Container:
         constraints = [
-            top == one.top,
-            left == one.left,
-            top == two.top,
-            right == two.right,
-            bottom == three.bottom,
-            left == three.left,
-            bottom == four.bottom,
-            right == four.right,
+            self.top == one.top,
+            self.left == one.left,
+            self.top == two.top,
+            self.right == two.right,
+            self.bottom == three.bottom,
+            self.left == three.left,
+            self.bottom == four.bottom,
+            self.right == four.right,
             one.right == two.left,
             three.right == four.left,
             one.bottom == three.top,
             two.bottom == four.top,
+            one.width == two.width,
+            one.width == three.width,
+            one.width == four.width,
+            one.height == three.height,
+            one.height == two.height,
+            one.height == four.height,
         ]
         Html:
             id: one
