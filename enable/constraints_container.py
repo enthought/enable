@@ -52,9 +52,7 @@ class ConstraintsContainer(Container):
         height_var = primitive('height')
         width, height = self.bounds
         def layout():
-            for name, component in self._component_map.iteritems():
-                if name == self.id:
-                    continue
+            for component in self._component_map.itervalues():
                 prim = component.layout_box.primitive
                 component.position = (prim('left').value,
                                       prim('bottom').value)
@@ -88,7 +86,7 @@ class ConstraintsContainer(Container):
         """ The default component map should include this container so that
         name collisions are avoided.
         """
-        return {self.id : self.layout_box}
+        return {}
 
     def __components_items_changed(self, event):
         """ Make sure components that are added can be used with constraints.
@@ -139,6 +137,9 @@ class ConstraintsContainer(Container):
             elif key in self._component_map:
                 msg = "A Component with id '{0}' has already been added."
                 raise ValueError(msg.format(key))
+            elif key == self.id:
+                msg = "Can't add a Component with the same id as its parent."
+                raise ValueError(msg)
 
             self._hard_constraints_map[key] = item.hard_constraints
             self._size_constraints_map[key] = item.size_constraints
@@ -158,14 +159,10 @@ class ConstraintsContainer(Container):
             def __getattr__(self, name):
                 return self._object.primitive(name)
 
-        eval_dict = {}
+        eval_dict = {self.id: PrimitiveGetter(self.layout_box)}
         eval_dict['__builtins__'] = None
-        components = self._component_map
-        for key in components.iterkeys():
-            if key == self.id:
-                eval_dict[key] = PrimitiveGetter(components[key])
-            else:
-                eval_dict[key] = PrimitiveGetter(components[key].layout_box)
+        for key, comp in self._component_map.iteritems():
+            eval_dict[key] = PrimitiveGetter(comp.layout_box)
 
         constraints = []
         push = constraints.append
