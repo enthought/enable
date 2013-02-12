@@ -47,17 +47,19 @@ class ConstraintsContainer(Container):
         constraints modification.
         """
         mgr_layout = self._layout_manager.layout
-        box = self.layout_box
-        width_var = box.width
-        height_var = box.height
+        primitive = self.layout_box.primitive
+        width_var = primitive('width')
+        height_var = primitive('height')
         width, height = self.bounds
         def layout():
             for name, component in self._component_map.iteritems():
                 if name == self.id:
                     continue
-                box = component.layout_box
-                component.position = (box.left.value, box.bottom.value)
-                component.bounds = (box.width.value, box.height.value)
+                prim = component.layout_box.primitive
+                component.position = (prim('left').value,
+                                      prim('bottom').value)
+                component.bounds = (prim('width').value,
+                                    prim('height').value)
         mgr_layout(layout, width_var, height_var, (width, height))
 
     #------------------------------------------------------------------------
@@ -150,14 +152,20 @@ class ConstraintsContainer(Container):
         return a list of casuarius constraint objects that can be added to this
         container's solver.
         """
+        class PrimitiveGetter(object):
+            def __init__(self, obj):
+                self._object = obj
+            def __getattr__(self, name):
+                return self._object.primitive(name)
+
         eval_dict = {}
         eval_dict['__builtins__'] = None
         components = self._component_map
         for key in components.iterkeys():
             if key == self.id:
-                eval_dict[key] = components[key]
+                eval_dict[key] = PrimitiveGetter(components[key])
             else:
-                eval_dict[key] = components[key].layout_box
+                eval_dict[key] = PrimitiveGetter(components[key].layout_box)
 
         constraints = []
         push = constraints.append

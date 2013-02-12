@@ -9,8 +9,6 @@ from operator import add, mul
 from casuarius import ConstraintVariable
 
 
-KNOWN_CONSTRAINTS = ('left', 'right', 'top', 'bottom', 'width', 'height',
-    'h_center', 'v_center')
 SYMBOLIC_CONSTRAINTS = {
     'right': ['left', 'width', add],
     'top': ['bottom', 'height', add],
@@ -94,13 +92,4 @@ class LayoutBox(object):
 
         assert len(operands) == 1
         return pop()
-
-    def __getattr__(self, name):
-        """ Allow the primitive dictionary to act as an extension to the
-        object's namespace.
-        """
-        if name in KNOWN_CONSTRAINTS:
-            return self.primitive(name)
-
-        return super(LayoutBox, self).__getattr__(name)
 

@@ -1046,13 +1046,11 @@ class Component(CoordinateBox, Interactor):
     def _get_hard_constraints(self):
         """ Generate the constraints which must always be applied.
         """
-        box = self.layout_box
-        left = box.left
-        right = box.right
-        bottom = box.bottom
-        top = box.top
-        width = box.width
-        height = box.height
+        primitive = self.layout_box.primitive
+        left = primitive('left')
+        bottom = primitive('bottom')
+        width = primitive('width')
+        height = primitive('height')
         cns = [left >= 0, bottom >= 0, width >= 0, height >= 0]
         return cns
 
@@ -1062,9 +1060,9 @@ class Component(CoordinateBox, Interactor):
         cns = []
         push = cns.append
         width_hint, height_hint = self.get_preferred_size()
-        box = self.layout_box
-        width = box.width
-        height = box.height
+        primitive = self.layout_box.primitive
+        width = primitive('width')
+        height = primitive('height')
         hug_width, hug_height = ('ignore', 'ignore')
         resist_width, resist_height = ('strong', 'strong')
         if width_hint >= 0:
