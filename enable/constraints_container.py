@@ -60,13 +60,16 @@ class ConstraintsContainer(Container):
                                     prim('height').value)
         mgr_layout(layout, width_var, height_var, (width, height))
 
+        self.invalidate_draw()
+
     #------------------------------------------------------------------------
     # Traits methods
     #------------------------------------------------------------------------
     def _bounds_changed(self, old, new):
+        """ Run the solver when the container's bounds change.
+        """
         super(ConstraintsContainer, self)._bounds_changed(old, new)
         self.relayout()
-        self.invalidate_draw()
 
     def _layout_constraints_changed(self, name, old, new):
         """ Invalidate the layout when constraints change
@@ -78,8 +81,9 @@ class ConstraintsContainer(Container):
     def _layout_constraints_items_changed(self, event):
         """ Invalidate the layout when constraints change
         """
+        removed = self._parse_constraint_strs(event.removed)
         added = self._parse_constraint_strs(event.added)
-        self._layout_manager.replace_constraints(event.removed, added)
+        self._layout_manager.replace_constraints(removed, added)
         self.relayout()
 
     def __component_map_default(self):
