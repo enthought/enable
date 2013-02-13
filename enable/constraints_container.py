@@ -28,12 +28,12 @@ class ConstraintsContainer(Container):
     _component_map = Dict
 
     # All the hard constraints for child components
-    _hard_constraints_map = Dict(Str, List)
-    _hard_constraints = List
+    _child_hard_constraints_map = Dict(Str, List)
+    _child_hard_constraints = List
 
     # The size constraints for child components
-    _size_constraints_map = Dict(Str, List)
-    _size_constraints = List
+    _child_size_constraints_map = Dict(Str, List)
+    _child_size_constraints = List
 
     # The casuarius solver
     _layout_manager = Instance(LayoutManager)
@@ -98,8 +98,8 @@ class ConstraintsContainer(Container):
         # Remove stale components from the map
         for item in event.removed:
             key = item.id
-            del self._hard_constraints_map[key]
-            del self._size_constraints_map[key]
+            del self._child_hard_constraints_map[key]
+            del self._child_size_constraints_map[key]
             del self._component_map[key]
 
         # Check the added components
@@ -110,8 +110,8 @@ class ConstraintsContainer(Container):
         """
         # Clear the component maps
         self._component_map = self.__component_map_default()
-        self._hard_constraints_map = {}
-        self._size_constraints_map = {}
+        self._child_hard_constraints_map = {}
+        self._child_size_constraints_map = {}
 
         # Check the new components
         self._check_and_add_components(new)
@@ -121,7 +121,7 @@ class ConstraintsContainer(Container):
         """
         lm = LayoutManager()
 
-        constraints = self.hard_constraints
+        constraints = self._hard_constraints
         lm.initialize(constraints)
         return lm
 
@@ -145,8 +145,8 @@ class ConstraintsContainer(Container):
                 msg = "Can't add a Component with the same id as its parent."
                 raise ValueError(msg)
 
-            self._hard_constraints_map[key] = item.hard_constraints
-            self._size_constraints_map[key] = item.size_constraints
+            self._child_hard_constraints_map[key] = item._hard_constraints
+            self._child_size_constraints_map[key] = item._size_constraints
             self._component_map[key] = item
 
         # Update the fixed constraints
@@ -181,8 +181,8 @@ class ConstraintsContainer(Container):
         """
         old_cns, all_new_cns = [], []
         for name in ('hard', 'size'):
-            map_attr = getattr(self, '_{0}_constraints_map'.format(name))
-            list_name = '_{0}_constraints'.format(name)
+            map_attr = getattr(self, '_child_{0}_constraints_map'.format(name))
+            list_name = '_child_{0}_constraints'.format(name)
             old_cns.extend(getattr(self, list_name))
             new_cns = []
             for item in map_attr.itervalues():

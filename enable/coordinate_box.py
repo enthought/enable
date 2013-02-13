@@ -1,9 +1,15 @@
 
+from uuid import uuid4
+
 # Enthought library imports
-from traits.api import HasTraits, Property
+from traits.api import HasTraits, Enum, Instance, Property
 
 # Local, relative imports
 from enable_traits import bounds_trait, coordinate_trait
+from layout.layout_box import LayoutBox
+
+
+ConstraintPolicyEnum = Enum('ignore', 'weak', 'medium', 'strong', 'required')
 
 
 class CoordinateBox(HasTraits):
@@ -42,6 +48,35 @@ class CoordinateBox(HasTraits):
     width = Property
 
     height = Property
+
+    #------------------------------------------------------------------------
+    # Constraints-based layout
+    #------------------------------------------------------------------------
+
+    # The source for constraints variables for this component
+    layout_box = Instance(LayoutBox)
+
+    # How strongly a component hugs it's width hint.
+    hug_width = ConstraintPolicyEnum('strong')
+
+    # How strongly a component hugs it's height hint.
+    hug_height = ConstraintPolicyEnum('strong')
+
+    # How strongly a component resists clipping its contents.
+    resist_width = ConstraintPolicyEnum('strong')
+
+    # How strongly a component resists clipping its contents.
+    resist_height = ConstraintPolicyEnum('strong')
+
+    # The list of hard constraints which must be applied to the widget.
+    _hard_constraints = Property
+
+    # The list of size constraints to apply to the widget.
+    _size_constraints = Property
+
+    #------------------------------------------------------------------------
+    # Public methods
+    #------------------------------------------------------------------------
 
     def is_in(self, x, y):
         "Returns if the point x,y is in the box"
@@ -137,6 +172,48 @@ class CoordinateBox(HasTraits):
         else:
             self.bounds[1] = new_height
         return
+
+    def _layout_box_default(self):
+        return LayoutBox(type(self).__name__, uuid4().hex)
+
+    def _get__hard_constraints(self):
+        """ Generate the constraints which must always be applied.
+        """
+        primitive = self.layout_box.primitive
+        left = primitive('left')
+        bottom = primitive('bottom')
+        width = primitive('width')
+        height = primitive('height')
+        cns = [left >= 0, bottom >= 0, width >= 0, height >= 0]
+        return cns
+
+    def _get__size_constraints(self):
+        """ Creates the list of size hint constraints for this box.
+        """
+        cns = []
+        push = cns.append
+        width_hint, height_hint = self.bounds
+        primitive = self.layout_box.primitive
+        width = primitive('width')
+        height = primitive('height')
+        hug_width, hug_height = self.hug_width, self.hug_height
+        resist_width, resist_height = self.resist_width, self.resist_height
+        if width_hint >= 0:
+            if hug_width != 'ignore':
+                cn = (width == width_hint) | hug_width
+                push(cn)
+            if resist_width != 'ignore':
+                cn = (width >= width_hint) | resist_width
+                push(cn)
+        if height_hint >= 0:
+            if hug_height != 'ignore':
+                cn = (height == height_hint) | hug_height
+                push(cn)
+            if resist_height != 'ignore':
+                cn = (height >= height_hint) | resist_height
+                push(cn)
+
+        return cns
 
 
 # EOF
