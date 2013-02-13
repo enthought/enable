@@ -4,7 +4,7 @@
 #------------------------------------------------------------------------------
 
 # traits imports
-from traits.api import Dict, Instance, List, Str
+from traits.api import Callable, Dict, Either, Instance, List, Str
 
 # local imports
 from container import Container
@@ -22,7 +22,13 @@ class ConstraintsContainer(Container):
     id = "parent"
 
     # The layout constraints for this container.
-    layout_constraints = List
+    # This can either be a list or a callable. If it is a callable, it will be
+    # called with a single argument, the ConstraintsContainer, and be expected
+    # to return a list of constraints.
+    layout_constraints = Either(List, Callable)
+
+    # A copy of the layout constraints used when the constraints change
+    _layout_constraints = List
 
     # A dictionary of components added to this container
     _component_map = Dict
@@ -41,6 +47,12 @@ class ConstraintsContainer(Container):
     #------------------------------------------------------------------------
     # Public methods
     #------------------------------------------------------------------------
+
+    def refresh_layout_constraints(self):
+        """ Explicitly regenerate the container's constraints and refresh the
+        layout.
+        """
+        self._layout_constraints_changed()
 
     def relayout(self):
         """ Re-run the constraints solver in response to a resize or
@@ -69,23 +81,25 @@ class ConstraintsContainer(Container):
         super(ConstraintsContainer, self)._bounds_changed(old, new)
         self.relayout()
 
-    def _layout_constraints_changed(self, name, old, new):
-        """ Invalidate the layout when constraints change
+    def _layout_constraints_changed(self):
+        """ React to changes of the user controlled constraints.
+        """
+        if self.layout_constraints is None:
+            return
+
+        if callable(self.layout_constraints):
+            new = self.layout_constraints(self)
+        else:
+            new = self.layout_constraints
+
+        # Update the private constraints list. This will trigger the relayout.
+        self._layout_constraints = new
+
+    def __layout_constraints_changed(self, name, old, new):
+        """ Invalidate the layout when the private constraints list changes.
         """
         self._layout_manager.replace_constraints(old, new)
         self.relayout()
-
-    def _layout_constraints_items_changed(self, event):
-        """ Invalidate the layout when constraints change
-        """
-        self._layout_manager.replace_constraints(event.removed, event.added)
-        self.relayout()
-
-    def __component_map_default(self):
-        """ The default component map should include this container so that
-        name collisions are avoided.
-        """
-        return {}
 
     def __components_items_changed(self, event):
         """ Make sure components that are added can be used with constraints.
@@ -104,7 +118,7 @@ class ConstraintsContainer(Container):
         """ Make sure components that are added can be used with constraints.
         """
         # Clear the component maps
-        self._component_map = self.__component_map_default()
+        self._component_map = {}
         self._child_hard_constraints_map = {}
         self._child_size_constraints_map = {}
 
@@ -163,4 +177,5 @@ class ConstraintsContainer(Container):
             setattr(self, list_name, new_cns)
 
         self._layout_manager.replace_constraints(old_cns, all_new_cns)
-
+        # Possibly regenerate the user-specified constraints
+        self.refresh_layout_constraints()
