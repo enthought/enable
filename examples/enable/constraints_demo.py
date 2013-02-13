@@ -19,36 +19,37 @@ class Demo(HasTraits):
                  )
 
     def _canvas_default(self):
-        container = ConstraintsContainer(bounds=(500,500))
+        parent = ConstraintsContainer(bounds=(500,500))
 
         hugs = {'hug_width':'weak', 'hug_height':'weak'}
-        container.add(Component(id="one", bgcolor=0xFF0000, **hugs))
-        container.add(Component(id="two", bgcolor=0x00FF00, **hugs))
-        container.add(Component(id="three", bgcolor=0x0000FF, **hugs))
-        container.add(Component(id="four", bgcolor=0x000000, **hugs))
+        one = Component(id="one", bgcolor=0xFF0000, **hugs)
+        two = Component(id="two", bgcolor=0x00FF00, **hugs)
+        three = Component(id="three", bgcolor=0x0000FF, **hugs)
+        four = Component(id="four", bgcolor=0x000000, **hugs)
 
-        container.layout_constraints = [
-            "parent.top == one.top",
-            "parent.left == one.left",
-            "parent.top == two.top",
-            "parent.right == two.right",
-            "parent.bottom == three.bottom",
-            "parent.left == three.left",
-            "parent.bottom == four.bottom",
-            "parent.right == four.right",
-            "one.right == two.left",
-            "three.right == four.left",
-            "one.bottom == three.top",
-            "two.bottom == four.top",
-            "one.width == two.width",
-            "one.width == three.width",
-            "one.width == four.width",
-            "one.height == three.height",
-            "one.height == two.height",
-            "one.height == four.height",
+        parent.add(one, two, three, four)
+        parent.layout_constraints = [
+            parent.constraints.top == one.constraints.top,
+            parent.constraints.left == one.constraints.left,
+            parent.constraints.top == two.constraints.top,
+            parent.constraints.right == two.constraints.right,
+            parent.constraints.bottom == three.constraints.bottom,
+            parent.constraints.left == three.constraints.left,
+            parent.constraints.bottom == four.constraints.bottom,
+            parent.constraints.right == four.constraints.right,
+            one.constraints.right == two.constraints.left,
+            three.constraints.right == four.constraints.left,
+            one.constraints.bottom == three.constraints.top,
+            two.constraints.bottom == four.constraints.top,
+            one.constraints.width == two.constraints.width,
+            one.constraints.width == three.constraints.width,
+            one.constraints.width == four.constraints.width,
+            one.constraints.height == three.constraints.height,
+            one.constraints.height == two.constraints.height,
+            one.constraints.height == four.constraints.height,
         ]
 
-        return container
+        return parent
 
 
 if __name__ == "__main__":

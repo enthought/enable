@@ -12,6 +12,16 @@ from layout.layout_box import LayoutBox
 ConstraintPolicyEnum = Enum('ignore', 'weak', 'medium', 'strong', 'required')
 
 
+class _ConstraintsProxy(object):
+    """ A simple wrapper for accessing a LayoutBox's constraints as attributes.
+    """
+    def __init__(self, layout_box):
+        self._layout_box = layout_box
+
+    def __getattr__(self, name):
+        return self._layout_box.primitive(name)
+
+
 class CoordinateBox(HasTraits):
     """
     Represents a box in screen space, and provides convenience properties to
@@ -53,25 +63,28 @@ class CoordinateBox(HasTraits):
     # Constraints-based layout
     #------------------------------------------------------------------------
 
-    # The source for constraints variables for this component
-    layout_box = Instance(LayoutBox)
+    # A namespace containing the constraints for this 
+    constraints = Instance(_ConstraintsProxy)
 
-    # How strongly a component hugs it's width hint.
+    # How strongly a layout box hugs it's width hint.
     hug_width = ConstraintPolicyEnum('strong')
 
-    # How strongly a component hugs it's height hint.
+    # How strongly a layout box hugs it's height hint.
     hug_height = ConstraintPolicyEnum('strong')
 
-    # How strongly a component resists clipping its contents.
+    # How strongly a layout box resists clipping its contents.
     resist_width = ConstraintPolicyEnum('strong')
 
-    # How strongly a component resists clipping its contents.
+    # How strongly a layout box resists clipping its contents.
     resist_height = ConstraintPolicyEnum('strong')
 
-    # The list of hard constraints which must be applied to the widget.
+    # The source for constraints variables for this object
+    _layout_box = Instance(LayoutBox)
+
+    # The list of hard constraints which must be applied to the object.
     _hard_constraints = Property
 
-    # The list of size constraints to apply to the widget.
+    # The list of size constraints to apply to the object.
     _size_constraints = Property
 
     #------------------------------------------------------------------------
@@ -173,17 +186,20 @@ class CoordinateBox(HasTraits):
             self.bounds[1] = new_height
         return
 
-    def _layout_box_default(self):
+    def _constraints_default(self):
+        return _ConstraintsProxy(self._layout_box)
+
+    def __layout_box_default(self):
         return LayoutBox(type(self).__name__, uuid4().hex)
 
     def _get__hard_constraints(self):
         """ Generate the constraints which must always be applied.
         """
-        primitive = self.layout_box.primitive
-        left = primitive('left')
-        bottom = primitive('bottom')
-        width = primitive('width')
-        height = primitive('height')
+        constraints = self.constraints
+        left = constraints.left
+        bottom = constraints.bottom
+        width = constraints.width
+        height = constraints.height
         cns = [left >= 0, bottom >= 0, width >= 0, height >= 0]
         return cns
 
@@ -193,9 +209,9 @@ class CoordinateBox(HasTraits):
         cns = []
         push = cns.append
         width_hint, height_hint = self.bounds
-        primitive = self.layout_box.primitive
-        width = primitive('width')
-        height = primitive('height')
+        constraints = self.constraints
+        width = constraints.width
+        height = constraints.height
         hug_width, hug_height = self.hug_width, self.hug_height
         resist_width, resist_height = self.resist_width, self.resist_height
         if width_hint >= 0:
