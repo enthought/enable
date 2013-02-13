@@ -47,17 +47,15 @@ class ConstraintsContainer(Container):
         constraints modification.
         """
         mgr_layout = self._layout_manager.layout
-        primitive = self.layout_box.primitive
-        width_var = primitive('width')
-        height_var = primitive('height')
+        constraints = self.constraints
+        width_var = constraints.width
+        height_var = constraints.height
         width, height = self.bounds
         def layout():
             for component in self._component_map.itervalues():
-                prim = component.layout_box.primitive
-                component.position = (prim('left').value,
-                                      prim('bottom').value)
-                component.bounds = (prim('width').value,
-                                    prim('height').value)
+                cns = component.constraints
+                component.position = (cns.left.value, cns.bottom.value)
+                component.bounds = (cns.width.value, cns.height.value)
         mgr_layout(layout, width_var, height_var, (width, height))
 
         self.invalidate_draw()
@@ -74,16 +72,13 @@ class ConstraintsContainer(Container):
     def _layout_constraints_changed(self, name, old, new):
         """ Invalidate the layout when constraints change
         """
-        new = self._parse_constraint_strs(new)
         self._layout_manager.replace_constraints(old, new)
         self.relayout()
 
     def _layout_constraints_items_changed(self, event):
         """ Invalidate the layout when constraints change
         """
-        removed = self._parse_constraint_strs(event.removed)
-        added = self._parse_constraint_strs(event.added)
-        self._layout_manager.replace_constraints(removed, added)
+        self._layout_manager.replace_constraints(event.removed, event.added)
         self.relayout()
 
     def __component_map_default(self):
@@ -151,29 +146,6 @@ class ConstraintsContainer(Container):
 
         # Update the fixed constraints
         self._update_fixed_constraints()
-
-    def _parse_constraint_strs(self, constraint_strs):
-        """ Given a list of strings with each describing a constraint,
-        return a list of casuarius constraint objects that can be added to this
-        container's solver.
-        """
-        class PrimitiveGetter(object):
-            def __init__(self, obj):
-                self._object = obj
-            def __getattr__(self, name):
-                return self._object.primitive(name)
-
-        eval_dict = {self.id: PrimitiveGetter(self.layout_box)}
-        eval_dict['__builtins__'] = None
-        for key, comp in self._component_map.iteritems():
-            eval_dict[key] = PrimitiveGetter(comp.layout_box)
-
-        constraints = []
-        push = constraints.append
-        for cns_str in constraint_strs:
-            push(eval(cns_str, eval_dict))
-
-        return constraints
 
     def _update_fixed_constraints(self):
         """ Resolve the differences between the list of constraints and the
