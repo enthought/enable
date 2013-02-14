@@ -24,8 +24,8 @@ def add_symbolic_constraints(namespace):
 
     namespace.right = left + width
     namespace.top = bottom + height
-    namespace.h_center = left + 0.5 * width
-    namespace.v_center = bottom + 0.5 * height
+    namespace.h_center = left + width / 2.0
+    namespace.v_center = bottom + height / 2.0
 
 
 class CoordinateBox(HasTraits):
