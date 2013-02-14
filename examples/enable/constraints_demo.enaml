@@ -4,30 +4,15 @@
 #------------------------------------------------------------------------------
 """ Implements the constraints_demo in Enaml
 """
+from enaml.layout.api import align, hbox
 from enaml.widgets.api import Window, Container, Html
 
 
 enamldef Main(Window):
     Container:
         constraints = [
-            self.top == one.top,
-            self.left == one.left,
-            self.top == two.top,
-            self.right == two.right,
-            self.bottom == three.bottom,
-            self.left == three.left,
-            self.bottom == four.bottom,
-            self.right == four.right,
-            one.right == two.left,
-            three.right == four.left,
-            one.bottom == three.top,
-            two.bottom == four.top,
-            one.width == two.width,
-            one.width == three.width,
-            one.width == four.width,
-            one.height == three.height,
-            one.height == two.height,
-            one.height == four.height,
+            hbox(one, two, three, four),
+            align('width', one, two, three, four),
         ]
         Html:
             id: one
