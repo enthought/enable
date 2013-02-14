@@ -7,25 +7,10 @@ from traits.api import HasTraits, Enum, Instance, Property
 # Local, relative imports
 from enable_traits import bounds_trait, coordinate_trait
 from layout.constraints_namespace import ConstraintsNamespace
+from layout.utils import add_symbolic_constraints, STRENGTHS
 
 
-ConstraintPolicyEnum = Enum('ignore', 'weak', 'medium', 'strong', 'required')
-
-
-def add_symbolic_constraints(namespace):
-    """ Add constraints to a namespace that are LinearExpressions of basic
-    constraints.
-
-    """
-    bottom = namespace.bottom
-    left = namespace.left
-    width = namespace.width
-    height = namespace.height
-
-    namespace.right = left + width
-    namespace.top = bottom + height
-    namespace.h_center = left + width / 2.0
-    namespace.v_center = bottom + height / 2.0
+ConstraintPolicyEnum = Enum('ignore', *STRENGTHS)
 
 
 class CoordinateBox(HasTraits):
