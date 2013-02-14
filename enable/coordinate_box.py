@@ -175,7 +175,7 @@ class CoordinateBox(HasTraits):
         return
 
     def _constraints_default(self):
-        cns_names = ConstraintsNamespace(type(self).__name__, uuid4().hex)
+        cns_names = ConstraintsNamespace(type(self).__name__, uuid4().hex[:8])
         add_symbolic_constraints(cns_names)
         return cns_names
 

@@ -340,7 +340,7 @@ class BoxHelper(DeferredConstraints):
 
         """
         super(BoxHelper, self).__init__()
-        owner = uuid4().hex
+        owner = uuid4().hex[:8]
         self.constraints_id = name + '|' + owner
         self._namespace = ConstraintsNamespace(name, owner)
         add_symbolic_constraints(self._namespace)
@@ -356,6 +356,7 @@ class BoxHelper(DeferredConstraints):
 
 
 ABConstrainable.register(BoxHelper)
+ABConstrainable.register(ConstraintsNamespace)
 
 
 class LinearBoxHelper(BoxHelper):

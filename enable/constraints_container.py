@@ -8,6 +8,7 @@ from traits.api import Callable, Dict, Either, Instance, List, Str
 
 # local imports
 from container import Container
+from layout.layout_helpers import expand_constraints
 from layout.layout_manager import LayoutManager
 
 
@@ -92,7 +93,9 @@ class ConstraintsContainer(Container):
             new = self.layout_constraints
 
         # Update the private constraints list. This will trigger the relayout.
-        self._layout_constraints = new
+        expand = expand_constraints
+        constraints = self.constraints
+        self._layout_constraints = [cns for cns in expand(constraints, new)]
 
     def __layout_constraints_changed(self, name, old, new):
         """ Invalidate the layout when the private constraints list changes.
@@ -176,7 +179,12 @@ class ConstraintsContainer(Container):
         cns.contents_h_center = contents_left + cns.contents_width / 2.0
 
         return [contents_left >= 0, contents_right >= 0,
-                contents_top >= 0, contents_bottom >= 0]
+                contents_top >= 0, contents_bottom >= 0,
+                contents_left == cns.left + self.padding_left,
+                contents_bottom == cns.bottom + self.padding_bottom,
+                contents_right == cns.right - self.padding_right,
+                contents_top == cns.top - self.padding_top,
+            ]
 
     def _update_fixed_constraints(self):
         """ Resolve the differences between the list of constraints and the
