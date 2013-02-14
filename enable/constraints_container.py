@@ -17,8 +17,7 @@ class ConstraintsContainer(Container):
 
     """
 
-    # The ID for this component. This ID can be used by the layout constraints
-    # when referencing the container.
+    # The ID for this component.
     id = "parent"
 
     # The layout constraints for this container.
@@ -130,7 +129,7 @@ class ConstraintsContainer(Container):
         """
         lm = LayoutManager()
 
-        constraints = self._hard_constraints
+        constraints = self._hard_constraints + self._content_box_constraints()
         lm.initialize(constraints)
         return lm
 
@@ -160,6 +159,24 @@ class ConstraintsContainer(Container):
 
         # Update the fixed constraints
         self._update_fixed_constraints()
+
+    def _content_box_constraints(self):
+        """ Return the constraints which define the content box of this
+        container.
+
+        """
+        cns = self.constraints
+        contents_left = cns.contents_left
+        contents_right = cns.contents_right
+        contents_top = cns.contents_top
+        contents_bottom = cns.contents_bottom
+        cns.contents_width = contents_right - contents_left
+        cns.contents_height = contents_bottom - contents_top
+        cns.contents_v_center = contents_top + cns.contents_height / 2.0
+        cns.contents_h_center = contents_left + cns.contents_width / 2.0
+
+        return [contents_left >= 0, contents_right >= 0,
+                contents_top >= 0, contents_bottom >= 0]
 
     def _update_fixed_constraints(self):
         """ Resolve the differences between the list of constraints and the
