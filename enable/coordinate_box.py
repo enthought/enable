@@ -6,20 +6,26 @@ from traits.api import HasTraits, Enum, Instance, Property
 
 # Local, relative imports
 from enable_traits import bounds_trait, coordinate_trait
-from layout.layout_box import LayoutBox
+from layout.constraints_namespace import ConstraintsNamespace
 
 
 ConstraintPolicyEnum = Enum('ignore', 'weak', 'medium', 'strong', 'required')
 
 
-class _ConstraintsProxy(object):
-    """ A simple wrapper for accessing a LayoutBox's constraints as attributes.
-    """
-    def __init__(self, layout_box):
-        self._layout_box = layout_box
+def add_symbolic_constraints(namespace):
+    """ Add constraints to a namespace that are LinearExpressions of basic
+    constraints.
 
-    def __getattr__(self, name):
-        return self._layout_box.primitive(name)
+    """
+    bottom = namespace.bottom
+    left = namespace.left
+    width = namespace.width
+    height = namespace.height
+
+    namespace.right = left + width
+    namespace.top = bottom + height
+    namespace.h_center = left + 0.5 * width
+    namespace.v_center = bottom + 0.5 * height
 
 
 class CoordinateBox(HasTraits):
@@ -63,8 +69,8 @@ class CoordinateBox(HasTraits):
     # Constraints-based layout
     #------------------------------------------------------------------------
 
-    # A namespace containing the constraints for this 
-    constraints = Instance(_ConstraintsProxy)
+    # A namespace containing the constraints for this CoordinateBox
+    constraints = Instance(ConstraintsNamespace)
 
     # How strongly a layout box hugs it's width hint.
     hug_width = ConstraintPolicyEnum('strong')
@@ -77,9 +83,6 @@ class CoordinateBox(HasTraits):
 
     # How strongly a layout box resists clipping its contents.
     resist_height = ConstraintPolicyEnum('strong')
-
-    # The source for constraints variables for this object
-    _layout_box = Instance(LayoutBox)
 
     # The list of hard constraints which must be applied to the object.
     _hard_constraints = Property
@@ -187,10 +190,9 @@ class CoordinateBox(HasTraits):
         return
 
     def _constraints_default(self):
-        return _ConstraintsProxy(self._layout_box)
-
-    def __layout_box_default(self):
-        return LayoutBox(type(self).__name__, uuid4().hex)
+        cns_names = ConstraintsNamespace(type(self).__name__, uuid4().hex)
+        add_symbolic_constraints(cns_names)
+        return cns_names
 
     def _get__hard_constraints(self):
         """ Generate the constraints which must always be applied.
