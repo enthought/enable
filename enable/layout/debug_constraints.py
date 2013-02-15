@@ -57,7 +57,7 @@ class DebugConstraintsOverlay(AbstractOverlay):
 
         """
         self.boxes = defaultdict(Coords)
-        if layout_mgr is not None:
+        if layout_mgr is not None and layout_mgr._constraints:
             for constraint in layout_mgr._constraints:
                 for expr in (constraint.lhs, constraint.rhs):
                     for term in expr.terms:
