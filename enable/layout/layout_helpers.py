@@ -1234,6 +1234,7 @@ def horizontal(*items, **config):
     abutments for the given sequence of items.
 
     """
+    items = [item.constraints for item in items]
     return AbutmentHelper('horizontal', *items, **config)
 
 
@@ -1242,6 +1243,7 @@ def vertical(*items, **config):
     abutments for the given sequence of items.
 
     """
+    items = [item.constraints for item in items]
     return AbutmentHelper('vertical', *items, **config)
 
 
@@ -1250,6 +1252,7 @@ def hbox(*items, **config):
     abutments for a given sequence of items.
 
     """
+    items = [item.constraints for item in items]
     return LinearBoxHelper('horizontal', *items, **config)
 
 
@@ -1258,6 +1261,7 @@ def vbox(*items, **config):
     for a given sequence of items.
 
     """
+    items = [item.constraints for item in items]
     return LinearBoxHelper('vertical', *items, **config)
 
 
@@ -1266,6 +1270,7 @@ def align(anchor, *items, **config):
     spacing is allowed.
 
     """
+    items = [item.constraints for item in items]
     return AlignmentHelper(anchor, *items, **config)
 
 
@@ -1274,6 +1279,7 @@ def grid(*rows, **config):
     grid.
 
     """
+    rows = [[item.constraints for item in items] for items in rows]
     return GridHelper(*rows, **config)
 
 
