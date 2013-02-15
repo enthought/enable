@@ -124,8 +124,6 @@ class ConstraintsContainer(Container):
         """ Invalidate the layout when the private constraints list changes.
         """
         self._layout_manager.replace_constraints(old, new)
-        if self.debug:
-            self._debug_overlay.selected_constraints = new
         self.relayout()
 
     def __components_items_changed(self, event):

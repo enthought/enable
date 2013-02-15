@@ -1,26 +1,51 @@
 
 from enable.api import Component, ComponentEditor, ConstraintsContainer
 from enable.layout.layout_helpers import hbox, align, grid
-from traits.api import HasTraits, Instance
-from traitsui.api import Item, View
+from traits.api import HasTraits, Any, Instance, List, Property
+from traitsui.api import Item, View, HGroup, TabularEditor
+from traitsui.tabular_adapter import TabularAdapter
+
+
+class ConstraintAdapter(TabularAdapter):
+    """ Display Constraints in a TabularEditor.
+    """
+    columns = [('Constraint', 'id')]
+    id_text = Property
+    def _get_id_text(self):
+        return self.item.__repr__()
 
 
 class Demo(HasTraits):
     canvas = Instance(Component)
 
+    constraints = Property(List)
+
+    selected_constraints = Any
+
     traits_view = View(
-                        Item('canvas',
-                             editor=ComponentEditor(),
-                             show_label=False,
+                        HGroup(
+                            Item('constraints',
+                                 editor=TabularEditor(
+                                    adapter=ConstraintAdapter(),
+                                    editable=False,
+                                    multi_select=True,
+                                    selected='selected_constraints',
+                                 ),
+                                 show_label=False,
+                            ),
+                            Item('canvas',
+                                 editor=ComponentEditor(),
+                                 show_label=False,
+                            ),
                         ),
                         resizable=True,
                         title="Constraints Demo",
-                        width=500,
+                        width=1000,
                         height=500,
                  )
 
     def _canvas_default(self):
-        parent = ConstraintsContainer(bounds=(500,500), debug=True)
+        parent = ConstraintsContainer(bounds=(500,500), padding=20, debug=True)
 
         hugs = {'hug_width':'weak', 'hug_height':'weak'}
         one = Component(id="one", bgcolor=0xFF0000, **hugs)
@@ -38,6 +63,18 @@ class Demo(HasTraits):
         ]
 
         return parent
+
+    def _get_constraints(self):
+        return list(self.canvas._layout_manager._constraints)
+
+    def _selected_constraints_changed(self, new):
+        if new is None or new == []:
+            return
+
+        if self.canvas.debug:
+            canvas = self.canvas
+            canvas._debug_overlay.selected_constraints = new
+            canvas.request_redraw()
 
 
 if __name__ == "__main__":
