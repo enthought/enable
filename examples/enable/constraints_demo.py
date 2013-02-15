@@ -1,6 +1,6 @@
 
 from enable.api import Component, ComponentEditor, ConstraintsContainer
-from enable.layout.layout_helpers import hbox, align, grid
+from enable.layout.layout_helpers import hbox, vbox, align, grid, horizontal
 from traits.api import HasTraits, Any, Instance, List, Property
 from traitsui.api import Item, View, HGroup, TabularEditor
 from traitsui.tabular_adapter import TabularAdapter
@@ -55,17 +55,20 @@ class Demo(HasTraits):
 
         parent.add(one, two, three, four)
         parent.layout_constraints = [
-            hbox(one.constraints, two.constraints,
-                 three.constraints, four.constraints),
+            grid([one.constraints, two.constraints],
+                 [three.constraints, four.constraints]),
+            align('height', one.constraints, two.constraints,
+                           three.constraints, four.constraints),
             align('width', one.constraints, two.constraints,
                            three.constraints, four.constraints),
-
         ]
 
         return parent
 
     def _get_constraints(self):
-        return list(self.canvas._layout_manager._constraints)
+        if self.canvas._layout_manager._constraints:
+            return list(self.canvas._layout_manager._constraints)
+        return []
 
     def _selected_constraints_changed(self, new):
         if new is None or new == []:

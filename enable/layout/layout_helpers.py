@@ -670,19 +670,19 @@ class GridHelper(BoxHelper):
 
         # Add some neighbor relations to the row and column vars.
         for r1, r2 in zip(row_vars[:-1], row_vars[1:]):
-            constraints.append(r1 <= r2)
+            constraints.append(r1 >= r2)
         for c1, c2 in zip(col_vars[:-1], col_vars[1:]):
             constraints.append(c1 <= c2)
 
         # Setup the initial interior bounding box for the grid.
         margins = self.margins
-        top_items = (self.top, EqSpacer(margins.top), row_vars[0])
-        bottom_items = (row_vars[-1], EqSpacer(margins.bottom), self.bottom)
+        bottom_items = (self.bottom, EqSpacer(margins.bottom), row_vars[-1])
+        top_items = (row_vars[0], EqSpacer(margins.top), self.top)
         left_items = (self.left, EqSpacer(margins.left), col_vars[0])
         right_items = (col_vars[-1], EqSpacer(margins.right), self.right)
         helpers = [
-            AbutmentHelper('vertical', *top_items),
             AbutmentHelper('vertical', *bottom_items),
+            AbutmentHelper('vertical', *top_items),
             AbutmentHelper('horizontal', *left_items),
             AbutmentHelper('horizontal', *right_items),
         ]
@@ -976,7 +976,7 @@ class AbutmentConstraintFactory(SequenceConstraintFactory):
     #: lookup for a pair of items in order to make the constraint.
     orientation_map = {
         'horizontal': ('right', 'left'),
-        'vertical': ('bottom', 'top'),
+        'vertical': ('top', 'bottom'),
     }
 
     @classmethod
@@ -1018,6 +1018,8 @@ class AbutmentConstraintFactory(SequenceConstraintFactory):
                    "'horizontal'. Got %r instead.")
             raise ValueError(msg % orientation)
         first_name, second_name = orient
+        if orientation == 'vertical':
+            items.reverse()
         return cls._make_cns(items, first_name, second_name, spacing)
 
 
