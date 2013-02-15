@@ -176,8 +176,8 @@ class ConstraintsContainer(Container):
 
         # Add these to the namespace, but don't use them
         cns.contents_width = contents_right - contents_left
-        cns.contents_height = contents_bottom - contents_top
-        cns.contents_v_center = contents_top + cns.contents_height / 2.0
+        cns.contents_height = contents_top - contents_bottom
+        cns.contents_v_center = contents_bottom + cns.contents_height / 2.0
         cns.contents_h_center = contents_left + cns.contents_width / 2.0
 
         return [contents_left == cns.left + self.padding_left,
