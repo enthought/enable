@@ -49,7 +49,7 @@ class DebugConstraintsOverlay(AbstractOverlay):
     boxes = Any()
 
     # Style options for the lines.
-    term_color = ColorTrait('lightblue')
+    term_color = ColorTrait('orange')
     term_line_style = LineStyle('solid')
 
     def update_from_constraints(self, layout_mgr):
@@ -76,7 +76,9 @@ class DebugConstraintsOverlay(AbstractOverlay):
         """
         if len(self.selected_constraints) == 0:
             return
+        origin = other_component.position
         with gc:
+            gc.translate_ctm(*origin)
             gc.set_stroke_color(self.term_color_)
             gc.set_line_dash(self.term_line_style_)
             gc.set_line_width(3)
