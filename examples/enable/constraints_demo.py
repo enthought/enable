@@ -20,7 +20,7 @@ class Demo(HasTraits):
                  )
 
     def _canvas_default(self):
-        parent = ConstraintsContainer(bounds=(500,500))
+        parent = ConstraintsContainer(bounds=(500,500), debug=True)
 
         hugs = {'hug_width':'weak', 'hug_height':'weak'}
         one = Component(id="one", bgcolor=0xFF0000, **hugs)
