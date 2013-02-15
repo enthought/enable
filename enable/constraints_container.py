@@ -4,10 +4,11 @@
 #------------------------------------------------------------------------------
 
 # traits imports
-from traits.api import Callable, Dict, Either, Instance, List, Str
+from traits.api import Bool, Callable, Dict, Either, Instance, List, Str
 
 # local imports
 from container import Container
+from layout.debug_constraints import DebugConstraintsOverlay
 from layout.layout_helpers import expand_constraints
 from layout.layout_manager import LayoutManager
 
@@ -44,6 +45,25 @@ class ConstraintsContainer(Container):
     # The casuarius solver
     _layout_manager = Instance(LayoutManager)
 
+
+    #------------------------------------------------------------------------
+    # Debugging bits
+    #------------------------------------------------------------------------
+
+    # Whether or not debugging info should be shown.
+    debug = Bool(False)
+
+    # The overlay that draws the debugging info
+    _debug_overlay = Instance(DebugConstraintsOverlay)
+
+    def __init__(self, **traits):
+        super(ConstraintsContainer, self).__init__(**traits)
+
+        if self.debug:
+            dbg = DebugConstraintsOverlay()
+            self.overlays.append(dbg)
+            self._debug_overlay = dbg
+
     #------------------------------------------------------------------------
     # Public methods
     #------------------------------------------------------------------------
@@ -68,6 +88,9 @@ class ConstraintsContainer(Container):
                 cns = component.constraints
                 component.position = (cns.left.value, cns.bottom.value)
                 component.bounds = (cns.width.value, cns.height.value)
+            if self._debug_overlay:
+                layout_mgr = self._layout_manager
+                self._debug_overlay.update_from_constraints(layout_mgr)
         mgr_layout(layout, width_var, height_var, (width, height))
 
         self.invalidate_draw()
@@ -101,6 +124,8 @@ class ConstraintsContainer(Container):
         """ Invalidate the layout when the private constraints list changes.
         """
         self._layout_manager.replace_constraints(old, new)
+        if self.debug:
+            self._debug_overlay.selected_constraints = new
         self.relayout()
 
     def __components_items_changed(self, event):
@@ -130,7 +155,7 @@ class ConstraintsContainer(Container):
     def __layout_manager_default(self):
         """ Create the layout manager.
         """
-        lm = LayoutManager()
+        lm = LayoutManager(debug=self.debug)
 
         constraints = self._hard_constraints + self._content_box_constraints()
         lm.initialize(constraints)
