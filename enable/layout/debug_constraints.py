@@ -91,16 +91,16 @@ class DebugConstraintsOverlay(AbstractOverlay):
                 box = self.boxes[name]
                 if attr == 'top':
                     self.hline(gc, box.left, box.top, box.width)
+                elif attr == 'bottom':
+                    self.hline(gc, box.left, box.bottom, box.width)
                 elif attr == 'left':
                     self.vline(gc, box.left, box.bottom, box.height)
+                elif attr == 'right':
+                    self.vline(gc, box.right, box.bottom, box.height)
                 elif attr == 'width':
                     self.hline(gc, box.left, box.v_center, box.width)
                 elif attr == 'height':
-                    self.vline(gc, box.h_center, box.top, box.height)
-                elif attr == 'bottom':
-                    self.hline(gc, box.left, box.bottom, box.right - box.left)
-                elif attr == 'right':
-                    self.vline(gc, box.right, box.bottom, box.top - box.bottom)
+                    self.vline(gc, box.h_center, box.bottom, box.height)
                 gc.stroke_path()
 
     def vline(self, gc, x, y0, length):
