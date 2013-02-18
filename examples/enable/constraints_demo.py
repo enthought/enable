@@ -55,9 +55,12 @@ class Demo(HasTraits):
 
         parent.add(one, two, three, four)
         parent.layout_constraints = [
-            grid([one, two], [three, four]),
-            align('height', one, two, three, four),
-            align('width', one, two, three, four),
+            grid([one.constraints, two.constraints],
+                 [three.constraints, four.constraints]),
+            align('height', one.constraints, two.constraints,
+                  three.constraints, four.constraints),
+            align('width', one.constraints, two.constraints,
+                  three.constraints, four.constraints),
         ]
 
         return parent
