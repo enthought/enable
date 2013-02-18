@@ -19,9 +19,6 @@ class ConstraintsContainer(Container):
 
     """
 
-    # The ID for this component.
-    id = "parent"
-
     # The layout constraints for this container.
     # This can either be a list or a callable. If it is a callable, it will be
     # called with a single argument, the ConstraintsContainer, and be expected
