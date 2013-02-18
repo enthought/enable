@@ -1,6 +1,4 @@
 
-from uuid import uuid4
-
 # Enthought library imports
 from traits.api import HasTraits, Enum, Instance, Property
 
@@ -175,7 +173,8 @@ class CoordinateBox(HasTraits):
         return
 
     def _constraints_default(self):
-        cns_names = ConstraintsNamespace(type(self).__name__, uuid4().hex[:8])
+        obj_name = self.id if hasattr(self, 'id') else ''
+        cns_names = ConstraintsNamespace(type(self).__name__, obj_name)
         add_symbolic_constraints(cns_names)
         return cns_names
 

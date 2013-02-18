@@ -2,6 +2,8 @@
 
 from __future__ import with_statement
 
+from uuid import uuid4
+
 # Enthought library imports
 from traits.api \
     import Any, Bool, Delegate, Enum, Float, Instance, Int, List, \
@@ -314,8 +316,8 @@ class Component(CoordinateBox, Interactor):
     # into more than one class and that class
     classes = List
 
-    # The optional element ID of this component.
-    id = Str("")
+    # The element ID of this component.
+    id = Str
 
     # These will be used by the new layout system, but are currently unused.
     #max_width = Any
@@ -1034,6 +1036,12 @@ class Component(CoordinateBox, Interactor):
     #------------------------------------------------------------------------
     # Event handlers
     #------------------------------------------------------------------------
+
+    def _id_default(self):
+        """ Generate a random UUID for the ID.
+        """
+        # The first 32bits is plenty.
+        return uuid4().hex[:8]
 
     def _aspect_ratio_changed(self, old, new):
         if new is not None:
