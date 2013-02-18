@@ -1,6 +1,6 @@
 
 from enable.api import Component, ComponentEditor, ConstraintsContainer
-from enable.layout.layout_helpers import hbox, vbox, align, grid, vertical
+from enable.layout.layout_helpers import hbox, vbox, align, grid, vertical, spacer
 from traits.api import HasTraits, Any, Instance, List, Property
 from traitsui.api import Item, View, HGroup, TabularEditor
 from traitsui.tabular_adapter import TabularAdapter
@@ -55,12 +55,9 @@ class Demo(HasTraits):
 
         parent.add(one, two, three, four)
         parent.layout_constraints = [
-            grid([one.constraints, two.constraints],
-                 [three.constraints, four.constraints]),
-            align('height', one.constraints, two.constraints,
-                  three.constraints, four.constraints),
-            align('width', one.constraints, two.constraints,
-                  three.constraints, four.constraints),
+            grid([one, two], [three, four]),
+            align('layout_height', one, two, three, four),
+            align('layout_width', one, two, three, four),
         ]
 
         return parent

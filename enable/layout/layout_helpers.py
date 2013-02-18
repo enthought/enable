@@ -349,14 +349,13 @@ class BoxHelper(DeferredConstraints):
     top = property(lambda self: self._namespace.top)
     right = property(lambda self: self._namespace.right)
     bottom = property(lambda self: self._namespace.bottom)
-    width = property(lambda self: self._namespace.width)
-    height = property(lambda self: self._namespace.height)
+    layout_width = property(lambda self: self._namespace.layout_width)
+    layout_height = property(lambda self: self._namespace.layout_height)
     v_center = property(lambda self: self._namespace.v_center)
     h_center = property(lambda self: self._namespace.h_center)
 
 
 ABConstrainable.register(BoxHelper)
-ABConstrainable.register(ConstraintsNamespace)
 
 
 class LinearBoxHelper(BoxHelper):

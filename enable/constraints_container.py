@@ -4,13 +4,16 @@
 #------------------------------------------------------------------------------
 
 # traits imports
-from traits.api import Bool, Callable, Dict, Either, Instance, List, Str
+from traits.api import Bool, Callable, Dict, Either, Instance, List, \
+    Property, Str
 
 # local imports
 from container import Container
+from coordinate_box import get_from_constraints_namespace
 from layout.debug_constraints import DebugConstraintsOverlay
 from layout.layout_helpers import expand_constraints
 from layout.layout_manager import LayoutManager
+from layout.utils import add_symbolic_contents_constraints
 
 
 class ConstraintsContainer(Container):
@@ -18,6 +21,37 @@ class ConstraintsContainer(Container):
     constraints-based layout solver.
 
     """
+    # A read-only symbolic object that represents the left boundary of
+    # the component
+    contents_left = Property(fget=get_from_constraints_namespace)
+
+    # A read-only symbolic object that represents the right boundary
+    # of the component
+    contents_right = Property(fget=get_from_constraints_namespace)
+
+    # A read-only symbolic object that represents the bottom boundary
+    # of the component
+    contents_bottom = Property(fget=get_from_constraints_namespace)
+
+    # A read-only symbolic object that represents the top boundary of
+    # the component
+    contents_top = Property(fget=get_from_constraints_namespace)
+
+    # A read-only symbolic object that represents the width of the
+    # component
+    contents_width = Property(fget=get_from_constraints_namespace)
+
+    # A read-only symbolic object that represents the height of the
+    # component
+    contents_height = Property(fget=get_from_constraints_namespace)
+
+    # A read-only symbolic object that represents the vertical center
+    # of the component
+    contents_v_center = Property(fget=get_from_constraints_namespace)
+
+    # A read-only symbolic object that represents the horizontal
+    # center of the component
+    contents_h_center = Property(fget=get_from_constraints_namespace)
 
     # The layout constraints for this container.
     # This can either be a list or a callable. If it is a callable, it will be
@@ -76,15 +110,15 @@ class ConstraintsContainer(Container):
         constraints modification.
         """
         mgr_layout = self._layout_manager.layout
-        constraints = self.constraints
-        width_var = constraints.width
-        height_var = constraints.height
+        width_var = self.layout_width
+        height_var = self.layout_height
         width, height = self.bounds
         def layout():
             for component in self._component_map.itervalues():
-                cns = component.constraints
-                component.position = (cns.left.value, cns.bottom.value)
-                component.bounds = (cns.width.value, cns.height.value)
+                component.position = (component.left.value,
+                                      component.bottom.value)
+                component.bounds = (component.layout_width.value,
+                                    component.layout_height.value)
             if self._debug_overlay:
                 layout_mgr = self._layout_manager
                 self._debug_overlay.update_from_constraints(layout_mgr)
@@ -114,8 +148,7 @@ class ConstraintsContainer(Container):
 
         # Update the private constraints list. This will trigger the relayout.
         expand = expand_constraints
-        constraints = self.constraints
-        self._layout_constraints = [cns for cns in expand(constraints, new)]
+        self._layout_constraints = [cns for cns in expand(self, new)]
 
     def __layout_constraints_changed(self, name, old, new):
         """ Invalidate the layout when the private constraints list changes.
@@ -188,22 +221,17 @@ class ConstraintsContainer(Container):
         container.
 
         """
-        cns = self.constraints
-        contents_left = cns.contents_left
-        contents_right = cns.contents_right
-        contents_top = cns.contents_top
-        contents_bottom = cns.contents_bottom
+        add_symbolic_contents_constraints(self._constraints_vars)
 
-        # Add these to the namespace, but don't use them here
-        cns.contents_width = contents_right - contents_left
-        cns.contents_height = contents_top - contents_bottom
-        cns.contents_v_center = contents_bottom + cns.contents_height / 2.0
-        cns.contents_h_center = contents_left + cns.contents_width / 2.0
+        contents_left = self.contents_left
+        contents_right = self.contents_right
+        contents_top = self.contents_top
+        contents_bottom = self.contents_bottom
 
-        return [contents_left == cns.left,
-                contents_bottom == cns.bottom,
-                contents_right == cns.left + cns.width,
-                contents_top == cns.bottom + cns.height,
+        return [contents_left == self.left,
+                contents_bottom == self.bottom,
+                contents_right == self.left + self.layout_width,
+                contents_top == self.bottom + self.layout_height,
             ]
 
     def _update_fixed_constraints(self):
