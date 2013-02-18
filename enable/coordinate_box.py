@@ -4,11 +4,20 @@ from traits.api import HasTraits, Enum, Instance, Property
 
 # Local, relative imports
 from enable_traits import bounds_trait, coordinate_trait
+from layout.ab_constrainable import ABConstrainable
 from layout.constraints_namespace import ConstraintsNamespace
 from layout.utils import add_symbolic_constraints, STRENGTHS
 
 
 ConstraintPolicyEnum = Enum('ignore', *STRENGTHS)
+
+
+def get_from_constraints_namespace(self, name):
+    """ Property getter for all attributes that come from the constraints
+    namespace.
+
+    """
+    return getattr(self._constraints_vars, name)
 
 
 class CoordinateBox(HasTraits):
@@ -52,8 +61,37 @@ class CoordinateBox(HasTraits):
     # Constraints-based layout
     #------------------------------------------------------------------------
 
-    # A namespace containing the constraints for this CoordinateBox
-    constraints = Instance(ConstraintsNamespace)
+    # A read-only symbolic object that represents the left boundary of
+    # the component
+    left = Property(fget=get_from_constraints_namespace)
+
+    # A read-only symbolic object that represents the right boundary
+    # of the component
+    right = Property(fget=get_from_constraints_namespace)
+
+    # A read-only symbolic object that represents the bottom boundary
+    # of the component
+    bottom = Property(fget=get_from_constraints_namespace)
+
+    # A read-only symbolic object that represents the top boundary of
+    # the component
+    top = Property(fget=get_from_constraints_namespace)
+
+    # A read-only symbolic object that represents the width of the
+    # component
+    layout_width = Property(fget=get_from_constraints_namespace)
+
+    # A read-only symbolic object that represents the height of the
+    # component
+    layout_height = Property(fget=get_from_constraints_namespace)
+
+    # A read-only symbolic object that represents the vertical center
+    # of the component
+    v_center = Property(fget=get_from_constraints_namespace)
+
+    # A read-only symbolic object that represents the horizontal
+    # center of the component
+    h_center = Property(fget=get_from_constraints_namespace)
 
     # How strongly a layout box hugs it's width hint.
     hug_width = ConstraintPolicyEnum('strong')
@@ -66,6 +104,9 @@ class CoordinateBox(HasTraits):
 
     # How strongly a layout box resists clipping its contents.
     resist_height = ConstraintPolicyEnum('strong')
+
+    # A namespace containing the constraints for this CoordinateBox
+    _constraints_vars = Instance(ConstraintsNamespace)
 
     # The list of hard constraints which must be applied to the object.
     _hard_constraints = Property
@@ -172,7 +213,7 @@ class CoordinateBox(HasTraits):
             self.bounds[1] = new_height
         return
 
-    def _constraints_default(self):
+    def __constraints_vars_default(self):
         obj_name = self.id if hasattr(self, 'id') else ''
         cns_names = ConstraintsNamespace(type(self).__name__, obj_name)
         add_symbolic_constraints(cns_names)
@@ -181,11 +222,10 @@ class CoordinateBox(HasTraits):
     def _get__hard_constraints(self):
         """ Generate the constraints which must always be applied.
         """
-        constraints = self.constraints
-        left = constraints.left
-        bottom = constraints.bottom
-        width = constraints.width
-        height = constraints.height
+        left = self.left
+        bottom = self.bottom
+        width = self.layout_width
+        height = self.layout_height
         cns = [left >= 0, bottom >= 0, width >= 0, height >= 0]
         return cns
 
@@ -195,9 +235,8 @@ class CoordinateBox(HasTraits):
         cns = []
         push = cns.append
         width_hint, height_hint = self.bounds
-        constraints = self.constraints
-        width = constraints.width
-        height = constraints.height
+        width = self.layout_width
+        height = self.layout_height
         hug_width, hug_height = self.hug_width, self.hug_height
         resist_width, resist_height = self.resist_width, self.resist_height
         if width_hint >= 0:
@@ -217,5 +256,9 @@ class CoordinateBox(HasTraits):
 
         return cns
 
+
+# Register with ABConstrainable so that layout helpers will recognize
+# CoordinateBox instances.
+ABConstrainable.register(CoordinateBox)
 
 # EOF
