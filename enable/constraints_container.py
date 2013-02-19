@@ -99,6 +99,13 @@ class ConstraintsContainer(Container):
     # Public methods
     #------------------------------------------------------------------------
 
+    def do_layout(self, size=None, force=False):
+        """ Make sure child components get a chance to refresh their layout.
+        """
+        for component in self.components:
+            component.do_layout(size=size, force=force)
+        return
+
     def refresh_layout_constraints(self):
         """ Explicitly regenerate the container's constraints and refresh the
         layout.
