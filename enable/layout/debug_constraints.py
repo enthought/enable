@@ -14,14 +14,14 @@ class Coords(HasTraits):
     bottom = Float()
     left = Float()
     right = Float()
-    width = Float()
-    height = Float()
+    layout_width = Float()
+    layout_height = Float()
 
     v_center = Property()
     _v_center = Any()
     def _get_v_center(self):
         if self._v_center is None:
-            return self.bottom + 0.5 * self.height
+            return self.bottom + 0.5 * self.layout_height
         else:
             return self._v_center
     def _set_v_center(self, value):
@@ -31,7 +31,7 @@ class Coords(HasTraits):
     _h_center = Any()
     def _get_h_center(self):
         if self._h_center is None:
-            return self.left + 0.5 * self.width
+            return self.left + 0.5 * self.layout_width
         else:
             return self._h_center
     def _set_h_center(self, value):
@@ -90,17 +90,17 @@ class DebugConstraintsOverlay(AbstractOverlay):
             for name, attr in sorted(term_attrs):
                 box = self.boxes[name]
                 if attr == 'top':
-                    self.hline(gc, box.left, box.top, box.width)
+                    self.hline(gc, box.left, box.top, box.layout_width)
                 elif attr == 'bottom':
-                    self.hline(gc, box.left, box.bottom, box.width)
+                    self.hline(gc, box.left, box.bottom, box.layout_width)
                 elif attr == 'left':
-                    self.vline(gc, box.left, box.bottom, box.height)
+                    self.vline(gc, box.left, box.bottom, box.layout_height)
                 elif attr == 'right':
-                    self.vline(gc, box.right, box.bottom, box.height)
-                elif attr == 'width':
-                    self.hline(gc, box.left, box.v_center, box.width)
-                elif attr == 'height':
-                    self.vline(gc, box.h_center, box.bottom, box.height)
+                    self.vline(gc, box.right, box.bottom, box.layout_height)
+                elif attr == 'layout_width':
+                    self.hline(gc, box.left, box.v_center, box.layout_width)
+                elif attr == 'layout_height':
+                    self.vline(gc, box.h_center, box.bottom, box.layout_height)
                 gc.stroke_path()
 
     def vline(self, gc, x, y0, length):
