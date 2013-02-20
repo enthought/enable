@@ -33,7 +33,7 @@ def add_symbolic_contents_constraints(namespace):
     top = namespace.contents_top
     bottom = namespace.contents_bottom
 
-    namespace.contents_width = left - right
+    namespace.contents_width = right - left
     namespace.contents_height = top - bottom
     namespace.contents_v_center = bottom + namespace.contents_height / 2.0
     namespace.contents_h_center = left + namespace.contents_width / 2.0
