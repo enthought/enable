@@ -10,8 +10,8 @@ class ABConstrainable(object):
     layout helpers.
 
     Minimally, instances need to have `top`, `bottom`, `left`, `right`,
-    `width`, `height`, `v_center` and `h_center` attributes which are
-    `LinearSymbolic` instances.
+    `layout_width`, `layout_height`, `v_center` and `h_center` attributes
+    which are `LinearSymbolic` instances.
 
     """
     __metaclass__ = ABCMeta
