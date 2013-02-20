@@ -6,7 +6,7 @@ from abc import ABCMeta, abstractmethod
 from collections import defaultdict
 from uuid import uuid4
 
-from casuarius import ConstraintVariable, LinearSymbolic
+from casuarius import ConstraintVariable, LinearSymbolic, LinearConstraint
 from traits.api import HasTraits, Instance, Range
 
 from .ab_constrainable import ABConstrainable
@@ -67,7 +67,7 @@ def expand_constraints(component, constraints):
                 if item is not None:
                     yield item
         else:
-            if cn is not None:
+            if cn is not None and isinstance(cn, LinearConstraint):
                 yield cn
 
 
