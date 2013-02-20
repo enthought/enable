@@ -1,8 +1,8 @@
 
 from enable.api import Component, ComponentEditor, ConstraintsContainer
-from enable.layout.layout_helpers import (expand_constraints, hbox, vbox,
-    align, grid, horizontal, vertical, spacer)
-from traits.api import HasTraits, Any, Instance, List, Property, Str
+from enable.layout.layout_helpers import (align, grid, horizontal, hbox, vbox,
+    spacer, vertical)
+from traits.api import HasTraits, Any, Event, Instance, List, Property, Str
 from traitsui.api import Item, View, HGroup, VGroup, TabularEditor, CodeEditor
 from traitsui.tabular_adapter import TabularAdapter
 
@@ -19,7 +19,8 @@ class ConstraintAdapter(TabularAdapter):
 class Demo(HasTraits):
     canvas = Instance(Component)
 
-    constraints = Property(List)
+    constraints = Property(List, depends_on='constraints_changed')
+    constraints_changed = Event
 
     constraints_def = Str
 
@@ -94,12 +95,13 @@ class Demo(HasTraits):
         except Exception, ex:
             return
 
-        self.selected_constraints = []
         self.canvas.layout_constraints = new_cns
+        self.selected_constraints = []
+        self.constraints_changed = True
         self.canvas.request_redraw()
 
     def _selected_constraints_changed(self, new):
-        if new is None or new == []:
+        if new is None:
             return
 
         if self.canvas.debug:
