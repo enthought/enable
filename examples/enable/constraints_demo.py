@@ -1,8 +1,9 @@
 
 from enable.api import Component, ComponentEditor, ConstraintsContainer
-from enable.layout.layout_helpers import hbox, vbox, align, grid, vertical, spacer
-from traits.api import HasTraits, Any, Instance, List, Property
-from traitsui.api import Item, View, HGroup, TabularEditor
+from enable.layout.layout_helpers import (expand_constraints, hbox, vbox,
+    align, grid, horizontal, vertical, spacer)
+from traits.api import HasTraits, Any, Instance, List, Property, Str
+from traitsui.api import Item, View, HGroup, VGroup, TabularEditor, CodeEditor
 from traitsui.tabular_adapter import TabularAdapter
 
 
@@ -20,18 +21,27 @@ class Demo(HasTraits):
 
     constraints = Property(List)
 
+    constraints_def = Str
+
     selected_constraints = Any
 
     traits_view = View(
                         HGroup(
-                            Item('constraints',
-                                 editor=TabularEditor(
-                                    adapter=ConstraintAdapter(),
-                                    editable=False,
-                                    multi_select=True,
-                                    selected='selected_constraints',
-                                 ),
-                                 show_label=False,
+                            VGroup(
+                                Item('constraints',
+                                     editor=TabularEditor(
+                                        adapter=ConstraintAdapter(),
+                                        editable=False,
+                                        multi_select=True,
+                                        selected='selected_constraints',
+                                     ),
+                                     show_label=False,
+                                ),
+                                Item('constraints_def',
+                                     editor=CodeEditor(),
+                                     height=100,
+                                     show_label=False,
+                                ),
                             ),
                             Item('canvas',
                                  editor=ComponentEditor(),
@@ -54,18 +64,39 @@ class Demo(HasTraits):
         four = Component(id="four", bgcolor=0x000000, **hugs)
 
         parent.add(one, two, three, four)
-        parent.layout_constraints = [
-            grid([one, two], [three, four]),
-            align('layout_height', one, two, three, four),
-            align('layout_width', one, two, three, four),
-        ]
-
         return parent
 
     def _get_constraints(self):
         if self.canvas._layout_manager._constraints:
             return list(self.canvas._layout_manager._constraints)
         return []
+
+    def _constraints_def_default(self):
+        return """[
+    grid([one, two], [three, four]),
+    align('layout_height', one, two, three, four),
+    align('layout_width', one, two, three, four),
+]"""
+
+    def _constraints_def_changed(self):
+        if self.canvas is None:
+            return
+
+        canvas = self.canvas
+        components = canvas._components
+        one = components[0]
+        two = components[1]
+        three = components[2]
+        four = components[3]
+
+        try:
+            new_cns = eval(self.constraints_def)
+        except Exception, ex:
+            return
+
+        self.selected_constraints = []
+        self.canvas.layout_constraints = new_cns
+        self.canvas.request_redraw()
 
     def _selected_constraints_changed(self, new):
         if new is None or new == []:
@@ -78,4 +109,6 @@ class Demo(HasTraits):
 
 
 if __name__ == "__main__":
-    Demo().configure_traits()
+    demo = Demo()
+    demo._constraints_def_changed()
+    demo.configure_traits()
