@@ -1,6 +1,6 @@
 
 # Enthought library imports
-from traits.api import HasTraits, Enum, Instance, Property
+from traits.api import HasTraits, Enum, Instance, Property, Tuple
 
 # Local, relative imports
 from enable_traits import bounds_trait, coordinate_trait
@@ -92,6 +92,9 @@ class CoordinateBox(HasTraits):
     # A read-only symbolic object that represents the horizontal
     # center of the component
     h_center = Property(fget=get_from_constraints_namespace)
+
+    # A size hint for the layout
+    layout_size_hint = Tuple(0.0, 0.0)
 
     # How strongly a layout box hugs it's width hint.
     hug_width = ConstraintPolicyEnum('strong')
@@ -234,7 +237,7 @@ class CoordinateBox(HasTraits):
         """
         cns = []
         push = cns.append
-        width_hint, height_hint = self.bounds
+        width_hint, height_hint = self.layout_size_hint
         width = self.layout_width
         height = self.layout_height
         hug_width, hug_height = self.hug_width, self.hug_height
