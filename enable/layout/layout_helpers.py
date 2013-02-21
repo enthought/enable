@@ -792,7 +792,7 @@ class AbstractConstraintFactory(object):
         if not all(extrema_test(item) for item in (items[0], items[-1])):
             msg = ('The first and last items of a constraint sequence '
                    'must be anchors or Components. Got %s instead.')
-            args = [type(items[0]), type(items[1])]
+            args = [type(items[0]), type(items[-1])]
             raise TypeError(msg % args)
 
         if not all(map(item_test, items)):
