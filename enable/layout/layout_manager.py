@@ -10,13 +10,10 @@ class LayoutManager(object):
     of constraints.
 
     """
-    def __init__(self, debug=False):
+    def __init__(self):
         self._solver = Solver(autosolve=False)
         self._initialized = False
         self._running = False
-
-        self._debug = debug
-        self._constraints = None
 
     def initialize(self, constraints):
         """ Initialize the solver with the given constraints.
@@ -28,9 +25,6 @@ class LayoutManager(object):
             solvers.
 
         """
-        if self._debug:
-            self._constraints = set(constraints)
-
         if self._initialized:
             raise RuntimeError('Solver already initialized')
         solver = self._solver
@@ -53,10 +47,6 @@ class LayoutManager(object):
             The list of casuarius constraints to add to the solver.
 
         """
-        if self._debug:
-            self._constraints.difference_update(set(old_cns))
-            self._constraints.update(set(new_cns))
-
         if not self._initialized:
             raise RuntimeError('Solver not yet initialized')
         solver = self._solver
