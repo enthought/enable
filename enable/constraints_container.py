@@ -131,8 +131,11 @@ class ConstraintsContainer(Container):
         """ Explicitly regenerate the container's constraints and refresh the
         layout.
         """
-        self._init_layout()
-        self.refresh()
+        if not self.share_layout:
+            self._init_layout()
+            self.refresh()
+        elif self._layout_owner is not None:
+            self._layout_owner.relayout()
 
     #------------------------------------------------------------------------
     # Layout Sharing

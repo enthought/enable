@@ -2,21 +2,32 @@
 from enable.api import Component, ComponentEditor, ConstraintsContainer
 from enable.layout.layout_helpers import (align, grid, horizontal, hbox, vbox,
     spacer, vertical)
-from traits.api import HasTraits, Instance, Str
-from traitsui.api import Item, View, HGroup, CodeEditor
+from traits.api import HasTraits, Bool, Instance, Str
+from traitsui.api import Item, View, HGroup, VGroup, CodeEditor
 
 
 class Demo(HasTraits):
-    canvas = Instance(Component)
+    canvas = Instance(ConstraintsContainer)
+    child_canvas = Instance(ConstraintsContainer)
 
     constraints_def = Str
+    child_constraints_def = Str
+    share_layout = Bool(False)
 
     traits_view = View(
                         HGroup(
-                            Item('constraints_def',
-                                 editor=CodeEditor(),
-                                 height=100,
-                                 show_label=False,
+                            VGroup(
+                                Item('constraints_def',
+                                     editor=CodeEditor(),
+                                     height=100,
+                                     show_label=False,
+                                ),
+                                Item('share_layout'),
+                                Item('child_constraints_def',
+                                     editor=CodeEditor(),
+                                     height=100,
+                                     show_label=False,
+                                ),
                             ),
                             Item('canvas',
                                  editor=ComponentEditor(),
@@ -33,10 +44,21 @@ class Demo(HasTraits):
         parent = ConstraintsContainer(bounds=(500,500), padding=20)
 
         hugs = {'hug_width':'weak', 'hug_height':'weak'}
-        one = Component(id="one", bgcolor=0xFF0000, **hugs)
-        two = Component(id="two", bgcolor=0x00FF00, **hugs)
-        three = Component(id="three", bgcolor=0x0000FF, **hugs)
-        four = Component(id="four", bgcolor=0x000000, **hugs)
+        one = Component(id="r", bgcolor=0xFF0000, **hugs)
+        two = Component(id="g", bgcolor=0x00FF00, **hugs)
+        three = Component(id="b", bgcolor=0x0000FF, **hugs)
+
+        parent.add(one, two, three, self.child_canvas)
+        return parent
+
+    def _child_canvas_default(self):
+        parent = ConstraintsContainer(id="child", share_layout=self.share_layout)
+
+        hugs = {'hug_width':'weak', 'hug_height':'weak'}
+        one = Component(id="c", bgcolor=0x00FFFF, **hugs)
+        two = Component(id="m", bgcolor=0xFF00FF, **hugs)
+        three = Component(id="y", bgcolor=0xFFFF00, **hugs)
+        four = Component(id="k", bgcolor=0x000000, **hugs)
 
         parent.add(one, two, three, four)
         return parent
@@ -47,28 +69,67 @@ class Demo(HasTraits):
 
         canvas = self.canvas
         components = canvas._components
-        one = components[0]
-        two = components[1]
-        three = components[2]
-        four = components[3]
+        r = components[0]
+        g = components[1]
+        b = components[2]
+        child = components[3]
+
+        components = child._components
+        c = components[0]
+        m = components[1]
+        y = components[2]
+        k = components[3]
+
 
         try:
             new_cns = eval(self.constraints_def)
         except Exception, ex:
             return
 
-        self.canvas.layout_constraints = new_cns
+        canvas.layout_constraints = new_cns
+        canvas.request_redraw()
+
+    def _child_constraints_def_changed(self):
+        if self.child_canvas is None:
+            return
+
+        canvas = self.child_canvas
+        components = canvas._components
+        c = components[0]
+        m = components[1]
+        y = components[2]
+        k = components[3]
+
+        try:
+            new_cns = eval(self.child_constraints_def)
+        except Exception, ex:
+            return
+
+        canvas.layout_constraints = new_cns
+        canvas.request_redraw()
+
+    def _share_layout_changed(self):
+        self.child_canvas.share_layout = self.share_layout
+        self.canvas.relayout()
         self.canvas.request_redraw()
 
     def _constraints_def_default(self):
         return """[
-    grid([one, two], [three, four]),
-    align('layout_height', one, two, three, four),
-    align('layout_width', one, two, three, four),
+    hbox(r, g, b, child),
+    align('layout_height', r,g,b,child),
+    align('layout_width', r,g,b,child),
+]"""
+
+    def _child_constraints_def_default(self):
+        return """[
+    vbox(c,m,y,k),
+    align('layout_height', c,m,y,k),
+    align('layout_width', c,m,y,k),
 ]"""
 
 
 if __name__ == "__main__":
     demo = Demo()
+    demo._child_constraints_def_changed()
     demo._constraints_def_changed()
     demo.configure_traits()
