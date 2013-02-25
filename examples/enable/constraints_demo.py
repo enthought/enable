@@ -43,10 +43,9 @@ class Demo(HasTraits):
     def _canvas_default(self):
         parent = ConstraintsContainer(bounds=(500,500), padding=20)
 
-        hugs = {'hug_width':'weak', 'hug_height':'weak'}
-        one = Component(id="r", bgcolor=0xFF0000, **hugs)
-        two = Component(id="g", bgcolor=0x00FF00, **hugs)
-        three = Component(id="b", bgcolor=0x0000FF, **hugs)
+        one = Component(id="r", bgcolor=0xFF0000)
+        two = Component(id="g", bgcolor=0x00FF00)
+        three = Component(id="b", bgcolor=0x0000FF)
 
         parent.add(one, two, three, self.child_canvas)
         return parent
@@ -54,11 +53,10 @@ class Demo(HasTraits):
     def _child_canvas_default(self):
         parent = ConstraintsContainer(id="child", share_layout=self.share_layout)
 
-        hugs = {'hug_width':'weak', 'hug_height':'weak'}
-        one = Component(id="c", bgcolor=0x00FFFF, **hugs)
-        two = Component(id="m", bgcolor=0xFF00FF, **hugs)
-        three = Component(id="y", bgcolor=0xFFFF00, **hugs)
-        four = Component(id="k", bgcolor=0x000000, **hugs)
+        one = Component(id="c", bgcolor=0x00FFFF)
+        two = Component(id="m", bgcolor=0xFF00FF)
+        three = Component(id="y", bgcolor=0xFFFF00)
+        four = Component(id="k", bgcolor=0x000000)
 
         parent.add(one, two, three, four)
         return parent
@@ -79,7 +77,6 @@ class Demo(HasTraits):
         m = components[1]
         y = components[2]
         k = components[3]
-
 
         try:
             new_cns = eval(self.constraints_def)
