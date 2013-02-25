@@ -97,10 +97,10 @@ class CoordinateBox(HasTraits):
     layout_size_hint = Tuple(0.0, 0.0)
 
     # How strongly a layout box hugs it's width hint.
-    hug_width = ConstraintPolicyEnum('strong')
+    hug_width = ConstraintPolicyEnum('weak')
 
     # How strongly a layout box hugs it's height hint.
-    hug_height = ConstraintPolicyEnum('strong')
+    hug_height = ConstraintPolicyEnum('weak')
 
     # How strongly a layout box resists clipping its contents.
     resist_width = ConstraintPolicyEnum('strong')
