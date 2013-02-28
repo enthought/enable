@@ -22,15 +22,21 @@ from enable.tools.api import DragTool
 
 keys = set(['shift', 'alt', 'control'])
 
+
 class IdentityMapper(object):
     def map_data(self, screen):
         return screen
 
+    def map_screen(self, data):
+        return data
+
+
 identity_mapper = IdentityMapper()
+
 
 class ValueDragTool(DragTool):
     """ Abstract tool for modifying a value as the mouse is dragged
-    
+
     The tool allows the use of an x_mapper and y_mapper to map between
     screen coordinates and more abstract data coordinates.  These mappers must
     be objects with a map_data() method that maps a component-space coordinate
@@ -39,25 +45,25 @@ class ValueDragTool(DragTool):
     to use as the defaults, facilitating interoperability with Chaco plots.
     Failing that, a simple identity mapper is provided which does nothing.
     Coordinates are given relative to the component.
-    
+
     Subclasses of this tool need to supply get_value() and set_delta() methods.
     The get_value method returns the current underlying value, while the
     set_delta method takes the current mapped x and y deltas from the original
     position, and sets the underlying value appropriately.  The object stores
     the original value at the start of the operation as the original_value
     attribute.
-    
+
     """
-    
+
     #: set of modifier keys that must be down to invoke the tool
     modifier_keys = Set(Enum(*keys))
-    
+
     #: mapper that maps from horizontal screen coordinate to data coordinate
     x_mapper = Any
-    
+
     #: mapper that maps from vertical screen coordinate to data coordinate
     y_mapper = Any
-    
+
     #: start point of the drag in component coordinates
     original_screen_point = Tuple(Float, Float)
 
@@ -66,32 +72,32 @@ class ValueDragTool(DragTool):
 
     #: initial underlying value
     original_value = Any
-    
+
     #: new_value event for inspector overlay
     new_value = Event(Dict)
-    
+
     #: visibility for inspector overlay
     visible = Bool(False)
-    
+
     def get_value(self):
         """ Return the current value that is being modified
-        
+
         """
         pass
-    
+
     def set_delta(self, value, delta_x, delta_y):
         """ Set the value that is being modified
-        
+
         This function should modify the underlying value based on the provided
         delta_x and delta_y in data coordinates.  These deltas are total
         displacement from the original location, not incremental.  The value
         parameter is the original value at the point where the drag started.
-        
+
         """
         pass
-    
+
     # Drag tool API
-    
+
     def drag_start(self, event):
         self.original_screen_point = (event.x, event.y)
         data_x = self.x_mapper.map_data(event.x)
@@ -100,14 +106,14 @@ class ValueDragTool(DragTool):
         self.original_value = self.get_value()
         self.visible = True
         return True
-    
+
     def dragging(self, event):
         position = event.window.get_pointer_position()
         delta_x = self.x_mapper.map_data(position[0]) - self.original_data_point[0]
         delta_y = self.y_mapper.map_data(position[1]) - self.original_data_point[1]
         self.set_delta(self.original_value, delta_x, delta_y)
         return True
-    
+
     def drag_end(self, event):
         event.window.set_pointer("arrow")
         self.visible = False
@@ -140,43 +146,43 @@ class ValueDragTool(DragTool):
 
 class AttributeDragTool(ValueDragTool):
     """ Tool which modifies a model's attributes as it drags
-    
+
     This is designed to cover the simplest of drag cases where the drag is
     modifying one or two numerical attributes on an underlying model.  To use,
     simply provide the model object and the attributes that you want to be
     changed by the drag.  If only one attribute is required, the other can be
     left as an empty string.
-    
+
     """
-    
+
     #: the model object which has the attributes we are modifying
     model = Any
-    
+
     #: the name of the attributes that is modified by horizontal motion
     x_attr = Str
-    
+
     #: the name of the attributes that is modified by vertical motion
     y_attr = Str
-    
+
     #: max and min values for x value
     x_bounds = Tuple(Either(Float, Str, None), Either(Float, Str, None))
-    
+
     #: max and min values for y value
     y_bounds = Tuple(Either(Float,Str,  None), Either(Float, Str, None))
-    
+
     x_name = Str
-    
+
     y_name = Str
-    
+
     # ValueDragTool API
-    
+
     def get_value(self):
         """ Get the current value of the attributes
-        
+
         Returns a 2-tuple of (x, y) values.  If either x_attr or y_attr is
         the empty string, then the corresponding component of the tuple is
         None.
-        
+
         """
         x_value = None
         y_value = None
@@ -185,18 +191,18 @@ class AttributeDragTool(ValueDragTool):
         if self.y_attr:
             y_value = getattr(self.model, self.y_attr)
         return (x_value, y_value)
-    
+
     def set_delta(self, value, delta_x, delta_y):
         """ Set the current value of the attributes
-        
+
         Set the underlying attribute values based upon the starting value and
         the provided deltas.  The values are simply set to the sum of the
         appropriate coordinate and the delta. If either x_attr or y_attr is
         the empty string, then the corresponding component of is ignored.
-        
+
         Note that setting x and y are two separate operations, and so will fire
         two trait notification events.
-        
+
         """
         inspector_value = {}
         if self.x_attr:
@@ -214,7 +220,7 @@ class AttributeDragTool(ValueDragTool):
                     M = self.x_bounds[1]
                 x_value = min(x_value, M)
             setattr(self.model, self.x_attr, x_value)
-            inspector_value[self.x_name] = x_value 
+            inspector_value[self.x_name] = x_value
         if self.y_attr:
             y_value = value[1] + delta_y
             if self.y_bounds[0] is not None:
@@ -230,7 +236,7 @@ class AttributeDragTool(ValueDragTool):
                     M = self.y_bounds[1]
                 y_value = min(y_value, M)
             setattr(self.model, self.y_attr, y_value)
-            inspector_value[self.y_name] = y_value 
+            inspector_value[self.y_name] = y_value
         self.new_value = inspector_value
 
     def _x_name_default(self):
