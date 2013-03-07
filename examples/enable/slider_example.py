@@ -1,6 +1,6 @@
-
 from enable.api import OverlayContainer, Slider, Window
 from enable.example_support import demo_main, DemoFrame
+
 
 class MyFrame(DemoFrame):
 
@@ -28,7 +28,8 @@ class MyFrame(DemoFrame):
     def val_changed(self):
         print self.slider.value
 
+
 if __name__ == "__main__":
-    demo_main(MyFrame, title="Slider example")
-
-
+    # Save demo so that it doesn't get garbage collected when run within
+    # existing event loop (i.e. from ipython).
+    demo = demo_main(MyFrame, title="Slider example")

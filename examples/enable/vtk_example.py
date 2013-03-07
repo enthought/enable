@@ -1,5 +1,3 @@
-
-import sys
 from tvtk.api import tvtk
 from mayavi import mlab
 from enable.vtk_backend.vtk_window import EnableVTKWindow
@@ -38,4 +36,3 @@ def main():
 
 if __name__=="__main__":
     main()
-

@@ -1,6 +1,6 @@
-
 from enable.api import OverlayContainer, Compass, Window
 from enable.example_support import demo_main, DemoFrame
+
 
 class MyFrame(DemoFrame):
 
@@ -17,7 +17,8 @@ class MyFrame(DemoFrame):
     def _arrow_printer(self):
         print "Clicked:", self.compass.clicked
 
+
 if __name__ == "__main__":
-    demo_main(MyFrame, title="Slider example")
-
-
+    # Save demo so that it doesn't get garbage collected when run within
+    # existing event loop (i.e. from ipython).
+    demo = demo_main(MyFrame, title="Slider example")

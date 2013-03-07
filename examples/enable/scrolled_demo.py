@@ -1,17 +1,11 @@
 """
 Similar to simple_drag_demo, put one circle inside a scrolled container
 """
-
-from __future__ import with_statement
-
 from numpy import array
 
+from traits.api import Enum, Float, Instance, Tuple
 from enable.example_support import DemoFrame, demo_main
-
-from enable.api import Component, Scrolled, Container, Container,\
-                                  Pointer, NativeScrollBar, Viewport, Window
-
-from traits.api import Array, Enum, Float, Instance, Trait, Tuple
+from enable.api import Component, Scrolled, Container, Pointer, Window
 
 
 class Circle(Component):
@@ -19,7 +13,7 @@ class Circle(Component):
     The circle moves with the mouse cursor but leaves a translucent version of
     itself in its original position until the mouse button is released.
     """
-    color = (0.0, 0.0, 1.0, 1.0)
+    color = (0.3, 0.4, 0.8, 1.0)
     bgcolor = "none"
 
     normal_pointer = Pointer("arrow")
@@ -98,6 +92,7 @@ class LightCircle(Component):
             gc.fill_path()
         return
 
+
 class DashedCircle(Component):
 
     color = Tuple
@@ -119,11 +114,13 @@ class DashedCircle(Component):
 
 
 class MyFrame(DemoFrame):
+
     def _create_window(self):
 
-        container = Container(bounds=[800,600], bgcolor="red", auto_size = False,
-                              fit_window=False)
-        circle1 = Circle(bounds=[75,75], position=[100,100], shadow_type="dashed")
+        container = Container(bounds=[800,600], bgcolor=(0.9, 0.7, 0.7, 1.0),
+                              auto_size=False, fit_window=False)
+        circle1 = Circle(bounds=[75,75], position=[100,100],
+                         shadow_type="dashed")
         container.add(circle1)
 
         scr = Scrolled(container, bounds=[200,200], position=[50,50],
@@ -133,6 +130,6 @@ class MyFrame(DemoFrame):
 
 
 if __name__ == "__main__":
-    demo_main(MyFrame, title="Click and drag to move the circles")
-
-# EOF
+    # Save demo so that it doesn't get garbage collected when run within
+    # existing event loop (i.e. from ipython).
+    demo = demo_main(MyFrame, title="Click and drag to move the circles")
