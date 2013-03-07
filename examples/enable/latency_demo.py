@@ -1,22 +1,18 @@
 """
 Test to see what level of click latency is noticeable.
 """
-
-from __future__ import with_statement
-
 import time
-import wx
-
-from traits.etsconfig.api import ETSConfig
-ETSConfig.toolkit = 'wx'
 
 from traits.api import Float
-from enable.api import (Component, Container, ColorTrait,
-                                  black_color_trait, Window)
+from enable.api import (Component, Container, ColorTrait, black_color_trait,
+                        Window)
+from enable.example_support import DemoFrame, demo_main
 from kiva.constants import SWISS
 from kiva.fonttools import Font
 
+
 font = Font(family=SWISS)
+
 
 class Box(Component):
     color = ColorTrait("red")
@@ -59,6 +55,7 @@ class Box(Component):
         event.handled = True
         self.request_redraw()
 
+
 class MyContainer(Container):
     text_color = black_color_trait
 
@@ -73,23 +70,17 @@ class MyContainer(Container):
             gc.set_text_position(x+dx/2-tdx/2, y+dy-tdy-20)
             gc.show_text(s)
 
-class EnableWindowFrame ( wx.Frame ):
-    def __init__ ( self, component, *args, **kw ):
-        wx.Frame.__init__( *(self,) + args, **kw )
-        sizer = wx.BoxSizer( wx.HORIZONTAL )
-        self.enable_window = Window( self, -1, component = component )
-        sizer.Add( self.enable_window.control, 1, wx.EXPAND )
-        self.SetSizer( sizer )
-        self.SetAutoLayout( True )
-        self.Show( True )
+
+class PlotFrame(DemoFrame):
+    def _create_window(self):
+        return Window(self, -1, component=container)
 
 
 if __name__ == "__main__":
-    app = wx.PySimpleApp()
-    times_and_bounds = { 0.5 : (60,200,100,100),
-                            0.33 : (240,200,100,100),
-                            0.25: (60,50,100,100),
-                            0.10: (240,50,100,100) }
+    times_and_bounds = {0.5 : (60,200,100,100),
+                        0.33 : (240,200,100,100),
+                        0.25: (60,50,100,100),
+                        0.10: (240,50,100,100)}
 
     container = MyContainer(auto_size = False)
     for delay, bounds in times_and_bounds.items():
@@ -98,9 +89,8 @@ if __name__ == "__main__":
         box.position = list(bounds[:2])
         box.bounds = list(bounds[2:])
         box.delay = delay
-    frame = EnableWindowFrame(container, None, -1,
-                            "Latency Test - Click a box", size=wx.Size(400,400))
-    app.SetTopWindow(frame)
-    frame.Show(True)
-    app.MainLoop()
 
+    # Save demo so that it doesn't get garbage collected when run within
+    # existing event loop (i.e. from ipython).
+    demo = demo_main(PlotFrame, size=(400, 400),
+                     title="Latency Test - Click a box")

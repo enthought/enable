@@ -1,10 +1,10 @@
-
-from __future__ import with_statement
-
+"""
+Use mouse wheel to zoom and right-click to pan the viewport.
+"""
 from traits.api import Float
 
-from enable.api import AbstractOverlay, Canvas, Viewport, \
-        Window, ColorTrait, Scrolled, Container
+from enable.api import (AbstractOverlay, Canvas, Viewport, Window, ColorTrait,
+                        Scrolled)
 from enable.tools.api import ViewportPanTool
 from enable.example_support import demo_main, DemoFrame
 
@@ -51,26 +51,15 @@ class MyFrame(DemoFrame):
         viewport.tools.append(ViewportPanTool(viewport, drag_button="right"))
         viewport.overlays.append(EventTracer(viewport))
 
-        if 1:
-            scrolled = Scrolled(canvas, inside_padding_width = 0,
-                            mousewheel_scroll = False,
-                            viewport_component = viewport,
-                            always_show_sb = True,
-                            continuous_drag_update = True)
-            return Window(self, -1, component=scrolled)
+        scrolled = Scrolled(canvas, inside_padding_width = 0,
+                        mousewheel_scroll = False,
+                        viewport_component = viewport,
+                        always_show_sb = True,
+                        continuous_drag_update = True)
+        return Window(self, -1, component=scrolled)
 
-        elif 1:
-            viewport.bounds = [300, 300]
-            viewport.position = [10,10]
-            container = Container(fit_window=True, auto_size=False,
-                                  border_visible=True,
-                                  border_color = "blue")
-            container.padding = 20
-            container.add(viewport)
-            return Window(self, -1, component=container)
-
-        else:
-            return Window(self, -1, component=viewport)
 
 if __name__ == "__main__":
-    demo_main(MyFrame, title="Canvas example")
+    # Save demo so that it doesn't get garbage collected when run within
+    # existing event loop (i.e. from ipython).
+    demo = demo_main(MyFrame, title="Canvas example")

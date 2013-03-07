@@ -1,10 +1,10 @@
-
-from numpy import arange, array
+from numpy import array
 
 from enable.api import Canvas, Viewport, Window, Scrolled
 from enable.tools.api import ViewportPanTool
 from enable.primitives.api import Box
 from enable.example_support import demo_main, DemoFrame
+
 
 class MyFrame(DemoFrame):
 
@@ -50,4 +50,4 @@ class MyFrame(DemoFrame):
         return Window(self, -1, component=scrolled)
 
 if __name__ == "__main__":
-    demo_main(MyFrame, title="Canvas example")
+    demo = demo_main(MyFrame, title="Canvas example")
