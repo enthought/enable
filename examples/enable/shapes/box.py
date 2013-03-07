@@ -1,16 +1,12 @@
 """ A moveable box shape. """
-
-from __future__ import with_statement
-
 from enable.primitives.shape import Shape
 
 
 class Box(Shape):
     """ A moveable box shape. """
 
-    ###########################################################################
     # Protected 'Component' interface.
-    ###########################################################################
+    #---------------------------------
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode='default'):
         """ Draw the component. """
@@ -26,5 +22,3 @@ class Box(Shape):
             self._draw_text(gc)
 
         return
-
-#### EOF ######################################################################

@@ -9,8 +9,6 @@ and because containers default to auto-sizing around their components,
 the container stretches to the minimum bounding box of its components
 as the user drags the circles around.
 """
-from __future__ import with_statement
-
 from numpy import array
 
 from traits.api import Any, Enum, Float, Instance, Tuple
@@ -159,6 +157,7 @@ class DashedCircle(Component):
 
 
 class MyFrame(DemoFrame):
+
     def _create_window(self):
         circle1 = Circle(bounds=[75, 75], position=[50, 50],
                          shadow_type="dashed")

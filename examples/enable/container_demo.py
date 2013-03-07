@@ -1,9 +1,6 @@
-from __future__ import with_statement
-
 from traits.api import Enum, Float, Int, Str, Tuple
 
 from kiva.trait_defs.kiva_font_trait import KivaFont
-
 from enable.api import ColorTrait, Window
 from enable.tools.api import DragTool
 from enable.example_support import DemoFrame, demo_main
@@ -71,29 +68,29 @@ class Overlay(AbstractOverlay):
             gc.show_text(self.text)
 
 
-rect1 = Region("orchid", position=[50, 50])
-rect2 = Region("cornflowerblue", position=[200, 50])
-rect1.overlays.append(Overlay("One", component=rect1))
-rect2.overlays.append(Overlay("Two", component=rect2))
-container1 = OverlayPlotContainer(bounds=[400, 400], resizable="")
-container1.add(rect1, rect2)
-container1.bgcolor = (0.60, 0.98, 0.60, 0.5) #"palegreen"
-
-rect3 = Region("purple", position=[50, 50])
-rect4 = Region("teal", position=[200, 50])
-rect3.overlays.append(Overlay("Three", component=rect3))
-rect4.overlays.append(Overlay("Four", component=rect4))
-container2 = OverlayPlotContainer(bounds=[400, 400], resizable="")
-container2.add(rect3, rect4)
-container2.bgcolor = "navajowhite"
-container2.position = [200, 200]
-
-top_container = OverlayPlotContainer()
-top_container.add(container1, container2)
-
-
 class PlotFrame(DemoFrame):
+
     def _create_window(self):
+        rect1 = Region("orchid", position=[50, 50])
+        rect2 = Region("cornflowerblue", position=[200, 50])
+        rect1.overlays.append(Overlay("One", component=rect1))
+        rect2.overlays.append(Overlay("Two", component=rect2))
+        container1 = OverlayPlotContainer(bounds=[400, 400], resizable="")
+        container1.add(rect1, rect2)
+        container1.bgcolor = (0.60, 0.98, 0.60, 0.5) #"palegreen"
+
+        rect3 = Region("purple", position=[50, 50])
+        rect4 = Region("teal", position=[200, 50])
+        rect3.overlays.append(Overlay("Three", component=rect3))
+        rect4.overlays.append(Overlay("Four", component=rect4))
+        container2 = OverlayPlotContainer(bounds=[400, 400], resizable="")
+        container2.add(rect3, rect4)
+        container2.bgcolor = "navajowhite"
+        container2.position = [200, 200]
+
+        top_container = OverlayPlotContainer()
+        top_container.add(container1, container2)
+
         return Window(self, -1, component=top_container)
 
 

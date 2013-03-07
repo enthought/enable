@@ -1,6 +1,4 @@
 """ An example showing moveable shapes. """
-
-
 # Enthought library imports.
 from enable.api import Container, Window
 from enable.example_support import DemoFrame, demo_main
@@ -34,28 +32,28 @@ class MyFrame(DemoFrame):
         box1 = Box(
             bounds     = [100, 100],
             position   = [50, 50],
-            fill_color = 'red',
+            fill_color = 'lightpink',
             text       = 'Box 1'
         )
 
         box2 = Box(
             bounds     = [100, 100],
             position   = [150, 150],
-            fill_color = 'green',
+            fill_color = 'greenyellow',
             text       = 'Box 2'
         )
 
         circle1 = Circle(
             radius     = 50,
             position   = [250,250],
-            fill_color = 'blue',
+            fill_color = 'cornflowerblue',
             text       = 'Circle 1'
         )
 
         circle2 = Circle(
             radius     = 50,
             position   = [350,350],
-            fill_color = 'yellow',
+            fill_color = 'khaki',
             text       = 'Circle 2'
         )
 

@@ -1,8 +1,6 @@
 """
 Demonstrates how clipping of objects occurs with the view_bounds parameter to draw().
 """
-from __future__ import with_statement
-
 from enable.example_support import DemoFrame, demo_main
 
 from enable.api import Container, Component, Scrolled, Window

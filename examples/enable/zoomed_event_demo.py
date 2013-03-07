@@ -1,13 +1,10 @@
 """
 Use mouse wheel to zoom and right-click to pan the viewport.
 """
-
-from __future__ import with_statement
-
 from traits.api import Float
 
-from enable.api import AbstractOverlay, Canvas, Viewport, \
-        Window, ColorTrait, Scrolled, Container
+from enable.api import (AbstractOverlay, Canvas, Viewport, Window, ColorTrait,
+                        Scrolled)
 from enable.tools.api import ViewportPanTool
 from enable.example_support import demo_main, DemoFrame
 

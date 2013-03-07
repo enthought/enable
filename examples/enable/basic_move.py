@@ -1,8 +1,6 @@
 """
 This allows a simple component to be moved around the screen.
 """
-from __future__ import with_statement
-
 from enable.example_support import DemoFrame, demo_main
 
 from traits.api import Float
