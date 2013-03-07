@@ -6,7 +6,7 @@ from collections import deque
 
 # traits imports
 from traits.api import Any, Bool, Callable, Dict, Either, Instance, List, \
-    Property, Str
+    Property
 
 # local imports
 from container import Container
@@ -96,7 +96,6 @@ class ConstraintsContainer(Container):
         """
         for component in self.components:
             component.do_layout(size=size, force=force)
-        return
 
     def refresh(self):
         """ Re-run the constraints solver in response to a resize or
@@ -111,12 +110,13 @@ class ConstraintsContainer(Container):
             width_var = self.layout_width
             height_var = self.layout_height
             width, height = self.bounds
+
             def layout():
                 running_index = 1
                 for offset_index, item in self._layout_table:
                     dx, dy = offset_table[offset_index]
                     nx, ny = item.left.value, item.bottom.value
-                    item.position = (nx-dx, ny-dy)
+                    item.position = (nx - dx, ny - dy)
                     item.bounds = (item.layout_width.value,
                                    item.layout_height.value)
                     offset_table[running_index] = (nx, ny)
@@ -236,6 +236,8 @@ class ConstraintsContainer(Container):
         """
         # Remove stale components from the map
         for item in event.removed:
+            item.on_trait_change(self._component_size_hint_changed,
+                                 'layout_size_hint', remove=True)
             del self._component_map[item.id]
 
         # Check the added components
@@ -245,10 +247,18 @@ class ConstraintsContainer(Container):
         """ Make sure components that are added can be used with constraints.
         """
         # Clear the component maps
+        for key, item in self._component_map.iteritems():
+            item.on_trait_change(self._component_size_hint_changed,
+                                 'layout_size_hint', remove=True)
         self._component_map = {}
 
         # Check the new components
         self._check_and_add_components(new)
+
+    def _component_size_hint_changed(self):
+        """ Refresh the size hint contraints for a child component
+        """
+        self.relayout()
 
     #------------------------------------------------------------------------
     # Protected methods
@@ -337,6 +347,8 @@ class ConstraintsContainer(Container):
                 raise ValueError(msg)
 
             self._component_map[key] = item
+            item.on_trait_change(self._component_size_hint_changed,
+                                 'layout_size_hint')
 
         # Update the layout
         self.relayout()
@@ -406,4 +418,3 @@ class ConstraintsContainer(Container):
             self._offset_table = offset_table
             self._layout_table = layout_table
             self._layout_manager = manager
-
