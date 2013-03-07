@@ -133,7 +133,7 @@ class CoordinateBox(HasTraits):
         "Returns a 4-tuple (x, y, x2, y2)"
         p = self.position
         b = self.bounds
-        return (p[0], p[1], p[0]+b[0]-1, p[1]+b[1]-1)
+        return (p[0], p[1], p[0] + b[0] - 1, p[1] + b[1] - 1)
 
     #------------------------------------------------------------------------
     # Property setters and getters
@@ -166,7 +166,7 @@ class CoordinateBox(HasTraits):
 
         old_value = self.bounds[0]
         self.bounds[0] = val
-        self.trait_property_changed( 'width', old_value, val )
+        self.trait_property_changed('width', old_value, val)
         return
 
     def _get_height(self):
@@ -180,11 +180,12 @@ class CoordinateBox(HasTraits):
                 pass
         old_value = self.bounds[1]
         self.bounds[1] = val
-        self.trait_property_changed( 'height', old_value, val )
+        self.trait_property_changed('height', old_value, val)
         return
 
     def _get_x2(self):
-        if self.bounds[0] == 0: return self.position[0]
+        if self.bounds[0] == 0:
+            return self.position[0]
         return self.position[0] + self.bounds[0] - 1
 
     def _set_x2(self, val):
@@ -194,7 +195,7 @@ class CoordinateBox(HasTraits):
     def _old_set_x2(self, val):
         new_width = val - self.position[0] + 1
         if new_width < 0.0:
-            raise RuntimeError, "Attempted to set negative component width."
+            raise RuntimeError("Attempted to set negative component width.")
         else:
             self.bounds[0] = new_width
         return
@@ -211,7 +212,7 @@ class CoordinateBox(HasTraits):
     def _old_set_y2(self, val):
         new_height = val - self.position[1] + 1
         if new_height < 0.0:
-            raise RuntimeError, "Attempted to set negative component height."
+            raise RuntimeError("Attempted to set negative component height.")
         else:
             self.bounds[1] = new_height
         return
@@ -263,5 +264,3 @@ class CoordinateBox(HasTraits):
 # Register with ABConstrainable so that layout helpers will recognize
 # CoordinateBox instances.
 ABConstrainable.register(CoordinateBox)
-
-# EOF
