@@ -1,6 +1,9 @@
-
 from enable.api import Container, TextField, Window
 from enable.example_support import DemoFrame, demo_main
+
+
+size = (500, 400)
+
 
 class MyFrame(DemoFrame):
     def _create_window(self):
@@ -16,9 +19,12 @@ class MyFrame(DemoFrame):
                                 width=200, multiline=True,
                                 font="Courier New 14")
 
-        container = Container(bounds=[800, 600], bgcolor='grey')
+        container = Container(bounds=size, bgcolor='grey')
         container.add(text_field, text_field2, text_field3)
         return Window(self, -1, component=container)
 
+
 if __name__ == '__main__':
-    demo_main(MyFrame, size=(800, 600))
+    # Save demo so that it doesn't get garbage collected when run within
+    # existing event loop (i.e. from ipython).
+    demo = demo_main(MyFrame, size=size)

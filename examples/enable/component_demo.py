@@ -4,11 +4,12 @@ from enable.api import Component, ComponentEditor
 from traits.api import HasTraits, Instance
 from traitsui.api import Item, View
 
+
 class MyComponent(Component):
     def draw(self, gc, **kwargs):
         w,h = gc.width(), gc.height()
         gc.clear()
-        
+
         # Draw a rounded rect just inside the bounds
         gc.set_line_width(2.0)
         gc.set_stroke_color((0.0, 0.0, 0.0, 1.0))
@@ -35,10 +36,11 @@ class MyComponent(Component):
     def normal_key_pressed(self, event):
         print "key pressed: ", event.character
 
+
 class Demo(HasTraits):
     canvas = Instance(Component)
 
-    traits_view = View(Item('canvas', editor=ComponentEditor(bgcolor="lightgray"),
+    traits_view = View(Item('canvas', editor=ComponentEditor(),
                             show_label=False, width=200, height=200),
                        resizable=True, title="Component Example")
 

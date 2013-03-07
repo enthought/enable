@@ -1,5 +1,3 @@
-
-
 from traits.api import HasTraits, Instance
 from traitsui.api import View, UItem, Item, RangeEditor, Group, VGroup
 from enable.api import ComponentEditor

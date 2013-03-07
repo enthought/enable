@@ -3,7 +3,8 @@
 from enable.example_support import DemoFrame, demo_main
 from enable.label import Label
 
-from enable.api import Component, Container, Pointer, Window
+from enable.api import Window
+
 
 class MyFrame(DemoFrame):
 
@@ -12,7 +13,8 @@ class MyFrame(DemoFrame):
         label.bgcolor = "red"
         return Window(self, -1, component=label)
 
-if __name__ == "__main__":
-    demo_main(MyFrame, title="Click and drag to move the box")
 
-# EOF
+if __name__ == "__main__":
+    # Save demo so that it doesn't get garbage collected when run within
+    # existing event loop (i.e. from ipython).
+    demo = demo_main(MyFrame, title="Click and drag to move the box")

@@ -13,9 +13,8 @@ from circle import Circle
 class MyFrame(DemoFrame):
     """ The top-level frame. """
 
-    ###########################################################################
     # 'DemoFrame' interface.
-    ###########################################################################
+    #--------------------------------------------------------------------------
 
     def _create_window(self):
         """ Create an enable window. """
@@ -26,9 +25,8 @@ class MyFrame(DemoFrame):
 
         return Window(self, component=container)
 
-    ###########################################################################
     # Private interface.
-    ###########################################################################
+    #--------------------------------------------------------------------------
 
     def _create_shapes(self):
         """ Create some shapes. """
@@ -65,6 +63,7 @@ class MyFrame(DemoFrame):
 
 
 if __name__ == "__main__":
-    demo_main(MyFrame, size=(500, 500), title="Click and drag the shapes")
-
-#### EOF ######################################################################
+    # Save demo so that it doesn't get garbage collected when run within
+    # existing event loop (i.e. from ipython).
+    demo = demo_main(MyFrame, size=(500, 500),
+                     title="Click and drag the shapes")

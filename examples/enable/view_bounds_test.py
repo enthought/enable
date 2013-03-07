@@ -1,7 +1,6 @@
 """
 Demonstrates how clipping of objects occurs with the view_bounds parameter to draw().
 """
-
 from __future__ import with_statement
 
 from enable.example_support import DemoFrame, demo_main
@@ -19,6 +18,7 @@ class Box(Component):
             gc.rect(x, y, dx, dy)
             gc.fill_path()
         return
+
 
 class VerboseContainer(Container):
     """
@@ -76,7 +76,7 @@ class MyFrame(DemoFrame):
 
 
 if __name__ == "__main__":
-    demo_main(MyFrame, title="Use the scroll bars to show and hide components")
-
-
-# EOF
+    title = "Use the scroll bars to show and hide components"
+    # Save demo so that it doesn't get garbage collected when run within
+    # existing event loop (i.e. from ipython).
+    demo = demo_main(MyFrame, title=title)
