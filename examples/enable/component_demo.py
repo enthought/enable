@@ -1,3 +1,6 @@
+"""
+Basic demo of drawing within an Enable component.
+"""
 from enable.api import Component, ComponentEditor
 from traits.api import HasTraits, Instance
 from traitsui.api import Item, View
