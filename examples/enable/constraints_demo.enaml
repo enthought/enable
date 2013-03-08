@@ -1,0 +1,29 @@
+#------------------------------------------------------------------------------
+#  Copyright (c) 2013, Enthought, Inc.
+#  All rights reserved.
+#------------------------------------------------------------------------------
+""" Implements the constraints_demo in Enaml
+"""
+from enaml.layout.api import align, hbox
+from enaml.widgets.api import Window, Container, Html
+
+
+enamldef Main(Window):
+    Container:
+        constraints = [
+            hbox(one, two, three, four),
+            align('width', one, two, three, four),
+        ]
+        Html:
+            id: one
+            source = '<html><body bgcolor="#FF0000"></body></html>'
+        Html:
+            id: two
+            source = '<html><body bgcolor="#00FF00"></body></html>'
+        Html:
+            id: three
+            source = '<html><body bgcolor="#0000FF"></body></html>'
+        Html:
+            id: four
+            source = '<html><body bgcolor="#000000"></body></html>'
+
