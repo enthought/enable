@@ -537,7 +537,8 @@ cdef class CGContext:
     def close_path(self):
         """ Close the path of the current subpath.
         """
-        CGContextClosePath(self.context)
+        if not CGContextIsPathEmpty(self.context):
+            CGContextClosePath(self.context)
 
     def curve_to(self, float cp1x, float cp1y, float cp2x, float cp2y,
         float x, float y):
@@ -602,7 +603,8 @@ cdef class CGContext:
     def clip(self):
         """
         """
-        CGContextClip(self.context)
+        if not CGContextIsPathEmpty(self.context):
+            CGContextClip(self.context)
 
     def even_odd_clip(self):
         """
