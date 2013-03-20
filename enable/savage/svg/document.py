@@ -877,7 +877,7 @@ class SVGDocument(object):
             url = urlparse.urlunsplit(url)
             try:
                 element = self.dereference(url)
-            except:
+            except ET.ParseError:
                 element = None
             if element is None:
                 if fallback:
