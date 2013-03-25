@@ -206,15 +206,10 @@ class ConstraintsContainer(Container):
         """
         add_symbolic_contents_constraints(self._constraints_vars)
 
-        contents_left = self.contents_left
-        contents_right = self.contents_right
-        contents_top = self.contents_top
-        contents_bottom = self.contents_bottom
-
-        return [contents_left == self.left,
-                contents_bottom == self.bottom,
-                contents_right == self.left + self.layout_width,
-                contents_top == self.bottom + self.layout_height,
+        return [self.contents_left == self.left,
+                self.contents_bottom == self.bottom,
+                self.contents_right == self.left + self.layout_width,
+                self.contents_top == self.bottom + self.layout_height,
             ]
 
     def _get__layout_constraints(self):
