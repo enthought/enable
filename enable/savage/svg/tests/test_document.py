@@ -67,7 +67,7 @@ class TestBrushFromColourValue(unittest.TestCase):
         self.document.state["fill"] = "url(http://google.com) red"
         self.assertEqual(
             self.document.getBrushFromState().color,
-            (255, 0, 0)
+            (255, 0, 0, 255)
         )
 
 
