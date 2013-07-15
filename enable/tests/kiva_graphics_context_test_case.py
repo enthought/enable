@@ -14,10 +14,10 @@ class TestGCErrors(unittest.TestCase):
         # The draw_image methods expects its first argument
         # to be a 3D whose last dimension has lenght 3 or 4.
         # Passing in arr should raise a value error.
-        self.assertRaises(ValueError, gc.draw_image, arr)
+        self.assertRaises(AssertionError, gc.draw_image, arr)
 
         # Pass in a 3D array, but with an invalid size in the last dimension.
-        self.assertRaises(ValueError, gc.draw_image, arr.reshape(2, 2, 1))
+        self.assertRaises(AssertionError, gc.draw_image, arr.reshape(2, 2, 1))
 
 
 if __name__ == "__main__":
