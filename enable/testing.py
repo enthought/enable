@@ -55,7 +55,7 @@ class EnableTestAssistant(object):
 
         """
         x, y = points[0]
-        window = self.create_a_mock_window() if window is None else window
+        window = self.create_mock_window() if window is None else window
         self.mouse_down(interactor, x, y, 'left', window=window,
                         alt_down=alt_down,
                         control_down=control_down,
@@ -71,7 +71,7 @@ class EnableTestAssistant(object):
                       control_down=control_down,
                       shift_down=shift_down)
 
-    def create_a_mock_window(self):
+    def create_mock_window(self):
         """ Creates a Mock class that behaves as an enable Abstract Window.
 
         Returns
@@ -126,7 +126,7 @@ class EnableTestAssistant(object):
                              control_down=control_down,
                              shift_down=shift_down)
         if window is None:
-            key_event.window = self.create_a_mock_window()
+            key_event.window = self.create_mock_window()
         else:
             key_event.window = window
         return key_event
@@ -186,7 +186,7 @@ class EnableTestAssistant(object):
             The event instance after it has be processed by the `interactor`.
 
         """
-        window = self.create_a_mock_window() if window is None else window
+        window = self.create_mock_window() if window is None else window
         event_attributes = {'x': x, 'y': y,
                             'alt_down': alt_down,
                             'control_down': control_down,
@@ -235,7 +235,7 @@ class EnableTestAssistant(object):
             The event instance after it has be processed by the `interactor`.
 
         """
-        window = self.create_a_mock_window() if window is None else window
+        window = self.create_mock_window() if window is None else window
         event = self.create_mouse_event(x=x, y=y,
                                         window=window,
                                         alt_down=alt_down,
@@ -284,7 +284,7 @@ class EnableTestAssistant(object):
             The event instance after it has be processed by the `interactor`.
 
         """
-        window = self.create_a_mock_window() if window is None else window
+        window = self.create_mock_window() if window is None else window
         event = self.create_mouse_event(x=x, y=y,
                                         window=window,
                                         alt_down=alt_down,
@@ -330,7 +330,7 @@ class EnableTestAssistant(object):
             The event instance after it has be processed by the `interactor`.
 
         """
-        window = self.create_a_mock_window() if window is None else window
+        window = self.create_mock_window() if window is None else window
         event = self.create_mouse_event(x=x, y=y,
                                         window=window,
                                         alt_down=alt_down,
@@ -361,7 +361,7 @@ class EnableTestAssistant(object):
             The event instance after it has be processed by the `interactor`.
 
         """
-        window = self.create_a_mock_window() if window is None else window
+        window = self.create_mock_window() if window is None else window
         event = self.create_key_press(key, window=window)
         self._key_event_dispatch(interactor, event)
         return event
