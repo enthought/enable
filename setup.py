@@ -24,6 +24,7 @@ from os.path import join
 import setuptools
 
 import distutils
+import distutils.command.clean
 import os
 import shutil
 
@@ -31,7 +32,7 @@ from numpy.distutils.core import setup
 
 
 info = {}
-execfile(join('enable', '__init__.py'), info)
+exec(compile(open(join('enable', '__init__.py')).read(), join('enable', '__init__.py'), 'exec'), info)
 
 
 # Configure python extensions.
