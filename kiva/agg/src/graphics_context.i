@@ -264,7 +264,7 @@ namespace kiva {
             # Later we can add full-blown support with wchar_t/Py_UNICODE
             # typemaps etc.
             try:
-                if isinstance(text, unicode):
+                if '' == b'' and isinstance(text, unicode):
                     text = text.encode("utf8")
                 return text
             except:
@@ -485,7 +485,8 @@ namespace kiva {
                 if not self.is_font_initialized():
                     raise RuntimeError, "Font not loaded/initialized."
                 else:
-                    text = handle_unicode(text)
+                    if bytes == str:
+                        text = handle_unicode(text)
                     return _agg.GraphicsContextArray_get_text_extent(self, text)
             %}
             kiva::rect_type get_text_extent(char *text);

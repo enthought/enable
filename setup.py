@@ -15,7 +15,7 @@ if 'develop' in sys.argv:
             compiler = ['-c', arg[11:]]
             del sys.argv[idx+1:]
     # insert extra options right before 'develop'
-    sys.argv[idx:idx] = ['build_src', '--inplace', 'build_clib'] + compiler + \
+    sys.argv[idx:idx] = ['build_py'] + ['build_src', '--inplace', 'build_clib'] + compiler + \
         ['build_ext', '--inplace'] + compiler
 
 from os.path import join
@@ -23,17 +23,15 @@ from os.path import join
 # Setuptools must be imported BEFORE numpy.distutils for things to work right!
 import setuptools
 
-import distutils
 import distutils.command.clean
 import os
 import shutil
 
 from numpy.distutils.core import setup
 
-
 info = {}
-exec(compile(open(join('enable', '__init__.py')).read(), join('enable', '__init__.py'), 'exec'), info)
-
+enable_init = join('enable', '__init__.py')
+exec(compile(open(enable_init).read(), enable_init, 'exec'), info)
 
 # Configure python extensions.
 def configuration(parent_package='', top_path=None):
@@ -113,6 +111,20 @@ class MyClean(distutils.command.clean.clean):
             if os.path.isfile(f):
                 os.remove(f)
 
+COMMANDS = {
+    # Work around a numpy distutils bug by forcing the use of the
+    # setuptools' sdist command.
+    'sdist': setuptools.command.sdist.sdist,
+
+    # Use our customized commands
+    'clean': MyClean,
+    }
+try:
+    from distutils.command.build_py import build_py_2to3
+except ImportError:
+    pass
+else:
+    COMMANDS['build_py'] = build_py_2to3
 
 setup(
     name = 'enable',
@@ -138,14 +150,7 @@ setup(
         Topic :: Software Development
         Topic :: Software Development :: Libraries
         """.splitlines() if len(c.strip()) > 0],
-    cmdclass = {
-        # Work around a numpy distutils bug by forcing the use of the
-        # setuptools' sdist command.
-        'sdist': setuptools.command.sdist.sdist,
-
-        # Use our customized commands
-        'clean': MyClean,
-        },
+    cmdclass = COMMANDS,
     description = 'low-level drawing and interaction',
     long_description = open('README.rst').read(),
     download_url = ('http://www.enthought.com/repo/ets/enable-%s.tar.gz' %

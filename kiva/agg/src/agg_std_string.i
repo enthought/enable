@@ -5,18 +5,18 @@
 // they?
 #ifdef SWIGPYTHON
 %typemap(in) std::string * {
-  if (PyString_Check ($input))
+  if (PyBytes_Check ($input))
   {
-    $1 = new std::string((char *)PyString_AsString($input));
+	$1 = new std::string((char *)PyBytes_AsString($input));
   }
   else
   {
-    PyErr_SetString (PyExc_TypeError, "not a String");
+    PyErr_SetString (PyExc_TypeError, "not a String/Bytes");
     return NULL;
   }
 }
 %typemap(out) std::string * {
-  $result = PyString_FromString((const char *)$1->c_str()); 
+  $result = PyBytes_FromString((const char *)$1->c_str());
 }
 %typemap(freearg) std::string * {
   if ($1)

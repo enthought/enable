@@ -60,7 +60,7 @@ namespace kiva
 %{
 def unicode_safe_init(self, _name="Arial", _size=12, _family=0, _style=0,
                       _encoding=0, validate=True):
-    if isinstance(_name, unicode):
+    if not isinstance(_name, str):
         _name = _name.encode("latin1")
     obj = _agg.new_AggFontType(_name, _size, _family, _style,
                                _encoding, validate)
