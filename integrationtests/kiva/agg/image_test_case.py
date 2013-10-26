@@ -2,7 +2,7 @@ import time
 import os, sys
 import unittest
 
-import Image
+from PIL import Image
 from numpy import alltrue, array, concatenate, dtype, fromstring, newaxis, \
                   pi, ravel, ones, zeros
 

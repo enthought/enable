@@ -13,7 +13,7 @@ import sys
 from xml.etree import cElementTree as ET
 import warnings
 
-import Image
+from PIL import Image
 import numpy as np
 
 from enable.api import Component

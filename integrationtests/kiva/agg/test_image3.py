@@ -95,7 +95,7 @@ def main():
 
 def main2():
 
-    import Image
+    from PIL import Image
     pil_img = Image.open('doubleprom_soho_full.jpg')
     img = fromstring(pil_img.tostring(),UInt8)
     img = img.resize((pil_img.size[1],pil_img.size[0],3))
@@ -111,7 +111,7 @@ def main2():
 
 def main3():
 
-    import Image
+    from PIL import Image
     pil_img = Image.open('doubleprom_soho_full.jpg')
     img = fromstring(pil_img.tostring(),UInt8)
     img = img.resize((pil_img.size[1],pil_img.size[0],3))
@@ -141,7 +141,7 @@ def main3():
 
 def main4():
     """ Test drawing an rgb24 into a bgra32"""
-    import Image
+    from PIL import Image
     pil_img = Image.open('doubleprom_soho_full.jpg')
     img = fromstring(pil_img.tostring(),UInt8)
     img = img.resize((pil_img.size[1],pil_img.size[0],3))

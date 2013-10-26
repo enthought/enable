@@ -815,7 +815,7 @@ namespace kiva {
                     rgb24 format.
                 """
                 FmtsWithoutAlpha = ('jpg', 'bmp', 'eps', "jpeg")
-                import Image as PilImage
+                from PIL import Image as PilImage
                 size = (self.width(), self.height())
                 fmt = self.format()
 
@@ -959,7 +959,7 @@ class Image(GraphicsContextArray):
             another GraphicsContextArray
         """
         # read the file using PIL
-        import Image as PilImage
+        from PIL import Image as PilImage
         pil_img = PilImage.open(file)
 
         # Convert image to a numeric array
