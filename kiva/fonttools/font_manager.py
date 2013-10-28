@@ -891,7 +891,7 @@ class FontProperties(object):
         if family is None:
             self._family = None
         else:
-            if isinstance(family, bytes):
+            if '' != b'' and isinstance(family, bytes):
                 family = family.decode('utf8')
             if is_string_like(family):
                 family = [family]

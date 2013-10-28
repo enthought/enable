@@ -15,8 +15,12 @@ if 'develop' in sys.argv:
             compiler = ['-c', arg[11:]]
             del sys.argv[idx+1:]
     # insert extra options right before 'develop'
-    sys.argv[idx:idx] = ['build_py'] + ['build_src', '--inplace', 'build_clib'] + compiler + \
-        ['build_ext', '--inplace'] + compiler
+    extra_options = []
+    if sys.version_info[0] == 3:
+        extra_options.append('build_py')
+    extra_options.extend(['build_src', '--inplace', 'build_clib'] + compiler + \
+                         ['build_ext', '--inplace'] + compiler)
+    sys.argv[idx:idx] = extra_options
 
 from os.path import join
 

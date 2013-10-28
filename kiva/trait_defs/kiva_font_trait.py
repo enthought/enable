@@ -131,8 +131,13 @@ class TraitKivaFont ( TraitHandler ):
                         point_size = int( lword )
                     except:
                         facename.append( word )
-            if facename == []:
-                facename = [default_face.get(family, "")]
+
+            if facename == "":
+                facename = default_face.get(family, "")
+            # FIXME: The above if clause never happens, the below should
+            # be correct though it results in loading weird fonts.
+#             if facename == []:
+#                 facename = [default_face.get(family, "")]
             return Font(face_name = " ".join(facename),
                         size = point_size,
                         family = family,

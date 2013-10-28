@@ -485,8 +485,7 @@ namespace kiva {
                 if not self.is_font_initialized():
                     raise RuntimeError, "Font not loaded/initialized."
                 else:
-                    if bytes == str:
-                        text = handle_unicode(text)
+                    text = handle_unicode(text)
                     return _agg.GraphicsContextArray_get_text_extent(self, text)
             %}
             kiva::rect_type get_text_extent(char *text);
