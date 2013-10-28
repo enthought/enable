@@ -332,7 +332,7 @@ class test_interpolation_image(unittest.TestCase):
             gc.draw_image(img)
         t2 = time.clock()
         img_per_sec = iters/(t2-t1)
-        print "'%s' interpolation -> img per sec: %4.2f" % (scheme, img_per_sec)
+        print("'%s' interpolation -> img per sec: %4.2f" % (scheme, img_per_sec))
         return img_per_sec
 
     def test_simple_timing(self):
