@@ -6,14 +6,15 @@ virtualenv:
   # This allows installing PyQt using apt-get and being able to import it.
   system_site_packages: true
 before_install:
-  # On Python 2.7 we install PyQt4 and run the UI tests.
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then source .travis_before_install; fi
+  # Install PyQt4 and run the UI tests
+  - source .travis_before_install
 install:
   # nose is already installed
   - pip install cython
   - sudo apt-get install python-numpy
   - sudo apt-get install swig
   - pip install PIL
+  - pip install pyparsing
   # Test against the current master of traits and traitsui
   - pip install git+http://github.com/enthought/traits.git#egg=traits
   - pip install git+http://github.com/enthought/traitsui.git#egg=traitsui
