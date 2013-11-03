@@ -6,8 +6,10 @@ virtualenv:
   # This allows installing PyQt using apt-get and being able to import it.
   system_site_packages: true
 before_install:
-  # Install PyQt4 and run the UI tests
-  - source .travis_before_install
+  # For Python 2.7, install PyQt4
+  - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then source .travis_before_install; fi
+  # PyQt can't be installed on 2.6; run the tests with the null toolkit.
+  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then export ETS_TOOLKIT=null.image; fi
 install:
   # nose is already installed
   - pip install cython
