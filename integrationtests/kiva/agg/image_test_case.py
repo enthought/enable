@@ -341,17 +341,17 @@ class test_interpolation_image(unittest.TestCase):
 
     def test_bilinear_timing(self):
         scheme = "bilinear"
-        iters = self.N/2 # this is slower than simple, so use less iters
+        iters = self.N//2 # this is slower than simple, so use less iters
         return self.generic_timing(scheme,self.size,iters)
 
     def test_bicubic_timing(self):
         scheme = "bicubic"
-        iters = self.N/2 # this is slower than simple, so use less iters
+        iters = self.N//2 # this is slower than simple, so use less iters
         return self.generic_timing(scheme,self.size,iters)
 
     def test_sinc144_timing(self):
         scheme = "sinc144"
-        iters = self.N/2 # this is slower than simple, so use less iters
+        iters = self.N//2 # this is slower than simple, so use less iters
         return self.generic_timing(scheme,self.size,iters)
 
 
