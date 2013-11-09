@@ -1,4 +1,4 @@
-from agg import *
+from .agg import *
 
 pix_format_string_map = {}
 pix_format_string_map["gray8"] = pix_format_gray8
