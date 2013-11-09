@@ -1,4 +1,4 @@
-from __future__ import with_statement
+
 
 from scipy import pi
 from kiva.image import GraphicsContext

@@ -1,11 +1,11 @@
-from __future__ import with_statement
+
 
 from numpy import array
 from pyglet.window import key, Window
 
 try:
     from kiva.gl import GraphicsContext
-except ImportError, e:
+except ImportError as e:
     raise Exception(e)
 from kiva.constants import FILL, STROKE, FILL_STROKE
 

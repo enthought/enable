@@ -42,7 +42,7 @@ class Box(Component):
         return
 
     def normal_key_pressed(self, event):
-        print "Key:", event.character
+        print("Key:", event.character)
 
     def normal_left_down(self, event):
         self.event_state = "moving"

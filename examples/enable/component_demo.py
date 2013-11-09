@@ -35,7 +35,7 @@ class MyComponent(Component):
         return
 
     def normal_key_pressed(self, event):
-        print "key pressed: ", event.character
+        print("key pressed: ", event.character)
 
 
 class Demo(HasTraits):
