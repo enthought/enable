@@ -24,6 +24,7 @@ from os.path import join
 import setuptools
 
 import distutils
+import distutils.command.clean
 import os
 import shutil
 
