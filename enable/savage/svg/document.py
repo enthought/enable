@@ -9,6 +9,12 @@ import os
 import urllib
 import urlparse
 from xml.etree import cElementTree as ET
+try:
+    from xml.etree.ElementTree import ParseError
+except ImportError:
+    # ParseError doesn't exist in Python 2.6
+    from xml.parsers.expat import ExpatError as ParseError
+
 
 import numpy
 
@@ -877,7 +883,7 @@ class SVGDocument(object):
             url = urlparse.urlunsplit(url)
             try:
                 element = self.dereference(url)
-            except ET.ParseError:
+            except ParseError:
                 element = None
             if element is None:
                 if fallback:
