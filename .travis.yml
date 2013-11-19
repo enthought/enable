@@ -22,10 +22,10 @@ install:
   - pip install git+http://github.com/enthought/traitsui.git#egg=traitsui
   - python setup.py develop
 script:
-    nosetests -v enable/tests
-    nosetests -v enable/savage/tests
-    nosetests -v kiva/agg/tests
-    nosetests -v kiva/tests
+  - nosetests -v enable/tests
+  - nosetests -v enable/savage/tests
+  - nosetests -v kiva/agg/tests
+  - nosetests -v kiva/tests
 notifications:
   email:
     - travis-ci@enthought.com
