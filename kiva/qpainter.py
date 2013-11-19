@@ -585,9 +585,11 @@ class GraphicsContext(object):
                                     QtGui.QImage.Format_RGB32)
             pixmap = QtGui.QPixmap.fromImage(draw_img)
         elif (isinstance(img, GraphicsContext) and
-              isinstance(img.gc.device(), QtGui.QPixmap)):
+              isinstance(img.qt_dc, QtGui.QPixmap) and img.gc.isActive()):
             # An offscreen Qt kiva context
-            pixmap = img.gc.device()
+            # Calling qpainter.device() appears to introduce a memory leak.
+            # using the display context and calling qpainter.isActive() has the same outcome.
+            pixmap = img.qt_dc
             width, height = pixmap.width(), pixmap.height()
         else:
             warnings.warn("Cannot render image of type '%r' into Qt4 context." % \
