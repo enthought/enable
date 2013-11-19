@@ -2,7 +2,10 @@
 # :Copyright: 2004, Enthought, Inc.
 # :License:   BSD Style
 
-from mac_context import get_mac_context
+try:
+    from mac_context import get_mac_context
+except ImportError:
+    get_mac_context = None
 
 
 def get_macport(dc):
