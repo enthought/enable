@@ -23,7 +23,7 @@ install:
   - python setup.py develop
 script:
   - nosetests -v enable/tests
-  - nosetests -v enable/savage/tests
+  - nosetests -v enable/savage/svg/tests
   - nosetests -v kiva/agg/tests
   - nosetests -v kiva/tests
 notifications:
