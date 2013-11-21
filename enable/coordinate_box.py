@@ -226,11 +226,9 @@ class CoordinateBox(HasTraits):
     def _get__hard_constraints(self):
         """ Generate the constraints which must always be applied.
         """
-        left = self.left
-        bottom = self.bottom
         width = self.layout_width
         height = self.layout_height
-        cns = [left >= 0, bottom >= 0, width >= 0, height >= 0]
+        cns = [width >= 0, height >= 0]
         return cns
 
     def _get__size_constraints(self):
