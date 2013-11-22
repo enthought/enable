@@ -1,6 +1,7 @@
 
 # Enthought library imports
-from traits.api import HasTraits, Enum, Instance, Property, Tuple
+from traits.api import HasTraits, Either, Enum, Float, Instance, Property, \
+    Tuple
 
 # Local, relative imports
 from enable_traits import bounds_trait, coordinate_trait
@@ -107,6 +108,21 @@ class CoordinateBox(HasTraits):
 
     # How strongly a layout box resists clipping its contents.
     resist_height = ConstraintPolicyEnum('strong')
+
+    # A position hint for the layout
+    layout_position_hint = Tuple(Either(None, Float), Either(None, Float))
+
+    # How strongly a layout box resists x being pushed left.
+    resist_push_left = ConstraintPolicyEnum('ignore')
+
+    # How strongly a layout box resists x being pushed right.
+    resist_push_right = ConstraintPolicyEnum('ignore')
+
+    # How strongly a layout box resists x being pushed up.
+    resist_push_up = ConstraintPolicyEnum('ignore')
+
+    # How strongly a layout box resists x being pushed down.
+    resist_push_down = ConstraintPolicyEnum('ignore')
 
     # A namespace containing the constraints for this CoordinateBox
     _constraints_vars = Instance(ConstraintsNamespace)
@@ -236,7 +252,7 @@ class CoordinateBox(HasTraits):
         """
         cns = []
         push = cns.append
-        width_hint, height_hint = self.layout_size_hint
+        width_hint, height_hint = self.layout_position_hint
         width = self.layout_width
         height = self.layout_height
         hug_width, hug_height = self.hug_width, self.hug_height
@@ -254,6 +270,36 @@ class CoordinateBox(HasTraits):
                 push(cn)
             if resist_height != 'ignore':
                 cn = (height >= height_hint) | resist_height
+                push(cn)
+
+        return cns
+        
+    def _get__position_constraints(self):
+        """ Creates the list of position hint constraints for this box.
+        """
+        cns = []
+        push = cns.append
+        x_hint, y_hint = self.position_hint
+        x_cns = self.left
+        y_cns = self.bottom
+        resist_push_left = self.resist_push_left
+        resist_push_right = self.resist_push_right
+        resist_push_up = self.resist_push_up
+        resist_push_down = self.resist_push_down
+        
+        if x_hint is not None:
+            if resist_push_left != 'ignore':
+                cn = (x_cns >= x_hint) | resist_push_left
+                push(cn)
+            if resist_push_right != 'ignore':
+                cn = (x_cns <= x_hint) | resist_push_right
+                push(cn)
+        if y_hint is not None:
+            if resist_push_down != 'ignore':
+                cn = (y_cns >= y_hint) | resist_push_down
+                push(cn)
+            if resist_push_up != 'ignore':
+                cn = (y_cns <= y_hint) | resist_push_up
                 push(cn)
 
         return cns

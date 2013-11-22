@@ -389,8 +389,10 @@ class ConstraintsContainer(Container):
                     raw_cns_extend(child._contents_constraints)
                 else:
                     raw_cns_extend(child._size_constraints)
+                    raw_cns_extend(child._position_constraints)
             else:
                 raw_cns_extend(child._size_constraints)
+                raw_cns_extend(child._position_constraints)
 
         return raw_cns + user_cns
 
