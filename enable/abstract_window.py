@@ -389,7 +389,7 @@ class AbstractWindow(HasTraits):
         if drag_event is None:
             return False
             
-        if (not drag_event.handled) and (self.component is not None):
+        if self.component is not None:
             # Test to see if we need to generate a drag_leave event
             if self._prev_event_handler:
                 if not self._prev_event_handler.is_in(drag_event.x, drag_event.y):

@@ -159,7 +159,7 @@ class _QtWindowHandler(object):
     def dragEnterEvent(self, event):
         if self._enable_window:
             self._enable_window._drag_result = QtCore.Qt.IgnoreAction
-            self._enable_window._handle_drag_event('drag_enter', event)
+            self._enable_window._handle_drag_event('drag_over', event)
             event.setDropAction(self._enable_window._drag_result)
             event.accept()
 
@@ -170,14 +170,14 @@ class _QtWindowHandler(object):
     def dragMoveEvent(self, event):
         if self._enable_window:
             self._enable_window._drag_result = QtCore.Qt.IgnoreAction
-            self._enable_window._handle_drag_event('drag_move', event)
+            self._enable_window._handle_drag_event('drag_over', event)
             event.setDropAction(self._enable_window._drag_result)
             event.accept()
 
     def dropEvent(self, event):
         if self._enable_window:
             self._enable_window._drag_result = QtCore.Qt.IgnoreAction
-            self._enable_window._handle_drag_event('dopped_on', event)
+            self._enable_window._handle_drag_event('dropped_on', event)
             event.setDropAction(self._enable_window._drag_result)
             event.accept()
 
@@ -440,9 +440,21 @@ class _Window(AbstractWindow):
         
         # extract an object from the event, if we can
         try:
-            obj = PyMimeData.coerce(event.mimeData()).instance()
+            mimedata = PyMimeData.coerce(event.mimeData())
         except AttributeError:
+            mimedata = None
             obj = None
+        else:
+            obj = mimedata.instance()
+            if obj is None:
+                files = mimedata.localPaths()
+                if files:
+                    # try to extract file info from mimedata
+                    try:
+                        from apptools.io.api import File
+                        obj = [File(path=path) for path in files]
+                    except ImportError:
+                        pass
         
         # is the proposed action a Copy or a Move
         try:
@@ -451,7 +463,7 @@ class _Window(AbstractWindow):
             copy = False
 
         return DragEvent(x=x, y=self._flip_y(y), obj=obj, copy=copy,
-                        window=self)
+                        window=self, mimedata=mimedata)
 
     def _redraw(self, coordinates=None):
         if self.control:
