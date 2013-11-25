@@ -133,6 +133,9 @@ class CoordinateBox(HasTraits):
     # The list of size constraints to apply to the object.
     _size_constraints = Property
 
+    # The list of size constraints to apply to the object.
+    _position_constraints = Property
+
     #------------------------------------------------------------------------
     # Public methods
     #------------------------------------------------------------------------
@@ -252,7 +255,7 @@ class CoordinateBox(HasTraits):
         """
         cns = []
         push = cns.append
-        width_hint, height_hint = self.layout_position_hint
+        width_hint, height_hint = self.layout_size_hint
         width = self.layout_width
         height = self.layout_height
         hug_width, hug_height = self.hug_width, self.hug_height
@@ -279,7 +282,7 @@ class CoordinateBox(HasTraits):
         """
         cns = []
         push = cns.append
-        x_hint, y_hint = self.position_hint
+        x_hint, y_hint = self.layout_position_hint
         x_cns = self.left
         y_cns = self.bottom
         resist_push_left = self.resist_push_left
