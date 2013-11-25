@@ -367,7 +367,7 @@ class AbstractWindow(HasTraits):
         return mouse_event.handled
 
     #---------------------------------------------------------------------------
-    #  Generic mouse event handler:
+    #  Generic drag event handler:
     #---------------------------------------------------------------------------
     def _handle_drag_event(self, event_name, event, set_focus=False):
         """ **event** should be a toolkit-specific opaque object that will
