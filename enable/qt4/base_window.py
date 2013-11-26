@@ -331,7 +331,7 @@ class _Window(AbstractWindow):
 
     def set_drag_result(self, result):
         if result not in DRAG_RESULTS_MAP:
-            raise RuntimeError, "Unknown drag result '%s'" % result
+            raise RuntimeError("Unknown drag result '%s'" % result)
         self._drag_result = DRAG_RESULTS_MAP[result]
         return
 
