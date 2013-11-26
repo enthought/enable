@@ -421,8 +421,6 @@ class _Window(AbstractWindow):
 
     def _create_drag_event(self, event):
         
-        from traitsui.qt4.clipboard import PyMimeData
-        
         # If the control no longer exists, don't send mouse event
         if self.control is None:
             return None
@@ -440,28 +438,32 @@ class _Window(AbstractWindow):
         
         # extract an object from the event, if we can
         try:
-            mimedata = PyMimeData.coerce(event.mimeData())
+            mimedata = event.mimeData()
+            copy = event.proposedAction() == QtCore.Qt.CopyAction
         except AttributeError:
-            mimedata = None
+            # this is a DragLeave event
+            return DragEvent(x=x, y=self._flip_y(y), obj=None, copy=False,
+                        window=self, mimedata=None)
+            
+        try:
+            from traitsui.qt4.clipboard import PyMimeData
+        except ImportError:
+            # traitsui isn't available, just make mimedata available on event
             obj = None
         else:
+            mimedata = PyMimeData.coerce(mimedata)
             obj = mimedata.instance()
             if obj is None:
                 files = mimedata.localPaths()
                 if files:
-                    # try to extract file info from mimedata
                     try:
+                        # try to extract file info from mimedata
+                        # XXX this is for compatibility with what wx does
                         from apptools.io.api import File
                         obj = [File(path=path) for path in files]
                     except ImportError:
                         pass
         
-        # is the proposed action a Copy or a Move
-        try:
-            copy = event.proposedAction() == QtCore.Qt.MoveAction
-        except AttributeError:
-            copy = False
-
         return DragEvent(x=x, y=self._flip_y(y), obj=obj, copy=copy,
                         window=self, mimedata=mimedata)
 
