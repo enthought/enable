@@ -5,7 +5,6 @@ the standard WX one.
 
 # Major library imports
 import wx
-from types import ListType, TupleType
 
 # Enthought Imports
 from traits.api import Property, Trait, TraitError, \
@@ -17,7 +16,7 @@ from enable.component import Component
 def valid_range(object, name, value):
     "Verify that a set of range values for a scrollbar is valid"
     try:
-        if (type(value) in (TupleType, ListType)) and (len(value) == 4):
+        if (type(value) in (tuple, list)) and (len(value) == 4):
             low, high, page_size, line_size = value
             if high < low:
                 low, high = high, low

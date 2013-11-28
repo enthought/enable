@@ -15,7 +15,7 @@ class MyFrame(DemoFrame):
         return Window(self, component=container)
 
     def _arrow_printer(self):
-        print "Clicked:", self.compass.clicked
+        print("Clicked:", self.compass.clicked)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-from __future__ import with_statement
+
 
 import os
 import time
@@ -33,7 +33,7 @@ def main():
     bbox = gc.get_text_extent(text)
     draw_text(gc,text,bbox,text_color,bbox_color)
     t2 = time.clock()
-    print '1st:', t2-t1
+    print('1st:', t2-t1)
 
     t1 = time.clock()
     with gc:
@@ -41,7 +41,7 @@ def main():
         gc.rotate_ctm(pi/4)
         draw_text(gc,text,bbox,text_color,bbox_color)
     t2 = time.clock()
-    print '2nd:', t2-t1
+    print('2nd:', t2-t1)
 
     t1 = time.clock()
     with gc:
@@ -49,7 +49,7 @@ def main():
         gc.scale_ctm(4.0,2.0)
         draw_text(gc,text,bbox,text_color,bbox_color)
     t2 = time.clock()
-    print '3rd:', t2-t1
+    print('3rd:', t2-t1)
 
     t1 = time.clock()
     with gc:
@@ -58,8 +58,8 @@ def main():
         gc.rotate_ctm(pi/4)
         draw_text(gc,text,bbox,text_color,bbox_color)
     t2 = time.clock()
-    print '4th:', t2-t1
-    print 'tot:', time.clock() - tot1
+    print('4th:', t2-t1)
+    print('tot:', time.clock() - tot1)
     gc.save(save_path('text2.bmp'))
 
     import random
@@ -71,55 +71,55 @@ def main():
     for i in range(N):
         random.shuffle(alpha)
         strs.append(''.join(alpha))
-    print 'starting:'
+    print('starting:')
     t1 = time.clock()
     for s in strs:
         gc.show_text(s)
     t2 = time.clock()
-    print
-    print '1. %d different 62 letter strings(total,per string):' % N
-    print '    %f %f' % (t2-t1,((t2-t1)/N))
+    print()
+    print('1. %d different 62 letter strings(total,per string):' % N)
+    print('    %f %f' % (t2-t1,((t2-t1)/N)))
 
     t1 = time.clock()
     for i in range(N/10):
         for s in strs[:10]:
             gc.show_text(s)
     t2 = time.clock()
-    print '2. 10 strings with 62 letter rendered %d times (total,per str):' % N
-    print '    %f %f' % (t2-t1,((t2-t1)/N))
+    print('2. 10 strings with 62 letter rendered %d times (total,per str):' % N)
+    print('    %f %f' % (t2-t1,((t2-t1)/N)))
 
-    print "Version 2. above is common in graphs and should be about 10 "
-    print "times faster than the first because of caching"
-    print
+    print("Version 2. above is common in graphs and should be about 10 ")
+    print("times faster than the first because of caching")
+    print()
     gc.save(save_path('text2.bmp'))
 
 def main2():
 
-    import Image
+    from PIL import Image
     pil_img = Image.open('doubleprom_soho_full.jpg')
     img = fromstring(pil_img.tostring(),UInt8)
     img = img.resize((pil_img.size[1],pil_img.size[0],3))
 
     alpha = ones(pil_img.size,UInt8) * 255
     img = concatenate((img[:,:,::-1],alpha[:,:,NewAxis]),-1).copy()
-    print 'typecode:', typecode(img)    , iscontiguous(img)
-    print shape(img)
+    print('typecode:', typecode(img)    , iscontiguous(img))
+    print(shape(img))
     gc=agg.GraphicsContextArray((1000,1000))
     gc.draw_image(img)
-    print pil_img.getpixel((300,300)), img[300,300], gc.bmp_array[300,300]
+    print(pil_img.getpixel((300,300)), img[300,300], gc.bmp_array[300,300])
     gc.save('sun.bmp')
 
 def main3():
 
-    import Image
+    from PIL import Image
     pil_img = Image.open('doubleprom_soho_full.jpg')
     img = fromstring(pil_img.tostring(),UInt8)
     img = img.resize((pil_img.size[1],pil_img.size[0],3))
 
     alpha = ones(pil_img.size,UInt8) * 255
     img = concatenate((img[:,:,::-1],alpha[:,:,NewAxis]),-1).copy()
-    print 'typecode:', typecode(img)    , iscontiguous(img)
-    print shape(img)
+    print('typecode:', typecode(img)    , iscontiguous(img))
+    print(shape(img))
     agg_img = agg.Image(img,"bgra32", interpolation_scheme="simple")
     gc=agg.GraphicsContextArray((760,760))
     N = 100
@@ -136,17 +136,17 @@ def main3():
             gc.set_fill_color((0.0,0,1.0,.25))
             #gc.show_text("SUN")
     t2 = time.clock()
-    print "images per second: %g" % (N/(t2-t1))
+    print("images per second: %g" % (N/(t2-t1)))
     gc.save('sun3.bmp')
 
 def main4():
     """ Test drawing an rgb24 into a bgra32"""
-    import Image
+    from PIL import Image
     pil_img = Image.open('doubleprom_soho_full.jpg')
     img = fromstring(pil_img.tostring(),UInt8)
     img = img.resize((pil_img.size[1],pil_img.size[0],3))
-    print 'typecode:', typecode(img)    , iscontiguous(img)
-    print shape(img)
+    print('typecode:', typecode(img)    , iscontiguous(img))
+    print(shape(img))
     agg_img = agg.Image(img,"rgb24", interpolation_scheme="simple")
     gc=agg.GraphicsContextArray((1000,1000))
     N = 1
@@ -162,7 +162,7 @@ def main4():
             gc.set_fill_color((0.0,0,1.0,.5))
             #gc.show_text("SUN")
     t2 = time.clock()
-    print "images per second: %g" % (N/(t2-t1))
+    print("images per second: %g" % (N/(t2-t1)))
     gc.save('sun2.bmp')
 
 def main5(gc):
@@ -177,7 +177,7 @@ def main5(gc):
     bbox = gc.get_text_extent(text)
     draw_text(gc,text,bbox,text_color,bbox_color)
     t2 = time.clock()
-    print '1st:', t2-t1
+    print('1st:', t2-t1)
 
 
     import random
@@ -200,9 +200,9 @@ def main5(gc):
             #gc.translate_ctm(0,14)
             gc.show_text(s)
     t2 = time.clock()
-    print
-    print ' %d  strings(total,per string):' % (N*10)
-    print '    %f %f' % (t2-t1,((t2-t1)/(N*10)))
+    print()
+    print(' %d  strings(total,per string):' % (N*10))
+    print('    %f %f' % (t2-t1,((t2-t1)/(N*10))))
     gc.save('text2.bmp')
 
 import profile

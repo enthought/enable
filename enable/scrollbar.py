@@ -10,7 +10,6 @@ from __future__ import with_statement
 # PZW: Define a scrollbar that uses the system/wx-native scrollbar instead
 # of drawing our own.
 
-from types import TupleType
 from traits.api import Event, Property, Trait, TraitError
 from traitsui.api import Group, View
 
@@ -58,7 +57,7 @@ hs_width  = 0
 def valid_range ( object, name, value ):
     "Verify that a set of range values for a scrollbar is valid"
     try:
-        if (type( value ) is TupleType) and (len( value ) == 4):
+        if (type( value ) is tuple) and (len( value ) == 4):
             low, high, page_size, line_size = value
             if high < low:
                 low, high = high, low

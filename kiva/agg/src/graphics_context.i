@@ -264,7 +264,7 @@ namespace kiva {
             # Later we can add full-blown support with wchar_t/Py_UNICODE
             # typemaps etc.
             try:
-                if isinstance(text, unicode):
+                if '' == b'' and isinstance(text, unicode):
                     text = text.encode("utf8")
                 return text
             except:
@@ -814,7 +814,7 @@ namespace kiva {
                     rgb24 format.
                 """
                 FmtsWithoutAlpha = ('jpg', 'bmp', 'eps', "jpeg")
-                import Image as PilImage
+                from PIL import Image as PilImage
                 size = (self.width(), self.height())
                 fmt = self.format()
 
@@ -960,7 +960,7 @@ class Image(GraphicsContextArray):
             another GraphicsContextArray
         """
         # read the file using PIL
-        import Image as PilImage
+        from PIL import Image as PilImage
         pil_img = PilImage.open(file)
 
         # Convert image to a numeric array

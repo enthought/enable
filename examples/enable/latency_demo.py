@@ -21,9 +21,9 @@ class Box(Component):
 
     def _draw_mainlayer(self, gc, view=None, mode="default"):
         if self.event_state == "clicked":
-            print "waiting %0.4f seconds... " % self.delay,
+            print("waiting %0.4f seconds... " % self.delay, end=' ')
             time.sleep(self.delay)
-            print "done."
+            print("done.")
 
             with gc:
                 gc.set_fill_color(self.color_)
@@ -83,7 +83,7 @@ if __name__ == "__main__":
                         0.10: (240,50,100,100)}
 
     container = MyContainer(auto_size = False)
-    for delay, bounds in times_and_bounds.items():
+    for delay, bounds in list(times_and_bounds.items()):
         box = Box()
         container.add(box)
         box.position = list(bounds[:2])

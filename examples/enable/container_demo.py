@@ -20,7 +20,7 @@ class Region(PlotComponent, DragTool):
         super(Region, self).__init__(**kw)
         if color:
             self.color = color
-        if not kw.has_key("bounds"):
+        if "bounds" not in kw:
             self.bounds = [100, 100]
 
     def _draw_plot(self, gc, view_bounds=None, mode="normal"):

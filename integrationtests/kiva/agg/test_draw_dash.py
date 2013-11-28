@@ -3,7 +3,7 @@ import sys
 import unittest
 
 import numpy
-import Image
+from PIL import Image
 
 from kiva import agg
 

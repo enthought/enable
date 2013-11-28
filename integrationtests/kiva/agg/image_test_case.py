@@ -2,7 +2,7 @@ import time
 import os, sys
 import unittest
 
-import Image
+from PIL import Image
 from numpy import alltrue, array, concatenate, dtype, fromstring, newaxis, \
                   pi, ravel, ones, zeros
 
@@ -332,7 +332,7 @@ class test_interpolation_image(unittest.TestCase):
             gc.draw_image(img)
         t2 = time.clock()
         img_per_sec = iters/(t2-t1)
-        print "'%s' interpolation -> img per sec: %4.2f" % (scheme, img_per_sec)
+        print("'%s' interpolation -> img per sec: %4.2f" % (scheme, img_per_sec))
         return img_per_sec
 
     def test_simple_timing(self):
@@ -341,17 +341,17 @@ class test_interpolation_image(unittest.TestCase):
 
     def test_bilinear_timing(self):
         scheme = "bilinear"
-        iters = self.N/2 # this is slower than simple, so use less iters
+        iters = self.N//2 # this is slower than simple, so use less iters
         return self.generic_timing(scheme,self.size,iters)
 
     def test_bicubic_timing(self):
         scheme = "bicubic"
-        iters = self.N/2 # this is slower than simple, so use less iters
+        iters = self.N//2 # this is slower than simple, so use less iters
         return self.generic_timing(scheme,self.size,iters)
 
     def test_sinc144_timing(self):
         scheme = "sinc144"
-        iters = self.N/2 # this is slower than simple, so use less iters
+        iters = self.N//2 # this is slower than simple, so use less iters
         return self.generic_timing(scheme,self.size,iters)
 
 

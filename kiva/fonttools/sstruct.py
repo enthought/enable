@@ -78,7 +78,7 @@ def unpack(format, data, object=None):
         if object is None:
                 object = {}
         formatstring, names, fixes = getformat(format)
-        if type(object) is types.DictType:
+        if type(object) is type({}):
                 dict = object
         else:
                 dict = object.__dict__

@@ -1,7 +1,7 @@
 """
 Benchmarks Agg rendering times.
 """
-from __future__ import with_statement
+
 
 import time
 
@@ -15,7 +15,7 @@ def benchmark_real_time(cycles=10,n_pts=1000,sz=(1000,1000)):
     """ Render a sin wave to the screen repeatedly.  Clears
         the screen between each rendering.
     """
-    print 'realtime:',
+    print('realtime:', end=' ')
     width,height = sz
     pts = zeros((n_pts,2),Float)
     x = pts[:,0]
@@ -32,7 +32,7 @@ def benchmark_real_time(cycles=10,n_pts=1000,sz=(1000,1000)):
         #agg.write_bmp_rgb24("sin%d.bmp" % i,gc.bitmap)
     t2 = time.clock()
     tot_time = t2 - t1
-    print 'tot,per cycle:', tot_time, tot_time/cycles
+    print('tot,per cycle:', tot_time, tot_time/cycles)
     return
 
 
@@ -61,12 +61,12 @@ def benchmark_compiled_path(cycles=10,n_pts=1000,sz=(1000,1000)):
     t2 = time.clock()
 
     tot_time = t2 - t1
-    print 'tot,per cycle:', tot_time, tot_time/cycles
+    print('tot,per cycle:', tot_time, tot_time/cycles)
     return
 
 
 def benchmark_draw_path_flags(cycles=10,n_pts=1000,sz=(1000,1000)):
-    print 'realtime:',
+    print('realtime:', end=' ')
     width,height = sz
     pts = zeros((n_pts,2),Float)
     x = pts[:,0]
@@ -88,7 +88,7 @@ def benchmark_draw_path_flags(cycles=10,n_pts=1000,sz=(1000,1000)):
         t2 = time.clock()
         agg.write_bmp_rgb24("draw_path%d.bmp" % flag,gc.bitmap)
         tot_time = t2 - t1
-        print 'tot,per cycle:', tot_time, tot_time/cycles
+        print('tot,per cycle:', tot_time, tot_time/cycles)
     return
 
 
@@ -127,8 +127,8 @@ def benchmark_individual_symbols(n_pts=1000,sz=(1000,1000)):
     "Draws some stars"
     width,height = sz
     pts = stats.norm.rvs(size=(n_pts,2)) * array(sz)/8.0 + array(sz)/2.0
-    print pts[5,:]
-    print shape(pts)
+    print(pts[5,:])
+    print(shape(pts))
     star_path = star_path_gen()
 
     gc = agg.GraphicsContextArray(sz)
@@ -143,7 +143,7 @@ def benchmark_individual_symbols(n_pts=1000,sz=(1000,1000)):
     t2 = time.clock()
     gc.save("benchmark_symbols1.bmp")
     tot_time = t2 - t1
-    print 'star count, tot,per shape:', n_pts, tot_time, tot_time / n_pts
+    print('star count, tot,per shape:', n_pts, tot_time, tot_time / n_pts)
     return
 
 
@@ -151,8 +151,8 @@ def benchmark_rect(n_pts=1000,sz=(1000,1000)):
     "Draws a number of randomly-placed renctangles."
     width,height = sz
     pts = stats.norm.rvs(size=(n_pts,2)) * array(sz)/8. + array(sz)/2.
-    print pts[5,:]
-    print shape(pts)
+    print(pts[5,:])
+    print(shape(pts))
 
     gc = agg.GraphicsContextArray(sz)
     gc.set_fill_color((1.0,0.0,0.0,0.1))
@@ -166,7 +166,7 @@ def benchmark_rect(n_pts=1000,sz=(1000,1000)):
     t2 = time.clock()
     gc.save("benchmark_rect.bmp")
     tot_time = t2 - t1
-    print 'rect count, tot,per shape:', n_pts, tot_time, tot_time / n_pts
+    print('rect count, tot,per shape:', n_pts, tot_time, tot_time / n_pts)
     return
 
 
@@ -198,8 +198,8 @@ def benchmark_symbols_all_at_once(n_pts=1000,sz=(1000,1000)):
     build_path_time = t2 - t1
     render_path_time = t3 - t2
     tot_time = t3 - t1
-    print 'star count, tot,building path, rendering path:', n_pts, \
-          tot_time, build_path_time,render_path_time
+    print('star count, tot,building path, rendering path:', n_pts, \
+          tot_time, build_path_time,render_path_time)
     return
 
 
