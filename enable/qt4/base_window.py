@@ -159,10 +159,9 @@ class _QtWindowHandler(object):
     def dragEnterEvent(self, event):
         if self._enable_window:
             self._enable_window._drag_result = QtCore.Qt.IgnoreAction
-            handled = self._enable_window._handle_drag_event('drag_over', event)
-            if handled:
-                event.setDropAction(self._enable_window._drag_result)
-                event.accept()
+            self._enable_window._handle_drag_event('drag_over', event)
+            event.setDropAction(self._enable_window._drag_result)
+            event.accept()
 
     def dragLeaveEvent(self, event):
         if self._enable_window:
@@ -171,18 +170,17 @@ class _QtWindowHandler(object):
     def dragMoveEvent(self, event):
         if self._enable_window:
             self._enable_window._drag_result = QtCore.Qt.IgnoreAction
-            handled = self._enable_window._handle_drag_event('drag_over', event)
-            if handled:
-                event.setDropAction(self._enable_window._drag_result)
-                event.accept()
+            print "drag move"
+            self._enable_window._handle_drag_event('drag_over', event)
+            event.setDropAction(self._enable_window._drag_result)
+            event.accept()
 
     def dropEvent(self, event):
         if self._enable_window:
             self._enable_window._drag_result = event.proposedAction()
-            handled = self._enable_window._handle_drag_event('dropped_on', event)
-            if handled:
-                event.setDropAction(self._enable_window._drag_result)
-                event.accept()
+            self._enable_window._handle_drag_event('dropped_on', event)
+            event.setDropAction(self._enable_window._drag_result)
+            event.accept()
 
 
 class _QtWindow(QtGui.QWidget):
