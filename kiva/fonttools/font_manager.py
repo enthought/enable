@@ -686,10 +686,7 @@ def createFontList(fontfiles, fontext='ttf'):
         else:
             try:
                 font = TTFont(str(fpath))
-            except TTLibError:
-                verbose.report("Could not open font file %s"%fpath)
-                continue
-            except RuntimeError:
+            except (RuntimeError, TTLibError):
                 verbose.report("Could not open font file %s"%fpath)
                 continue
             except UnicodeError:
