@@ -10,6 +10,7 @@ minimalSVG = etree.parse(StringIO(r"""<?xml version="1.0" standalone="no"?>
   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>"""))
 
+
 class TestBrushFromColourValue(unittest.TestCase):
 
     def setUp(self):
@@ -28,7 +29,7 @@ class TestBrushFromColourValue(unittest.TestCase):
         self.document.state["color"] = "rgb(100,100,100)"
         self.assertEqual(
             self.document.getBrushFromState().color,
-            (100,100,100,255)
+            (100, 100, 100, 255)
         )
 
     def testCurrentColourNull(self):
@@ -61,18 +62,34 @@ class TestBrushFromColourValue(unittest.TestCase):
             self.document.getBrushFromState().color[-1],
             0
         )
+
     def testURLFallback(self):
         self.document.state["fill"] = "url(http://google.com) red"
         self.assertEqual(
             self.document.getBrushFromState().color,
-            (255,0,0)
+            (255, 0, 0, 255)
         )
+
 
 class TestValueToPixels(unittest.TestCase):
     """ Make sure that CSS length values get converted correctly to pixels"""
+
     def testDefault(self):
         got = document.valueToPixels("12")
         self.assertEqual(got, 12)
+
     def testPointConversion(self):
         got = document.valueToPixels('14pt')
-        self.assertEqual(got, 22)
+        self.assertEqual(got, 14)
+
+    def testInchConversion(self):
+        got = document.valueToPixels('2in')
+        self.assertEqual(got, 144)
+
+    def testCentimeterConversion(self):
+        got = document.valueToPixels('2cm')
+        self.assertAlmostEqual(got, 56.7, places=1)
+
+    def testMillimeterConversion(self):
+        got = document.valueToPixels('2mm')
+        self.assertAlmostEqual(got, 5.67, places=2)

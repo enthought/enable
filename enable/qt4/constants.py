@@ -17,6 +17,13 @@ from pyface.qt import QtCore
 
 from ..toolkit_constants import key_names, pointer_names
 
+DRAG_RESULTS_MAP = { "error":   QtCore.Qt.IgnoreAction,
+                     "none":    QtCore.Qt.IgnoreAction,
+                     "copy":    QtCore.Qt.CopyAction,
+                     "move":    QtCore.Qt.MoveAction,
+                     "link":    QtCore.Qt.LinkAction,
+                     "cancel":  QtCore.Qt.IgnoreAction }
+
 BUTTON_NAME_MAP = {
     QtCore.Qt.LeftButton:   "left",
     QtCore.Qt.RightButton:  "right",
