@@ -2,9 +2,8 @@ import unittest
 
 from traits.api import Int
 
+from enable.testing import EnableTestAssistant
 from enable.tools.drag_tool import DragTool
-from enable.events import KeyEvent, MouseEvent
-from enable.abstract_window import AbstractWindow
 
 
 class DummyTool(DragTool):
@@ -16,37 +15,15 @@ class DummyTool(DragTool):
         return True
 
 
-class DummyWindow(AbstractWindow):
-
-    mouse_owner = None
-
-    def _get_control_size(self):
-        return (0, 0)
-
-    def _redraw(self):
-        pass
-
-
-class DragToolTestCase(unittest.TestCase):
+class DragToolTestCase(EnableTestAssistant, unittest.TestCase):
 
     def setUp(self):
         self.tool = DummyTool()
-        self.window = DummyWindow()
-
-    def _press_key(self, character):
-        """ Create a key_pressed event and dispatch it. """
-
-        event = KeyEvent(character=character, event_type='key_pressed',
-                         alt_down=False, control_down=False,
-                         shift_down=False, window=self.window)
-
-        self.tool.dispatch(event, 'key_pressed')
-        return event
 
     def test_default_cancel_key(self):
         tool = self.tool
         tool._drag_state = 'dragging'  # force dragging state
-        event = self._press_key('Esc')
+        event = self.send_key(tool, 'Esc')
         self.assertEqual(tool.canceled, 1)
         self.assertTrue(event.handled)
 
@@ -55,24 +32,24 @@ class DragToolTestCase(unittest.TestCase):
 
         tool._drag_state = 'dragging'  # force dragging state
         tool.cancel_keys = ['a', 'Left']
-        event = self._press_key('Esc')
+        event = self.send_key(tool, 'Esc')
         self.assertEqual(tool.canceled, 0)
         self.assertFalse(event.handled)
 
         tool._drag_state = 'dragging'  # force dragging state
-        event = self._press_key('a')
+        event = self.send_key(tool, 'a')
         self.assertEqual(tool.canceled, 1)
         self.assertTrue(event.handled)
 
         tool._drag_state = 'dragging'  # force dragging state
-        event = self._press_key('Left')
+        event = self.send_key(tool, 'Left')
         self.assertEqual(tool.canceled, 2)
         self.assertTrue(event.handled)
 
     def test_other_key_pressed(self):
         tool = self.tool
         tool._drag_state = 'dragging'  # force dragging state
-        event = self._press_key('Left')
+        event = self.send_key(tool, 'Left')
         self.assertEqual(tool.canceled, 0)
         self.assertFalse(event.handled)
 
@@ -83,8 +60,7 @@ class DragToolTestCase(unittest.TestCase):
         tool = self.tool
         tool.end_drag_on_leave = True
         tool._drag_state = 'dragging'  # force dragging state
-        event = MouseEvent(x=0, y=0, window=self.window)
-        self.tool.dispatch(event, 'mouse_leave')
+        event = self.mouse_leave(interactor=tool, x=0, y=0)
         self.assertEqual(tool.canceled, 1)
         self.assertEqual(tool._drag_state, 'nondrag')
         self.assertTrue(event.handled)
@@ -94,8 +70,7 @@ class DragToolTestCase(unittest.TestCase):
         # be 'dragging'
         tool.end_drag_on_leave = False
         tool._drag_state = 'dragging'  # force dragging state
-        event = MouseEvent(x=0, y=0, window=self.window)
-        self.tool.dispatch(event, 'mouse_leave')
+        event = self.mouse_leave(interactor=tool, x=0, y=0)
         self.assertEqual(tool.canceled, 1)
         self.assertEqual(tool._drag_state, 'dragging')
         self.assertFalse(event.handled)

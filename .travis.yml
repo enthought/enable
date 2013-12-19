@@ -1,0 +1,31 @@
+language: python
+python:
+  - 2.7
+  - 2.6
+virtualenv:
+  # This allows installing PyQt using apt-get and being able to import it.
+  system_site_packages: true
+before_install:
+  # For Python 2.7, install PyQt4
+  - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then source .travis_before_install; fi
+  # PyQt can't be installed on 2.6; run the tests without Qt
+  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then source .travis_before_install_noqt; fi
+install:
+  # nose is already installed
+  - pip install cython
+  - sudo apt-get install python-numpy
+  - sudo apt-get install swig
+  - pip install PIL
+  - pip install pyparsing
+  # Test against the current master of traits and traitsui
+  - pip install git+http://github.com/enthought/traits.git#egg=traits
+  - pip install git+http://github.com/enthought/traitsui.git#egg=traitsui
+  - python setup.py develop
+script:
+  - nosetests -v enable/tests
+  - nosetests -v enable/savage/svg/tests
+  - nosetests -v kiva/agg/tests
+  - nosetests -v kiva/tests
+notifications:
+  email:
+    - travis-ci@enthought.com

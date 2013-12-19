@@ -233,6 +233,8 @@ class ConstraintsContainer(Container):
         for item in event.removed:
             item.on_trait_change(self._component_size_hint_changed,
                                  'layout_size_hint', remove=True)
+            item.on_trait_change(self._component_position_hint_changed,
+                                 'layout_position_hint', remove=True)
             del self._component_map[item.id]
 
         # Check the added components
@@ -245,12 +247,19 @@ class ConstraintsContainer(Container):
         for key, item in self._component_map.iteritems():
             item.on_trait_change(self._component_size_hint_changed,
                                  'layout_size_hint', remove=True)
+            item.on_trait_change(self._component_position_hint_changed,
+                                 'layout_position_hint', remove=True)
         self._component_map = {}
 
         # Check the new components
         self._check_and_add_components(new)
 
     def _component_size_hint_changed(self):
+        """ Refresh the size hint contraints for a child component
+        """
+        self.relayout()
+
+    def _component_position_hint_changed(self):
         """ Refresh the size hint contraints for a child component
         """
         self.relayout()
@@ -344,6 +353,8 @@ class ConstraintsContainer(Container):
             self._component_map[key] = item
             item.on_trait_change(self._component_size_hint_changed,
                                  'layout_size_hint')
+            item.on_trait_change(self._component_position_hint_changed,
+                                 'layout_position_hint')
 
         # Update the layout
         self.relayout()
@@ -389,8 +400,10 @@ class ConstraintsContainer(Container):
                     raw_cns_extend(child._contents_constraints)
                 else:
                     raw_cns_extend(child._size_constraints)
+                    raw_cns_extend(child._position_constraints)
             else:
                 raw_cns_extend(child._size_constraints)
+                raw_cns_extend(child._position_constraints)
 
         return raw_cns + user_cns
 
