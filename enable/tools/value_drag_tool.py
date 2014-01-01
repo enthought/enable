@@ -18,7 +18,7 @@ potentially be used as the basis for many different interactions,
 
 
 from traits.api import Str, Float, Set, Enum, Bool, Tuple, Dict, Event, Any, Either
-from enable.tools.api import DragTool
+from .drag_tool import DragTool
 
 keys = set(['shift', 'alt', 'control'])
 
@@ -108,7 +108,7 @@ class ValueDragTool(DragTool):
         return True
 
     def dragging(self, event):
-        position = event.window.get_pointer_position()
+        position = event.current_pointer_position()
         delta_x = self.x_mapper.map_data(position[0]) - self.original_data_point[0]
         delta_y = self.y_mapper.map_data(position[1]) - self.original_data_point[1]
         self.set_delta(self.original_value, delta_x, delta_y)

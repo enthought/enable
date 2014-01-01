@@ -1,78 +1,116 @@
 
-from traits.api import Bool, Enum, Tuple
+from traits.api import Bool, Enum, Int, Set
 
-from drag_tool import DragTool
+from ..enable_traits import bounds_trait
+from .value_drag_tool import ValueDragTool
 
 
-class ResizeTool(DragTool):
+class ResizeTool(ValueDragTool):
     """ Generic tool for resizing a component
     """
 
-    drag_button = Enum("left", "right")
-
-    # Should the moved component be raised to the top of its container's
+    # Should the resized component be raised to the top of its container's
     # list of components?  This is only recommended for overlaying containers
     # and canvases, but generally those are the only ones in which the
     # ResizeTool will be useful.
     auto_raise = Bool(True)
+    
+    #: the hotspots which are active for this tool
+    hotspots = Set(Enum("top", "left", "right", "bottom",
+        "top left", "top right", "bottom left", "bottom right"))
+    
+    #: the distance in pixels from a hotspot required to register a hit
+    threshhold = Int(10)
+    
+    #: the minimum bounds that we can resize to
+    minimum_bounds = bounds_trait
 
-    _corner = Enum("ul", "ur", "ll", "lr")
-    _offset = Tuple(0, 0)
+    #: the hotspot that started the drag
+    _selected_hotspot = Enum("top", "left", "right", "bottom",
+        "top left", "top right", "bottom left", "bottom right")
 
-    # The last cursor position we saw; used during drag to compute deltas
-    _prev_pos = Tuple(0, 0)
+    # 'ValueDragTool' Interface ##############################################
 
-    def is_draggable(self, x, y):
+    def get_value(self):
         if self.component is not None:
             c = self.component
-            return (c.x <= x <= c.x2) and (c.y <= y <= c.y2)
-        else:
-            return False
+            return c.position[:], c.bounds[:]
+    
+    def set_delta(self, value, delta_x, delta_y):
+        if self.component is not None:
+            c = self.component
+            position, bounds = value
+            x, y = position
+            width, height = bounds
+            min_width, min_height = self.minimum_bounds
+            edges = self._selected_hotspot.split()
+            if 'left' in edges:
+                if delta_x >= width-min_width:
+                    delta_x = width-min_width
+                c.x = x+delta_x
+                c.width = width-delta_x
+            if 'right' in edges:
+                if delta_x <= -width+min_width:
+                    delta_x = -width+min_width
+                c.width = width+delta_x
+            if 'bottom' in edges:
+                if delta_y >= height-min_height:
+                    delta_y = height-min_height
+                c.y = y+delta_y
+                c.height = height-delta_y
+            if 'top' in edges:
+                if delta_y <= -height+min_height:
+                    delta_y = -height+min_height
+                c.height = height+delta_y
+            c._layout_needed = True
+            c.request_redraw()
+
+    # 'DragTool' Interface ###################################################
+
+    def is_draggable(self, x, y):
+        return self._find_hotspot(x, y) in self.hotspots
 
     def drag_start(self, event):
         if self.component is not None:
-            component = self.component
-            self._prev_pos = (event.x, event.y)
-            # Figure out which corner we are resizing
-            if event.x > component.x + component.width/2:
-                cx = 'r'  # right
-                x_offset = component.x2 - event.x + 1
-            else:
-                cx = 'l'  # left
-                x_offset = event.x - component.x + 1
-            if event.y > component.y + component.height/2:
-                cy = 'u'  # upper
-                y_offset = component.y2 - event.y + 1
-            else:
-                cy = 'l'  # lower
-                y_offset = event.y - component.y + 1
-            self._corner = cy + cx
-            self._offset = (x_offset, y_offset)
+            self._selected_hotspot = self._find_hotspot(event.x, event.y)
+            super(ResizeTool, self).drag_start(event)
             self.component._layout_needed = True
             if self.auto_raise:
                 # Push the component to the top of its container's list
                 self.component.container.raise_component(self.component)
             event.window.set_mouse_owner(self, event.net_transform())
             event.handled = True
-        return
+        return True
 
-    def dragging(self, event):
-        # FIXME: this function appears to do nothing.
+    # Private Interface ######################################################
+            
+    def _find_hotspot(self, x, y):
+        hotspot = []
         if self.component is not None:
-            #dx = event.x - self._prev_pos[0]
-            #dy = event.y - self._prev_pos[1]
-            #pos = self.component.position
-            #self.component.position = [pos[0] + dx, pos[1] + dy]
-            offset = self._offset
-            if self._corner[1] == 'l':   # left
-                raise NotImplementedError
-            else:                        # right
-                x2 = event.x + offset
+            c = self.component
+            
+            v_threshhold = min(self.threshhold, c.height/2.0)
+            if c.y <= y <= c.y+v_threshhold:
+                hotspot.append('bottom')
+            elif c.y2+1-v_threshhold <= y <= c.y2+1:
+                hotspot.append('top')
+            elif y < c.y or y > c.y2+1:
+                return ''
+            
+            h_threshhold = min(self.threshhold, c.width/2.0)
+            if c.x <= x <= c.x+h_threshhold:
+                hotspot.append('left')
+            elif c.x2+1-h_threshhold <= x <= c.x2+1:
+                hotspot.append('right')
+            elif x < c.x or x > c.x2+1:
+                return ''
+        return ' '.join(hotspot)
 
-            self.component._layout_needed = True
-            self.component.request_redraw()
-            self._prev_pos = (event.x, event.y)
-            event.handled = True
-        return
+    # Traits Handlers ########################################################
 
+    def _hotspots_default(self):
+        return set(["top", "left", "right", "bottom",
+            "top left", "top right", "bottom left", "bottom right"])
 
+    def _minimum_bounds_default(self):
+        return [self.threshhold*2, self.threshhold*2]
