@@ -257,12 +257,13 @@ namespace kiva
             std::vector<gradient_stop>::iterator stop_it = this->stops.begin();
             double offset = 0.0;
             unsigned int i = 0;
+            unsigned int const max_index = array.size();
 
             for (; stop_it+1 != this->stops.end(); stop_it++)
             {
                 std::vector<gradient_stop>::iterator next_it = stop_it+1;
                 double offset_range = next_it->offset - stop_it->offset;
-                while ( (offset <= next_it->offset) && (offset <=1.0))
+                while ( (offset <= next_it->offset) && (offset <=1.0) && (i < max_index))
                 {
                     array[i] = stop_it->color.gradient(next_it->color, (offset-stop_it->offset)/offset_range);
                     i++;
