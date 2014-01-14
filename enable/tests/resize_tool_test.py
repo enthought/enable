@@ -10,9 +10,10 @@ from enable.tools.resize_tool import ResizeTool
 class DragToolTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.component = Component(position=[50, 50], bounds=[100, 100], padding=10)
+        self.component = Component(position=[50, 50], bounds=[100, 100],
+                                   padding=10)
         self.tool = ResizeTool(component=self.component)
-    
+
     def test_find_hotspots(self):
         points_and_results = [
             # corners and edges
@@ -72,7 +73,8 @@ class DragToolTestCase(unittest.TestCase):
         for (x, y), result in points_and_results:
             value = self.tool._find_hotspot(x, y)
             self.assertEqual(value, result,
-                "Failed at (%f, %f): expected %s, got %s" % (x,y, result, value))
+                             "Failed at (%f, %f): expected %s, got %s" %
+                             (x, y, result, value))
 
     def test_set_delta_left(self):
         self.tool._selected_hotspot = 'left'
@@ -107,7 +109,7 @@ class DragToolTestCase(unittest.TestCase):
             self.tool.set_delta(value, x, y)
             self.assertEqual(self.component.position, position)
             self.assertEqual(self.component.bounds, bounds)
-            
+
     def test_set_delta_bottom(self):
         self.tool._selected_hotspot = 'bottom'
         value = (self.component.position[:], self.component.bounds[:])

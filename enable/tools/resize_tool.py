@@ -4,6 +4,9 @@ from traits.api import Bool, Enum, Int, Set
 from ..enable_traits import bounds_trait
 from .value_drag_tool import ValueDragTool
 
+hotspot_trait = Enum("top", "left", "right", "bottom", "top left", "top right",
+                     "bottom left", "bottom right")
+
 
 class ResizeTool(ValueDragTool):
     """ Generic tool for resizing a component
@@ -14,20 +17,18 @@ class ResizeTool(ValueDragTool):
     # and canvases, but generally those are the only ones in which the
     # ResizeTool will be useful.
     auto_raise = Bool(True)
-    
+
     #: the hotspots which are active for this tool
-    hotspots = Set(Enum("top", "left", "right", "bottom",
-        "top left", "top right", "bottom left", "bottom right"))
-    
+    hotspots = Set(hotspot_trait)
+
     #: the distance in pixels from a hotspot required to register a hit
     threshhold = Int(10)
-    
+
     #: the minimum bounds that we can resize to
     minimum_bounds = bounds_trait
 
     #: the hotspot that started the drag
-    _selected_hotspot = Enum("top", "left", "right", "bottom",
-        "top left", "top right", "bottom left", "bottom right")
+    _selected_hotspot = hotspot_trait
 
     # 'ValueDragTool' Interface ##############################################
 
@@ -35,7 +36,7 @@ class ResizeTool(ValueDragTool):
         if self.component is not None:
             c = self.component
             return c.position[:], c.bounds[:]
-    
+
     def set_delta(self, value, delta_x, delta_y):
         if self.component is not None:
             c = self.component
@@ -83,12 +84,12 @@ class ResizeTool(ValueDragTool):
         return True
 
     # Private Interface ######################################################
-            
+
     def _find_hotspot(self, x, y):
         hotspot = []
         if self.component is not None:
             c = self.component
-            
+
             v_threshhold = min(self.threshhold, c.height/2.0)
             if c.y <= y <= c.y+v_threshhold:
                 hotspot.append('bottom')
@@ -96,7 +97,7 @@ class ResizeTool(ValueDragTool):
                 hotspot.append('top')
             elif y < c.y or y > c.y2+1:
                 return ''
-            
+
             h_threshhold = min(self.threshhold, c.width/2.0)
             if c.x <= x <= c.x+h_threshhold:
                 hotspot.append('left')
@@ -109,8 +110,8 @@ class ResizeTool(ValueDragTool):
     # Traits Handlers ########################################################
 
     def _hotspots_default(self):
-        return set(["top", "left", "right", "bottom",
-            "top left", "top right", "bottom left", "bottom right"])
+        return set(["top", "left", "right", "bottom", "top left", "top right",
+                    "bottom left", "bottom right"])
 
     def _minimum_bounds_default(self):
         return [self.threshhold*2, self.threshhold*2]

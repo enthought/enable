@@ -23,8 +23,11 @@ class MyFrame(DemoFrame):
 
     def _create_window(self):
         box = Box(bounds=[100.0, 100.0], position=[50.0, 50.0])
-        box.tools.append(ResizeTool(component=box, hotspots=set(["top", "left", "right", "bottom",
-            "top left", "top right", "bottom left", "bottom right"])))
+        box.tools.append(ResizeTool(component=box,
+                                    hotspots=set(["top", "left", "right",
+                                                  "bottom", "top left",
+                                                  "top right", "bottom left",
+                                                  "bottom right"])))
         container = Container(bounds=[500, 500])
         container.add(box)
         return Window(self, -1, component=container)
