@@ -10,27 +10,27 @@
 
 """
 # XXX would like to not have pyface imports here - not so good for Enaml GUIs
-from enthought.pyface.action.api import MenuManager, ActionController
+from pyface.action.api import MenuManager, ActionController
 
-from enthought.traits.api import Instance, Any
-from enthought.enable.api import BaseTool
+from traits.api import Instance, Any
+from enable.api import BaseTool
 
 
 class EnableActionController(ActionController):
     """ An action controller that keeps a reference to the enable event that
     triggered the action.
-
+    
     """
-
+    
     #: the enable event which triggered the popup menu
     enable_event = Any
-
+    
     def perform(self, action, event):
         """ Control an action invocation
-
+        
         We make the original enable event available to the action by adding it
         to the pyface event.
-
+        
         """
         event.enable_event = self.enable_event
         return action.perform(event)
@@ -42,31 +42,31 @@ class ContextMenuTool(BaseTool):
 
     #: the pyface action MenuManager instance
     menu_manager = Instance(MenuManager)
-
+    
     #: an optional ActionController
     controller = Instance(ActionController)
-
-    def normal_right_down(self, event):
+    
+    def normal_right_up(self, event):
         """ Handles the right mouse button being pressed.
         """
         if self.menu_manager is not None:
             if self.is_showable(event.x, event.y):
                 self.show_menu(event)
-
+    
     def is_showable(self, x, y):
         """ Returns whether the (x, y) position is OK for showing the menu
-
+        
         By default checks that the point is in the component.  Subclasses can
         override to provide more refined hit-testing.
-
+        
         """
         return self.component.is_in(x, y)
-
+    
     def show_menu(self, event):
         """ Create the toolkit menu and show it
-
+        
         This method also makes the enable event available to the controller.
-
+        
         """
         controller = self.controller
         if controller is None:
@@ -76,6 +76,5 @@ class ContextMenuTool(BaseTool):
         else:
             controller.enable_event = event
         menu = self.menu_manager.create_menu(event.window.control, controller)
-        ### FIXME : This comment came from the example code I copied...
-        #           The call to _flip_y is necessary but inappropriate.
-        menu.show(event.x, event.window._flip_y(event.y))
+        screen_pos = event.window.window_to_screen(event.x, event.y)
+        menu.show(*screen_pos)
