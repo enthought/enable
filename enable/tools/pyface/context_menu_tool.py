@@ -52,6 +52,7 @@ class ContextMenuTool(BaseTool):
         if self.menu_manager is not None:
             if self.is_showable(event.x, event.y):
                 self.show_menu(event)
+                event.handled = True
 
     def is_showable(self, x, y):
         """ Returns whether the (x, y) position is OK for showing the menu
@@ -78,4 +79,4 @@ class ContextMenuTool(BaseTool):
         menu = self.menu_manager.create_menu(event.window.control, controller)
         ### FIXME : This comment came from the example code I copied...
         #           The call to _flip_y is necessary but inappropriate.
-        menu.show(event.x, event.window._flip_y(event.y))
+        menu.show()#event.x, event.window._flip_y(event.y))
