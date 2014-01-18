@@ -158,6 +158,10 @@ class AbstractWindow(HasTraits):
         "Returns local window coordinates for given global screen coordinates"
         raise NotImplementedError
 
+    def window_to_screen(self, x, y):
+        "Returns global screen coordinates for given local window coordinates"
+        raise NotImplementedError
+
     def get_pointer_position(self):
         "Returns the current pointer position in local window coordinates"
         raise NotImplementedError

@@ -10,10 +10,10 @@
 
 """
 # XXX would like to not have pyface imports here - not so good for Enaml GUIs
-from enthought.pyface.action.api import MenuManager, ActionController
+from pyface.action.api import MenuManager, ActionController
 
-from enthought.traits.api import Instance, Any
-from enthought.enable.api import BaseTool
+from traits.api import Instance, Any
+from enable.api import BaseTool
 
 
 class EnableActionController(ActionController):
@@ -76,6 +76,5 @@ class ContextMenuTool(BaseTool):
         else:
             controller.enable_event = event
         menu = self.menu_manager.create_menu(event.window.control, controller)
-        ### FIXME : This comment came from the example code I copied...
-        #           The call to _flip_y is necessary but inappropriate.
-        menu.show(event.x, event.window._flip_y(event.y))
+        screen_pos = event.window.window_to_screen(event.x, event.y)
+        menu.show(*screen_pos)

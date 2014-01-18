@@ -459,6 +459,11 @@ class BaseWindow(AbstractWindow):
         y = self._flip_y(y)
         return x,y
 
+    def window_to_screen(self, x, y):
+        pt = wx.Point(x, self._flip_y(y))
+        x, y = self.control.ClientToScreen(pt)
+        return x, y
+
     def get_pointer_position(self):
         "Returns the current pointer position in local window coordinates"
         pos = wx.GetMousePosition()
