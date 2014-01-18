@@ -441,13 +441,18 @@ class _Window(AbstractWindow):
 
     def _on_key_pressed(self, event):
         return self._handle_key_event('key_pressed', event)
-    
+
+    def screen_to_window(self, x, y):
+        pos = self.control.mapFromGlobal(QtCore.QPoint(x, y))
+        return pos.x(), self._flip_y(pos.y())
+
+    def window_to_screen(self, x, y):
+        pos = self.control.mapToGlobal(QtCore.QPoint(x, self._flip_y(y)))
+        return pos.x(), pos.y()
+
     def get_pointer_position(self):
-        pos = self.control.mapFromGlobal(QtGui.QCursor.pos())
-        x = pos.x()
-        y = self._flip_y(pos.y())
-        return x, y
-            
+        pos = QtGui.QCursor.pos()
+        return self.screen_to_window(pos.x(), pos.y())
 
     #------------------------------------------------------------------------
     # Private methods
