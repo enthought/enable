@@ -9,7 +9,7 @@
 """ This is a minimum example for adding a context menu to plot.
 
 """
-# XXX would like to not have pyface imports here - not so good for Enaml GUIs
+
 from pyface.action.api import MenuManager, ActionController
 
 from traits.api import Instance, Any
