@@ -4,6 +4,9 @@ enable: low-level drawing and interaction
 
 http://github.enthought.com/enable
 
+.. image:: https://api.travis-ci.org/enthought/enable.png?branch=master
+   :target: https://travis-ci.org/enthought/enable
+   :alt: Build status
 
 The Enable *project* provides two related multi-platform *packages* for drawing
 GUI objects.
