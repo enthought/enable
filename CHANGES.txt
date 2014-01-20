@@ -1,0 +1,20 @@
+Enable CHANGELOG
+================
+
+Change summary since 4.3.0
+
+Enhancements
+
+ * Added a test assistant to aid in writing unit tests for Enable/Chaco code (3cb6d22)
+ * Added Drag & Drop support for Qt (4196bc8)
+
+Fixes
+
+ * PR #92: Fixed the example support code to allow Chaco demos to run on Qt
+ * PR #94: Fixed the examples so that they would run on Qt
+ * PR #102: Fixed a transparency drawing bug in the Qt image backend
+ * Fixed various bugs which caused test failures in Enable and Chaco (PRs #103,
+    #105, #110, #113)
+ * PR #107: Fixed a memory leak in the QPainter kiva backend
+ * PR #116: Fixed the incomplete implementation of the resize tool
+ * PR #118: Fixed a gradient rendering bug that sometimes caused segfaults
