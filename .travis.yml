@@ -20,12 +20,16 @@ install:
   # Test against the current master of traits and traitsui
   - pip install git+http://github.com/enthought/traits.git#egg=traits
   - pip install git+http://github.com/enthought/traitsui.git#egg=traitsui
+  - pip install coverage
+  - pip install coveralls
   - python setup.py develop
 script:
-  - nosetests -v enable/tests
-  - nosetests -v enable/savage/svg/tests
-  - nosetests -v kiva/agg/tests
-  - nosetests -v kiva/tests
+  - coverage run -m nose.core -v enable/tests
+  - coverage run -a -m nose.core -v enable/savage/svg/tests
+  - coverage run -a -m nose.core -v kiva/tests
+  - coverage run -a -m nose.core -v kiva/agg/tests
 notifications:
   email:
     - travis-ci@enthought.com
+after_success:
+  coveralls
