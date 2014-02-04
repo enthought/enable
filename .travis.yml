@@ -25,6 +25,7 @@ install:
   - python setup.py develop
 script:
   - coverage run -m nose.core -v
+notifications:
   email:
     - travis-ci@enthought.com
 after_success:
