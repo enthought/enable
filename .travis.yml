@@ -26,8 +26,8 @@ install:
 script:
   - coverage run -m nose.core -v enable/tests
   - coverage run -m nose.core -v enable/savage/svg/tests
-  - coverage run -m nose.core -v enable/kiva/tests
-  - coverage run -m nose.core -v enable/kiva/agg/tests
+  - coverage run -m nose.core -v kiva/tests
+  - coverage run -m nose.core -v kiva/agg/tests
 notifications:
   email:
     - travis-ci@enthought.com
