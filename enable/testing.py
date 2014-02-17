@@ -89,6 +89,13 @@ class EnableTestAssistant(object):
         window.control.set_pointer = Mock()
         return window
 
+    def create_a_mock_gc(self, width, height):
+        gc = PlotGraphicsContext((width, height))
+        gc.clear((0.0, 0.0, 0.0, 0.0))
+        gc.stroke_path = Mock()
+        gc.draw_path = Mock()
+        return gc
+
     def create_key_press(self, key, window=None, alt_down=False,
                          control_down=False, shift_down=False):
         """ Creates a KeyEvent for the given Key.
@@ -365,6 +372,66 @@ class EnableTestAssistant(object):
         event = self.create_key_press(key, window=window)
         self._key_event_dispatch(interactor, event)
         return event
+
+    def _mouse_event_dispatch(self, interactor, event, suffix):
+        mouse_owner = event.window.mouse_owner
+        if mouse_owner is None:
+            interactor.dispatch(event, suffix)
+        else:
+            mouse_owner.dispatch(event, suffix)
+
+    def _key_event_dispatch(self, interactor, event):
+        focus_owner = event.window.focus_owner
+        if focus_owner is None:
+            interactor.dispatch(event, 'key_pressed')
+        else:
+            focus_owner.dispatch(event, 'key_pressed')
+
+    def assertPathsAreProcessed(self, drawable, width=200, height=200):
+        """ Check that drawing does not leave paths unused in the GC cache.
+
+        Parameters
+        ----------
+        drawable :
+            A drawable object that has a draw method.
+
+        width : int, optional
+            The width of the array buffer
+
+        height : int, optional
+            The height of the array buffer
+
+        """
+        gc = PlotGraphicsContext((width, height))
+        drawable.draw(gc)
+        compiled_path = gc._get_path()
+        self.assertEqual(
+            compiled_path.total_vertices(), 0,
+            msg='There are compiled paths that '
+            'have not been processed: {0}'.format(compiled_path))
+
+    def assertPathsAreCreated(self, drawable, width=200, height=200):
+        """ Check that drawing creates paths.
+
+        Parameters
+        ----------
+        drawable :
+            A drawable object that has a draw method.
+
+        width : int, optional
+            The width of the array buffer
+
+        height : int, optional
+            The height of the array buffer
+
+        """
+        gc = self.create_a_mock_gc(width, height)
+        drawable.draw(gc)
+        compiled_path = gc._get_path()
+        self.assertGreater(
+            compiled_path.total_vertices(), 0,
+            msg='There are no compiled paths '
+            'created: {0}'.format(compiled_path))
 
     def _mouse_event_dispatch(self, interactor, event, suffix):
         mouse_owner = event.window.mouse_owner
