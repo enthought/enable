@@ -432,17 +432,3 @@ class EnableTestAssistant(object):
             compiled_path.total_vertices(), 0,
             msg='There are no compiled paths '
             'created: {0}'.format(compiled_path))
-
-    def _mouse_event_dispatch(self, interactor, event, suffix):
-        mouse_owner = event.window.mouse_owner
-        if mouse_owner is None:
-            interactor.dispatch(event, suffix)
-        else:
-            mouse_owner.dispatch(event, suffix)
-
-    def _key_event_dispatch(self, interactor, event):
-        focus_owner = event.window.focus_owner
-        if focus_owner is None:
-            interactor.dispatch(event, 'key_pressed')
-        else:
-            focus_owner.dispatch(event, 'key_pressed')
