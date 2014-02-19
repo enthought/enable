@@ -4,6 +4,7 @@ from mock import Mock
 
 from enable.abstract_window import AbstractWindow
 from enable.events import MouseEvent, KeyEvent
+from enable.graphics_context import GraphicsContextImage
 
 class _MockWindow(AbstractWindow):
 
@@ -89,8 +90,8 @@ class EnableTestAssistant(object):
         window.control.set_pointer = Mock()
         return window
 
-    def create_a_mock_gc(self, width, height):
-        gc = PlotGraphicsContext((width, height))
+    def create_mock_graphics_context(self, width, height):
+        gc = GraphicsContextImage((width, height))
         gc.clear((0.0, 0.0, 0.0, 0.0))
         gc.stroke_path = Mock()
         gc.draw_path = Mock()
@@ -402,7 +403,7 @@ class EnableTestAssistant(object):
             The height of the array buffer
 
         """
-        gc = PlotGraphicsContext((width, height))
+        gc = GraphicsContextImage((width, height))
         drawable.draw(gc)
         compiled_path = gc._get_path()
         self.assertEqual(
