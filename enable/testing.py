@@ -4,7 +4,6 @@ from mock import Mock
 
 from enable.abstract_window import AbstractWindow
 from enable.events import MouseEvent, KeyEvent
-from enable.graphics_context import GraphicsContextImage
 
 class _MockWindow(AbstractWindow):
 
@@ -89,30 +88,6 @@ class EnableTestAssistant(object):
         window.control = Mock()
         window.control.set_pointer = Mock()
         return window
-
-    def create_mock_graphics_context(
-            self, width, height, stroke_path=None, draw_path=None):
-        """ Create an image graphics context that will mock the stroke and
-        draw_path methods.
-
-        Parameters
-        ----------
-        width, height :
-            The size of the graphics context canvas.
-
-        stroke_path : callable, optional
-            A callable to use as the stroke_path method (default is Mock()).
-
-        draw_path : callable, optional
-            A callable to use as the draw_path method (default is Mock()).
-
-
-        """
-        gc = GraphicsContextImage((width, height))
-        gc.clear((0.0, 0.0, 0.0, 0.0))
-        gc.stroke_path = Mock() if stroke_path is None else stroke_path
-        gc.draw_path = Mock() if draw_path is None else draw_path
-        return gc
 
     def create_key_press(self, key, window=None, alt_down=False,
                          control_down=False, shift_down=False):
@@ -404,49 +379,3 @@ class EnableTestAssistant(object):
             interactor.dispatch(event, 'key_pressed')
         else:
             focus_owner.dispatch(event, 'key_pressed')
-
-    def assertPathsAreProcessed(self, drawable, width=200, height=200):
-        """ Check that drawing does not leave paths unused in the GC cache.
-
-        Parameters
-        ----------
-        drawable :
-            A drawable object that has a draw method.
-
-        width : int, optional
-            The width of the array buffer
-
-        height : int, optional
-            The height of the array buffer
-
-        """
-        gc = GraphicsContextImage((width, height))
-        drawable.draw(gc)
-        compiled_path = gc._get_path()
-        self.assertEqual(
-            compiled_path.total_vertices(), 0,
-            msg='There are compiled paths that '
-            'have not been processed: {0}'.format(compiled_path))
-
-    def assertPathsAreCreated(self, drawable, width=200, height=200):
-        """ Check that drawing creates paths.
-
-        Parameters
-        ----------
-        drawable :
-            A drawable object that has a draw method.
-
-        width : int, optional
-            The width of the array buffer (default is 200)
-
-        height : int, optional
-            The height of the array buffer (default is 200)
-
-        """
-        gc = self.create_mock_gc(width, height)
-        drawable.draw(gc)
-        compiled_path = gc._get_path()
-        self.assertGreater(
-            compiled_path.total_vertices(), 0,
-            msg='There are no compiled paths '
-            'created: {0}'.format(compiled_path))
