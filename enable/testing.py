@@ -437,13 +437,13 @@ class EnableTestAssistant(object):
             A drawable object that has a draw method.
 
         width : int, optional
-            The width of the array buffer
+            The width of the array buffer (default is 200)
 
         height : int, optional
-            The height of the array buffer
+            The height of the array buffer (default is 200)
 
         """
-        gc = self.create_a_mock_gc(width, height)
+        gc = self.create_mock_gc(width, height)
         drawable.draw(gc)
         compiled_path = gc._get_path()
         self.assertGreater(
