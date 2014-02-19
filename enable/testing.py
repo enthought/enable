@@ -90,11 +90,28 @@ class EnableTestAssistant(object):
         window.control.set_pointer = Mock()
         return window
 
-    def create_mock_graphics_context(self, width, height):
+    def create_mock_graphics_context(
+            self, width, height, stroke_path=None, draw_path=None):
+        """ Create an image graphics context that will mock the stroke and
+        draw_path methods.
+
+        Parameters
+        ----------
+        width, height :
+            The size of the graphics context canvas.
+
+        stroke_path : callable, optional
+            A callable to use as the stroke_path method (default is Mock()).
+
+        draw_path : callable, optional
+            A callable to use as the draw_path method (default is Mock()).
+
+
+        """
         gc = GraphicsContextImage((width, height))
         gc.clear((0.0, 0.0, 0.0, 0.0))
-        gc.stroke_path = Mock()
-        gc.draw_path = Mock()
+        gc.stroke_path = Mock() if stroke_path is None else stroke_path
+        gc.draw_path = Mock() if draw_path is None else draw_path
         return gc
 
     def create_key_press(self, key, window=None, alt_down=False,
