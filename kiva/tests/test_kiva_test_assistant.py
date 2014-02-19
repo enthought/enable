@@ -29,8 +29,9 @@ class TestKivaTestAssistant(KivaTestAssistant, unittest.TestCase):
         drawable = Drawable(should_draw=False)
 
         # drawing nothing
-        with self.assertRaises(AssertionError):
-            self.assertPathsAreCreated(drawable)
+        self.assertRaises(AssertionError,
+            self.assertPathsAreCreated,
+            drawable)
 
         #drawing something
         drawable.should_draw = True
@@ -40,8 +41,10 @@ class TestKivaTestAssistant(KivaTestAssistant, unittest.TestCase):
         drawable = Drawable(should_draw=True, should_process=False)
 
         # not finishing the path
-        with self.assertRaises(AssertionError):
-            self.assertPathsAreProcessed(drawable)
+        self.assertRaises(
+            AssertionError,
+            self.assertPathsAreProcessed,
+            drawable)
 
         #drawing something
         drawable.should_process = True
