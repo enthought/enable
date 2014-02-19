@@ -39,7 +39,7 @@ class TestKivaTestAssistant(KivaTestAssistant, unittest.TestCase):
     def test_paths_processed_assertions(self):
         drawable = Drawable(should_draw=True, should_process=False)
 
-        # drawing nothing
+        # not finishing the path
         with self.assertRaises(AssertionError):
             self.assertPathsAreProcessed(drawable)
 

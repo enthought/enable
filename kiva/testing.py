@@ -35,11 +35,7 @@ class KivaTestAssistant(object):
         return gc
 
     def assertPathsAreProcessed(self, drawable, width=200, height=200):
-        """ Check that drawing does not leave paths unused in the GC cache.
-
-        The method checks that there is something drawn into the
-        graphics context and then that all the paths have been compiled
-        and processed successfully.
+        """ Check that all the paths have been compiled and processed.
 
         Parameters
         ----------
@@ -52,8 +48,11 @@ class KivaTestAssistant(object):
         height : int, optional
             The height of the array buffer (default is 200).
 
+        note ::
+
+           A drawable that draws nothing will pass this check.
+
         """
-        # check first that something is drawn to the graphics context.
         gc = GraphicsContext((width, height))
         drawable.draw(gc)
         compiled_path = gc._get_path()
@@ -67,7 +66,8 @@ class KivaTestAssistant(object):
         """ Check that drawing creates paths.
 
         When paths and lines creation methods are used from a graphics
-        context the drawing paths are compiled and processed.
+        context the drawing paths are compiled and processed. By using
+        a mock graphics context we can check if something has been drawn.
 
         Parameters
         ----------
