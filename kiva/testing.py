@@ -84,7 +84,7 @@ class KivaTestAssistant(object):
         gc = self.create_mock_gc(width, height)
         drawable.draw(gc)
         compiled_path = gc._get_path()
-        self.assertGreater(
-            compiled_path.total_vertices(), 0,
+        self.assertTrue(
+            compiled_path.total_vertices() > 0,
             msg='There are no compiled paths '
             'created: {0}'.format(compiled_path))
