@@ -6,6 +6,7 @@ from enable.abstract_window import AbstractWindow
 from enable.events import MouseEvent, KeyEvent
 from kiva.testing import KivaTestAssistant
 
+
 class _MockWindow(AbstractWindow):
 
     # FIXME: for some reason I cannot replace these functions with a Mock
