@@ -12,8 +12,7 @@ class KivaTestAssistant(object):
 
     def create_mock_gc(
             self, width, height, methods=()):
-        """ Create an image graphics context that will mock the stroke_path
-        and draw_path methods.
+        """ Create an image graphics context that with mocked methods.
 
         Parameters
         ----------
