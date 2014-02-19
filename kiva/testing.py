@@ -11,7 +11,7 @@ class KivaTestAssistant(object):
     """
 
     def create_mock_gc(
-            self, width, height, stroke_path=None, draw_path=None):
+            self, width, height, methods=()):
         """ Create an image graphics context that will mock the stroke_path
         and draw_path methods.
 
@@ -20,18 +20,14 @@ class KivaTestAssistant(object):
         width, height :
             The size of the graphics context canvas.
 
-        stroke_path : callable, optional
-            A callable to use as the stroke_path method (default is Mock()).
-
-        draw_path : callable, optional
-            A callable to use as the draw_path method (default is Mock()).
-
+        methods : iterable
+           the methods which are going to be mocked with a Mock object.
 
         """
         gc = GraphicsContext((int(width), int(height)))
         gc.clear((0.0, 0.0, 0.0, 0.0))
-        gc.stroke_path = Mock() if stroke_path is None else stroke_path
-        gc.draw_path = Mock() if draw_path is None else draw_path
+        for method in methods:
+            setattr(gc, method, Mock())
         return gc
 
     def assertPathsAreProcessed(self, drawable, width=200, height=200):
@@ -81,7 +77,7 @@ class KivaTestAssistant(object):
             The height of the array buffer (default is 200).
 
         """
-        gc = self.create_mock_gc(width, height)
+        gc = self.create_mock_gc(width, height, ('draw_path', 'stroke_path'))
         drawable.draw(gc)
         compiled_path = gc._get_path()
         self.assertTrue(
