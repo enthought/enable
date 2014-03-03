@@ -4,6 +4,8 @@ from mock import Mock
 
 from enable.abstract_window import AbstractWindow
 from enable.events import MouseEvent, KeyEvent
+from kiva.testing import KivaTestAssistant
+
 
 class _MockWindow(AbstractWindow):
 
@@ -15,7 +17,7 @@ class _MockWindow(AbstractWindow):
         pass
 
 
-class EnableTestAssistant(object):
+class EnableTestAssistant(KivaTestAssistant):
     """ Mixin helper for enable/chaco components.
 
     """
