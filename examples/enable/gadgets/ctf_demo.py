@@ -1,3 +1,12 @@
+"""
+This demonstrates the `CtfEditor` gadget.
+
+To use: right-click in the window to bring up a context menu. Once you've added
+a color or opacity, you can drag them around by just clicking on them. The
+colors at the end points are editable, but cannot be removed.
+
+"""
+
 from traits.etsconfig.api import ETSConfig
 ETSConfig.toolkit = 'qt4'
 
