@@ -6,7 +6,7 @@ from enable.gadgets.ctf.editor_tools import (
 )
 from enable.gadgets.ctf.menu_tool import FunctionMenuTool
 from enable.gadgets.ctf.piecewise import PiecewiseFunction
-from traits.api import Event, Instance
+from traits.api import Callable, Event, Instance
 
 
 ALPHA_DEFAULT = ((0.0, 0.0), (1.0, 1.0))
@@ -28,6 +28,17 @@ class CtfEditor(Component):
     colors = Instance(PiecewiseFunction)
 
     function_updated = Event
+
+    # A callable which prompts the user for a filename.
+    # A single keyword argument 'action' will be passed to the callable and
+    # its value will be 'open' or 'save'. A filename should be returned.
+    prompt_file_selection = Callable
+
+    # A callable which prompts the user for a color
+    # A single keyword argument 'starting_color' will be passed to the callable
+    # and its value will be None or an RGB tuple with values in the range
+    # [0, 1]. An RGB tuple should be returned.
+    prompt_color_selection = Callable
 
     #------------------------------------------------------------------------
     # Public interface

@@ -6,35 +6,8 @@ from enable.gadgets.ctf.utils import (
     FunctionUIAdapter, AlphaFunctionUIAdapter, ColorFunctionUIAdapter
 )
 from enable.tools.pyface.context_menu_tool import ContextMenuTool
-from enaml.colors import Color
 from pyface.action.api import Action, Group, MenuManager, Separator
-from traits.api import Instance, List, Type
-import traits_enaml
-
-with traits_enaml.imports():
-    from enaml.widgets.api import FileDialogEx
-    from enaml.widgets.color_dialog import ColorDialog
-
-
-def get_color(starting_color=None):
-    """ Show a color picker to the user and return the color which is selected.
-    """
-    def color_as_tuple(color):
-        return (color.red/255., color.green/255., color.blue/255.)
-
-    def tuple_as_color(tup):
-        r, g, b = tup
-        return Color(int(r * 255), int(g * 255), int(b * 255), 255)
-
-    dlg_kwargs = {'show_alpha': False}
-    if starting_color:
-        dlg_kwargs['current_color'] = tuple_as_color(starting_color)
-    return color_as_tuple(ColorDialog.get_color(**dlg_kwargs))
-
-
-def get_filename(action='save'):
-    function = getattr(FileDialogEx, 'get_' + action + '_file_name')
-    return function()
+from traits.api import Callable, Instance, List, Type
 
 
 class BaseCtfAction(Action):
@@ -55,9 +28,12 @@ class AddColorAction(BaseCtfAction):
     name = 'Add Color...'
     ui_adaptor_klass = ColorFunctionUIAdapter
 
+    # A callable which prompts the user for a color
+    prompt_color = Callable
+
     def perform(self, event):
         pos = self._get_relative_event_position(event.enable_event)
-        color_val = (pos[0],) + get_color()
+        color_val = (pos[0],) + self.prompt_color()
         self.component.add_function_node(self.function, color_val)
 
 
@@ -74,12 +50,15 @@ class EditColorAction(BaseCtfAction):
     name = 'Edit Color...'
     ui_adaptor_klass = ColorFunctionUIAdapter
 
+    # A callable which prompts the user for a color
+    prompt_color = Callable
+
     def perform(self, event):
         mouse_pos = (event.enable_event.x, event.enable_event.y)
         index = self.ui_adaptor.function_index_at_position(*mouse_pos)
         if index is not None:
             color_val = self.function.value_at(index)
-            new_value = (color_val[0],) + get_color(color_val[1:])
+            new_value = (color_val[0],) + self.prompt_color(color_val[1:])
             self.component.edit_function_node(self.function, index, new_value)
 
 
@@ -114,8 +93,11 @@ class LoadFunctionAction(Action):
     alpha_func = Instance(PiecewiseFunction)
     color_func = Instance(PiecewiseFunction)
 
+    # A callable which prompts the user for a filename
+    prompt_filename = Callable
+
     def perform(self, event):
-        filename = get_filename(action='open')
+        filename = self.prompt_filename(action='open')
         with open(filename, 'r') as fp:
             loaded_data = json.load(fp)
 
@@ -142,8 +124,11 @@ class SaveFunctionAction(Action):
     alpha_func = Instance(PiecewiseFunction)
     color_func = Instance(PiecewiseFunction)
 
+    # A callable which prompts the user for a filename
+    prompt_filename = Callable
+
     def perform(self, event):
-        filename = get_filename(action='save')
+        filename = self.prompt_filename(action='save')
         function = {'alpha': self.alpha_func.values(),
                     'color': self.color_func.values()}
         with open(filename, 'w') as fp:
@@ -155,15 +140,19 @@ class FunctionMenuTool(ContextMenuTool):
         component = self.component
         alpha_func = component.opacities
         color_func = component.colors
+        prompt_color = component.prompt_color_selection
+        prompt_filename = component.prompt_file_selection
         return MenuManager(
             Group(
-                AddColorAction(component=component, function=color_func),
+                AddColorAction(component=component, function=color_func,
+                               prompt_color=prompt_color),
                 AddOpacityAction(component=component, function=alpha_func),
                 id='AddGroup',
             ),
             Separator(),
             Group(
-                EditColorAction(component=component, function=color_func),
+                EditColorAction(component=component, function=color_func,
+                                prompt_color=prompt_color),
                 id='EditGroup',
             ),
             Separator(),
@@ -175,9 +164,11 @@ class FunctionMenuTool(ContextMenuTool):
             Separator(),
             Group(
                 LoadFunctionAction(component=component, alpha_func=alpha_func,
-                                   color_func=color_func),
+                                   color_func=color_func,
+                                   prompt_filename=prompt_filename),
                 SaveFunctionAction(component=component, alpha_func=alpha_func,
-                                   color_func=color_func),
+                                   color_func=color_func,
+                                   prompt_filename=prompt_filename),
                 id='IOGroup',
             ),
         )
