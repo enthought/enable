@@ -1,10 +1,12 @@
+from abc import abstractmethod
+
 from math import sqrt
 
 import numpy as np
 
 from enable.component import Component
 from enable.gadgets.ctf.piecewise import PiecewiseFunction
-from traits.api import HasTraits, Callable, Float, Instance
+from traits.api import ABCHasTraits, Callable, Float, Instance
 
 
 def build_function_to_screen(component):
@@ -30,7 +32,7 @@ def point_dist(pos0, pos1):
     return sqrt(diff[0]**2 + diff[1]**2)
 
 
-class FunctionUIAdapter(HasTraits):
+class FunctionUIAdapter(ABCHasTraits):
     """ A class to handle translation between screen space and function space
     """
     # The Component where the function lives
@@ -51,11 +53,11 @@ class FunctionUIAdapter(HasTraits):
     def _screen_to_function_default(self):
         return build_screen_to_function(self.component)
 
+    @abstractmethod
     def function_index_at_position(self, x, y):
         """ Implemented by subclasses to find function nodes at the given
         mouse position. Returns None if no node is found.
         """
-        raise NotImplementedError
 
 
 class AlphaFunctionUIAdapter(FunctionUIAdapter):
