@@ -27,7 +27,7 @@ class FunctionEditorTool(ValueDragTool):
     """ A value drag tool for editing a PiecewiseFunction.
     """
 
-    #: The function being edited
+    # The function being edited
     function = Instance(PiecewiseFunction)
 
     # An event to trigger when the function is updated
@@ -36,10 +36,10 @@ class FunctionEditorTool(ValueDragTool):
     # A tuple containing the index and starting value of the item being edited
     edit_value = Tuple
 
-    #: A factory for the FunctionUIAdapter to use
+    # A factory for the FunctionUIAdapter to use
     ui_adapter_klass = Type
 
-    #: The helper object for screen <=> function translation
+    # The helper object for screen <=> function translation
     _ui_adapter = Instance(FunctionUIAdapter)
 
     #------------------------------------------------------------------------

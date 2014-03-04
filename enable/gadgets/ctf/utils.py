@@ -33,16 +33,16 @@ def point_dist(pos0, pos1):
 class FunctionUIAdapter(HasTraits):
     """ A class to handle translation between screen space and function space
     """
-    #: The Component where the function lives
+    # The Component where the function lives
     component = Instance(Component)
 
-    #: The function being adapted
+    # The function being adapted
     function = Instance(PiecewiseFunction)
 
-    #: A function which maps a point from function space to screen space
+    # A function which maps a point from function space to screen space
     function_to_screen = Callable
 
-    #: A function which maps a point from screen space to function space
+    # A function which maps a point from screen space to function space
     screen_to_function = Callable
 
     def _function_to_screen_default(self):
