@@ -34,7 +34,7 @@ class FunctionEditorTool(ValueDragTool):
     function_updated = Event
 
     # A tuple containing the index and starting value of the item being edited
-    edit_value = Tuple
+    edited_item = Tuple
 
     # A factory for the FunctionUIAdapter to use
     ui_adapter_klass = Type
@@ -68,15 +68,14 @@ class FunctionEditorTool(ValueDragTool):
         """
         index = self._ui_adapter.function_index_at_position(x, y)
         if index is not None:
-            self.edit_value = (index, self.function.value_at(index))
+            self.edited_item = (index, self.function.value_at(index))
             return True
 
-        self.edit_value = tuple()
         return False
 
     def get_value(self):
         """ Return the current value that is being modified. """
-        return self.edit_value
+        return self.edited_item
 
 
 class AlphaFunctionEditorTool(FunctionEditorTool):
