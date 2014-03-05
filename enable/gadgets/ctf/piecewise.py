@@ -24,10 +24,13 @@ class PiecewiseFunction(object):
 
     def neighbor_indices(self, key_value):
         index = bisect(self._keys, key_value)
-        value = self._keys[index]
-        if key_value < value:
-            return (max(0, index-1), index)
-        return (index, min(index+1, self.size()-1))
+        try:
+            value = self._keys[index]
+            if key_value < value:
+                return (max(0, index-1), index)
+        except IndexError:
+            max_index = self.size() - 1
+            return (min(index, max_index), min(index+1, max_index))
 
     def remove(self, index):
         del self._keys[index]
