@@ -170,7 +170,6 @@ class _QtWindowHandler(object):
     def dragMoveEvent(self, event):
         if self._enable_window:
             self._enable_window._drag_result = QtCore.Qt.IgnoreAction
-            print "drag move"
             self._enable_window._handle_drag_event('drag_over', event)
             event.setDropAction(self._enable_window._drag_result)
             event.accept()
