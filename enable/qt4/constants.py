@@ -144,7 +144,7 @@ for enum_name in dir(QtCore.Qt):
     if enum_name.startswith('Key_'):
         enum = getattr(QtCore.Qt, enum_name)
         # Ignore everything in latin-1 as we just want the unichr() conversion.
-        if enum <= 255:
+        if enum <= 255 or enum in KEY_MAP:
             continue
         key_name = enum_name[len('Key_'):]
         KEY_MAP[enum] = key_name
