@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Enable Concepts &mdash; Enable v3.0.0b1 documentation</title>
+    <title>Enable Concepts &mdash; enable 4.4.0 documentation</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '3.0.0b1',
+        VERSION:     '4.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +26,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/et.ico"/>
-    <link rel="top" title="Enable v3.0.0b1 documentation" href="index.html" />
+    <link rel="top" title="enable 4.4.0 documentation" href="index.html" />
     <link rel="next" title="Kiva Interface Quick Reference" href="kiva.html" />
     <link rel="prev" title="Enable Documentation" href="index.html" /> 
   </head>
@@ -40,7 +43,7 @@
         <li class="right" >
           <a href="index.html" title="Enable Documentation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Enable v3.0.0b1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">enable 4.4.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -61,19 +64,19 @@ everything. It represents a visual component. It both draws a screen object, and
 receives input for it (keyboard, mouse, and multitouch events).</p>
 <p>Basic traits of Component include:</p>
 <blockquote>
-<ul class="simple">
+<div><ul class="simple">
 <li><tt class="xref py py-attr docutils literal"><span class="pre">visible</span></tt>: Whether it&#8217;s visible</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">invisible_layout</span></tt>: Whether it uses space even when not visible (by
 default, invisible objects don&#8217;t take up space in layout)</li>
 </ul>
-</blockquote>
+</div></blockquote>
 <div class="section" id="padding">
 <h3>Padding<a class="headerlink" href="#padding" title="Permalink to this headline">¶</a></h3>
 <p>Layout in Enable uses padding, similar to CSS. In Chaco, it&#8217;s used for things
 around the edges of plot, like labels and tick marks that extend outside the
 main plot area.</p>
 <blockquote>
-<ul class="simple">
+<div><ul class="simple">
 <li><tt class="xref py py-attr docutils literal"><span class="pre">fill_padding</span></tt>: Whether the background color fills the padding area as
 well as the main area of the component.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">padding_left</span></tt></li>
@@ -88,7 +91,7 @@ vertical padding</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">padding_accepts_focus</span></tt>: Whether the component responds to mouse events
 over the padding area</li>
 </ul>
-</blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="parent-classes">
 <h3>Parent Classes<a class="headerlink" href="#parent-classes" title="Permalink to this headline">¶</a></h3>
@@ -102,11 +105,11 @@ something that doesn&#8217;t draw but does respond to events, subclass
 <tt class="xref py py-class docutils literal"><span class="pre">Interactor</span></tt> (e.g., a tool).</p>
 <p><tt class="xref py py-class docutils literal"><span class="pre">Interactor</span></tt> defines common traits for screen interaction, including:</p>
 <blockquote>
-<ul class="simple">
+<div><ul class="simple">
 <li><tt class="xref py py-attr docutils literal"><span class="pre">pointer</span></tt>: The cursor shape when the interactor is active</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">event_state</span></tt>: The object&#8217;s event state, used for event dispatch</li>
 </ul>
-</blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="containers">
 <h3>Containers<a class="headerlink" href="#containers" title="Permalink to this headline">¶</a></h3>
@@ -136,29 +139,29 @@ Enable <tt class="xref py py-class docutils literal"><span class="pre">Component
 <p>When a component gets an event, it tries to handle it in a standard way, which
 is to dispatch to:</p>
 <blockquote>
-<ol class="arabic simple">
+<div><ol class="arabic simple">
 <li>its active tool</li>
 <li>its overlays</li>
 <li>itself, so that any event handler methods on itself get called</li>
 <li>its underlays</li>
 <li>its listener tools</li>
 </ol>
-</blockquote>
+</div></blockquote>
 <p>That logic is in <tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt>, in the <tt class="xref py py-meth docutils literal"><span class="pre">_new_dispatch()</span></tt> method, which
 is called from <tt class="xref py py-meth docutils literal"><span class="pre">Component.dispatch()</span></tt> (<tt class="xref py py-meth docutils literal"><span class="pre">_old_dispatch()</span></tt> will be
 removed in 3.0). If any of these handlers sets event.handled to True, event
 propagation stops. If an event gets as far as the listener tools, then all of
 them get the event.</p>
 <blockquote>
-(The notion of an active tool is not used in current code, just older client
+<div>(The notion of an active tool is not used in current code, just older client
 code. Experience has shown that the notion of a tool promoting itself to be
 the &#8220;active&#8221; tool isn&#8217;t really useful, because usually the tools need to
 interact with each other. For newer tools, such as Pan, Zoom, or !DragZoom,
 when the user starts interacting with a tool, that tool calls capture_mouse()
 at the window level, and then all mouse events go to that tool, circumventing
-the entire dispatch() mechanism.)</blockquote>
+the entire dispatch() mechanism.)</div></blockquote>
 <p>The event handlers that <tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt> dispatches to are of the form
-:samp:{event_state}{event_suffix}`, where <em>event_suffix</em> corresponds to the
+<tt class="samp docutils literal"><em><span class="pre">event_state</span></em><em><span class="pre">event_suffix</span></em></tt>, where <em>event_suffix</em> corresponds to the
 actual kind of event that happened, e.g., <tt class="xref py py-obj docutils literal"><span class="pre">left_down</span></tt>, <tt class="xref py py-obj docutils literal"><span class="pre">left_up</span></tt>,
 <tt class="xref py py-obj docutils literal"><span class="pre">left_dclick</span></tt>, etc. Most objects default to having just a single event
 state, which is the &#8220;normal&#8221; event state. To make an Enable component that
@@ -172,9 +175,9 @@ system with new kinds of events and new suffixes (as was done for multitouch). A
 disadvantage is that you don&#8217;t necessarily get feedback when you misspell an
 event handler method name in its definition.</p>
 <blockquote>
-(This scheme is difficult to implement when the number of states and events
+<div>(This scheme is difficult to implement when the number of states and events
 gets large. There&#8217;s nothing to tell you if you&#8217;ve forgotten to implement one
-of the possible combinations.)</blockquote>
+of the possible combinations.)</div></blockquote>
 <p>If an interactor transforms an event, then it has to return the full
 transformation that it applies to the event.</p>
 <p>When an event comes in, it has a reference to the GUI toolkit window that the
@@ -201,14 +204,14 @@ system, and the container is responsible for offsetting the GC, and setting up
 the transform correctly. Likewise, when a component gets an event, it expects
 that event to be in the coordinate system of its parent container.</p>
 <blockquote>
-(This introduces some complexity in trying to handle mouse event capture. If a
+<div>(This introduces some complexity in trying to handle mouse event capture. If a
 tool or component captures the mouse, the top-level window has no idea what
 the coordinate system of that object is. It has to be able to ask an event,
 &#8220;give me your total transformation up to this point&#8221;, and then apply that
 transformation to all subsequent events. Programmers using Chaco or Enable
 don&#8217;t usually have to think about this, but the interactor does have to be
 able to do it. Containers implement this, so if you&#8217;re just writing a standard
-component, you don&#8217;t have to worry about it.)</blockquote>
+component, you don&#8217;t have to worry about it.)</div></blockquote>
 </div>
 <div class="section" id="viewports">
 <h3>Viewports<a class="headerlink" href="#viewports" title="Permalink to this headline">¶</a></h3>
@@ -234,14 +237,14 @@ the thickness of any border around the component.</p>
 <h3>Rendering<a class="headerlink" href="#rendering" title="Permalink to this headline">¶</a></h3>
 <p>Every component can have several layers:</p>
 <blockquote>
-<ul class="simple">
+<div><ul class="simple">
 <li>background</li>
 <li>image (Chaco only, not Enable)</li>
 <li>underlay</li>
 <li>main layer (the actual component)</li>
 <li>overlay</li>
 </ul>
-</blockquote>
+</div></blockquote>
 <p>These are defined by DEFAULT_DRAWING_ORDER, and stored in the
 <tt class="xref py py-attr docutils literal"><span class="pre">drawing_order</span></tt> trait.</p>
 <p>Complexity arises when you have multiple components in a container: How do
@@ -349,7 +352,7 @@ handler.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -375,13 +378,13 @@ handler.</p>
         <li class="right" >
           <a href="index.html" title="Enable Documentation"
              >previous</a> |</li>
-        <li><a href="index.html">Enable v3.0.0b1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">enable 4.4.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2008, Enthought.
-      Last updated on Jan 28, 2011.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+        &copy; Copyright 2008-2014, Enthought.
+      Last updated on Apr 24, 2014.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

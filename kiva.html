@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Kiva Interface Quick Reference &mdash; Enable v3.0.0b1 documentation</title>
+    <title>Kiva Interface Quick Reference &mdash; enable 4.4.0 documentation</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '3.0.0b1',
+        VERSION:     '4.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +26,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/et.ico"/>
-    <link rel="top" title="Enable v3.0.0b1 documentation" href="index.html" />
+    <link rel="top" title="enable 4.4.0 documentation" href="index.html" />
     <link rel="prev" title="Enable Concepts" href="enable_concepts.html" /> 
   </head>
   <body>
@@ -36,7 +39,7 @@
         <li class="right" >
           <a href="enable_concepts.html" title="Enable Concepts"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Enable v3.0.0b1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">enable 4.4.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -49,7 +52,7 @@
 <h1>Kiva Interface Quick Reference<a class="headerlink" href="#kiva-interface-quick-reference" title="Permalink to this headline">¶</a></h1>
 <p>This document is a summary of the classes and functions available in
 Kiva.  More specifically, it describes some of the details of the
-enthought.kiva.agg backend, including enumerated types and helper classes.</p>
+kiva.agg backend, including enumerated types and helper classes.</p>
 <div class="section" id="types">
 <h2>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="primitive-types">
@@ -59,19 +62,19 @@ enthought.kiva.agg backend, including enumerated types and helper classes.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">color:</th><td class="field-body">Either a 3-tuple or 4-tuple. The represented color depends on the
+<tr class="field-odd field"><th class="field-name">color:</th><td class="field-body">Either a 3-tuple or 4-tuple. The represented color depends on the
 graphics context&#8217;s pixel format.</td>
 </tr>
-<tr class="field"><th class="field-name">rect:</th><td class="field-body">(origin_x, origin_y, width, height)</td>
+<tr class="field-even field"><th class="field-name">rect:</th><td class="field-body">(origin_x, origin_y, width, height)</td>
 </tr>
-<tr class="field"><th class="field-name">bool:</th><td class="field-body">an int that is 1 or 0</td>
+<tr class="field-odd field"><th class="field-name">bool:</th><td class="field-body">an int that is 1 or 0</td>
 </tr>
-<tr class="field"><th class="field-name">point_array:</th><td class="field-body">an array/sequence of length-2 arrays, e.g. ((x,y), (x2,y2),...)</td>
+<tr class="field-even field"><th class="field-name">point_array:</th><td class="field-body">an array/sequence of length-2 arrays, e.g. ((x,y), (x2,y2),...)</td>
 </tr>
-<tr class="field"><th class="field-name">rect_array:</th><td class="field-body">an array/sequence of rects ((x,y,w,h), (x2,y2,w2,h2), ...)</td>
+<tr class="field-odd field"><th class="field-name">rect_array:</th><td class="field-body">an array/sequence of rects ((x,y,w,h), (x2,y2,w2,h2), ...)</td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">color_stop_array:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body">an array/sequence of color stops ((offset,r,g,b,a),
+<tr class="field-even field"><th class="field-name" colspan="2">color_stop_array:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">an array/sequence of color stops ((offset,r,g,b,a),
 (offset2,r2,g2,b2,a2), ...) where offset is some number between 0 and 1
 inclusive and the entries are sorted from lowest offset to highest.</td>
 </tr>
@@ -86,19 +89,19 @@ are called:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name" colspan="2">__init__(v0, v1, v2, v3, v4, v5):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body">also __init__()</td>
+<tr class="field-odd field"><th class="field-name" colspan="2">__init__(v0, v1, v2, v3, v4, v5):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">also __init__()</td>
 </tr>
-<tr class="field"><th class="field-name">reset():</th><td class="field-body">Sets this matrix to the identity</td>
+<tr class="field-even field"><th class="field-name">reset():</th><td class="field-body">Sets this matrix to the identity</td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">multiply(<cite>AffineMatrix</cite>):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body">multiples this matrix by another</td>
+<tr class="field-odd field"><th class="field-name" colspan="2">multiply(<cite>AffineMatrix</cite>):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">multiples this matrix by another</td>
 </tr>
-<tr class="field"><th class="field-name">invert():</th><td class="field-body">sets this matrix to the inverse of itself</td>
+<tr class="field-even field"><th class="field-name">invert():</th><td class="field-body">sets this matrix to the inverse of itself</td>
 </tr>
-<tr class="field"><th class="field-name">flip_x():</th><td class="field-body">mirrors around X</td>
+<tr class="field-odd field"><th class="field-name">flip_x():</th><td class="field-body">mirrors around X</td>
 </tr>
-<tr class="field"><th class="field-name">flip_y():</th><td class="field-body">mirrors around Y</td>
+<tr class="field-even field"><th class="field-name">flip_y():</th><td class="field-body">mirrors around Y</td>
 </tr>
 </tbody>
 </table>
@@ -107,11 +110,11 @@ are called:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name" colspan="2">scale() -&gt; float:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body">returns the average scale of this matrix</td>
+<tr class="field-odd field"><th class="field-name" colspan="2">scale() -&gt; float:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">returns the average scale of this matrix</td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">determinant() -&gt; float:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body">returns the determinant</td>
+<tr class="field-even field"><th class="field-name" colspan="2">determinant() -&gt; float:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">returns the determinant</td>
 </tr>
 </tbody>
 </table>
@@ -128,11 +131,11 @@ to create specific kinds of <tt class="xref py py-class docutils literal"><span 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name" colspan="2">__init__(name, size=12, family=0, style=0):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body">constructs a <tt class="xref py py-class docutils literal"><span class="pre">FontType</span></tt> instance</td>
+<tr class="field-odd field"><th class="field-name" colspan="2">__init__(name, size=12, family=0, style=0):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">constructs a <tt class="xref py py-class docutils literal"><span class="pre">FontType</span></tt> instance</td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">is_loaded() -&gt; bool:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body">returns True if a font was actually loaded</td>
+<tr class="field-even field"><th class="field-name" colspan="2">is_loaded() -&gt; bool:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">returns True if a font was actually loaded</td>
 </tr>
 </tbody>
 </table>
@@ -150,17 +153,17 @@ map between their names and integer values</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">line_cap:</th><td class="field-body">CAP_BUTT, CAP_ROUND, CAP_SQUARE</td>
+<tr class="field-odd field"><th class="field-name">line_cap:</th><td class="field-body">CAP_BUTT, CAP_ROUND, CAP_SQUARE</td>
 </tr>
-<tr class="field"><th class="field-name">line_join:</th><td class="field-body">JOIN_ROUND, JOIN_BEVEL, JOIN_MITER</td>
+<tr class="field-even field"><th class="field-name">line_join:</th><td class="field-body">JOIN_ROUND, JOIN_BEVEL, JOIN_MITER</td>
 </tr>
-<tr class="field"><th class="field-name">draw_mode:</th><td class="field-body">FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE</td>
+<tr class="field-odd field"><th class="field-name">draw_mode:</th><td class="field-body">FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE</td>
 </tr>
-<tr class="field"><th class="field-name">text_style:</th><td class="field-body">NORMAL, BOLD, ITALIC</td>
+<tr class="field-even field"><th class="field-name">text_style:</th><td class="field-body">NORMAL, BOLD, ITALIC</td>
 </tr>
-<tr class="field"><th class="field-name">text_draw_mode:</th><td class="field-body">TEXT_FILL, TEXT_INVISIBLE (currently unused)</td>
+<tr class="field-odd field"><th class="field-name">text_draw_mode:</th><td class="field-body">TEXT_FILL, TEXT_INVISIBLE (currently unused)</td>
 </tr>
-<tr class="field"><th class="field-name">pix_format:</th><td class="field-body">(NOTE: the strings in the dicts omit the <tt class="docutils literal"><span class="pre">pix_format_</span></tt> prefix)</td>
+<tr class="field-even field"><th class="field-name">pix_format:</th><td class="field-body">(NOTE: the strings in the dicts omit the <tt class="docutils literal"><span class="pre">pix_format_</span></tt> prefix)</td>
 </tr>
 </tbody>
 </table>
@@ -179,7 +182,7 @@ pix_format_abgr32, pix_format_bgra32</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">interpolation:</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">interpolation:</th><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -197,7 +200,7 @@ pix_format_abgr32, pix_format_bgra32</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">marker:</th><td class="field-body">(NOTE: the strings in the dicts omit the <tt class="docutils literal"><span class="pre">marker_</span></tt> prefix)</td>
+<tr class="field-odd field"><th class="field-name">marker:</th><td class="field-body">(NOTE: the strings in the dicts omit the <tt class="docutils literal"><span class="pre">marker_</span></tt> prefix)</td>
 </tr>
 </tbody>
 </table>
@@ -221,10 +224,10 @@ documentation for more information about them.  We just pass them through in Kiv
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">path_cmd:</th><td class="field-body">path_cmd_curve3, path_cmd_curve4, path_cmd_end_poly,
+<tr class="field-odd field"><th class="field-name">path_cmd:</th><td class="field-body">path_cmd_curve3, path_cmd_curve4, path_cmd_end_poly,
 path_cmd_line_to, path_cmd_mask, path_cmd_move_to, path_cmd_stop</td>
 </tr>
-<tr class="field"><th class="field-name">path_flags:</th><td class="field-body">path_flags, path_flags_ccw, path_flags_close, path_flags_cw,
+<tr class="field-even field"><th class="field-name">path_flags:</th><td class="field-body">path_flags, path_flags_ccw, path_flags_close, path_flags_cw,
 path_flags_mask, path_flags_none</td>
 </tr>
 </tbody>
@@ -239,8 +242,8 @@ path_flags_mask, path_flags_none</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name" colspan="2">__init__(size, pix_format):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body">Size is a tuple (width, height), pix_format
+<tr class="field-odd field"><th class="field-name" colspan="2">__init__(size, pix_format):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">Size is a tuple (width, height), pix_format
 is a string.</td>
 </tr>
 </tbody>
@@ -252,88 +255,88 @@ is a string.</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">save_state():</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">save_state():</th><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">restore_state():</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">restore_state():</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">set_stroke_color(color):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">set_stroke_color(color):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">get_stroke_color() -&gt; color:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">get_stroke_color() -&gt; color:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">set_line_width(float):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">set_line_width(float):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">set_line_join(line_join):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">set_line_join(line_join):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">set_line_cap(line_cap):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">set_line_cap(line_cap):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">set_line_dash(array):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body">array is an even-lengthed tuple of floats that represents
+<tr class="field-even field"><th class="field-name" colspan="2">set_line_dash(array):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">array is an even-lengthed tuple of floats that represents
 the width of each dash and gap in the dash pattern.</td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">set_fill_color(color):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">set_fill_color(color):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">get_fill_color() -&gt; color:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">get_fill_color() -&gt; color:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">linear_gradient(x1, y1, x2, y2, color_stop_array, spread_method, units):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body">spread_method
+<tr class="field-odd field"><th class="field-name" colspan="2">linear_gradient(x1, y1, x2, y2, color_stop_array, spread_method, units):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">spread_method
 is one of the following strings: pad, reflect, repeat. units is one of the
 following strings: userSpaceOnUse, objectBoundingBox. This method modifies
 the current fill pattern.</td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">radial_gradient(cx, cy, r, fx, fy, color_stop_array, spread_method, units):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body">same
+<tr class="field-even field"><th class="field-name" colspan="2">radial_gradient(cx, cy, r, fx, fy, color_stop_array, spread_method, units):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">same
 arguments as linear gradient. The direction of the gradient is from the focus
 point to the center point.</td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">set_alpha(float):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">set_alpha(float):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">get_alpha() -&gt; float:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">get_alpha() -&gt; float:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">set_antialias(bool):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">set_antialias(bool):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">get_antialias() -&gt; bool:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">get_antialias() -&gt; bool:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">set_miter_limit(float):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">set_miter_limit(float):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">set_flatness(float):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">set_flatness(float):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">get_image_interpolation() -&gt; interpolation:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">get_image_interpolation() -&gt; interpolation:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">set_image_interpolation(interpolation):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">set_image_interpolation(interpolation):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">translate_ctm(float x, float y):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">translate_ctm(float x, float y):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">rotate_ctm(float angle_in_radians):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">rotate_ctm(float angle_in_radians):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">concat_ctm(<a class="reference internal" href="#affinematrix">AffineMatrix</a>):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">concat_ctm(<a class="reference internal" href="#affinematrix">AffineMatrix</a>):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">scale_ctm(float x_scale, float y_scale):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">scale_ctm(float x_scale, float y_scale):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">set_ctm(<a class="reference internal" href="#affinematrix">AffineMatrix</a>):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">set_ctm(<a class="reference internal" href="#affinematrix">AffineMatrix</a>):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">get_ctm() -&gt; <a class="reference internal" href="#affinematrix">AffineMatrix</a>:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">get_ctm() -&gt; <a class="reference internal" href="#affinematrix">AffineMatrix</a>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -344,16 +347,16 @@ point to the center point.</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name" colspan="2">clip_to_rect(rect):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">clip_to_rect(rect):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">clip_to_rects(rect_array):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">clip_to_rects(rect_array):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name">clip():</th><td class="field-body">clips using the current path</td>
+<tr class="field-odd field"><th class="field-name">clip():</th><td class="field-body">clips using the current path</td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">even_odd_clip():</th></tr>
-<tr><td>&nbsp;</td><td class="field-body">modifies the current clipping path using the even-odd rule to
+<tr class="field-even field"><th class="field-name" colspan="2">even_odd_clip():</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">modifies the current clipping path using the even-odd rule to
 calculate the intersection of the current path and the current clipping path.</td>
 </tr>
 </tbody>
@@ -365,51 +368,51 @@ calculate the intersection of the current path and the current clipping path.</t
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">begin_path():</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">begin_path():</th><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name">close_path():</th><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name">close_path():</th><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">get_empty_path() -&gt; <a class="reference internal" href="#compiledpath">CompiledPath</a>:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><p class="first">returns a blank <tt class="xref py py-class docutils literal"><span class="pre">CompiledPath</span></tt> instance</p>
+<tr class="field-odd field"><th class="field-name" colspan="2">get_empty_path() -&gt; <a class="reference internal" href="#compiledpath">CompiledPath</a>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">returns a blank <tt class="xref py py-class docutils literal"><span class="pre">CompiledPath</span></tt> instance</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">add_path(<a class="reference internal" href="#compiledpath">CompiledPath</a>):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">add_path(<a class="reference internal" href="#compiledpath">CompiledPath</a>):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name">move_to(x, y):</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">move_to(x, y):</th><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name">line_to(x, y):</th><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name">line_to(x, y):</th><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">lines(point_array):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">lines(point_array):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">rect(x, y, w, h):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">rect(x, y, w, h):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">rects(rect_array):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">rects(rect_array):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">curve_to(x1, y1, x2, y2, end_x, end_y):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><p class="first">draws a cubic bezier curve with
+<tr class="field-even field"><th class="field-name" colspan="2">curve_to(x1, y1, x2, y2, end_x, end_y):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">draws a cubic bezier curve with
 control points (x1,y1) and (x2,y2) that ends at point (end_x, end_y)</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">quad_curve_to(cp_x, cp_y, end_x, end_y):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><p class="first">draws a quadratic bezier curve from
+<tr class="field-odd field"><th class="field-name" colspan="2">quad_curve_to(cp_x, cp_y, end_x, end_y):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">draws a quadratic bezier curve from
 the current point using control point (cp_x, cp_y) and ending at
 (end_x, end_y)</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">arc(x, y, radius, start_angle, end_angle, bool cw=false):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><p class="first">draws a circular arc
+<tr class="field-even field"><th class="field-name" colspan="2">arc(x, y, radius, start_angle, end_angle, bool cw=false):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">draws a circular arc
 of the given radius, centered at (x,y) with angular span as indicated.
 Angles are measured counter-clockwise from the positive X axis. If &#8220;cw&#8221; is
 true, then the arc is swept from the end_angle back to the start_angle
 (it does not change the sense in which the angles are measured).</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">arc_to(x1, y1, x2, y2, radius):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><p class="first">Sweeps a circular arc from the pen position to
+<tr class="field-odd field"><th class="field-name" colspan="2">arc_to(x1, y1, x2, y2, radius):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">Sweeps a circular arc from the pen position to
 a point on the line from (x1,y1) to (x2,y2).</p>
 <p>The arc is tangent to the line from the current pen position
 to (x1,y1), and it is also tangent to the line from (x1,y1)
@@ -437,27 +440,27 @@ pen position be (x_left + r, y_top).  Then (x2,y2) would be
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">stroke_path():</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">stroke_path():</th><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name">fill_path():</th><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name">fill_path():</th><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">eof_fill_path():</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">eof_fill_path():</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">draw_path(draw_mode=FILL_STROKE):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">draw_path(draw_mode=FILL_STROKE):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">draw_rect(rect, draw_mode=FILL_STROKE):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">draw_rect(rect, draw_mode=FILL_STROKE):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">draw_marker_at_points(point_array, int size, marker=marker_square):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">draw_marker_at_points(point_array, int size, marker=marker_square):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">draw_path_at_points(point_array, <a class="reference internal" href="#compiledpath">CompiledPath</a>, draw_mode):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">draw_path_at_points(point_array, <a class="reference internal" href="#compiledpath">CompiledPath</a>, draw_mode):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">draw_image(graphics_context img, rect=None):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body">if rect is defined, then img is
+<tr class="field-even field"><th class="field-name" colspan="2">draw_image(graphics_context img, rect=None):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">if rect is defined, then img is
 scaled and drawn into it. Otherwise, img is overlayed exactly on top of this
 graphics context</td>
 </tr>
@@ -470,57 +473,57 @@ graphics context</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name" colspan="2">set_text_drawing_mode(text_draw_mode):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">set_text_drawing_mode(text_draw_mode):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">set_text_matrix(<a class="reference internal" href="#affinematrix">AffineMatrix</a>):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">set_text_matrix(<a class="reference internal" href="#affinematrix">AffineMatrix</a>):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">get_text_matrix() -&gt; <a class="reference internal" href="#affinematrix">AffineMatrix</a>:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">get_text_matrix() -&gt; <a class="reference internal" href="#affinematrix">AffineMatrix</a>:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">set_text_position(float x, float x):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">set_text_position(float x, float x):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">get_text_position() -&gt; (x, y):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">get_text_position() -&gt; (x, y):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">show_text(string):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">show_text(string):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">show_text_translate(string, float y, float y):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">show_text_translate(string, float y, float y):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">get_text_extent(string) -&gt; (x,y,w,h):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">get_text_extent(string) -&gt; (x,y,w,h):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">get_full_text_extent(string) -&gt; (w,h,x,y):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body">deprecated. Order has been changed
+<tr class="field-odd field"><th class="field-name" colspan="2">get_full_text_extent(string) -&gt; (w,h,x,y):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">deprecated. Order has been changed
 for backwards-compatibility with existing Enable.</td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">select_font(name, size, style):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">select_font(name, size, style):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">set_font(<a class="reference internal" href="#fonttype">FontType</a>):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">set_font(<a class="reference internal" href="#fonttype">FontType</a>):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">get_font() -&gt; <a class="reference internal" href="#fonttype">FontType</a>:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">get_font() -&gt; <a class="reference internal" href="#fonttype">FontType</a>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">set_font_size(int):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">set_font_size(int):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">set_character_spacing():</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">set_character_spacing():</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">get_character_spacing():</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">get_character_spacing():</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">set_text_drawing_mode():</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">set_text_drawing_mode():</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">show_text_at_point():</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">show_text_at_point():</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -531,40 +534,40 @@ for backwards-compatibility with existing Enable.</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">width() -&gt; int:</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">width() -&gt; int:</th><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">height() -&gt; int:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">height() -&gt; int:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">stride() -&gt; int:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">stride() -&gt; int:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">bottom_up() -&gt; bool:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name" colspan="2">bottom_up() -&gt; bool:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">format() -&gt; pix_format:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">format() -&gt; pix_format:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name">flush():</th><td class="field-body"><p class="first">Force all pending drawing operations to be rendered immediately. This
+<tr class="field-even field"><th class="field-name">flush():</th><td class="field-body"><p class="first">Force all pending drawing operations to be rendered immediately. This
 only makes sense in window contexts, ie- the Mac Quartz backend.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">synchronize():</th><td class="field-body"><p class="first">A deferred version of flush(). Also only relevant in window contexts.</p>
+<tr class="field-odd field"><th class="field-name">synchronize():</th><td class="field-body"><p class="first">A deferred version of flush(). Also only relevant in window contexts.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">begin_page():</th><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name">begin_page():</th><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name">end_page():</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">end_page():</th><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">clear_rect(rect):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><p class="first">Clears a rect. Not available in PDF context.</p>
+<tr class="field-even field"><th class="field-name" colspan="2">clear_rect(rect):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">Clears a rect. Not available in PDF context.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">convert_pixel_format(pix_format, bool inplace=0):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">convert_pixel_format(pix_format, bool inplace=0):</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">save(filename, file_format=None, pil_options=None):</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><p class="first">Save the GraphicsContext
+<tr class="field-even field"><th class="field-name" colspan="2">save(filename, file_format=None, pil_options=None):</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">Save the GraphicsContext
 to a file.  Output files are always saved in RGB or RGBA format; if this GC is
 not in one of these formats, it is automatically converted.</p>
 <p>If filename includes an extension, the image format is
@@ -588,8 +591,8 @@ rgb24 format.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name" colspan="2">show_glyphs_at_point():</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name" colspan="2">show_glyphs_at_point():</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -643,7 +646,7 @@ rgb24 format.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -666,13 +669,13 @@ rgb24 format.</p>
         <li class="right" >
           <a href="enable_concepts.html" title="Enable Concepts"
              >previous</a> |</li>
-        <li><a href="index.html">Enable v3.0.0b1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">enable 4.4.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2008, Enthought.
-      Last updated on Jan 28, 2011.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+        &copy; Copyright 2008-2014, Enthought.
+      Last updated on Apr 24, 2014.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>
