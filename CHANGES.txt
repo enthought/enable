@@ -5,8 +5,9 @@ Change summary since 4.3.0
 
 Enhancements
 
- * Added a test assistant to aid in writing unit tests for Enable/Chaco code (3cb6d22)
+ * Added a test assistant to aid in writing unit tests for Enable/Chaco code (3cb6d22 & a5b8cb9)
  * Added Drag & Drop support for Qt (4196bc8)
+ * Added a context menu tool (0c27475)
 
 Fixes
 
