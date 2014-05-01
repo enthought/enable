@@ -3,7 +3,7 @@ Kiva Interface Quick Reference
 
 This document is a summary of the classes and functions available in
 Kiva.  More specifically, it describes some of the details of the
-enthought.kiva.agg backend, including enumerated types and helper classes.
+kiva.agg backend, including enumerated types and helper classes.
 
 Types
 -----
