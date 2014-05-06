@@ -22,5 +22,3 @@ kiva/agg/src/win32/plat_support_wrap.cpp
 kiva/agg/src/x11/plat_support_wrap.cpp
 kiva/quartz/ABCGI.c
 kiva/quartz/CTFont.c
-
-*.pdb
