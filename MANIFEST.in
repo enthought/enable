@@ -1,2 +1,1 @@
 include kiva/agg/agg.i
-prune enable.egg-info
