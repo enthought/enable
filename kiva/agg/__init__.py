@@ -13,6 +13,8 @@ pix_format_string_map["bgra32"] = pix_format_bgra32
 
 default_pix_format = "bgra32"
 
+import types
+
 try:
     # Define a system-dependent GraphicsContext if there is a PixelMap
     # class defined for the system (i.e. if plat_support was built)
@@ -23,13 +25,16 @@ try:
                      size,
                      pix_format=default_pix_format,
                      interpolation="nearest",
-                     bottom_up=1):
-            assert type(size) is type(()),`size`
+                     bottom_up=True):
+            assert isinstance(size, types.TupleType), repr(size)
             width,height = size
-            pixel_map = PixelMap(width,height,
-                                 pix_format_string_map[pix_format],
-                                 255,
-                                 bottom_up).set_bmp_array()
+            pixel_map = PixelMap(
+                width,
+                height,
+                pix_format_string_map[pix_format],
+                255,
+                bool(bottom_up)
+            ).set_bmp_array()
             GraphicsContextArray.__init__(self, pixel_map.bmp_array,
                                           pix_format, interpolation,
                                           bottom_up)

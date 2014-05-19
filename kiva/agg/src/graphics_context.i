@@ -814,7 +814,7 @@ namespace kiva {
                     rgb24 format.
                 """
                 FmtsWithoutAlpha = ('jpg', 'bmp', 'eps', "jpeg")
-                import Image as PilImage
+                from PIL import Image as PilImage
                 size = (self.width(), self.height())
                 fmt = self.format()
 
