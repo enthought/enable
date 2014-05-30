@@ -1,13 +1,10 @@
 language: python
 python:
-  - 2.7
+  - '2.7_with_system_site_packages'
   - 2.6
-virtualenv:
-  # This allows installing PyQt using apt-get and being able to import it.
-  system_site_packages: true
 before_install:
   # For Python 2.7, install PyQt4
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then source .travis_before_install; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == '2.7_with_system_site_packages' ]]; then source .travis_before_install; fi
   # PyQt can't be installed on 2.6; run the tests without Qt
   - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then source .travis_before_install_noqt; fi
 install:
