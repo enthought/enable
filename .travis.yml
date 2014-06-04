@@ -24,7 +24,8 @@ install:
 
   # Test against the current master of traits and traitsui
   - pip install git+http://github.com/enthought/traits.git#egg=traits
-  - pip install git+http://github.com/enthought/traitsui.git#egg=traitsui
+  - pip install git+http://github.com/pradyun/pyface.git@python3#egg=pyface
+  - pip install git+http://github.com/pradyun/traitsui.git@python3#egg=traitsui
 
   - pip install coverage
   - pip install coveralls
