@@ -1,32 +1,43 @@
 language: python
 python:
-  - '2.7_with_system_site_packages'
-  - 2.6
+  - 2.7
+  - 3.3
+  - 3.4
+
 before_install:
-  # For Python 2.7, install PyQt4
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.7_with_system_site_packages' ]]; then source .travis_before_install; fi
-  # PyQt can't be installed on 2.6; run the tests without Qt
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then source .travis_before_install_noqt; fi
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - export ETS_TOOLKIT=qt4
+  - 'export LD_LIBRARY_PATH=`python -c "import os,nose; print(os.path.dirname(os.path.dirname(nose.__file__)))"`/PySide'
 install:
-  # nose is already installed
-  - pip install cython
-  - sudo apt-get install python-numpy
   - sudo apt-get install swig
+
+  - pip install cython
+  - pip install numpy
+  - pip install -U nose
   - pip install PIL --allow-external PIL --allow-unverified PIL
-  - pip install pyparsing
+
+  # PySide from a wheel
+  - git clone https://github.com/pradyun/travis-dependencies dependencies
+  - pip install -v -v -v --no-index --find-links=./dependencies PySide
+
   # Test against the current master of traits and traitsui
   - pip install git+http://github.com/enthought/traits.git#egg=traits
   - pip install git+http://github.com/enthought/traitsui.git#egg=traitsui
+
   - pip install coverage
   - pip install coveralls
+
   - python setup.py develop
+
 script:
   - coverage run -m nose.core -v enable/tests
   - coverage run -a -m nose.core -v enable/savage/svg/tests
   - coverage run -a -m nose.core -v kiva/tests
   - coverage run -a -m nose.core -v kiva/agg/tests
+after_success:
+  coveralls
+
 notifications:
   email:
     - travis-ci@enthought.com
-after_success:
-  coveralls
