@@ -16,14 +16,14 @@ default_pix_format = "bgra32"
 try:
     # Define a system-dependent GraphicsContext if there is a PixelMap
     # class defined for the system (i.e. if plat_support was built)
-    from plat_support import PixelMap
+    from .plat_support import PixelMap
 
     class GraphicsContextSystem(GraphicsContextArray):
         def __init__(self,
                      size,
                      pix_format=default_pix_format,
                      interpolation="nearest",
-                     bottom_up=1):
+                     bottom_up=True):
             assert type(size) is type(()),`size`
             width,height = size
             pixel_map = PixelMap(width,height,

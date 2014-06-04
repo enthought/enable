@@ -993,10 +993,10 @@ def ttfdict_to_fnames(d):
 
 def pickle_dump(data, filename):
     """
-    Equivalent to pickle.dump(data, open(filename, 'w'))
+    Equivalent to pickle.dump(data, open(filename, 'wb'))
     but closes the file to prevent filehandle leakage.
     """
-    fh = open(filename, 'w')
+    fh = open(filename, 'wb')
     try:
         pickle.dump(data, fh)
     finally:
@@ -1004,7 +1004,7 @@ def pickle_dump(data, filename):
 
 def pickle_load(filename):
     """
-    Equivalent to pickle.load(open(filename, 'r'))
+    Equivalent to pickle.load(open(filename, 'rb'))
     but closes the file to prevent filehandle leakage.
     """
     fh = open(filename, 'rb')
