@@ -56,7 +56,7 @@ except NameError:
 import afm
 
 from traits.etsconfig.api import ETSConfig
-from kiva.fonttools.fontTools.ttLib import TTFont
+from kiva.fonttools.fontTools.ttLib import TTFont, TTLibError
 
 try:
     import cPickle as pickle
@@ -689,7 +689,7 @@ def createFontList(fontfiles, fontext='ttf'):
         else:
             try:
                 font = TTFont(str(fpath))
-            except RuntimeError:
+            except (RuntimeError, TTLibError):
                 verbose.report("Could not open font file %s"%fpath)
                 continue
             except UnicodeError:

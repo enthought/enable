@@ -6,9 +6,27 @@ from traits.api import Float
 from enable.api import (AbstractOverlay, Canvas, Viewport, Window, ColorTrait,
                         Scrolled)
 from enable.tools.api import ViewportPanTool
+from enable.primitives.api import Box
 from enable.example_support import demo_main, DemoFrame
 
+class DropCanvas(Canvas):
+    """ Adds a Box at a drop location """
 
+    def normal_drag_over(self, event):
+        self.window.set_drag_result("link")
+        event.handled = True
+
+    def normal_dropped_on(self, event):
+        self.window.set_drag_result("link")
+        print event.obj
+
+        box = Box(x=event.x-2, y=event.y-2, width=4, height=4)
+        self.add(box)
+
+        self.request_redraw()
+        event.handled = True
+        
+        
 class EventTracer(AbstractOverlay):
     """ Draws a marker under the mouse cursor where an event is occurring. """
 
@@ -42,10 +60,10 @@ class MyFrame(DemoFrame):
 
     def _create_window(self):
 
-        canvas = Canvas(bgcolor="lightsteelblue", draw_axes=True)
+        canvas = DropCanvas(bgcolor="lightsteelblue", draw_axes=True)
         canvas.overlays.append(EventTracer(canvas, color="green", size=8,
                                            angle=45.0))
-
+        
         viewport = Viewport(component=canvas, enable_zoom=True)
         viewport.view_position = [0,0]
         viewport.tools.append(ViewportPanTool(viewport, drag_button="right"))

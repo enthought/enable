@@ -1,3 +1,29 @@
+Enable CHANGELOG
+================
+
+Enable 4.4.0 (May 1, 2014)
+==========================
+
+Enhancements
+------------
+
+ * Added a test assistant to aid in writing unit tests for Enable/Chaco code (3cb6d22 & a5b8cb9)
+ * Added Drag & Drop support for Qt (4196bc8)
+ * Added a context menu tool (0c27475)
+
+Fixes
+-----
+
+ * PR #92: Fixed the example support code to allow Chaco demos to run on Qt
+ * PR #94: Fixed the examples so that they would run on Qt
+ * PR #102: Fixed a transparency drawing bug in the Qt image backend
+ * Fixed various bugs which caused test failures in Enable and Chaco (PRs #103,
+    #105, #110, #113)
+ * PR #107: Fixed a memory leak in the QPainter kiva backend
+ * PR #116: Fixed the incomplete implementation of the resize tool
+ * PR #118: Fixed a gradient rendering bug that sometimes caused segfaults
+
+
 Enable 3.4.1 (March 3, 2011)
 ============================
 
@@ -17,8 +43,7 @@ Enable 3.4.0 (Jan 26, 2011)
 Enhancements
 ------------
 
-* Major refactor of kiva backends to make setting the desired backend more 
-  resilient and flexible.
+* Major refactor of kiva backends to make setting the desired backend more resilient and flexible.
 * Added support for PySide
 * Qt backend no longer uses Agg internally, instead it uses QPainter.
 * Improved gradient support in Quartz backend
@@ -53,15 +78,9 @@ Enhancements
           # Do stuff with gc...
 
 * Stacked layout containers were added.
-
-* qt4_backend: Added Tony Yu's patch to better handling keypresses in Qt4
-  when modifier keys are pressed (r25644).
-
-* vtk_backend: Added John Wiggins patch which adds key bindings to
-  EnableVTKWindow (r25796).
-
-* The Kiva backend for the Mac, implemented in ABCGI.pyx, is now processed
-  with cython instead of pyrex.
+* qt4_backend: Added Tony Yu's patch to better handling keypresses in Qt4 when modifier keys are pressed (r25644).
+* vtk_backend: Added John Wiggins patch which adds key bindings to EnableVTKWindow (r25796).
+* The Kiva backend for the Mac, implemented in ABCGI.pyx, is now processed with cython instead of pyrex.
 
 
 Fixes
@@ -136,23 +155,14 @@ enable Enhancements
 -----------------------------
 
  * Added Slider and Compass widgets
-
  * Added an OverlayContainer (almost identical to the one in Chaco)
-
  * Added ImageGraphicsContextEnable class so that one can always import a Kiva Image backend-based GraphicsContextEnable
-
  * renaming marker_trait to MarkerTrait (the old name is still permitted forbackwards compatibility, but should be avoided)
-
  * Moved the scatter_markers module from Chaco to Enable, so that Enable components can use MarkerTrait
-
  * Added an experimental VTK backend for Enable, along with an example
-
  * Changed SVGButtonEditor toggle to draw a SVG under the button SVG instead of drawing a plain box
-
  * Added labels for SVGButton
-
  * Improving backbuffering performance on the Mac by creating the layer context from the window context instead of from a bitmap.
-
  * Adding a "fixed_preferred_size" trait to Components, so that relative size preferences can be expressed amongst different components in a container
 
 
@@ -160,13 +170,9 @@ enable Fixes
 ----------------------
 
  * Improved the backend selection to match the Traits UI backend unless ETSConfig.enable_toolkit is explicitly set
-
  * Fixed demo_main() in example_support.py so that it doesn't crash IPython
-
  * Fixed RGBAColorTrait so it can be used with the null toolkit
-
  * Changed the "sys_window" color to be the same as the Traits UI "WindowColor" constant
-
  * Fixed backend_cairo's get_text_extent() implementation to match other backends
 
 
@@ -175,14 +181,10 @@ kiva Enhancements
 
  * Added basic gradients to Kiva
 
-
 kiva Fixes
 --------------------
 
  * Fixed Python 2.6 datatype errors
-
  * Fixed memory leak as reported in ticket 1815
-
  * The macport test is only run on Darwin systems
-
  * Removed deprecated calls to old numpy APIs
