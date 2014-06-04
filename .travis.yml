@@ -12,10 +12,11 @@ before_install:
 install:
   - sudo apt-get install swig
 
-  - pip install cython
-  - pip install numpy
   - pip install -U nose
-  - pip install PIL --allow-external PIL --allow-unverified PIL
+  - pip install Numpy
+  - pip install Cython
+  - pip install Pillow
+  - pip install PyParsing
 
   # PySide from a wheel
   - git clone https://github.com/pradyun/travis-dependencies dependencies
