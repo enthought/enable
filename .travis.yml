@@ -36,11 +36,10 @@ install:
 before_script:
   - export NOSE_WITH_COVERAGE=True
 script:
-  - "if [[ ${TRAVIS_PYTHON_VERSION::1} == '3' ]]; then cd build/lib ; fi"
-  - python setup.py nosetests --cover-package enable --cover-package kiva --tests kiva/tests
-  - python setup.py nosetests --cover-package enable --cover-package kiva --tests kiva/agg/tests
-  - python setup.py nosetests --cover-package enable --cover-package kiva --tests enable/tests
-  - python setup.py nosetests --cover-package enable --cover-package kiva --tests enable/savage/svg/tests
+  - python setup.py nosetests --cover-package enable --cover-package kiva --tests kiva.tests
+  - python setup.py nosetests --cover-package enable --cover-package kiva --tests kiva.agg.tests
+  - python setup.py nosetests --cover-package enable --cover-package kiva --tests enable.tests
+  - python setup.py nosetests --cover-package enable --cover-package kiva --tests enable.savage.svg.tests
 after_success:
   - coveralls
 
