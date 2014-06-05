@@ -1,6 +1,0 @@
-# Set up X11 for potential UI tests.
-
-export DISPLAY=:99.0
-sh -e /etc/init.d/xvfb start
-
-export ETS_TOOLKIT=null.image

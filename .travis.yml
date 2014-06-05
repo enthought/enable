@@ -27,18 +27,17 @@ install:
   - pip install git+http://github.com/pradyun/pyface.git@python3#egg=pyface
   - pip install git+http://github.com/pradyun/traitsui.git@python3#egg=traitsui
 
+  - python setup.py build
+  - python setup.py develop
+
   - pip install coverage
   - pip install coveralls
 
-  - python setup.py develop
-
 script:
-  - coverage run -m nose.core -v enable/tests
-  - coverage run -a -m nose.core -v enable/savage/svg/tests
-  - coverage run -a -m nose.core -v kiva/tests
-  - coverage run -a -m nose.core -v kiva/agg/tests
+  - "if [[ ${TRAVIS_PYTHON_VERSION::1} == '3' ]]; then cd build/lib ; fi"
+  - "nosetests --with-coverage 'enable,kiva'"
 after_success:
-  coveralls
+  - coveralls
 
 notifications:
   email:
