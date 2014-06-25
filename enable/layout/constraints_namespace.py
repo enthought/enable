@@ -2,13 +2,13 @@
 #  Copyright (c) 2013, Enthought, Inc.
 #  All rights reserved.
 #------------------------------------------------------------------------------
-from kiwisolver import Variable as ConstraintsVariable
+from kiwisolver import Variable
 
 from .linear_symbolic import LinearSymbolic
 
 
 class ConstraintsNamespace(object):
-    """ A class which acts as a namespace for casuarius constraint variables.
+    """ A class which acts as a namespace for kiwi constraint variables.
 
     The constraint variables are created on an as-needed basis, this
     allows components to define new constraints and build layouts
@@ -34,7 +34,7 @@ class ConstraintsNamespace(object):
         self._constraints = {}
 
     def __getattr__(self, name):
-        """ Returns a casuarius constraint variable for the given name,
+        """ Returns a kiwi constraint variable for the given name,
         unless the name is already in the instance dictionary.
 
         Parameters
@@ -53,11 +53,11 @@ class ConstraintsNamespace(object):
             res = constraints[name]
         else:
             label = '{0}|{1}|{2}'.format(self._name, self._owner, name)
-            res = constraints[name] = ConstraintsVariable(label)
+            res = constraints[name] = Variable(label)
         return res
 
     def __setattr__(self, name, value):
-        """ Adds a casuarius constraint variable to the constraints dictionary.
+        """ Adds a kiwi constraint variable to the constraints dictionary.
 
         Parameters
         ----------
@@ -65,7 +65,7 @@ class ConstraintsNamespace(object):
             The name of the constraint variable to set.
 
         value : LinearSymbolic
-            The casuarius variable to add to the constraints dictionary.
+            The kiwi variable to add to the constraints dictionary.
 
         """
         if isinstance(value, LinearSymbolic):
