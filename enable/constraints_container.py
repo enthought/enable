@@ -115,10 +115,10 @@ class ConstraintsContainer(Container):
                 running_index = 1
                 for offset_index, item in self._layout_table:
                     dx, dy = offset_table[offset_index]
-                    nx, ny = item.left.value, item.bottom.value
+                    nx, ny = item.left.value(), item.bottom.value()
                     item.position = (nx - dx, ny - dy)
-                    item.bounds = (item.layout_width.value,
-                                   item.layout_height.value)
+                    item.bounds = (item.layout_width.value(),
+                                   item.layout_height.value())
                     offset_table[running_index] = (nx, ny)
                     running_index += 1
             mgr_layout(layout, width_var, height_var, (width, height))

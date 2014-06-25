@@ -6,12 +6,14 @@ from abc import ABCMeta, abstractmethod
 from collections import defaultdict
 from uuid import uuid4
 
-from casuarius import ConstraintVariable, LinearSymbolic, LinearConstraint
+from kiwisolver import Variable, Constraint
+
 from traits.api import HasTraits, Instance, Range
 
 from .ab_constrainable import ABConstrainable
 from .constraints_namespace import ConstraintsNamespace
 from .geometry import Box
+from .linear_symbolic import LinearSymbolic
 from .utils import add_symbolic_constraints, STRENGTHS
 
 
@@ -67,7 +69,7 @@ def expand_constraints(component, constraints):
                 if item is not None:
                     yield item
         else:
-            if cn is not None and isinstance(cn, LinearConstraint):
+            if cn is not None and isinstance(cn, Constraint):
                 yield cn
 
 
@@ -93,11 +95,9 @@ class DeferredConstraints(object):
         """ Initialize a DeferredConstraints instance.
 
         """
-        # __or__() will set these default strength and weight. If
-        # provided, they will be combined with the constraints created
-        # by this instance.
+        # __or__() will set the default_strength. If provided, it will be
+        # combined with the constraints created by this instance.
         self.default_strength = None
-        self.default_weight = None
 
     def __or__(self, other):
         """ Set the strength of all of the constraints to a common
@@ -105,13 +105,13 @@ class DeferredConstraints(object):
 
         """
         if isinstance(other, (float, int, long)):
-            self.default_weight = float(other)
+            self.default_string = float(other)
         elif isinstance(other, basestring):
             if other not in STRENGTHS:
                 raise ValueError('Invalid strength %r' % other)
             self.default_strength = other
         else:
-            msg = 'Strength must be a string. Got %s instead.'
+            msg = 'Strength must be a string or number. Got %s instead.'
             raise TypeError(msg % type(other))
         return self
 
@@ -124,7 +124,7 @@ class DeferredConstraints(object):
             return self
 
     def get_constraints(self, component):
-        """ Returns a list of weighted LinearConstraints.
+        """ Returns a list of constraints.
 
         Parameters
         ----------
@@ -135,18 +135,15 @@ class DeferredConstraints(object):
 
         Returns
         -------
-        result : list of LinearConstraints
-            The list of LinearConstraint objects which have been
-            weighted by any provided strengths and weights.
+        result : list of Constraints
+            The list of Constraint objects which have been
+            weighted by any provided strengths.
 
         """
         cn_list = self._get_constraints(component)
         strength = self.default_strength
         if strength is not None:
             cn_list = [cn | strength for cn in cn_list]
-        weight = self.default_weight
-        if weight is not None:
-            cn_list = [cn | weight for cn in cn_list]
         return cn_list
 
     @abstractmethod
@@ -658,12 +655,12 @@ class GridHelper(BoxHelper):
         cn_id = self.constraints_id
         for idx in xrange(num_rows + 1):
             name = 'row' + str(idx)
-            var = ConstraintVariable('{0}|{1}'.format(cn_id, name))
+            var = Variable('{0}|{1}'.format(cn_id, name))
             row_vars.append(var)
             constraints.append(var >= 0)
         for idx in xrange(num_cols + 1):
             name = 'col' + str(idx)
-            var = ConstraintVariable('{0}|{1}'.format(cn_id, name))
+            var = Variable('{0}|{1}'.format(cn_id, name))
             col_vars.append(var)
             constraints.append(var >= 0)
 
@@ -1080,10 +1077,9 @@ class Spacer(object):
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self, amt, strength=None, weight=None):
+    def __init__(self, amt, strength=None):
         self.amt = max(0, amt)
         self.strength = strength
-        self.weight = weight
 
     def when(self, switch):
         """ A simple method that can be used to switch off the generated
@@ -1095,16 +1091,13 @@ class Spacer(object):
 
     def constrain(self, first_anchor, second_anchor):
         """ Returns the list of generated constraints appropriately
-        weighted by the default strength and weight, if provided.
+        weighted by the default strength, if provided.
 
         """
         constraints = self._constrain(first_anchor, second_anchor)
         strength = self.strength
         if strength is not None:
             constraints = [cn | strength for cn in constraints]
-        weight = self.weight
-        if weight is not None:
-            constraints = [cn | weight for cn in constraints]
         return constraints
 
     @abstractmethod
@@ -1162,12 +1155,10 @@ class FlexSpacer(Spacer):
     a weaker preference for being that minimum.
 
     """
-    def __init__(self, amt, min_strength='required', min_weight=1.0, eq_strength='medium', eq_weight=1.25):
+    def __init__(self, amt, min_strength='required', eq_strength='medium'):
         self.amt = max(0, amt)
         self.min_strength = min_strength
-        self.min_weight = min_weight
         self.eq_strength = eq_strength
-        self.eq_weight = eq_weight
 
     def constrain(self, first_anchor, second_anchor):
         """ Return list of LinearConstraint objects that are appropriate to
@@ -1183,8 +1174,8 @@ class FlexSpacer(Spacer):
 
         """
         return [
-            ((first_anchor + self.amt) <= second_anchor) | self.min_strength | self.min_weight,
-            ((first_anchor + self.amt) == second_anchor) | self.eq_strength | self.eq_weight,
+            ((first_anchor + self.amt) <= second_anchor) | self.min_strength,
+            ((first_anchor + self.amt) == second_anchor) | self.eq_strength,
         ]
 
 
@@ -1199,23 +1190,23 @@ class LayoutSpacer(Spacer):
     def __eq__(self, other):
         if not isinstance(other, int):
             raise TypeError('space can only be created from ints')
-        return EqSpacer(other, self.strength, self.weight)
+        return EqSpacer(other, self.strength)
 
     def __le__(self, other):
         if not isinstance(other, int):
             raise TypeError('space can only be created from ints')
-        return LeSpacer(other, self.strength, self.weight)
+        return LeSpacer(other, self.strength)
 
     def __ge__(self, other):
         if not isinstance(other, int):
             raise TypeError('space can only be created from ints')
-        return GeSpacer(other, self.strength, self.weight)
+        return GeSpacer(other, self.strength)
 
     def _constrain(self, first_anchor, second_anchor):
         """ Returns a greater than or equal to spacing constraint.
 
         """
-        spacer = GeSpacer(self.amt, self.strength, self.weight)
+        spacer = GeSpacer(self.amt, self.strength)
         return spacer._constrain(first_anchor, second_anchor)
 
     def flex(self, **kwargs):
