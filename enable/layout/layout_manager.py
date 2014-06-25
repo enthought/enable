@@ -55,8 +55,7 @@ class LayoutManager(object):
         for cn in new_cns:
             solver.addConstraint(cn)
 
-    def layout(self, cb, width, height, size, strength=kiwi.strength.medium,
-               weight=1.0):
+    def layout(self, cb, width, height, size, strength=kiwi.strength.medium):
         """ Perform an iteration of the solver for the new width and
         height constraint variables.
 
@@ -81,13 +80,10 @@ class LayoutManager(object):
             The (width, height) size tuple which is the current size
             of the main layout container.
 
-        strength : casuarius strength, optional
+        strength : kiwisolver strength, optional
             The strength with which to perform the layout using the
             current size of the container. i.e. the strength of the
-            resize. The default is casuarius.medium.
-
-        weight : float, optional
-            The weight to apply to the strength. The default is 1.0
+            resize. The default is kiwisolver.strength.medium.
 
         """
         if not self._initialized:
@@ -107,8 +103,7 @@ class LayoutManager(object):
         finally:
             self._running = False
 
-    def get_min_size(self, width, height, strength=kiwi.strength.medium,
-                     weight=0.1):
+    def get_min_size(self, width, height, strength=kiwi.strength.medium):
         """ Run an iteration of the solver with the suggested size of the
         component set to (0, 0). This will cause the solver to effectively
         compute the minimum size that the window can be to solve the
@@ -124,15 +119,10 @@ class LayoutManager(object):
             The constraint variable representing the height of the
             main layout container.
 
-        strength : casuarius strength, optional
+        strength : kiwisolver strength, optional
             The strength with which to perform the layout using the
             current size of the container. i.e. the strength of the
-            resize. The default is casuarius.medium.
-
-        weight : float, optional
-            The weight to apply to the strength. The default is 0.1
-            so that constraints of medium strength but default weight
-            have a higher precedence than the minimum size.
+            resize. The default is kiwisolver.strength.medium.
 
         Returns
         -------
@@ -153,8 +143,7 @@ class LayoutManager(object):
             min_height = height.value()
         return (min_width, min_height)
 
-    def get_max_size(self, width, height, strength=kiwi.strength.medium,
-                     weight=0.1):
+    def get_max_size(self, width, height, strength=kiwi.strength.medium):
         """ Run an iteration of the solver with the suggested size of
         the component set to a very large value. This will cause the
         solver to effectively compute the maximum size that the window
@@ -172,15 +161,10 @@ class LayoutManager(object):
             The constraint variable representing the height of the
             main layout container.
 
-        strength : casuarius strength, optional
+        strength : kiwisolver strength, optional
             The strength with which to perform the layout using the
             current size of the container. i.e. the strength of the
-            resize. The default is casuarius.medium.
-
-        weight : float, optional
-            The weight to apply to the strength. The default is 0.1
-            so that constraints of medium strength but default weight
-            have a higher precedence than the minimum size.
+            resize. The default is kiwisolver.strength.medium.
 
         Returns
         -------

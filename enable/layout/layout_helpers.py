@@ -153,8 +153,7 @@ class DeferredConstraints(object):
         Subclasses must implement this method to actually yield their
         constraints. Users of instances should instead call the
         `get_constraints()` method which will combine these
-        constraints with the `default_strength` and/or the
-        `default_weight` if one or both are provided.
+        constraints with the `default_strength` if provided.
 
         Parameters
         ----------
@@ -587,7 +586,8 @@ class GridHelper(BoxHelper):
         self.row_align = config.get('row_align', '')
         self.col_align = config.get('col_align', '')
         self.row_spacing = config.get('row_spacing', DefaultSpacing.ABUTMENT)
-        self.col_spacing = config.get('column_spacing', DefaultSpacing.ABUTMENT)
+        self.col_spacing = config.get('column_spacing',
+                                      DefaultSpacing.ABUTMENT)
         self.margins = Box(config.get('margins', DefaultSpacing.BOX_MARGINS))
 
     def __repr__(self):
@@ -779,10 +779,12 @@ class AbstractConstraintFactory(object):
             raise ValueError(msg)
 
         extrema_types = (LinearSymbolic, ABConstrainable)
+
         def extrema_test(item):
             return isinstance(item, extrema_types)
 
         item_types = (LinearSymbolic, ABConstrainable, Spacer, int)
+
         def item_test(item):
             return isinstance(item, item_types)
 
@@ -1162,8 +1164,8 @@ class FlexSpacer(Spacer):
 
     def constrain(self, first_anchor, second_anchor):
         """ Return list of LinearConstraint objects that are appropriate to
-        separate the two anchors according to the amount of space represented by
-        the spacer.
+        separate the two anchors according to the amount of space represented
+        by the spacer.
 
         """
         return self._constrain(first_anchor, second_anchor)
@@ -1268,4 +1270,3 @@ def grid(*rows, **config):
 
 
 spacer = LayoutSpacer(DefaultSpacing.ABUTMENT)
-
