@@ -82,7 +82,7 @@ class ConstraintsContainer(Container):
     # A dictionary of components added to this container
     _component_map = Dict
 
-    # The casuarius solver
+    # The kiwi solver
     _layout_manager = Instance(LayoutManager, allow_none=True)
     _offset_table = List
     _layout_table = List
@@ -349,12 +349,12 @@ class ConstraintsContainer(Container):
         self.relayout()
 
     def _generate_constraints(self, layout_table):
-        """ Creates the list of casuarius LinearConstraint objects for
+        """ Creates the list of kiwi Constraint objects for
         the widgets for which this container owns the layout.
 
         This method walks over the items in the given layout table and
-        aggregates their constraints into a single list of casuarius
-        LinearConstraint objects which can be given to the layout
+        aggregates their constraints into a single list of kiwi
+        Constraint objects which can be given to the layout
         manager.
 
         Parameters
@@ -365,15 +365,15 @@ class ConstraintsContainer(Container):
         Returns
         -------
         result : list
-            The list of casuarius LinearConstraints instances to pass to
+            The list of kiwi Constraint instances to pass to
             the layout manager.
 
         """
         user_cns = self._layout_constraints
         user_cns_extend = user_cns.extend
 
-        # The list of raw casuarius constraints which will be returned
-        # from this method to be added to the casuarius solver.
+        # The list of raw kiwi constraints which will be returned
+        # from this method to be added to the kiwi solver.
         raw_cns = self._hard_constraints + self._contents_constraints
         raw_cns_extend = raw_cns.extend
 

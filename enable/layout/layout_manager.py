@@ -7,7 +7,7 @@ import kiwisolver as kiwi
 
 
 class LayoutManager(object):
-    """ A class which uses a casuarius solver to manage a system
+    """ A class which uses a kiwi solver to manage a system
     of constraints.
 
     """
@@ -40,11 +40,11 @@ class LayoutManager(object):
         Parameters
         ----------
         old_cns : list
-            The list of casuarius constraints to remove from the
+            The list of kiwi constraints to remove from the
             solver.
 
         new_cns : list
-            The list of casuarius constraints to add to the solver.
+            The list of kiwi constraints to add to the solver.
 
         """
         if not self._initialized:
