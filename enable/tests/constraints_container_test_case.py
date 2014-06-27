@@ -22,9 +22,7 @@ class ConstraintsContainerTestCase(unittest.TestCase):
             self.c1.layout_width == 10,
             self.c2.layout_width == 10,
             self.c1.layout_height == 10,
-            self.c2.layout_height == 10,
-            align('layout_width', self.c1, self.c2),
-            align('layout_height', self.c1, self.c2)
+            self.c2.layout_height == 10
         ]
 
         self.assert_(self.c1.bounds == self.c2.bounds)
