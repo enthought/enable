@@ -366,6 +366,53 @@ class AbstractWindow(HasTraits):
 
         return mouse_event.handled
 
+    #---------------------------------------------------------------------------
+    #  Generic drag event handler:
+    #---------------------------------------------------------------------------
+    def _handle_drag_event(self, event_name, event, set_focus=False):
+        """ **event** should be a toolkit-specific opaque object that will
+        be passed in to the backend's _create_drag_event() method.  It can
+        be None if the the toolkit lacks a native "drag event" object.
+
+        Returns True if the event has been handled within the Enable object
+        hierarchy, or False otherwise.
+        """
+        if self._size is None:
+            # PZW: Hack!
+            # We need to handle the cases when the window hasn't been painted yet, but
+            # it's gotten a mouse event.  In such a case, we just ignore the mouse event.
+            # If the window has been painted, then _size will have some sensible value.
+            return False
+
+        drag_event = self._create_drag_event(event)
+        # if no mouse event generated for some reason, return
+        if drag_event is None:
+            return False
+            
+        if self.component is not None:
+            # Test to see if we need to generate a drag_leave event
+            if self._prev_event_handler:
+                if not self._prev_event_handler.is_in(drag_event.x, drag_event.y):
+                    self._prev_event_handler.dispatch(drag_event, "pre_drag_leave")
+                    drag_event.handled = False
+                    self._prev_event_handler.dispatch(drag_event, "drag_leave")
+                    self._prev_event_handler = None
+
+            if self.component.is_in(drag_event.x, drag_event.y):
+                # Test to see if we need to generate a mouse_enter event
+                if self._prev_event_handler != self.component:
+                    self._prev_event_handler = self.component
+                    self.component.dispatch(drag_event, "pre_drag_enter")
+                    drag_event.handled = False
+                    self.component.dispatch(drag_event, "drag_enter")
+
+                # Fire the actual event
+                self.component.dispatch(drag_event, "pre_" + event_name)
+                drag_event.handled = False
+                self.component.dispatch(drag_event, event_name)
+
+        return drag_event.handled
+
     def set_tooltip(self, components):
         "Set the window's tooltip (if necessary)"
         raise NotImplementedError

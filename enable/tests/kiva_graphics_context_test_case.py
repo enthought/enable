@@ -12,7 +12,7 @@ class TestGCErrors(unittest.TestCase):
         arr = np.array([[1, 2], [3, 4]], dtype=np.uint8)
         gc = GraphicsContext((50, 50))
         # The draw_image methods expects its first argument
-        # to be a 3D whose last dimension has lenght 3 or 4.
+        # to be a 3D whose last dimension has length 3 or 4.
         # Passing in arr should raise a value error.
         self.assertRaises(ValueError, gc.draw_image, arr)
 

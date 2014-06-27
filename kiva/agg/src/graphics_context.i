@@ -814,7 +814,7 @@ namespace kiva {
                     rgb24 format.
                 """
                 FmtsWithoutAlpha = ('jpg', 'bmp', 'eps', "jpeg")
-                import Image as PilImage
+                from PIL import Image as PilImage
                 size = (self.width(), self.height())
                 fmt = self.format()
 
@@ -895,11 +895,13 @@ def init(self, ary_or_size, pix_format="bgra32",
         ary = ary_or_size
         sh = shape(ary)
         if len(sh) == 2:
-            msg = "2D arrays must use a format that is one byte per pixel"
-            assert img_depth == 1, msg
+            if img_depth != 1:
+                msg = "2D arrays must use a format that is one byte per pixel"
+                raise ValueError(msg)
         elif len(sh) == 3:
-            msg = "Image depth and format are incompatible"
-            assert img_depth == sh[2], msg
+            if img_depth != sh[2]:
+                msg = "Image depth and format are incompatible"
+                raise ValueError(msg)
         else:
             msg = "only 2 or 3 dimensional arrays are supported as images"
             msg += " but got sh=%r" % (sh,)
