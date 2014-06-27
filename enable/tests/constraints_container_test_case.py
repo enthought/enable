@@ -3,6 +3,8 @@ import unittest
 from enable.api import ConstraintsContainer, Component
 from enable.layout.api import hbox, vbox, align, spacer, grid
 from enable.layout.layout_helpers import DefaultSpacing
+from enable.layout.geometry import Rect, Box, Pos, Size, RectF, BoxF, PosF, \
+    SizeF
 
 
 class ConstraintsContainerTestCase(unittest.TestCase):
@@ -169,6 +171,59 @@ class ConstraintsContainerTestCase(unittest.TestCase):
         self.container.relayout()
 
         self.assert_(self.c1.bounds[0] == self.c2.bounds[0] == c3.bounds[0])
+
+
+class GeometryTestCase(unittest.TestCase):
+
+    def test_rect(self):
+        rect = Rect(10, 20, 60, 40)
+
+        self.assert_(rect.box == Box(20, 70, 60, 10))
+        self.assert_(rect.pos == Pos(10, 20))
+        self.assert_(rect.size == Size(60, 40))
+
+    def test_rect_f(self):
+        rect_f = RectF(10.5, 20.5, 60.5, 40.5)
+
+        self.assert_(rect_f.box == BoxF(20.5, 71.0, 61.0, 10.5))
+        self.assert_(rect_f.pos == PosF(10.5, 20.5))
+        self.assert_(rect_f.size == SizeF(60.5, 40.5))
+
+    def test_box(self):
+        box = Box(20, 70, 60, 10)
+        self.assert_(box == Box((20, 70, 60, 10)))
+        self.assert_(box.rect == Rect(10, 20, 60, 40))
+        self.assert_(box.pos == Pos(10, 20))
+        self.assert_(box.size == Size(60, 40))
+
+    def test_box_f(self):
+        box_f = BoxF(20.5, 71.0, 61.0, 10.5)
+        self.assert_(box_f == BoxF((20.5, 71.0, 61.0, 10.5)))
+        self.assert_(box_f.rect == RectF(10.5, 20.5, 60.5, 40.5))
+        self.assert_(box_f.pos == PosF(10.5, 20.5))
+        self.assert_(box_f.size == SizeF(60.5, 40.5))
+
+    def test_pos(self):
+        pos = Pos(10, 20)
+        self.assert_(pos.x == 10)
+        self.assert_(pos.y == 20)
+
+    def test_pos_f(self):
+        pos_f = PosF(10.5, 20.5)
+        self.assert_(pos_f.x == 10.5)
+        self.assert_(pos_f.y == 20.5)
+
+    def test_size(self):
+        size = Size(40, 20)
+        self.assert_(size == Size((40, 20)))
+        self.assert_(size.width == 40)
+        self.assert_(size.height == 20)
+
+    def test_size_f(self):
+        size_f = SizeF(40.5, 20.5)
+        self.assert_(size_f == SizeF((40.5, 20.5)))
+        self.assert_(size_f.width == 40.5)
+        self.assert_(size_f.height == 20.5)
 
 
 if __name__ == '__main__':
