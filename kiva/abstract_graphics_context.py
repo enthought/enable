@@ -10,9 +10,9 @@ class AbstractGraphicsContext(object):
 
     __metaclass__ = ABCMeta
 
-    #-------------------------------------------
-    # Graphics state methods
-    #-------------------------------------------
+    #----------------------------------------------------------------
+    # Save/Restore graphics state.
+    #----------------------------------------------------------------
 
     @abstract_method
     def save_state(self):
@@ -21,6 +21,20 @@ class AbstractGraphicsContext(object):
     @abstract_method
     def restore_state(self):
         """ Pop the previous graphics state from the stack """
+
+    #----------------------------------------------------------------
+    # context manager interface
+    #----------------------------------------------------------------
+
+    def __enter__(self):
+        self.save_state()
+
+    def __exit__(self, type, value, traceback):
+        self.restore_state()
+
+    #-------------------------------------------
+    # Graphics state methods
+    #-------------------------------------------
 
     @abstract_method
     def set_stroke_color(self, color):
@@ -75,7 +89,7 @@ class AbstractGraphicsContext(object):
         """ Set the alpha to use when drawing """
 
     @abstract_method
-    def  get_alpha(self, alpha):
+    def get_alpha(self, alpha):
         """ Return the alpha used when drawing """
 
     @abstract_method
@@ -101,7 +115,6 @@ class AbstractGraphicsContext(object):
     @abstract_method
     def get_image_interpolation(self):
         """ Get the type of interpolation to use when scaling images """
-
 
     #-------------------------------------------
     # Transformation matrix methods
@@ -156,7 +169,7 @@ class AbstractGraphicsContext(object):
 
     @abstract_method
     def close_path(self):
-        """ Finish a path, connecting back to the start """
+        """ Finish a subpath, connecting back to the start """
 
     @abstract_method
     def get_empty_path(self):
@@ -172,29 +185,54 @@ class AbstractGraphicsContext(object):
 
     @abstract_method
     def line_to(self, x, y):
-        """ Draw a straight line from the current point to (x, y) """
+        """ Add a line from the current point to (x, y) to the path """
 
     @abstract_method
-    def lines(self, point_array):
-        """ Draw a sequence of lines
+    def lines(self, points):
+        """ Adds a series of lines as a new subpath.
 
-        The array consists of a sequence of (x1, y1, x2, y2) quadruples
+        Parameters
+        ----------
+        points
+            an Nx2 sequence of (x, y) pairs
+
+        The current_point is moved to the last point in `point_array`.
+
+        """
+
+    def line_set(self, starts, ends):
+        """ Adds a set of disjoint lines as a new subpath.
+
+        Parameters
+        ----------
+        starts
+            an Nx2 array of x,y pairs
+        ends
+            an Nx2 array of x,y pairs
+
+        Starts and ends arrays should have the same length.
+        The current point is moved to the last point in 'ends'.
 
         """
 
     @abstract_method
     def rect(self, x, y, w, h):
-        """ Draw a rectangle
+        """ Add a rectangle as a new sub-path
 
-        The bottom left corner is (x, y) the width is w and height is h
+        The bottom left corner is (x, y) the width is w and height is h.
 
         """
 
     @abstract_method
     def rects(self, rect_array):
-        """ Draw a sequence of rectangles
+        """ Add a sequence of rectangles as separate sub-paths.
 
-        The array consists of a sequence of (x, y, w, h) quadruples """
+        Parameters
+        ----------
+        rect_array:
+            An Nx4 array of (x, y, w, h) quadruples
+
+        """
 
 
     @abstract_method
@@ -372,8 +410,33 @@ class AbstractGraphicsContext(object):
 
         """
 
-    def select_font(self, name, size, style):
-        """ Set the font based on the provided parameters """
+    def select_font(self, name, size=12, style="regular", encoding=None):
+        """ Set the font based on the provided parameters
+
+        Parameters
+        ----------
+
+        name:
+            The name of a font. E.g.: "Times New Roman"
+        size
+            The font size in points.
+        style
+            One of "regular", "bold", "italic", "bold italic"
+        encoding
+            A 4 letter encoding name. Common ones are:
+
+                * "unic" -- unicode
+                * "armn" -- apple roman
+                * "symb" -- symbol
+
+            Not all fonts support all encodings.  If none is
+            specified, fonts that have unicode encodings
+            default to unicode.  Symbol is the second choice.
+            If neither are available, the encoding defaults
+            to the first one returned in the FreeType charmap
+            list for the font face.
+
+        """
 
     def set_font(self, font):
         """ Set the font with a Kiva font object """
@@ -385,7 +448,16 @@ class AbstractGraphicsContext(object):
         """ Set the size of the current font """
 
     def set_character_spacing(self, spacing):
-        """ Set the spacing between characters when drawing text """
+        """ Set the spacing between characters when drawing text
+
+        Parameters
+        ----------
+
+        spacing : float
+            units of space extra space to add between text coordinates.
+            It is specified in text coordinate system.
+
+        """
 
     def get_character_spacing(self):
         """ Get the current spacing between characters when drawing text """
