@@ -10,9 +10,9 @@ class AbstractGraphicsContext(object):
 
     __metaclass__ = ABCMeta
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Save/Restore graphics state.
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     @abstract_method
     def save_state(self):
@@ -22,9 +22,9 @@ class AbstractGraphicsContext(object):
     def restore_state(self):
         """ Pop the previous graphics state from the stack """
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # context manager interface
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def __enter__(self):
         self.save_state()
@@ -32,9 +32,9 @@ class AbstractGraphicsContext(object):
     def __exit__(self, type, value, traceback):
         self.restore_state()
 
-    #-------------------------------------------
+    # -------------------------------------------
     # Graphics state methods
-    #-------------------------------------------
+    # -------------------------------------------
 
     @abstract_method
     def set_stroke_color(self, color):
@@ -116,9 +116,9 @@ class AbstractGraphicsContext(object):
     def get_image_interpolation(self):
         """ Get the type of interpolation to use when scaling images """
 
-    #-------------------------------------------
+    # -------------------------------------------
     # Transformation matrix methods
-    #-------------------------------------------
+    # -------------------------------------------
 
     def translate_ctm(self, x, y):
         """ Concatenate a translation to the current transformation matrix """
@@ -139,9 +139,9 @@ class AbstractGraphicsContext(object):
     def get_ctm(self):
         """ Get the current transformation matrix """
 
-    #-------------------------------------------
+    # -------------------------------------------
     # Clipping functions
-    #-------------------------------------------
+    # -------------------------------------------
 
     @abstract_method
     def clip_to_rect(self, rect):
@@ -157,11 +157,11 @@ class AbstractGraphicsContext(object):
 
     @abstract_method
     def even_odd_clip(self):
-        """ Modify clipping region with the current path using even-odd rule """
+        """ Modify clipping region with current path using even-odd rule """
 
-    #-------------------------------------------
+    # -------------------------------------------
     # Path construction functions
-    #-------------------------------------------
+    # -------------------------------------------
 
     @abstract_method
     def begin_path(self):
@@ -234,7 +234,6 @@ class AbstractGraphicsContext(object):
 
         """
 
-
     @abstract_method
     def curve_to(self, x1, y1, x2, y2, end_x, end_y):
         """ Draw a cubic bezier curve
@@ -290,9 +289,9 @@ class AbstractGraphicsContext(object):
 
         """
 
-    #-------------------------------------------
+    # -------------------------------------------
     # Drawing functions
-    #-------------------------------------------
+    # -------------------------------------------
 
     @abstract_method
     def stroke_path(self):
@@ -354,9 +353,9 @@ class AbstractGraphicsContext(object):
 
         """
 
-    #-------------------------------------------
+    # -------------------------------------------
     # Text functions
-    #-------------------------------------------
+    # -------------------------------------------
 
     @abstract_method
     def set_text_drawing_mode(self, draw_mode):
@@ -465,9 +464,9 @@ class AbstractGraphicsContext(object):
     def show_text_at_point(self, x, y):
         """ Draw text at the absolute position specified by the point """
 
-    #-------------------------------------------
+    # -------------------------------------------
     # Misc functions
-    #-------------------------------------------
+    # -------------------------------------------
 
     def width(self):
         """ Get the width of the context manager """
