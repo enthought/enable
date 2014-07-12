@@ -12,6 +12,7 @@ import copy
 from numpy import array, float64
 
 from .constants import CAP_ROUND, JOIN_MITER, TEXT_FILL
+from .fonttools import Font
 from .line_state import LineState
 import kiva.affine as affine
 
@@ -95,16 +96,14 @@ class GraphicsState(LineState):
         line_cap = CAP_ROUND
         line_join = JOIN_MITER
         line_dash = (0, array([0]))  # This will draw a solid line
-        LineState.__init__(self, line_color, line_width, line_cap, line_join,
-                           line_dash)
+        self.line_state = LineState(line_color, line_width, line_cap,
+                                    line_join, line_dash)
 
         # All other default values.
         self.ctm = affine.affine_identity()
         self.fill_color = array((0.0, 0.0, 0.0, 1.0))
         self.alpha = 1.0
-        # self.font = freetype.FontInfo(
-        # freetype.default_font_info.default_font )
-        self.font = None
+        self.font = Font()
         self.text_matrix = affine.affine_identity()
         self.clipping_path = None  # Not sure what the default should be?
         # Technically uninitialized in the PDF spec, but 0,0 seems fine to me:

@@ -48,6 +48,7 @@ from .constants import (POINT, LINE, LINES, RECT, NO_DASH, CLOSE,
 from .abstract_graphics_context import AbstractGraphicsContext
 from .line_state import LineState, line_state_equal
 from .graphics_state import GraphicsState
+from .fonttools import Font
 import kiva.affine as affine
 
 
@@ -298,8 +299,9 @@ class GraphicsContextBase(AbstractGraphicsContext):
         ----------
         width : float
             The new width for lines in user space units.
+
         """
-        self.state.line_width = width
+        self.state.line_state.line_width = width
 
     def set_line_join(self, style):
         """ Sets the style for joining lines in a drawing.
@@ -314,7 +316,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         if style not in (JOIN_ROUND, JOIN_BEVEL, JOIN_MITER):
             msg = "Invalid line join style. See documentation for valid styles"
             raise ValueError(msg)
-        self.state.line_join = style
+        self.state.line_state.line_join = style
 
     def set_miter_limit(self, limit):
         """ Specifies limits on line lengths for mitering line joins.
@@ -348,7 +350,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         if style not in (CAP_ROUND, CAP_BUTT, CAP_SQUARE):
             msg = "Invalid line cap style.  See documentation for valid styles"
             raise ValueError(msg)
-        self.state.line_cap = style
+        self.state.line_state.line_cap = style
 
     def set_line_dash(self, pattern, phase=0):
         """ Sets the line dash pattern and phase for line painting.
@@ -365,7 +367,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
 
         """
         if not alltrue(pattern):
-            self.state.line_dash = NO_DASH
+            self.state.line_state.line_dash = NO_DASH
             return
         pattern = asarray(pattern)
         if len(pattern) < 2:
@@ -373,7 +375,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         # not sure if this check is really needed.
         if phase < 0:
             raise ValueError("dash phase should be a positive value.")
-        self.state.line_dash = (phase, pattern)
+        self.state.line_state.line_dash = (phase, pattern)
 
     def set_flatness(self, flatness):
         """ Not implemented
@@ -862,10 +864,10 @@ class GraphicsContextBase(AbstractGraphicsContext):
             between 0.0 and 1.0
         """
         if len(color) == 3:
-            self.state.line_color[:3] = color
-            self.state.line_color[3] = 1.0
+            self.state.line_state.line_color[:3] = color
+            self.state.line_state.line_color[3] = 1.0
         else:
-            self.state.line_color[:] = color
+            self.state.line_state.line_color[:] = color
 
     def get_stroke_color(self, color):
         """
@@ -966,7 +968,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """
         # !! should check if name and encoding are valid.
 #        self.state.font = freetype.FontInfo(face_name, size, style, encoding)
-        self.state.font = None
+        self.state.font = Font(face_name, size=size, style=style)
 
     def set_font(self, font):
         """ Set the font for the current graphics context.
@@ -1213,10 +1215,10 @@ class GraphicsContextBase(AbstractGraphicsContext):
         # is not needed.
         # ---------------------------------------------------------------------
 
-        old_line_alpha = self.state.line_color[3]
+        old_line_alpha = self.state.line_state.line_color[3]
         old_fill_alpha = self.state.fill_color[3]
         if mode not in [STROKE, FILL_STROKE, EOF_FILL_STROKE]:
-            self.state.line_color[3] = 0.0
+            self.state.line_state.line_color[3] = 0.0
         if mode not in [FILL, EOF_FILL, FILL_STROKE, EOF_FILL_STROKE]:
             self.state.fill_color[3] = 0.0
 
@@ -1258,7 +1260,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         # ---------------------------------------------------------------------
         # reset the alpha values for line and fill values.
         # ---------------------------------------------------------------------
-        self.state.line_color[3] = old_line_alpha
+        self.state.line_state.line_color[3] = old_line_alpha
         self.state.fill_color[3] = old_fill_alpha
 
         # ---------------------------------------------------------------------
