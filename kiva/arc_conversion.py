@@ -1,4 +1,4 @@
-from numpy import sqrt, dot, sin, dot, array, pi
+from numpy import sqrt, dot, sin, array, pi
 
 from math import atan2, acos
 
@@ -60,4 +60,3 @@ def arc_to_tangent_points(start, p1, p2, radius):
     t2 = (p1[0]+v2[0]*dist_to_tangent, p1[1]+v2[1]*dist_to_tangent)
 
     return (t1, t2)
-
