@@ -1,5 +1,4 @@
-#------------------------------------------------------------------------------
-# Copyright (c) 2005, Enthought, Inc.
+# Copyright (c) 2005-2014, Enthought, Inc.
 # some parts copyright Space Telescope Science Institute
 # All rights reserved.
 #
@@ -8,291 +7,220 @@
 # under the conditions described in the aforementioned license.  The license
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 # Thanks for using Enthought open source!
-#------------------------------------------------------------------------------
-""" Pure-Python reference implementation of a Kiva graphics context.
 
-    Data Structures
-    ---------------
-    color
-        1-D array with 4 elements.
-        The array elements represent (red, green, blue, alpha)
-        and are each between 0 and 1.  Alpha is a transparency
-        value with 0 being fully transparent and 1 being fully
-        opaque.  Many backends do not handle tranparency and
-        treat any alpha value greater than 0 as fully opaque.
-    transform
-        currently a 3x3 array.  This is not the
-        most convenient in some backends.  Mac and OpenGL
-        use a 1-D 6 element array.  We need to either make
-        transform a class or always use accessor functions
-        to access its values. Currently, I do the latter.
+"""
+Pure-Python reference implementation of a Kiva graphics context.
+
+Data Structures
+---------------
+
+color
+    1-D array with 4 elements.
+    The array elements represent (red, green, blue, alpha)
+    and are each between 0 and 1.  Alpha is a transparency
+    value with 0 being fully transparent and 1 being fully
+    opaque.  Many backends do not handle tranparency and
+    treat any alpha value greater than 0 as fully opaque.
+transform
+    currently a 3x3 array.  This is not the
+    most convenient in some backends.  Mac and OpenGL
+    use a 1-D 6 element array.  We need to either make
+    transform a class or always use accessor functions
+    to access its values. Currently, I do the latter.
+
 """
 
-import affine
+from __future__ import absolute_import, print_function
+
 import copy
-from numpy import alltrue, array, asarray, float64, sometrue, shape,\
-     pi, concatenate
+
 import numpy as np
+from numpy import alltrue, array, asarray, float64, shape, pi, concatenate
 
-from constants import *
+from .constants import (POINT, LINE, LINES, RECT, NO_DASH, CLOSE,
+                        CAP_ROUND, CAP_BUTT, CAP_SQUARE,
+                        JOIN_ROUND, JOIN_BEVEL, JOIN_MITER,
+                        STROKE, FILL_STROKE, EOF_FILL_STROKE,
+                        FILL, EOF_FILL,
+                        TEXT_FILL, TEXT_STROKE, TEXT_FILL_STROKE,
+                        TEXT_INVISIBLE, TEXT_FILL_CLIP, TEXT_STROKE_CLIP,
+                        TEXT_FILL_STROKE_CLIP, TEXT_CLIP, TEXT_OUTLINE,
+                        SCALE_CTM, TRANSLATE_CTM, ROTATE_CTM, CONCAT_CTM,
+                        LOAD_CTM)
+from .abstract_graphics_context import AbstractGraphicsContext
+from .line_state import LineState, line_state_equal
+import kiva.affine as affine
 
-def exactly_equal(arr1,arr2):
-    return shape(arr1)==shape(arr2) and alltrue(arr1==arr2)
 
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 # Import and initialize freetype engine for rendering.
 #
 # !! Need to figure out how to set dpi intelligently
-#--------------------------------------------------------------------
-#from enthought import freetype
+# --------------------------------------------------------------------
+# from enthought import freetype
 # freetype engine for text rendering.
-#ft_engine = freetype.FreeType(dpi=120.0)
+# ft_engine = freetype.FreeType(dpi=120.0)
 
-#--------------------------------------------------------------------
+
+# --------------------------------------------------------------------
 # Drawing style tests.
 #
 # Simple tests used by drawing methods to determine what kind of
 # drawing command is supposed to be executed.
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 
-def is_point(tup): return tup[0] == POINT
-def is_line(tup): return tup[0] == LINE
+def is_point(tup):
+    return tup[0] == POINT
 
-def is_dashed(dash):
-    # if all the values in the dash settings are 0, then it is a solid line.
-    result = 0
-    if dash is not None and sometrue(asarray(dash[1]) != 0):
-        result = 1
-    return result
+
+def is_line(tup):
+    return tup[0] == LINE
+
 
 def is_fully_transparent(color):
     """ Tests a color array to see whether it is fully transparent or not.
 
-        This is true if the alpha value (4th entry in the color array) is
-        0.0.
+    This is true if the alpha value (4th entry in the color array) is 0.0.
+
     """
     transparent = (color[3] == 0.0)
     return transparent
 
-def line_state_equal(line1,line2):
-    """ Compares two `LineState` objects to see if they are equivalent.
 
-        This is generally called by device-specific drawing routines
-        before they stroke a path. It determines whether previously set
-        line settings are equivalent to desired line settings for this
-        drawing command.  If true, the routine can bypass all the
-        work needed to set all the line settings of the graphics device.
-
-        With the current Python implementation, this may not provide any
-        time savings over just setting all the graphics state values.
-        However, in C this could be a very fast memcmp if the C structure
-        is set up correctly.
-
-        While this could be the __cmp__ method for `LineState`, I have
-        left it as a function because I think it will move to C and be
-        used to compare structures.
-    """
-
-    result = 0
-    #---------------------------------------------------------------------
-    # line_dash is a little persnickety.  It is a 2-tuple
-    # with the second entry being an array.  If the arrays are different,
-    # just comparing the tuple will yield true because of how rich
-    # the result from the array comparison is a non-empty array which
-    # tests true.  Thus, the tuple comparison will test true even if the
-    # arrays are different.  Its almost like we need a "deep compare"
-    # method or something like that.
-    #
-    # Note: I think should be easy, but is breaking because of a bug in
-    #       Numeric.  Waiting for confirmation.
-    #---------------------------------------------------------------------
-    dash_equal = line1.line_dash[0] == line2.line_dash[0] and \
-                 exactly_equal(line1.line_dash[1], line2.line_dash[1])
-    if (dash_equal                                    and
-        exactly_equal(line1.line_color, line2.line_color)  and
-        line1.line_width == line2.line_width          and
-        line1.line_cap   == line2.line_cap            and
-        line1.line_join  == line2.line_join):
-        result = 1
-    return result
-
-def fill_equal(fill1,fill2):
-    """ Currently fill just compares the two colors.
-
-
-    """
+def fill_equal(fill1, fill2):
+    """ Compares the two fill colors. """
     return alltrue(fill1 == fill2)
-
-class LineState(object):
-    """ Stores information about the current line drawing settings.
-
-        This is split off from `GraphicsState` to make it easier to
-        track line state changes.  All the methods for setting
-        these variables are left in the GraphicsStateBase class.
-    """
-    def __init__(self,color,width,cap,join,dash):
-        """ Creates a new `LineState` object.
-
-            All input arguments that are containers are copied
-            by the constructor.  This prevents two `LineState` objects
-            from ever sharing and modifying the other's data.
-        """
-        self.line_color = array(color,copy=1)
-        self.line_width     = width
-        self.line_cap       = cap
-        self.line_join      = join
-        if not dash:
-            # always set line_dash to be a tuple
-            self.line_dash  = NO_DASH
-        else:
-            self.line_dash  = (dash[0],array(dash[1],copy=1))
-
-    def copy(self):
-        """ Makes a copy of the current line state. Could just use
-            deepcopy...
-        """
-        return LineState(self.line_color, self.line_width,
-                          self.line_cap  , self.line_join,
-                          self.line_dash)
-
-    def is_dashed(self):
-        # if line_dash only has one entry, it is a solid line.
-        return is_dashed(self.line_dash)
 
 class GraphicsState(LineState):
     """ Holds information used by a graphics context when drawing.
 
-        I'm not sure if these should be a separate class, a dictionary,
-        or part of the GraphicsContext object.  Making them a dictionary
-        or object simplifies save_state and restore_state a little bit.
+    I'm not sure if these should be a separate class, a dictionary,
+    or part of the GraphicsContext object.  Making them a dictionary
+    or object simplifies save_state and restore_state a little bit.
 
-        Also, this is a pretty good candidate for using slots.  I'm not
-        going to use them right now, but, if we standardize on 2.2, slots might
-        speed things up some.
+    Also, this is a pretty good candidate for using slots.  I'm not
+    going to use them right now, but, if we standardize on 2.2, slots might
+    speed things up some.
 
-        Fields
-        ------
+    Attributes
+    ----------
 
-        ctm
-            context transform matrix
+    ctm
+        context transform matrix
+    fill_color
+        RGBA array(4) of values 0.0 to 1.0
+    alpha
+        transparency value of drawn objects
+    font
+        either a special device independent font
+        object (what does anygui use?) or a
+        device dependent font object.
+    text_matrix
+        coordinate transformation matrix for text
+    clipping_path
+        defines the path of the clipping region.
+        For now, this can only be a rectangle.
+    current_point
+        location where next object is drawn.
+    should_antialias
+        whether anti-aliasing should be used when
+        drawing lines and fonts
+    miter_limit
+        specifies when and when not to miter line joins.
+    flatness
+        specifies tolerance for bumpiness of curves
+    character_spacing
+        spacing between drawing text characters
+    text_drawing_mode
+        style for drawing text: outline, fill, etc.
 
-        These are inherited from LineState:
+    These are inherited from LineState:
 
-        line_color
-            RGBA array(4) of values 0.0 to 1.0
-        line_width
-            width of drawn lines
-        line_join
-            style of how lines are joined.  The choices
-            are: JOIN_ROUND, JOIN_BEVEL, JOIN_MITER
-        line_cap
-            style of the end cap on lines.  The choices
-            are: CAP_ROUND, CAP_SQUARE, CAP_BUTT
-        line_dash
-            (phase,pattern) dash pattern for lines.
-            phase is a single value specifying how many
-            units into the pattern to start.  dash is
-            a 1-D array of floats that alternate between
-            specifying the number of units on and off
-            in the pattern.  When the end of the array
-            is reached, the pattern repeats.
-        fill_color
-            RGBA array(4) of values 0.0 to 1.0
-        alpha
-            transparency value of drawn objects
-        font
-            either a special device independent font
-            object (what does anygui use?) or a
-            device dependent font object.
-        text_matrix
-            coordinate transformation matrix for text
-        clipping_path
-            defines the path of the clipping region.
-            For now, this can only be a rectangle.
-        current_point
-            location where next object is drawn.
-        should_antialias
-            whether anti-aliasing should be used when
-            drawing lines and fonts
-        miter_limit
-            specifies when and when not to miter line joins.
-        flatness
-            not sure
-        character_spacing
-            spacing between drawing text characters
-        text_drawing_mode
-            style for drawing text: outline, fill, etc.
+    line_color
+        RGBA array(4) of values 0.0 to 1.0
+    line_width
+        width of drawn lines
+    line_join
+        style of how lines are joined.  The choices
+        are: JOIN_ROUND, JOIN_BEVEL, JOIN_MITER
+    line_cap
+        style of the end cap on lines.  The choices
+        are: CAP_ROUND, CAP_SQUARE, CAP_BUTT
+    line_dash
+        (phase,pattern) dash pattern for lines.
+        phase is a single value specifying how many
+        units into the pattern to start.  dash is
+        a 1-D array of floats that alternate between
+        specifying the number of units on and off
+        in the pattern.  When the end of the array
+        is reached, the pattern repeats.
 
-        Not yet supported:
+    Not yet supported:
 
-        rendering_intent
-            deals with colors and color correction in
-            a sophisticated way.
+    rendering_intent
+        deals with colors and color correction in
+        a sophisticated way.
+
     """
-    def __init__(self):
 
+    def __init__(self):
         #---------------------------------------------------------------------
         # Line state default values.
         #---------------------------------------------------------------------
-        line_color     = array( ( 0.0, 0.0, 0.0, 1.0 ) )
-        line_width     = 1
-        line_cap       = CAP_ROUND
-        line_join      = JOIN_MITER
-        line_dash      = ( 0, array( [ 0 ] ) ) # This will draw a solid line
-        LineState.__init__( self, line_color, line_width, line_cap,
-                                  line_join, line_dash )
+        line_color = array((0.0, 0.0, 0.0, 1.0))
+        line_width = 1
+        line_cap = CAP_ROUND
+        line_join = JOIN_MITER
+        line_dash = (0, array([0])) # This will draw a solid line
+        LineState.__init__(self, line_color, line_width, line_cap, line_join,
+                           line_dash)
 
         #---------------------------------------------------------------------
         # All other default values.
         #---------------------------------------------------------------------
-        self.ctm              = affine.affine_identity()
-        self.fill_color       = array( ( 0.0, 0.0, 0.0, 1.0 ) )
-        self.alpha            = 1.0
-#        self.font             = freetype.FontInfo(
-#                                   freetype.default_font_info.default_font )
+        self.ctm = affine.affine_identity()
+        self.fill_color = array((0.0, 0.0, 0.0, 1.0))
+        self.alpha = 1.0
+        # self.font = freetype.FontInfo(
+        # freetype.default_font_info.default_font )
         self.font = None
-        self.text_matrix      = affine.affine_identity()
-        self.clipping_path    = None # Not sure what the default should be?
+        self.text_matrix = affine.affine_identity()
+        self.clipping_path = None # Not sure what the default should be?
         # Technically uninitialized in the PDF spec, but 0,0 seems fine to me:
-        self.current_point     = array( ( 0, 0 ), float64 )
+        self.current_point = array((0, 0), dtype=float64)
 
-        self.antialias         = 1
-        # What should this default to?
-        self.miter_limit       = 1.0
-        # Not so sure about this one either.
-        self.flatness          = None
-        # I think this is the correct default.
+        self.antialias = True
+        self.miter_limit = 1.0
+        self.flatness = 1.0
         self.character_spacing = 0.0
-        # Should it be outline also?
         self.text_drawing_mode = TEXT_FILL
-        self.alpha             = 1.0
+        self.alpha = 1.0
 
     def copy(self):
         return copy.deepcopy(self)
 
-class GraphicsContextBase(object):
-    """
 
-        Fields
-        ------
+class GraphicsContextBase(AbstractGraphicsContext):
+    """ Concrete base implementation of a GraphicsContext
 
-        state
-            Current state of graphics context.
-        state_stack
-            Stack used to save graphics states
-        path
-            The drawing path.
-        active_subpath
-            The active drawing subpath
+    Attributes
+    ----------
 
-        I *think* this class needs to be sub-classed by every device type
-        that handles graphics.  This is so that set_line_width() and similar
-        functions can do things like setting up a new pen in wxPython, etc.
-        This stuff could also be stored in the GraphicsState, and there
-        are probably performance benefits for doing so.  Maybe graphics
-        state is the device dependent object??  Time will tell.
+    state
+        Current state of graphics context.
+    state_stack
+        Stack used to save graphics states
+    path
+        The drawing path.
+    active_subpath
+        The active drawing subpath
 
-        path and active_subpath will probably need to be optimized somehow.
+    This class needs to be sub-classed by device types that handle
+    drawing but don't handle more advanced concepts like paths, graphics state,
+    and coordinate transformations.
+
+    This class can also be used as a null backend for testing purposes.
+
     """
 
     def __init__(self, *args, **kwargs):
@@ -413,14 +341,15 @@ class GraphicsContextBase(object):
     def save_state(self):
         """ Saves the current graphic's context state.
 
-            Always pair this with a `restore_state()`.
+        Always pair this with a `restore_state()`, for example using
+        try ... finally ... or the context manager interface.
+
         """
         self.state_stack.append(self.state)
         self.state = self.state.copy()
 
     def restore_state(self):
-        """ Restores the previous graphics state.
-        """
+        """ Restores the previous graphics state. """
         self.state = self.state_stack.pop(-1)
         self.active_subpath.append( (LOAD_CTM, (self.state.ctm,)) )
         self.path_transform_indices.append(len(self.active_subpath)-1)
@@ -439,82 +368,110 @@ class GraphicsContextBase(object):
     # Manipulate graphics state attributes.
     #----------------------------------------------------------------
 
-    def set_antialias(self,value):
+    def set_antialias(self, value):
         """ Sets/Unsets anti-aliasing for bitmap graphics context.
 
-            Ignored on most platforms.
+        Ignored on most platforms.
+
         """
         self.state.antialias = value
 
-    def set_line_width(self,width):
+    def get_antialias(self, value):
+        """ Returns the anti-aliasing for bitmap graphics context.
+
+        Ignored on most platforms.
+
+        """
+        return self.state.antialias
+
+    def set_image_interpolation(self, value):
+        """ Sets image interpolation for bitmap graphics context.
+
+        Ignored on most platforms.
+
+        """
+        self.state.image_interpolation = value
+
+    def get_image_interpolation(self, value):
+        """ Sets/Unsets anti-aliasing for bitmap graphics context.
+
+        Ignored on most platforms.
+
+        """
+        return self.state.image_interpolation
+
+    def set_line_width(self, width):
         """ Sets the line width for drawing
 
-            Parameters
-            ----------
-            width : float
-                The new width for lines in user space units.
+        Parameters
+        ----------
+        width : float
+            The new width for lines in user space units.
         """
         self.state.line_width = width
 
-    def set_line_join(self,style):
+    def set_line_join(self, style):
         """ Sets the style for joining lines in a drawing.
 
-            Parameters
-            ----------
-            style : join_style
-                The line joining style.  The available
-                styles are JOIN_ROUND, JOIN_BEVEL, JOIN_MITER.
+        Parameters
+        ----------
+        style : join_style
+            The line joining style.  The available
+            styles are JOIN_ROUND, JOIN_BEVEL, JOIN_MITER.
+
         """
-        if style not in (JOIN_ROUND,JOIN_BEVEL,JOIN_MITER):
+        if style not in (JOIN_ROUND, JOIN_BEVEL, JOIN_MITER):
             msg = "Invalid line join style.  See documentation for valid styles"
             raise ValueError, msg
         self.state.line_join = style
 
-    def set_miter_limit(self,limit):
+    def set_miter_limit(self, limit):
         """ Specifies limits on line lengths for mitering line joins.
 
-            If line_join is set to miter joins, the limit specifies which
-            line joins should actually be mitered.  If lines are not mitered,
-            they are joined with a bevel.  The line width is divided by
-            the length of the miter.  If the result is greater than the
-            limit, the bevel style is used.
+        If line_join is set to miter joins, the limit specifies which
+        line joins should actually be mitered.  If lines are not mitered,
+        they are joined with a bevel.  The line width is divided by
+        the length of the miter.  If the result is greater than the
+        limit, the bevel style is used.
 
-            This is not implemented on most platforms.
+        This is not implemented on most platforms.
 
-            Parameters
-            ----------
-            limit : float
-                limit for mitering joins. defaults to 1.0.
-                (XXX is this the correct default?)
+        Parameters
+        ----------
+        limit : float
+            limit for mitering joins. defaults to 1.0.
+
         """
         self.state.miter_limit = limit
 
-    def set_line_cap(self,style):
+    def set_line_cap(self, style):
         """ Specifies the style of endings to put on line ends.
 
-            Parameters
-            ----------
-            style : cap_style
-                The line cap style to use. Available styles
-                are CAP_ROUND, CAP_BUTT, CAP_SQUARE.
+        Parameters
+        ----------
+        style : cap_style
+            The line cap style to use. Available styles
+            are CAP_ROUND, CAP_BUTT, CAP_SQUARE.
+
         """
-        if style not in (CAP_ROUND,CAP_BUTT,CAP_SQUARE):
+        if style not in (CAP_ROUND, CAP_BUTT, CAP_SQUARE):
             msg = "Invalid line cap style.  See documentation for valid styles"
             raise ValueError, msg
         self.state.line_cap = style
 
-    def set_line_dash(self,pattern,phase=0):
+    def set_line_dash(self, pattern, phase=0):
         """ Sets the line dash pattern and phase for line painting.
 
-            Parameters
-            ----------
-            pattern : float array
-                An array of floating point values
-                specifing the lengths of on/off painting
-                pattern for lines.
-            phase : float
-                Specifies how many units into dash pattern
-                to start.  phase defaults to 0.
+        Parameters
+        ----------
+        pattern : float array
+            An array of floating point values
+            specifing the lengths of on/off painting
+            pattern for lines.
+        phase : float
+            Specifies how many units into dash pattern
+            to start.  phase defaults to 0.
+
         """
         if not alltrue(pattern):
             self.state.line_dash = NO_DASH
@@ -530,12 +487,13 @@ class GraphicsContextBase(object):
     def set_flatness(self,flatness):
         """ Not implemented
 
-            It is device dependent and therefore not recommended by
-            the PDF documentation.
+        It is device dependent and therefore not recommended by
+        the PDF documentation.
 
-            flatness determines how accurately lines are rendered.  Setting it
-            to values less than one will result in more accurate drawings, but
-            they take longer.  It defaults to None
+        flatness determines how accurately curves are rendered.  Setting it
+        to values less than one will result in more accurate drawings, but
+        they take longer.  It defaults to None
+
         """
         self.state.flatness = flatness
 
@@ -544,16 +502,14 @@ class GraphicsContextBase(object):
     #----------------------------------------------------------------
 
     def flush(self):
-        """ Sends all drawing data to the destination device.
-
-            Currently this is a NOP for wxPython.
-        """
+        """ Sends all drawing data to the destination device. """
         pass
 
     def synchronize(self):
         """ Prepares drawing data to be updated on a destination device.
 
-            Currently this is a NOP for all implementations.
+        Currently this is a NOP for all implementations.
+
         """
         pass
 
@@ -564,20 +520,20 @@ class GraphicsContextBase(object):
     def begin_page(self):
         """ Creates a new page within the graphics context.
 
-            Currently this is a NOP for all implementations.  The PDF
-            backend should probably implement it, but the ReportLab
-            Canvas uses the showPage() method to handle both
-            begin_page and end_page issues.
+        Currently this is a NOP for all implementations.  The PDF
+        backend should probably implement it, but the ReportLab
+        Canvas uses the showPage() method to handle both
+        begin_page and end_page issues.
         """
         pass
 
     def end_page(self):
         """ Ends drawing in the current page of the graphics context.
 
-            Currently this is a NOP for all implementations.  The PDF
-            backend should probably implement it, but the ReportLab
-            Canvas uses the showPage() method to handle both
-            begin_page and end_page issues.
+        Currently this is a NOP for all implementations.  The PDF
+        backend should probably implement it, but the ReportLab
+        Canvas uses the showPage() method to handle both
+        begin_page and end_page issues.
         """
         pass
 
@@ -997,6 +953,21 @@ class GraphicsContextBase(object):
         else:
             self.state.fill_color[:]= color
 
+    def get_fill_color(self,color):
+        """
+            set_fill_color returns a sequence of rgb or rgba values
+            between 0.0 and 1.0
+        """
+        return self.state.fill_color
+
+    def linear_gradient(self, x1, y1, x2, y2, stops, spread_method, units):
+        """ Modify the fill color to be a linear gradient """
+        pass
+
+    def radial_gradient(self, cx, cy, r, fx, fy, stops, spread_method, units):
+        """ Modify the fill color to be a linear gradient """
+        pass
+
 
     def set_stroke_color(self,color):
         """
@@ -1009,10 +980,20 @@ class GraphicsContextBase(object):
         else:
             self.state.line_color[:]= color
 
-    def set_alpha(self,alpha):
+    def get_stroke_color(self,color):
         """
+            set_stroke_color returns a sequence of rgb or rgba values
+            between 0.0 and 1.0
         """
+        return self.state.stroke_color
+
+    def set_alpha(self, alpha):
+        """ Set the alpha to use when drawing """
         self.state.alpha = alpha
+
+    def get_alpha(self, alpha):
+        """ Return the alpha used when drawing """
+        return self.state.alpha
 
     #def set_gray_fill_color(self):
     #    """
@@ -1212,6 +1193,13 @@ class GraphicsContextBase(object):
         """
         self.device_show_text(text)
 
+    def show_text_tanslate(self, text, dx, dy):
+        """ Draws text at the specified offset. """
+        x, y = self.get_text_position()
+        self.set_text_position(x+dx, y+dy)
+        self.device_show_text(text)
+        self.set_text_position(x, y)
+
     #------------------------------------------------------------------------
     # kiva defaults to drawing text using the freetype rendering engine.
     #
@@ -1293,6 +1281,10 @@ class GraphicsContextBase(object):
     # Painting paths (drawing and filling contours)
     #----------------------------------------------------------------
 
+    def get_empty_path(self):
+        """ Get an empty CompiledPath instance """
+        pass
+
     def stroke_path(self):
         self.draw_path(mode=STROKE)
 
@@ -1372,7 +1364,7 @@ class GraphicsContextBase(object):
                               CONCAT_CTM,LOAD_CTM]:
                     self.device_transform_device_ctm(func,args)
                 else:
-                    print 'oops:', func
+                    print('oops:', func)
             # finally, draw any remaining paths.
             self.draw_subpath(mode)
 
@@ -1582,4 +1574,3 @@ class GraphicsContextBase(object):
     #    '''Find the descent (extent below base) of the given font.'''
     #    extents = self.dc.GetFullTextExtent(' ', wx_font)
     #    return extents[2]
-

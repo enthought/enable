@@ -245,14 +245,14 @@ class GraphicsContextTestCase(unittest.TestCase):
 
     def test_state_flatness(self):
         gc = basecore2d.GraphicsContextBase()
-        # defaults to None
-        self.assertEqual(gc.state.flatness, None)
-        gc.set_flatness(1.0)
-        gc.save_state()
-        gc.set_flatness(2.0)
-        self.assertEqual(gc.state.flatness, 2.0)
-        gc.restore_state()
+        # defaults to 1.0
         self.assertEqual(gc.state.flatness, 1.0)
+        gc.set_flatness(2.0)
+        gc.save_state()
+        gc.set_flatness(3.0)
+        self.assertEqual(gc.state.flatness, 3.0)
+        gc.restore_state()
+        self.assertEqual(gc.state.flatness, 2.0)
 
     def test_state_alpha(self):
         gc = basecore2d.GraphicsContextBase()

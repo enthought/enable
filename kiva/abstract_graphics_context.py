@@ -1,8 +1,8 @@
 from __future__ import absolute_import
 
-from abc import ABCMeta, abstract_method
+from abc import ABCMeta, abstractmethod
 
-from .constants import FILL_STROKE, marker_square
+from .constants import FILL_STROKE
 
 
 class AbstractGraphicsContext(object):
@@ -14,11 +14,11 @@ class AbstractGraphicsContext(object):
     # Save/Restore graphics state.
     # ----------------------------------------------------------------
 
-    @abstract_method
+    @abstractmethod
     def save_state(self):
         """ Push the current graphics state onto the stack """
 
-    @abstract_method
+    @abstractmethod
     def restore_state(self):
         """ Pop the previous graphics state from the stack """
 
@@ -36,27 +36,27 @@ class AbstractGraphicsContext(object):
     # Graphics state methods
     # -------------------------------------------
 
-    @abstract_method
+    @abstractmethod
     def set_stroke_color(self, color):
         """ Set the color used when stroking a path """
 
-    @abstract_method
+    @abstractmethod
     def get_stroke_color(self):
         """ Get the current color used when stroking a path """
 
-    @abstract_method
+    @abstractmethod
     def set_line_width(self, width):
         """ Set the width of the pen used to stroke a path """
 
-    @abstract_method
+    @abstractmethod
     def set_line_join(self, line_join):
         """ Set the style of join to use a path corners """
 
-    @abstract_method
+    @abstractmethod
     def set_line_cap(self, line_cap):
         """ Set the style of cap to use a path ends """
 
-    @abstract_method
+    @abstractmethod
     def set_line_dash(self, line_dash):
         """ Set the dash style to use when stroking a path
 
@@ -68,51 +68,51 @@ class AbstractGraphicsContext(object):
 
         """
 
-    @abstract_method
+    @abstractmethod
     def set_fill_color(self, color):
         """ Set the color used to fill the region bounded by a path """
 
-    @abstract_method
+    @abstractmethod
     def get_fill_color(self):
         """ Get the color used to fill the region bounded by a path """
 
-    @abstract_method
+    @abstractmethod
     def linear_gradient(self, x1, y1, x2, y2, stops, spread_method, units):
         """ Modify the fill color to be a linear gradient """
 
-    @abstract_method
+    @abstractmethod
     def radial_gradient(self, cx, cy, r, fx, fy, stops, spread_method, units):
         """ Modify the fill color to be a linear gradient """
 
-    @abstract_method
+    @abstractmethod
     def set_alpha(self, alpha):
         """ Set the alpha to use when drawing """
 
-    @abstract_method
+    @abstractmethod
     def get_alpha(self, alpha):
         """ Return the alpha used when drawing """
 
-    @abstract_method
+    @abstractmethod
     def set_antialias(self, antialias):
         """ Set whether or not to antialias when drawing """
 
-    @abstract_method
+    @abstractmethod
     def get_antialias(self):
         """ Set whether or not to antialias when drawing """
 
-    @abstract_method
+    @abstractmethod
     def set_miter_limit(self, miter_limit):
         """ Set the limit at which mitered joins are flattened """
 
-    @abstract_method
+    @abstractmethod
     def set_flatness(self, flatness):
         """ Set the error tolerance when drawing curved paths """
 
-    @abstract_method
+    @abstractmethod
     def set_image_interpolation(self, interpolation):
         """ Set the type of interpolation to use when scaling images """
 
-    @abstract_method
+    @abstractmethod
     def get_image_interpolation(self):
         """ Get the type of interpolation to use when scaling images """
 
@@ -143,19 +143,19 @@ class AbstractGraphicsContext(object):
     # Clipping functions
     # -------------------------------------------
 
-    @abstract_method
+    @abstractmethod
     def clip_to_rect(self, rect):
         """ Set the clipping region to the specified rectangle """
 
-    @abstract_method
+    @abstractmethod
     def clip_to_rects(self, rect_array):
         """ Set the clipping region to the collection of rectangles """
 
-    @abstract_method
+    @abstractmethod
     def clip(self):
         """ Set the clipping region to the current path """
 
-    @abstract_method
+    @abstractmethod
     def even_odd_clip(self):
         """ Modify clipping region with current path using even-odd rule """
 
@@ -163,31 +163,31 @@ class AbstractGraphicsContext(object):
     # Path construction functions
     # -------------------------------------------
 
-    @abstract_method
+    @abstractmethod
     def begin_path(self):
         """ Start a new path """
 
-    @abstract_method
+    @abstractmethod
     def close_path(self):
         """ Finish a subpath, connecting back to the start """
 
-    @abstract_method
+    @abstractmethod
     def get_empty_path(self):
         """ Get an empty CompiledPath instance """
 
-    @abstract_method
+    @abstractmethod
     def add_path(self, compiled_path):
         """ Add the current path to a compiled path """
 
-    @abstract_method
+    @abstractmethod
     def move_to(self, x, y):
         """ Move the current point on the path without drawing """
 
-    @abstract_method
+    @abstractmethod
     def line_to(self, x, y):
         """ Add a line from the current point to (x, y) to the path """
 
-    @abstract_method
+    @abstractmethod
     def lines(self, points):
         """ Adds a series of lines as a new subpath.
 
@@ -215,7 +215,7 @@ class AbstractGraphicsContext(object):
 
         """
 
-    @abstract_method
+    @abstractmethod
     def rect(self, x, y, w, h):
         """ Add a rectangle as a new sub-path
 
@@ -223,7 +223,7 @@ class AbstractGraphicsContext(object):
 
         """
 
-    @abstract_method
+    @abstractmethod
     def rects(self, rect_array):
         """ Add a sequence of rectangles as separate sub-paths.
 
@@ -234,7 +234,7 @@ class AbstractGraphicsContext(object):
 
         """
 
-    @abstract_method
+    @abstractmethod
     def curve_to(self, x1, y1, x2, y2, end_x, end_y):
         """ Draw a cubic bezier curve
 
@@ -243,7 +243,7 @@ class AbstractGraphicsContext(object):
 
         """
 
-    @abstract_method
+    @abstractmethod
     def quad_curve_to(self, cp_x, cp_y, end_x, end_y):
         """ Draw a quadratic bezier curve
 
@@ -251,7 +251,7 @@ class AbstractGraphicsContext(object):
         with control point (cp_x, cp_y)
 
         """
-    @abstract_method
+    @abstractmethod
     def arc(self, x, y, radius, start_angle, end_angle, cw=False):
         """ Draw a circular arc of the given radius, centered at (x,y)
 
@@ -265,7 +265,7 @@ class AbstractGraphicsContext(object):
 
         """
 
-    @abstract_method
+    @abstractmethod
     def arc_to(self, x1, y1, x2, y2, radius):
         """ Draw a circular arc from current point to tangent line
 
@@ -293,11 +293,11 @@ class AbstractGraphicsContext(object):
     # Drawing functions
     # -------------------------------------------
 
-    @abstract_method
+    @abstractmethod
     def stroke_path(self):
         """ Stroke the current path with pen settings from current state """
 
-    @abstract_method
+    @abstractmethod
     def fill_path(self):
         """ Fill the current path with fill settings from the current state
 
@@ -305,7 +305,7 @@ class AbstractGraphicsContext(object):
 
         """
 
-    @abstract_method
+    @abstractmethod
     def eof_fill_path(self):
         """ Fill the current path with fill settings from the current state
 
@@ -313,11 +313,11 @@ class AbstractGraphicsContext(object):
 
         """
 
-    @abstract_method
+    @abstractmethod
     def draw_path(self, draw_mode=FILL_STROKE):
         """ Draw the current path with the specified mode """
 
-    @abstract_method
+    @abstractmethod
     def draw_rect(self, rect, draw_mode=FILL_STROKE):
         """ Draw a rectangle with the specified mode
 
@@ -325,25 +325,25 @@ class AbstractGraphicsContext(object):
 
         """
 
-    @abstract_method
-    def draw_marker_at_points(self, point_array, size, marker=marker_square):
-        """ Draw a marker at a collection of points
+#    @abstractmethod
+#    def draw_marker_at_points(self, point_array, size, marker=marker_square):
+#        """ Draw a marker at a collection of points
+#
+#        The shape and size of the marker are specified by the size and marker
+#        arguments.
+#
+#        """
 
-        The shape and size of the marker are specified by the size and marker
-        arguments.
+#    @abstractmethod
+#    def draw_path_at_points(self, point_array, compiled_path, draw_mode):
+#        """ Draw a compiled path at a collection of points
+#
+#        The starting point of the paths are specified by the points,
+#        and the drawing mode is specified by the third argument.
+#
+#        """
 
-        """
-
-    @abstract_method
-    def draw_path_at_points(self, point_array, compiled_path, draw_mode):
-        """ Draw a compiled path at a collection of points
-
-        The starting point of the paths are specified by the points,
-        and the drawing mode is specified by the third argument.
-
-        """
-
-    @abstract_method
+    @abstractmethod
     def draw_image(image, rect=None):
         """ Render an image into a rectangle
 
@@ -357,19 +357,19 @@ class AbstractGraphicsContext(object):
     # Text functions
     # -------------------------------------------
 
-    @abstract_method
+    @abstractmethod
     def set_text_drawing_mode(self, draw_mode):
         """ Set the drawing mode to use with text """
 
-    @abstract_method
+    @abstractmethod
     def set_text_matrix(self, text_matrix):
         """ Set the transformation matrix to use when drawing text """
 
-    @abstract_method
+    @abstractmethod
     def get_text_matrix(self):
         """ Get the transformation matrix to use when drawing text """
 
-    @abstract_method
+    @abstractmethod
     def set_text_position(self, x, y):
         """ Set the current point for drawing text
 
@@ -377,19 +377,19 @@ class AbstractGraphicsContext(object):
 
         """
 
-    @abstract_method
+    @abstractmethod
     def get_text_position(self):
         """ Get the current point where text will be drawn """
 
-    @abstract_method
+    @abstractmethod
     def show_text(self, text):
         """ Draw the specified string at the current point """
 
-    @abstract_method
-    def show_text_translate(self, text, dx, dy):
-        """ Draw the specified text translated as specified """
+    #@abstractmethod
+    #def show_text_translate(self, text, dx, dy):
+    #    """ Draw the specified text translated as specified """
 
-    @abstract_method
+    @abstractmethod
     def get_text_extent(self, text):
         """ Return a rectangle which encloses the specified text
 
@@ -399,7 +399,7 @@ class AbstractGraphicsContext(object):
 
         """
 
-    @abstract_method
+    @abstractmethod
     def get_full_text_extent(self, string):
         """ Get the text extent as a tuple (w, h, x, y)
 
