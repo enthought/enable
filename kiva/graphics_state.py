@@ -7,6 +7,8 @@ PDF backends, but not Agg or QPainter).
 
 """
 
+from __future__ import absolute_import, print_function
+
 import copy
 
 from numpy import array, float64
