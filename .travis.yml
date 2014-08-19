@@ -13,8 +13,6 @@ install:
   # nose is already installed
   - pip install cython
   - pip install -r dev_requirements.txt
-  - git clone https://github.com/nucleic/kiwi
-  - pushd kiwi/py; python ./build.py install; popd
   - pip install coveralls
   - python setup.py develop
 script:
