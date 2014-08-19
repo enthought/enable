@@ -24,9 +24,7 @@ constant ``USE_FONTCONFIG`` in this file to ``True``.  Fontconfig has
 the advantage that it is the standard way to look up fonts on X11
 platforms, so if a font is installed, it is much more likely to be
 found.
-"""
 
-"""
 KNOWN ISSUES
 
   - documentation
@@ -66,7 +64,7 @@ except ImportError:
 from traits.etsconfig.api import ETSConfig
 from kiva.fonttools.fontTools.ttLib import TTFont, TTLibError
 
-import kiva.fonttools.afm as afm
+from kiva.fonttools import afm
 
 USE_FONTCONFIG = False
 

@@ -68,7 +68,7 @@ class GraphicsContext(GraphicsContextBase):
     Simple wrapper around a PDF graphics context.
     """
     def __init__(self, pdf_canvas, *args, **kwargs):
-        from image import GraphicsContext as GraphicsContextImage
+        from .image import GraphicsContext as GraphicsContextImage
         self.gc = pdf_canvas
         self.current_pdf_path = None
         self.current_point = (0, 0)
