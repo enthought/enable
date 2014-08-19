@@ -226,6 +226,13 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """
         return self.state.ctm.copy()
 
+    def set_ctm(self, transform):
+        """ Returns the current coordinate transform matrix.
+        """
+        self.state.ctm = transform
+        self.active_subpath.append((LOAD_CTM, (transform,)))
+        self.path_transform_indices.append(len(self.active_subpath)-1)
+
     # ----------------------------------------------------------------
     # Save/Restore graphics state.
     # ----------------------------------------------------------------
@@ -975,6 +982,11 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """
         self.state.font = font.copy()
 
+    def get_font(self, font):
+        """ Set the font for the current graphics context.
+        """
+        return self.state.font.copy()
+
     def set_font_size(self, size):
         """ Sets the size of the font.
 
@@ -1005,6 +1017,10 @@ class GraphicsContextBase(AbstractGraphicsContext):
             2.  Not implemented in wxPython.
         """
         self.state.character_spacing = spacing
+
+    def get_character_spacing(self):
+        """ Gets the amount of additional spacing between text characters. """
+        return self.state.character_spacing
 
     def set_text_drawing_mode(self, mode):
         """ Specifies whether text is drawn filled or outlined or both.
@@ -1440,6 +1456,14 @@ class GraphicsContextBase(AbstractGraphicsContext):
         # glyphs = ft_engine.render(textstring)
         # dy, dx = shape(glyphs.img)
         # return (dx, dy, -glyphs.bbox[1], 0)
+
+    # -------------------------------------------
+    # Misc functions
+    # -------------------------------------------
+
+    def save(self, filename, file_format=None, pil_options=None):
+        """ Save the graphics context to a file """
+        raise NotImplementedError
 
     # ----------------------------------------------------------------
     # Extra routines that aren't part of DisplayPDF
