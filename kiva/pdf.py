@@ -120,7 +120,18 @@ class GraphicsContext(GraphicsContextBase):
             XXX: This should really return a 3x3 matrix (or maybe an affine
                  object?) like the other API's.  Needs thought.
         """
-        return copy.copy(self.gc._currentMatrix)
+        return affine.affine_from_values(*copy.copy(self.gc._currentMatrix))
+
+    def set_ctm(self, transform):
+        """ Set the coordinate transform matrix
+
+        """
+        # We have to do this by inverting the current state to zero it out,
+        # then transform by desired transform, as Reportlab Canvas doesn't
+        # provide a method to directly set the ctm.
+        current = self.get_ctm()
+        self.concat_ctm(affine.invert(current))
+        self.concat_ctm(transform)
 
     # ----------------------------------------------------------------
     # Save/Restore graphics state.
@@ -656,6 +667,10 @@ class GraphicsContext(GraphicsContextBase):
             font.face_name = "Helvetica"
         self.gc.setFont(font.face_name, font.size)
 
+    def get_font(self):
+        """ Get the current font """
+        raise NotImplementedError
+
     def set_font_size(self, size):
         """
         """
@@ -666,6 +681,10 @@ class GraphicsContext(GraphicsContextBase):
         """
         """
         pass
+
+    def get_character_spacing(self):
+        """ Get the current font """
+        raise NotImplementedError
 
     def set_text_drawing_mode(self):
         """

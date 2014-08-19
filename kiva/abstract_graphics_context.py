@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 from abc import ABCMeta, abstractmethod
 
-from .constants import FILL_STROKE
+from .constants import FILL_STROKE, SQUARE_MARKER
 
 
 class AbstractGraphicsContext(object):
@@ -120,22 +120,28 @@ class AbstractGraphicsContext(object):
     # Transformation matrix methods
     # -------------------------------------------
 
+    @abstractmethod
     def translate_ctm(self, x, y):
         """ Concatenate a translation to the current transformation matrix """
 
+    @abstractmethod
     def rotate_ctm(self, angle):
         """ Concatenate a rotation to the current transformation matrix """
 
+    @abstractmethod
     def concat_ctm(self, matrix):
         """ Concatenate an arbitrary affine matrix to the current
             transformation matrix """
 
+    @abstractmethod
     def scale_ctm(self, x_scale, y_scale):
         """ Concatenate a scaling to the current transformation matrix """
 
+    @abstractmethod
     def set_ctm(self, matrix):
         """ Set the current transformation matrix """
 
+    @abstractmethod
     def get_ctm(self):
         """ Get the current transformation matrix """
 
@@ -200,6 +206,7 @@ class AbstractGraphicsContext(object):
 
         """
 
+    @abstractmethod
     def line_set(self, starts, ends):
         """ Adds a set of disjoint lines as a new subpath.
 
@@ -325,24 +332,6 @@ class AbstractGraphicsContext(object):
 
         """
 
-#    @abstractmethod
-#    def draw_marker_at_points(self, point_array, size, marker=marker_square):
-#        """ Draw a marker at a collection of points
-#
-#        The shape and size of the marker are specified by the size and marker
-#        arguments.
-#
-#        """
-
-#    @abstractmethod
-#    def draw_path_at_points(self, point_array, compiled_path, draw_mode):
-#        """ Draw a compiled path at a collection of points
-#
-#        The starting point of the paths are specified by the points,
-#        and the drawing mode is specified by the third argument.
-#
-#        """
-
     @abstractmethod
     def draw_image(image, rect=None):
         """ Render an image into a rectangle
@@ -385,10 +374,6 @@ class AbstractGraphicsContext(object):
     def show_text(self, text):
         """ Draw the specified string at the current point """
 
-    #@abstractmethod
-    #def show_text_translate(self, text, dx, dy):
-    #    """ Draw the specified text translated as specified """
-
     @abstractmethod
     def get_text_extent(self, text):
         """ Return a rectangle which encloses the specified text
@@ -409,6 +394,7 @@ class AbstractGraphicsContext(object):
 
         """
 
+    @abstractmethod
     def select_font(self, name, size=12, style="regular", encoding=None):
         """ Set the font based on the provided parameters
 
@@ -437,15 +423,19 @@ class AbstractGraphicsContext(object):
 
         """
 
+    @abstractmethod
     def set_font(self, font):
         """ Set the font with a Kiva font object """
 
+    @abstractmethod
     def get_font(self):
         """ Get the current font """
 
+    @abstractmethod
     def set_font_size(self, size):
         """ Set the size of the current font """
 
+    @abstractmethod
     def set_character_spacing(self, spacing):
         """ Set the spacing between characters when drawing text
 
@@ -458,9 +448,11 @@ class AbstractGraphicsContext(object):
 
         """
 
+    @abstractmethod
     def get_character_spacing(self):
         """ Get the current spacing between characters when drawing text """
 
+    @abstractmethod
     def show_text_at_point(self, x, y):
         """ Draw text at the absolute position specified by the point """
 
@@ -468,21 +460,7 @@ class AbstractGraphicsContext(object):
     # Misc functions
     # -------------------------------------------
 
-    def width(self):
-        """ Get the width of the context manager """
-
-    def height(self):
-        """ Get the height of the context manager """
-
-    def stride(self):
-        """ Get the stride of the context manager """
-
-    def bottom_up(self):
-        """ Whether the origin is top left as opposed to bottom left """
-
-    def format(self):
-        """ The format of the color information in pixel data structures """
-
+    @abstractmethod
     def flush(self):
         """ Render all pending draw operations immediately
 
@@ -490,6 +468,7 @@ class AbstractGraphicsContext(object):
 
         """
 
+    @abstractmethod
     def synchronize(self):
         """ A deferred version of flush()
 
@@ -497,12 +476,15 @@ class AbstractGraphicsContext(object):
 
         """
 
+    @abstractmethod
     def begin_page(self):
         """ Start rendering in a new page """
 
+    @abstractmethod
     def end_page(self):
         """ Finish rendering in a page """
 
+    @abstractmethod
     def clear_rect(self, rect):
         """ Set rectangle to background colour
 
@@ -510,15 +492,7 @@ class AbstractGraphicsContext(object):
 
         """
 
-    def convert_pixel_format(self, pix_format, inplace=False):
-        """ Change the way pixel data is stored.
-
-        If inplace is True, it will try to re-use the memory that is currently
-        used for the context.  This method only makes sense in rastering
-        contexts.
-
-        """
-
+    @abstractmethod
     def save(self, filename, file_format=None, pil_options=None):
         """ Save the graphics context to a file
 
@@ -534,3 +508,29 @@ class AbstractGraphicsContext(object):
         output.  Unrecognized options are silently ignored.
 
         """
+
+
+class EnhancedAbstractGraphicsContext(AbstractGraphicsContext):
+    """ ABC for graphics contexts which provide additional methods """
+
+    @abstractmethod
+    def draw_marker_at_points(self, point_array, size, marker=SQUARE_MARKER):
+        """ Draw a marker at a collection of points
+
+        The shape and size of the marker are specified by the size and marker
+        arguments.
+
+        """
+
+    @abstractmethod
+    def draw_path_at_points(self, point_array, compiled_path, draw_mode):
+        """ Draw a compiled path at a collection of points
+
+        The starting point of the paths are specified by the points,
+        and the drawing mode is specified by the third argument.
+
+        """
+
+    @abstractmethod
+    def show_text_translate(self, text, dx, dy):
+        """ Draw the specified text translated as specified """
