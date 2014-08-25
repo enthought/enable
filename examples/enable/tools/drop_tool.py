@@ -3,7 +3,7 @@ This demonstrates the use of the drop tool.
 """
 from enable.example_support import DemoFrame, demo_main
 from enable.api import Component, Container, Label, Window
-from enable.tools.drop_tool import BaseDropTool
+from enable.tools.base_drop_tool import BaseDropTool
 
 class Box(Component):
 
