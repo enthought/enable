@@ -12,39 +12,110 @@
 
 from __future__ import absolute_import, print_function, division
 
+from traits.api import Enum
+
 from enable.base_tool import BaseTool
 
 
 class BaseDropTool(BaseTool):
     """ Abstract base class for tools that handle drag and drop """
 
+    default_drag_result = Enum("copy", "move", "link", "cancel",
+                               "error", "none")
+
     def normal_drag_over(self, event):
         """ Handle dragging over the component """
+        if event.handled:
+            return
         try:
-            result = self.accepts_drop(event.obj)
-            self.component.window.set_drag_result(result)
+            result = self.get_drag_result((event.x, event.y), event.obj)
+            if result is not None:
+                self.component.window.set_drag_result(result)
+                event.handled = True
         except Exception:
             self.component.window.set_drag_result("error")
             raise
 
     def normal_dropped_on(self, event):
-        if self.accepts_drop(event.obj) != "none":
-            self.handle_drop(event.obj)
+        if event.handled:
+            return
+        position = (event.x, event.y)
+        if self.accept_drop(position, event.obj):
+            self.handle_drop(position, event.obj)
+            event.handled = True
 
-    def accepts_drop(self, urls):
-        """ Whether or not to accept the drag, and the type of drag
+    def get_drag_result(self, position, obj):
+        """ The type of drag that will happen
 
-        The return value is either "none", if the drag is refused for the
-        dragged object types, or one of "copy", "move", or "link".
+        By default, if the dragged objects are available this method calls
+        accept_drop() and returns "none" if the result is False, otherwise
+        it returns the value of default_drag_result.
+
+        Parameters
+        ----------
+
+        position :
+            The coordinates of the drag over event
+
+        obj : any
+            The object(s) being dragged, if available.  Some backends (such as
+            Wx) may not be able to provide the object being dragged, in which
+            case `obj` will be `None`.
+
+        Returns
+        -------
+
+        Either None, if the drop should be ignored by this tool and not
+        handled, or one of the keys of DRAG_RESULTS_MAP: "none", "copy, "move",
+        "link", "cancel" or "error".
+
+        """
+        if obj is not None:
+            # if we have the object, see if we can accept
+            if not self.accept_drop(position, obj):
+                return None
+
+        return self.default_drag_result
+
+    def accept_drop(self, position, obj):
+        """ Whether or not to accept the drop
 
         Subclasses should override this method.
+
+        Parameters
+        ----------
+
+        position :
+            The coordinates of the drag over event
+
+        obj : any
+            The object(s) being dragged, if available.  Some backends (such as
+            Wx) may not be able to provide the object being dragged, in which
+            case `obj` will be `None`.
+
+        Returns
+        -------
+
+        True if the drop should be accepted, False otherwise.
 
         """
         raise NotImplementedError
 
-    def handle_drop(self, urls):
+    def handle_drop(self, position, obj):
         """ Handle objects being dropped on the component
 
         Subclasses should override this method.
+
+        Parameters
+        ----------
+
+        position :
+            The coordinates of the drag over event
+
+        obj : any
+            The object(s) being dragged, if available.  Some backends (such as
+            Wx) may not be able to provide the object being dragged, in which
+            case `obj` will be `None`.
+
         """
         raise NotImplementedError
