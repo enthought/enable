@@ -297,8 +297,64 @@ Dashes::
 
 .. image:: kiva_images/dashes.png
 
+Before filling a path, the colour of the fill is via the ``set_fill_color()``
+method, and gradient fills can be done via the ``set_linear_gradient()`` and
+``set_radial_gradient()`` methods.  Finally, there are two different fill modes
+available:
+`even-odd fill <http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule>`_ and
+`non-zero winding fill <http://en.wikipedia.org/wiki/Nonzero-rule>`_
+
+Winding vs. Even-Odd Fill::
+
+    from numpy import pi
+    from kiva.image import GraphicsContext
+    from kiva.constants import FILL, EOF_FILL
+
+    gc = GraphicsContext((200, 100))
+    gc.set_fill_color((0.0, 0.0, 0.0))
+
+    gc.move_to(50, 90)
+    for i in range(1, 6):
+        theta = 4*pi/5*i
+        x = 50+40*sin(theta)
+        y = 50+40*cos(theta)
+        gc.line_to(x, y)
+
+    gc.fill_path()
 
 
+    gc.move_to(150, 90)
+    for i in range(1, 6):
+        theta = 4*pi/5*i
+        x = 150+40*sin(theta)
+        y = 50+40*cos(theta)
+        gc.line_to(x, y)
+
+    gc.eof_fill_path()
+
+    gc.save('fill.png')
+
+.. image:: kiva_images/fill.png
+
+Text
+~~~~
+
+Text can be rendered at a point by first setting the font to use, then setting
+the text location using ``set_text_position()`` and then ``show_text()`` to
+render the text::
+
+    from kiva.fonttools import Font
+    from kiva.image import GraphicsContext
+
+    gc = GraphicsContext((200, 100))
+
+    gc.set_font(Font(size=24))
+    gc.set_text_position(30, 40)
+    gc.show_text("Hello World")
+
+    gc.save('text.png')
+
+.. image:: kiva_images/text.png
 
 Kiva Interface Quick Reference
 ==============================
