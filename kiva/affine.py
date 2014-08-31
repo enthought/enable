@@ -41,7 +41,7 @@
         in case the implementation is changed at some future date.
 """
 
-from numpy import (array, alltrue, arctan2, cos, dot, eye, float64, ones,
+from numpy import (array, array_equal, arctan2, cos, dot, eye, float64, ones,
                    ravel, sin, zeros)
 
 
@@ -191,11 +191,7 @@ IDENTITY = affine_identity()
 def is_identity(m):
     """ Tests whether an affine transform is the identity transform.
     """
-    m1 = ravel(IDENTITY)
-    m2 = ravel(m)
-    return alltrue(m1 == m2)
-    # numarray return None for .flat...
-    # return alltrue(IDENTITY.flat == m.flat)
+    return array_equal(m, IDENTITY)
 
 
 def affine_params(m):
@@ -278,8 +274,6 @@ def transform_points(ctm, pts):
         x = pts[..., 0]
         y = pts[..., 1]
         a, b, c, d, tx, ty = affine_params(ctm)
-        # x_p = a*x+c*y+tx
-        # y_p = b*x+d*y+ty
         res = zeros(pts.shape, float64)
         res[..., 0] = a*x+c*y+tx
         res[..., 1] = b*x+d*y+ty
