@@ -1,3 +1,164 @@
+Kiva
+====
+
+Kiva is a 2D vector drawing interface providing functionality similar to
+`Quartz <http://en.wikipedia.org/wiki/Quartz_2D>`_,
+`Cairo <http://cairographics.org/>`_, the
+`Qt QPainter interface <http://qt-project.org/doc/qt-4.8/qpainter.html>`_,
+the 2D drawing routines of `OpenGL <http://www.opengl.org/>`_ , the HTML5
+Canvas element and many other similar 2D vector drawing APIs.  Rather than
+re-implementing everthing, Kiva is a Python interface layer that sits on top
+of many different back-ends which are in fact provided by some of these
+libraries, depending on the platform, GUI toolkit, and capabilties of the
+system.
+
+This approach permits code to be written to the Kiva API, but produce output
+that could be rendered to a GUI window, an image file, a PDF file, or a number
+of other possible output formats without any (or at least minimal) changes to
+the image generation code.
+
+Kiva is the base layer of the Chaco plotting library, and is what is
+responsible for actually drawing pixels on the screen.  Developers interested
+in writing code that renders new plots or other graphical features for Chaco
+will need to be at least passingly familiar with the Kiva drawing API.
+
+The most important Kiva backend is the Agg or "Image" backend, which is a
+Python extension module which wraps the C++
+`Anti-grain geometry <http://www.antigrain.com/>`_ drawing library into a
+Python extension and exposes the Kiva API.  The Agg renders the vector drawing
+commands into a raster image which can then be saved as a standard image format
+(such as PNG or JPEG) or copied into a GUI window.  The Agg backend should be
+available on any platform, and should work even if there is no GUI or windowing
+system available.
+
+Kiva Concepts
+-------------
+
+This section gives a whirlwind tour of the concepts involved with drawing with
+Kiva.
+
+The Graphics Context
+~~~~~~~~~~~~~~~~~~~~
+
+The heart of the Kiva drawing API is the "graphics context", frequently
+abbreviated as ``gc`` in code.  The graphics context holds the current drawing
+state (such as pen and fill colors, font state, and affine transformations to
+be applied to points) and provides methods for chaning the state and
+performing drawing actions.
+
+In many common ues-cases (such as writing renderers for Chaco), you will be
+provided a graphics context by other code, but it is straight-forward to create
+your own graphics context::
+
+    from kiva.image import GraphicsContext
+
+    gc = GraphicsContext((400, 400))
+
+This is an graphics context for the Agg or "image" backend which has a size of
+400x400 pixels.  If instead we wanted to draw into a Qt ``QPainter`` drawing
+context in a `QWidget` called `my_qwidget` we would use::
+
+    from kiva.qpainter import GraphicsContext
+
+    gc = GraphicsContext((400, 400), parent=my_qwidget)
+
+Other Kiva backends have similar methods of creating a graphics context, and
+each may take somwhat different arguments to the constructor, dpending on the
+requirements of the backend.
+
+Once you have a graphics context, you can use it to draw vector graphics.
+For example, the following code will draw a translucent gray line from
+(100, 100) to (100, 200)::
+
+    gc.move_to(100, 100)
+    gc.line_to(100, 200)
+    gc.set_stroke_color((0.5, 0.5, 0.5, 0.5))
+    gc.stroke_path()
+
+For many of the backends, you can save the rendered image out as an image file
+using the ``save()`` method::
+
+    gc.save("my_line.png")
+
+It is worthwhile noting that Kiva uses mathematical axes direction conventions
+as opposed to computer science axes conventions.  In other words, the origin is
+always at the _bottom_ left of the screen, and the positive y axis goes _up_
+from bottom to top; as opposed to screen coordinates which typically have the
+origin at the _top_ left and the positive y axis goes _down_ from top to
+bottom.
+
+Kiva is numpy-aware, and has a number of methods that allow you to pass numpy
+arrays of points to draw many things in one operation, with loops being
+performed in C where possible::
+
+    from numpy import empty, linspace, random
+
+    # Nx2 array of points
+    pts = empty(shape=(20, 2), dtype=float)
+    pts[:, 0] = linspace(100, 200, 20)
+    pts[:, 1] = random.uniform(size=20)*100 + 100
+
+    gc.lines(pts)
+    gc.stroke_path()
+
+The Coordinate Transform Matrix
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Kiva API allows arbitrary affine transforms to be applied to the graphics
+context during drawing.  The API provides convenience methods for common
+transformations, such as rotation and scaling::
+
+    from numpy import empty, linspace, random, pi
+    from kiva.image import GraphicsContext
+
+    # Nx2 array of points
+    pts = empty(shape=(20, 2), dtype=float)
+    pts[:, 0] = linspace(100, 200, 20)
+    pts[:, 1] = random.uniform(size=20)*100 + 100
+
+    gc = GraphicsContext((400, 400))
+
+    # draw a simple graph
+    gc.move_to(100, 200)
+    gc.line_to(100, 100)
+    gc.line_to(200, 100)
+    gc.set_stroke_color((0.5, 0.5, 0.5, 0.5))
+    gc.stroke_path()
+
+    gc.lines(pts)
+    gc.set_stroke_color((1.0, 0.0, 0.0, 0.5))
+    gc.stroke_path()
+
+    # translate by 100 pixels in the x direction
+    gc.translate_ctm(100, 0)
+
+    # rotate by 45 degrees
+    gc.rotate_ctm(pi/4.0)
+
+    # scale by 1.5 in the x direction
+    gc.scale_ctm(1.5, 1.0)
+
+    # now draw in the transformed coordinates
+    gc.move_to(100, 200)
+    gc.line_to(100, 100)
+    gc.line_to(200, 100)
+    gc.set_stroke_color((0.5, 0.5, 0.5, 0.5))
+    gc.stroke_path()
+
+    gc.lines(pts)
+    gc.set_stroke_color((0.0, 0.0, 1.0, 0.5))
+    gc.stroke_path()
+
+    gc.save('my_lines.png')
+
+If desired, the user can also supply their own transformations directly::
+
+    from kiva.affine import affine_from_values
+
+    transform = affine_from_values(1.0, 2.0, -2.0, 0.0, 50.0, -50.0)
+    gc.concat_ctm(transform)
+
+
 Kiva Interface Quick Reference
 ==============================
 
@@ -39,7 +200,7 @@ The rest of the member functions return information about the matrix.
 
 :scale() -> float: returns the average scale of this matrix
 :determinant() -> float: returns the determinant
-  
+
 The following factory methods are available in the top-level "agg" namespace
 to create specific kinds of :class:`AffineMatrix` instances:
 
@@ -59,7 +220,7 @@ FontType
 CompiledPath
 ~~~~~~~~~~~~
 Interface is the same as the `Path functions`_ in Graphics Context.
-  
+
 Enumerations
 ~~~~~~~~~~~~
 The following enumerations are represented by top-level constants in the "agg"
@@ -99,7 +260,7 @@ map between their names and integer values
 
 path_cmd and path_flags are low-level Agg path attributes.  See the Agg
 documentation for more information about them.  We just pass them through in Kiva.
-    
+
 :path_cmd: path_cmd_curve3, path_cmd_curve4, path_cmd_end_poly,
     path_cmd_line_to, path_cmd_mask, path_cmd_move_to, path_cmd_stop
 
@@ -185,21 +346,21 @@ Path functions
     (it does not change the sense in which the angles are measured).
 
 :arc_to(x1, y1, x2, y2, radius): Sweeps a circular arc from the pen position to
-    a point on the line from (x1,y1) to (x2,y2).    
-    
+    a point on the line from (x1,y1) to (x2,y2).
+
     The arc is tangent to the line from the current pen position
     to (x1,y1), and it is also tangent to the line from (x1,y1)
     to (x2,y2).  (x1,y1) is the imaginary intersection point of
     the two lines tangent to the arc at the current point and
     at (x2,y2).
-    
+
     If the tangent point on the line from the current pen position
     to (x1,y1) is not equal to the current pen position, a line is
     drawn to it.  Depending on the supplied radius, the tangent
     point on the line fron (x1,y1) to (x2,y2) may or may not be
     (x2,y2).  In either case, the arc is drawn to the point of
     tangency, which is also the new pen position.
-    
+
     Consider the common case of rounding a rectangle's upper left
     corner.  Let "r" be the radius of rounding.  Let the current
     pen position be (x_left + r, y_top).  Then (x2,y2) would be
@@ -256,16 +417,16 @@ Misc functions
 :save(filename, file_format=None, pil_options=None): Save the GraphicsContext
     to a file.  Output files are always saved in RGB or RGBA format; if this GC is
     not in one of these formats, it is automatically converted.
-    
+
     If filename includes an extension, the image format is
     inferred from it.  file_format is only required if the
     format can't be inferred from the filename (e.g. if you
     wanted to save a PNG file as a .dat or .bin).
-    
+
     pil_options is a dict of format-specific options that
     are passed down to the PIL image file writer.  If a writer
     doesn't recognize an option, it is silently ignored.
-    
+
     If the image has an alpha channel and the specified output
     file format does not support alpha, the image is saved in
     rgb24 format.
