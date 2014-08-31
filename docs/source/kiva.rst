@@ -121,13 +121,13 @@ for instance::
     gc.set_stroke_color((0.0, 0.0, 0.0))
     gc.stroke_path()
 
-    gc.save("two_lines.png")
+    gc.save("pixel_coordinates.png")
 
 Notice that the line on the bottom (the first of the two lines) is fuzzier
 because it is drawn along the boundary of the pixels, while the other line
 is drawn through the center of the pixels:
 
-.. figure:: pixel_coordinates.png
+.. image:: kiva_images/pixel_coordinates.png
 
 The Coordinate Transform Matrix
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -177,7 +177,9 @@ transformations, such as rotation and scaling::
     gc.set_stroke_color((0.0, 0.0, 1.0, 0.5))
     gc.stroke_path()
 
-    gc.save('my_lines.png')
+    gc.save('transformed_lines.png')
+
+.. image:: kiva_images/transformed_lines.png
 
 If desired, the user can also supply their own transformations directly.
 
@@ -222,7 +224,7 @@ Thicknesses::
     gc = GraphicsContext((200, 100))
 
     for i in range(5):
-        y = 30 + i*10
+        y = 30.5 + i*10
         thickness = 2.0**(i-1)
 
         gc.move_to(40, y)
@@ -232,25 +234,69 @@ Thicknesses::
 
     gc.save('thicknesses.png')
 
+.. image:: kiva_images/thicknesses.png
 
-Thicknesses::
+Joins::
 
     from kiva.image import GraphicsContext
-    from kiva.constants import
+    from kiva.constants import JOIN_ROUND, JOIN_BEVEL, JOIN_MITER
 
     gc = GraphicsContext((200, 100))
-    gc.set_line_thickness(8)
+    gc.set_line_width(8)
 
-    for i in range(5):
-        y = 30 + i*10
-        thickness = 2.0**(i-1)
+    for i, join in enumerate([JOIN_ROUND, JOIN_BEVEL, JOIN_MITER]):
+        y = 20 + i*20
+
+        gc.move_to(y, 80)
+        gc.line_to(y, y)
+        gc.line_to(160, y)
+        gc.set_line_join(join)
+        gc.stroke_path()
+
+    gc.save('joins.png')
+
+.. image:: kiva_images/joins.png
+
+Caps::
+
+    from kiva.image import GraphicsContext
+    from kiva.constants import CAP_ROUND, CAP_BUTT, CAP_SQUARE
+
+    gc = GraphicsContext((200, 100))
+    gc.set_line_width(8)
+
+    for i, cap in enumerate([CAP_ROUND, CAP_BUTT, CAP_SQUARE]):
+        y = 30 + i*20
 
         gc.move_to(40, y)
         gc.line_to(160, y)
-        gc.set_line_cap(thickness)
+        gc.set_line_cap(cap)
         gc.stroke_path()
 
-    gc.save('thicknesses.png')
+    gc.save('caps.png')
+
+.. image:: kiva_images/caps.png
+
+Dashes::
+
+    from kiva.image import GraphicsContext
+
+    gc = GraphicsContext((200, 100))
+    dashes = ([6.0, 6.0], [9.0, 3.0], [3.0, 5.0, 9.0, 5.0])
+    gc.set_line_width(2)
+
+    for i, dash in enumerate(dashes):
+        y = 30.5 + i*20
+
+        gc.move_to(40, y)
+        gc.line_to(160, y)
+        gc.set_line_dash(dash)
+        gc.stroke_path()
+
+    gc.save('dashes.png')
+
+.. image:: kiva_images/dashes.png
+
 
 
 
