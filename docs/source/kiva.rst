@@ -80,13 +80,6 @@ using the ``save()`` method::
 
     gc.save("my_line.png")
 
-It is worthwhile noting that Kiva uses mathematical axes direction conventions
-as opposed to computer science axes conventions.  In other words, the origin is
-always at the _bottom_ left of the screen, and the positive y axis goes _up_
-from bottom to top; as opposed to screen coordinates which typically have the
-origin at the _top_ left and the positive y axis goes _down_ from top to
-bottom.
-
 Kiva is numpy-aware, and has a number of methods that allow you to pass numpy
 arrays of points to draw many things in one operation, with loops being
 performed in C where possible::
@@ -100,6 +93,41 @@ performed in C where possible::
 
     gc.lines(pts)
     gc.stroke_path()
+
+Coordinate Model
+~~~~~~~~~~~~~~~~
+
+Kiva uses mathematical axes direction conventions as opposed to computer
+science axes conventions.  In other words, the origin is always at the _bottom_
+left of the screen, and the positive y axis goes _up_ from bottom to top; as
+opposed to screen coordinates which typically have the origin at the _top_ left
+and the positive y axis goes _down_ from top to bottom.
+
+Additionally, for backends that produce raster images, the coordinates
+represent the _corner_ of pixels, rather than the center of pixels.  This has
+consequences when rendering thin lines.  Compare the two lines in this example,
+for instance::
+
+    from kiva.image import GraphicsContext
+
+    gc = GraphicsContext((200, 100))
+
+    gc.move_to(40, 35)
+    gc.line_to(160, 35)
+
+    gc.move_to(40, 65.5)
+    gc.line_to(160, 65.5)
+
+    gc.set_stroke_color((0.0, 0.0, 0.0))
+    gc.stroke_path()
+
+    gc.save("two_lines.png")
+
+Notice that the line on the bottom (the first of the two lines) is fuzzier
+because it is drawn along the boundary of the pixels, while the other line
+is drawn through the center of the pixels:
+
+.. figure:: pixel_coordinates.png
 
 The Coordinate Transform Matrix
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -151,12 +179,79 @@ transformations, such as rotation and scaling::
 
     gc.save('my_lines.png')
 
-If desired, the user can also supply their own transformations directly::
+If desired, the user can also supply their own transformations directly.
 
-    from kiva.affine import affine_from_values
+Paths
+-----
 
-    transform = affine_from_values(1.0, 2.0, -2.0, 0.0, 50.0, -50.0)
-    gc.concat_ctm(transform)
+The basic drawing operations are performed by building a path out of primitive
+operations, and then performing stroking and/or filling operations with it.
+
+The simplest path operations are ``move_to()`` and ``line_to()`` which
+respectively move the current point in the path to the specified point, and
+add a line to the path from the current point to the specified point.
+
+In addition to the straight line commands, there are 4 arc commands for adding
+curves to a path: ``curve_to()`` which draws a cubic bezier curve,
+``quad_curve_to()`` which draws a quadratic bezier curve, ``arc()`` which
+draws a cricular arc based on a center and radius, and ``arc_to()`` which
+draws a circular arc from one point to another.
+
+Finally, the ``rect()`` method adds a rectangle to the path.
+
+In addition there are convenience methods ``lines()``, ``rects()`` and
+``line_set()`` which add multiple lines or rectangles to a path, reading from
+appropriately shaped numpy arrays.
+
+None of these methods make any change to the visible image until the path is
+either stroked with ``stroke_path()`` or filled with ``fill_path()``.  The way
+these actions are performed depends upon certain state of the graphics context.
+
+For stroking, the graphics context keeps track of the color to use with
+``set_stroke_color()``, the thickness of the line with ``set_line_width()``,
+the way that lines are joined with ``set_line_join()`` and
+``set_miter_limit()``, and the way that they are ended with ``set_line_cap()``.
+Lines can also be dashed using the ``set_line_dash()`` method which takes a
+pattern of numbers to use for lengths of on and off, and an optional ``phase``
+for where to start in the pattern.
+
+Thicknesses::
+
+    from kiva.image import GraphicsContext
+
+    gc = GraphicsContext((200, 100))
+
+    for i in range(5):
+        y = 30 + i*10
+        thickness = 2.0**(i-1)
+
+        gc.move_to(40, y)
+        gc.line_to(160, y)
+        gc.set_line_width(thickness)
+        gc.stroke_path()
+
+    gc.save('thicknesses.png')
+
+
+Thicknesses::
+
+    from kiva.image import GraphicsContext
+    from kiva.constants import
+
+    gc = GraphicsContext((200, 100))
+    gc.set_line_thickness(8)
+
+    for i in range(5):
+        y = 30 + i*10
+        thickness = 2.0**(i-1)
+
+        gc.move_to(40, y)
+        gc.line_to(160, y)
+        gc.set_line_cap(thickness)
+        gc.stroke_path()
+
+    gc.save('thicknesses.png')
+
 
 
 Kiva Interface Quick Reference
