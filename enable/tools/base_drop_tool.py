@@ -30,10 +30,10 @@ class BaseDropTool(BaseTool):
         try:
             result = self.get_drag_result((event.x, event.y), event.obj)
             if result is not None:
-                self.component.window.set_drag_result(result)
+                event.window.set_drag_result(result)
                 event.handled = True
         except Exception:
-            self.component.window.set_drag_result("error")
+            event.window.set_drag_result("error")
             raise
 
     def normal_dropped_on(self, event):
