@@ -109,13 +109,11 @@ def _parse_header(fh):
         if line.startswith('Comment'):
             continue
         lst = line.split(' ', 1)
-        # print '%-s\t%-d line :: %-s' % ( fh.name, len(lst), line )
         key = lst[0]
         if len(lst) == 2:
             val = lst[1]
         else:
             val = ''
-        # key, val = line.split(' ', 1)
         try:
             d[key] = headerConverters[key](val)
         except ValueError:
@@ -226,7 +224,7 @@ def _parse_composites(fh):
             return d
         vals = line.split(';')
         cc = vals[0].split()
-        name, numParts = cc[1], _to_int(cc[2])                      # noqa
+        name = cc[1]
         pccParts = []
         for s in vals[1:-1]:
             pcc = s.split()
@@ -432,7 +430,6 @@ class AFM(object):
 
 
 if __name__ == '__main__':
-    # pathname = '/usr/local/lib/R/afm/'
     pathname = '/usr/local/share/fonts/afms/adobe'
 
     for fname in os.listdir(pathname):

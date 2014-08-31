@@ -177,7 +177,6 @@ class verbose(object):
     @staticmethod
     def report(text, level='info'):
         return
-        # print "kiva font_manager: ", text
 
 
 def _is_writable_dir(p):
@@ -719,7 +718,6 @@ def createFontList(fontfiles, fontext='ttf'):
                 continue
             except UnicodeError:
                 verbose.report("Cannot handle unicode filenames")
-                # print >> sys.stderr, 'Bad file is', fpath
                 continue
             try:
                 prop = ttfFontProperty(fpath, font)
