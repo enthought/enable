@@ -251,7 +251,6 @@ class GraphicsContext(GraphicsContextBase):
             I think save() affects the paging of a document I think.
             We'll have to look into this more.
         """
-        # self.gc.save()
         pass
 
     def synchronize(self):
@@ -705,9 +704,7 @@ class GraphicsContext(GraphicsContextBase):
         """
         """
         a, b, c, d, tx, ty = affine.affine_params(ttm)
-        # print "set text matrix", a, b, c, d, tx, ty
         self.gc._textMatrix = (a, b, c, d, tx, ty)
-        # self.gc.CGContextGetTextMatrix(ttm)
 
     def get_text_matrix(self):
         """
@@ -741,11 +738,6 @@ class GraphicsContext(GraphicsContextBase):
     def get_full_text_extent(self, textstring):
         fontname = self.gc._fontname
         fontsize = self.gc._fontsize
-
-        # this call does not seem to work. returns zero
-        # ascent=(reportlab.pdfbase.pdfmetrics.getFont(fontname).face.ascent)
-        # this call does not seem to work. returns -1
-        # descent=(reportlab.pdfbase.pdfmetrics.getFont(fontname).face.descent)
 
         ascent, descent = reportlab.pdfbase._fontdata.ascent_descent[fontname]
 
