@@ -43,7 +43,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-# Convert string the a python type
+# Convert value to a python type
 _to_int = int
 _to_float = float
 _to_str = str
