@@ -16,8 +16,10 @@ class DrawingTester(object):
 
     def setUp(self):
         self.directory = tempfile.mkdtemp()
-        self.filename = os.path.join(self.directory, 'rendered_image.png')
+        self.filename = os.path.join(self.directory, 'rendered')
         self.gc = self.create_graphics_context(300, 300)
+        self.gc.set_stroke_color((0.0, 0.0, 0.0))
+        self.gc.set_fill_color((0.0, 0.0, 1.0))
 
     def tearDown(self):
         del self.gc
@@ -150,8 +152,9 @@ class DrawingImageTester(DrawingTester):
     @contextlib.contextmanager
     def draw_and_check(self):
         yield
-        self.gc.save(self.filename)
-        self.assertImageSavedWithContent(self.filename)
+        filename = "{0}.png".format(self.filename)
+        self.gc.save(filename)
+        self.assertImageSavedWithContent(filename)
 
     def assertImageSavedWithContent(self, filename):
         """ Load the image and check that there is some content in it.
