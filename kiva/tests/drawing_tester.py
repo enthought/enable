@@ -10,6 +10,9 @@ from kiva.fonttools import Font
 from kiva.constants import MODERN
 
 class DrawingTester(object):
+    """ Basic drawing tests for graphics contexts.
+
+    """
 
     def setUp(self):
         self.directory = tempfile.mkdtemp()
@@ -17,6 +20,7 @@ class DrawingTester(object):
         self.gc = self.create_graphics_context(300, 300)
 
     def tearDown(self):
+        del self.gc
         shutil.rmtree(self.directory)
 
     def test_line(self):
@@ -107,7 +111,6 @@ class DrawingTester(object):
             self.gc.show_text("hello kiva")
 
     def test_star_clip(self):
-
         with self.draw_and_check():
             self.gc.begin_path()
             self.gc.move_to(100, 100)
@@ -123,6 +126,33 @@ class DrawingTester(object):
             self.gc.arc(150, 150, 100, 0.0, 2 * numpy.pi)
             self.gc.fill_path()
 
+    #### Required methods ####################################################
+
+    @contextlib.contextmanager
+    def draw_and_check(self):
+        """ A context manager to check the result.
+
+        """
+        raise NotImplementedError()
+
+    def create_graphics_context(self, width, length):
+        """ Create the desired graphics context
+
+        """
+        raise NotImplementedError()
+
+
+class DrawingImageTester(DrawingTester):
+    """ Basic drawing tests for graphics contexts of gui toolkits.
+
+    """
+
+    @contextlib.contextmanager
+    def draw_and_check(self):
+        yield
+        self.gc.save(self.filename)
+        self.assertImageSavedWithContent(self.filename)
+
     def assertImageSavedWithContent(self, filename):
         """ Load the image and check that there is some content in it.
 
@@ -132,26 +162,3 @@ class DrawingTester(object):
         mask = image != 255
         if not mask.any():
             self.fail('An empty image was saved')
-
-    @contextlib.contextmanager
-    def draw_and_check(self):
-        yield
-        self.save_to_file()
-        self.assertImageSavedWithContent(self.filename)
-
-    #### Required methods ####################################################
-
-    def create_graphics_context(self, width, length):
-        """ Create the desired graphics context
-
-        """
-        raise NotImplementedError()
-
-    def save_to_file(self):
-        """ Save the rendered image into a file.
-
-        The filename is given by self.filename.
-
-        """
-        raise NotImplementedError()
-
