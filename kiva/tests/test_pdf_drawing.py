@@ -12,9 +12,6 @@ from kiva.pdf import GraphicsContext
 
 class TestPDFDrawing(DrawingTester, unittest.TestCase):
 
-    def setUp(self):
-        DrawingTester.setUp(self)
-
     def create_graphics_context(self, width, height):
         filename = "{0}.pdf".format(self.filename)
         canvas = Canvas(filename, (width, height))

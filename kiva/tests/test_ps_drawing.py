@@ -8,9 +8,6 @@ from kiva.ps import PSGC
 
 class TestPSDrawing(DrawingTester, unittest.TestCase):
 
-    def setUp(self):
-        DrawingTester.setUp(self)
-
     def create_graphics_context(self, width, height):
         return PSGC((width, height))
 
