@@ -1,4 +1,5 @@
 import contextlib
+import os
 import StringIO
 import unittest
 
@@ -13,20 +14,19 @@ class TestPDFDrawing(DrawingTester, unittest.TestCase):
 
     def setUp(self):
         DrawingTester.setUp(self)
-        self.gc.set_stroke_color((0.0, 0.0, 0.0))
-        self.gc.set_fill_color((0.0, 0.0, 1.0))
 
     def create_graphics_context(self, width, height):
-        canvas = Canvas(self.filename, (width, height))
+        filename = "{0}.pdf".format(self.filename)
+        canvas = Canvas(filename, (width, height))
         return GraphicsContext(canvas)
 
     @contextlib.contextmanager
     def draw_and_check(self):
         yield
-        # Read the pdfstream.
-        pdfdata = self.gc.gc.getpdfdata()
-        stream = StringIO.StringIO(pdfdata)
-        reader = PyPDF2.PdfFileReader(stream)
+        # Save the pdf file.
+        filename = "{0}.pdf".format(self.filename)
+        self.gc.save()
+        reader = PyPDF2.PdfFileReader(filename)
         self.assertEqual(reader.getNumPages(), 1)
 
         # Find the graphics in the page
@@ -35,12 +35,12 @@ class TestPDFDrawing(DrawingTester, unittest.TestCase):
 
         # Just a simple check that the path has been closed or the text has
         # been drawn.
-        line = content.getData().splitlines()[-2].strip()
+        line = content.getData().splitlines()[-2]
         if not any((
-            line.endswith('f'),
-            line.endswith('S'),
-            line.endswith('f*'),
-            line.endswith('ET') and 'hello kiva' in line)):
+                line.endswith('f'),
+                line.endswith('S'),
+                line.endswith('f*'),
+                line.endswith('ET') and 'hello kiva' in line)):
             self.fail('Path was not closed')
 
 
