@@ -736,7 +736,7 @@ class GraphicsContext(object):
     def eof_fill_path(self):
         """
         """
-        self.path.setFillRule(QtCore.Qt.OddEvenFill)
+        self.path.path.setFillRule(QtCore.Qt.OddEvenFill)
         self.gc.fillPath(self.path.path, self.gc.brush())
         self.begin_path()
 
