@@ -113,9 +113,7 @@ class BaseDropTool(BaseTool):
             The coordinates of the drag over event
 
         obj : any
-            The object(s) being dragged, if available.  Some backends (such as
-            Wx) may not be able to provide the object being dragged, in which
-            case `obj` will be `None`.
+            The object(s) being dragged.
 
         """
         raise NotImplementedError
