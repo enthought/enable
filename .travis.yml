@@ -17,6 +17,7 @@ install:
   # nose is already installed
   - pip install cython
   - pip install -r dev_requirements.txt
+  - pip install --download=. pycairo
   - tar -xf pycairo-1.10.0.tar.bz2
   - pushd pycairo-1.10.0
   - ./waf configure
