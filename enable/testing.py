@@ -352,7 +352,7 @@ class EnableTestAssistant(KivaTestAssistant):
         self._mouse_event_dispatch(interactor, event, 'mouse_leave')
         return event
 
-    def send_key(self, interactor, x, y, window=None):
+    def send_key(self, interactor, key, window=None):
         """ Sent a key press event to the interactor.
 
         Parameters
