@@ -10,6 +10,10 @@ before_install:
   - sudo apt-get install python-numpy
   - sudo apt-get install swig
   - sudo apt-get install libpng-dev libjpeg-dev zlib1g-dev libfreetype6-dev python-dev
+  # Simlinks for PIL compilation
+  - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libfreetype.so /usr/lib/
+  - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libjpeg.so /usr/lib/
+  - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libz.so /usr/lib/
 install:
   # nose is already installed
   - pip install cython
