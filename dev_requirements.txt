@@ -5,7 +5,6 @@ PIL
 pyparsing
 PyPDF2
 pyglet
--e git+http://git.cairographics.org/git/py2cairo
 -e git+http://github.com/enthought/traits.git#egg=traits
 -e git+http://github.com/enthought/traitsui.git#egg=traitsui
 -e git+http://github.com/nucleic/kiwi.git#egg=kiwisolver
