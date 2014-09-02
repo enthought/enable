@@ -51,17 +51,6 @@ from .graphics_state import GraphicsState
 from .fonttools import Font
 import kiva.affine as affine
 
-
-# --------------------------------------------------------------------
-# Import and initialize freetype engine for rendering.
-#
-# !! Need to figure out how to set dpi intelligently
-# --------------------------------------------------------------------
-# from enthought import freetype
-# freetype engine for text rendering.
-# ft_engine = freetype.FreeType(dpi=120.0)
-
-
 # --------------------------------------------------------------------
 # Drawing style tests.
 #
@@ -136,9 +125,6 @@ class GraphicsContextBase(AbstractGraphicsContext):
         self.active_subpath = []
         self.path_transform_indices = []
         self.path = [self.active_subpath]
-
-        # Used as memory cache for transforming points
-        # self.transform_points_cache = array((2, 1))
 
         # Whether the particular underlying graphics context considers the
         # "origin" of a pixel to be the center of the pixel or the lower-left
@@ -805,29 +791,6 @@ class GraphicsContextBase(AbstractGraphicsContext):
         self.device_destroy_clipping_path()
 
     # ----------------------------------------------------------------
-    # Color space manipulation
-    #
-    # I'm not sure we'll mess with these at all.  They seem to
-    # be for setting the color system.  Hard coding to RGB or
-    # RGBA for now sounds like a reasonable solution.
-    # ----------------------------------------------------------------
-
-    # def set_fill_color_space(self):
-    #    """
-    #    """
-    #    pass
-
-    # def set_stroke_color_space(self):
-    #    """
-    #    """
-    #    pass
-
-    # def set_rendering_intent(self):
-    #    """
-    #    """
-    #    pass
-
-    # ----------------------------------------------------------------
     # Color manipulation
     # ----------------------------------------------------------------
 
@@ -883,36 +846,6 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """ Return the alpha used when drawing """
         return self.state.alpha
 
-    # def set_gray_fill_color(self):
-    #    """
-    #    """
-    #    pass
-
-    # def set_gray_stroke_color(self):
-    #    """
-    #    """
-    #    pass
-
-    # def set_rgb_fill_color(self):
-    #    """
-    #    """
-    #    pass
-
-    # def set_rgb_stroke_color(self):
-    #    """
-    #    """
-    #    pass
-
-    # def cmyk_fill_color(self):
-    #    """
-    #    """
-    #    pass
-
-    # def cmyk_stroke_color(self):
-    #    """
-    #    """
-    #    pass
-
     # ----------------------------------------------------------------
     # Drawing Images
     # ----------------------------------------------------------------
@@ -921,15 +854,6 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """
         """
         self.device_draw_image(img, rect)
-
-    # ----------------------------------------------------------------
-    # Drawing PDF documents
-    # ----------------------------------------------------------------
-
-    # def draw_pdf_document(self):
-    #    """
-    #    """
-    #    pass
 
     # -------------------------------------------------------------------------
     # Drawing Text
@@ -1389,25 +1313,3 @@ class GraphicsContextBase(AbstractGraphicsContext):
     def save(self, filename, file_format=None, pil_options=None):
         """ Save the graphics context to a file """
         raise NotImplementedError
-
-    # ----------------------------------------------------------------
-    # Extra routines that aren't part of DisplayPDF
-    #
-    # Some access to font metrics are needed for laying out text.
-    # Not sure how to handle this yet.  The candidates below are
-    # from Piddle.  Perhaps there is another alternative?
-    #
-    # ----------------------------------------------------------------
-
-    # def font_height(self):
-    #    '''Find the total height (ascent + descent) of the given font.'''
-    #    # return self.font_ascent() + self.font_descent()
-
-    # def font_ascent(self):
-    #    '''Find the ascent (height above base) of the given font.'''
-    #    pass
-
-    # def font_descent(self):
-    #    '''Find the descent (extent below base) of the given font.'''
-    #    extents = self.dc.GetFullTextExtent(' ', wx_font)
-    #    return extents[2]
