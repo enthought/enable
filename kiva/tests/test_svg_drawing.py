@@ -18,7 +18,7 @@ class TestSVGDrawing(DrawingTester, unittest.TestCase):
         filename = "{0}.svg".format(self.filename)
         self.gc.save(filename)
         tree = ElementTree.parse(filename)
-        elements = [element for element in tree.iter()]
+        elements = [element for element in tree.getiterator()]
         if not len(elements) in [4, 7]:
             self.fail('The expected number of elements was not found')
 
