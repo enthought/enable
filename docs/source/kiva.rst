@@ -356,6 +356,9 @@ render the text::
 
 .. image:: kiva_images/text.png
 
+Text defaults to being rendered filled, but can be rendered with an outline.
+
+
 Kiva Interface Quick Reference
 ==============================
 
