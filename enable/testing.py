@@ -3,7 +3,7 @@
 from mock import Mock
 
 from enable.abstract_window import AbstractWindow
-from enable.events import MouseEvent, KeyEvent
+from enable.events import MouseEvent, KeyEvent, DragEvent
 from kiva.testing import KivaTestAssistant
 
 
@@ -16,6 +16,10 @@ class _MockWindow(AbstractWindow):
     def _redraw(self, coordinates=None):
         pass
 
+    _drag_result = None
+
+    def set_drag_result(self, result):
+        self._drag_result = result
 
 class EnableTestAssistant(KivaTestAssistant):
     """ Mixin helper for enable/chaco components.
@@ -146,6 +150,13 @@ class EnableTestAssistant(KivaTestAssistant):
         }
         event_attributes.update(**kwargs)
         event = MouseEvent(**event_attributes)
+        return event
+
+    def create_drag_event(self, **kwargs):
+        """ Creates a DragEvent() with the specified attributes.
+
+        """
+        event = DragEvent(**kwargs)
         return event
 
     def mouse_down(self, interactor, x, y, button='left', window=None,
@@ -341,7 +352,7 @@ class EnableTestAssistant(KivaTestAssistant):
         self._mouse_event_dispatch(interactor, event, 'mouse_leave')
         return event
 
-    def send_key(self, interactor, key, window=None):
+    def send_key(self, interactor, x, y, window=None):
         """ Sent a key press event to the interactor.
 
         Parameters
@@ -368,6 +379,103 @@ class EnableTestAssistant(KivaTestAssistant):
         self._key_event_dispatch(interactor, event)
         return event
 
+    def send_drag_over(self, interactor, x, y, obj, window=None):
+        """ Sent a drag_over event to the interactor.
+
+        Parameters
+        ----------
+        interactor : Interactor
+            The interactor (or subclass) where to dispatch the event.
+
+        x : float
+            The x coordinates of the mouse position
+
+        y : float
+            The y coordinates of the mouse position
+
+        obj : object
+            The object(s) being dragged or dropped
+
+        window : AbstractWindow, optional
+            The enable AbstractWindow to associate with the event. Default
+            is to create a mock class instance. If the window has a mouse
+            owner then that interactor is used.
+
+        Returns
+        -------
+        event : KeyEvent
+            The event instance after it has be processed by the `interactor`.
+
+        """
+        window = self.create_mock_window() if window is None else window
+        event = self.create_drag_event(x=x, y=y, obj=obj, window=window)
+        self._drag_event_dispatch(interactor, event, "drag_over")
+        return event
+
+    def send_dropped_on(self, interactor, x, y, obj, window=None):
+        """ Sent a dropped_on event to the interactor.
+
+        Parameters
+        ----------
+        interactor : Interactor
+            The interactor (or subclass) where to dispatch the event.
+
+        x : float
+            The x coordinates of the mouse position
+
+        y : float
+            The y coordinates of the mouse position
+
+        obj : object
+            The object(s) being dragged or dropped
+
+        window : AbstractWindow, optional
+            The enable AbstractWindow to associate with the event. Default
+            is to create a mock class instance. If the window has a mouse
+            owner then that interactor is used.
+
+        Returns
+        -------
+        event : KeyEvent
+            The event instance after it has be processed by the `interactor`.
+
+        """
+        window = self.create_mock_window() if window is None else window
+        event = self.create_drag_event(x=x, y=y, obj=obj, window=window)
+        self._drag_event_dispatch(interactor, event, "dropped_on")
+        return event
+
+    def send_drag_leave(self, interactor, x, y, window=None):
+        """ Sent a drag_leave event to the interactor.
+
+        Parameters
+        ----------
+        interactor : Interactor
+            The interactor (or subclass) where to dispatch the event.
+
+        x : float
+            The x coordinates of the mouse position
+
+        y : float
+            The y coordinates of the mouse position
+
+        window : AbstractWindow, optional
+            The enable AbstractWindow to associate with the event. Default
+            is to create a mock class instance. If the window has a mouse
+            owner then that interactor is used.
+
+        Returns
+        -------
+        event : KeyEvent
+            The event instance after it has be processed by the `interactor`.
+
+        """
+        window = self.create_mock_window() if window is None else window
+        event = self.create_drag_event(x=x, y=y, window=window)
+        self._drag_event_dispatch(interactor, event, "drag_leave")
+        return event
+
+
     def _mouse_event_dispatch(self, interactor, event, suffix):
         mouse_owner = event.window.mouse_owner
         if mouse_owner is None:
@@ -381,3 +489,6 @@ class EnableTestAssistant(KivaTestAssistant):
             interactor.dispatch(event, 'key_pressed')
         else:
             focus_owner.dispatch(event, 'key_pressed')
+
+    def _drag_event_dispatch(self, interactor, event, suffix):
+        interactor.dispatch(event, suffix)
