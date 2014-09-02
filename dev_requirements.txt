@@ -1,5 +1,7 @@
---allow-external PIL pycairo
---allow-unverified PIL pycairo
+--allow-external PIL
+--allow-unverified PIL
+--allow-external pycairo
+--allow-unverified pycairo
 coverage
 PIL
 pyparsing
