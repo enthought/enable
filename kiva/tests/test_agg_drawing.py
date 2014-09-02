@@ -1,7 +1,6 @@
-import unittest
-
 from kiva.tests.drawing_tester import DrawingImageTester
 from kiva.image import GraphicsContext
+from traits.testing.unittest_tools import unittest
 
 
 class TestAggDrawing(DrawingImageTester, unittest.TestCase):

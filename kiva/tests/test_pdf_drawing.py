@@ -1,13 +1,11 @@
 import contextlib
-import os
-import StringIO
-import unittest
 
 import PyPDF2  # Tests require the PyPDF2 library for parsing the pdf stream
 from reportlab.pdfgen.canvas import Canvas
 
 from kiva.tests.drawing_tester import DrawingTester
 from kiva.pdf import GraphicsContext
+from traits.testing.unittest_tools import unittest
 
 
 class TestPDFDrawing(DrawingTester, unittest.TestCase):

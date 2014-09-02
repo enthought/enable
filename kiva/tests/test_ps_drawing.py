@@ -1,9 +1,8 @@
 import contextlib
-import StringIO
-import unittest
 
 from kiva.tests.drawing_tester import DrawingTester
 from kiva.ps import PSGC
+from traits.testing.unittest_tools import unittest
 
 
 class TestPSDrawing(DrawingTester, unittest.TestCase):
@@ -28,7 +27,6 @@ class TestPSDrawing(DrawingTester, unittest.TestCase):
                 line.endswith('cliprestore'),
                 '(hello kiva) show\n' in lines)):
             self.fail('Path was not closed')
-
 
 
 if __name__ == "__main__":

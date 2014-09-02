@@ -1,7 +1,6 @@
-import unittest
-
 from kiva.tests.drawing_tester import DrawingImageTester
 from kiva.cairo import GraphicsContext
+from traits.testing.unittest_tools import unittest
 
 
 class TestCairoDrawing(DrawingImageTester, unittest.TestCase):

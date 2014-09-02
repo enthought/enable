@@ -1,9 +1,8 @@
-import unittest
-
 from pyface.qt import QtGui
 
 from kiva.tests.drawing_tester import DrawingImageTester
 from kiva.qpainter import GraphicsContext
+from traits.testing.unittest_tools import unittest
 
 
 class TestQPainterDrawing(DrawingImageTester, unittest.TestCase):
