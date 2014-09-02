@@ -9,7 +9,7 @@ before_install:
   - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then source .travis_before_install_noqt; fi
   - sudo apt-get install python-numpy
   - sudo apt-get install swig
-  - sudo apt-get install libpng-dev libjpeg-dev zlib1g-dev
+  - sudo apt-get install libpng-dev libjpeg-dev zlib1g-dev libfreetype6-dev python-dev
 install:
   # nose is already installed
   - pip install cython
