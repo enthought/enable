@@ -174,24 +174,24 @@ class GraphicsContextTestCase(unittest.TestCase):
     def test_state_line_width(self):
         gc = basecore2d.GraphicsContextBase()
         # defaults to 1
-        self.assertEqual(gc.state.line_width, 1)
+        self.assertEqual(gc.state.line_state.line_width, 1)
         gc.set_line_width(5)
         gc.save_state()
         gc.set_line_width(10)
-        self.assertEqual(gc.state.line_width, 10)
+        self.assertEqual(gc.state.line_state.line_width, 10)
         gc.restore_state()
-        self.assertEqual(gc.state.line_width, 5)
+        self.assertEqual(gc.state.line_state.line_width, 5)
 
     def test_state_line_join(self):
         gc = basecore2d.GraphicsContextBase()
         # defaults to JOIN_MITER
-        self.assertEqual(gc.state.line_join, constants.JOIN_MITER)
+        self.assertEqual(gc.state.line_state.line_join, constants.JOIN_MITER)
         gc.set_line_join(constants.JOIN_BEVEL)
         gc.save_state()
         gc.set_line_join(constants.JOIN_ROUND)
-        self.assertEqual(gc.state.line_join, constants.JOIN_ROUND)
+        self.assertEqual(gc.state.line_state.line_join, constants.JOIN_ROUND)
         gc.restore_state()
-        self.assertEqual(gc.state.line_join, constants.JOIN_BEVEL)
+        self.assertEqual(gc.state.line_state.line_join, constants.JOIN_BEVEL)
         # set_line_join should fail if one attempts to set a bad value.
         self.assertRaises(ValueError, gc.set_line_join, (100,))
 
@@ -209,32 +209,32 @@ class GraphicsContextTestCase(unittest.TestCase):
     def test_state_line_cap(self):
         gc = basecore2d.GraphicsContextBase()
         # defaults to CAP_ROUND
-        self.assertEqual(gc.state.line_cap, constants.CAP_ROUND)
+        self.assertEqual(gc.state.line_state.line_cap, constants.CAP_ROUND)
         gc.set_line_cap(constants.CAP_BUTT)
         gc.save_state()
         gc.set_line_cap(constants.CAP_SQUARE)
-        self.assertEqual(gc.state.line_cap, constants.CAP_SQUARE)
+        self.assertEqual(gc.state.line_state.line_cap, constants.CAP_SQUARE)
         gc.restore_state()
-        self.assertEqual(gc.state.line_cap, constants.CAP_BUTT)
+        self.assertEqual(gc.state.line_state.line_cap, constants.CAP_BUTT)
         # set_line_cap should fail if one attempts to set a bad value.
         self.assertRaises(ValueError, gc.set_line_cap, (100,))
 
     def test_state_line_dash(self):
         gc = basecore2d.GraphicsContextBase()
         # defaults to non-dashed line
-        self.assert_(not gc.state.is_dashed())
+        self.assert_(not gc.state.line_state.is_dashed())
         gc.set_line_dash([1.0, 2.0], phase=2.0)
         gc.save_state()
 
         gc.set_line_dash([3.0, 4.0])
-        self.assert_(gc.state.is_dashed())
-        self.assertEqual(gc.state.line_dash[0], 0)
-        self.assert_(alltrue(ravel(gc.state.line_dash[1] ==
+        self.assert_(gc.state.line_state.is_dashed())
+        self.assertEqual(gc.state.line_state.line_dash[0], 0)
+        self.assert_(alltrue(ravel(gc.state.line_state.line_dash[1] ==
                                             array([3.0, 4.0]))))
         gc.restore_state()
-        self.assert_(gc.state.is_dashed())
-        self.assertEqual(gc.state.line_dash[0], 2.0)
-        self.assert_(alltrue(ravel(gc.state.line_dash[1] ==
+        self.assert_(gc.state.line_state.is_dashed())
+        self.assertEqual(gc.state.line_state.line_dash[0], 2.0)
+        self.assert_(alltrue(ravel(gc.state.line_state.line_dash[1] ==
                                             array([1.0, 2.0]))))
 
         # pattern must be a container with atleast two values
@@ -245,14 +245,14 @@ class GraphicsContextTestCase(unittest.TestCase):
 
     def test_state_flatness(self):
         gc = basecore2d.GraphicsContextBase()
-        # defaults to None
-        self.assertEqual(gc.state.flatness, None)
-        gc.set_flatness(1.0)
-        gc.save_state()
-        gc.set_flatness(2.0)
-        self.assertEqual(gc.state.flatness, 2.0)
-        gc.restore_state()
+        # defaults to 1.0
         self.assertEqual(gc.state.flatness, 1.0)
+        gc.set_flatness(2.0)
+        gc.save_state()
+        gc.set_flatness(3.0)
+        self.assertEqual(gc.state.flatness, 3.0)
+        gc.restore_state()
+        self.assertEqual(gc.state.flatness, 2.0)
 
     def test_state_alpha(self):
         gc = basecore2d.GraphicsContextBase()
@@ -279,13 +279,13 @@ class GraphicsContextTestCase(unittest.TestCase):
     def test_state_stroke_color(self):
         gc = basecore2d.GraphicsContextBase()
         # defaults to [0,0,0,1]
-        self.assert_(alltrue(gc.state.line_color == array([0, 0, 0, 1])))
+        self.assert_(alltrue(gc.state.line_state.line_color == array([0, 0, 0, 1])))
         gc.set_stroke_color((0, 1, 0, 1))
         gc.save_state()
         gc.set_stroke_color((1, 1, 1, 1))
-        self.assert_(alltrue(gc.state.line_color == array([1, 1, 1, 1])))
+        self.assert_(alltrue(gc.state.line_state.line_color == array([1, 1, 1, 1])))
         gc.restore_state()
-        self.assert_(alltrue(gc.state.line_color == array([0, 1, 0, 1])))
+        self.assert_(alltrue(gc.state.line_state.line_color == array([0, 1, 0, 1])))
 
     def test_state_character_spacing(self):
         gc = basecore2d.GraphicsContextBase()
@@ -328,13 +328,13 @@ class GraphicsContextTestCase(unittest.TestCase):
             gc.set_antialias(1)
             self.assertEqual(gc.state.antialias, 1)
             gc.set_line_width(10)
-            self.assertEqual(gc.state.line_width, 10)
+            self.assertEqual(gc.state.line_state.line_width, 10)
             gc.set_fill_color((1, 1, 1, 1))
             self.assert_(alltrue(gc.state.fill_color == array([1, 1, 1, 1])))
 
         # Verify that we're back to the earlier settings.
         self.assertEqual(gc.state.antialias, 0)
-        self.assertEqual(gc.state.line_width, 5)
+        self.assertEqual(gc.state.line_state.line_width, 5)
         self.assert_(alltrue(gc.state.fill_color == array([0, 1, 0, 1])))
 
     def test_state_context_manager_nested(self):
@@ -350,7 +350,7 @@ class GraphicsContextTestCase(unittest.TestCase):
             gc.set_antialias(1)
             self.assertEqual(gc.state.antialias, 1)
             gc.set_line_width(10)
-            self.assertEqual(gc.state.line_width, 10)
+            self.assertEqual(gc.state.line_state.line_width, 10)
             gc.set_fill_color((1, 1, 1, 1))
             self.assert_(alltrue(gc.state.fill_color == array([1, 1, 1, 1])))
 
@@ -359,19 +359,19 @@ class GraphicsContextTestCase(unittest.TestCase):
                 gc.set_antialias(0)
                 self.assertEqual(gc.state.antialias, 0)
                 gc.set_line_width(2)
-                self.assertEqual(gc.state.line_width, 2)
+                self.assertEqual(gc.state.line_state.line_width, 2)
                 gc.set_fill_color((1, 1, 0, 1))
                 self.assert_(alltrue(gc.state.fill_color ==
                                             array([1, 1, 0, 1])))
 
             # Verify that we're back to the earlier settings.
             self.assertEqual(gc.state.antialias, 1)
-            self.assertEqual(gc.state.line_width, 10)
+            self.assertEqual(gc.state.line_state.line_width, 10)
             self.assert_(alltrue(gc.state.fill_color == array([1, 1, 1, 1])))
 
         # Verify that we're back to the earlier settings.
         self.assertEqual(gc.state.antialias, 0)
-        self.assertEqual(gc.state.line_width, 5)
+        self.assertEqual(gc.state.line_state.line_width, 5)
         self.assert_(alltrue(gc.state.fill_color == array([0, 1, 0, 1])))
 
     #-------------------------------------------------------------------------
@@ -426,9 +426,9 @@ class GraphicsContextTestCase(unittest.TestCase):
         gc.set_line_width(5)
         gc.save_state()
         gc.set_line_width(10)
-        self.assertEqual(gc.state.line_width, 10)
+        self.assertEqual(gc.state.line_state.line_width, 10)
         gc.restore_state()
-        self.assertEqual(gc.state.line_width, 5)
+        self.assertEqual(gc.state.line_state.line_width, 5)
 
     #-------------------------------------------------------------------------
     # Test drawing path empty
