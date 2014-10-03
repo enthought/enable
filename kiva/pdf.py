@@ -550,36 +550,6 @@ class GraphicsContext(GraphicsContextBase):
         self.gc.setStrokeAlpha(alpha)
         super(GraphicsContext, self).set_alpha(alpha)
 
-    # def set_gray_fill_color(self):
-    #    """
-    #    """
-    #    pass
-
-    # def set_gray_stroke_color(self):
-    #    """
-    #    """
-    #    pass
-
-    # def set_rgb_fill_color(self):
-    #    """
-    #    """
-    #    pass
-
-    # def set_rgb_stroke_color(self):
-    #    """
-    #    """
-    #    pass
-
-    # def cmyk_fill_color(self):
-    #    """
-    #    """
-    #    pass
-
-    # def cmyk_stroke_color(self):
-    #    """
-    #    """
-    #    pass
-
     # ----------------------------------------------------------------
     # Drawing Images
     # ----------------------------------------------------------------
@@ -639,15 +609,6 @@ class GraphicsContext(GraphicsContextBase):
         # actually needs.
         self.gc.drawImage(ImageReader(pil_img),
                           rect[0], rect[1], rect[2], rect[3])
-
-    # ----------------------------------------------------------------
-    # Drawing PDF documents
-    # ----------------------------------------------------------------
-
-    # def draw_pdf_document(self):
-    #    """
-    #    """
-    #    pass
 
     # ----------------------------------------------------------------
     # Drawing Text

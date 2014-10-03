@@ -602,9 +602,6 @@ def ttfFontProperty(fpath, font):
     #  !!!!  Incomplete
     size = 'scalable'
 
-    #  !!!!  Incomplete
-    # size_adjust = None
-
     return FontEntry(fpath, name, style, variant, weight, stretch, size)
 
 
@@ -668,9 +665,6 @@ def afmFontProperty(fontpath, font):
     #  All AFM fonts are apparently scalable.
 
     size = 'scalable'
-
-    # !!!!  Incomplete
-    # size_adjust = None
 
     return FontEntry(fontpath, name, style, variant, weight, stretch, size)
 
