@@ -17,8 +17,8 @@ class Image(Component):
     This is extremely simple right now.  By default it will draw the array into
     the entire region occupied by the component, stretching or shrinking as
     needed.  It is up to the user to set the bounds, although the from_file
-    will give something sensible, and we assume that a constraints-based layout
-    should have a layour_size_hint of the image size.
+    method will give something sensible, and we assume that a constraints-based
+    layout gets a layout_size_hint of the image size.
 
     """
 
@@ -36,8 +36,9 @@ class Image(Component):
 
     @classmethod
     def from_file(cls, filename):
-        from scipy.misc import imread
-        data = imread(filename)
+        from PIL import Image
+        from numpy import asarray
+        data = asarray(Image.open(filename))
         return cls(data=data, bounds=data.shape[:2])
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="normal"):
