@@ -1,7 +1,5 @@
---allow-external PIL
---allow-unverified PIL
 coverage
-PIL
+Pillow
 pyparsing
 -e git+http://github.com/enthought/traits.git#egg=traits
 -e git+http://github.com/enthought/traitsui.git#egg=traitsui
