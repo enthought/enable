@@ -8,6 +8,7 @@ Enhancements
 ------------
 
  * Added a base class for drag and drop tools, example and test support.
+ * Upgraded from PIL to Pillow
 
 
 
