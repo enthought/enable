@@ -24,7 +24,12 @@ class TestGLDrawing(DrawingImageTester, unittest.TestCase):
     @unittest.skip("gl graphics context does not support start_clip")
     def test_star_clip(self):
         # FIXME: overriding test since it segfaults
-        pass
+        DrawingImageTester.test_star_clip(self)
+
+    @unittest.expectedFailure
+    def test_text_clip(self):
+        # gl graphics context does not clip text properly
+        DrawingImageTester.test_text_clip(self)
 
     @contextlib.contextmanager
     def draw_and_check(self):
