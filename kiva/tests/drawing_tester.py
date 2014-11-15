@@ -15,6 +15,7 @@ class DrawingTester(object):
         self.directory = tempfile.mkdtemp()
         self.filename = os.path.join(self.directory, 'rendered_image.png')
         self.gc = self.create_graphics_context(300, 300)
+        self.gc.clear()
 
     def tearDown(self):
         shutil.rmtree(self.directory)
