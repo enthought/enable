@@ -1,5 +1,7 @@
+--allow-external PIL
+--allow-unverified PIL
 coverage
-pillow
+PIL
 pyparsing
 PyPDF2
 pyglet
