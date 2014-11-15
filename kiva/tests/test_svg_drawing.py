@@ -1,12 +1,12 @@
 import contextlib
 from xml.etree import ElementTree
 
-from kiva.tests.drawing_tester import DrawingTester
+from kiva.tests.drawing_tester import DrawingImageTester
 from kiva.svg import GraphicsContext
 from traits.testing.unittest_tools import unittest
 
 
-class TestSVGDrawing(DrawingTester, unittest.TestCase):
+class TestSVGDrawing(DrawingImageTester, unittest.TestCase):
 
     def create_graphics_context(self, width, height):
         return GraphicsContext((width, height))
