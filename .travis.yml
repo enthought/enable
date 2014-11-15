@@ -17,6 +17,7 @@ before_install:
 install:
   # nose is already installed
   - pip install cython
+  - pip install --upgrade numpy
   - pip install -r dev_requirements.txt
   - wget -nv http://cairographics.org/releases/py2cairo-1.10.0.tar.bz2
   - tar -xf py2cairo-1.10.0.tar.bz2
