@@ -1,12 +1,11 @@
-import unittest
-
 from pyface.qt import QtGui
 
-from kiva.tests.drawing_tester import DrawingTester
+from kiva.tests.drawing_tester import DrawingImageTester
 from kiva.qpainter import GraphicsContext
+from traits.testing.unittest_tools import unittest
 
 
-class TestQPainterDrawing(DrawingTester, unittest.TestCase):
+class TestQPainterDrawing(DrawingImageTester, unittest.TestCase):
 
     def setUp(self):
         application = QtGui.QApplication.instance()
@@ -15,16 +14,12 @@ class TestQPainterDrawing(DrawingTester, unittest.TestCase):
         else:
             self.application = application
 
-        DrawingTester.setUp(self)
+        DrawingImageTester.setUp(self)
         self.gc.set_stroke_color((0.0, 0.0, 0.0))
         self.gc.set_fill_color((0.0, 0.0, 1.0))
 
-
     def create_graphics_context(self, width, height):
         return GraphicsContext((width, height))
-
-    def save_to_file(self):
-        self.gc.save(self.filename)
 
 
 if __name__ == "__main__":
