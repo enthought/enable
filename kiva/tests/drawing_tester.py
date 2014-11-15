@@ -20,8 +20,9 @@ class DrawingTester(object):
         self.filename = os.path.join(self.directory, 'rendered')
         self.gc = self.create_graphics_context(300, 300)
         self.gc.clear()
-        self.gc.set_stroke_color((0.0, 0.0, 0.0))
-        self.gc.set_fill_color((0.0, 0.0, 1.0))
+        self.gc.set_stroke_color((1.0, 0.0, 0.0))
+        self.gc.set_fill_color((1.0, 0.0, 0.0))
+        self.gc.set_line_width(5)
 
     def tearDown(self):
         del self.gc
@@ -164,6 +165,8 @@ class DrawingImageTester(DrawingTester):
         """
         image = numpy.array(Image.open(filename))
         # default is expected to be a totally white image
-        mask = image != 255
-        if not mask.any():
-            self.fail('An empty image was saved')
+        self.assertEqual(image.shape, (300, 300, 4))
+        check = numpy.sum(image == [255, 0, 0, 255], axis=2) == 4
+        if check.any():
+            return
+        self.fail('An empty image was saved')
