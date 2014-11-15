@@ -171,8 +171,15 @@ class DrawingImageTester(DrawingTester):
         """
         image = numpy.array(Image.open(filename))
         # default is expected to be a totally white image
-        self.assertEqual(image.shape, (300, 300, 4))
-        check = numpy.sum(image == [255, 0, 0, 255], axis=2) == 4
+
+        self.assertEqual(image.shape[:2], (300, 300))
+        if image.shape[2] == 3:
+            check = numpy.sum(image == [255, 0, 0], axis=2) == 3
+        elif image.shape[2] == 4:
+            check = numpy.sum(image == [255, 0, 0, 255], axis=2) == 4
+        else:
+            self.fail(
+                'Pixel size is not 3 or 4, but {0}'.format(image.shape[2]))
         if check.any():
             return
-        self.fail('An empty image was saved')
+        self.fail('The image looks empty, no red pixels where drawn')
