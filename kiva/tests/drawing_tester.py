@@ -9,6 +9,7 @@ from PIL import Image
 from kiva.fonttools import Font
 from kiva.constants import MODERN
 
+
 class DrawingTester(object):
     """ Basic drawing tests for graphics contexts.
 
@@ -46,7 +47,7 @@ class DrawingTester(object):
     def test_rect(self):
         with self.draw_and_check():
             self.gc.begin_path()
-            self.gc.rect(0,0,200,200)
+            self.gc.rect(0, 0, 200, 200)
             self.gc.stroke_path()
 
     def test_circle(self):
