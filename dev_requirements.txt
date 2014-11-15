@@ -1,5 +1,6 @@
 --allow-external PIL
 --allow-unverified PIL
+numpy
 coverage
 PIL
 pyparsing
