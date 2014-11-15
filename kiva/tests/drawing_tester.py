@@ -16,6 +16,8 @@ class DrawingTester(object):
     """
 
     def setUp(self):
+        self.directory = tempfile.mkdtemp()
+        self.filename = os.path.join(self.directory, 'rendered')
         self.gc = self.create_graphics_context(300, 300)
         self.gc.clear()
         self.gc.set_stroke_color((1.0, 0.0, 0.0))
@@ -24,6 +26,7 @@ class DrawingTester(object):
 
     def tearDown(self):
         del self.gc
+        shutil.rmtree(self.directory)
 
     def test_line(self):
         with self.draw_and_check():
@@ -148,15 +151,6 @@ class DrawingImageTester(DrawingTester):
     """ Basic drawing tests for graphics contexts of gui toolkits.
 
     """
-
-    def setUp(self):
-        self.directory = tempfile.mkdtemp()
-        self.filename = os.path.join(self.directory, 'rendered')
-        DrawingTester.setUp(self)
-
-    def tearDown(self):
-        DrawingTester.tearDown(self)
-        shutil.rmtree(self.directory)
 
     @contextlib.contextmanager
     def draw_and_check(self):
