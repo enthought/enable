@@ -34,9 +34,8 @@ class TestGLDrawing(DrawingImageTester, unittest.TestCase):
         yield
         self.window.dispatch_events()
         filename = "{0}.png".format(self.filename)
-        print filename
-        pyglet.image.get_buffer_manager().get_color_buffer().save('filename.png')
-        self.assertImageSavedWithContent('filename.png')
+        pyglet.image.get_buffer_manager().get_color_buffer().save(filename)
+        self.assertImageSavedWithContent(filename)
 
 
 if __name__ == "__main__":
