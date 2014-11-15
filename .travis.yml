@@ -3,6 +3,7 @@ python:
   - '2.7_with_system_site_packages'
   - 2.6
 before_install:
+  - sudo apt-get update
   # For Python 2.7, install PyQt4
   - if [[ $TRAVIS_PYTHON_VERSION == '2.7_with_system_site_packages' ]]; then source .travis_before_install; fi
   # PyQt can't be installed on 2.6; run the tests without Qt
@@ -12,6 +13,7 @@ before_install:
   # Simlinks for PIL compilation
   - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libfreetype.so /usr/lib/
   - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libjpeg.so /usr/lib/
+  - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libpng.so /usr/lib/
   - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libz.so /usr/lib/
 install:
   # nose is already installed
