@@ -1,6 +1,7 @@
 import contextlib
 
 import pyglet
+from pyglet.image.codecs.png import PNGImageEncoder
 
 from kiva.tests.drawing_tester import DrawingImageTester
 from kiva.gl import GraphicsContext
@@ -39,7 +40,8 @@ class TestGLDrawing(DrawingImageTester, unittest.TestCase):
         yield
         self.window.dispatch_events()
         filename = "{0}.png".format(self.filename)
-        pyglet.image.get_buffer_manager().get_color_buffer().save(filename)
+        buffer = pyglet.image.get_buffer_manager()
+        buffer.get_color_buffer().save(filename, encoder=PNGImageEncoder())
         self.assertImageSavedWithContent(filename)
 
 
