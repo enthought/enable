@@ -1,16 +1,30 @@
 import contextlib
 
-import PyPDF2  # Tests require the PyPDF2 library for parsing the pdf stream
-from reportlab.pdfgen.canvas import Canvas
-
 from kiva.tests.drawing_tester import DrawingTester
-from kiva.pdf import GraphicsContext
 from traits.testing.unittest_tools import unittest
 
+try:
+    import PyPDF2  # Tests require the PyPDF2 library.
+except ImportError:
+    PYPDF2_NOT_AVAILABLE = True
+else:
+    PYPDF2_NOT_AVAILABLE = False
 
+try:
+    import reportlab  # noqa
+except ImportError:
+    REPORTLAB_NOT_AVAILABLE = True
+else:
+    REPORTLAB_NOT_AVAILABLE = False
+
+
+@unittest.skipIf(PYPDF2_NOT_AVAILABLE, "PDF tests require PyPDF2")
 class TestPDFDrawing(DrawingTester, unittest.TestCase):
 
+    @unittest.skipIf(REPORTLAB_NOT_AVAILABLE, "Cannot import reportlab")
     def create_graphics_context(self, width, height):
+        from reportlab.pdfgen.canvas import Canvas
+        from kiva.pdf import GraphicsContext
         filename = "{0}.pdf".format(self.filename)
         canvas = Canvas(filename, (width, height))
         return GraphicsContext(canvas)
