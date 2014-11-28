@@ -4,9 +4,9 @@ python:
   - 2.6
 before_install:
   - sudo apt-get update
-  # For Python 2.7, install PyQt4
+  # For Python 2.7, install PyQt4 and cairo
   - if [[ $TRAVIS_PYTHON_VERSION == '2.7_with_system_site_packages' ]]; then source .travis_before_install; fi
-  # PyQt can't be installed on 2.6; run the tests without Qt
+  # PyQt and cairo can't be installed on 2.6; run the tests without Qt
   - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then source .travis_before_install_noqt; fi
   - sudo apt-get install swig
   # Simlinks for PIL compilation
@@ -20,13 +20,6 @@ install:
   - pip install --upgrade numpy
   - pip install -r dev_requirements.txt
   - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install -r requirements-2.6.txt; fi
-  - wget -nv http://cairographics.org/releases/py2cairo-1.10.0.tar.bz2
-  - tar -xf py2cairo-1.10.0.tar.bz2
-  - pushd py2cairo-1.10.0
-  - ./waf configure
-  - ./waf build
-  - sudo ./waf install
-  - popd
   - pip install coveralls
   - python setup.py develop
 script:
