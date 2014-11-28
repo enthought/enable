@@ -1,10 +1,16 @@
-from pyface.qt import QtGui
+try:
+    from pyface.qt import QtGui
+except ImportError:
+    QT_NOT_AVAILABLE = True
+else:
+    QT_NOT_AVAILABLE = False
 
 from kiva.tests.drawing_tester import DrawingImageTester
 from kiva.qpainter import GraphicsContext
 from traits.testing.unittest_tools import unittest
 
 
+@unittest.skipIf(QT_NOT_AVAILABLE, "Cannot import qt")
 class TestQPainterDrawing(DrawingImageTester, unittest.TestCase):
 
     def setUp(self):

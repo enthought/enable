@@ -1,6 +1,13 @@
 import contextlib
 
-import pyglet
+try:
+    import pyglet
+except ImportError:
+    PYGLET_NOT_AVAILABLE = True
+else:
+    PYGLET_NOT_AVAILABLE = False
+
+
 from pyglet.image.codecs.png import PNGImageEncoder
 
 from kiva.tests.drawing_tester import DrawingImageTester
@@ -8,6 +15,7 @@ from kiva.gl import GraphicsContext
 from traits.testing.unittest_tools import unittest
 
 
+@unittest.skipIf(PYGLET_NOT_AVAILABLE, "Cannot import pyglet")
 class TestGLDrawing(DrawingImageTester, unittest.TestCase):
 
     def tearDown(self):
