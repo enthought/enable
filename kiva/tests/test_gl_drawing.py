@@ -11,7 +11,6 @@ else:
 from pyglet.image.codecs.png import PNGImageEncoder
 
 from kiva.tests.drawing_tester import DrawingImageTester
-from kiva.gl import GraphicsContext
 from traits.testing.unittest_tools import unittest
 
 
@@ -25,6 +24,7 @@ class TestGLDrawing(DrawingImageTester, unittest.TestCase):
         DrawingImageTester.tearDown(self)
 
     def create_graphics_context(self, width, height):
+        from kiva.gl import GraphicsContext
         self.window = pyglet.window.Window(width=width, height=height)
         gc = GraphicsContext((width, height))
         gc.gl_init()

@@ -6,7 +6,6 @@ else:
     QT_NOT_AVAILABLE = False
 
 from kiva.tests.drawing_tester import DrawingImageTester
-from kiva.qpainter import GraphicsContext
 from traits.testing.unittest_tools import unittest
 
 
@@ -23,6 +22,7 @@ class TestQPainterDrawing(DrawingImageTester, unittest.TestCase):
         DrawingImageTester.setUp(self)
 
     def create_graphics_context(self, width, height):
+        from kiva.qpainter import GraphicsContext
         return GraphicsContext((width, height))
 
 
