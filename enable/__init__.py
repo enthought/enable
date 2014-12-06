@@ -7,6 +7,6 @@ __version__ = '4.5.0-dev'
 
 __requires__ = [
     'traitsui',
-    'PIL',
+    'Pillow',
     'kiwisolver',
 ]
