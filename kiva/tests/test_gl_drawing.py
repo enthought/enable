@@ -35,7 +35,7 @@ class TestGLDrawing(DrawingImageTester, unittest.TestCase):
 
     @unittest.expectedFailure
     def test_text_clip(self):
-        # gl graphics context does not clip text properly
+        # gl graphics context does not clip text properly (#165).
         DrawingImageTester.test_text_clip(self)
 
     @contextlib.contextmanager
