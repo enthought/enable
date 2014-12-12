@@ -723,6 +723,11 @@ class GraphicsContext(GraphicsContextBase):
     # Painting paths (drawing and filling contours)
     # ----------------------------------------------------------------
 
+    def clear(self):
+        """
+        """
+        warnings.warn("clear() is ignored for the pdf backend")
+
     def stroke_path(self):
         """
         """
