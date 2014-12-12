@@ -7,9 +7,9 @@ Kiva is a 2D vector drawing interface providing functionality similar to
 `Qt QPainter interface <http://qt-project.org/doc/qt-4.8/qpainter.html>`_,
 the 2D drawing routines of `OpenGL <http://www.opengl.org/>`_ , the HTML5
 Canvas element and many other similar 2D vector drawing APIs.  Rather than
-re-implementing everthing, Kiva is a Python interface layer that sits on top
+re-implementing everything, Kiva is a Python interface layer that sits on top
 of many different back-ends which are in fact provided by some of these
-libraries, depending on the platform, GUI toolkit, and capabilties of the
+libraries, depending on the platform, GUI toolkit, and capabilities of the
 system.
 
 This approach permits code to be written to the Kiva API, but produce output
@@ -43,10 +43,10 @@ The Graphics Context
 The heart of the Kiva drawing API is the "graphics context", frequently
 abbreviated as ``gc`` in code.  The graphics context holds the current drawing
 state (such as pen and fill colors, font state, and affine transformations to
-be applied to points) and provides methods for chaning the state and
+be applied to points) and provides methods for changing the state and
 performing drawing actions.
 
-In many common ues-cases (such as writing renderers for Chaco), you will be
+In many common use-cases (such as writing renderers for Chaco), you will be
 provided a graphics context by other code, but it is straight-forward to create
 your own graphics context::
 
@@ -63,7 +63,7 @@ context in a `QWidget` called `my_qwidget` we would use::
     gc = GraphicsContext((400, 400), parent=my_qwidget)
 
 Other Kiva backends have similar methods of creating a graphics context, and
-each may take somwhat different arguments to the constructor, dpending on the
+each may take somewhat different arguments to the constructor, depending on the
 requirements of the backend.
 
 Once you have a graphics context, you can use it to draw vector graphics.
@@ -97,14 +97,14 @@ performed in C where possible::
 Coordinate Model
 ~~~~~~~~~~~~~~~~
 
-Kiva uses mathematical axes direction conventions as opposed to computer
-science axes conventions.  In other words, the origin is always at the _bottom_
-left of the screen, and the positive y axis goes _up_ from bottom to top; as
-opposed to screen coordinates which typically have the origin at the _top_ left
-and the positive y axis goes _down_ from top to bottom.
+Kiva uses mathematical axes direction conventions as opposed to framebuffer
+axes conventions.  In other words, the origin is always at the *bottom*
+left of the screen, and the positive y axis goes *up* from bottom to top; as
+opposed to screen coordinates which typically have the origin at the *top* left
+and the positive y axis goes *down* from top to bottom.
 
 Additionally, for backends that produce raster images, the coordinates
-represent the _corner_ of pixels, rather than the center of pixels.  This has
+represent the *corner* of pixels, rather than the center of pixels.  This has
 consequences when rendering thin lines.  Compare the two lines in this example,
 for instance::
 
@@ -196,7 +196,7 @@ add a line to the path from the current point to the specified point.
 In addition to the straight line commands, there are 4 arc commands for adding
 curves to a path: ``curve_to()`` which draws a cubic bezier curve,
 ``quad_curve_to()`` which draws a quadratic bezier curve, ``arc()`` which
-draws a cricular arc based on a center and radius, and ``arc_to()`` which
+draws a circular arc based on a center and radius, and ``arc_to()`` which
 draws a circular arc from one point to another.
 
 Finally, the ``rect()`` method adds a rectangle to the path.
@@ -485,7 +485,7 @@ State functions
 :set_line_width(float):
 :set_line_join(line_join):
 :set_line_cap(line_cap):
-:set_line_dash(array): array is an even-lengthed tuple of floats that represents
+:set_line_dash(array): array is an even-length tuple of floats that represents
     the width of each dash and gap in the dash pattern.
 :set_fill_color(color):
 :get_fill_color() -> color:
@@ -576,7 +576,7 @@ Drawing functions
 :draw_marker_at_points(point_array, int size, marker=marker_square):
 :draw_path_at_points(point_array, `CompiledPath`_, draw_mode):
 :draw_image(graphics_context img, rect=None): if rect is defined, then img is
-    scaled and drawn into it. Otherwise, img is overlayed exactly on top of this
+    scaled and drawn into it. Otherwise, img is overlaid exactly on top of this
     graphics context
 
 Text functions
