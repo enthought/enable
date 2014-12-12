@@ -8,8 +8,6 @@ else:
     PYGLET_NOT_AVAILABLE = False
 
 
-from pyglet.image.codecs.png import PNGImageEncoder
-
 from kiva.tests.drawing_tester import DrawingImageTester
 from traits.testing.unittest_tools import unittest
 
@@ -42,6 +40,8 @@ class TestGLDrawing(DrawingImageTester, unittest.TestCase):
 
     @contextlib.contextmanager
     def draw_and_check(self):
+        from pyglet.image.codecs.png import PNGImageEncoder
+
         self.window.clear()
         self.window.switch_to()
         self.window.dispatch_events()

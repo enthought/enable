@@ -19,9 +19,9 @@ else:
 
 
 @unittest.skipIf(PYPDF2_NOT_AVAILABLE, "PDF tests require PyPDF2")
+@unittest.skipIf(REPORTLAB_NOT_AVAILABLE, "Cannot import reportlab")
 class TestPDFDrawing(DrawingTester, unittest.TestCase):
 
-    @unittest.skipIf(REPORTLAB_NOT_AVAILABLE, "Cannot import reportlab")
     def create_graphics_context(self, width, height):
         from reportlab.pdfgen.canvas import Canvas
         from kiva.pdf import GraphicsContext
