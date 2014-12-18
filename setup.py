@@ -209,7 +209,7 @@ if __name__ == "__main__":
           author_email='info@enthought.com',
           maintainer='ETS Developers',
           maintainer_email='enthought-dev@enthought.com',
-          url='http://code.enthought.com/projects/enable',
+          url='https://github.com/enthought/enable/',
           classifiers=[c.strip() for c in """\
               Development Status :: 5 - Production/Stable
               Intended Audience :: Developers
@@ -235,8 +235,9 @@ if __name__ == "__main__":
           },
           description='low-level drawing and interaction',
           long_description=open('README.rst').read(),
-          download_url=('http://www.enthought.com/repo/ets/enable-%s.tar.gz' %
-                        __version__),
+          # Note that this URL is only valid for tagged releases.
+          download_url=('https://github.com/enthought/enable/archive/'
+                        '{0}.tar.gz'.format(__version__)),
           install_requires=__requires__,
           license='BSD',
           package_data={'': ['*.zip', '*.svg', 'images/*']},
