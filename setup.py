@@ -92,24 +92,23 @@ if not is_released:
     # up the build under Python 3.
     fullversion = VERSION
     if os.path.exists('.git'):
-        git_rev, dev_num = git_version()
+        git_revision, dev_num = git_version()
     elif os.path.exists('enable/_version.py'):
         # must be a source distribution, use existing version file
         try:
-            from enable._version import git_revision as git_rev
-            from enable._version import full_version as full_v
+            from enable._version import git_revision, full_version
         except ImportError:
             raise ImportError("Unable to import git_revision. Try removing "
                               "enable/_version.py and the build directory "
                               "before building.")
 
-        match = re.match(r'.*?\.dev(?P<dev_num>\d+)', full_v)
+        match = re.match(r'.*?\.dev(?P<dev_num>\d+)', full_version)
         if match is None:
             dev_num = '0'
         else:
             dev_num = match.group('dev_num')
     else:
-        git_rev = 'Unknown'
+        git_revision = 'Unknown'
         dev_num = '0'
 
     if not IS_RELEASED:
@@ -118,7 +117,7 @@ if not is_released:
     with open(filename, "wt") as fp:
         fp.write(template.format(version=VERSION,
                                  full_version=fullversion,
-                                 git_revision=git_rev,
+                                 git_revision=git_revision,
                                  is_released=IS_RELEASED))
 
 
