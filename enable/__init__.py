@@ -4,9 +4,7 @@
     Part of the Enable project of the Enthought Tool Suite.
 """
 
-from __future__ import absolute_import
-
-from ._version import full_version as __version__
+from enable._version import full_version as __version__
 
 __requires__ = [
     'traitsui',
