@@ -76,7 +76,7 @@ def git_version():
     return git_revision, git_count
 
 
-def write_version_py(filename='enable/_version.py'):
+def write_version_py(filename='kiva/_version.py'):
     template = """\
 # THIS FILE IS GENERATED FROM ENABLE SETUP.PY
 version = '{version}'
@@ -88,18 +88,18 @@ if not is_released:
     version = full_version
 """
     # Adding the git rev number needs to be done inside
-    # write_version_py(), otherwise the import of enable._version messes
+    # write_version_py(), otherwise the import of kiva._version messes
     # up the build under Python 3.
     fullversion = VERSION
     if os.path.exists('.git'):
         git_revision, dev_num = git_version()
-    elif os.path.exists('enable/_version.py'):
+    elif os.path.exists('kiva/_version.py'):
         # must be a source distribution, use existing version file
         try:
-            from enable._version import git_revision, full_version
+            from kiva._version import git_revision, full_version
         except ImportError:
             raise ImportError("Unable to import git_revision. Try removing "
-                              "enable/_version.py and the build directory "
+                              "kiva/_version.py and the build directory "
                               "before building.")
 
         match = re.match(r'.*?\.dev(?P<dev_num>\d+)', full_version)

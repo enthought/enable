@@ -4,7 +4,7 @@
     Part of the Enable project of the Enthought Tool Suite.
 """
 
-from enable._version import full_version as __version__
+from kiva._version import full_version as __version__
 
 __requires__ = [
     'traitsui',
