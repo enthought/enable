@@ -26,10 +26,10 @@ class Image(Component):
     data = Array(shape=(None, None, (3,4)), dtype='uint8')
 
     #: the format of the image data (eg. RGB vs. RGBA)
-    format = Property(Enum('rgb24', 'rgba32'))
+    format = Property(Enum('rgb24', 'rgba32'), depends_on='data')
 
     #: the size-hint for constraints-based layout
-    layout_size_hint = Property(data)
+    layout_size_hint = Property(data, depends_on='data')
 
     #: the image as an Image GC
     _image = Property(Instance(GraphicsContext), depends_on='data')
@@ -43,7 +43,7 @@ class Image(Component):
 
     def __init__(self, data, **traits):
         # the default bounds are the size of the image
-        traits.setdefault('bounds', data.shape[:2])
+        traits.setdefault('bounds', data.shape[1::-1])
         super(Image, self).__init__(data=data, **traits)
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="normal"):
@@ -62,7 +62,7 @@ class Image(Component):
 
     @cached_property
     def _get_layout_size_hint(self):
-        return self.data.shape[:2]
+        return self.data.shape[1::-1]
 
     @cached_property
     def _get__image(self):
