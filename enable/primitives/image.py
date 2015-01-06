@@ -1,4 +1,4 @@
-""" Defines the Label class.
+""" Defines the Image component class.
 """
 
 from __future__ import absolute_import
@@ -16,9 +16,9 @@ class Image(Component):
 
     This is extremely simple right now.  By default it will draw the array into
     the entire region occupied by the component, stretching or shrinking as
-    needed.  It is up to the user to set the bounds, although the from_file
-    method will give something sensible, and we assume that a constraints-based
-    layout gets a layout_size_hint of the image size.
+    needed.  By default the bounds are set to the width and height of the data
+    array, and we provide the same information to constraints-based layout
+    with the layout_size_hint trait.
 
     """
 
