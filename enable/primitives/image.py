@@ -23,7 +23,7 @@ class Image(Component):
     """
 
     #: the image data as an array
-    data = Array(dtype='uint8')
+    data = Array(shape=(None, None, (3,4)), dtype='uint8')
 
     #: the format of the image data (eg. RGB vs. RGBA)
     format = Property(Enum('rgb24', 'rgba32'))
@@ -35,11 +35,16 @@ class Image(Component):
     _image = Property(Instance(GraphicsContext), depends_on='data')
 
     @classmethod
-    def from_file(cls, filename):
+    def from_file(cls, filename, **traits):
         from PIL import Image
         from numpy import asarray
         data = asarray(Image.open(filename))
-        return cls(data=data, bounds=data.shape[:2])
+        return cls(data=data, **traits)
+
+    def __init__(self, data, **traits):
+        # the default bounds are the size of the image
+        traits.setdefault('bounds', data.shape[:2])
+        super(Image, self).__init__(data=data, **traits)
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="normal"):
         """ Draws the image. """

@@ -1,21 +1,22 @@
 """
-This demonstrates the most basic drawing capabilities using Enable.  A new
-component is created and added to a container.
+This demonstrates the use of the simple Image component.
 """
 import os
-from enable.example_support import DemoFrame, demo_main
+
 from enable.api import ConstraintsContainer, Window
+from enable.example_support import DemoFrame, demo_main
 from enable.primitives.image import Image
 
 THIS_DIR = os.path.split(__file__)[0]
+
 
 class MyFrame(DemoFrame):
 
     def _create_window(self):
         path = os.path.join(THIS_DIR, 'deepfield.jpg')
-        image = Image.from_file(path)
-        image.resist_width = 'weak'
-        image.resist_height = 'weak'
+        image = Image.from_file(path, resist_width='weak',
+                                resist_height='weak')
+
         container = ConstraintsContainer(bounds=[500, 500])
         container.add(image)
         ratio = float(image.data.shape[1])/image.data.shape[0]
