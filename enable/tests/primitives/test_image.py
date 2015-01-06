@@ -1,7 +1,8 @@
 
+import unittest
+
 import numpy as np
 from numpy.testing import assert_array_equal
-import unittest2 as unittest
 
 from kiva.image import GraphicsContext
 from traits.api import TraitError
