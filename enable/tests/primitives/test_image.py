@@ -1,4 +1,6 @@
+""" Tests for the Image component """
 
+import os
 import sys
 if sys.version_info[:2] == (2, 7):
     import unittest2 as unittest
@@ -7,12 +9,16 @@ else:
 
 import numpy as np
 from numpy.testing import assert_array_equal
+from pkg_resources import resource_filename
 
 from kiva.image import GraphicsContext
 from traits.api import TraitError
 from traits.testing.unittest_tools import UnittestTools
 
 from enable.primitives.image import Image
+
+
+data_dir = resource_filename('enable.tests.primitives', 'data')
 
 
 class ImageTest(unittest.TestCase, UnittestTools):
@@ -26,6 +32,22 @@ class ImageTest(unittest.TestCase, UnittestTools):
 
         self.image_24 = Image(self.data[..., :3])
         self.image_32 = Image(self.data)
+
+    def test_fromfile_png_rgb(self):
+        # basic smoke test - assume that kiva.image does the right thing
+        path = os.path.join(data_dir, 'PngSuite', 'basn2c08.png')
+        image = Image.from_file(path)
+
+        self.assertEqual(image.data.shape, (32, 32, 3))
+        self.assertEqual(image.format, 'rgb24')
+
+    def test_fromfile_png_rgba(self):
+        # basic smoke test - assume that kiva.image does the right thing
+        path = os.path.join(data_dir, 'PngSuite', 'basi6a08.png')
+        image = Image.from_file(path)
+
+        self.assertEqual(image.data.shape, (32, 32, 4))
+        self.assertEqual(image.format, 'rgba32')
 
     def test_init_bad_shape(self):
         data = np.zeros(shape=(256, 256), dtype='uint8')
