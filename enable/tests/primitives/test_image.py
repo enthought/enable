@@ -129,3 +129,19 @@ class ImageTest(unittest.TestCase, UnittestTools):
         # XXX actually compute what it should look like with alpha transfer
         white_image = np.ones(shape=(256, 128, 4), dtype='uint8')*255
         self.assertFalse(np.array_equal(white_image, gc.bmp_array))
+
+    def test_draw_stretched(self):
+        gc = GraphicsContext((256, 256), pix_format='rgba32')
+        self.image_32.bounds = [128, 258]
+        self.image_32.position = [128, 0]
+        self.image_32.draw(gc)
+        # if test is failing, uncommetn this line to see what is drawn
+        #gc.save('test_image_draw_stretched.png')
+
+        # smoke test: image isn't all white
+        # XXX actually compute what it should look like with alpha transfer
+        white_image = np.ones(shape=(256, 256, 4), dtype='uint8')*255
+        self.assertFalse(np.array_equal(white_image, gc.bmp_array))
+
+        # left half of the image *should* be white
+        assert_array_equal(gc.bmp_array[:, :128, :], white_image[:, :128, :])
