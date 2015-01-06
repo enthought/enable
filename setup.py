@@ -152,7 +152,10 @@ setup(
                     info['__version__']),
     install_requires = info['__requires__'],
     license = 'BSD',
-    package_data = {'': ['*.zip', '*.svg', 'images/*']},
+    package_data = {
+        '': ['*.zip', '*.svg', 'images/*'],
+        'enable': ['tests/primitives/data/PngSuite/*.png'],
+    },
     platforms = ["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
     setup_requires = [
         'cython',
