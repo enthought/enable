@@ -1,3 +1,19 @@
+#
+# (C) Copyright 2015 Enthought, Inc., Austin, TX
+# All right reserved.
+#
+# This file is open source software distributed according to the terms in
+# LICENSE.txt
+#
+"""
+Example Application Support
+===========================
+
+This module provides a simple Pyface application that can be used by examples
+in places where a DemoFrame is insufficient.
+
+"""
+
 from __future__ import (division, absolute_import, print_function,
                         unicode_literals)
 
