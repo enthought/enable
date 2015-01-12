@@ -20,18 +20,23 @@ from __future__ import (division, absolute_import, print_function,
 from apptools.undo.api import (CommandStack, ICommandStack, IUndoManager,
                                UndoManager)
 from apptools.undo.action.api import UndoAction, RedoAction
-from pyface.api import ApplicationWindow, GUI
 from pyface.action.api import Action, Group, MenuBarManager, MenuManager
 from traits.api import Instance
 
-from enable.api import Container, Window
+from enable.api import Container, Window, KeySpec
 from enable.example_application import DemoApplication, demo_main
 from enable.primitives.api import Box
 from enable.tools.apptools.move_command_tool import MoveCommandTool
+from enable.tools.apptools.undo_tool import UndoTool
 
 
 class UndoableMoveApplication(DemoApplication):
-    """ Example of using a MoveCommandTool with undo/redo support. """
+    """ Example of using a MoveCommandTool with undo/redo support.
+
+    You can use left/right arrow keys to step through the move history, or
+    use the standard undo/redo menu items.
+
+    """
 
     #: The apptools undo manager the application uses.
     undo_manager = Instance(IUndoManager)
@@ -45,13 +50,22 @@ class UndoableMoveApplication(DemoApplication):
 
     def _create_window(self):
         box = Box(bounds=[100,100], position=[50,50], color='red')
-        tool = MoveCommandTool(component=box,
-                               command_stack=self.command_stack)
-        box.tools.append(tool)
+
+        move_tool = MoveCommandTool(component=box,
+                                    command_stack=self.command_stack)
+        box.tools.append(move_tool)
 
         container = Container(bounds=[600, 600])
         container.add(box)
-        return Window(self.control, -1, component=container)
+
+        undo_tool = UndoTool(component=container,
+                             undo_manager=self.undo_manager,
+                             undo_keys=[KeySpec('Left')],
+                             redo_keys=[KeySpec('Right')])
+        container.tools.append(undo_tool)
+
+        window = Window(self.control, -1, component=container)
+        return window
 
     #-------------------------------------------------------------------------
     # Traits handlers
