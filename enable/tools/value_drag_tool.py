@@ -136,11 +136,11 @@ class ValueDragTool(DragTool):
     # traits default handlers
 
     def _x_mapper_default(self):
-        # if the component has an x_mapper, try to sue it by default
+        # if the component has an x_mapper, try to use it by default
         return getattr(self.component, 'x_mapper', identity_mapper)
 
     def _y_mapper_default(self):
-        # if the component has an x_mapper, try to sue it by default
+        # if the component has an x_mapper, try to use it by default
         return getattr(self.component, 'y_mapper', identity_mapper)
 
 
