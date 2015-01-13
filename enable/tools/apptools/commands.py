@@ -45,6 +45,58 @@ class ComponentCommand(AbstractCommand):
         return ''
 
 
+class ResizeCommand(ComponentCommand):
+
+    #: The new rectangle of the component as a tuple (x, y, width, height).
+    data = Tuple
+
+    #: The old rectangle of the component as a tuple (x, y, width, height).
+    previous_rectangle = Tuple
+
+    #-------------------------------------------------------------------------
+    # AbstractCommand interface
+    #-------------------------------------------------------------------------
+
+    def merge(self, other):
+        if not self.final and isinstance(other, self.__class__) and \
+                other.component == self.component:
+            return self._merge_data(other)
+        return super(ResizeCommand, self).merge(other)
+
+    def do(self):
+        if self.previous_rectangle == ():
+            self.previous_rectangle = tuple(self.component.position +
+                                            self.component.bounds)
+        self.redo()
+
+    def redo(self):
+        self._change_rectangle(self.data)
+
+    def undo(self):
+        self._change_rectangle(self.previous_rectangle)
+
+    #-------------------------------------------------------------------------
+    # Private interface
+    #-------------------------------------------------------------------------
+
+    def _change_rectangle(self, rectangle):
+        x, y, w, h = rectangle
+        self.component.position = [x, y]
+        self.component.bounds = [w, h]
+        self.component._layout_needed = True
+        self.component.request_redraw()
+
+    def _merge_data(self, other):
+        self.data = other.data
+
+    #-------------------------------------------------------------------------
+    # traits handlers
+    #-------------------------------------------------------------------------
+
+    def _name_default(self):
+        return "Resize "+self.component_name
+
+
 class MoveCommand(ComponentCommand):
     """ A command that moves a component
 
