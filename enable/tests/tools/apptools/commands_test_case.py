@@ -1,0 +1,272 @@
+#
+# (C) Copyright 2015 Enthought, Inc., Austin, TX
+# All right reserved.
+#
+# This file is open source software distributed according to the terms in
+# LICENSE.txt
+#
+""" Tests for Commands that work with Components """
+
+from mock import MagicMock
+
+from traits.testing.unittest_tools import UnittestTools, unittest
+
+from enable.component import Component
+from enable.testing import EnableTestAssistant
+from enable.tools.apptools.commands import (
+    ComponentCommand, MovePositionCommand, ResizeCommand)
+
+
+class ComponentCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
+
+    def setUp(self):
+        self.component = Component()
+        self.command = ComponentCommand(component=self.component)
+
+    def test_name_default(self):
+        self.assertEqual(self.command.component_name, 'Component')
+
+    def test_name_empty(self):
+        command = ComponentCommand()
+        self.assertEqual(command.component_name, '')
+
+
+class ResizeCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
+
+    def setUp(self):
+        self.component = Component(position=[50, 50], bounds=[100, 100])
+        self.component.request_redraw = MagicMock()
+        self.command = ResizeCommand(component=self.component,
+                                     data=(25, 25, 150, 150),
+                                     previous_rectangle=(50, 50, 100, 100))
+
+    def test_do(self):
+        command = self.command
+
+        with self.assertMultiTraitChanges([self.component],
+                                          ['position', 'bounds'], []):
+            command.do()
+
+        self.assertEqual(self.component.position, [25, 25])
+        self.assertEqual(self.component.bounds, [150, 150])
+        self.assertTrue(self.component.request_redraw.called)
+
+    def test_do_no_previous_rectangle(self):
+        command = ResizeCommand(component=self.component,
+                                data=(25, 25, 150, 150))
+
+        with self.assertTraitChanges(command, 'previous_rectangle', count=1):
+            with self.assertMultiTraitChanges([self.component],
+                                            ['position', 'bounds'], []):
+                command.do()
+
+        self.assertEqual(command.previous_rectangle, (50, 50, 100, 100))
+        self.assertEqual(self.component.position, [25, 25])
+        self.assertEqual(self.component.bounds, [150, 150])
+        self.assertTrue(self.component.request_redraw.called)
+
+    def test_undo(self):
+        command = self.command
+        command.do()
+
+        with self.assertMultiTraitChanges([self.component],
+                                          ['position', 'bounds'], []):
+            command.undo()
+
+        self.assertEqual(self.component.position, [50, 50])
+        self.assertEqual(self.component.bounds, [100, 100])
+        self.assertTrue(self.component.request_redraw.called)
+
+    def test_redo(self):
+        command = self.command
+        command.do()
+        command.undo()
+
+        with self.assertMultiTraitChanges([self.component],
+                                          ['position', 'bounds'], []):
+            command.redo()
+
+        self.assertEqual(self.component.position, [25, 25])
+        self.assertEqual(self.component.bounds, [150, 150])
+        self.assertTrue(self.component.request_redraw.called)
+
+    def test_merge(self):
+        command = self.command
+        other_command = ResizeCommand(component=self.component,
+                                      data=(0, 0, 200, 200),
+                                      previous_rectangle=(50, 50, 100, 100))
+
+        with self.assertTraitChanges(command, 'data'):
+            merged = command.merge(other_command)
+
+        self.assertTrue(merged)
+        self.assertEqual(command.data, (0, 0, 200, 200))
+        self.assertFalse(command.final)
+
+    def test_merge_other_final(self):
+        command = self.command
+        other_command = ResizeCommand(component=self.component,
+                                      final=True,
+                                      data=(0, 0, 200, 200),
+                                      previous_rectangle=(50, 50, 100, 100))
+
+        with self.assertTraitChanges(command, 'data'):
+            merged = command.merge(other_command)
+
+        self.assertTrue(merged)
+        self.assertEqual(command.data, (0, 0, 200, 200))
+        self.assertTrue(command.final)
+
+    def test_merge_final(self):
+        command = self.command
+        command.final = True
+        other_command = ResizeCommand(component=self.component,
+                                      data=(0, 0, 200, 200),
+                                      previous_rectangle=(50, 50, 100, 100))
+
+        with self.assertTraitDoesNotChange(command, 'data'):
+            merged = command.merge(other_command)
+
+        self.assertFalse(merged)
+        self.assertEqual(command.data, (25, 25, 150, 150))
+
+    def test_merge_wrong_component(self):
+        command = self.command
+        command.final = True
+        other_component = Component()
+        other_command = ResizeCommand(component=other_component,
+                                      data=(0, 0, 200, 200),
+                                      previous_rectangle=(50, 50, 100, 100))
+
+        with self.assertTraitDoesNotChange(command, 'data'):
+            merged = command.merge(other_command)
+
+        self.assertFalse(merged)
+        self.assertEqual(command.data, (25, 25, 150, 150))
+
+    def test_merge_wrong_class(self):
+        command = self.command
+        command.final = True
+        other_command = ComponentCommand(component=self.component)
+
+        with self.assertTraitDoesNotChange(command, 'data'):
+            merged = command.merge(other_command)
+
+        self.assertFalse(merged)
+        self.assertEqual(command.data, (25, 25, 150, 150))
+
+class MoveCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
+
+    def setUp(self):
+        self.component = Component(position=[50, 50], bounds=[100, 100])
+        self.component.request_redraw = MagicMock()
+        self.command = MovePositionCommand(component=self.component,
+                                           data=(25, 25),
+                                           previous_position=(50, 50))
+
+    def test_do(self):
+        command = self.command
+
+        with self.assertTraitChanges(self.component, 'position', count=1):
+            command.do()
+
+        self.assertEqual(self.component.position, [25, 25])
+        self.assertTrue(self.component.request_redraw.called)
+
+    def test_do_no_previous_position(self):
+        command = MovePositionCommand(component=self.component,
+                                      data=(25, 25))
+
+        with self.assertTraitChanges(command, 'previous_position', count=1):
+            with self.assertTraitChanges(self.component, 'position', count=1):
+                command.do()
+
+        self.assertEqual(command.previous_position, (50, 50))
+        self.assertEqual(self.component.position, [25, 25])
+        self.assertTrue(self.component.request_redraw.called)
+
+    def test_undo(self):
+        command = self.command
+        command.do()
+
+        with self.assertTraitChanges(self.component, 'position', count=1):
+            command.undo()
+
+        self.assertEqual(self.component.position, [50, 50])
+        self.assertTrue(self.component.request_redraw.called)
+
+    def test_redo(self):
+        command = self.command
+        command.do()
+        command.undo()
+
+        with self.assertTraitChanges(self.component, 'position', count=1):
+            command.redo()
+
+        self.assertEqual(self.component.position, [25, 25])
+        self.assertTrue(self.component.request_redraw.called)
+
+    def test_merge(self):
+        command = self.command
+        other_command = MovePositionCommand(component=self.component,
+                                            data=(0, 0),
+                                            previous_position=(50, 50))
+
+        with self.assertTraitChanges(command, 'data'):
+            merged = command.merge(other_command)
+
+        self.assertTrue(merged)
+        self.assertEqual(command.data, (0, 0))
+        self.assertFalse(command.final)
+
+    def test_merge_other_final(self):
+        command = self.command
+        other_command = MovePositionCommand(component=self.component,
+                                            final=True, data=(0, 0),
+                                            previous_position=(50, 50))
+
+        with self.assertTraitChanges(command, 'data'):
+            merged = command.merge(other_command)
+
+        self.assertTrue(merged)
+        self.assertEqual(command.data, (0, 0))
+        self.assertTrue(command.final)
+
+    def test_merge_final(self):
+        command = self.command
+        command.final = True
+        other_command = MovePositionCommand(component=self.component,
+                                            data=(0, 0),
+                                            previous_position=(50, 50))
+
+        with self.assertTraitDoesNotChange(command, 'data'):
+            merged = command.merge(other_command)
+
+        self.assertFalse(merged)
+        self.assertEqual(command.data, (25, 25))
+
+    def test_merge_wrong_component(self):
+        command = self.command
+        command.final = True
+        other_component = Component()
+        other_command = MovePositionCommand(component=other_component,
+                                            data=(0, 0),
+                                            previous_position=(50, 50))
+
+
+        with self.assertTraitDoesNotChange(command, 'data'):
+            merged = command.merge(other_command)
+
+        self.assertFalse(merged)
+        self.assertEqual(command.data, (25, 25))
+
+    def test_merge_wrong_class(self):
+        command = self.command
+        command.final = True
+        other_command = ComponentCommand(component=self.component)
+
+        with self.assertTraitDoesNotChange(command, 'data'):
+            merged = command.merge(other_command)
+
+        self.assertFalse(merged)
+        self.assertEqual(command.data, (25, 25))

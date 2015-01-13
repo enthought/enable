@@ -53,6 +53,9 @@ class ResizeCommand(ComponentCommand):
     #: The old rectangle of the component as a tuple (x, y, width, height).
     previous_rectangle = Tuple
 
+    #: whether the resize is finished, or if additional resizes can be merged.
+    final = Bool
+
     #-------------------------------------------------------------------------
     # AbstractCommand interface
     #-------------------------------------------------------------------------
@@ -88,6 +91,8 @@ class ResizeCommand(ComponentCommand):
 
     def _merge_data(self, other):
         self.data = other.data
+        self.final = other.final
+        return True
 
     #-------------------------------------------------------------------------
     # traits handlers
@@ -208,3 +213,5 @@ class MovePositionCommand(MoveCommand):
 
     def _merge_data(self, other):
         self.data = other.data
+        self.final = other.final
+        return True
