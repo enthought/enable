@@ -7,10 +7,16 @@
 #
 """ Tests for Commands that work with Components """
 
+from __future__ import (division, absolute_import, print_function,
+                        unicode_literals)
+
+# Third party library imports
 from mock import MagicMock
 
+# Enthought library imports
 from traits.testing.unittest_tools import UnittestTools, unittest
 
+# Local library imports
 from enable.component import Component
 from enable.testing import EnableTestAssistant
 from enable.tools.apptools.commands import (

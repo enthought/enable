@@ -5,6 +5,13 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
+"""
+UndoTool
+========
+
+Tool that triggers undo or redo when keys are pressed.
+
+"""
 
 from __future__ import (division, absolute_import, print_function,
                         unicode_literals)
@@ -18,8 +25,8 @@ from .command_tool import BaseUndoTool
 
 
 # default undo/redo/clear key specifications
-ctrl_z = KeySpec('z', 'control', ignore=['shift', 'alt'])
-ctrl_shift_z = KeySpec('z', 'control', 'shift', ignore=['alt'])
+ctrl_z = KeySpec('z', 'control')
+ctrl_shift_z = KeySpec('z', 'control', 'shift')
 
 
 class UndoTool(BaseUndoTool):
@@ -40,6 +47,7 @@ class UndoTool(BaseUndoTool):
                     event.handled = True
                     return
             for key in self.redo_keys:
+                print (key)
                 if key.match(event):
                     self.undo_manager.redo()
                     event.handled = True

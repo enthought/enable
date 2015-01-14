@@ -56,8 +56,8 @@ class ResizeCommandTool(ResizeTool, BaseCommandTool):
                 final=True)
             self.command_stack.push(command)
             event.handled = True
-            super(ResizeCommandTool, self).drag_end(event)
-        return
+            return super(ResizeCommandTool, self).drag_end(event)
+        return True
 
     def drag_cancel(self, event):
         """ Restore the component's position if the drag is cancelled.
@@ -70,4 +70,4 @@ class ResizeCommandTool(ResizeTool, BaseCommandTool):
         if self.component is not None:
             self.component.position = list(self._initial_rectangle)
             event.handled = True
-        return
+        return True
