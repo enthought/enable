@@ -46,6 +46,13 @@ class ResizeCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
                                      data=(25, 25, 150, 150),
                                      previous_rectangle=(50, 50, 100, 100))
 
+    def test_name_default(self):
+        self.assertEqual(self.command.name, 'Resize Component')
+
+    def test_name_alternate_component_name(self):
+        self.command.component_name = 'My Component'
+        self.assertEqual(self.command.name, 'Resize My Component')
+
     def test_do(self):
         command = self.command
 
@@ -98,6 +105,7 @@ class ResizeCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
 
     def test_merge(self):
         command = self.command
+        command.mergeable = True
         other_command = ResizeCommand(component=self.component,
                                       data=(0, 0, 200, 200),
                                       previous_rectangle=(50, 50, 100, 100))
@@ -107,12 +115,13 @@ class ResizeCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
 
         self.assertTrue(merged)
         self.assertEqual(command.data, (0, 0, 200, 200))
-        self.assertFalse(command.final)
+        self.assertFalse(command.mergeable)
 
-    def test_merge_other_final(self):
+    def test_merge_other_mergeable(self):
         command = self.command
+        command.mergeable = True
         other_command = ResizeCommand(component=self.component,
-                                      final=True,
+                                      mergeable=True,
                                       data=(0, 0, 200, 200),
                                       previous_rectangle=(50, 50, 100, 100))
 
@@ -121,11 +130,10 @@ class ResizeCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
 
         self.assertTrue(merged)
         self.assertEqual(command.data, (0, 0, 200, 200))
-        self.assertTrue(command.final)
+        self.assertTrue(command.mergeable)
 
-    def test_merge_final(self):
+    def test_merge_unmergeable(self):
         command = self.command
-        command.final = True
         other_command = ResizeCommand(component=self.component,
                                       data=(0, 0, 200, 200),
                                       previous_rectangle=(50, 50, 100, 100))
@@ -138,7 +146,7 @@ class ResizeCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
 
     def test_merge_wrong_component(self):
         command = self.command
-        command.final = True
+        command.mergeable = True
         other_component = Component()
         other_command = ResizeCommand(component=other_component,
                                       data=(0, 0, 200, 200),
@@ -152,7 +160,7 @@ class ResizeCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
 
     def test_merge_wrong_class(self):
         command = self.command
-        command.final = True
+        command.mergeable = True
         other_command = ComponentCommand(component=self.component)
 
         with self.assertTraitDoesNotChange(command, 'data'):
@@ -169,6 +177,13 @@ class MoveCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
         self.command = MovePositionCommand(component=self.component,
                                            data=(25, 25),
                                            previous_position=(50, 50))
+
+    def test_name_default(self):
+        self.assertEqual(self.command.name, 'Move Component')
+
+    def test_name_alternate_component_name(self):
+        self.command.component_name = 'My Component'
+        self.assertEqual(self.command.name, 'Move My Component')
 
     def test_do(self):
         command = self.command
@@ -214,6 +229,7 @@ class MoveCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
 
     def test_merge(self):
         command = self.command
+        command.mergeable = True
         other_command = MovePositionCommand(component=self.component,
                                             data=(0, 0),
                                             previous_position=(50, 50))
@@ -223,12 +239,13 @@ class MoveCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
 
         self.assertTrue(merged)
         self.assertEqual(command.data, (0, 0))
-        self.assertFalse(command.final)
+        self.assertFalse(command.mergeable)
 
-    def test_merge_other_final(self):
+    def test_merge_other_mergeable(self):
         command = self.command
+        command.mergeable = True
         other_command = MovePositionCommand(component=self.component,
-                                            final=True, data=(0, 0),
+                                            mergeable=True, data=(0, 0),
                                             previous_position=(50, 50))
 
         with self.assertTraitChanges(command, 'data'):
@@ -236,11 +253,10 @@ class MoveCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
 
         self.assertTrue(merged)
         self.assertEqual(command.data, (0, 0))
-        self.assertTrue(command.final)
+        self.assertTrue(command.mergeable)
 
-    def test_merge_final(self):
+    def test_merge_unmergeable(self):
         command = self.command
-        command.final = True
         other_command = MovePositionCommand(component=self.component,
                                             data=(0, 0),
                                             previous_position=(50, 50))
@@ -253,7 +269,7 @@ class MoveCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
 
     def test_merge_wrong_component(self):
         command = self.command
-        command.final = True
+        command.mergeable = True
         other_component = Component()
         other_command = MovePositionCommand(component=other_component,
                                             data=(0, 0),
@@ -268,7 +284,7 @@ class MoveCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
 
     def test_merge_wrong_class(self):
         command = self.command
-        command.final = True
+        command.mergeable = True
         other_command = ComponentCommand(component=self.component)
 
         with self.assertTraitDoesNotChange(command, 'data'):

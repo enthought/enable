@@ -17,7 +17,7 @@ commands.
 from __future__ import (division, absolute_import, print_function,
                         unicode_literals)
 
-from traits.api import Tuple
+from traits.api import Bool, Tuple
 
 from enable.tools.resize_tool import ResizeTool
 
@@ -34,8 +34,19 @@ class ResizeCommandTool(ResizeTool, BaseCommandTool):
 
     """
 
+    #-------------------------------------------------------------------------
+    # 'ResizeCommandTool' interface
+    #-------------------------------------------------------------------------
+
+    #: Whether or not subsequent moves can be merged with this one.
+    mergeable = Bool
+
     #: The initial component position.
     _initial_rectangle = Tuple(0, 0, 0, 0)
+
+    #-------------------------------------------------------------------------
+    # 'DragTool' interface
+    #-------------------------------------------------------------------------
 
     def drag_start(self, event):
         if self.component is not None:
@@ -49,7 +60,7 @@ class ResizeCommandTool(ResizeTool, BaseCommandTool):
     def drag_end(self, event):
         """ End the drag operation, issuing a MovePositionCommand """
         if self.component is not None:
-            command = ResizeCommand(
+            command = self.command(
                 component=self.component,
                 data=tuple(self.component.position + self.component.bounds),
                 previous_rectangle=self._initial_rectangle,
@@ -71,3 +82,10 @@ class ResizeCommandTool(ResizeTool, BaseCommandTool):
             self.component.position = list(self._initial_rectangle)
             event.handled = True
         return True
+
+    #-------------------------------------------------------------------------
+    # Trait handlers
+    #-------------------------------------------------------------------------
+
+    def _command_default(self):
+        return ResizeCommand

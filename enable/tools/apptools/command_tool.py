@@ -19,7 +19,7 @@ from __future__ import (division, absolute_import, print_function,
                         unicode_literals)
 
 from apptools.undo.api import ICommandStack, IUndoManager
-from traits.api import Instance
+from traits.api import Callable, Instance
 
 from enable.base_tool import BaseTool
 
@@ -31,6 +31,9 @@ class BaseCommandTool(BaseTool):
     undoable commands.
 
     """
+
+    # The command that the tool creates in response to user action.
+    command = Callable
 
     # The command stack to push to.
     command_stack = Instance(ICommandStack)

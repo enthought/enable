@@ -71,7 +71,7 @@ class ResizeCommandToolTestCase(unittest.TestCase, EnableTestAssistant,
         # check that the ResizeCommand has right parameters
         self.assertEqual(command.data, (50, 50, 150, 50))
         self.assertEqual(command.previous_rectangle, (50, 50, 100, 100))
-        self.assertTrue(command.final)
+        self.assertFalse(command.mergeable)
         self.assertEqual(command.component, self.component)
 
     def test_drag_cancel(self):

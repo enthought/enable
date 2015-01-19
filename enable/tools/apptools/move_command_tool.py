@@ -17,7 +17,7 @@ commands.
 from __future__ import (division, absolute_import, print_function,
                         unicode_literals)
 
-from traits.api import Tuple
+from traits.api import Bool, Tuple
 
 from enable.tools.move_tool import MoveTool
 
@@ -34,8 +34,19 @@ class MoveCommandTool(MoveTool, BaseCommandTool):
 
     """
 
+    #-------------------------------------------------------------------------
+    # 'MoveCommandTool' interface
+    #-------------------------------------------------------------------------
+
+    #: Whether or not subsequent moves can be merged with this one.
+    mergeable = Bool
+
     #: The initial component position.
     _initial_position = Tuple(0, 0)
+
+    #-------------------------------------------------------------------------
+    # 'DragTool' interface
+    #-------------------------------------------------------------------------
 
     def drag_start(self, event):
         if self.component:
@@ -46,11 +57,11 @@ class MoveCommandTool(MoveTool, BaseCommandTool):
     def drag_end(self, event):
         """ End the drag operation, issuing a MovePositionCommand """
         if self.component:
-            command = MovePositionCommand(
+            command = self.command(
                 component=self.component,
                 data=tuple(self.component.position),
                 previous_position=self._initial_position,
-                final=True)
+                mergeable=self.mergeable)
             self.command_stack.push(command)
             event.handled = True
         return
@@ -68,3 +79,10 @@ class MoveCommandTool(MoveTool, BaseCommandTool):
 
             event.handled = True
         return
+
+    #-------------------------------------------------------------------------
+    # Trait handlers
+    #-------------------------------------------------------------------------
+
+    def _command_default(self):
+        return MovePositionCommand

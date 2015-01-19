@@ -26,8 +26,7 @@ from traits.api import Instance
 from enable.api import Container, Window, KeySpec
 from enable.example_application import DemoApplication, demo_main
 from enable.primitives.api import Box
-from enable.tools.apptools.move_command_tool import MoveCommandTool
-from enable.tools.apptools.undo_tool import UndoTool
+from enable.tools.apptools.api import MoveCommandTool, UndoTool
 
 
 class UndoableMoveApplication(DemoApplication):

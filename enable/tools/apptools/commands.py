@@ -53,15 +53,15 @@ class ResizeCommand(ComponentCommand):
     #: The old rectangle of the component as a tuple (x, y, width, height).
     previous_rectangle = Tuple
 
-    #: whether the resize is finished, or if additional resizes can be merged.
-    final = Bool
+    #: whether additional resizes can be merged or if the resize is finished.
+    mergeable = Bool
 
     #-------------------------------------------------------------------------
     # AbstractCommand interface
     #-------------------------------------------------------------------------
 
     def merge(self, other):
-        if not self.final and isinstance(other, self.__class__) and \
+        if self.mergeable and isinstance(other, self.__class__) and \
                 other.component == self.component:
             return self._merge_data(other)
         return super(ResizeCommand, self).merge(other)
@@ -91,7 +91,7 @@ class ResizeCommand(ComponentCommand):
 
     def _merge_data(self, other):
         self.data = other.data
-        self.final = other.final
+        self.mergeable = other.mergeable
         return True
 
     #-------------------------------------------------------------------------
@@ -112,15 +112,15 @@ class MoveCommand(ComponentCommand):
 
     """
 
-    #: whether the move is finished, or if additional moves can be merged.
-    final = Bool
+    #: whether additional moves can be merged or if the move is finished.
+    mergeable = Bool
 
     #-------------------------------------------------------------------------
     # AbstractCommand interface
     #-------------------------------------------------------------------------
 
     def merge(self, other):
-        if not self.final and isinstance(other, self.__class__) and \
+        if self.mergeable and isinstance(other, self.__class__) and \
                 other.component == self.component:
             return self._merge_data(other)
         return super(MoveCommand, self).merge(other)
@@ -213,5 +213,5 @@ class MovePositionCommand(MoveCommand):
 
     def _merge_data(self, other):
         self.data = other.data
-        self.final = other.final
+        self.mergeable = other.mergeable
         return True
