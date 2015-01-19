@@ -22,7 +22,7 @@ from traits.api import Bool, Tuple
 from enable.tools.move_tool import MoveTool
 
 from .command_tool import BaseCommandTool
-from .commands import MovePositionCommand
+from .commands import MoveCommand
 
 
 class MoveCommandTool(MoveTool, BaseCommandTool):
@@ -85,4 +85,4 @@ class MoveCommandTool(MoveTool, BaseCommandTool):
     #-------------------------------------------------------------------------
 
     def _command_default(self):
-        return MovePositionCommand
+        return MoveCommand

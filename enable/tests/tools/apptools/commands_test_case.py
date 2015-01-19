@@ -20,7 +20,7 @@ from traits.testing.unittest_tools import UnittestTools, unittest
 from enable.component import Component
 from enable.testing import EnableTestAssistant
 from enable.tools.apptools.commands import (
-    ComponentCommand, MovePositionCommand, ResizeCommand)
+    ComponentCommand, MoveCommand, ResizeCommand)
 
 
 class ComponentCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
@@ -174,9 +174,9 @@ class MoveCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
     def setUp(self):
         self.component = Component(position=[50, 50], bounds=[100, 100])
         self.component.request_redraw = MagicMock()
-        self.command = MovePositionCommand(component=self.component,
-                                           data=(25, 25),
-                                           previous_position=(50, 50))
+        self.command = MoveCommand(component=self.component,
+                                   data=(25, 25),
+                                   previous_position=(50, 50))
 
     def test_name_default(self):
         self.assertEqual(self.command.name, 'Move Component')
@@ -195,8 +195,8 @@ class MoveCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
         self.assertTrue(self.component.request_redraw.called)
 
     def test_do_no_previous_position(self):
-        command = MovePositionCommand(component=self.component,
-                                      data=(25, 25))
+        command = MoveCommand(component=self.component,
+                              data=(25, 25))
 
         with self.assertTraitChanges(command, 'previous_position', count=1):
             with self.assertTraitChanges(self.component, 'position', count=1):
@@ -230,9 +230,9 @@ class MoveCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
     def test_merge(self):
         command = self.command
         command.mergeable = True
-        other_command = MovePositionCommand(component=self.component,
-                                            data=(0, 0),
-                                            previous_position=(50, 50))
+        other_command = MoveCommand(component=self.component,
+                                    data=(0, 0),
+                                    previous_position=(50, 50))
 
         with self.assertTraitChanges(command, 'data'):
             merged = command.merge(other_command)
@@ -244,9 +244,9 @@ class MoveCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
     def test_merge_other_mergeable(self):
         command = self.command
         command.mergeable = True
-        other_command = MovePositionCommand(component=self.component,
-                                            mergeable=True, data=(0, 0),
-                                            previous_position=(50, 50))
+        other_command = MoveCommand(component=self.component,
+                                    mergeable=True, data=(0, 0),
+                                    previous_position=(50, 50))
 
         with self.assertTraitChanges(command, 'data'):
             merged = command.merge(other_command)
@@ -257,9 +257,9 @@ class MoveCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
 
     def test_merge_unmergeable(self):
         command = self.command
-        other_command = MovePositionCommand(component=self.component,
-                                            data=(0, 0),
-                                            previous_position=(50, 50))
+        other_command = MoveCommand(component=self.component,
+                                    data=(0, 0),
+                                    previous_position=(50, 50))
 
         with self.assertTraitDoesNotChange(command, 'data'):
             merged = command.merge(other_command)
@@ -271,10 +271,9 @@ class MoveCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
         command = self.command
         command.mergeable = True
         other_component = Component()
-        other_command = MovePositionCommand(component=other_component,
-                                            data=(0, 0),
-                                            previous_position=(50, 50))
-
+        other_command = MoveCommand(component=other_component,
+                                    data=(0, 0),
+                                    previous_position=(50, 50))
 
         with self.assertTraitDoesNotChange(command, 'data'):
             merged = command.merge(other_command)

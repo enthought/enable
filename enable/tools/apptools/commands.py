@@ -46,6 +46,14 @@ class ComponentCommand(AbstractCommand):
 
 
 class ResizeCommand(ComponentCommand):
+    """ Command for resizing a component
+
+    This handles the logic of moving a component and merging successive moves.
+    This class provides  ``_change_rectangle`` and ``_merge_data`` methods that
+    subclasses can override to change the move behaviour in a uniform way for
+    undo and redo operations.
+
+    """
 
     #: The new rectangle of the component as a tuple (x, y, width, height).
     data = Tuple
@@ -55,6 +63,24 @@ class ResizeCommand(ComponentCommand):
 
     #: whether additional resizes can be merged or if the resize is finished.
     mergeable = Bool
+
+    @classmethod
+    def move_command(cls, component, data, previous_position, **traits):
+        """ Factory that creates a ResizeCommand implementing a move operation
+
+        This allows a MoveTool to create move commands that can be easily
+        merged with resize commands.
+
+        """
+        bounds = component.bounds
+        data += tuple(bounds)
+        previous_rectangle = previous_position + tuple(bounds)
+        return cls(
+            component=component,
+            data=data,
+            previous_rectangle=previous_rectangle
+            **traits)
+
 
     #-------------------------------------------------------------------------
     # AbstractCommand interface
@@ -105,92 +131,21 @@ class ResizeCommand(ComponentCommand):
 class MoveCommand(ComponentCommand):
     """ A command that moves a component
 
-    This handles some of the logic of moving a component and merging successive
-    moves.  Subclasses should call `_change_position()` when they wish to move
-    the object, and should override the implementation of `_merge_data()` if
-    they wish to be able to merge non-finalized moves.
+    This handles the logic of moving a component and merging successive moves.
+    This class provides  ``_change_position`` and ``_merge_data`` methods that
+    subclasses can override to change the move behaviour in a uniform way for
+    undo and redo operations.
 
     """
-
-    #: whether additional moves can be merged or if the move is finished.
-    mergeable = Bool
-
-    #-------------------------------------------------------------------------
-    # AbstractCommand interface
-    #-------------------------------------------------------------------------
-
-    def merge(self, other):
-        if self.mergeable and isinstance(other, self.__class__) and \
-                other.component == self.component:
-            return self._merge_data(other)
-        return super(MoveCommand, self).merge(other)
-
-    #-------------------------------------------------------------------------
-    # Private interface
-    #-------------------------------------------------------------------------
-
-    def _change_position(self, position):
-        self.component.position = list(position)
-        self.component._layout_needed = True
-        self.component.request_redraw()
-
-    def _merge_data(self, other):
-        return False
-
-    #-------------------------------------------------------------------------
-    # traits handlers
-    #-------------------------------------------------------------------------
-
-    def _name_default(self):
-        return "Move "+self.component_name
-
-
-class MoveDeltaCommand(MoveCommand):
-    """ Command that records fine-grained movement of an object
-
-    This is suitable for being used for building up a Command from many
-    incremental steps.
-
-    """
-
-    #: The change in position of the component as a tuple (dx, dy).
-    data = Tuple
-
-    #-------------------------------------------------------------------------
-    # AbstractCommand interface
-    #-------------------------------------------------------------------------
-
-    def do(self):
-        self.redo()
-
-    def redo(self):
-        x = self.component.position[0] + self.delta[0]
-        y = self.component.position[1] + self.delta[1]
-        self._change_position((x, y))
-
-    def undo(self):
-        x = self.component.position[0] - self.delta[0]
-        y = self.component.position[1] - self.delta[1]
-        self._change_position((x, y))
-
-    #-------------------------------------------------------------------------
-    # Private interface
-    #-------------------------------------------------------------------------
-
-    def _merge_data(self, other):
-        x = self.data[0] + other.data[0]
-        y = self.data[1] + other.data[1]
-        self.data = (x, y)
-
-
-class MovePositionCommand(MoveCommand):
-    """ Command that records gross movement of an object """
 
     #: The new position of the component as a tuple (x, y).
     data = Tuple
 
     #: The old position of the component as a tuple (x, y).
     previous_position = Tuple
+
+    #: whether additional moves can be merged or if the move is finished.
+    mergeable = Bool
 
     #-------------------------------------------------------------------------
     # AbstractCommand interface
@@ -207,11 +162,30 @@ class MovePositionCommand(MoveCommand):
     def undo(self):
         self._change_position(self.previous_position)
 
+    def merge(self, other):
+        if self.mergeable and isinstance(other, self.__class__) and \
+                other.component == self.component:
+            return self._merge_data(other)
+        return super(MoveCommand, self).merge(other)
+
     #-------------------------------------------------------------------------
     # Private interface
     #-------------------------------------------------------------------------
+
+    def _change_position(self, position):
+        self.component.position = list(position)
+        self.component._layout_needed = True
+        self.component.request_redraw()
+
 
     def _merge_data(self, other):
         self.data = other.data
         self.mergeable = other.mergeable
         return True
+
+    #-------------------------------------------------------------------------
+    # traits handlers
+    #-------------------------------------------------------------------------
+
+    def _name_default(self):
+        return "Move "+self.component_name

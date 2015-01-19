@@ -21,7 +21,7 @@ from traits.testing.unittest_tools import UnittestTools, unittest
 from enable.component import Component
 from enable.container import Container
 from enable.testing import EnableTestAssistant
-from enable.tools.apptools.commands import MovePositionCommand
+from enable.tools.apptools.commands import MoveCommand
 from enable.tools.apptools.move_command_tool import MoveCommandTool
 
 
@@ -65,7 +65,7 @@ class ResizeCommandToolTestCase(unittest.TestCase, EnableTestAssistant,
         args, kwargs = self.command_stack.push.call_args
         self.assertIsNotNone(args)
         self.assertEqual(len(args), 1)
-        self.assertIsInstance(args[0], MovePositionCommand)
+        self.assertIsInstance(args[0], MoveCommand)
         command = args[0]
 
         # check that the ResizeCommand has right parameters
