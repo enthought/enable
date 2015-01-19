@@ -62,7 +62,7 @@ class ResizeCommandTool(ResizeTool, BaseCommandTool):
         if self.component is not None:
             command = self.command(
                 component=self.component,
-                data=tuple(self.component.position + self.component.bounds),
+                new_rectangle=tuple(self.component.position + self.component.bounds),
                 previous_rectangle=self._initial_rectangle,
                 final=True)
             self.command_stack.push(command)

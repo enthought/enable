@@ -25,8 +25,8 @@ from enable.tools.apptools.commands import MoveCommand
 from enable.tools.apptools.move_command_tool import MoveCommandTool
 
 
-class ResizeCommandToolTestCase(unittest.TestCase, EnableTestAssistant,
-                                UnittestTools):
+class MoveCommandToolTestCase(unittest.TestCase, EnableTestAssistant,
+                              UnittestTools):
 
     def setUp(self):
         self.command_stack = CommandStack()

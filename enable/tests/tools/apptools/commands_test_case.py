@@ -33,8 +33,8 @@ class ComponentCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools
         self.assertEqual(self.command.component_name, 'Component')
 
     def test_name_empty(self):
-        command = ComponentCommand()
-        self.assertEqual(command.component_name, '')
+        self.command.component = None
+        self.assertEqual(self.command.component_name, '')
 
 
 class ResizeCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
@@ -42,9 +42,8 @@ class ResizeCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
     def setUp(self):
         self.component = Component(position=[50, 50], bounds=[100, 100])
         self.component.request_redraw = MagicMock()
-        self.command = ResizeCommand(component=self.component,
-                                     data=(25, 25, 150, 150),
-                                     previous_rectangle=(50, 50, 100, 100))
+        self.command = ResizeCommand(self.component, (25, 25, 150, 150),
+                                     (50, 50, 100, 100))
 
     def test_name_default(self):
         self.assertEqual(self.command.name, 'Resize Component')
@@ -65,18 +64,34 @@ class ResizeCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
         self.assertTrue(self.component.request_redraw.called)
 
     def test_do_no_previous_rectangle(self):
-        command = ResizeCommand(component=self.component,
-                                data=(25, 25, 150, 150))
-
-        with self.assertTraitChanges(command, 'previous_rectangle', count=1):
-            with self.assertMultiTraitChanges([self.component],
-                                            ['position', 'bounds'], []):
-                command.do()
-
+        command = ResizeCommand(self.component, (25, 25, 150, 150))
         self.assertEqual(command.previous_rectangle, (50, 50, 100, 100))
-        self.assertEqual(self.component.position, [25, 25])
-        self.assertEqual(self.component.bounds, [150, 150])
-        self.assertTrue(self.component.request_redraw.called)
+
+    def test_do_no_new_position(self):
+        with self.assertRaises(TypeError):
+            ResizeCommand(self.component,
+                          previous_rectangle=(50, 50, 100, 100))
+
+    def test_do_no_new_position_with_data(self):
+        command = ResizeCommand(self.component,
+                                previous_rectangle=(50, 50, 100, 100),
+                                data=(25, 25, 150, 150))
+        self.assertEqual(command.data, (25, 25, 150, 150))
+
+    def test_do_no_new_position_no_previous_position_with_data(self):
+        command = ResizeCommand(self.component, data=(25, 25, 150, 150))
+        self.assertEqual(command.data, (25, 25, 150, 150))
+        self.assertEqual(command.previous_rectangle, (50, 50, 100, 100))
+
+    def test_move_command(self):
+        command = ResizeCommand.move_command(self.component, (25, 25), (50, 50))
+        self.assertEqual(command.data, (25, 25, 100, 100))
+        self.assertEqual(command.previous_rectangle, (50, 50, 100, 100))
+
+    def test_move_command_no_previous_position(self):
+        command = ResizeCommand.move_command(self.component, (25, 25))
+        self.assertEqual(command.data, (25, 25, 100, 100))
+        self.assertEqual(command.previous_rectangle, (50, 50, 100, 100))
 
     def test_undo(self):
         command = self.command
@@ -174,9 +189,7 @@ class MoveCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
     def setUp(self):
         self.component = Component(position=[50, 50], bounds=[100, 100])
         self.component.request_redraw = MagicMock()
-        self.command = MoveCommand(component=self.component,
-                                   data=(25, 25),
-                                   previous_position=(50, 50))
+        self.command = MoveCommand(self.component, (25, 25), (50, 50))
 
     def test_name_default(self):
         self.assertEqual(self.command.name, 'Move Component')
@@ -195,16 +208,22 @@ class MoveCommandTest(unittest.TestCase, EnableTestAssistant, UnittestTools):
         self.assertTrue(self.component.request_redraw.called)
 
     def test_do_no_previous_position(self):
-        command = MoveCommand(component=self.component,
-                              data=(25, 25))
-
-        with self.assertTraitChanges(command, 'previous_position', count=1):
-            with self.assertTraitChanges(self.component, 'position', count=1):
-                command.do()
-
+        command = MoveCommand(self.component, (25, 25))
         self.assertEqual(command.previous_position, (50, 50))
-        self.assertEqual(self.component.position, [25, 25])
-        self.assertTrue(self.component.request_redraw.called)
+
+    def test_do_no_new_position(self):
+        with self.assertRaises(TypeError):
+            MoveCommand(self.component, previous_position=(50, 50))
+
+    def test_do_no_new_position_with_data(self):
+        command = MoveCommand(self.component, previous_position=(50, 50),
+                    data=(25, 25))
+        self.assertEqual(command.data, (25, 25))
+
+    def test_do_no_new_position_no_previous_position_with_data(self):
+        command = MoveCommand(self.component, data=(25, 25))
+        self.assertEqual(command.data, (25, 25))
+        self.assertEqual(command.previous_position, (50, 50))
 
     def test_undo(self):
         command = self.command

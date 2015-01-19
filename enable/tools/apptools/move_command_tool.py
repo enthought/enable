@@ -59,8 +59,8 @@ class MoveCommandTool(MoveTool, BaseCommandTool):
         if self.component:
             command = self.command(
                 component=self.component,
-                data=tuple(self.component.position),
                 previous_position=self._initial_position,
+                new_position=tuple(self.component.position),
                 mergeable=self.mergeable)
             self.command_stack.push(command)
             event.handled = True

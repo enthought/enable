@@ -35,6 +35,9 @@ class ComponentCommand(AbstractCommand):
     #: The default is the class name, split into words.
     component_name = Unicode
 
+    def __init__(self, component, **traits):
+        super(ComponentCommand, self).__init__(component=component, **traits)
+
     #-------------------------------------------------------------------------
     # traits handlers
     #-------------------------------------------------------------------------
@@ -64,8 +67,29 @@ class ResizeCommand(ComponentCommand):
     #: whether additional resizes can be merged or if the resize is finished.
     mergeable = Bool
 
+    def __init__(self, component, new_rectangle=None, previous_rectangle=None,
+                 **traits):
+        if previous_rectangle is None:
+            previous_rectangle = tuple(component.position)+tuple(component.bounds)
+
+        if new_rectangle is None:
+            if 'data' in traits:
+                data = traits.pop('data')
+            else:
+                raise TypeError("MoveCommand __init__ method requires "
+                                "'new_rectangle' argument.")
+        else:
+            data = new_rectangle
+
+        super(ComponentCommand, self).__init__(
+            component=component,
+            data=data,
+            previous_rectangle=previous_rectangle,
+            **traits)
+
     @classmethod
-    def move_command(cls, component, data, previous_position, **traits):
+    def move_command(cls, component, new_position, previous_position=None,
+                     **traits):
         """ Factory that creates a ResizeCommand implementing a move operation
 
         This allows a MoveTool to create move commands that can be easily
@@ -73,12 +97,15 @@ class ResizeCommand(ComponentCommand):
 
         """
         bounds = component.bounds
-        data += tuple(bounds)
-        previous_rectangle = previous_position + tuple(bounds)
+        new_rectangle = new_position + tuple(bounds)
+        if previous_position is not None:
+            previous_rectangle = previous_position + tuple(bounds)
+        else:
+            previous_rectangle = None
         return cls(
             component=component,
-            data=data,
-            previous_rectangle=previous_rectangle
+            new_rectangle=new_rectangle,
+            previous_rectangle=previous_rectangle,
             **traits)
 
 
@@ -147,13 +174,31 @@ class MoveCommand(ComponentCommand):
     #: whether additional moves can be merged or if the move is finished.
     mergeable = Bool
 
+    def __init__(self, component, new_position=None, previous_position=None,
+                 **traits):
+        if previous_position is None:
+            previous_position = component.position
+
+        if new_position is None:
+            if 'data' in traits:
+                data = traits.pop('data')
+            else:
+                raise TypeError("MoveCommand __init__ method requires "
+                                "'new_position' argument.")
+        else:
+            data = new_position
+
+        super(ComponentCommand, self).__init__(
+            component=component,
+            data=data,
+            previous_position=previous_position,
+            **traits)
+
     #-------------------------------------------------------------------------
     # AbstractCommand interface
     #-------------------------------------------------------------------------
 
     def do(self):
-        if self.previous_position == ():
-            self.previous_position = tuple(self.component.position)
         self.redo()
 
     def redo(self):
