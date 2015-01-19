@@ -8,6 +8,7 @@ Enable Documentation
   enable_constraints_layout.rst
   enable_key_events.rst
   enable_drag_and_drop.rst
+  enable_apptools_integration.rst
 
   kiva.rst
 
