@@ -9,6 +9,7 @@ Enhancements
 
  * Added a base class for drag and drop tools, example and test support.
  * PR #160: Basic testing for kiva backends.
+ * PR #168: Simple push-button anf checkbox tool.
 
 
 Enable 4.4.0 (May 1, 2014)
@@ -40,9 +41,9 @@ Enable 3.4.1 (March 3, 2011)
 Fixes
 -----
 
-* Removed OnPaint method from KivaRenderPanel in savage. On Windows there 
+* Removed OnPaint method from KivaRenderPanel in savage. On Windows there
   were competing handlers for the paint event. The OnPaint method expected a
-  certain order, which varied by Platform 
+  certain order, which varied by Platform
 * QImage constructor args were changed to use QByteArray to match changes to
   PySide API changes in PySide RC1
 
