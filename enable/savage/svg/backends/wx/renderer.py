@@ -76,20 +76,32 @@ class Renderer(NullRenderer):
 
         stops = numpy.transpose(stops)
 
-        if len(stops) > 2:
-            warnings.warn("Wx only supports 2 gradient stops, but %d were specified" % len(stops))
-
         def convert_stop(stop):
             offset, red, green, blue, opacity = stop
             color = wx.Colour(red*255, green*255, blue*255, opacity*255)
             return offset, color
 
-        start_offset, start_color = convert_stop(stops[0])
-        end_offset, end_color = convert_stop(stops[1])
+        if wx.VERSION > (2,9):        
+            # wxPython 2.9+ supports a collection of stops
+            wx_stops = wx.GraphicsGradientStops()
+            for stop in stops:
+                offset, color = convert_stop(stop)
+                wx_stops.Add(color, offset)
+        
+            wx_renderer = wx.GraphicsRenderer.GetDefaultRenderer()
+            return wx_renderer.CreateLinearGradientBrush(x1, y1, x2, y2, wx_stops)
+        
+        else:        
+            if len(stops) > 2:
+                warnings.warn("Wx only supports 2 gradient stops, but %d were specified" % len(stops))
+    
+            start_offset, start_color = convert_stop(stops[0])
+            end_offset, end_color = convert_stop(stops[1])
+    
+            wx_renderer = wx.GraphicsRenderer.GetDefaultRenderer()
+            return wx_renderer.CreateLinearGradientBrush(x1, y1, x2, y2,
+                                                         start_color, end_color)
 
-        wx_renderer = wx.GraphicsRenderer.GetDefaultRenderer()
-        return wx_renderer.CreateLinearGradientBrush(x1, y1, x2, y2,
-                                                     start_color, end_color)
 
     @staticmethod
     def createRadialGradientBrush(cx,cy, r, stops, fx=None,fy=None,
@@ -98,25 +110,37 @@ class Renderer(NullRenderer):
 
         stops = numpy.transpose(stops)
 
-        if len(stops) > 2:
-            warnings.warn("Wx only supports 2 gradient stops, but %d were specified" % len(stops))
-
         def convert_stop(stop):
             offset, red, green, blue, opacity = stop
             color = wx.Colour(red*255, green*255, blue*255, opacity*255)
             return offset, color
 
-        start_offset, start_color = convert_stop(stops[0])
-        end_offset, end_color = convert_stop(stops[-1])
+        if wx.VERSION > (2,9):        
+            # wxPython 2.9+ supports a collection of stops
+            wx_stops = wx.GraphicsGradientStops()
+            for stop in stops:
+                offset, color = convert_stop(stop)
+                wx_stops.Add(color, offset)
+    
+            wx_renderer = wx.GraphicsRenderer.GetDefaultRenderer()
+            return wx_renderer.CreateRadialGradientBrush(fx, fy, cx, cy, r, wx_stops)
 
-        if fx is None:
-            fx = cx
-        if fy is None:
-            fy = cy
+        else:
 
-        wx_renderer = wx.GraphicsRenderer.GetDefaultRenderer()
-        return wx_renderer.CreateRadialGradientBrush(fx, fy, cx, cy, r,
-                                                     start_color, end_color)
+            if len(stops) > 2:
+                warnings.warn("Wx only supports 2 gradient stops, but %d were specified" % len(stops))
+    
+            start_offset, start_color = convert_stop(stops[0])
+            end_offset, end_color = convert_stop(stops[-1])
+    
+            if fx is None:
+                fx = cx
+            if fy is None:
+                fy = cy
+    
+            wx_renderer = wx.GraphicsRenderer.GetDefaultRenderer()
+            return wx_renderer.CreateRadialGradientBrush(fx, fy, cx, cy, r,
+                                                         start_color, end_color)
 
     @staticmethod
     def fillPath(*args):
