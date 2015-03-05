@@ -55,9 +55,9 @@ class ButtonToolTestCase(EnableTestAssistant, UnittestTools, unittest.TestCase):
         tool = self.tool
         tool.togglable = True
 
-        with self.assertTraitDoesNotChange(tool, 'down', count=1), \
+        with self.assertTraitDoesNotChange(tool, 'down'), \
                 self.assertTraitDoesNotChange(tool, 'clicked'), \
-                self.assertTraitChanges(tool, 'checked'):
+                self.assertTraitChanges(tool, 'checked', count=1):
             tool.toggle()
 
         self.assertTrue(tool.checked)
@@ -67,9 +67,9 @@ class ButtonToolTestCase(EnableTestAssistant, UnittestTools, unittest.TestCase):
         tool.togglable = True
         tool.checked = True
 
-        with self.assertTraitDoesNotChange(tool, 'down', count=1), \
+        with self.assertTraitDoesNotChange(tool, 'down'), \
                 self.assertTraitDoesNotChange(tool, 'clicked'), \
-                self.assertTraitChanges(tool, 'checked'):
+                self.assertTraitChanges(tool, 'checked', count=1):
             tool.toggle()
 
         self.assertFalse(tool.checked)

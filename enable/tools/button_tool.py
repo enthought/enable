@@ -41,7 +41,7 @@ class ButtonTool(BaseTool):
     #: Event fired when button is clicked
     clicked = Event
 
-    #: Is the button togglable?
+    #: Is the button toggled?
     checked = Bool(False)
 
     #: Is the mouse button pressed down in the clickable region
