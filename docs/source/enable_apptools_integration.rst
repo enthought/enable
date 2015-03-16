@@ -106,11 +106,11 @@ want to interact with Enable components.
 
 ``ResizeCommand``
 
-    This command handles changing the position of a component.  The constructor
-    expects arguments ``component``, ``new_position`` and (optionally)
-    ``previous_position``, plus optional additional traits.  If
-    ``previous_position`` is not provided, then the component's current
-    position is used.
+    This command handles changing the size of a component.  The constructor
+    expects arguments ``component``, ``new_rectangle`` and (optionally)
+    ``previous_rectangle``, plus optional additional traits.  If
+    ``previous_rectangle`` is not provided, then the component's current
+    rectangle is used.
 
     Instances hold references to the ``Component`` being resized in the
     ``component`` attribute, the new and previous rectangles of the component

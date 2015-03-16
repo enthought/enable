@@ -53,8 +53,26 @@ class ResizeCommand(ComponentCommand):
 
     This handles the logic of moving a component and merging successive moves.
     This class provides  ``_change_rectangle`` and ``_merge_data`` methods that
-    subclasses can override to change the move behaviour in a uniform way for
+    subclasses can override to change the reszie behaviour in a uniform way for
     undo and redo operations.
+
+    Parameters
+    ----------
+
+    component : Component instance
+        The component being moved.
+
+    new_rectangle : tuple of (x, y, w, h)
+        The rectangle representing the new position and bounds.
+
+    previous_rectangle : tuple of (x, y, w, h)
+        The rectangle representing the previous position and bounds.
+
+    **traits :
+        Any other trait values that need to be passed in at creation time.
+
+    The ``new_rectangle`` argument is the same as the ``data`` trait on the
+    class.  If both are provided, the ``new_rectangle`` value is used.
 
     """
 
@@ -76,12 +94,12 @@ class ResizeCommand(ComponentCommand):
             if 'data' in traits:
                 data = traits.pop('data')
             else:
-                raise TypeError("MoveCommand __init__ method requires "
+                raise TypeError("ResizeCommand __init__ method requires "
                                 "'new_rectangle' argument.")
         else:
             data = new_rectangle
 
-        super(ComponentCommand, self).__init__(
+        super(ResizeCommand, self).__init__(
             component=component,
             data=data,
             previous_rectangle=previous_rectangle,
@@ -96,10 +114,10 @@ class ResizeCommand(ComponentCommand):
         merged with resize commands.
 
         """
-        bounds = component.bounds
-        new_rectangle = new_position + tuple(bounds)
+        bounds = tuple(component.bounds)
+        new_rectangle = new_position + bounds
         if previous_position is not None:
-            previous_rectangle = previous_position + tuple(bounds)
+            previous_rectangle = previous_position + bounds
         else:
             previous_rectangle = None
         return cls(
@@ -163,6 +181,24 @@ class MoveCommand(ComponentCommand):
     subclasses can override to change the move behaviour in a uniform way for
     undo and redo operations.
 
+    Parameters
+    ----------
+
+    component : Component instance
+        The component being moved.
+
+    new_position : tuple of (x, y)
+        The tuple representing the new position.
+
+    previous_position : tuple of (x, y)
+        The tuple representing the previous position.
+
+    **traits :
+        Any other trait values that need to be passed in at creation time.
+
+    The ``new_position`` argument is the same as the ``data`` trait on the
+    class.  If both are provided, the ``new_position`` value is used.
+
     """
 
     #: The new position of the component as a tuple (x, y).
@@ -188,7 +224,7 @@ class MoveCommand(ComponentCommand):
         else:
             data = new_position
 
-        super(ComponentCommand, self).__init__(
+        super(MoveCommand, self).__init__(
             component=component,
             data=data,
             previous_position=previous_position,

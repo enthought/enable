@@ -6,11 +6,11 @@
 # LICENSE.txt
 #
 """
-MoveCommandTool
-===============
+ResizeCommandTool
+=================
 
-A MoveTool that uses AppTools' undo/redo infrastructure to create undoable move
-commands.
+A CommandTool that uses AppTools' undo/redo infrastructure to create undoable
+resize commands.
 
 """
 
@@ -28,7 +28,7 @@ from .commands import ResizeCommand
 class ResizeCommandTool(ResizeTool, BaseCommandTool):
     """ Resize tool which pushes ResizeCommands onto a CommandStack
 
-    This tool pushes a single MovePositionCommand onto its CommandStack at
+    This tool pushes a single ResizeCommand onto its CommandStack at
     the end of the drag operation.  If the drag is cancelled, then no command
     is issued, and no commands are issued during the drag operation.
 
@@ -58,7 +58,7 @@ class ResizeCommandTool(ResizeTool, BaseCommandTool):
 
 
     def drag_end(self, event):
-        """ End the drag operation, issuing a MovePositionCommand """
+        """ End the drag operation, issuing a ResizeCommands """
         if self.component is not None:
             command = self.command(
                 component=self.component,

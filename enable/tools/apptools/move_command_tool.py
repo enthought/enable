@@ -26,9 +26,9 @@ from .commands import MoveCommand
 
 
 class MoveCommandTool(MoveTool, BaseCommandTool):
-    """ Move tool which pushes MovePositionCommands onto a CommandStack
+    """ Move tool which pushes MoveCommands onto a CommandStack
 
-    This tool pushes a single MovePositionCommand onto its CommandStack at
+    This tool pushes a single MoveCommands onto its CommandStack at
     the end of the drag operation.  If the drag is cancelled, then no command
     is issued, and no commands are issued during the drag operation.
 
@@ -55,7 +55,7 @@ class MoveCommandTool(MoveTool, BaseCommandTool):
         return super(MoveCommandTool, self).drag_start(event)
 
     def drag_end(self, event):
-        """ End the drag operation, issuing a MovePositionCommand """
+        """ End the drag operation, issuing a MoveCommands """
         if self.component:
             command = self.command(
                 component=self.component,
@@ -64,7 +64,6 @@ class MoveCommandTool(MoveTool, BaseCommandTool):
                 mergeable=self.mergeable)
             self.command_stack.push(command)
             event.handled = True
-        return
 
     def drag_cancel(self, event):
         """ Restore the component's position if the drag is cancelled.
@@ -78,7 +77,6 @@ class MoveCommandTool(MoveTool, BaseCommandTool):
             self.component.position = list(self._initial_position)
 
             event.handled = True
-        return
 
     #-------------------------------------------------------------------------
     # Trait handlers

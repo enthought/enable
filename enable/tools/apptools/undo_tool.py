@@ -47,7 +47,6 @@ class UndoTool(BaseUndoTool):
                     event.handled = True
                     return
             for key in self.redo_keys:
-                print (key)
                 if key.match(event):
                     self.undo_manager.redo()
                     event.handled = True

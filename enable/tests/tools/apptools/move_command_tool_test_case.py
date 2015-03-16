@@ -44,7 +44,6 @@ class MoveCommandToolTestCase(unittest.TestCase, EnableTestAssistant,
         # start the mouse drag
         mouse_down_event = self.mouse_down(self.component, 145, 145,
                                            window=window)
-        #self.assertTrue(mouse_down_event.handled)
         self.assertTrue(self.tool._mouse_down_received)
 
         # start moving the mouse
@@ -113,7 +112,6 @@ class MoveCommandToolTestCase(unittest.TestCase, EnableTestAssistant,
         # start the mouse drag
         mouse_down_event = self.mouse_down(self.component, 145, 145,
                                            window=window)
-        #self.assertTrue(mouse_down_event.handled)
         self.assertTrue(self.tool._mouse_down_received)
 
         # start moving the mouse
