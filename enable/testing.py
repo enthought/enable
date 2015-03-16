@@ -311,7 +311,7 @@ class EnableTestAssistant(KivaTestAssistant):
 
     def mouse_leave(self, interactor, x, y, window=None,
                     alt_down=False, control_down=False, shift_down=False):
-        """ Send a mouse click event to the interactor.
+        """ Send a mouse leave event to the interactor.
 
         Parameters
         ----------
@@ -353,6 +353,52 @@ class EnableTestAssistant(KivaTestAssistant):
                                         control_down=control_down,
                                         shift_down=shift_down)
         self._mouse_event_dispatch(interactor, event, 'mouse_leave')
+        return event
+
+    def mouse_enter(self, interactor, x, y, window=None,
+                    alt_down=False, control_down=False, shift_down=False):
+        """ Send a mouse enter event to the interactor.
+
+        Parameters
+        ----------
+        interactor : Interactor
+            The interactor (or subclass) where to dispatch the event.
+
+        x : float
+            The x coordinates of the mouse position
+
+        y : float
+            The y coordinates of the mouse position
+
+        window : AbstractWindow, optional
+            The enable AbstractWindow to associate with the event. Default
+            is to create a mock class instance. If the window has a mouse
+            owner then that interactor is used.
+
+        alt_down : boolean, optional
+            The button is pressed while `alt` is down. Default value is False.
+
+        control_down : boolean, optional
+            The button is pressed while `control` is down. Default value is
+            False.
+
+        shift_down : boolean, optional
+            The button is pressed while `shift` is down. Default value is
+            False.
+
+        Returns
+        -------
+        event : MouseEvent
+            The event instance after it has be processed by the `interactor`.
+
+        """
+        window = self.create_mock_window() if window is None else window
+        event = self.create_mouse_event(x=x, y=y,
+                                        window=window,
+                                        alt_down=alt_down,
+                                        control_down=control_down,
+                                        shift_down=shift_down)
+        self._mouse_event_dispatch(interactor, event, 'mouse_enter')
         return event
 
     def send_key(self, interactor, key, window=None):
