@@ -7,11 +7,19 @@ Enable 4.5.0
 Enhancements
 ------------
 
- * Added a base class for drag and drop tools, example and test support.
+ * PR #138: Optional constraints-based layout.
+ * PR #140: Add a base class for drag and drop tools, example and test support.
+ * PR #150: Add a very basic Image component
  * PR #160: Basic testing for kiva backends.
  * PR #168: Simple push-button and checkbox tool.
- * PR #167: Added tools that support Apptools Undo/Redo.
+ * PR #167: Add tools that support Apptools Undo/Redo.
 
+Fixes
+-----
+
+ * PR#139 Significant code clean-up, modernization, test improvement and
+   documentation for Kiva.
+ * Multiple fixes for breaks to Travis-CI builds.
 
 Enable 4.4.0 (May 1, 2014)
 ==========================
