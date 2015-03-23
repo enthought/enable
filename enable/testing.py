@@ -21,6 +21,7 @@ class _MockWindow(AbstractWindow):
     def set_drag_result(self, result):
         self._drag_result = result
 
+
 class EnableTestAssistant(KivaTestAssistant):
     """ Mixin helper for enable/chaco components.
 
@@ -93,6 +94,7 @@ class EnableTestAssistant(KivaTestAssistant):
         window._redraw = Mock()
         window.control = Mock()
         window.control.set_pointer = Mock()
+        window.get_pointer_position = Mock()
         return window
 
     def create_key_press(self, key, window=None, alt_down=False,
@@ -254,6 +256,7 @@ class EnableTestAssistant(KivaTestAssistant):
                                         alt_down=alt_down,
                                         control_down=control_down,
                                         shift_down=shift_down)
+        window.get_pointer_position.return_value = (x, y)
         self._mouse_event_dispatch(interactor, event, 'mouse_move')
         return event
 

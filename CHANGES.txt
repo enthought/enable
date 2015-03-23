@@ -10,6 +10,7 @@ Enhancements
  * Added a base class for drag and drop tools, example and test support.
  * PR #160: Basic testing for kiva backends.
  * PR #168: Simple push-button and checkbox tool.
+ * PR #167: Added tools that support Apptools Undo/Redo.
 
 
 Enable 4.4.0 (May 1, 2014)
