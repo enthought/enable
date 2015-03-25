@@ -74,7 +74,7 @@ namespace agg24
 }
 
 
-%pythoncode {
+%pythoncode %{
 def is_sequence(arg):
     try:
         len(arg)
@@ -90,6 +90,6 @@ class Rgba(_Rgba):
             if len(args) not in [3,4]:
                 raise ValueError, "array argument must be 1x3 or 1x4"
         _Rgba.__init__(self,*args)
-}
+%}
 
 %clear double r, double g, double b, double a;
