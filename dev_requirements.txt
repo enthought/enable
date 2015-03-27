@@ -8,8 +8,3 @@ PyPDF2
 https://bitbucket.org/pyglet/pyglet/get/pyglet-1.1.4.zip
 pygarrayimage
 reportlab<=3.1
--e git+http://github.com/enthought/traits.git#egg=traits
--e git+http://github.com/enthought/pyface.git#egg=pyface
--e git+http://github.com/enthought/traitsui.git#egg=traitsui
--e git+http://github.com/enthought/apptools.git#egg=apptools
--e git+http://github.com/nucleic/kiwi.git#egg=kiwisolver
