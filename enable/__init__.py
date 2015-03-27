@@ -4,8 +4,7 @@
     Part of the Enable project of the Enthought Tool Suite.
 """
 import sys
-
-from kiva._version import full_version as __version__
+from ._version import full_version as __version__
 
 __requires__ = [
     'traitsui',
@@ -13,6 +12,6 @@ __requires__ = [
     'kiwisolver',
 ]
 
-# Cython is only necessary to built the quartz backend.
+# Cython is only necessary to build the quartz backend.
 if sys.platform == 'darwin':
     __requires__.append('cython')
