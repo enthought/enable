@@ -12,7 +12,3 @@ __requires__ = [
     'PIL',
     'kiwisolver',
 ]
-
-# Cython is only necessary to build the quartz backend.
-if sys.platform == 'darwin':
-    __requires__.append('cython')
