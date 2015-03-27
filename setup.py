@@ -38,7 +38,6 @@ setup_requires=['numpy', 'traits']
 if sys.platform == 'darwin':
     setup_requires.append('cython')
 
-
 MAJOR = 4
 MINOR = 5
 MICRO = 0
