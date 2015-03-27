@@ -76,7 +76,7 @@ def git_version():
     return git_revision, git_count
 
 
-def write_version_py(filename='kiva/_version.py'):
+def write_version_py(filename):
     template = """\
 # THIS FILE IS GENERATED FROM ENABLE SETUP.PY
 version = '{version}'
@@ -192,7 +192,8 @@ class MyClean(distutils.command.clean.clean):
 
 
 if __name__ == "__main__":
-    write_version_py()
+    write_version_py(filename='enable/_version.py')
+    write_version_py(filename='kiva/_version.py')
     from enable import __version__, __requires__
 
     # Build the full set of packages by appending any found by setuptools'
