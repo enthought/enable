@@ -3,13 +3,12 @@ python:
   - '2.7_with_system_site_packages'
   - 2.6
 before_install:
-  - sudo add-apt-repository ppa:cython-dev/master-ppa -y
   - sudo apt-get update
   # For Python 2.7, install PyQt4 and cairo
   - if [[ $TRAVIS_PYTHON_VERSION == '2.7_with_system_site_packages' ]]; then source .travis_before_install; fi
   # PyQt and cairo can't be installed on 2.6; run the tests without Qt
   - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then source .travis_before_install_noqt; fi
-  - sudo apt-get install swig cython
+  - sudo apt-get install swig
   # Simlinks for PIL compilation
   - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libfreetype.so /usr/lib/
   - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libjpeg.so /usr/lib/
