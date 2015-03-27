@@ -3,7 +3,6 @@
 """ A multi-platform object drawing library.
     Part of the Enable project of the Enthought Tool Suite.
 """
-import sys
 from ._version import full_version as __version__
 
 __requires__ = [
@@ -13,7 +12,3 @@ __requires__ = [
     'PIL',
     'kiwisolver',
 ]
-
-# Cython is only necessary to build the quartz backend.
-if sys.platform == 'darwin':
-    __requires__.append('cython')

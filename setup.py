@@ -33,6 +33,11 @@ import subprocess
 from numpy.distutils.core import setup
 
 
+setup_requires=['numpy', 'traits']
+# Cython is only necessary to build the quartz backend.
+if sys.platform == 'darwin':
+    setup_requires.append('cython')
+
 MAJOR = 4
 MINOR = 6
 MICRO = 0
@@ -40,6 +45,7 @@ MICRO = 0
 IS_RELEASED = False
 
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
+
 
 
 # Return the git revision as a string
@@ -246,6 +252,6 @@ if __name__ == "__main__":
               'enable': ['tests/primitives/data/PngSuite/*.png'],
           },
           platforms=["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
-          setup_requires=['numpy', 'traits'],
+          setup_requires=setup_requires,
           zip_safe=False,
           **config)
