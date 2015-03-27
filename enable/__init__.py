@@ -7,6 +7,7 @@ import sys
 from ._version import full_version as __version__
 
 __requires__ = [
+    'numpy',
     'traits',
     'traitsui',
     'PIL',
