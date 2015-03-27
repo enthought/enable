@@ -245,6 +245,6 @@ if __name__ == "__main__":
               'enable': ['tests/primitives/data/PngSuite/*.png'],
           },
           platforms=["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
-          setup_requires=['cython'],
+          setup_requires=['numpy', 'traits'],
           zip_safe=False,
           **config)
