@@ -82,7 +82,7 @@ Enable/Kiva also have the following requirements:
 .. rubric:: Runtime:
 
 * `Numpy <http://pypi.python.org/pypi/numpy>`_
-* `PIL <http://www.pythonware.com/products/pil>`._
+* `PIL <http://www.pythonware.com/products/pil>`_
 * `traits <https://pypi.python.org/pypi/traits>`_
 * `traitsui <https://pypi.python.org/pypi/traitsui>`_
 * `pyface <https://pypi.python.org/pypi/pyface>`_
