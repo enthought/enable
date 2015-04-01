@@ -4,7 +4,7 @@ enable: low-level drawing and interaction
 
 http://github.enthought.com/enable
 
-.. image:: https://api.travis-ci.org/enthought/enable.png?branch=master
+.. image:: https://travis-ci.org/enthought/enable.svg?branch=master
    :target: https://travis-ci.org/enthought/enable
    :alt: Build status
 
