@@ -10,7 +10,7 @@ __requires__ = [
     'traits',
     'traitsui',
     'PIL',
-    'kiwisolver',
+    'pyface',
 ]
 
 # Cython is only necessary to build the quartz backend.
