@@ -96,3 +96,4 @@ Enable/Kiva also have the following requirements:
 - (GL backend) `pygarrayimage <https://pypi.python.org/pypi/pygarrayimage>`_
 - (SVG backend) `PyParsing <https://pypi.python.org/pypi/pyparsing>`_
 - (PDF backend) `ReportLab Toolkit version 3.1 <http://www.reportlab.org/rl_toolkit.html/>`_
+- (Cairo backend) `PyCairo 1.10.0 <http://cairographics.org/releases/py2cairo-1.10.0.tar.bz2>`_
