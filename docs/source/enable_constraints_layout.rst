@@ -23,7 +23,7 @@ to the :class:`Component` class which define a simple box model:
  * :attr:`h_center`: The vertical center line between the left and right edges
  * :attr:`v_center`: The  horizontal center line between the top and bottom edges
 
-Additionally, there are some constraints which only exist on 
+Additionally, there are some constraints which only exist on
 :class:`ConstraintsContainer`:
 
  * :attr:`contents_height`: The height of the container.
@@ -37,7 +37,9 @@ Additionally, there are some constraints which only exist on
 
 These variables can be used in linear inequality expressions which make up the
 layout constraints of a container:
+
 ::
+
   def build_hierarchy():
     container = ConstraintsContainer()
     one = Component()
@@ -48,27 +50,29 @@ layout constraints of a container:
         one.layout_height == two.layout_height,
         # ... and so on ...
     ]
-    
+
     return container
 
 For more complicated layouts, the :attr:`layout_constraints` trait on a
 :class:`ConstraintsContainer` can be a :class:`callable`. The function is
 passed a reference to the container and should return a list of
 :class:`LinearContraints` objects or layout helper instances (as described below).
+
 ::
-  def create_container(self):
+
+   def create_container(self):
     self.container = ConstraintsContainer()
     self.container.add(self.bar)
     self.container.layout_constraints = self.my_layout_constraints
-  
+
   def my_layout_constraints(self, container):
     cns = []
-    
+
     if self.foo:
       cns.append(self.foo.layout_height <= 300)
       cns.append(hbox(self.foo, self.bar))
     cns.append(self.bar.layout_width == 250)
-    
+
     return cns
 
 If :attr:`layout_constraints` is callable, it will be invoked each time a
@@ -85,25 +89,25 @@ also available in Enable. The layout helpers are:
 :data:`spacer`: Creates space between two adjacent components.
 
 .. function:: horizontal(*components[, spacing=10])
-   
+
    Takes a list of components and lines them up using their left and right edges.
-   
+
    :param components: A sequence of :class:`Component` or :class:`spacer` objects.
    :param spacing: How many pixels of inter-element spacing to use
    :type spacing: integer >= 0
 
 .. function:: vertical(*components[, spacing=10])
-   
+
    Takes a list of components and lines them up using their top and bottom edges.
-   
+
    :param components: A sequence of :class:`Component` or :class:`spacer` objects.
    :param spacing: How many pixels of inter-element spacing to use
    :type spacing: integer >= 0
 
 .. function:: hbox(*components[, spacing=10, margins=...])
-   
+
    Like :func:`horizontal`, but ensures the height of components matches the container.
-   
+
    :param components: A sequence of :class:`Component` or :class:`spacer` objects.
    :param spacing: How many pixels of inter-element spacing to use
    :type spacing: integer >= 0
@@ -112,9 +116,9 @@ also available in Enable. The layout helpers are:
                    of the box. The default is 0.
 
 .. function:: vbox(*components[, spacing=10, margins=...])
-   
+
    Like :func:`vertical`, but ensures the width of components matches the container.
-   
+
    :param components: A sequence of :class:`Component` or :class:`spacer` objects.
    :param spacing: How many pixels of inter-element spacing to use
    :type spacing: integer >= 0
@@ -123,9 +127,9 @@ also available in Enable. The layout helpers are:
                    of the box. The default is 0.
 
 .. function:: align(anchor, *components[, spacing=10])
-   
+
    Aligns a single constraint across multiple components.
-   
+
    :param anchor: The name of a constraint variable that exists on all of the
                   `components`.
    :param components: A sequence of :class:`Component` objects. Spacers are not allowed.
@@ -133,9 +137,9 @@ also available in Enable. The layout helpers are:
    :type spacing: integer >= 0
 
 .. function:: grid(*rows[, row_align='', row_spacing=10, column_align='', column_spacing=10, margins=...])
-   
+
    Creates an NxM grid of components. Components may span multiple columns or rows.
-   
+
    :param rows: A sequence of sequences of :class:`Component` objects
    :param row_align: The name of a constraint variable on an item. If given,
                      it is used to add constraints on the alignment of items
