@@ -1,0 +1,354 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Enable Constraints Layout &mdash; enable 4.5.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.5.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/et.ico"/>
+    <link rel="top" title="enable 4.5.0 documentation" href="index.html" />
+    <link rel="next" title="Enable Keyboard Events" href="enable_key_events.html" />
+    <link rel="prev" title="Enable Concepts" href="enable_concepts.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="enable_key_events.html" title="Enable Keyboard Events"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="enable_concepts.html" title="Enable Concepts"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">enable 4.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="enable-constraints-layout">
+<h1>Enable Constraints Layout<a class="headerlink" href="#enable-constraints-layout" title="Permalink to this headline">¶</a></h1>
+<p>This document describes the constraints-based layout system that is being
+proposed as the new layout model going forward. Familiarity with <a class="reference external" href="http://docs.enthought.com/enaml/">Enaml</a> and
+its layout system is helpful but not required.</p>
+<div class="section" id="using-constraints">
+<h2>Using Constraints<a class="headerlink" href="#using-constraints" title="Permalink to this headline">¶</a></h2>
+<p><tt class="xref py py-class docutils literal"><span class="pre">ConstraintsContainer</span></tt> is a <tt class="xref py py-class docutils literal"><span class="pre">Container</span></tt> subclass which uses the
+<a class="reference external" href="http://www.cs.washington.edu/research/constraints/cassowary/">Cassowary</a> constraint solver to determine the layout of its child
+<tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt> instances. This is achieved by adding constraint variables
+to the <tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt> class which define a simple box model:</p>
+<blockquote>
+<div><ul class="simple">
+<li><tt class="xref py py-attr docutils literal"><span class="pre">layout_height</span></tt>: The height of the component.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">layout_width</span></tt>: The width of the component.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">left</span></tt>: The left edge of the component.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">right</span></tt>: The right edge of the component.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">top</span></tt>: The top edge of the component.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">bottom</span></tt>: The bottom edge of the component.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">h_center</span></tt>: The vertical center line between the left and right edges</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">v_center</span></tt>: The  horizontal center line between the top and bottom edges</li>
+</ul>
+</div></blockquote>
+<p>Additionally, there are some constraints which only exist on
+<tt class="xref py py-class docutils literal"><span class="pre">ConstraintsContainer</span></tt>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><tt class="xref py py-attr docutils literal"><span class="pre">contents_height</span></tt>: The height of the container.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">contents_width</span></tt>: The width of the container.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">contents_left</span></tt>: The left edge of the container.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">contents_right</span></tt>: The right edge of the container.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">contents_top</span></tt>: The top edge of the container.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">contents_bottom</span></tt>: The bottom edge of the container.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">contents_h_center</span></tt>: The vertical center line of the container.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">contents_v_center</span></tt>: The  horizontal center line of the container.</li>
+</ul>
+</div></blockquote>
+<p>These variables can be used in linear inequality expressions which make up the
+layout constraints of a container:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">build_hierarchy</span><span class="p">():</span>
+  <span class="n">container</span> <span class="o">=</span> <span class="n">ConstraintsContainer</span><span class="p">()</span>
+  <span class="n">one</span> <span class="o">=</span> <span class="n">Component</span><span class="p">()</span>
+  <span class="n">two</span> <span class="o">=</span> <span class="n">Component</span><span class="p">()</span>
+  <span class="n">container</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">)</span>
+  <span class="n">container</span><span class="o">.</span><span class="n">layout_constraints</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="n">one</span><span class="o">.</span><span class="n">layout_width</span> <span class="o">==</span> <span class="n">two</span><span class="o">.</span><span class="n">layout_width</span> <span class="o">*</span> <span class="mf">2.0</span><span class="p">,</span>
+      <span class="n">one</span><span class="o">.</span><span class="n">layout_height</span> <span class="o">==</span> <span class="n">two</span><span class="o">.</span><span class="n">layout_height</span><span class="p">,</span>
+      <span class="c"># ... and so on ...</span>
+  <span class="p">]</span>
+
+  <span class="k">return</span> <span class="n">container</span>
+</pre></div>
+</div>
+<p>For more complicated layouts, the <tt class="xref py py-attr docutils literal"><span class="pre">layout_constraints</span></tt> trait on a
+<tt class="xref py py-class docutils literal"><span class="pre">ConstraintsContainer</span></tt> can be a <tt class="xref py py-class docutils literal"><span class="pre">callable</span></tt>. The function is
+passed a reference to the container and should return a list of
+<tt class="xref py py-class docutils literal"><span class="pre">LinearContraints</span></tt> objects or layout helper instances (as described below).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">create_container</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="n">ConstraintsContainer</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bar</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">layout_constraints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">my_layout_constraints</span>
+
+<span class="k">def</span> <span class="nf">my_layout_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container</span><span class="p">):</span>
+  <span class="n">cns</span> <span class="o">=</span> <span class="p">[]</span>
+
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">foo</span><span class="p">:</span>
+    <span class="n">cns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">foo</span><span class="o">.</span><span class="n">layout_height</span> <span class="o">&lt;=</span> <span class="mi">300</span><span class="p">)</span>
+    <span class="n">cns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hbox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">foo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar</span><span class="p">))</span>
+  <span class="n">cns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bar</span><span class="o">.</span><span class="n">layout_width</span> <span class="o">==</span> <span class="mi">250</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">cns</span>
+</pre></div>
+</div>
+<p>If <tt class="xref py py-attr docutils literal"><span class="pre">layout_constraints</span></tt> is callable, it will be invoked each time a
+component is added to the container or whenever the <tt class="xref py py-attr docutils literal"><span class="pre">layout_size_hint</span></tt>
+trait changes on a child component.</p>
+</div>
+<div class="section" id="layout-helpers">
+<h2>Layout Helpers<a class="headerlink" href="#layout-helpers" title="Permalink to this headline">¶</a></h2>
+<p>In practice, it&#8217;s too tedious to specify all the constraints for a rich UI
+layout. To aid in the generation of layouts, the layout helpers from <a class="reference external" href="http://docs.enthought.com/enaml/">Enaml</a> are
+also available in Enable. The layout helpers are:</p>
+<p><tt class="xref py py-data docutils literal"><span class="pre">spacer</span></tt>: Creates space between two adjacent components.</p>
+<dl class="function">
+<dt id="horizontal">
+<tt class="descname">horizontal</tt><big>(</big><em>*components</em><span class="optional">[</span>, <em>spacing=10</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#horizontal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a list of components and lines them up using their left and right edges.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>components</strong> &#8211; A sequence of <tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">spacer</span></tt> objects.</li>
+<li><strong>spacing</strong> (<em>integer &gt;= 0</em>) &#8211; How many pixels of inter-element spacing to use</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vertical">
+<tt class="descname">vertical</tt><big>(</big><em>*components</em><span class="optional">[</span>, <em>spacing=10</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#vertical" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a list of components and lines them up using their top and bottom edges.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>components</strong> &#8211; A sequence of <tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">spacer</span></tt> objects.</li>
+<li><strong>spacing</strong> (<em>integer &gt;= 0</em>) &#8211; How many pixels of inter-element spacing to use</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="hbox">
+<tt class="descname">hbox</tt><big>(</big><em>*components</em><span class="optional">[</span>, <em>spacing=10</em>, <em>margins=...</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#hbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like <a class="reference internal" href="#horizontal" title="horizontal"><tt class="xref py py-func docutils literal"><span class="pre">horizontal()</span></tt></a>, but ensures the height of components matches the container.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>components</strong> &#8211; A sequence of <tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">spacer</span></tt> objects.</li>
+<li><strong>spacing</strong> (<em>integer &gt;= 0</em>) &#8211; How many pixels of inter-element spacing to use</li>
+<li><strong>margins</strong> &#8211; An <cite>int</cite>, <cite>tuple</cite> of ints, or <tt class="xref py py-class docutils literal"><span class="pre">Box</span></tt> of ints &gt;= 0 which
+indicate how many pixels of margin to add around the bounds
+of the box. The default is 0.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vbox">
+<tt class="descname">vbox</tt><big>(</big><em>*components</em><span class="optional">[</span>, <em>spacing=10</em>, <em>margins=...</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#vbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like <a class="reference internal" href="#vertical" title="vertical"><tt class="xref py py-func docutils literal"><span class="pre">vertical()</span></tt></a>, but ensures the width of components matches the container.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>components</strong> &#8211; A sequence of <tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">spacer</span></tt> objects.</li>
+<li><strong>spacing</strong> (<em>integer &gt;= 0</em>) &#8211; How many pixels of inter-element spacing to use</li>
+<li><strong>margins</strong> &#8211; An <cite>int</cite>, <cite>tuple</cite> of ints, or <tt class="xref py py-class docutils literal"><span class="pre">Box</span></tt> of ints &gt;= 0 which
+indicate how many pixels of margin to add around the bounds
+of the box. The default is 0.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="align">
+<tt class="descname">align</tt><big>(</big><em>anchor</em>, <em>*components</em><span class="optional">[</span>, <em>spacing=10</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#align" title="Permalink to this definition">¶</a></dt>
+<dd><p>Aligns a single constraint across multiple components.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>anchor</strong> &#8211; The name of a constraint variable that exists on all of the
+<cite>components</cite>.</li>
+<li><strong>components</strong> &#8211; A sequence of <tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt> objects. Spacers are not allowed.</li>
+<li><strong>spacing</strong> (<em>integer &gt;= 0</em>) &#8211; How many pixels of inter-element spacing to use</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="grid">
+<tt class="descname">grid</tt><big>(</big><em>*rows</em><span class="optional">[</span>, <em>row_align=''</em>, <em>row_spacing=10</em>, <em>column_align=''</em>, <em>column_spacing=10</em>, <em>margins=...</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an NxM grid of components. Components may span multiple columns or rows.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>rows</strong> &#8211; A sequence of sequences of <tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt> objects</li>
+<li><strong>row_align</strong> (<em>string</em>) &#8211; The name of a constraint variable on an item. If given,
+it is used to add constraints on the alignment of items
+in a row. The constraints will only be applied to items
+that do not span rows.</li>
+<li><strong>row_spacing</strong> (<em>integer &gt;= 0</em>) &#8211; Indicates how many pixels of space should be placed
+between rows in the grid. The default is 10.</li>
+<li><strong>column_align</strong> (<em>string</em>) &#8211; The name of a constraint variable on an item. If given,
+it is used to add constraints on the alignment of items
+in a column. The constraints will only be applied to
+items that do not span columns.</li>
+<li><strong>column_spacing</strong> (<em>integer &gt;= 0</em>) &#8211; Indicates how many pixels of space should be placed
+between columns in the grid. The default is 10.</li>
+<li><strong>margins</strong> &#8211; An <cite>int</cite>, <cite>tuple</cite> of ints, or <tt class="xref py py-class docutils literal"><span class="pre">Box</span></tt> of ints &gt;= 0 which
+indicate how many pixels of margin to add around the bounds
+of the box. The default is 0.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="fine-tuning-layouts">
+<h2>Fine Tuning Layouts<a class="headerlink" href="#fine-tuning-layouts" title="Permalink to this headline">¶</a></h2>
+<p><tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt> defines a <tt class="xref py py-class docutils literal"><span class="pre">Tuple</span></tt> trait <tt class="xref py py-attr docutils literal"><span class="pre">layout_size_hint</span></tt> which
+controls the minimum size of a component when it&#8217;s part of a contraints layout.
+Additionally, <tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt> defines some strength traits that can be used
+to fine tune the behavior of a component instance during layout. They are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><tt class="xref py py-attr docutils literal"><span class="pre">hug_height</span></tt>: How strongly a component prefers the height of its size hint when it could grow.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">hug_width</span></tt>: How strongly a component prefers the width of its size hint when it could grow.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">resist_height</span></tt>: How strongly a component resists its height being made smaller than its size hint.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">resist_width</span></tt>: How strongly a component resists its width being made smaller than its size hint.</li>
+</ul>
+</div></blockquote>
+<p>The allow values for these strengths are: <cite>&#8216;required&#8217;</cite>, <cite>&#8216;strong&#8217;</cite>, <cite>&#8216;medium&#8217;</cite>,
+and <cite>&#8216;weak&#8217;</cite>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/e-logo-rev.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Enable Constraints Layout</a><ul>
+<li><a class="reference internal" href="#using-constraints">Using Constraints</a></li>
+<li><a class="reference internal" href="#layout-helpers">Layout Helpers</a></li>
+<li><a class="reference internal" href="#fine-tuning-layouts">Fine Tuning Layouts</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable_concepts.html"
+                        title="previous chapter">Enable Concepts</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable_key_events.html"
+                        title="next chapter">Enable Keyboard Events</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/enable_constraints_layout.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="enable_key_events.html" title="Enable Keyboard Events"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="enable_concepts.html" title="Enable Concepts"
+             >previous</a> |</li>
+        <li><a href="index.html">enable 4.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008-2015, Enthought.
+      Last updated on Apr 01, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>
