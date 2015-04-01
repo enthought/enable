@@ -85,11 +85,10 @@ Enable/Kiva also have the following requirements:
 - `traits 4.5.0 <https://pypi.python.org/pypi/traits>`_
 - `traitsui 4.4.0 <https://pypi.python.org/pypi/traitsui>`_
 - `pyface 4.5.0 <https://pypi.python.org/pypi/pyface>`_
-- `apptools 4.3.0 <https://pypi.python.org/pypi/apptools/>`_
-- `kiwisolver <https://pypi.python.org/pypi/kiwisolver>`_
 
 .. rubric:: Optional:
 
+- `apptools 4.3.0 <https://pypi.python.org/pypi/apptools/>`_
 - (Qt backend) `PySide <https://pypi.python.org/pypi/PySide>`_ or `PyQt4 <https://pypi.python.org/pypi/PyQt4>`_
 - (WX backend) `WxPython version 2.8.11.0 <https://pypi.python.org/pypi/wxPython/2.8.11.0>`_
 - (GL backend) `pyglet version 1.1.4 <https://bitbucket.org/pyglet/pyglet/get/pyglet-1.1.4.zip>`_
@@ -97,3 +96,4 @@ Enable/Kiva also have the following requirements:
 - (SVG backend) `PyParsing <https://pypi.python.org/pypi/pyparsing>`_
 - (PDF backend) `ReportLab Toolkit version 3.1 <http://www.reportlab.org/rl_toolkit.html/>`_
 - (Cairo backend) `PyCairo 1.10.0 <http://cairographics.org/releases/py2cairo-1.10.0.tar.bz2>`_
+- (Constrained layout) `kiwisolver <https://pypi.python.org/pypi/kiwisolver>`_
