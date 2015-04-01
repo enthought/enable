@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Kiva Interface Quick Reference &mdash; enable 4.4.1 documentation</title>
+    <title>Kiva &mdash; enable 4.5.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4.4.1',
+        VERSION:     '4.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/et.ico"/>
-    <link rel="top" title="enable 4.4.1 documentation" href="index.html" />
-    <link rel="prev" title="Enable Concepts" href="enable_concepts.html" /> 
+    <link rel="top" title="enable 4.5.0 documentation" href="index.html" />
+    <link rel="prev" title="Enable Apptools Integration" href="enable_apptools_integration.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,9 +35,9 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="enable_concepts.html" title="Enable Concepts"
+          <a href="enable_apptools_integration.html" title="Enable Apptools Integration"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">enable 4.4.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">enable 4.5.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -46,7 +46,340 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="kiva-interface-quick-reference">
+  <div class="section" id="kiva">
+<h1>Kiva<a class="headerlink" href="#kiva" title="Permalink to this headline">¶</a></h1>
+<p>Kiva is a 2D vector drawing interface providing functionality similar to
+<a class="reference external" href="http://en.wikipedia.org/wiki/Quartz_2D">Quartz</a>,
+<a class="reference external" href="http://cairographics.org/">Cairo</a>, the
+<a class="reference external" href="http://qt-project.org/doc/qt-4.8/qpainter.html">Qt QPainter interface</a>,
+the 2D drawing routines of <a class="reference external" href="http://www.opengl.org/">OpenGL</a> , the HTML5
+Canvas element and many other similar 2D vector drawing APIs.  Rather than
+re-implementing everything, Kiva is a Python interface layer that sits on top
+of many different back-ends which are in fact provided by some of these
+libraries, depending on the platform, GUI toolkit, and capabilities of the
+system.</p>
+<p>This approach permits code to be written to the Kiva API, but produce output
+that could be rendered to a GUI window, an image file, a PDF file, or a number
+of other possible output formats without any (or at least minimal) changes to
+the image generation code.</p>
+<p>Kiva is the base layer of the Chaco plotting library, and is what is
+responsible for actually drawing pixels on the screen.  Developers interested
+in writing code that renders new plots or other graphical features for Chaco
+will need to be at least passingly familiar with the Kiva drawing API.</p>
+<p>The most important Kiva backend is the Agg or &#8220;Image&#8221; backend, which is a
+Python extension module which wraps the C++
+<a class="reference external" href="http://www.antigrain.com/">Anti-grain geometry</a> drawing library into a
+Python extension and exposes the Kiva API.  The Agg renders the vector drawing
+commands into a raster image which can then be saved as a standard image format
+(such as PNG or JPEG) or copied into a GUI window.  The Agg backend should be
+available on any platform, and should work even if there is no GUI or windowing
+system available.</p>
+<div class="section" id="kiva-concepts">
+<h2>Kiva Concepts<a class="headerlink" href="#kiva-concepts" title="Permalink to this headline">¶</a></h2>
+<p>This section gives a whirlwind tour of the concepts involved with drawing with
+Kiva.</p>
+<div class="section" id="the-graphics-context">
+<h3>The Graphics Context<a class="headerlink" href="#the-graphics-context" title="Permalink to this headline">¶</a></h3>
+<p>The heart of the Kiva drawing API is the &#8220;graphics context&#8221;, frequently
+abbreviated as <tt class="docutils literal"><span class="pre">gc</span></tt> in code.  The graphics context holds the current drawing
+state (such as pen and fill colors, font state, and affine transformations to
+be applied to points) and provides methods for changing the state and
+performing drawing actions.</p>
+<p>In many common use-cases (such as writing renderers for Chaco), you will be
+provided a graphics context by other code, but it is straight-forward to create
+your own graphics context:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>This is an graphics context for the Agg or &#8220;image&#8221; backend which has a size of
+400x400 pixels.  If instead we wanted to draw into a Qt <tt class="docutils literal"><span class="pre">QPainter</span></tt> drawing
+context in a <cite>QWidget</cite> called <cite>my_qwidget</cite> we would use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.qpainter</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">),</span> <span class="n">parent</span><span class="o">=</span><span class="n">my_qwidget</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Other Kiva backends have similar methods of creating a graphics context, and
+each may take somewhat different arguments to the constructor, depending on the
+requirements of the backend.</p>
+<p>Once you have a graphics context, you can use it to draw vector graphics.
+For example, the following code will draw a translucent gray line from
+(100, 100) to (100, 200):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>For many of the backends, you can save the rendered image out as an image file
+using the <tt class="docutils literal"><span class="pre">save()</span></tt> method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;my_line.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Kiva is numpy-aware, and has a number of methods that allow you to pass numpy
+arrays of points to draw many things in one operation, with loops being
+performed in C where possible:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">empty</span><span class="p">,</span> <span class="n">linspace</span><span class="p">,</span> <span class="n">random</span>
+
+<span class="c"># Nx2 array of points</span>
+<span class="n">pts</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">pts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">pts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span> <span class="o">+</span> <span class="mi">100</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="coordinate-model">
+<h3>Coordinate Model<a class="headerlink" href="#coordinate-model" title="Permalink to this headline">¶</a></h3>
+<p>Kiva uses mathematical axes direction conventions as opposed to framebuffer
+axes conventions.  In other words, the origin is always at the <em>bottom</em>
+left of the screen, and the positive y axis goes <em>up</em> from bottom to top; as
+opposed to screen coordinates which typically have the origin at the <em>top</em> left
+and the positive y axis goes <em>down</em> from top to bottom.</p>
+<p>Additionally, for backends that produce raster images, the coordinates
+represent the <em>corner</em> of pixels, rather than the center of pixels.  This has
+consequences when rendering thin lines.  Compare the two lines in this example,
+for instance:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">35</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="mi">35</span><span class="p">)</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mf">65.5</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="mf">65.5</span><span class="p">)</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;pixel_coordinates.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Notice that the line on the bottom (the first of the two lines) is fuzzier
+because it is drawn along the boundary of the pixels, while the other line
+is drawn through the center of the pixels:</p>
+<img alt="_images/pixel_coordinates.png" src="_images/pixel_coordinates.png" />
+</div>
+<div class="section" id="the-coordinate-transform-matrix">
+<h3>The Coordinate Transform Matrix<a class="headerlink" href="#the-coordinate-transform-matrix" title="Permalink to this headline">¶</a></h3>
+<p>The Kiva API allows arbitrary affine transforms to be applied to the graphics
+context during drawing.  The API provides convenience methods for common
+transformations, such as rotation and scaling:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">empty</span><span class="p">,</span> <span class="n">linspace</span><span class="p">,</span> <span class="n">random</span><span class="p">,</span> <span class="n">pi</span>
+<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
+
+<span class="c"># Nx2 array of points</span>
+<span class="n">pts</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">pts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">pts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span> <span class="o">+</span> <span class="mi">100</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
+
+<span class="c"># draw a simple graph</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="c"># translate by 100 pixels in the x direction</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c"># rotate by 45 degrees</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">rotate_ctm</span><span class="p">(</span><span class="n">pi</span><span class="o">/</span><span class="mf">4.0</span><span class="p">)</span>
+
+<span class="c"># scale by 1.5 in the x direction</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">scale_ctm</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+<span class="c"># now draw in the transformed coordinates</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;transformed_lines.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/transformed_lines.png" src="_images/transformed_lines.png" />
+<p>If desired, the user can also supply their own transformations directly.</p>
+</div>
+</div>
+<div class="section" id="paths">
+<h2>Paths<a class="headerlink" href="#paths" title="Permalink to this headline">¶</a></h2>
+<p>The basic drawing operations are performed by building a path out of primitive
+operations, and then performing stroking and/or filling operations with it.</p>
+<p>The simplest path operations are <tt class="docutils literal"><span class="pre">move_to()</span></tt> and <tt class="docutils literal"><span class="pre">line_to()</span></tt> which
+respectively move the current point in the path to the specified point, and
+add a line to the path from the current point to the specified point.</p>
+<p>In addition to the straight line commands, there are 4 arc commands for adding
+curves to a path: <tt class="docutils literal"><span class="pre">curve_to()</span></tt> which draws a cubic bezier curve,
+<tt class="docutils literal"><span class="pre">quad_curve_to()</span></tt> which draws a quadratic bezier curve, <tt class="docutils literal"><span class="pre">arc()</span></tt> which
+draws a circular arc based on a center and radius, and <tt class="docutils literal"><span class="pre">arc_to()</span></tt> which
+draws a circular arc from one point to another.</p>
+<p>Finally, the <tt class="docutils literal"><span class="pre">rect()</span></tt> method adds a rectangle to the path.</p>
+<p>In addition there are convenience methods <tt class="docutils literal"><span class="pre">lines()</span></tt>, <tt class="docutils literal"><span class="pre">rects()</span></tt> and
+<tt class="docutils literal"><span class="pre">line_set()</span></tt> which add multiple lines or rectangles to a path, reading from
+appropriately shaped numpy arrays.</p>
+<p>None of these methods make any change to the visible image until the path is
+either stroked with <tt class="docutils literal"><span class="pre">stroke_path()</span></tt> or filled with <tt class="docutils literal"><span class="pre">fill_path()</span></tt>.  The way
+these actions are performed depends upon certain state of the graphics context.</p>
+<p>For stroking, the graphics context keeps track of the color to use with
+<tt class="docutils literal"><span class="pre">set_stroke_color()</span></tt>, the thickness of the line with <tt class="docutils literal"><span class="pre">set_line_width()</span></tt>,
+the way that lines are joined with <tt class="docutils literal"><span class="pre">set_line_join()</span></tt> and
+<tt class="docutils literal"><span class="pre">set_miter_limit()</span></tt>, and the way that they are ended with <tt class="docutils literal"><span class="pre">set_line_cap()</span></tt>.
+Lines can also be dashed using the <tt class="docutils literal"><span class="pre">set_line_dash()</span></tt> method which takes a
+pattern of numbers to use for lengths of on and off, and an optional <tt class="docutils literal"><span class="pre">phase</span></tt>
+for where to start in the pattern.</p>
+<p>Thicknesses:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mf">30.5</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="mi">10</span>
+    <span class="n">thickness</span> <span class="o">=</span> <span class="mf">2.0</span><span class="o">**</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="n">thickness</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;thicknesses.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/thicknesses.png" src="_images/thicknesses.png" />
+<p>Joins:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
+<span class="kn">from</span> <span class="nn">kiva.constants</span> <span class="kn">import</span> <span class="n">JOIN_ROUND</span><span class="p">,</span> <span class="n">JOIN_BEVEL</span><span class="p">,</span> <span class="n">JOIN_MITER</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">join</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">JOIN_ROUND</span><span class="p">,</span> <span class="n">JOIN_BEVEL</span><span class="p">,</span> <span class="n">JOIN_MITER</span><span class="p">]):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="mi">20</span>
+
+    <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_line_join</span><span class="p">(</span><span class="n">join</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;joins.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/joins.png" src="_images/joins.png" />
+<p>Caps:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
+<span class="kn">from</span> <span class="nn">kiva.constants</span> <span class="kn">import</span> <span class="n">CAP_ROUND</span><span class="p">,</span> <span class="n">CAP_BUTT</span><span class="p">,</span> <span class="n">CAP_SQUARE</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cap</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">CAP_ROUND</span><span class="p">,</span> <span class="n">CAP_BUTT</span><span class="p">,</span> <span class="n">CAP_SQUARE</span><span class="p">]):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mi">30</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="mi">20</span>
+
+    <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_line_cap</span><span class="p">(</span><span class="n">cap</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;caps.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/caps.png" src="_images/caps.png" />
+<p>Dashes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="n">dashes</span> <span class="o">=</span> <span class="p">([</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">9.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">])</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">dash</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dashes</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mf">30.5</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="mi">20</span>
+
+    <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_line_dash</span><span class="p">(</span><span class="n">dash</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;dashes.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/dashes.png" src="_images/dashes.png" />
+<p>Before filling a path, the colour of the fill is via the <tt class="docutils literal"><span class="pre">set_fill_color()</span></tt>
+method, and gradient fills can be done via the <tt class="docutils literal"><span class="pre">set_linear_gradient()</span></tt> and
+<tt class="docutils literal"><span class="pre">set_radial_gradient()</span></tt> methods.  Finally, there are two different fill modes
+available:
+<a class="reference external" href="http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule">even-odd fill</a> and
+<a class="reference external" href="http://en.wikipedia.org/wiki/Nonzero-rule">non-zero winding fill</a></p>
+<p>Winding vs. Even-Odd Fill:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span>
+<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
+<span class="kn">from</span> <span class="nn">kiva.constants</span> <span class="kn">import</span> <span class="n">FILL</span><span class="p">,</span> <span class="n">EOF_FILL</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="mi">5</span><span class="o">*</span><span class="n">i</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mi">50</span><span class="o">+</span><span class="mi">40</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mi">50</span><span class="o">+</span><span class="mi">40</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">fill_path</span><span class="p">()</span>
+
+
+<span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="mi">5</span><span class="o">*</span><span class="n">i</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mi">150</span><span class="o">+</span><span class="mi">40</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mi">50</span><span class="o">+</span><span class="mi">40</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">eof_fill_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;fill.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/fill.png" src="_images/fill.png" />
+<div class="section" id="text">
+<h3>Text<a class="headerlink" href="#text" title="Permalink to this headline">¶</a></h3>
+<p>Text can be rendered at a point by first setting the font to use, then setting
+the text location using <tt class="docutils literal"><span class="pre">set_text_position()</span></tt> and then <tt class="docutils literal"><span class="pre">show_text()</span></tt> to
+render the text:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.fonttools</span> <span class="kn">import</span> <span class="n">Font</span>
+<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">set_font</span><span class="p">(</span><span class="n">Font</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">24</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_text_position</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">show_text</span><span class="p">(</span><span class="s">&quot;Hello World&quot;</span><span class="p">)</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;text.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/text.png" src="_images/text.png" />
+<p>Text defaults to being rendered filled, but can be rendered with an outline.</p>
+</div>
+</div>
+</div>
+<div class="section" id="kiva-interface-quick-reference">
 <h1>Kiva Interface Quick Reference<a class="headerlink" href="#kiva-interface-quick-reference" title="Permalink to this headline">¶</a></h1>
 <p>This document is a summary of the classes and functions available in
 Kiva.  More specifically, it describes some of the details of the
@@ -274,7 +607,7 @@ is a string.</td>
 <tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">set_line_dash(array):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body">array is an even-lengthed tuple of floats that represents
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">array is an even-length tuple of floats that represents
 the width of each dash and gap in the dash pattern.</td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">set_fill_color(color):</th></tr>
@@ -459,7 +792,7 @@ pen position be (x_left + r, y_top).  Then (x2,y2) would be
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">draw_image(graphics_context img, rect=None):</th></tr>
 <tr class="field-even field"><td>&nbsp;</td><td class="field-body">if rect is defined, then img is
-scaled and drawn into it. Otherwise, img is overlayed exactly on top of this
+scaled and drawn into it. Otherwise, img is overlaid exactly on top of this
 graphics context</td>
 </tr>
 </tbody>
@@ -609,7 +942,20 @@ rgb24 format.</p>
             </a></p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Kiva Interface Quick Reference</a><ul>
+<li><a class="reference internal" href="#">Kiva</a><ul>
+<li><a class="reference internal" href="#kiva-concepts">Kiva Concepts</a><ul>
+<li><a class="reference internal" href="#the-graphics-context">The Graphics Context</a></li>
+<li><a class="reference internal" href="#coordinate-model">Coordinate Model</a></li>
+<li><a class="reference internal" href="#the-coordinate-transform-matrix">The Coordinate Transform Matrix</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#paths">Paths</a><ul>
+<li><a class="reference internal" href="#text">Text</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#kiva-interface-quick-reference">Kiva Interface Quick Reference</a><ul>
 <li><a class="reference internal" href="#types">Types</a><ul>
 <li><a class="reference internal" href="#primitive-types">Primitive types</a></li>
 <li><a class="reference internal" href="#affinematrix">AffineMatrix</a></li>
@@ -634,8 +980,8 @@ rgb24 format.</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="enable_concepts.html"
-                        title="previous chapter">Enable Concepts</a></p>
+  <p class="topless"><a href="enable_apptools_integration.html"
+                        title="previous chapter">Enable Apptools Integration</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/kiva.txt"
@@ -665,15 +1011,15 @@ rgb24 format.</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="enable_concepts.html" title="Enable Concepts"
+          <a href="enable_apptools_integration.html" title="Enable Apptools Integration"
              >previous</a> |</li>
-        <li><a href="index.html">enable 4.4.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">enable 4.5.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2008-2014, Enthought.
-      Last updated on May 12, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+        &copy; Copyright 2008-2015, Enthought.
+      Last updated on Apr 01, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>
