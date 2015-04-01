@@ -82,9 +82,9 @@ Enable/Kiva also have the following requirements:
 
 - `Numpy <http://pypi.python.org/pypi/numpy>`_
 - `PIL <http://www.pythonware.com/products/pil>`_
-- `traits <https://pypi.python.org/pypi/traits>`_
-- `traitsui <https://pypi.python.org/pypi/traitsui>`_
-- `pyface <https://pypi.python.org/pypi/pyface>`_
+- `traits 4.5.0 <https://pypi.python.org/pypi/traits>`_
+- `traitsui 4.4.0 <https://pypi.python.org/pypi/traitsui>`_
+- `pyface 4.5.0 <https://pypi.python.org/pypi/pyface>`_
 - `apptools 4.3.0 <https://pypi.python.org/pypi/apptools/>`_
 - `kiwisolver <https://pypi.python.org/pypi/kiwisolver>`_
 
