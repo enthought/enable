@@ -71,10 +71,10 @@ Prerequisites
 You must have the following libraries installed before building or installing
 the Enable project:
 
-* `distribute <http://pypi.python.org/pypi/distribute>`_
-* `SWIG <http://www.swig.org/>`_
-* `Cython <http://www.cython.org>`_
+* `Setuptools <https://pypi.python.org/pypi/setuptools>`_
 * `Numpy <http://pypi.python.org/pypi/numpy>`_
+* `SWIG <http://www.swig.org/>`_
 * `ReportLab Toolkit <http://www.reportlab.org/rl_toolkit.html/>`_ for PDF
   backend support in Kiva.
 * (on Linux) X11-devel (development tools for X11)
+* (on Mac OS X) `Cython <http://www.cython.org>`_
