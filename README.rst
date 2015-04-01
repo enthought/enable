@@ -90,7 +90,9 @@ Enable/Kiva also have the following requirements:
 
 .. rubric:: Optional:
 
-- (GL backend) `pyglet == 1.1.4 <https://bitbucket.org/pyglet/pyglet/get/pyglet-1.1.4.zip>`_
+- (Qt backend) `PySide <https://pypi.python.org/pypi/PySide>`_ or `PyQt4 <https://pypi.python.org/pypi/PyQt4>`_
+- (WX backend) `WxPython version 2.8.11.0 <https://pypi.python.org/pypi/wxPython/2.8.11.0>`_
+- (GL backend) `pyglet version 1.1.4 <https://bitbucket.org/pyglet/pyglet/get/pyglet-1.1.4.zip>`_
 - (GL backend) `pygarrayimage <https://pypi.python.org/pypi/pygarrayimage>`_
 - (SVG backend) `PyParsing <https://pypi.python.org/pypi/pyparsing>`_
-- (PDF backend) `ReportLab Toolkit <= 3.1 <http://www.reportlab.org/rl_toolkit.html/>`_
+- (PDF backend) `ReportLab Toolkit version 3.1 <http://www.reportlab.org/rl_toolkit.html/>`_
