@@ -9,6 +9,6 @@ __requires__ = [
     'numpy',
     'traits',
     'traitsui',
-    'PIL',
+    'Pillow',
     'kiwisolver',
 ]
