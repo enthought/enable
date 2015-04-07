@@ -1,6 +1,27 @@
 Enable CHANGELOG
 ================
 
+Enable 4.5.2
+============
+
+Enhancements
+------------
+
+Fixes
+-----
+
+Enable 4.5.1(April 7, 2015)
+===========================
+
+Fixes
+-----
+
+* PR #182: Fix enable setup under recent versions of setuptools
+* PR #180: Fixed sphinx warnings
+* PR #178: Fix version file sync for kiva and enable and travis-ci build
+
+
+
 Enable 4.5.0 (March 23, 2015)
 =============================
 
