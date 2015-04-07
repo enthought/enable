@@ -33,10 +33,10 @@ import subprocess
 from numpy.distutils.core import setup
 
 MAJOR = 4
-MINOR = 6
-MICRO = 0
+MINOR = 5
+MICRO = 1
 
-IS_RELEASED = False
+IS_RELEASED = True
 
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
