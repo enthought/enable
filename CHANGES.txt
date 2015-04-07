@@ -18,7 +18,7 @@ Fixes
 
 * PR #182: Fix enable setup under recent versions of setuptools
 * PR #180: Fixed sphinx warnings
-* PR #178: Fix version file sync for kiva and enable and travis-ci build
+* PR #178: Fix Travis-CI build and version file setup for kiva and enable
 
 Enable 4.5.0 (March 23, 2015)
 =============================
