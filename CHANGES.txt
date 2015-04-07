@@ -20,8 +20,6 @@ Fixes
 * PR #180: Fixed sphinx warnings
 * PR #178: Fix version file sync for kiva and enable and travis-ci build
 
-
-
 Enable 4.5.0 (March 23, 2015)
 =============================
 
