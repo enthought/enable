@@ -34,7 +34,7 @@ from numpy.distutils.core import setup
 
 MAJOR = 4
 MINOR = 5
-MICRO = 0
+MICRO = 1
 
 IS_RELEASED = True
 
