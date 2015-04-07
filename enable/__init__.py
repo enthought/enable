@@ -10,5 +10,5 @@ __requires__ = [
     'traits',
     'traitsui',
     'PIL',
-    'kiwisolver',
+    'pyface',
 ]
