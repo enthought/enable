@@ -1,7 +1,7 @@
 Enable CHANGELOG
 ================
 
-Enable 4.5.2
+Enable 4.6.0
 ============
 
 Enhancements
