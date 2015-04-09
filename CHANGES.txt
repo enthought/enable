@@ -1,15 +1,6 @@
 Enable CHANGELOG
 ================
 
-Enable 4.6.0
-============
-
-Enhancements
-------------
-
-Fixes
------
-
 Enable 4.5.1 (April 7, 2015)
 ============================
 
