@@ -3,11 +3,16 @@
 """ A multi-platform object drawing library.
     Part of the Enable project of the Enthought Tool Suite.
 """
-
-from kiva._version import full_version as __version__
+from ._version import full_version as __version__
 
 __requires__ = [
+    'numpy',
+    'traits',
     'traitsui',
     'PIL',
-    'kiwisolver',
+    'pyface',
 ]
+
+# Cython is only necessary to build the quartz backend.
+if sys.platform == 'darwin':
+    __requires__.append('cython')
