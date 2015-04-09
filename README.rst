@@ -68,13 +68,32 @@ Kiva currently implements the following features:
 Prerequisites
 -------------
 
-You must have the following libraries installed before building or installing
+You must have the following libraries installed before building
 the Enable project:
 
 * `Setuptools <https://pypi.python.org/pypi/setuptools>`_
 * `Numpy <http://pypi.python.org/pypi/numpy>`_
 * `SWIG <http://www.swig.org/>`_
-* `ReportLab Toolkit <http://www.reportlab.org/rl_toolkit.html/>`_ for PDF
-  backend support in Kiva.
 * (on Linux) X11-devel (development tools for X11)
 * (on Mac OS X) `Cython <http://www.cython.org>`_
+
+Enable/Kiva also have the following requirements:
+
+.. rubric:: Runtime:
+
+* `Numpy <http://pypi.python.org/pypi/numpy>`_
+* `PIL <http://www.pythonware.com/products/pil>`_
+* `traits <https://pypi.python.org/pypi/traits>`_
+* `traitsui <https://pypi.python.org/pypi/traitsui>`_
+* `pyface <https://pypi.python.org/pypi/pyface>`_
+* `apptools 4.3.0 <https://pypi.python.org/pypi/apptools/>`_
+* `kiwisolver <https://pypi.python.org/pypi/kiwisolver>`_
+
+.. rubric:: Optional:
+
+* (GL backend) `pyglet == 1.1.4 <https://bitbucket.org/pyglet/pyglet/get/pyglet-1.1.4.zip>`_
+* (GL backend) `pygarrayimage <https://pypi.python.org/pypi/pygarrayimage>`_
+* (SVG backend) `PyParsing <https://pypi.python.org/pypi/pyparsing>`_
+* (PDF backend) `ReportLab Toolkit <= 3.1 <http://www.reportlab.org/rl_toolkit.html/>`_
+  backend support in Kiva.
+
