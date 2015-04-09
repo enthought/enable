@@ -3,7 +3,12 @@
 """ A multi-platform object drawing library.
     Part of the Enable project of the Enthought Tool Suite.
 """
+import sys
 from ._version import full_version as __version__
+
+__all__ = [
+    '__version__',
+]
 
 __requires__ = [
     'numpy',
