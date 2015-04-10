@@ -17,7 +17,6 @@ before_install:
 install:
   # nose is already installed
   # numpy is already installed
-  - pip install cython
   - pip install -r dev_requirements.txt
   - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install -r requirements-2.6.txt; fi
   - pip install coveralls
