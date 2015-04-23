@@ -29,7 +29,7 @@ def configuration(parent_package='', top_path=None):
                     cython_result.num_errors)
         return target
 
-    frameworks = ['CoreFoundation','ApplicationServices','Foundation']
+    frameworks = ['Cocoa', 'CoreFoundation','ApplicationServices','Foundation']
     extra_link_args=['-framework %s' % x for x in frameworks]
     include_dirs = [
         '/System/Library/Frameworks/%s.framework/Versions/A/Headers' % x
