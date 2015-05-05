@@ -24,4 +24,5 @@ kiva/quartz/ABCGI.c
 kiva/quartz/CTFont.c
 
 # Auto-generated version info
+enable/_version.py
 kiva/_version.py
