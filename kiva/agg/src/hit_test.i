@@ -22,7 +22,7 @@ namespace kiva
 }
 
 %pythoncode
-{
+%{
 from numpy import shape, transpose, zeros, rank, reshape, int32
 
 def points_in_polygon(pts, poly_pts, use_winding=False):
@@ -92,4 +92,4 @@ def points_in_polygon(pts, poly_pts, use_winding=False):
     else:
         _agg.points_in_polygon(pts, poly_pts, results)
     return results    
-}
+%}
