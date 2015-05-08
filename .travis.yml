@@ -29,8 +29,5 @@ script:
   - coverage run -a -m nose.core -v enable/savage/svg/tests
   - coverage run -a -m nose.core -v kiva/tests
   - coverage run -a -m nose.core -v kiva/agg/tests
-notifications:
-  email:
-    - travis-ci@enthought.com
 after_success:
   coveralls
