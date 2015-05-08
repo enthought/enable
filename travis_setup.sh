@@ -27,7 +27,3 @@ cd py2cairo-1.10.0
 ./waf build
 sudo ./waf install
 cd ..
-
-# setup X11 for the tests
-export DISPLAY=:99.0
-sh -e /etc/init.d/xvfb start
