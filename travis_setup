@@ -13,7 +13,7 @@ sudo ln -s /usr/lib/`uname -i`-linux-gnu/libpng.so /usr/lib/
 sudo ln -s /usr/lib/`uname -i`-linux-gnu/libz.so /usr/lib/
 
 if [ "$ETS_TOOLKIT" = "wx" ]; then
-    sudo apt-get install python python-wxtools python-wxgtk2.8-dbg
+    sudo apt-get install python-wxtools python-wxgtk2.8-dbg
 elif [ "$ETS_TOOLKIT" = "qt4" ]; then
     sudo apt-get install python-qt4 python-qt4-dev python-sip python-qt4-gl libqt4-scripttools
 fi
