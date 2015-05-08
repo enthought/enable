@@ -16,7 +16,7 @@ before_install:
   - sh ./travis_setup.sh
   # setup X11 for the tests
   - export DISPLAY=:99.0
-  -sh -e /etc/init.d/xvfb start
+  - sh -e /etc/init.d/xvfb start
 install:
   # nose is already installed
   # numpy is already installed
