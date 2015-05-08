@@ -10,9 +10,9 @@ env:
 matrix:
   exclude:
     - python: 2.6
-      env: ETS_TOOLKIT=qt4 REQUIREMENTS=dev_requirements_pillow.txt
+      env: ETS_TOOLKIT=qt4
     - python: 2.6
-      env: ETS_TOOLKIT=wx REQUIREMENTS=dev_requirements_pillow.txt
+      env: ETS_TOOLKIT=wx
 before_install:
   - sh ./travis_setup.sh
   # setup X11 for the tests
