@@ -12,7 +12,7 @@ sudo ln -s /usr/lib/`uname -i`-linux-gnu/libjpeg.so /usr/lib/
 sudo ln -s /usr/lib/`uname -i`-linux-gnu/libpng.so /usr/lib/
 sudo ln -s /usr/lib/`uname -i`-linux-gnu/libz.so /usr/lib/
 
-# setup gui
+# setup gui toolkit
 if [ "$ETS_TOOLKIT" = "wx" ]; then
     echo "HERE"
     sudo apt-get install python-wxtools python-wxgtk2.8-dbg
