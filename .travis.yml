@@ -2,9 +2,12 @@ language: python
 python:
   - '2.7_with_system_site_packages'
   - 2.6
+env:
+  - ETS_TOOLKIT = qt4 PYTHON =
+  - ETS_TOOLKIT = wx
 before_install:
   - sudo apt-get update
-  # For Python 2.7, install PyQt4 and cairo
+  # For Python 2.7, install PyQt4 (or WX) and cairo
   - if [[ $TRAVIS_PYTHON_VERSION == '2.7_with_system_site_packages' ]]; then source .travis_before_install; fi
   # PyQt and cairo can't be installed on 2.6; run the tests without Qt
   - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then source .travis_before_install_noqt; fi
