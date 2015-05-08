@@ -4,7 +4,7 @@ python:
   - 2.6
 env:
   - ETS_TOOLKIT=wx REQUIREMENTS=dev_requirements_pillow.txt
-  - ETS_TOOLKIT=qt4 REQUIREMENTS=dev_requirements_pilow.txt
+  - ETS_TOOLKIT=qt4 REQUIREMENTS=dev_requirements_pillow.txt
   - ETS_TOOLKIT=null.image REQUIREMENTS=dev_requirements_pillow.txt
   - ETS_TOOLKIT=null.image REQUIREMENTS=dev_requirements_pil.txt
 matrix:
