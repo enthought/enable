@@ -22,13 +22,12 @@ install:
   # nose is already installed
   # numpy is already installed
   - pip install -r $REQUIREMENTS
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install -r requirements-2.6.txt; fi
   - pip install coveralls
   - python setup.py develop
 script:
   - coverage run -m nose.core -v enable/tests
   - coverage run -a -m nose.core -v enable/savage/svg/tests
-  - coverage run -a -m nose.core -v kiva/tests
+  - coverage run -a -m unit2 -v discover kiva/tests
   - coverage run -a -m nose.core -v kiva/agg/tests
 after_success:
   coveralls
