@@ -27,7 +27,7 @@ install:
 script:
   - coverage run -m nose.core -v enable/tests
   - coverage run -a -m nose.core -v enable/savage/svg/tests
-  - coverage run -a unit2 -v discover kiva/tests
+  - coverage run -a unit2 discover -v kiva/tests
   - coverage run -a -m nose.core -v kiva/agg/tests
 after_success:
   coveralls
