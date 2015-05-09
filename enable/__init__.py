@@ -12,6 +12,7 @@ __requires__ = [
     'pyface',
 ]
 
+# Do not force installation of pillow if PIL is already available.
 try:
     import PIL
 except ImportError:
