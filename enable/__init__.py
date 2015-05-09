@@ -9,6 +9,10 @@ __requires__ = [
     'numpy',
     'traits',
     'traitsui',
-    'PIL',
     'pyface',
 ]
+
+try:
+    import PIL
+except ImportError:
+    __requires__.append('pillow')
