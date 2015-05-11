@@ -81,7 +81,7 @@ Enable/Kiva also have the following requirements:
 .. rubric:: Runtime:
 
 - `Numpy <http://pypi.python.org/pypi/numpy>`_
-- `PIL <http://www.pythonware.com/products/pil>`_
+- `PIL <http://www.pythonware.com/products/pil>`_ or preferably `pillow <https://pypi.python.org/pypi/Pillow/2.8.1>`_
 - `traits 4.5.0 <https://pypi.python.org/pypi/traits>`_
 - `traitsui 4.4.0 <https://pypi.python.org/pypi/traitsui>`_
 - `pyface 4.5.0 <https://pypi.python.org/pypi/pyface>`_

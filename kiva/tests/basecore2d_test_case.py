@@ -19,7 +19,7 @@ from kiva import basecore2d
 from kiva import constants
 
 
-class test_is_fully_transparent(unittest.TestCase):
+class TestIsFullyTransparent(unittest.TestCase):
 
     def test_simple(self):
         self.assert_(basecore2d.is_fully_transparent([1, 1, 1, 0]))
@@ -27,7 +27,7 @@ class test_is_fully_transparent(unittest.TestCase):
         self.assert_(not basecore2d.is_fully_transparent([0, 0, 0, .5]))
 
 
-class test_fill_equal(unittest.TestCase):
+class TestFillEqual(unittest.TestCase):
 
     def test_simple(self):
         self.assert_(basecore2d.fill_equal(array([0, 0, 0, 0]),

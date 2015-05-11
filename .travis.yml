@@ -2,32 +2,32 @@ language: python
 python:
   - '2.7_with_system_site_packages'
   - 2.6
+env:
+  - ETS_TOOLKIT=wx REQUIREMENTS=dev_requirements_pillow.txt
+  - ETS_TOOLKIT=qt4 REQUIREMENTS=dev_requirements_pillow.txt
+  - ETS_TOOLKIT=null.image REQUIREMENTS=dev_requirements_pillow.txt
+  - ETS_TOOLKIT=null.image REQUIREMENTS=dev_requirements_pil.txt
+matrix:
+  exclude:
+    - python: 2.6
+      env: ETS_TOOLKIT=qt4 REQUIREMENTS=dev_requirements_pillow.txt
+    - python: 2.6
+      env: ETS_TOOLKIT=wx REQUIREMENTS=dev_requirements_pillow.txt
 before_install:
-  - sudo apt-get update
-  # For Python 2.7, install PyQt4 and cairo
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.7_with_system_site_packages' ]]; then source .travis_before_install; fi
-  # PyQt and cairo can't be installed on 2.6; run the tests without Qt
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then source .travis_before_install_noqt; fi
-  - sudo apt-get install swig
-  # Simlinks for PIL compilation
-  - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libfreetype.so /usr/lib/
-  - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libjpeg.so /usr/lib/
-  - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libpng.so /usr/lib/
-  - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libz.so /usr/lib/
+  - sh ./travis_setup.sh
+  # setup X11 for the tests
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
 install:
   # nose is already installed
   # numpy is already installed
-  - pip install -r dev_requirements.txt
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install -r requirements-2.6.txt; fi
+  - pip install -r $REQUIREMENTS
   - pip install coveralls
   - python setup.py develop
 script:
   - coverage run -m nose.core -v enable/tests
   - coverage run -a -m nose.core -v enable/savage/svg/tests
-  - coverage run -a -m nose.core -v kiva/tests
+  - coverage run -a -m unittest2 discover -v -p *test_* kiva/tests
   - coverage run -a -m nose.core -v kiva/agg/tests
-notifications:
-  email:
-    - travis-ci@enthought.com
 after_success:
   coveralls
