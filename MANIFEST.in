@@ -1,5 +1,5 @@
 include kiva/agg/agg.i
-include kiva/quartz/*pyx
+include kiva/quartz/*.pyx
 include kiva/quartz/*.pxi
 include kiva/quartz/*.pxd
 include kiva/quartz/mac_context.c
