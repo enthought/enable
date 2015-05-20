@@ -1,14 +1,9 @@
 include kiva/agg/agg.i
 include chaco/tests/data/PngSuite/*.png
 include chaco/tests/data/PngSuite/LICENSE.txt
-kiva/quartz/ABCGI.pyx
-kiva/quartz/CTFont.pyx
-kiva/quartz/CoreFoundation.pxi
-kiva/quartz/CoreGraphics.pxi
-kiva/quartz/CoreText.pxi
-kiva/quartz/Python.pxi
-kiva/quartz/c_numpy.pxd
+kiva/quartz/*.pyx
+kiva/quartz/*.pxi
+kiva/quartz/*.pxd
 kiva/quartz/mac_context.c
 kiva/quartz/mac_context.h
 kiva/quartz/mac_context_cocoa.m
-kiva/quartz/numpy.pxi
