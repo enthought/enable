@@ -92,13 +92,14 @@ if not is_released:
     fullversion = VERSION
     if os.path.exists('.git'):
         git_revision, dev_num = git_version()
-    elif os.path.exists('kiva/_version.py'):
+    # All packages are synced with the enable version
+    elif os.path.exists('enable/_version.py'):
         # must be a source distribution, use existing version file
         try:
-            from kiva._version import git_revision, full_version
+            from enable._version import git_revision, full_version
         except ImportError:
             raise ImportError("Unable to import git_revision. Try removing "
-                              "kiva/_version.py and the build directory "
+                              "enable/_version.py and the build directory "
                               "before building.")
 
         match = re.match(r'.*?\.dev(?P<dev_num>\d+)', full_version)
