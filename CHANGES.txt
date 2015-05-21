@@ -1,6 +1,11 @@
 Enable CHANGELOG
 ================
 
+Fixes
+-----
+
+* PR #199: Fix installation problem with importing kiva._version (issue #197)
+
 Enable 4.5.1 (April 9, 2015)
 ============================
 
