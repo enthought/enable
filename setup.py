@@ -87,7 +87,7 @@ if not is_released:
     version = full_version
 """
     # Adding the git rev number needs to be done inside
-    # write_version_py(), otherwise the import of kiva._version messes
+    # write_version_py(), otherwise the import of enable._version messes
     # up the build under Python 3.
     fullversion = VERSION
     if os.path.exists('.git'):
