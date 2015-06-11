@@ -33,11 +33,6 @@ class TestGLDrawing(DrawingImageTester, unittest.TestCase):
         # FIXME: overriding test since it segfaults
         DrawingImageTester.test_star_clip(self)
 
-    @unittest.expectedFailure
-    def test_text_clip(self):
-        # gl graphics context does not clip text properly (#165).
-        DrawingImageTester.test_text_clip(self)
-
     @contextlib.contextmanager
     def draw_and_check(self):
         from pyglet.image.codecs.png import PNGImageEncoder
