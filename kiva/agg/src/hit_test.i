@@ -23,7 +23,7 @@ namespace kiva
 
 %pythoncode
 %{
-from numpy import shape, transpose, zeros, rank, reshape, int32
+from numpy import asarray, shape, transpose, zeros, reshape, int32
 
 def points_in_polygon(pts, poly_pts, use_winding=False):
     """ Test whether point pairs in pts are within the polygon, poly_pts.
@@ -69,7 +69,8 @@ def points_in_polygon(pts, poly_pts, use_winding=False):
     """
     
     # Check the shape of pts and transpose if necessary.
-    if rank(pts) == 1:
+    pts = asarray(pts)
+    if pts.ndim == 1:
         pts = reshape(pts, (1,)+shape(pts))
     if shape(pts)[1] != 2:
         if shape(pts)[0] == 2:
@@ -78,7 +79,8 @@ def points_in_polygon(pts, poly_pts, use_winding=False):
             raise ValueError('pts must be an Nx2 or 2xN array')
 
     # Check the shape of poly_pts and transpose if necessary
-    if rank(poly_pts) == 1:
+    poly_pts = asarray(poly_pts)
+    if poly_pts.ndim == 1:
         poly_pts = reshape(poly_pts, (1,)+shape(poly_pts))
     if shape(poly_pts)[1] != 2:
         if shape(poly_pts)[0] == 2:
