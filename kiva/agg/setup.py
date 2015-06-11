@@ -170,7 +170,7 @@ def configuration(parent_package='', top_path=None):
         f = os.popen("g++ --version")
         line0 = f.readline()
         f.close()
-        m = re.match(r'.+?\s(3|4)\.\d+', line0)
+        m = re.match(r'.+?\s([3-5])\.\d+', line0)
         if int(m.group(1)) < 4:
             use_32bit_workaround = True
 
