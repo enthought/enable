@@ -183,7 +183,11 @@ class NativeScrollBar(Component):
         # scroll bar, not the document length. We need to subtract the length
         # of the scroll bar itself.
         self._control.setMaximum(maximum-page_size)
-        self._control.setValue(value)
+        # invert values for vertical ranges because of coordinate system issues
+        if self.orientation == 'vertical':
+            self._control.setValue(maximum-page_size-value)
+        else:
+            self._control.setValue(value)
         self._control.setPageStep(page_size)
         self._control.setSingleStep(line_size)
 
@@ -192,7 +196,11 @@ class NativeScrollBar(Component):
     #------------------------------------------------------------------------
 
     def _update_enable_pos(self, value):
-        self.scroll_position = value
+        # invert values for vertical ranges because of coordinate system issues
+        if self.orientation == "vertical":
+            self.scroll_position = self.high - self.page_size - value
+        else:
+            self.scroll_position = value
 
     def _on_slider_pressed(self):
         self.mouse_thumb = "down"
@@ -285,4 +293,3 @@ class NativeScrollBar(Component):
         low, high, page_size, ignore = self.range
         self._clean = False
         self.range =(low, high, page_size, line_size)
-
