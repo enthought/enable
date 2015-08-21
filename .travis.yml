@@ -3,6 +3,18 @@ sudo: false
 python:
   - '2.7_with_system_site_packages'
   - 2.6
+addons:
+  apt:
+    packages:
+    - python-qt4
+    - python-qt4-dev
+    - python-qt4-gl
+    - python-pip
+    - python-numpy
+    - python-wxtools
+    - ccache
+    - cmake
+    - swig
 env:
   - ETS_TOOLKIT=wx REQUIREMENTS=dev_requirements_pillow.txt
   - ETS_TOOLKIT=qt4 REQUIREMENTS=dev_requirements_pillow.txt
@@ -14,7 +26,12 @@ matrix:
       env: ETS_TOOLKIT=qt4 REQUIREMENTS=dev_requirements_pillow.txt
     - python: 2.6
       env: ETS_TOOLKIT=wx REQUIREMENTS=dev_requirements_pillow.txt
+cache:
+  directories:
+    - $HOME/.cache
+    - $HOME/.ccache
 before_install:
+  - ccache -s
   - sh ./travis_setup.sh
   # setup X11 for the tests
   - export DISPLAY=:99.0
