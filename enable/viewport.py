@@ -39,7 +39,13 @@ class Viewport(Component):
     # Whether or not this viewport should stay constrained to the bounds
     # of the viewed component
     # TODO: Implement this
-    stay_inside = Bool(False)
+    stay_inside = Bool(True)
+
+    # Where to anchor vertically on resizes
+    vertical_anchor = Enum('top', 'bottom', 'top', 'center')
+
+    # Where to anchor vertically on resizes
+    horizontal_anchor = Enum('left', 'right', 'center')
 
     # Enable Zoom interaction
     enable_zoom = Bool(False)
@@ -70,7 +76,7 @@ class Viewport(Component):
 
     def __init__(self, **traits):
         Component.__init__(self, **traits)
-        self._update_component_view_bounds()
+        self._adjust_bounds(0, 0)
         if 'zoom_tool' not in traits:
             self.zoom_tool = ViewportZoomTool(self)
         if self.enable_zoom:
@@ -190,7 +196,7 @@ class Viewport(Component):
                 gc.clip_to_rect(x-0.5, y-0.5,
                                 self.width+1,
                                 self.height+1)
-    
+
                 # There is a two-step transformation from the viewport's "outer"
                 # coordinates into the coordinates space of the viewed component:
                 # scaling, followed by a translation.
@@ -202,7 +208,7 @@ class Viewport(Component):
                         raise RuntimeError("Viewport zoomed out too far.")
                 else:
                     gc.translate_ctm(x - view_x, y - view_y)
-    
+
                 # Now transform the passed-in view_bounds; this is not the same thing as
                 # self.view_bounds!
                 if view_bounds:
@@ -287,10 +293,12 @@ class Viewport(Component):
 
     def _bounds_changed(self, old, new):
         Component._bounds_changed(self, old, new)
-        self.set(view_bounds = [new[0]/self.zoom, new[1]/self.zoom],
-                 trait_change_notify=False)
-        self._update_component_view_bounds()
-        return
+        new_w = new[0]/self.zoom
+        new_h = new[1]/self.zoom
+        w, h = self.view_bounds
+        delta_x = new_w - w
+        delta_y = new_h - h
+        self._adjust_bounds(delta_x, delta_y)
 
     def _bounds_items_changed(self, event):
         return self._bounds_changed(None, self.bounds)
@@ -305,5 +313,26 @@ class Viewport(Component):
     def _get_bounds(self):
         return self.view_bounds
 
-# EOF
+    def _adjust_bounds(self, delta_x, delta_y):
+        w, h = self.view_bounds
+        x, y = self.view_position
+        new_w = w + delta_x
+        new_h = h + delta_y
 
+        if self.vertical_anchor == 'top':
+            y -= delta_y
+        elif self.vertical_anchor == 'center':
+            y -= delta_y/2
+        if self.stay_inside and self.component is not None and \
+                new_h <= self.component.height:
+            y = max(0, y)
+
+        if self.horizontal_anchor == 'right':
+            x -= delta_x
+        elif self.horizontal_anchor == 'center':
+            x -= delta_x/2
+        if self.stay_inside and self.component is not None and \
+                new_w <= self.component.width:
+            x = max(0, x)
+
+        self.trait_set(view_bounds=[new_w, new_h], view_position=[x, y])
