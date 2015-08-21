@@ -38,11 +38,10 @@ class Viewport(Component):
 
     # Whether or not this viewport should stay constrained to the bounds
     # of the viewed component
-    # TODO: Implement this
-    stay_inside = Bool(True)
+    stay_inside = Bool(False)
 
     # Where to anchor vertically on resizes
-    vertical_anchor = Enum('top', 'bottom', 'top', 'center')
+    vertical_anchor = Enum('bottom', 'top', 'center')
 
     # Where to anchor vertically on resizes
     horizontal_anchor = Enum('left', 'right', 'center')
@@ -76,7 +75,8 @@ class Viewport(Component):
 
     def __init__(self, **traits):
         Component.__init__(self, **traits)
-        if self.component is not None:
+        # can't use a default because need bounds to be set first
+        if 'view_position' not in traits and self.component is not None:
             self._initialize_position()
         if 'zoom_tool' not in traits:
             self.zoom_tool = ViewportZoomTool(self)
@@ -288,9 +288,7 @@ class Viewport(Component):
 
         if (new is not None) and (self not in new.viewports):
             new.viewports.append(self)
-            self._initialize_position()
             self._update_component_view_bounds()
-        return
 
     def _bounds_changed(self, old, new):
         Component._bounds_changed(self, old, new)
@@ -314,7 +312,7 @@ class Viewport(Component):
     def _get_bounds(self):
         return self.view_bounds
 
-    def _initialize_position(self):
+    def _initial_position(self):
         x = 0
         y = 0
         if self.vertical_anchor == 'top':
@@ -325,7 +323,10 @@ class Viewport(Component):
             x = self.component.width-self.view_bounds[0]
         elif self.horizontal_anchor == 'center':
             x = (self.component.width-self.view_bounds[0])/2.0
-        self.trait_set(view_position=[x, y])
+        return [x, y]
+
+    def _initialize_position(self):
+        self.trait_set(view_position=self._initial_position())
 
     def _adjust_bounds(self, delta_x, delta_y):
         w, h = self.view_bounds
@@ -337,16 +338,32 @@ class Viewport(Component):
             y -= delta_y
         elif self.vertical_anchor == 'center':
             y -= delta_y/2
-        if self.stay_inside and self.component is not None and \
-                new_h <= self.component.height:
-            y = max(0, y)
 
         if self.horizontal_anchor == 'right':
             x -= delta_x
         elif self.horizontal_anchor == 'center':
             x -= delta_x/2
-        if self.stay_inside and self.component is not None and \
-                new_w <= self.component.width:
-            x = max(0, x)
+
+        if self.stay_inside and self.component is not None:
+            extra_height = self.component.height - new_h
+            extra_width = self.component.width - new_w
+
+            if extra_height >= 0:
+                y = min(max(0, y), extra_height)
+            elif self.vertical_anchor == 'top':
+                y = extra_height
+            elif self.vertical_anchor == 'center':
+                y = extra_height/2
+            else:
+                y = 0
+
+            if extra_width >= 0:
+                x =  min(max(0, x), extra_width)
+            elif self.horizontal_anchor == 'right':
+                x = extra_width
+            elif self.horizontal_anchor == 'center':
+                x = extra_width/2
+            else:
+                x = 0
 
         self.trait_set(view_bounds=[new_w, new_h], view_position=[x, y])

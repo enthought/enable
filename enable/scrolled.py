@@ -2,7 +2,7 @@
 from __future__ import with_statement
 
 # Enthought library imports
-from traits.api import Bool, Instance, Int, Any, Float
+from traits.api import Any, Bool, DelegatesTo, Float, Instance, Int
 
 # Local, relative imports
 from base import intersect_bounds, empty_rectangle
@@ -23,7 +23,17 @@ class Scrolled(Container):
     component = Instance(Component)
 
     # The viewport onto our component
-    viewport_component = Instance(Viewport)
+    viewport_component = Instance(Viewport, ())
+
+    # Whether or not the viewport should stay constrained to the bounds
+    # of the viewed component
+    stay_inside = DelegatesTo('viewport_component')
+
+    # Where to anchor vertically on resizes
+    vertical_anchor = DelegatesTo('viewport_component')
+
+    # Where to anchor vertically on resizes
+    horizontal_anchor = DelegatesTo('viewport_component')
 
     # Inside padding is a background drawn area between the edges or scrollbars
     # and the scrolled area/left component.
@@ -298,10 +308,14 @@ class Scrolled(Container):
 
     def _viewport_component_changed(self):
         if self.viewport_component is None:
-            self.viewport_component = Viewport()
+            self.viewport_component = Viewport(
+                stay_inside=self.stay_inside,
+                vertical_anchor=self.vertical_anchor,
+                horizontal_anchor=self.horizontal_anchor,
+            )
         self.viewport_component.view_bounds = self.bounds
         self.viewport_component.component = self.component
-        #self.viewport_component.view_position = [0, 0]
+        self.viewport_component._initialize_position()
         self.add(self.viewport_component)
 
     def _alternate_vsb_changed(self, old, new):

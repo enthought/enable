@@ -117,14 +117,15 @@ class MyFrame(DemoFrame):
 
     def _create_window(self):
 
-        container = Container(bounds=[800,600], bgcolor=(0.9, 0.7, 0.7, 1.0),
+        container = Container(bounds=[800, 600], bgcolor=(0.9, 0.7, 0.7, 1.0),
                               auto_size=False, fit_window=False)
         circle1 = Circle(bounds=[75,75], position=[100,100],
                          shadow_type="dashed")
         container.add(circle1)
 
         scr = Scrolled(container, bounds=[200,200], position=[50,50],
-                       fit_window=False)
+                       stay_inside=True, vertical_anchor='top',
+                       horizontal_anchor='left', fit_window=False)
 
         return Window(self, -1, component=scr)
 
