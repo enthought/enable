@@ -76,12 +76,12 @@ class Viewport(Component):
 
     def __init__(self, **traits):
         Component.__init__(self, **traits)
-        self._adjust_bounds(0, 0)
+        if self.component is not None:
+            self._initialize_position()
         if 'zoom_tool' not in traits:
             self.zoom_tool = ViewportZoomTool(self)
         if self.enable_zoom:
             self._enable_zoom_changed(False, True)
-        return
 
     def components_at(self, x, y, add_containers = False):
         """
@@ -288,6 +288,7 @@ class Viewport(Component):
 
         if (new is not None) and (self not in new.viewports):
             new.viewports.append(self)
+            self._initialize_position()
             self._update_component_view_bounds()
         return
 
@@ -312,6 +313,19 @@ class Viewport(Component):
 
     def _get_bounds(self):
         return self.view_bounds
+
+    def _initialize_position(self):
+        x = 0
+        y = 0
+        if self.vertical_anchor == 'top':
+            y = self.component.height-self.view_bounds[1]
+        elif self.vertical_anchor == 'center':
+            y = (self.component.height-self.view_bounds[1])/2.0
+        if self.horizontal_anchor == 'right':
+            x = self.component.width-self.view_bounds[0]
+        elif self.horizontal_anchor == 'center':
+            x = (self.component.width-self.view_bounds[0])/2.0
+        self.trait_set(view_position=[x, y])
 
     def _adjust_bounds(self, delta_x, delta_y):
         w, h = self.view_bounds
