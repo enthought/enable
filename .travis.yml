@@ -15,6 +15,10 @@ addons:
     - ccache
     - cmake
     - swig
+    - zlib1g-dev
+    - libpng-dev
+    - libfreetype6-dev
+    - libcairo2-dev
 env:
   - ETS_TOOLKIT=wx REQUIREMENTS=dev_requirements_pillow.txt
   - ETS_TOOLKIT=qt4 REQUIREMENTS=dev_requirements_pillow.txt
@@ -32,7 +36,7 @@ cache:
     - $HOME/.ccache
 before_install:
   - ccache -s
-  - sh ./travis_setup.sh
+  - pip install --upgrade pip
   # setup X11 for the tests
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start

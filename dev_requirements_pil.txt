@@ -3,6 +3,7 @@
 numpy
 coverage
 PIL
+pycairo
 pyparsing
 PyPDF2
 https://bitbucket.org/pyglet/pyglet/get/pyglet-1.1.4.zip
