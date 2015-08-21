@@ -178,18 +178,38 @@ class NativeScrollBar(Component):
 
     def _update_control(self, enable_range, value):
         minimum, maximum, page_size, line_size = enable_range
-        self._control.setMinimum(minimum)
         # The maximum value of a QScrollBar is the maximum position of the
         # scroll bar, not the document length. We need to subtract the length
         # of the scroll bar itself.
-        self._control.setMaximum(maximum-page_size)
+        max_value = maximum-page_size
         # invert values for vertical ranges because of coordinate system issues
-        if self.orientation == 'vertical':
-            self._control.setValue(maximum-page_size-value)
-        else:
-            self._control.setValue(value)
+        value = self._correct_value(value, max_value)
+
+        self._control.setMinimum(minimum)
+        self._control.setMaximum(max_value)
+        self._control.setValue(value)
         self._control.setPageStep(page_size)
         self._control.setSingleStep(line_size)
+
+    def _correct_value(self, value, max_value):
+        """ Correct vertical position values for Qt and Enable conventions
+
+        Enable expects vertical scroll_position to be measured with origin at
+        the bottom and positive going upwards, while Qt scrollbar values are
+        measured with origin at the top and positive going down.
+
+        Parameters
+        ----------
+        value : float
+            The position value in either Enable or Qt conventions.
+        max_value : float
+            The maximum value that the Qt scrollbar can be set to (height of
+            the scrolled component, less the page size).
+        """
+        if self.orientation != 'vertical':
+            return value
+        return max_value - value
+
 
     #------------------------------------------------------------------------
     # Qt Event handlers
@@ -197,10 +217,8 @@ class NativeScrollBar(Component):
 
     def _update_enable_pos(self, value):
         # invert values for vertical ranges because of coordinate system issues
-        if self.orientation == "vertical":
-            self.scroll_position = self.high - self.page_size - value
-        else:
-            self.scroll_position = value
+        value = self._correct_value(value, self.high-self.page_size)
+        self.scroll_position = value
 
     def _on_slider_pressed(self):
         self.mouse_thumb = "down"
