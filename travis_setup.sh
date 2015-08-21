@@ -20,10 +20,10 @@ set -e
 #fi
 
 # compile cairo
-wget -nv http://cairographics.org/releases/py2cairo-1.10.0.tar.bz2
-tar -xf py2cairo-1.10.0.tar.bz2
-cd py2cairo-1.10.0
-./waf configure
-./waf build
-sudo ./waf install
-cd ..
+#wget -nv http://cairographics.org/releases/py2cairo-1.10.0.tar.bz2
+#tar -xf py2cairo-1.10.0.tar.bz2
+#cd py2cairo-1.10.0
+#./waf configure
+#./waf build
+#sudo ./waf install
+#cd ..
