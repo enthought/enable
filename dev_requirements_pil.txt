@@ -1,5 +1,7 @@
 --allow-external PIL
 --allow-unverified PIL
+--allow-external pycairo
+--allow-unverified pycairo
 numpy
 coverage
 PIL

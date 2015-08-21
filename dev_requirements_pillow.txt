@@ -1,3 +1,5 @@
+--allow-external pycairo
+--allow-unverified pycairo
 numpy
 coverage
 pillow
