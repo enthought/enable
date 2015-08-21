@@ -181,7 +181,7 @@ class ViewportTestCase(unittest.TestCase):
         view.bounds = [60, 60]
         self.assertEqual(view.view_position, [20, 15.0])
 
-        # resize beyond bottom
+        # resize beyond left
         view.bounds = [95, 95]
         self.assertEqual(view.view_position, [5, 0.0])
 
@@ -204,7 +204,7 @@ class ViewportTestCase(unittest.TestCase):
         view.bounds = [60, 60]
         self.assertEqual(view.view_position, [10, 20.0])
 
-        # resize beyond bottom
+        # resize beyond left
         view.bounds = [80, 80]
         self.assertEqual(view.view_position, [-10, 20.0])
 
@@ -228,7 +228,7 @@ class ViewportTestCase(unittest.TestCase):
         view.bounds = [60, 60]
         self.assertEqual(view.view_position, [10, 20.0])
 
-        # resize beyond bottom
+        # resize beyond left
         view.bounds = [80, 80]
         self.assertEqual(view.view_position, [0, 20.0])
 
@@ -251,7 +251,7 @@ class ViewportTestCase(unittest.TestCase):
         view.bounds = [60, 60]
         self.assertEqual(view.view_position, [15.0, 20])
 
-        # resize beyond bottom
+        # resize beyond left
         view.bounds = [95, 95]
         self.assertEqual(view.view_position, [-2.5, 20])
 
@@ -275,7 +275,7 @@ class ViewportTestCase(unittest.TestCase):
         view.bounds = [60, 60]
         self.assertEqual(view.view_position, [15.0, 20])
 
-        # resize beyond bottom
+        # resize beyond left
         view.bounds = [95, 95]
         self.assertEqual(view.view_position, [0.0, 5])
 
