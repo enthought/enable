@@ -276,17 +276,117 @@ class ViewportTestCase(unittest.TestCase):
         self.assertEqual(view.view_position, [15.0, 20])
 
         # resize beyond left
-        view.bounds = [95, 95]
+        view.height = 95
+        view.width = 95
         self.assertEqual(view.view_position, [0.0, 5])
 
         # resize bigger than view
-        view.bounds = [120, 120]
+        view.bounds[0] = 120
+        view.bounds[1] = 120
         self.assertEqual(view.view_position, [-10.0, 0])
 
+    def test_adjust_container_bounds_vanchor_top(self):
+        container = Container(bounds=[100.0, 100.0])
+        component = Component(bounds=[50.0, 50.0], position=[5.0, 5.0])
+        container.add(component)
+        view = Viewport(component=container,
+                        view_bounds=[50.0, 50.0],
+                        view_position=[20, 20],
+                        position=[0,0],
+                        bounds=[50,50],
+                        vertical_anchor='top')
 
+        # simple resize bigger
+        container.bounds = [120, 120]
+        self.assertEqual(view.view_position, [20, 40.0])
+
+        # simple resize smaller
+        container.height = 90
+        container.width = 90
+        self.assertEqual(view.view_position, [20, 10.0])
+
+        # simple resize much smaller
+        container.bounds[0] = 40
+        container.bounds[1] = 40
+        self.assertEqual(view.view_position, [20, -40.0])
+
+    def test_adjust_container_bounds_vanchor_top_stay_inside(self):
+        container = Container(bounds=[100.0, 100.0])
+        component = Component(bounds=[50.0, 50.0], position=[5.0, 5.0])
+        container.add(component)
+        view = Viewport(component=container,
+                        view_bounds=[50.0, 50.0],
+                        view_position=[20, 20],
+                        position=[0,0],
+                        bounds=[50,50],
+                        vertical_anchor='top',
+                        stay_inside=True)
+
+        # simple resize bigger
+        container.bounds = [120, 120]
+        self.assertEqual(view.view_position, [20, 40.0])
+
+        # simple resize smaller
+        container.height = 90
+        container.width = 90
+        self.assertEqual(view.view_position, [20, 10.0])
+
+        # simple resize much smaller
+        container.bounds[0] = 40
+        container.bounds[1] = 40
+        self.assertEqual(view.view_position, [0, -10.0])
+
+    def test_adjust_container_bounds_hanchor_right(self):
+        container = Container(bounds=[100.0, 100.0])
+        component = Component(bounds=[50.0, 50.0], position=[5.0, 5.0])
+        container.add(component)
+        view = Viewport(component=container,
+                        view_bounds=[50.0, 50.0],
+                        view_position=[20, 20],
+                        position=[0,0],
+                        bounds=[50,50],
+                        horizontal_anchor='right')
+
+        # simple resize bigger
+        container.bounds = [120, 120]
+        self.assertEqual(view.view_position, [40, 20.0])
+
+        # simple resize smaller
+        container.height = 90
+        container.width = 90
+        self.assertEqual(view.view_position, [10, 20.0])
+
+        # simple resize much smaller
+        container.bounds[0] = 40
+        container.bounds[1] = 40
+        self.assertEqual(view.view_position, [-40, 20.0])
+
+    def test_adjust_container_bounds_hanchor_right_stay_inside(self):
+        container = Container(bounds=[100.0, 100.0])
+        component = Component(bounds=[50.0, 50.0], position=[5.0, 5.0])
+        container.add(component)
+        view = Viewport(component=container,
+                        view_bounds=[50.0, 50.0],
+                        view_position=[20, 20],
+                        position=[0,0],
+                        bounds=[50,50],
+                        vertical_anchor='top',
+                        stay_inside=True)
+
+        # simple resize bigger
+        container.bounds = [120, 120]
+        self.assertEqual(view.view_position, [20, 40.0])
+
+        # simple resize smaller
+        container.height = 90
+        container.width = 90
+        self.assertEqual(view.view_position, [20, 10.0])
+
+        # simple resize much smaller
+        container.bounds[0] = 40
+        container.bounds[1] = 40
+        self.assertEqual(view.view_position, [0, -10.0])
 
 if __name__ == "__main__":
     import nose
     nose.main()
-
-# EOF

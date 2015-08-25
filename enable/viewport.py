@@ -290,6 +290,22 @@ class Viewport(Component):
             new.viewports.append(self)
             self._update_component_view_bounds()
 
+    @on_trait_change('component:bounds')
+    def _component_bounds_updated(self, obj, name, old, new):
+        if name == 'bounds':
+            delta_x = new[0] - old[0]
+            delta_y = new[1] - old[1]
+        elif name == 'bounds_items':
+            delta_x = 0
+            delta_y = 0
+            if new.index == 1:
+                delta_y = new.added[0] - new.removed[0]
+            else:
+                delta_x = new.added[0] - new.removed[0]
+                if len(new.removed) == 2:
+                    delta_y = new.added[1] - new.removed[1]
+        self._adjust_view_from_component_resize(delta_x, delta_y)
+
     def _bounds_changed(self, old, new):
         Component._bounds_changed(self, old, new)
         new_w = new[0]/self.zoom
@@ -297,7 +313,7 @@ class Viewport(Component):
         w, h = self.view_bounds
         delta_x = new_w - w
         delta_y = new_h - h
-        self._adjust_bounds(delta_x, delta_y)
+        self._adjust_view_from_viewport_resize(delta_x, delta_y)
 
     def _bounds_items_changed(self, event):
         return self._bounds_changed(None, self.bounds)
@@ -328,12 +344,80 @@ class Viewport(Component):
     def _initialize_position(self):
         self.trait_set(view_position=self._initial_position())
 
-    def _adjust_bounds(self, delta_x, delta_y):
+    def _adjust_view_from_viewport_resize(self, delta_x, delta_y):
+        """ The viewport has been resized, so need to adjust view parameters
+
+        This computes the new view bounds, shifts the view position depending
+        on the horizontal and vertical anchoring, and if we are trying to stay
+        inside the viewed component, adjusts for that as well.
+
+        Parameters
+        ----------
+        delta_x : float
+            The change in width of the view_bounds in viewed component
+            coordinates.
+
+        delta_y : float
+            The change in height of the view_bounds in viewed component
+            coordinates.
+        """
+        # resize the view
         w, h = self.view_bounds
-        x, y = self.view_position
         new_w = w + delta_x
         new_h = h + delta_y
 
+        x, y = self._shift_view_position(delta_x, delta_y)
+
+        if self.stay_inside and self.component is not None:
+            extra_width = self.component.width - new_w
+            extra_height = self.component.height - new_h
+            x, y = self._adjust_stay_inside(x, y, extra_width, extra_height)
+
+        self.trait_set(view_bounds=[new_w, new_h], view_position=[x, y])
+
+    def _adjust_view_from_component_resize(self, delta_x, delta_y):
+        """ The viewport has been resized, so need to adjust view parameters
+
+        This shifts the view position depending on the horizontal and vertical
+        anchoring, and if we are trying to stay inside the viewed component,
+        adjusts for that as well.  The view bounds should not change from a
+        component resize.
+
+        Parameters
+        ----------
+        delta_x : float
+            The change in width of the viewed component.
+
+        delta_y : float
+            The change in height of the viewed component.
+        """
+        x, y = self._shift_view_position(-delta_x, -delta_y)
+
+        if self.stay_inside and self.component is not None:
+            w, h = self.view_bounds
+            extra_width = self.component.width - w
+            extra_height = self.component.height - h
+            x, y = self._adjust_stay_inside(x, y, extra_width, extra_height)
+
+        self.trait_set(view_position=[x, y])
+
+    def _shift_view_position(self, delta_x, delta_y):
+        """ Compute new view position, accounting for anchoring
+
+        Parameters
+        ----------
+        delta_x : float
+            The change in width that needs to be accounted for.
+
+        delta_y : float
+            The change in height that needs to be accounted for.
+
+        Returns
+        -------
+        position : tuple of float, float
+            The new x, y coordinates for the view position.
+        """
+        x, y = self.view_position
         if self.vertical_anchor == 'top':
             y -= delta_y
         elif self.vertical_anchor == 'center':
@@ -343,27 +427,54 @@ class Viewport(Component):
             x -= delta_x
         elif self.horizontal_anchor == 'center':
             x -= delta_x/2
+        return x, y
 
-        if self.stay_inside and self.component is not None:
-            extra_height = self.component.height - new_h
-            extra_width = self.component.width - new_w
+    def _adjust_stay_inside(self, x, y, extra_width, extra_height):
+        """ Compute new view position, resisting views outside component
 
-            if extra_height >= 0:
-                y = min(max(0, y), extra_height)
-            elif self.vertical_anchor == 'top':
-                y = extra_height
-            elif self.vertical_anchor == 'center':
-                y = extra_height/2
-            else:
-                y = 0
+        The algorithm followed is:
 
-            if extra_width >= 0:
-                x =  min(max(0, x), extra_width)
-            elif self.horizontal_anchor == 'right':
-                x = extra_width
-            elif self.horizontal_anchor == 'center':
-                x = extra_width/2
-            else:
-                x = 0
+        * if the view is smaller than the component, position should be
+          between 0 and the amount of extra space
+        * otherwise, expand view outside of component based on anchor point
 
-        self.trait_set(view_bounds=[new_w, new_h], view_position=[x, y])
+        Parameters
+        ----------
+        x : float
+            The proposed x coordinate of the new view position.
+
+        y : float
+            The proposed y coordinate of the new view position.
+
+        extra_width : float
+            The difference in width between the viewed component and the view
+            bounds (may be negative)
+
+        extra_height : float
+            The difference in height between the viewed component and the view
+            bounds (may be negative)
+
+        Returns
+        -------
+        position : tuple of float, float
+            The new x, y coordinates for the view position.
+        """
+        if extra_height >= 0:
+            y = min(max(0, y), extra_height)
+        elif self.vertical_anchor == 'top':
+            y = extra_height
+        elif self.vertical_anchor == 'center':
+            y = extra_height/2
+        else:
+            y = 0
+
+        if extra_width >= 0:
+            x =  min(max(0, x), extra_width)
+        elif self.horizontal_anchor == 'right':
+            x = extra_width
+        elif self.horizontal_anchor == 'center':
+            x = extra_width/2
+        else:
+            x = 0
+
+        return x, y
