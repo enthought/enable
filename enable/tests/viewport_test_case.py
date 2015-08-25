@@ -370,22 +370,22 @@ class ViewportTestCase(unittest.TestCase):
                         view_position=[20, 20],
                         position=[0,0],
                         bounds=[50,50],
-                        vertical_anchor='top',
+                        horizontal_anchor='right',
                         stay_inside=True)
 
         # simple resize bigger
         container.bounds = [120, 120]
-        self.assertEqual(view.view_position, [20, 40.0])
+        self.assertEqual(view.view_position, [40, 20])
 
         # simple resize smaller
         container.height = 90
         container.width = 90
-        self.assertEqual(view.view_position, [20, 10.0])
+        self.assertEqual(view.view_position, [10, 20])
 
         # simple resize much smaller
         container.bounds[0] = 40
         container.bounds[1] = 40
-        self.assertEqual(view.view_position, [0, -10.0])
+        self.assertEqual(view.view_position, [-10, 0])
 
 if __name__ == "__main__":
     import nose
