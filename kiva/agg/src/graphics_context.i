@@ -849,7 +849,7 @@ namespace kiva {
 
             def __enter__(self):
                 self.save_state()
-                
+
             def __exit__(self, type, value, traceback):
                 self.restore_state()
 
@@ -1099,5 +1099,3 @@ namespace kiva {
     };
 
 }
-
-

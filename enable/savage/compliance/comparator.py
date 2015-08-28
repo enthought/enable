@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: UTF-8 -*-
 """ Compare the output of various Kiva SVG implementations against other
 renderers.
 """
@@ -430,7 +429,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-

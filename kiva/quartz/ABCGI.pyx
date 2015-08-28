@@ -910,7 +910,7 @@ cdef class CGContext:
         cdef size_t pointer
         cdef CTFontRef ct_font
         cdef CTLineRef ct_line
-        
+
         if not text:
             # Nothing to draw
             return
@@ -920,7 +920,7 @@ cdef class CGContext:
         ct_line = _create_ct_line(text, ct_font, self.stroke_color)
         if ct_line == NULL:
             return
-        
+
         if xy is None:
             x = 0.0
             y = 0.0
@@ -2774,14 +2774,14 @@ cdef CTLineRef _create_ct_line(object the_string, CTFontRef font, object stroke_
 
     CFAttributedStringSetAttribute(cf_attr_string, CFRangeMake(0, text_len),
         kCTFontAttributeName, font)
-    
+
     if stroke_color is not None:
         cg_color = _create_cg_color(stroke_color)
         CFAttributedStringSetAttribute(cf_attr_string, CFRangeMake(0, text_len),
             kCTForegroundColorAttributeName, cg_color)
         CGColorRelease(cg_color)
-    
-    # Stroke Color is supported by OS X 10.6 and greater using the 
+
+    # Stroke Color is supported by OS X 10.6 and greater using the
     # kCTStrokeColorAttributeName attribute.
 
     ct_line = CTLineCreateWithAttributedString(cf_attr_string)
