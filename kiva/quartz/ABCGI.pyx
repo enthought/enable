@@ -1604,9 +1604,9 @@ cdef class CGBitmapContext(CGContext):
         """
 
         try:
-            import Image
+            from PIL import Image
         except ImportError:
-            raise ImportError("need PIL to save images")
+            raise ImportError("need PIL (or Pillow) to save images")
 
         if self.bits_per_pixel == 32:
             if self.alpha_info == kCGImageAlphaPremultipliedLast:
@@ -1780,7 +1780,7 @@ cdef class CGImageFile(CGImage):
         cdef int width, height, bits_per_component, bits_per_pixel, bytes_per_row
         cdef CGImageAlphaInfo alpha_info
 
-        import Image
+        from PIL import Image
         import types
 
         if type(image_or_filename) is str:

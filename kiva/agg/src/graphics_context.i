@@ -960,7 +960,7 @@ class Image(GraphicsContextArray):
             another GraphicsContextArray
         """
         # read the file using PIL
-        import Image as PilImage
+        from PIL import Image as PilImage
         pil_img = PilImage.open(file)
 
         # Convert image to a numeric array
