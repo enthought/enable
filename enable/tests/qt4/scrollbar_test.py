@@ -2,11 +2,14 @@
 from contextlib import contextmanager
 import unittest
 
+from traitsui.tests._tools import skip_if_not_qt4
+
 from enable.container import Container
 from enable.qt4.scrollbar import NativeScrollBar
 from enable.window import Window
 
 
+@skip_if_not_qt4
 class ScrollBarTest(unittest.TestCase):
 
     def setUp(self):
