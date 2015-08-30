@@ -3,6 +3,7 @@ from contextlib import contextmanager
 
 from traits.testing.unittest_tools import unittest
 from traitsui.tests._tools import skip_if_not_qt4
+from pyface.gui import GUI
 
 from enable.container import Container
 from enable.window import Window
@@ -19,12 +20,14 @@ class ScrollBarTest(unittest.TestCase):
     def setUp(self):
         if NativeScrollBar is None:
             raise unittest.SkipTest("Qt4 NativeScrollbar not available.")
+        self.gui = GUI()
         self.container = Container(position=[0, 0], bounds=[600, 600])
         self.window = Window(None, size=(600, 600), component=self.container)
 
     @contextmanager
     def setup_window(self, window):
         window.control.show()
+        self.gui.process_events()
         try:
             yield
         finally:
