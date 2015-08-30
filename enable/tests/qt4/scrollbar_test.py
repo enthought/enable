@@ -31,7 +31,7 @@ class ScrollBarTest(unittest.TestCase):
             window.control.destroy()
 
     @contextmanager
-    def setup_scrollbar(self, scrollbar, window, enable_range, value):
+    def setup_scrollbar(self, scrollbar, window):
         scrollbar._draw_mainlayer(self, window._gc)
         try:
             yield
@@ -50,7 +50,7 @@ class ScrollBarTest(unittest.TestCase):
         )
         self.container.add(scrollbar)
         with self.setup_window(self.window):
-            with self.setup_scrollbar(scrollbar, self.window, range, 0):
+            with self.setup_scrollbar(scrollbar, self.window):
                 self.assertEqual(scrollbar._control.value(), 0)
                 self.assertEqual(scrollbar.scroll_position, 0)
 
@@ -75,7 +75,7 @@ class ScrollBarTest(unittest.TestCase):
         )
         self.container.add(scrollbar)
         with self.setup_window(self.window):
-            with self.setup_scrollbar(scrollbar, self.window, range, 0):
+            with self.setup_scrollbar(scrollbar, self.window):
                 self.assertEqual(scrollbar._control.value(), 600-375)
                 self.assertEqual(scrollbar.scroll_position, 0)
 
@@ -100,7 +100,7 @@ class ScrollBarTest(unittest.TestCase):
         )
         self.container.add(scrollbar)
         with self.setup_window(self.window):
-            with self.setup_scrollbar(scrollbar, self.window, range, 100):
+            with self.setup_scrollbar(scrollbar, self.window):
                 self.assertEqual(scrollbar._control.value(), 100)
                 self.assertEqual(scrollbar.scroll_position, 100)
 
@@ -125,7 +125,7 @@ class ScrollBarTest(unittest.TestCase):
         )
         self.container.add(scrollbar)
         with self.setup_window(self.window):
-            with self.setup_scrollbar(scrollbar, self.window, range, 100):
+            with self.setup_scrollbar(scrollbar, self.window):
                 # control should be at top
                 self.assertEqual(scrollbar._control.value(), 700-375)
                 self.assertEqual(scrollbar.scroll_position, 100)
