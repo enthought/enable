@@ -1,18 +1,24 @@
 
 from contextlib import contextmanager
-import unittest
 
+from traits.testing.unittest_tools import unittest
 from traitsui.tests._tools import skip_if_not_qt4
 
 from enable.container import Container
-from enable.qt4.scrollbar import NativeScrollBar
 from enable.window import Window
+
+try:
+    from enable.qt4.scrollbar import NativeScrollBar
+except Exception:
+    NativeScrollBar = None
 
 
 @skip_if_not_qt4
 class ScrollBarTest(unittest.TestCase):
 
     def setUp(self):
+        if NativeScrollBar is None:
+            raise unittest.SkipTest("Qt4 NativeScrollbar not available.")
         self.container = Container(position=[0, 0], bounds=[600, 600])
         self.window = Window(None, size=(600, 600), component=self.container)
 
