@@ -35,7 +35,7 @@ class ScrollBarTest(unittest.TestCase):
 
     @contextmanager
     def setup_scrollbar(self, scrollbar, window):
-        scrollbar._draw_mainlayer(self, window._gc)
+        scrollbar._draw_mainlayer(window._gc)
         try:
             yield
         finally:
