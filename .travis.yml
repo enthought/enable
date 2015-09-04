@@ -19,6 +19,8 @@ addons:
     - libpng-dev
     - libfreetype6-dev
     - libcairo2-dev
+    - python-cairo
+    - python-cairo-dev
 env:
   - ETS_TOOLKIT=wx REQUIREMENTS=dev_requirements_pillow.txt
   - ETS_TOOLKIT=qt4 REQUIREMENTS=dev_requirements_pillow.txt
