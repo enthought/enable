@@ -27,6 +27,7 @@ class ScrollBarTest(unittest.TestCase):
     @contextmanager
     def setup_window(self, window):
         window.control.show()
+        window._size = window._get_control_size()
         self.gui.process_events()
         try:
             yield
