@@ -204,7 +204,7 @@ class ResourceGetter(object):
         path, open = self.resolve(path)
         fin = open(path)
 
-        import Image
+        from PIL import Image
         import numpy
         pil_img = Image.open(fin)
         if pil_img.mode not in ('RGB', 'RGBA'):

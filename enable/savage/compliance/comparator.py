@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: UTF-8 -*-
 """ Compare the output of various Kiva SVG implementations against other
 renderers.
 """
@@ -13,7 +12,7 @@ import sys
 from xml.etree import cElementTree as ET
 import warnings
 
-import Image
+from PIL import Image
 import numpy as np
 
 from enable.api import Component
@@ -430,7 +429,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-

@@ -849,7 +849,7 @@ namespace kiva {
 
             def __enter__(self):
                 self.save_state()
-                
+
             def __exit__(self, type, value, traceback):
                 self.restore_state()
 
@@ -960,7 +960,7 @@ class Image(GraphicsContextArray):
             another GraphicsContextArray
         """
         # read the file using PIL
-        import Image as PilImage
+        from PIL import Image as PilImage
         pil_img = PilImage.open(file)
 
         # Convert image to a numeric array
@@ -1099,5 +1099,3 @@ namespace kiva {
     };
 
 }
-
-
