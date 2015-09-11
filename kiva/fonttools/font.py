@@ -84,7 +84,7 @@ class Font(object):
             (type(weight) != type(NORMAL)) or (type(style) != type(NORMAL)) or \
             (type(underline) != int) or (not isinstance(face_name, basestring)) or \
             (type(encoding) != type(DEFAULT)):
-                raise RuntimeError, "Bad value in Font() constructor."
+                raise RuntimeError("Bad value in Font() constructor.")
         ### HACK:  C++ stuff expects a string (not unicode) for the face_name, so fix
         ###        if needed.  See ticket #2111 in the CP Trac.
         ### Only for python < 3
