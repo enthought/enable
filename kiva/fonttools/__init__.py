@@ -1,1 +1,1 @@
-from font import Font, str_to_font
+from .font import Font, str_to_font
