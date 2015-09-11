@@ -5,7 +5,7 @@ from __future__ import with_statement
 from enable.api import cursor_style_trait, Line
 from traits.api import Event, Int, Instance
 
-from drawing_tool import DrawingTool
+from .drawing_tool import DrawingTool
 
 
 class PointLine(DrawingTool):

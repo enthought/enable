@@ -12,8 +12,8 @@
 from pyface.qt import QtCore, QtGui
 from kiva.agg import CompiledPath, GraphicsContextSystem as GraphicsContext
 
-from base_window import BaseWindow
-from scrollbar import NativeScrollBar
+from .base_window import BaseWindow
+from .scrollbar import NativeScrollBar
 
 class Window(BaseWindow):
     def _create_gc(self, size, pix_format="bgra32"):

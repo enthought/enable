@@ -5,7 +5,7 @@ from __future__ import with_statement
 from enable.api import Line
 from traits.api import Instance
 
-from drawing_tool import DrawingTool
+from .drawing_tool import DrawingTool
 
 
 class DragLine(DrawingTool):
