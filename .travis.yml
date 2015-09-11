@@ -18,9 +18,7 @@ addons:
     - zlib1g-dev
     - libpng-dev
     - libfreetype6-dev
-    - libcairo2-dev
     - python-cairo
-    - python-cairo-dev
 env:
   - ETS_TOOLKIT=wx
   - ETS_TOOLKIT=qt4
