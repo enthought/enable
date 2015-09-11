@@ -2,7 +2,6 @@ language: python
 sudo: false
 python:
   - '2.7_with_system_site_packages'
-  - 2.6
   - 3.4
 addons:
   apt:
@@ -26,10 +25,6 @@ env:
   - ETS_TOOLKIT=null.image
 matrix:
   exclude:
-    - python: 2.6
-      env: ETS_TOOLKIT=qt4
-    - python: 2.6
-      env: ETS_TOOLKIT=wx
     - python: 3.4
       env: ETS_TOOLKIT=wx
 cache:
