@@ -45,7 +45,9 @@ install:
   - if [[ $TRAVIS_PYTHON_VERSION == "2.7_with_system_site_packages" ]]; then pip install kiwisolver; fi
   - python setup.py develop
 before_script:
-  - export NOSE_WITH_COVERAGE=True
+  - mkdir testrun
+  - cp .coveragerc testrun
+  - cd testrun
 script:
   - coverage run -m nose.core -v enable/tests
   - coverage run -a -m nose.core -v enable/savage/svg/tests
