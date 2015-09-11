@@ -36,7 +36,7 @@ namespace agg24
 // unsigned value.  It is cleared at the end of this file.
 %typemap(in) unsigned
 {
-    PyObject* obj = PyNumber_Int($input);
+    PyObject* obj = PyNumber_Long($input);
     if (PyErr_Occurred()) SWIG_fail;
     $1 = (unsigned) PyLong_AsLong(obj);
     if (PyErr_Occurred()) SWIG_fail;

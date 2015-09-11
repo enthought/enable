@@ -1,4 +1,4 @@
-from string import lowercase, uppercase
+from string import ascii_lowercase, ascii_uppercase
 import os
 import time
 
@@ -6,7 +6,7 @@ from kiva.image import font_metrics_provider as FMP
 from kiva.fonttools import Font
 
 counts = (500,)
-strings = ("hello", ) # lowercase + uppercase)
+strings = ("hello", ) # ascii_lowercase + ascii_uppercase)
 fonts = ( ("arial", 12), ) # ("times", 16), ("courier", 10) )
 
 def test():

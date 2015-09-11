@@ -1,4 +1,4 @@
-from agg import *
+from .agg import *
 
 pix_format_string_map = {}
 pix_format_string_map["gray8"] = pix_format_gray8
@@ -18,7 +18,7 @@ import types
 try:
     # Define a system-dependent GraphicsContext if there is a PixelMap
     # class defined for the system (i.e. if plat_support was built)
-    from plat_support import PixelMap
+    from .plat_support import PixelMap
 
     class GraphicsContextSystem(GraphicsContextArray):
         def __init__(self,

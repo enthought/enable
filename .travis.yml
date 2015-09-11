@@ -3,6 +3,7 @@ sudo: false
 python:
   - '2.7_with_system_site_packages'
   - 2.6
+  - 3.4
 addons:
   apt:
     packages:
@@ -29,6 +30,8 @@ matrix:
       env: ETS_TOOLKIT=qt4
     - python: 2.6
       env: ETS_TOOLKIT=wx
+    - python: 3.4
+      env: ETS_TOOLKIT=wx
 cache:
   directories:
     - $HOME/.cache
@@ -44,7 +47,9 @@ install:
   # numpy is already installed
   - pip install -r travis-ci-requirements
   - pip install coveralls
-  - python setup.py develop
+
+before_script:
+  - export NOSE_WITH_COVERAGE=True
 script:
   - coverage run -m nose.core -v enable/tests
   - coverage run -a -m nose.core -v enable/savage/svg/tests

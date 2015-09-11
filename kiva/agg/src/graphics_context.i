@@ -264,7 +264,7 @@ namespace kiva {
             # Later we can add full-blown support with wchar_t/Py_UNICODE
             # typemaps etc.
             try:
-                if isinstance(text, unicode):
+                if '' == b'' and isinstance(text, unicode):
                     text = text.encode("utf8")
                 return text
             except:

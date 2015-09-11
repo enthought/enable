@@ -1,7 +1,7 @@
 """
     SVGDocument
 """
-from cStringIO import StringIO
+from io import BytesIO
 import warnings
 import math
 from functools import wraps
@@ -183,7 +183,7 @@ class ResourceGetter(object):
             # Plain URI. Pass it back.
             # Read the data and stuff it in a StringIO in order to satisfy
             # functions that need a functioning seek() and stuff.
-            return path, lambda uri: StringIO(urllib.urlopen(uri).read())
+            return path, lambda uri: BytesIO(urllib.urlopen(uri).read())
         path = os.path.abspath(os.path.join(self.dirname, path_part))
         return path, lambda fn: open(fn, 'rb')
 

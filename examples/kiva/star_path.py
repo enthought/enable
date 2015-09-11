@@ -1,4 +1,4 @@
-from __future__ import with_statement
+
 
 from numpy import cos, sin, arange, pi, array
 from kiva.image import GraphicsContext
@@ -96,7 +96,7 @@ gc.scale_ctm(4.0,4.0)
 
 offsets = array(((0,0),(80,0),(160,0),(240,0),(320,0)))
 modes = [FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE]
-pairs = zip(modes, offsets)
+pairs = list(zip(modes, offsets))
 center = array((50,50))
 for mode, offset in pairs:
     with gc:

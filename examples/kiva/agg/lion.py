@@ -17,7 +17,7 @@ def main():
     t1 = now()
     path_and_color, size, center = get_lion()
     t2 = now()
-    print t2 - t1
+    print(t2 - t1)
 
     gc = agg.GraphicsContextArray(sz)
     t1 = now()
@@ -33,7 +33,7 @@ def main():
             gc.fill_path()
         gc.rotate_ctm(1)
     t2 = now()
-    print 'total time, sec/image, img/sec:', t2 - t1, (t2-t1)/Nimages, Nimages/(t2-t1)
+    print('total time, sec/image, img/sec:', t2 - t1, (t2-t1)/Nimages, Nimages/(t2-t1))
     gc.save('lion.bmp')
 
 if __name__ == "__main__":
