@@ -18,7 +18,7 @@ except ImportError:
     CList = List
 
 # Relative imports
-import kiva.base as base
+import enable.base as base
 from .base import default_font_name
 
 #------------------------------------------------------------------------------
