@@ -22,16 +22,15 @@ addons:
     - python-cairo
     - python-cairo-dev
 env:
-  - ETS_TOOLKIT=wx REQUIREMENTS=dev_requirements_pillow.txt
-  - ETS_TOOLKIT=qt4 REQUIREMENTS=dev_requirements_pillow.txt
-  - ETS_TOOLKIT=null.image REQUIREMENTS=dev_requirements_pillow.txt
-  - ETS_TOOLKIT=null.image REQUIREMENTS=dev_requirements_pil.txt
+  - ETS_TOOLKIT=wx
+  - ETS_TOOLKIT=qt4
+  - ETS_TOOLKIT=null.image
 matrix:
   exclude:
     - python: 2.6
-      env: ETS_TOOLKIT=qt4 REQUIREMENTS=dev_requirements_pillow.txt
+      env: ETS_TOOLKIT=qt4
     - python: 2.6
-      env: ETS_TOOLKIT=wx REQUIREMENTS=dev_requirements_pillow.txt
+      env: ETS_TOOLKIT=wx
 cache:
   directories:
     - $HOME/.cache
@@ -45,7 +44,7 @@ before_install:
 install:
   # nose is already installed
   # numpy is already installed
-  - pip install -r $REQUIREMENTS
+  - pip install -r travis-ci-requirements
   - pip install coveralls
   - python setup.py develop
 script:

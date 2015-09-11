@@ -2,7 +2,7 @@ import time
 import os, sys
 import unittest
 
-import Image
+from PIL import Image
 from numpy import alltrue, array, concatenate, dtype, fromstring, newaxis, \
                   pi, ravel, ones, zeros
 
@@ -97,131 +97,6 @@ def assert_close(desired,actual,diff_allowed=2):
             msg = "size: %d.  To large to display" % size
         raise AssertionError(msg)
 
-#----------------------------------------------------------------------------
-# Tests for various alpha blending cases
-#
-# These include setting an "ambient" alpha value as well as specifying an
-# image with an alpha channel.  Because of the special casing, different
-# colors take different paths through the code.  As a result, there are a
-# classes to check black, white, and gray images.
-#----------------------------------------------------------------------------
-class test_alpha_black_image(unittest.TestCase):
-    size = (1,1)
-    color = 0.0
-    def test_simple(self):
-        gc = agg.GraphicsContextArray(self.size,pix_format = "bgra32")
-        desired = solid_bgra32(self.size,self.color)
-        img = agg.GraphicsContextArray(desired, pix_format="bgra32")
-        gc.draw_image(img)
-        actual = gc.bmp_array
-        # for alpha == 1, image should be exactly equal.
-        assert_equal(desired,actual)
-
-    def test_image_alpha(self):
-        alpha = 0.5
-        gc = agg.GraphicsContextArray(self.size,pix_format = "bgra32")
-        orig = solid_bgra32(self.size,self.color,alpha)
-        img = agg.GraphicsContextArray(orig, pix_format="bgra32")
-        gc.draw_image(img)
-        actual = gc.bmp_array
-
-        gc_background = solid_bgra32(self.size,1.0)
-        orig = solid_bgra32(self.size,self.color,alpha)
-        desired = alpha_blend(gc_background,orig)
-
-        # also, the alpha channel of the image is not copied into the
-        # desination graphics context, so we have to ignore alphas
-        assert_close(desired[:,:,:-1],actual[:,:,:-1],diff_allowed=slop_allowed)
-
-    def test_ambient_alpha(self):
-        orig = solid_bgra32(self.size,self.color)
-        img = agg.GraphicsContextArray(orig, pix_format="bgra32")
-        gc = agg.GraphicsContextArray(self.size,pix_format = "bgra32")
-        amb_alpha = 0.5
-        gc.set_alpha(amb_alpha)
-        gc.draw_image(img)
-        actual = gc.bmp_array
-
-        gc_background = solid_bgra32(self.size,1.0)
-        orig = solid_bgra32(self.size,self.color)
-        desired = alpha_blend(gc_background,orig,ambient_alpha=amb_alpha)
-        # alpha blending is approximate, allow channel differences of to 2.
-        assert_close(desired,actual,diff_allowed=slop_allowed)
-
-    def test_ambient_plus_image_alpha(self):
-        amb_alpha = 0.5
-        img_alpha = 0.5
-        gc = agg.GraphicsContextArray(self.size,pix_format = "bgra32")
-        orig = solid_bgra32(self.size,self.color,img_alpha)
-        img = agg.GraphicsContextArray(orig, pix_format="bgra32")
-        gc.set_alpha(amb_alpha)
-        gc.draw_image(img)
-        actual = gc.bmp_array
-
-        gc_background = solid_bgra32(self.size,1.0)
-        orig = solid_bgra32(self.size,self.color,img_alpha)
-        desired = alpha_blend(gc_background,orig,ambient_alpha=amb_alpha)
-        # alpha blending is approximate, allow channel differences of to 2.
-        assert_close(desired,actual,diff_allowed=slop_allowed)
-
-class test_alpha_white_image(test_alpha_black_image):
-    color = 1.0
-
-class test_alpha_gray_image(test_alpha_black_image):
-    color = 0.5
-
-
-#----------------------------------------------------------------------------
-# Test scaling based on "rect" argument to draw_image function.
-#
-#
-#----------------------------------------------------------------------------
-class test_rect_scaling_image(unittest.TestCase):
-    color = 0.0
-
-    def test_rect_scale(self):
-        orig_sz= (10,10)
-        img_ary = solid_bgra32(orig_sz,self.color)
-        orig = agg.GraphicsContextArray(img_ary, pix_format="bgra32")
-
-        sx,sy = 5,20
-        scaled_rect=(0,0,sx,sy)
-        gc = agg.GraphicsContextArray((20,20),pix_format = "bgra32")
-        gc.draw_image(orig,scaled_rect)
-        actual = gc.bmp_array
-        save(gc,test_name()+'.bmp')
-
-        desired_sz= (sx,sy)
-        img_ary = solid_bgra32(desired_sz,self.color)
-        img = agg.GraphicsContextArray(img_ary, pix_format="bgra32")
-        gc = agg.GraphicsContextArray((20,20),pix_format = "bgra32")
-        gc.draw_image(img)
-        desired = gc.bmp_array
-        save(gc,test_name()+'2.bmp')
-        assert_equal(desired,actual)
-
-    def test_rect_scale_translate(self):
-        orig_sz= (10,10)
-        img_ary = solid_bgra32(orig_sz,self.color)
-        orig = agg.GraphicsContextArray(img_ary, pix_format="bgra32")
-
-        tx, ty = 5,10
-        sx,sy = 5,20
-        translate_scale_rect=(tx,ty,sx,sy)
-        gc = agg.GraphicsContextArray((40,40),pix_format = "bgra32")
-        gc.draw_image(orig,translate_scale_rect)
-        actual = gc.bmp_array
-        save(gc,test_name()+'.bmp')
-
-        desired_sz= (sx,sy)
-        img_ary = solid_bgra32(desired_sz,self.color)
-        img = agg.GraphicsContextArray(img_ary, pix_format="bgra32")
-        gc = agg.GraphicsContextArray((40,40),pix_format = "bgra32")
-        gc.translate_ctm(tx,ty)
-        gc.draw_image(img)
-        desired = gc.bmp_array
-        save(gc,test_name()+'2.bmp')
-        assert_equal(desired,actual)
 
 #----------------------------------------------------------------------------
 # Tests speed of various interpolation schemes

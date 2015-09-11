@@ -1,8 +1,6 @@
---allow-external PIL
---allow-unverified PIL
 numpy
 coverage
-PIL
+pillow
 pyparsing
 PyPDF2
 https://bitbucket.org/pyglet/pyglet/get/pyglet-1.1.4.zip
@@ -14,3 +12,4 @@ git+http://github.com/enthought/pyface.git#egg=pyface
 git+http://github.com/enthought/traitsui.git#egg=traitsui
 git+http://github.com/enthought/apptools.git#egg=apptools
 unittest2
+hypothesis
