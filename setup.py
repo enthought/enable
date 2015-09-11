@@ -25,6 +25,11 @@ import setuptools
 
 import distutils
 import distutils.command.clean
+try:
+    from distutils.command.build_py import build_py_2to3 as build_py
+except ImportError:
+    from distutils.command.build_py import build_py
+
 import os
 import re
 import shutil
@@ -232,6 +237,8 @@ if __name__ == "__main__":
               'sdist': setuptools.command.sdist.sdist,
               # Use our customized commands
               'clean': MyClean,
+              # Use appropriate builder
+              'build_py': build_py,
           },
           description='low-level drawing and interaction',
           long_description=open('README.rst').read(),
