@@ -48,7 +48,7 @@ before_script:
   - cp .coveragerc testrun
   - cd testrun
 script:
-  - coverage run -m nose.core -v
+  - coverage run -m nose.core enable -v
 after_success:
   - pip install codecov
   - codecov
