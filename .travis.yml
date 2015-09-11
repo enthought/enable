@@ -51,4 +51,5 @@ script:
   - coverage run -a -m unittest2 discover -v -p *test_* kiva/tests
   - coverage run -a -m nose.core -v kiva/agg/tests
 after_success:
-  coveralls
+  - pip install codecov
+  - codecov
