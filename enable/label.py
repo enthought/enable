@@ -14,8 +14,8 @@ from traits.api import Bool, Enum, Float, HasTraits, Int, \
                                  List, Str
 
 # Local, relative imports
-from colors import black_color_trait, transparent_color_trait
-from component import Component
+from .colors import black_color_trait, transparent_color_trait
+from .component import Component
 
 
 class Label(Component):
@@ -233,4 +233,3 @@ class Label(Component):
 
     def _rotate_angle_changed(self):
         self._position_cache_valid = False
-

@@ -8,12 +8,12 @@ from traits.api import Any, Bool, Event, HasTraits, Instance, \
 
 
 # Local relative imports
-from base import bounds_to_coordinates, does_disjoint_intersect_coordinates, \
+from .base import bounds_to_coordinates, does_disjoint_intersect_coordinates, \
     union_bounds
-from component import Component
-from interactor import Interactor
-from container import Container
-from colors import ColorTrait
+from .component import Component
+from .interactor import Interactor
+from .container import Container
+from .colors import ColorTrait
 
 def Alias(name):
     return Property(lambda obj: getattr(obj, name),
@@ -100,7 +100,7 @@ class AbstractWindow(HasTraits):
     def _create_key_event(self, event):
         "Convert a GUI toolkit key event into a KeyEvent"
         raise NotImplementedError
-    
+
     def _create_mouse_event(self, event):
         "Convert a GUI toolkit mouse event into a MouseEvent"
         raise NotImplementedError
@@ -161,7 +161,7 @@ class AbstractWindow(HasTraits):
     def get_pointer_position(self):
         "Returns the current pointer position in local window coordinates"
         raise NotImplementedError
-        
+
     #------------------------------------------------------------------------
     # Public methods
     #------------------------------------------------------------------------
@@ -244,7 +244,7 @@ class AbstractWindow(HasTraits):
         """ **event** should be a toolkit-specific opaque object that will
         be passed in to the backend's _create_key_event() method. It can
         be None if the the toolkit lacks a native "key event" object.
-        
+
         Returns True if the event has been handled within the Enable object
         hierarchy, or False otherwise.
         """
@@ -252,11 +252,11 @@ class AbstractWindow(HasTraits):
         key_event = self._create_key_event(event_type, event)
         if key_event is None:
             return False
-        
+
         self.shift_pressed = key_event.shift_down
         self.alt_pressed = key_event.alt_down
         self.control_pressed = key_event.control_down
-        
+
         # Dispatch the event to the correct component
         mouse_owner = self.mouse_owner
         if mouse_owner is not None:
@@ -276,7 +276,7 @@ class AbstractWindow(HasTraits):
                 if self.component.is_in(key_event.x, key_event.y):
                     # Fire the actual event
                     self.component.dispatch(key_event, event_type)
-        
+
         return key_event.handled
 
     #---------------------------------------------------------------------------
@@ -301,7 +301,7 @@ class AbstractWindow(HasTraits):
         # if no mouse event generated for some reason, return
         if mouse_event is None:
             return False
-        
+
         mouse_owner = self.mouse_owner
 
         if mouse_owner is not None:
@@ -388,7 +388,7 @@ class AbstractWindow(HasTraits):
         # if no mouse event generated for some reason, return
         if drag_event is None:
             return False
-            
+
         if self.component is not None:
             # Test to see if we need to generate a drag_leave event
             if self._prev_event_handler:
@@ -559,5 +559,3 @@ class AbstractWindow(HasTraits):
 
     def _on_character(self, event):
         self._handle_key_event('character', event)
-
-

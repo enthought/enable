@@ -14,11 +14,11 @@ from traits.api import (Bool, Delegate, Float, Instance, Enum, List,
 from kiva import affine
 
 # Local relative imports
-from enable_traits import bounds_trait, coordinate_trait
-from base import empty_rectangle, intersect_bounds
-from component import Component
-from container import Container
-from canvas import Canvas
+from .enable_traits import bounds_trait, coordinate_trait
+from .base import empty_rectangle, intersect_bounds
+from .component import Component
+from .container import Container
+from .canvas import Canvas
 
 
 class Viewport(Component):
@@ -190,7 +190,7 @@ class Viewport(Component):
                 gc.clip_to_rect(x-0.5, y-0.5,
                                 self.width+1,
                                 self.height+1)
-    
+
                 # There is a two-step transformation from the viewport's "outer"
                 # coordinates into the coordinates space of the viewed component:
                 # scaling, followed by a translation.
@@ -202,7 +202,7 @@ class Viewport(Component):
                         raise RuntimeError("Viewport zoomed out too far.")
                 else:
                     gc.translate_ctm(x - view_x, y - view_y)
-    
+
                 # Now transform the passed-in view_bounds; this is not the same thing as
                 # self.view_bounds!
                 if view_bounds:
@@ -306,4 +306,3 @@ class Viewport(Component):
         return self.view_bounds
 
 # EOF
-

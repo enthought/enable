@@ -14,8 +14,8 @@ from traits.api import Event, Property, Trait, TraitError
 from traitsui.api import Group, View
 
 # Relative imports
-from component import Component
-from enable_traits import layout_style_trait
+from .component import Component
+from .enable_traits import layout_style_trait
 
 
 #------------------------------------------------------------------------------

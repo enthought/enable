@@ -11,10 +11,10 @@ from traits.api \
 from kiva.constants import FILL, STROKE
 
 # Local relative imports
-from colors import black_color_trait, white_color_trait
-from coordinate_box import CoordinateBox
-from enable_traits import bounds_trait, coordinate_trait, LineStyle
-from interactor import Interactor
+from .colors import black_color_trait, white_color_trait
+from .coordinate_box import CoordinateBox
+from .enable_traits import bounds_trait, coordinate_trait, LineStyle
+from .interactor import Interactor
 
 
 coordinate_delegate = Delegate("inner", modify=True)
@@ -467,15 +467,15 @@ class Component(CoordinateBox, Interactor):
             width -= 2*inset
             height -= 2*inset
             rect = (x, y, width, height)
-    
+
             gc.set_stroke_color(bgcolor)
             gc.set_line_dash(None)
             gc.draw_rect(rect, STROKE)
-    
+
             gc.set_stroke_color(color)
             gc.set_line_dash(dash)
             gc.draw_rect(rect, STROKE)
-    
+
             if marker_size > 0:
                 gc.set_fill_color(bgcolor)
                 half_y = y + height/2.0
@@ -510,7 +510,7 @@ class Component(CoordinateBox, Interactor):
         else:
             offset_x, offset_y = self.position
         return (offset_x + coords[0], offset_y + coords[1])
- 
+
     def get_relative_coords(self, *coords):
         """ Given absolute coordinates (where the origin is the top-left corner
         of the frame in the top-level parent Window) return coordinates relative

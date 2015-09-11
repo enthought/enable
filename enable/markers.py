@@ -15,7 +15,7 @@ from kiva.constants import STROKE, FILL_STROKE, \
             PIXEL_MARKER, NO_MARKER
 
 # Local imports
-from compiled_path import CompiledPath
+from .compiled_path import CompiledPath
 
 
 class AbstractMarker(HasTraits):
@@ -251,7 +251,7 @@ class CustomMarker(AbstractMarker):
     def _add_to_path(self, path, size):
         if self.scale_path:
             path.save_ctm()
-            path.scale_ctm(size)
+            path.scale_ctm(size, size)
         path.add_path(path)
         if self.scale_path:
             path.restore_ctm()
@@ -265,7 +265,7 @@ class CustomMarker(AbstractMarker):
         """
         if self.scale_path:
             newpath = CompiledPath()
-            newpath.scale_ctm(size)
+            newpath.scale_ctm(size, size)
             newpath.add_path(self.path)
             return newpath
         else:

@@ -6,7 +6,7 @@ items underneath them.
 
 from traits.api import Instance
 
-from component import Component
+from .component import Component
 
 
 class AbstractOverlay(Component):

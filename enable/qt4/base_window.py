@@ -344,7 +344,7 @@ class _Window(AbstractWindow):
         "Release the mouse capture"
         # Nothing needed with Qt.
         pass
-    
+
     def _create_key_event(self, event_type, event):
         focus_owner = self.focus_owner
 
@@ -361,7 +361,7 @@ class _Window(AbstractWindow):
             # Convert the keypress to a standard enable key if possible, otherwise
             # to text.
             key_code = event.key()
-            key = KEY_MAP.get(key_code)    
+            key = KEY_MAP.get(key_code)
             if key is None:
                 key = unichr(key_code).lower()
 
@@ -420,7 +420,7 @@ class _Window(AbstractWindow):
                 window=self)
 
     def _create_drag_event(self, event):
-        
+
         # If the control no longer exists, don't send mouse event
         if self.control is None:
             return None
@@ -435,7 +435,7 @@ class _Window(AbstractWindow):
             y = pos.y()
 
         self.control.handler.last_mouse_pos = (x, y)
-        
+
         # extract an object from the event, if we can
         try:
             mimedata = event.mimeData()
@@ -444,7 +444,7 @@ class _Window(AbstractWindow):
             # this is a DragLeave event
             return DragEvent(x=x, y=self._flip_y(y), obj=None, copy=False,
                         window=self, mimedata=None)
-            
+
         try:
             from traitsui.qt4.clipboard import PyMimeData
         except ImportError:
@@ -463,7 +463,7 @@ class _Window(AbstractWindow):
                         obj = [File(path=path) for path in files]
                     except ImportError:
                         pass
-        
+
         return DragEvent(x=x, y=self._flip_y(y), obj=obj, copy=copy,
                         window=self, mimedata=mimedata)
 
@@ -505,13 +505,13 @@ class _Window(AbstractWindow):
 
     def _on_key_pressed(self, event):
         return self._handle_key_event('key_pressed', event)
-    
+
     def get_pointer_position(self):
         pos = self.control.mapFromGlobal(QtGui.QCursor.pos())
         x = pos.x()
         y = self._flip_y(pos.y())
         return x, y
-            
+
 
     #------------------------------------------------------------------------
     # Private methods

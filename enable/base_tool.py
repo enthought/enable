@@ -8,8 +8,8 @@ overview of how event handling works in Chaco.
 from traits.api import Bool, Enum, Instance
 
 # Local relative imports
-from component import Component
-from interactor import Interactor
+from .component import Component
+from .interactor import Interactor
 
 
 class KeySpec(object):
@@ -52,7 +52,16 @@ class KeySpec(object):
            ('control' in self.ignore or self.control == event.control_down) and \
            ('shift' in self.ignore or self.shift == event.shift_down)
 
-        
+    @classmethod
+    def from_string(cls, s):
+        """ Create a KeySpec from a string joined by '+' characters. """
+        codes = s.split('+')
+        key = codes[-1]
+        modifiers = set(code.lower() for code in codes[:-1])
+        ignore = set('alt', 'shift', 'control') - modifiers
+        return cls(key, *modifiers, ignore=ignore)
+
+
 
 class BaseTool(Interactor):
     """ The base class for Chaco tools.
@@ -153,4 +162,3 @@ class BaseTool(Interactor):
         # Compatibility with new AbstractController interface
         self._deactivate()
         return
-

@@ -3,10 +3,10 @@
 from traits.api import HasTraits, Enum, Instance, Property, Tuple
 
 # Local, relative imports
-from enable_traits import bounds_trait, coordinate_trait
-from layout.ab_constrainable import ABConstrainable
-from layout.constraints_namespace import ConstraintsNamespace
-from layout.utils import add_symbolic_constraints, STRENGTHS
+from .enable_traits import bounds_trait, coordinate_trait
+from .layout.ab_constrainable import ABConstrainable
+from .layout.constraints_namespace import ConstraintsNamespace
+from .layout.utils import add_symbolic_constraints, STRENGTHS
 
 
 ConstraintPolicyEnum = Enum('ignore', *STRENGTHS)

@@ -18,8 +18,8 @@ except ImportError:
     CList = List
 
 # Relative imports
-import base
-from base import default_font_name
+import kiva.base as base
+from .base import default_font_name
 
 #------------------------------------------------------------------------------
 #  Constants:
@@ -121,4 +121,3 @@ TimeInterval = Trait(None, None, Range(0.0, 3600.0))
 # Stretch traits:
 Stretch = Range(0.0, 1.0, value = 1.0)
 NoStretch = Stretch(0.0)
-
