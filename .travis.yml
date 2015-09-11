@@ -48,10 +48,7 @@ before_script:
   - cp .coveragerc testrun
   - cd testrun
 script:
-  - coverage run -m nose.core -v enable/tests
-  - coverage run -a -m nose.core -v enable/savage/svg/tests
-  - coverage run -a -m unittest2 discover -v -p *test_* kiva/tests
-  - coverage run -a -m nose.core -v kiva/agg/tests
+  - coverage run -m nose.core -v
 after_success:
   - pip install codecov
   - codecov
