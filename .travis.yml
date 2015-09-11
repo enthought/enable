@@ -39,6 +39,7 @@ cache:
 before_install:
   - ccache -s
   - pip install --upgrade pip
+  - if [[ ${TRAVIS_PYTHON_VERSION} == "3.4" && ${ETS_TOOLKIT} == "qt4" ]]; then ./build_pyside_wheel.sh; fi
   # setup X11 for the tests
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
@@ -46,8 +47,7 @@ install:
   # nose is already installed
   # numpy is already installed
   - pip install -r travis-ci-requirements
-  - pip install coveralls
-
+  - python setup.py develop
 before_script:
   - export NOSE_WITH_COVERAGE=True
 script:
