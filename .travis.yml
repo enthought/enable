@@ -42,7 +42,7 @@ install:
   # nose is already installed
   # numpy is already installed
   - pip install -r travis-ci-requirements
-  - if [[ ${TRAVIS_PYTHON_VERSION} == "2.7" ]]; then pip install kiwisolver; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == "2.7_with_system_site_packages" ]]; then pip install kiwisolver; fi
   - python setup.py develop
 before_script:
   - export NOSE_WITH_COVERAGE=True
