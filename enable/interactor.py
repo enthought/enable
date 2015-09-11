@@ -5,8 +5,8 @@ from kiva.affine import affine_identity
 from traits.api import Any, Bool, HasTraits, List, Property, Str, Trait
 
 # Local relative imports
+from enable.colors import ColorTrait
 from .enable_traits import cursor_style_trait, Pointer
-from .enable.colors import ColorTrait
 
 class Interactor(HasTraits):
     """
