@@ -38,3 +38,10 @@ def add_symbolic_contents_constraints(namespace):
     namespace.contents_v_center = bottom + namespace.contents_height / 2.0
     namespace.contents_h_center = left + namespace.contents_width / 2.0
 
+
+def get_from_constraints_namespace(self, name):
+    """ Property getter for all attributes that come from the constraints
+    namespace.
+
+    """
+    return getattr(self._constraints_vars, name)

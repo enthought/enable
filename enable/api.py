@@ -34,8 +34,15 @@ from .component import Component
 from .container import Container
 from .coordinate_box import CoordinateBox
 from .component_editor import ComponentEditor
-from .constraints_container import ConstraintsContainer
 from .overlay_container import OverlayContainer
+
+try:
+    import kiwisolver
+except ImportError:
+    pass
+else:
+    from .constraints_container import ConstraintsContainer
+    del kiwisolver
 
 # Breaks code that does not use numpy
 from .label import Label

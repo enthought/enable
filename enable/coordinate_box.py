@@ -4,20 +4,21 @@ from traits.api import HasTraits, Enum, Instance, Property, Tuple
 
 # Local, relative imports
 from .enable_traits import bounds_trait, coordinate_trait
-from .layout.ab_constrainable import ABConstrainable
-from .layout.constraints_namespace import ConstraintsNamespace
-from .layout.utils import add_symbolic_constraints, STRENGTHS
 
+try:
+    import kiwisolver
+except ImportError:
+    ENABLE_CONSTRAINTS = False
+else:
+    ENABLE_CONSTRAINTS = True
+    from .layout.constraints_namespace import ConstraintsNamespace
+    from .layout.ab_constrainable import ABConstrainable
+    from .layout.utils import (
+        add_symbolic_constraints, STRENGTHS, get_from_constraints_namespace)
 
-ConstraintPolicyEnum = Enum('ignore', *STRENGTHS)
+    ConstraintPolicyEnum = Enum('ignore', *STRENGTHS)
 
-
-def get_from_constraints_namespace(self, name):
-    """ Property getter for all attributes that come from the constraints
-    namespace.
-
-    """
-    return getattr(self._constraints_vars, name)
+    del kiwisolver
 
 
 class CoordinateBox(HasTraits):
@@ -57,65 +58,68 @@ class CoordinateBox(HasTraits):
 
     height = Property
 
+
     #------------------------------------------------------------------------
     # Constraints-based layout
     #------------------------------------------------------------------------
 
-    # A read-only symbolic object that represents the left boundary of
-    # the component
-    left = Property(fget=get_from_constraints_namespace)
+    if ENABLE_CONSTRAINTS:
 
-    # A read-only symbolic object that represents the right boundary
-    # of the component
-    right = Property(fget=get_from_constraints_namespace)
+        # A read-only symbolic object that represents the left boundary of
+        # the component
+        left = Property(fget=get_from_constraints_namespace)
 
-    # A read-only symbolic object that represents the bottom boundary
-    # of the component
-    bottom = Property(fget=get_from_constraints_namespace)
+        # A read-only symbolic object that represents the right boundary
+        # of the component
+        right = Property(fget=get_from_constraints_namespace)
 
-    # A read-only symbolic object that represents the top boundary of
-    # the component
-    top = Property(fget=get_from_constraints_namespace)
+        # A read-only symbolic object that represents the bottom boundary
+        # of the component
+        bottom = Property(fget=get_from_constraints_namespace)
 
-    # A read-only symbolic object that represents the width of the
-    # component
-    layout_width = Property(fget=get_from_constraints_namespace)
+        # A read-only symbolic object that represents the top boundary of
+        # the component
+        top = Property(fget=get_from_constraints_namespace)
 
-    # A read-only symbolic object that represents the height of the
-    # component
-    layout_height = Property(fget=get_from_constraints_namespace)
+        # A read-only symbolic object that represents the width of the
+        # component
+        layout_width = Property(fget=get_from_constraints_namespace)
 
-    # A read-only symbolic object that represents the vertical center
-    # of the component
-    v_center = Property(fget=get_from_constraints_namespace)
+        # A read-only symbolic object that represents the height of the
+        # component
+        layout_height = Property(fget=get_from_constraints_namespace)
 
-    # A read-only symbolic object that represents the horizontal
-    # center of the component
-    h_center = Property(fget=get_from_constraints_namespace)
+        # A read-only symbolic object that represents the vertical center
+        # of the component
+        v_center = Property(fget=get_from_constraints_namespace)
 
-    # A size hint for the layout
-    layout_size_hint = Tuple(0.0, 0.0)
+        # A read-only symbolic object that represents the horizontal
+        # center of the component
+        h_center = Property(fget=get_from_constraints_namespace)
 
-    # How strongly a layout box hugs it's width hint.
-    hug_width = ConstraintPolicyEnum('weak')
+        # A size hint for the layout
+        layout_size_hint = Tuple(0.0, 0.0)
 
-    # How strongly a layout box hugs it's height hint.
-    hug_height = ConstraintPolicyEnum('weak')
+        # How strongly a layout box hugs it's width hint.
+        hug_width = ConstraintPolicyEnum('weak')
 
-    # How strongly a layout box resists clipping its contents.
-    resist_width = ConstraintPolicyEnum('strong')
+        # How strongly a layout box hugs it's height hint.
+        hug_height = ConstraintPolicyEnum('weak')
 
-    # How strongly a layout box resists clipping its contents.
-    resist_height = ConstraintPolicyEnum('strong')
+        # How strongly a layout box resists clipping its contents.
+        resist_width = ConstraintPolicyEnum('strong')
 
-    # A namespace containing the constraints for this CoordinateBox
-    _constraints_vars = Instance(ConstraintsNamespace)
+        # How strongly a layout box resists clipping its contents.
+        resist_height = ConstraintPolicyEnum('strong')
 
-    # The list of hard constraints which must be applied to the object.
-    _hard_constraints = Property
+        # A namespace containing the constraints for this CoordinateBox
+        _constraints_vars = Instance(ConstraintsNamespace)
 
-    # The list of size constraints to apply to the object.
-    _size_constraints = Property
+        # The list of hard constraints which must be applied to the object.
+        _hard_constraints = Property
+
+        # The list of size constraints to apply to the object.
+        _size_constraints = Property
 
     #------------------------------------------------------------------------
     # Public methods
@@ -217,50 +221,53 @@ class CoordinateBox(HasTraits):
             self.bounds[1] = new_height
         return
 
-    def __constraints_vars_default(self):
-        obj_name = self.id if hasattr(self, 'id') else ''
-        cns_names = ConstraintsNamespace(type(self).__name__, obj_name)
-        add_symbolic_constraints(cns_names)
-        return cns_names
+    if ENABLE_CONSTRAINTS:
 
-    def _get__hard_constraints(self):
-        """ Generate the constraints which must always be applied.
-        """
-        left = self.left
-        bottom = self.bottom
-        width = self.layout_width
-        height = self.layout_height
-        cns = [left >= 0, bottom >= 0, width >= 0, height >= 0]
-        return cns
+        def __constraints_vars_default(self):
+            obj_name = self.id if hasattr(self, 'id') else ''
+            cns_names = ConstraintsNamespace(type(self).__name__, obj_name)
+            add_symbolic_constraints(cns_names)
+            return cns_names
 
-    def _get__size_constraints(self):
-        """ Creates the list of size hint constraints for this box.
-        """
-        cns = []
-        push = cns.append
-        width_hint, height_hint = self.layout_size_hint
-        width = self.layout_width
-        height = self.layout_height
-        hug_width, hug_height = self.hug_width, self.hug_height
-        resist_width, resist_height = self.resist_width, self.resist_height
-        if width_hint >= 0:
-            if hug_width != 'ignore':
-                cn = (width == width_hint) | hug_width
-                push(cn)
-            if resist_width != 'ignore':
-                cn = (width >= width_hint) | resist_width
-                push(cn)
-        if height_hint >= 0:
-            if hug_height != 'ignore':
-                cn = (height == height_hint) | hug_height
-                push(cn)
-            if resist_height != 'ignore':
-                cn = (height >= height_hint) | resist_height
-                push(cn)
+        def _get__hard_constraints(self):
+            """ Generate the constraints which must always be applied.
+            """
+            left = self.left
+            bottom = self.bottom
+            width = self.layout_width
+            height = self.layout_height
+            cns = [left >= 0, bottom >= 0, width >= 0, height >= 0]
+            return cns
 
-        return cns
+        def _get__size_constraints(self):
+            """ Creates the list of size hint constraints for this box.
+            """
+            cns = []
+            push = cns.append
+            width_hint, height_hint = self.layout_size_hint
+            width = self.layout_width
+            height = self.layout_height
+            hug_width, hug_height = self.hug_width, self.hug_height
+            resist_width, resist_height = self.resist_width, self.resist_height
+            if width_hint >= 0:
+                if hug_width != 'ignore':
+                    cn = (width == width_hint) | hug_width
+                    push(cn)
+                if resist_width != 'ignore':
+                    cn = (width >= width_hint) | resist_width
+                    push(cn)
+            if height_hint >= 0:
+                if hug_height != 'ignore':
+                    cn = (height == height_hint) | hug_height
+                    push(cn)
+                if resist_height != 'ignore':
+                    cn = (height >= height_hint) | resist_height
+                    push(cn)
+
+            return cns
 
 
-# Register with ABConstrainable so that layout helpers will recognize
-# CoordinateBox instances.
-ABConstrainable.register(CoordinateBox)
+if ENABLE_CONSTRAINTS:
+    # Register with ABConstrainable so that layout helpers will recognize
+    # CoordinateBox instances.
+    ABConstrainable.register(CoordinateBox)
