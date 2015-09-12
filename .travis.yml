@@ -49,7 +49,7 @@ before_script:
 script:
   - coverage run -m nose.core enable -v
   - coverage run -a -m nose.core kiva -v
-  - coverage run -a -m nose.core -v --no-capture
+  - coverage run -a -m nose.core -v --nocapture
 after_success:
   - pip install codecov
   - codecov
