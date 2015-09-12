@@ -44,8 +44,8 @@ install:
   - pip install -r travis-ci-requirements
   - python setup.py develop
 before_script:
-  - cp .coveragerc integration_tests/kiva/agg
-  - cd integration_tests/kiva/agg
+  - cp .coveragerc integrationtests/kiva/agg
+  - cd integrationtests/kiva/agg
 script:
   - coverage run -m nose.core enable -v
   - coverage run -a -m nose.core kiva -v
