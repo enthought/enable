@@ -205,20 +205,22 @@ def main5(gc):
     print('    %f %f' % (t2-t1,((t2-t1)/(N*10))))
     gc.save('text2.bmp')
 
-import profile
-gc=agg.GraphicsContextArray((800,800))
-#profile.run('main()')
-#main5(gc)
-#main5(gc)
-#main5(gc)
-#profile.run('main5(gc)')
-#main()
-#main2()
-#main3()
-#main4()
 
-main()
-#main2(gc)
-#main4(gc)
-#main5(gc)
+if __name__ == '__main__':
 
+    import profile
+    gc=agg.GraphicsContextArray((800,800))
+    #profile.run('main()')
+    #main5(gc)
+    #main5(gc)
+    #main5(gc)
+    #profile.run('main5(gc)')
+    #main()
+    #main2()
+    #main3()
+    #main4()
+
+    main()
+    #main2(gc)
+    #main4(gc)
+    #main5(gc)
