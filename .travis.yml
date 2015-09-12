@@ -44,12 +44,12 @@ install:
   - pip install -r travis-ci-requirements
   - python setup.py develop
 before_script:
-  - mkdir testrun
-  - cp .coveragerc testrun
-  - cd testrun
+  - cp .coveragerc integration_tests/kiva/agg
+  - cd integration_tests/kiva/agg
 script:
   - coverage run -m nose.core enable -v
   - coverage run -a -m nose.core kiva -v
+  - coverage run -a -m nose.core -v
 after_success:
   - pip install codecov
   - codecov
