@@ -178,20 +178,46 @@ class NativeScrollBar(Component):
 
     def _update_control(self, enable_range, value):
         minimum, maximum, page_size, line_size = enable_range
-        self._control.setMinimum(minimum)
         # The maximum value of a QScrollBar is the maximum position of the
         # scroll bar, not the document length. We need to subtract the length
         # of the scroll bar itself.
-        self._control.setMaximum(maximum-page_size)
+        max_value = maximum-page_size
+        # invert values for vertical ranges because of coordinate system issues
+        value = self._correct_value(value, minimum, max_value)
+
+        self._control.setMinimum(minimum)
+        self._control.setMaximum(max_value)
         self._control.setValue(value)
         self._control.setPageStep(page_size)
         self._control.setSingleStep(line_size)
+
+    def _correct_value(self, value, min_value, max_value):
+        """ Correct vertical position values for Qt and Enable conventions
+
+        Enable expects vertical scroll_position to be measured with origin at
+        the bottom and positive going upwards, while Qt scrollbar values are
+        measured with origin at the top and positive going down.
+
+        Parameters
+        ----------
+        value : float
+            The position value in either Enable or Qt conventions.
+        max_value : float
+            The maximum value that the Qt scrollbar can be set to (height of
+            the scrolled component, less the page size).
+        """
+        if self.orientation != 'vertical':
+            return value
+        return max_value - (value - min_value)
+
 
     #------------------------------------------------------------------------
     # Qt Event handlers
     #------------------------------------------------------------------------
 
     def _update_enable_pos(self, value):
+        # invert values for vertical ranges because of coordinate system issues
+        value = self._correct_value(value, self.low, self.high-self.page_size)
         self.scroll_position = value
 
     def _on_slider_pressed(self):
@@ -285,4 +311,3 @@ class NativeScrollBar(Component):
         low, high, page_size, ignore = self.range
         self._clean = False
         self.range =(low, high, page_size, line_size)
-
