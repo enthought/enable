@@ -10,6 +10,7 @@ __requires__ = [
     'traits',
     'traitsui',
     'pyface',
+    'six',
 ]
 
 # Do not force installation of pillow if PIL is already available.
