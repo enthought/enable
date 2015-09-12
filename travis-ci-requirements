@@ -3,7 +3,7 @@ coverage
 pillow
 pyparsing
 PyPDF2
-https://bitbucket.org/pyglet/pyglet/get/pyglet-1.1.4.zip
+https://bitbucket.org/pyglet/pyglet/get/pyglet-1.1.4.zip ; python_version <= "2.7"
 pygarrayimage
 reportlab<=3.1
 kiwisolver ; python_version <= "2.7"
