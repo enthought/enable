@@ -23,6 +23,7 @@ env:
   - ETS_TOOLKIT=wx
   - ETS_TOOLKIT=qt4
   - ETS_TOOLKIT=null.image PILLOW='pillow<3.0.0'
+  - ETS_TOOLKIT=null.image PILLOW='pillow'
 matrix:
   exclude:
     - python: 2.6
