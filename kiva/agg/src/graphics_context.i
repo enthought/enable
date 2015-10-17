@@ -813,7 +813,6 @@ namespace kiva {
                     file format does not support alpha, the image is saved in
                     rgb24 format.
                 """
-		from kiva.compat import pilfromstring
                 FmtsWithoutAlpha = ('jpg', 'bmp', 'eps', "jpeg")
                 size = (self.width(), self.height())
                 fmt = self.format()
@@ -839,7 +838,8 @@ namespace kiva {
                 else:
                     bmp = self.bmp_array
 
-                img = pilfromstring(pilformat, size, bmp.tostring())
+                from kiva import compat
+                img = compat.pilfromstring(pilformat, size, bmp.tostring())
                 img.save(filename, format=file_format, options=pil_options)
 
 
