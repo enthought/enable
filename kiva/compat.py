@@ -3,21 +3,20 @@ Compatibility module to help support various versions of PIL and
 Pillow.
 
 """
-import PIL
 from PIL import Image
 
-PILLOW_VERSION = getattr(PIL, 'PILLOW_VERSION', PIL.VERSION)
+HAS_FROM_BYTES = hasattr(Image, 'frombytes')
 
 
 def piltostring(image):
-    if PILLOW_VERSION.startswith('3'):
+    if hasattr(image, 'tobytes'):
         return image.tobytes()
     else:
         return image.tostring()
 
 
 def pilfromstring(*args, **kwargs):
-    if PILLOW_VERSION.startswith('3'):
+    if HAS_FROM_BYTES:
         return Image.frombytes(*args, **kwargs)
     else:
         return Image.fromstring(*args, **kwargs)
