@@ -27,11 +27,11 @@ env:
 matrix:
   exclude:
     - python: 2.6
-      env: ETS_TOOLKIT=qt4
+      env: ETS_TOOLKIT=qt4 PILLOW='pillow'
     - python: 2.6
-      env: ETS_TOOLKIT=wx
+      env: ETS_TOOLKIT=wx PILLOW='pillow'
     - python: 2.6
-      env: ETS_TOOLKIT=wx ETS_TOOLKIT=null.image PILLOW='pillow'
+      env: ETS_TOOLKIT=null.image PILLOW='pillow'
 cache:
   directories:
     - $HOME/.cache
