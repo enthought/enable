@@ -6,7 +6,7 @@ Pillow.
 import PIL
 from PIL import Image
 
-PILLOW_VERSION = getattr(PIL, 'PILLOW_VERSION', PIL.PIL_VERSION)
+PILLOW_VERSION = getattr(PIL, 'PILLOW_VERSION', PIL.VERSION)
 
 
 def piltostring(image):
