@@ -20,8 +20,8 @@ addons:
     - libfreetype6-dev
     - python-cairo
 env:
-  - ETS_TOOLKIT=wx
-  - ETS_TOOLKIT=qt4
+  - ETS_TOOLKIT=wx PILLOW='pillow'
+  - ETS_TOOLKIT=qt4 PILLOW='pillow'
   - ETS_TOOLKIT=null.image PILLOW='pillow<3.0.0'
   - ETS_TOOLKIT=null.image PILLOW='pillow'
 matrix:
