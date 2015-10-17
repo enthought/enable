@@ -4,9 +4,9 @@ Pillow.
 
 """
 import PIL
+from PIL import Image
 
-PIL_VERSION = getattr(PIL, 'VERSION')
-PILLOW_VERSION = getattr(PIL, 'PILLOW_VERSION', PIL_VERSION)
+PILLOW_VERSION = getattr(PIL, 'PILLOW_VERSION', PIL.PIL_VERSION)
 
 
 def piltostring(image):
@@ -14,3 +14,10 @@ def piltostring(image):
         return image.tobytes()
     else:
         return image.tostring()
+
+
+def pilfromstring(*args, **kwargs):
+    if PILLOW_VERSION.starts_with('3'):
+        return Image.frombytes(*args, **kwargs)
+    else:
+        return Image.tostring(*args, **kwargs)
