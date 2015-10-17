@@ -20,4 +20,4 @@ def pilfromstring(*args, **kwargs):
     if PILLOW_VERSION.startswith('3'):
         return Image.frombytes(*args, **kwargs)
     else:
-        return Image.tostring(*args, **kwargs)
+        return Image.fromstring(*args, **kwargs)
