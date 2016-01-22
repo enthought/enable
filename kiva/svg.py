@@ -221,7 +221,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
         Requires the Python Imaging Library (PIL).
         """
-        from PIL import Image as PilImage
+        from kiva.compat import pilfromstring, Image as PilImage
 
         # We turn img into a PIL object, since that is what ReportLab
         # requires.  To do this, we first determine if the input image
@@ -250,10 +250,10 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             return
 
         # converted_img now holds an Agg graphics context with the image
-        pil_img = PilImage.fromstring(format,
-                                      (converted_img.width(),
-                                       converted_img.height()),
-                                      converted_img.bmp_array.tostring())
+        pil_img = pilfromstring(format,
+                                (converted_img.width(),
+                                 converted_img.height()),
+                                converted_img.bmp_array.tostring())
         if rect == None:
             rect = (0, 0, img.width(), img.height())
 
@@ -439,4 +439,3 @@ def font_metrics_provider():
 
 
 SVGGC = GraphicsContext # for b/w compatibility
-
