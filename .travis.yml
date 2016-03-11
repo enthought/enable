@@ -20,9 +20,10 @@ addons:
     - libfreetype6-dev
     - python-cairo
 env:
-  - ETS_TOOLKIT=wx
-  - ETS_TOOLKIT=qt4
-  - ETS_TOOLKIT=null.image
+  - ETS_TOOLKIT=wx PILLOW='pillow'
+  - ETS_TOOLKIT=qt4 PILLOW='pillow'
+  - ETS_TOOLKIT=null.image PILLOW='pillow<3.0.0'
+  - ETS_TOOLKIT=null.image PILLOW='pillow'
 matrix:
   exclude:
     - python: 3.4
@@ -40,8 +41,8 @@ before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
 install:
-  # nose is already installed
-  # numpy is already installed
+  # Install pillow separately to control the version
+  - pip install $PILLOW
   - pip install -r travis-ci-requirements
   - python setup.py develop
 before_script:

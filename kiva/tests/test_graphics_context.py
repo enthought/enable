@@ -8,6 +8,7 @@ from hypothesis import given
 from hypothesis.strategies import sampled_from
 
 from kiva.image import GraphicsContext
+from kiva.compat import piltostring
 
 # alpha blending is approximate in agg, so we allow some "slop" between
 # desired and actual results, allow channel differences of to 2.
@@ -126,7 +127,7 @@ class TestAlphaBlackImage(unittest.TestCase):
 
     def sun(self, interpolation_scheme="simple"):
         pil_img = PILImage.open('doubleprom_soho_full.jpg')
-        img = fromstring(pil_img.tostring(), UInt8)
+        img = fromstring(piltostring(pil_img), UInt8)
         img.resize((pil_img.size[1], pil_img.size[0], 3))
         alpha = ones(pil_img.size, UInt8) * 255
         img = concatenate((img[:, :, ::-1], alpha[:, :, newaxis]), -1).copy()

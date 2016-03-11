@@ -814,7 +814,6 @@ namespace kiva {
                     rgb24 format.
                 """
                 FmtsWithoutAlpha = ('jpg', 'bmp', 'eps', "jpeg")
-                from PIL import Image as PilImage
                 size = (self.width(), self.height())
                 fmt = self.format()
 
@@ -839,7 +838,8 @@ namespace kiva {
                 else:
                     bmp = self.bmp_array
 
-                img = PilImage.fromstring(pilformat, size, bmp.tostring())
+                from kiva import compat
+                img = compat.pilfromstring(pilformat, size, bmp.tostring())
                 img.save(filename, format=file_format, options=pil_options)
 
 
@@ -961,6 +961,7 @@ class Image(GraphicsContextArray):
         """
         # read the file using PIL
         from PIL import Image as PilImage
+        from kiva.compat import piltostring
         pil_img = PilImage.open(file)
 
         # Convert image to a numeric array
@@ -968,7 +969,7 @@ class Image(GraphicsContextArray):
             (cvar.ALWAYS_32BIT_WORKAROUND_FLAG and pil_img.mode != "RGBA")):
             pil_img = pil_img.convert(mode="RGBA")
         depth = pil_depth_map[pil_img.mode]
-        img = fromstring(pil_img.tostring(),uint8)
+        img = fromstring(piltostring(pil_img),uint8)
         img = resize(img, (pil_img.size[1],pil_img.size[0],depth))
         format = pil_format_map[pil_img.mode]
 
