@@ -20,8 +20,9 @@ from colors import color_table, transparent_color, ColorTrait, black_color_trait
 
 from markers import MarkerTrait, marker_trait, MarkerNameDict, marker_names, \
     SquareMarker, CircleMarker, TriangleMarker, Inverted_TriangleMarker, \
-    PlusMarker, CrossMarker, DiamondMarker, DotMarker, PixelMarker, \
-    CustomMarker, AbstractMarker
+    LeftTriangleMarker, RightTriangleMarker, PentagonMarker, Hexagon1Marker,\
+    Hexagon2Marker, StarMarker, CrossPlusMarker, PlusMarker, CrossMarker,\
+    DiamondMarker, DotMarker, PixelMarker, CustomMarker, AbstractMarker
 
 from events import drag_event_trait, key_event_trait, mouse_event_trait, \
     BasicEvent, BlobEvent, BlobFrameEvent, DragEvent, KeyEvent, MouseEvent
