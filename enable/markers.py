@@ -208,11 +208,12 @@ class PentagonMarker(AbstractMarker):
     antialias = False
 
     def _add_to_path(self, path, size):
+        # xi = size * cos(2*pi*i/5. + pi/2), yi = size * sin(2*pi*i/5. + pi/2)
         path.lines(array([(0, size),
-                          (size, 0.3 * size),
-                          (0.7 * size, -size),
-                          (-0.7 * size, -size),
-                          (-size, 0.3 * size)]))
+                          (0.951 * size, 0.309 * size),
+                          (0.588 * size, -0.809 * size),
+                          (-0.588 * size, -0.809 * size),
+                          (-0.951 * size, 0.309 * size)]))
 
 
 class Hexagon1Marker(AbstractMarker):
@@ -224,12 +225,13 @@ class Hexagon1Marker(AbstractMarker):
     antialias = False
 
     def _add_to_path(self, path, size):
-        path.lines(array([(0, size),
-                          (size, 0.5 * size),
-                          (size, -0.5 * size),
-                          (0, -size),
-                          (-size, -0.5 * size),
-                          (-size, 0.5 * size)]))
+        # xi = size * cos(2*pi*i/6.), yi = size * sin(2*pi*i/6.)
+        path.lines(array([(size, 0),
+                          (0.5 * size, 0.866 * size),
+                          (-0.5 * size, 0.866 * size),
+                          (-size, 0),
+                          (-0.5 * size, -0.866 * size),
+                          (0.5 * size, -0.866 * size)]))
 
 
 class Hexagon2Marker(AbstractMarker):
@@ -241,12 +243,13 @@ class Hexagon2Marker(AbstractMarker):
     antialias = False
 
     def _add_to_path(self, path, size):
-        path.lines(array([(-size, 0),
-                          (-0.5 * size, size),
-                          (0.5 * size, size),
-                          (size, 0),
-                          (0.5 * size, -size),
-                          (-0.5 * size, -size)]))
+        # Like Hexagon1Marker but with an offset of 30 deg.
+        path.lines(array([(0.866 * size, 0.5 * size),
+                          (0., size),
+                          (-0.866 * size, 0.5 * size),
+                          (-0.866 * size, -0.5 * size),
+                          (0., -size),
+                          (0.866 * size, -0.5 * size)]))
 
 
 class PlusMarker(AbstractMarker):
