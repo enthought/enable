@@ -303,7 +303,7 @@ class StarMarker(AbstractMarker):
                           (0.951 * size, 0.309 * size),
                           (0.476 * size, -0.155 * size),
                           (0.588 * size, -0.809 * size),
-                          (0, -0.5),
+                          (0, -0.5 * size),
                           (-0.588 * size, -0.809 * size),
                           (-0.476 * size, -0.155 * size),
                           (-0.951 * size, 0.309 * size),
