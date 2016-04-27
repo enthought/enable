@@ -287,22 +287,27 @@ class CrossMarker(AbstractMarker):
 
 
 class StarMarker(AbstractMarker):
-    """ A marker that is an X and a | superimposed.
+    """ A marker that is a (filled) star.
     """
     # How this marker is to be stroked. (Overrides AbstractMarker.)
-    draw_mode = STROKE
+    draw_mode = FILL_STROKE
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
 
     def _add_to_path(self, path, size):
-        # Darw an X
-        path.move_to(-size, -size)
-        path.line_to(size,  size)
-        path.move_to(size, -size)
-        path.line_to(-size,  size)
-        # Draw a -
-        path.move_to(-size, 0)
-        path.line_to(size, 0)
+        # Generated from
+        # i = arange(10), thetai = 2*pi * i/10., ri = 0.75 + (-1)**i * 0.25
+        # xi = ri * sin(thetai), yi = ri * cos(thetai)
+        path.lines(array([(0.0, 1.0),
+                          (0.29389262614623657, 0.40450849718747373),
+                          (0.95105651629515353, 0.30901699437494745),
+                          (0.47552825814757682, -0.15450849718747367),
+                          (0.58778525229247325, -0.80901699437494734),
+                          (6.123233995736766e-17, -0.5),
+                          (-0.58778525229247303, -0.80901699437494745),
+                          (-0.47552825814757677, -0.15450849718747378),
+                          (-0.95105651629515364, 0.30901699437494723),
+                          (-0.29389262614623662, 0.40450849718747367)]))
 
 
 class CrossPlusMarker(AbstractMarker):
