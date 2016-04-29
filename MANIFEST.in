@@ -1,3 +1,5 @@
 include kiva/agg/agg.i
-include chaco/tests/data/PngSuite/*.png
-include chaco/tests/data/PngSuite/LICENSE.txt
+include docs/Makefile
+include docs/kiva/agg/notes
+recursive-include docs *.py *.rst *.txt *.css *.png *.ico *.doc
+recursive-include examples *.py *.txt *.gif *.jpg *.enaml

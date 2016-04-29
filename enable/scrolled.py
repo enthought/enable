@@ -2,7 +2,7 @@
 from __future__ import with_statement
 
 # Enthought library imports
-from traits.api import Bool, Instance, Int, Any, Float
+from traits.api import Any, Bool, DelegatesTo, Float, Instance, Int
 
 # Local, relative imports
 from .base import intersect_bounds, empty_rectangle
@@ -23,7 +23,17 @@ class Scrolled(Container):
     component = Instance(Component)
 
     # The viewport onto our component
-    viewport_component = Instance(Viewport)
+    viewport_component = Instance(Viewport, ())
+
+    # Whether or not the viewport should stay constrained to the bounds
+    # of the viewed component
+    stay_inside = DelegatesTo('viewport_component')
+
+    # Where to anchor vertically on resizes
+    vertical_anchor = DelegatesTo('viewport_component')
+
+    # Where to anchor vertically on resizes
+    horizontal_anchor = DelegatesTo('viewport_component')
 
     # Inside padding is a background drawn area between the edges or scrollbars
     # and the scrolled area/left component.
@@ -258,8 +268,8 @@ class Scrolled(Container):
         self.update_from_viewport()
         return
 
-    def _component_bounds_items_handler(self, object, new):
-        if new.added != new.removed:
+    def _component_bounds_items_handler(self, object, event):
+        if event.added != event.removed:
             self.update_bounds()
 
     def _component_bounds_handler(self, object, name, old, new):
@@ -298,10 +308,14 @@ class Scrolled(Container):
 
     def _viewport_component_changed(self):
         if self.viewport_component is None:
-            self.viewport_component = Viewport()
-        self.viewport_component.component = self.component
-        self.viewport_component.view_position = [0,0]
+            self.viewport_component = Viewport(
+                stay_inside=self.stay_inside,
+                vertical_anchor=self.vertical_anchor,
+                horizontal_anchor=self.horizontal_anchor,
+            )
         self.viewport_component.view_bounds = self.bounds
+        self.viewport_component.component = self.component
+        self.viewport_component._initialize_position()
         self.add(self.viewport_component)
 
     def _alternate_vsb_changed(self, old, new):
@@ -323,12 +337,10 @@ class Scrolled(Container):
     def _bounds_changed ( self, old, new ):
         Component._bounds_changed( self, old, new )
         self.update_bounds()
-        return
 
     def _bounds_items_changed(self, event):
         Component._bounds_items_changed(self, event)
         self.update_bounds()
-        return
 
 
     #---------------------------------------------------------------------------
@@ -400,6 +412,7 @@ class Scrolled(Container):
                                             range=range_x,
                                             enabled=False,
                                             )
+                self._hsb.scroll_position = self.viewport_component.view_position[0]
                 self._hsb.on_trait_change(self._handle_horizontal_scroll,
                                           'scroll_position')
                 self._hsb.on_trait_change(self._mouse_thumb_changed,
@@ -411,8 +424,6 @@ class Scrolled(Container):
                 self._hsb.position = hsb_position
         elif self._hsb is not None:
             self._hsb = self._release_sb(self._hsb)
-            if not hasattr(self.component, "bounds_offset"):
-                self.viewport_component.view_position[0] = 0
         else:
             # We don't need to render the horizontal scrollbar, and we don't
             # have one to update, either.
@@ -432,9 +443,9 @@ class Scrolled(Container):
                 self._vsb = NativeScrollBar(orientation = 'vertical',
                                             bounds=bounds,
                                             position=vsb_position,
-                                            range=range_y
+                                            range=range_y,
                                             )
-
+                self._vsb.scroll_position = self.viewport_component.view_position[1]
                 self._vsb.on_trait_change(self._handle_vertical_scroll,
                                           'scroll_position')
                 self._vsb.on_trait_change(self._mouse_thumb_changed,
@@ -446,8 +457,6 @@ class Scrolled(Container):
                 self._vsb.range = range_y
         elif self._vsb:
             self._vsb = self._release_sb(self._vsb)
-            if not hasattr(self.component, "bounds_offset"):
-                self.viewport_component.view_position[1] = 0
         else:
             # We don't need to render the vertical scrollbar, and we don't
             # have one to update, either.
