@@ -199,7 +199,7 @@ class PSGC(basecore2d.GraphicsContextBase):
 
         Requires the Python Imaging Library (PIL).
         """
-        from PIL import Image as PilImage
+        from kiva.compat import pilfromstring
 
         if type(img) == type(array([])):
             # Numeric array
@@ -221,10 +221,10 @@ class PSGC(basecore2d.GraphicsContextBase):
             return
 
         # converted_img now holds an Agg graphics context with the image
-        pil_img = PilImage.fromstring(format,
-                                      (converted_img.width(),
-                                       converted_img.height()),
-                                      converted_img.bmp_array.tostring())
+        pil_img = pilfromstring(format,
+                                (converted_img.width(),
+                                 converted_img.height()),
+                                converted_img.bmp_array.tostring())
         if rect == None:
             rect = (0, 0, img.width(), img.height())
 
@@ -339,4 +339,3 @@ class PSGC(basecore2d.GraphicsContextBase):
 
     def device_update_fill_state(self):
         pass
-

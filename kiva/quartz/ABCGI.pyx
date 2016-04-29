@@ -1604,7 +1604,7 @@ cdef class CGBitmapContext(CGContext):
         """
 
         try:
-            from PIL import Image
+            from kiva.compat import pilfromstring
         except ImportError:
             raise ImportError("need PIL (or Pillow) to save images")
 
@@ -1623,7 +1623,7 @@ cdef class CGBitmapContext(CGContext):
         if file_format is None:
             file_format = ''
 
-        img = Image.fromstring(mode, (self.width(), self.height()), self)
+        img = pilfromstring(mode, (self.width(), self.height()), self)
         if 'A' in mode:
             # Check the output format to see if it can handle an alpha channel.
             no_alpha_formats = ('jpg', 'bmp', 'eps', 'jpeg')
