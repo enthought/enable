@@ -41,8 +41,8 @@ copyright = '2008-2015, Enthought'
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 d = {}
-execfile(os.path.join('..', '..', 'enable', '__init__.py'), d)
-version = release = d['__version__']
+execfile(os.path.join('..', '..', 'enable', '_version.py'), d)
+version = release = d['full_version']
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
