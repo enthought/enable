@@ -1,7 +1,7 @@
 numpy
 coverage
 pillow
-pyparsing
+pyparsing==2.0.3
 PyPDF2
 https://bitbucket.org/pyglet/pyglet/get/pyglet-1.1.4.zip
 pygarrayimage
@@ -12,4 +12,4 @@ git+http://github.com/enthought/pyface.git#egg=pyface
 git+http://github.com/enthought/traitsui.git#egg=traitsui
 git+http://github.com/enthought/apptools.git#egg=apptools
 unittest2
-hypothesis
+hypothesis<3.0.0
