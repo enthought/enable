@@ -171,7 +171,7 @@ def configuration(parent_package='', top_path=None):
         line0 = f.readline()
         f.close()
         m = re.match(r'.+?\s([3-5])\.\d+', line0)
-        if int(m.group(1)) < 4:
+        if m is not None and int(m.group(1)) < 4:
             use_32bit_workaround = True
 
     # Enable workaround of agg bug on 64-bit machines with g++ < 4.0
