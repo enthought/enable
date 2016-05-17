@@ -221,7 +221,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
         Requires the Python Imaging Library (PIL).
         """
-        from kiva.compat import pilfromstring, Image as PilImage
+        from kiva.compat import pilfromstring, piltostring, Image as PilImage
 
         # We turn img into a PIL object, since that is what ReportLab
         # requires.  To do this, we first determine if the input image
@@ -253,7 +253,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         pil_img = pilfromstring(format,
                                 (converted_img.width(),
                                  converted_img.height()),
-                                converted_img.bmp_array.tostring())
+                                piltostring(converted_img.bmp_array))
         if rect == None:
             rect = (0, 0, img.width(), img.height())
 

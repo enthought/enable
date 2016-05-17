@@ -27,13 +27,13 @@ from traits.api import Bool, Delegate, HasTraits, Str, Trait, \
 from traitsui.api import View, Group
 
 # Local relative imports
-from component import Component
-from base import LEFT, RIGHT, TOP, BOTTOM, HCENTER, VCENTER, EMBOSSED, ENGRAVED, \
+from .component import Component
+from .base import LEFT, RIGHT, TOP, BOTTOM, HCENTER, VCENTER, EMBOSSED, ENGRAVED, \
                  transparent_color, xy_in_bounds, add_rectangles
-from enable_traits import spacing_trait, padding_trait, margin_trait,\
+from .enable_traits import spacing_trait, padding_trait, margin_trait,\
                           border_size_trait, image_trait
-from enable_traits import position_trait, font_trait, engraving_trait
-from radio_group import RadioStyle, RadioGroup
+from .enable_traits import position_trait, font_trait, engraving_trait
+from .radio_group import RadioStyle, RadioGroup
 
 
 #-------------------------------------------------------------------------------
@@ -409,7 +409,7 @@ class Label ( Component ):
             image = self._image
             if image is not None:
                 gc.draw_image( image, ( itx + ix, ity + iy, idx, idy ) )
-    
+
             # Draw the text (if required):
             gc.set_font( self.font )
             _text = self._text
@@ -438,7 +438,7 @@ class Label ( Component ):
                         gc.set_fill_color( shadow_color )
                         gc.set_text_position( _tx + 2.0, ty - 2.0 )
                     gc.show_text( text )
-    
+
                 # Draw the normal text:
                 gc.set_fill_color( text_color )
                 gc.set_text_position( _tx, ty )
@@ -595,4 +595,3 @@ class Radio ( CheckBox, RadioStyle ):
         CheckBox._selected_changed( self )
         if self.selected:
             self.radio_group.selection = self
-

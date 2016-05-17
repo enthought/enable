@@ -36,7 +36,7 @@ would be pre-loaded, but due to a nasty circularity problem we
 trap attempts to access them and do it on first access.
 """
 import string, os
-from types import ListType, TupleType
+from types import list, tuple
 
 # XXX Kiva specific changes
 defaultEncoding = 'WinAnsiEncoding'       # 'WinAnsi' or 'MacRoman'
@@ -224,7 +224,7 @@ class Encoding:
             baseEnc = getEncoding(base)
             self.baseEncodingName = baseEnc.name
             self.vector = baseEnc.vector[:]
-        elif type(base) in (ListType, TupleType):
+        elif type(base) in (list, tuple):
             self.baseEncodingName = defaultEncoding
             self.vector = base[:]
         elif isinstance(base, Encoding):

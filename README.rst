@@ -85,6 +85,7 @@ Enable/Kiva also have the following requirements:
 - `traits 4.5.0 <https://pypi.python.org/pypi/traits>`_
 - `traitsui 4.4.0 <https://pypi.python.org/pypi/traitsui>`_
 - `pyface 4.5.0 <https://pypi.python.org/pypi/pyface>`_
+- `six 1.9.0 <https://pypi.python.org/pypi/six>`_
 
 .. rubric:: Optional:
 

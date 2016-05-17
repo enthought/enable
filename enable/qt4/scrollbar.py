@@ -3,8 +3,6 @@ Define a standard horizontal and vertical Enable scrollbar component that wraps
 the standard Qt one.
 """
 
-from types import ListType, TupleType
-
 from pyface.qt import QtCore, QtGui
 from traits.api import Any, Bool, Enum, Float, Int, Property, Trait, TraitError
 
@@ -15,7 +13,7 @@ def valid_range(object, name, value):
     """ Verify that a set of range values for a scrollbar is valid.
     """
     try:
-        if (type(value) in (TupleType, ListType)) and (len(value) == 4):
+        if (type(value) in (tuple, list)) and (len(value) == 4):
             low, high, page_size, line_size = value
             if high < low:
                 low, high = high, low
@@ -116,6 +114,7 @@ class NativeScrollBar(Component):
         if self._control is not None:
             self._control.hide()
             self._control.deleteLater()
+            self._control = None
         return
 
     def __del__(self):

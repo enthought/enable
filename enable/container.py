@@ -11,9 +11,9 @@ from traits.api import Any, Bool, Enum, HasTraits, Instance, List, \
         Property, Tuple
 
 # Local, relative imports
-from base import empty_rectangle, intersect_bounds
-from component import Component
-from events import BlobEvent, BlobFrameEvent, DragEvent, MouseEvent
+from .base import empty_rectangle, intersect_bounds
+from .component import Component
+from .events import BlobEvent, BlobFrameEvent, DragEvent, MouseEvent
 
 
 class Container(Component):
@@ -589,7 +589,7 @@ class Container(Component):
         """
         with gc:
             gc.set_antialias(False)
-    
+
             self._draw_container(gc, mode)
             self._draw_background(gc, view_bounds, mode)
             self._draw_underlay(gc, view_bounds, mode)

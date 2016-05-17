@@ -31,7 +31,11 @@ __doc__="""
     widthVectorsByFont
         fontName -> vector of widths
 """
-import string, UserDict, os, sys
+import string
+import os
+import sys
+
+from six.moves import UserDict
 
 # mapping of name to width vector, starts empty until fonts are added
 # e.g. widths['Courier'] = [...600,600,600,...]
@@ -82,7 +86,7 @@ else:
                     }
 
 def _findFNR(fontName):
-    return _font2fnrMap[string.lower(fontName)]
+    return _font2fnrMap[fontName.lower()]
 
 def findT1File(fontName,ext='.pfb'):
     # XXX Kiva-specific changes
@@ -101,18 +105,18 @@ def findT1File(fontName,ext='.pfb'):
 standardEncodings = ('WinAnsiEncoding','MacRomanEncoding','StandardEncoding','SymbolEncoding','ZapfDingbatsEncoding','PDFDocEncoding', 'MacExpertEncoding')
 
 #this is the global mapping of standard encodings to name vectors
-class _Name2StandardEncodingMap(UserDict.UserDict):
+class _Name2StandardEncodingMap(UserDict):
     '''Trivial fake dictionary with some [] magic'''
     _XMap = {'winansi':'WinAnsiEncoding','macroman': 'MacRomanEncoding','standard':'StandardEncoding','symbol':'SymbolEncoding', 'zapfdingbats':'ZapfDingbatsEncoding','pdfdoc':'PDFDocEncoding', 'macexpert':'MacExpertEncoding'}
     def __setitem__(self,x,v):
-        y = string.lower(x)
+        y = x.lower()
         if y[-8:]=='encoding': y = y[:-8]
         y = self._XMap[y]
         if y in self.keys(): raise IndexError, 'Encoding %s is already set' % y
         self.data[y] = v
 
     def __getitem__(self,x):
-        y = string.lower(x)
+        y = x.lower()
         if y[-8:]=='encoding': y = y[:-8]
         y = self._XMap[y]
         return self.data[y]

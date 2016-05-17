@@ -13,10 +13,10 @@
 #
 #-------------------------------------------------------------------------------
 
-from base import bounds_to_coordinates, TOP, BOTTOM, LEFT, RIGHT
-from interactor import Interactor
+from .base import bounds_to_coordinates, TOP, BOTTOM, LEFT, RIGHT
+from .interactor import Interactor
 
-from traits.api import Any
+from .traits.api import Any
 
 #-------------------------------------------------------------------------------
 #  'DragResizeHandler' class:
@@ -160,4 +160,3 @@ class DragResizeHandler ( Interactor ):
 
         # Inform the component that the resize operation is complete:
         self.component.resized = True
-

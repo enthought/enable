@@ -1,4 +1,4 @@
-import time
+from timeit import Timer
 import os, sys
 import unittest
 
@@ -8,6 +8,7 @@ from numpy import alltrue, array, concatenate, dtype, fromstring, newaxis, \
 
 from kiva import agg
 from kiva.fonttools import Font
+from kiva.compat import pilfromstring, piltostring
 
 
 # alpha blending is approximate in agg, so we allow some "slop" between
@@ -17,16 +18,16 @@ slop_allowed = 2
 UInt8 = dtype('uint8')
 Int32 = dtype('int32')
 
-def save(img,file_name):
+def save(img, file_name):
     """ This only saves the rgb channels of the image
     """
     format = img.format()
     if format == "bgra32":
-        size = img.bmp_array.shape[1],img.bmp_array.shape[0]
-        bgr = img.bmp_array[:,:,:3]
-        rgb = bgr[:,:,::-1].copy()
+        size = (img.bmp_array.shape[1], img.bmp_array.shape[0])
+        bgr = img.bmp_array[:, :, :3]
+        rgb = bgr[:, :, ::-1].copy()
         st = rgb.tostring()
-        pil_img = Image.fromstring("RGB",size,st)
+        pil_img = pilfromstring("RGB", size, st)
         pil_img.save(file_name)
     else:
         raise NotImplementedError(
@@ -43,7 +44,7 @@ def test_name():
 
 def sun(interpolation_scheme="simple"):
     pil_img = Image.open('doubleprom_soho_full.jpg')
-    img = fromstring(pil_img.tostring(),UInt8)
+    img = fromstring(piltostring(pil_img), UInt8)
     img.resize((pil_img.size[1],pil_img.size[0],3))
 
     alpha = ones(pil_img.size,UInt8) * 255
@@ -187,47 +188,56 @@ class test_sun(unittest.TestCase):
         gc = self.generic_sun("blackman256")
         save(gc,test_name()+'.bmp')
 
+
+def bench(stmt='pass', setup='pass', repeat=5, adjust_runs=True):
+    """ BenchMark the function.
+    """
+    timer = Timer(stmt, setup)
+    if adjust_runs:
+        for i in range(100):
+            number = 10**i
+            time = timer.timeit(number)
+            if time > 0.2:
+                break
+    else:
+        number = 1
+    times = [timer.timeit(number) for i in range(repeat)]
+    message = '{} calls, best of {} repeats: {:f} sec per call'
+    return message.format(number, repeat, min(times)/number)
+
 #----------------------------------------------------------------------------
 # Tests speed of various interpolation schemes
 #
 #
 #----------------------------------------------------------------------------
 class test_interpolation_image(unittest.TestCase):
-    N = 10
     size = (1000,1000)
     color = 0.0
 
-    def generic_timing(self,scheme,size,iters):
+    def generic_timing(self,scheme,size):
         gc = agg.GraphicsContextArray(size,pix_format = "bgra32")
         desired = solid_bgra32(size,self.color)
         img = agg.GraphicsContextArray(desired, pix_format="bgra32",
                                        interpolation=scheme)
-        t1 = time.clock()
-        for i in range(iters):
-            gc.draw_image(img)
-        t2 = time.clock()
-        img_per_sec = iters/(t2-t1)
-        print "'%s' interpolation -> img per sec: %4.2f" % (scheme, img_per_sec)
-        return img_per_sec
+        print(
+            "{!r} interpolation, ".format(scheme),
+            bench(lambda: gc.draw_image(img)))
 
     def test_simple_timing(self):
         scheme = "nearest"
-        return self.generic_timing(scheme,self.size,self.N)
+        self.generic_timing(scheme,self.size)
 
     def test_bilinear_timing(self):
         scheme = "bilinear"
-        iters = self.N/2 # this is slower than simple, so use less iters
-        return self.generic_timing(scheme,self.size,iters)
+        self.generic_timing(scheme,self.size)
 
     def test_bicubic_timing(self):
         scheme = "bicubic"
-        iters = self.N/2 # this is slower than simple, so use less iters
-        return self.generic_timing(scheme,self.size,iters)
+        self.generic_timing(scheme,self.size)
 
     def test_sinc144_timing(self):
         scheme = "sinc144"
-        iters = self.N/2 # this is slower than simple, so use less iters
-        return self.generic_timing(scheme,self.size,iters)
+        self.generic_timing(scheme,self.size)
 
 
 if __name__ == "__main__":

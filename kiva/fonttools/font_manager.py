@@ -189,7 +189,7 @@ def _is_writable_dir(p):
 
     try:
         t = tempfile.TemporaryFile(dir=p)
-        t.write('kiva.test')
+        t.write(b'kiva.test')
         t.close()
     except OSError:
         return False
@@ -390,7 +390,9 @@ def x11FontDirectory():
     for fontdir in X11FontDirectories:
         try:
             if os.path.isdir(fontdir):
-                os.path.walk(fontdir, add, None)
+                for dirpath, dirs, _files in os.walk(fontdir):
+                    fontpaths.extend([os.path.join(dirpath, d) for d in dirs])
+
         except (IOError, OSError, TypeError, ValueError):
             pass
     return fontpaths
@@ -414,6 +416,7 @@ def get_fontconfig_fonts(fontext='ttf'):
         # Calling fc-list did not work, so we'll just return nothing
         return fontfiles
 
+    output = output.decode('utf8')
     if pipe.returncode == 0:
         for line in output.split('\n'):
             fname = line.split(':')[0]
@@ -903,6 +906,8 @@ class FontProperties(object):
         if family is None:
             self._family = None
         else:
+            if '' != b'' and isinstance(family, bytes):
+                family = family.decode('utf8')
             if is_string_like(family):
                 family = [family]
             self._family = family
@@ -1005,10 +1010,10 @@ def ttfdict_to_fnames(d):
 
 def pickle_dump(data, filename):
     """
-    Equivalent to pickle.dump(data, open(filename, 'w'))
+    Equivalent to pickle.dump(data, open(filename, 'wb'))
     but closes the file to prevent filehandle leakage.
     """
-    fh = open(filename, 'w')
+    fh = open(filename, 'wb')
     try:
         pickle.dump(data, fh)
     finally:
@@ -1017,10 +1022,10 @@ def pickle_dump(data, filename):
 
 def pickle_load(filename):
     """
-    Equivalent to pickle.load(open(filename, 'r'))
+    Equivalent to pickle.load(open(filename, 'rb'))
     but closes the file to prevent filehandle leakage.
     """
-    fh = open(filename, 'r')
+    fh = open(filename, 'rb')
     try:
         data = pickle.load(fh)
     finally:

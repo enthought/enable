@@ -8,8 +8,8 @@ from kiva.constants import FILL
 
 
 # Local relative imports
-from component import Component
-from container import Container
+from .component import Component
+from .container import Container
 
 
 class Canvas(Container):
@@ -190,4 +190,3 @@ class Canvas(Container):
     def _bounds_items_changed(self, event):
         Component._bounds_items_changed(self, event)
         self.invalidate_draw()
-

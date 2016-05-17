@@ -11,8 +11,8 @@
 
 from kiva.qpainter import CompiledPath, GraphicsContext, font_metrics_provider
 
-from base_window import BaseWindow
-from scrollbar import NativeScrollBar
+from .base_window import BaseWindow
+from .scrollbar import NativeScrollBar
 
 class Window(BaseWindow):
     def _create_gc(self, size, pix_format=None):

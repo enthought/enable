@@ -199,7 +199,7 @@ class PSGC(basecore2d.GraphicsContextBase):
 
         Requires the Python Imaging Library (PIL).
         """
-        from kiva.compat import pilfromstring
+        from kiva.compat import pilfromstring, piltostring
 
         if type(img) == type(array([])):
             # Numeric array
@@ -224,7 +224,7 @@ class PSGC(basecore2d.GraphicsContextBase):
         pil_img = pilfromstring(format,
                                 (converted_img.width(),
                                  converted_img.height()),
-                                converted_img.bmp_array.tostring())
+                                piltostring(converted_img.bmp_array))
         if rect == None:
             rect = (0, 0, img.width(), img.height())
 

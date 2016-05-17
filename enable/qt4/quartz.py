@@ -13,8 +13,8 @@ import numpy as np
 from kiva.fonttools import Font
 from kiva.quartz import get_mac_context, ABCGI
 
-from base_window import BaseWindow
-from scrollbar import NativeScrollBar
+from .base_window import BaseWindow
+from .scrollbar import NativeScrollBar
 
 CompiledPath = ABCGI.CGMutablePath
 
@@ -36,7 +36,7 @@ class GraphicsContext(ABCGI.CGLayerContext):
             # No initialization.
             image = None
             width, height = size_or_array
-        
+
         super(GraphicsContext, self).__init__((width, height), gc, *args, **kwds)
         if image is not None:
             self.draw_image(image)
@@ -78,9 +78,9 @@ class Window(BaseWindow):
     def _create_gc(self, size, pix_format=None):
         if hasattr(self.control, 'winId'):
             # From the Qt 4.7 Documentation:
-            # "On Mac OS X, the type returned depends on which framework Qt was 
-            # linked against. If Qt is using Carbon, the {WId} is actually 
-            # an HIViewRef. If Qt is using Cocoa, {WId} is a pointer to 
+            # "On Mac OS X, the type returned depends on which framework Qt was
+            # linked against. If Qt is using Carbon, the {WId} is actually
+            # an HIViewRef. If Qt is using Cocoa, {WId} is a pointer to
             # an NSView."
             # get_mac_context() only works on Cocoa.
             self.dc = get_mac_context(self.control.winId())

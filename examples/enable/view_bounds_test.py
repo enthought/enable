@@ -48,8 +48,8 @@ class VerboseContainer(Container):
                 tmp = intersect_bounds(component.position + component.bounds,
                                        new_bounds)
                 if tmp == empty_rectangle:
-                    print "skipping component:", component.__class__.__name__,
-                    print "\tbounds:", component.position, component.bounds
+                    print("skipping component:", component.__class__.__name__, end=' ')
+                    print("\tbounds:", component.position, component.bounds)
                     continue
 
                 with gc:

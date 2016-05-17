@@ -10,9 +10,9 @@ from traits.api import (Any, Bool, Enum, Float, Int, Property,
 from traitsui.api import EnumEditor
 
 # Local, relative imports
-from colors import ColorTrait
-from component import Component
-from markers import MarkerNameDict, marker_names, CustomMarker
+from .colors import ColorTrait
+from .component import Component
+from .markers import MarkerNameDict, marker_names, CustomMarker
 
 slider_marker_names = list(marker_names) + ["rect"]
 SliderMarkerTrait = Trait("rect", "rect", MarkerNameDict,
@@ -371,7 +371,7 @@ class Slider(Component):
                 gc.set_fill_color(self.slider_color_)
                 gc.set_stroke_color(self.slider_border_)
                 gc.set_line_width(self.slider_outline_width)
-    
+
             if hasattr(gc, "draw_marker_at_points") and \
                     (marker.__class__ != CustomMarker) and \
                     (gc.draw_marker_at_points([point], size, marker.kiva_marker) != 0):
@@ -507,4 +507,3 @@ class Slider(Component):
                 self._cached_endcap_size = int(self.width * self._endcap_percent)
 
         return
-

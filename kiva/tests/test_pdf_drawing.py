@@ -1,5 +1,7 @@
 import contextlib
 
+import six
+
 from kiva.tests.drawing_tester import DrawingTester
 from traits.testing.unittest_tools import unittest
 
@@ -46,10 +48,10 @@ class TestPDFDrawing(DrawingTester, unittest.TestCase):
         # been drawn.
         line = content.getData().splitlines()[-2]
         if not any((
-                line.endswith('f'),
-                line.endswith('S'),
-                line.endswith('f*'),
-                line.endswith('ET') and 'hello kiva' in line)):
+                line.endswith(six.b('f')),
+                line.endswith(six.b('S')),
+                line.endswith(six.b('f*')),
+                line.endswith(six.b('ET')) and six.b('hello kiva') in line)):
             self.fail('Path was not closed')
 
 

@@ -1,3 +1,1 @@
-from rgba_color_trait import RGBAColor
-
-
+from .rgba_color_trait import RGBAColor

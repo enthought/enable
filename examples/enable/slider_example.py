@@ -26,7 +26,7 @@ class MyFrame(DemoFrame):
         return Window(self, component=container)
 
     def val_changed(self):
-        print self.slider.value
+        print(self.slider.value)
 
 
 if __name__ == "__main__":

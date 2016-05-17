@@ -7,8 +7,8 @@ from numpy import array, pi
 from traits.api import Bool, Enum, Float, Int
 
 # Local, relative imports
-from component import Component
-from colors import ColorTrait
+from .component import Component
+from .colors import ColorTrait
 
 
 class Compass(Component):

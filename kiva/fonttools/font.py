@@ -81,13 +81,14 @@ class Font(object):
     def __init__(self, face_name="", size=12, family=SWISS, weight=NORMAL,
                  style=NORMAL, underline=0, encoding=DEFAULT):
         if (type(size) != int) or (type(family) != type(SWISS)) or \
-                (type(weight) != type(NORMAL)) or (type(style) != type(NORMAL)) or \
-                (type(underline) != int) or (not isinstance(face_name, basestring)) or \
-                (type(encoding) != type(DEFAULT)):
-            raise RuntimeError("Bad value in Font() constructor.")
-        # HACK:  C++ stuff expects a string (not unicode) for the face_name,
-        #        so fix if needed.  See ticket #2111 in the CP Trac.
-        if isinstance(face_name, unicode):
+            (type(weight) != type(NORMAL)) or (type(style) != type(NORMAL)) or \
+            (type(underline) != int) or (not isinstance(face_name, basestring)) or \
+            (type(encoding) != type(DEFAULT)):
+                raise RuntimeError("Bad value in Font() constructor.")
+        ### HACK:  C++ stuff expects a string (not unicode) for the face_name, so fix
+        ###        if needed.  See ticket #2111 in the CP Trac.
+        ### Only for python < 3
+        if '' == b'' and isinstance(face_name, unicode):
             face_name = face_name.encode("latin1")
         self.size = size
         self.family = family

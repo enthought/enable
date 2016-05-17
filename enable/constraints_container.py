@@ -9,11 +9,12 @@ from traits.api import Any, Bool, Callable, Dict, Either, Instance, List, \
     Property
 
 # local imports
-from container import Container
-from coordinate_box import CoordinateBox, get_from_constraints_namespace
-from layout.layout_helpers import expand_constraints
-from layout.layout_manager import LayoutManager
-from layout.utils import add_symbolic_contents_constraints
+from .container import Container
+from .coordinate_box import CoordinateBox
+from .layout.layout_helpers import expand_constraints
+from .layout.layout_manager import LayoutManager
+from .layout.utils import (
+    add_symbolic_contents_constraints, get_from_constraints_namespace)
 
 
 class ConstraintsContainer(Container):

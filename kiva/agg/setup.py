@@ -93,7 +93,8 @@ def configuration(parent_package='', top_path=None):
     prefix = config.paths('freetype2/src')[0]
     freetype_lib = 'freetype2_src'
 
-    def get_ft2_sources((lib_name, build_info), build_dir):
+    def get_ft2_sources(name_info, build_dir):
+        (lib_name, build_info) = name_info
         sources = [prefix + "/" + s for s in freetype2_sources]
         if sys.platform=='darwin':
             return sources[:]
@@ -250,7 +251,7 @@ def configuration(parent_package='', top_path=None):
             dict_append(plat_info, **darwin_opengl_opts)
         else:
             msg = "OpenGL build support only on MacOSX right now."
-            raise NotImplementedError, msg
+            raise NotImplementedError(msg)
 
 
     config.add_extension('_plat_support',

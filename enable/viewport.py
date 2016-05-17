@@ -14,11 +14,11 @@ from traits.api import (Bool, Delegate, Float, Instance, Enum, List,
 from kiva import affine
 
 # Local relative imports
-from enable_traits import bounds_trait, coordinate_trait
-from base import empty_rectangle, intersect_bounds
-from component import Component
-from container import Container
-from canvas import Canvas
+from .enable_traits import bounds_trait, coordinate_trait
+from .base import empty_rectangle, intersect_bounds
+from .component import Component
+from .container import Container
+from .canvas import Canvas
 
 
 class Viewport(Component):

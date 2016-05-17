@@ -18,9 +18,18 @@ except Exception:
 class ScrollBarTest(unittest.TestCase):
 
     def setUp(self):
+        from pyface.qt.QtGui import QApplication
+        from pyface.ui.qt4.util.event_loop_helper import EventLoopHelper
+
+        qt_app = QApplication.instance()
+        if qt_app is None:
+            qt_app = QApplication([])
+        self.qt_app = qt_app
+
         if NativeScrollBar is None:
             raise unittest.SkipTest("Qt4 NativeScrollbar not available.")
         self.gui = GUI()
+        self.event_loop_helper = EventLoopHelper(gui=self.gui, qt_app=qt_app)
         self.container = Container(position=[0, 0], bounds=[600, 600])
         self.window = Window(None, size=(600, 600), component=self.container)
 
@@ -32,7 +41,9 @@ class ScrollBarTest(unittest.TestCase):
         try:
             yield
         finally:
-            window.control.destroy()
+            self.gui.process_events()
+            with self.event_loop_helper.delete_widget(window.control, timeout=1.0):
+                window.control.deleteLater()
 
     @contextmanager
     def setup_scrollbar(self, scrollbar, window):

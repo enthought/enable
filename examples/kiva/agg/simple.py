@@ -13,7 +13,7 @@ gc.set_fill_color((0,0,1))
 #gc.rect(0,0,5,5)
 gc.rect(0.5,0.5,5.0,5.0)
 gc.draw_path()
-print gc.bmp_array[:7,:7,0]
+print(gc.bmp_array[:7,:7,0])
 
 gc.clear()
 gc.set_line_cap(constants.CAP_SQUARE)
@@ -22,6 +22,6 @@ gc.set_fill_color((0,0,1))
 #gc.rect(0,0,5,5)
 gc.rect(0.5,0.5,5.0,5.0)
 gc.draw_path()
-print gc.bmp_array[:7,:7,0]
+print(gc.bmp_array[:7,:7,0])
 
 #gc.save("pr.bmp")

@@ -5,12 +5,12 @@ from __future__ import with_statement
 from traits.api import Any, Bool, DelegatesTo, Float, Instance, Int
 
 # Local, relative imports
-from base import intersect_bounds, empty_rectangle
-from colors import ColorTrait
-from component import Component
-from container import Container
-from viewport import Viewport
-from native_scrollbar import NativeScrollBar
+from .base import intersect_bounds, empty_rectangle
+from .colors import ColorTrait
+from .component import Component
+from .container import Container
+from .viewport import Viewport
+from .native_scrollbar import NativeScrollBar
 
 
 class Scrolled(Container):

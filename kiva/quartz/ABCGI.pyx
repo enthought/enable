@@ -1781,6 +1781,7 @@ cdef class CGImageFile(CGImage):
         cdef CGImageAlphaInfo alpha_info
 
         from PIL import Image
+        from kiva.compat import piltostring
         import types
 
         if type(image_or_filename) is str:
@@ -1822,7 +1823,7 @@ cdef class CGImageFile(CGImage):
         self.bmp_array = c_numpy.PyArray_SimpleNew(3, &(dims[0]), c_numpy.NPY_UBYTE)
 
         data = self.bmp_array.data
-        s = img.tostring()
+        s = piltostring(img)
         py_data = PyString_AsString(s)
 
         memcpy(<void*>data, <void*>py_data, len(s))

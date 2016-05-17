@@ -32,7 +32,7 @@ from kiva.constants import DEFAULT, DECORATIVE, ROMAN, SCRIPT, SWISS,\
                                      MODERN, NORMAL, BOLD, ITALIC
 from kiva.fonttools import Font
 
-from colors import color_table, transparent_color
+from .colors import color_table, transparent_color
 
 # Special 'empty rectangle' indicator:
 empty_rectangle = -1
@@ -257,5 +257,3 @@ class IDroppedOnHandler:
     "Interface for draggable objects that handle the 'dropped_on' event"
     def was_dropped_on ( self, component, event ):
         raise NotImplementedError
-
-

@@ -568,9 +568,9 @@ def _test_endianness():
         """
         import struct
         data = struct.pack("h", 0x01)
-        if data == "\000\001":
+        if data == b"\000\001":
                 return "big"
-        elif data == "\001\000":
+        elif data == b"\001\000":
                 return "little"
         else:
                 assert 0, "endian confusion!"
