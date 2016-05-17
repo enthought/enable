@@ -40,7 +40,7 @@ class ScrollBarTest(unittest.TestCase):
         try:
             yield
         finally:
-            scrollbar.destroy()
+            del scrollbar
 
     def test_scroll_position_horizontal(self):
         bounds = [600.0, 30.0]
