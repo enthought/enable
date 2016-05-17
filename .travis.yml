@@ -27,7 +27,7 @@ env:
 matrix:
   exclude:
     - python: 3.4
-      env: ETS_TOOLKIT=wx
+      env: ETS_TOOLKIT=wx PILLOW='pillow'
 cache:
   directories:
     - $HOME/.cache
