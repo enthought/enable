@@ -1,8 +1,7 @@
 import unittest
 
-from PIL import Image
-
 from kiva import agg
+from kiva.compat import pilfromstring
 
 
 def save(img, file_name):
@@ -10,11 +9,11 @@ def save(img, file_name):
     """
     format = img.format()
     if format == "bgra32":
-        size = img.bmp_array.shape[1], img.bmp_array.shape[0]
+        size = (img.bmp_array.shape[1], img.bmp_array.shape[0])
         bgr = img.bmp_array[:, :, :3]
         rgb = bgr[:, :, ::-1].copy()
         st = rgb.tostring()
-        pil_img = Image.fromstring("RGB", size, st)
+        pil_img = pilfromstring("RGB", size, st)
         pil_img.save(file_name)
     else:
         raise NotImplementedError("currently only supports writing out "

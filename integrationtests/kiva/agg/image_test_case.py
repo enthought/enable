@@ -8,6 +8,7 @@ from numpy import alltrue, array, concatenate, dtype, fromstring, newaxis, \
 
 from kiva import agg
 from kiva.fonttools import Font
+from kiva.compat import pilfromstring, piltostring
 
 
 # alpha blending is approximate in agg, so we allow some "slop" between
@@ -17,16 +18,16 @@ slop_allowed = 2
 UInt8 = dtype('uint8')
 Int32 = dtype('int32')
 
-def save(img,file_name):
+def save(img, file_name):
     """ This only saves the rgb channels of the image
     """
     format = img.format()
     if format == "bgra32":
-        size = img.bmp_array.shape[1],img.bmp_array.shape[0]
-        bgr = img.bmp_array[:,:,:3]
-        rgb = bgr[:,:,::-1].copy()
+        size = (img.bmp_array.shape[1], img.bmp_array.shape[0])
+        bgr = img.bmp_array[:, :, :3]
+        rgb = bgr[:, :, ::-1].copy()
         st = rgb.tostring()
-        pil_img = Image.fromstring("RGB",size,st)
+        pil_img = pilfromstring("RGB", size, st)
         pil_img.save(file_name)
     else:
         raise NotImplementedError(
@@ -43,7 +44,7 @@ def test_name():
 
 def sun(interpolation_scheme="simple"):
     pil_img = Image.open('doubleprom_soho_full.jpg')
-    img = fromstring(pil_img.tostring(),UInt8)
+    img = fromstring(piltostring(pil_img), UInt8)
     img.resize((pil_img.size[1],pil_img.size[0],3))
 
     alpha = ones(pil_img.size,UInt8) * 255

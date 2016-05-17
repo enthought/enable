@@ -576,7 +576,7 @@ class GraphicsContext(GraphicsContextBase):
         # it brute-force using Agg.
         from reportlab.lib.utils import ImageReader
         from kiva import agg
-        from kiva.compat import pilfromstring
+        from kiva.compat import pilfromstring, piltostring
 
         if type(img) == type(array([])):
             # Numeric array
@@ -599,7 +599,7 @@ class GraphicsContext(GraphicsContextBase):
         pil_img = pilfromstring(format,
                                 (converted_img.width(),
                                  converted_img.height()),
-                                converted_img.bmp_array.tostring())
+                                piltostring(converted_img.bmp_array))
 
         if rect is None:
             rect = (0, 0, img.width(), img.height())
