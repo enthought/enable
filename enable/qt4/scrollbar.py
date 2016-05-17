@@ -114,6 +114,7 @@ class NativeScrollBar(Component):
         if self._control is not None:
             self._control.hide()
             self._control.deleteLater()
+            self._control = None
         return
 
     def __del__(self):
