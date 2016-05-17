@@ -171,6 +171,87 @@ class Inverted_TriangleMarker(AbstractMarker):
                           (0, -0.732 * size))))
 
 
+class LeftTriangleMarker(AbstractMarker):
+    """ A marker that is a triangle with one apex pointing left.
+    """
+    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    draw_mode = FILL_STROKE
+    # Do not render anti-aliased. (Overrides AbstractMarker.)
+    antialias = True
+
+    def _add_to_path(self, path, size):
+        path.lines(array([(size, -size),
+                          (size, size),
+                          (-0.732 * size, 0)]))
+
+
+class RightTriangleMarker(AbstractMarker):
+    """ A marker that is a triangle with one apex pointing right.
+    """
+    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    draw_mode = FILL_STROKE
+    # Do not render anti-aliased. (Overrides AbstractMarker.)
+    antialias = True
+
+    def _add_to_path(self, path, size):
+        path.lines(array([(-size, -size),
+                          (-size, size),
+                          (0.732 * size, 0)]))
+
+
+class PentagonMarker(AbstractMarker):
+    """ A marker that is a pentagon.
+    """
+    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    draw_mode = FILL_STROKE
+    # Do not render anti-aliased. (Overrides AbstractMarker.)
+    antialias = True
+
+    def _add_to_path(self, path, size):
+        # xi = size * cos(2*pi*i/5. + pi/2), yi = size * sin(2*pi*i/5. + pi/2)
+        path.lines(array([(0, size),
+                          (0.951 * size, 0.309 * size),
+                          (0.588 * size, -0.809 * size),
+                          (-0.588 * size, -0.809 * size),
+                          (-0.951 * size, 0.309 * size)]))
+
+
+class Hexagon1Marker(AbstractMarker):
+    """ A marker that is a hexagon, with the flat sides on the sides.
+    """
+    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    draw_mode = FILL_STROKE
+    # Do not render anti-aliased. (Overrides AbstractMarker.)
+    antialias = True
+
+    def _add_to_path(self, path, size):
+        # xi = size * cos(2*pi*i/6.), yi = size * sin(2*pi*i/6.)
+        path.lines(array([(size, 0),
+                          (0.5 * size, 0.866 * size),
+                          (-0.5 * size, 0.866 * size),
+                          (-size, 0),
+                          (-0.5 * size, -0.866 * size),
+                          (0.5 * size, -0.866 * size)]))
+
+
+class Hexagon2Marker(AbstractMarker):
+    """ A marker that is a hexagon, with the flat sides on the top and bottom.
+    """
+    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    draw_mode = FILL_STROKE
+    # Do not render anti-aliased. (Overrides AbstractMarker.)
+    antialias = True
+
+    def _add_to_path(self, path, size):
+        # Like Hexagon1Marker but with an offset of 30 deg.
+        path.lines(array([(0.866 * size, 0.5 * size),
+                          (0., size),
+                          (-0.866 * size, 0.5 * size),
+                          (-0.866 * size, -0.5 * size),
+                          (0., -size),
+                          (0.866 * size, -0.5 * size)]))
+
+
 class PlusMarker(AbstractMarker):
     """ A marker that is a plus-sign.
     """
@@ -203,6 +284,51 @@ class CrossMarker(AbstractMarker):
         path.line_to(size,  size)
         path.move_to(size, -size)
         path.line_to(-size,  size)
+
+
+class StarMarker(AbstractMarker):
+    """ A marker that is a (filled) star.
+    """
+    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    draw_mode = FILL_STROKE
+    # Do not render anti-aliased. (Overrides AbstractMarker.)
+    antialias = True
+
+    def _add_to_path(self, path, size):
+        # Generated from
+        # i = arange(10), thetai = 2*pi * i/10., ri = 0.75 + (-1)**i * 0.25
+        # xi = ri * sin(thetai), yi = ri * cos(thetai)
+        path.lines(array([(0.0, size),
+                          (0.294 * size, 0.405 * size),
+                          (0.951 * size, 0.309 * size),
+                          (0.476 * size, -0.155 * size),
+                          (0.588 * size, -0.809 * size),
+                          (0, -0.5 * size),
+                          (-0.588 * size, -0.809 * size),
+                          (-0.476 * size, -0.155 * size),
+                          (-0.951 * size, 0.309 * size),
+                          (-0.294 * size, 0.405 * size)]))
+
+
+class CrossPlusMarker(AbstractMarker):
+    """ A marker that is an X and a + superimposed.
+    """
+    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    draw_mode = STROKE
+    # Do not render anti-aliased. (Overrides AbstractMarker.)
+    antialias = True
+
+    def _add_to_path(self, path, size):
+        # Darw an X
+        path.move_to(-size, -size)
+        path.line_to(size,  size)
+        path.move_to(size, -size)
+        path.line_to(-size,  size)
+        # Draw a +
+        path.move_to(0, -size)
+        path.line_to(0,  size)
+        path.move_to(-size, 0)
+        path.line_to(size, 0)
 
 
 class DotMarker(AbstractMarker):
@@ -272,16 +398,25 @@ class CustomMarker(AbstractMarker):
             return self.path
 
 # String names for marker types.
-marker_names = ("square", "circle", "triangle", "inverted_triangle", "plus",
-                "cross", "diamond", "dot", "pixel")
+marker_names = ("square", "circle", "triangle", "inverted_triangle",
+                "left_triangle", "right_triangle", "pentagon", "hexagon",
+                "hexagon2", "plus", "cross", "star", "cross_plus", "diamond",
+                "dot", "pixel")
 
 # Mapping of marker string names to classes.
 MarkerNameDict = {"square": SquareMarker,
                   "circle": CircleMarker,
                   "triangle": TriangleMarker,
                   "inverted_triangle": Inverted_TriangleMarker,
+                  "left_triangle":LeftTriangleMarker,
+                  "right_triangle": RightTriangleMarker,
+                  "pentagon": PentagonMarker,
+                  "hexagon": Hexagon1Marker,
+                  "hexagon2": Hexagon2Marker,
                   "plus": PlusMarker,
                   "cross": CrossMarker,
+                  "star": StarMarker,
+                  "cross_plus": CrossPlusMarker,
                   "diamond": DiamondMarker,
                   "dot": DotMarker,
                   "pixel": PixelMarker,
