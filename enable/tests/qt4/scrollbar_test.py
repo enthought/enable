@@ -32,7 +32,9 @@ class ScrollBarTest(unittest.TestCase):
         try:
             yield
         finally:
+            self.gui.process_events()
             window.control.destroy()
+            self.gui.process_events()
 
     @contextmanager
     def setup_scrollbar(self, scrollbar, window):
