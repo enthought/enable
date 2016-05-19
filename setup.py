@@ -244,6 +244,7 @@ if __name__ == "__main__":
           package_data = {
               '': ['*.zip', '*.svg', 'images/*'],
               'enable': ['tests/primitives/data/PngSuite/*.png'],
+              'kiva': ['tests/agg/doubleprom_soho_full.jpg'],
           },
           platforms=["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
           zip_safe=False,
