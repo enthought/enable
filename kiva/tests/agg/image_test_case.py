@@ -43,7 +43,8 @@ def test_name():
     return '.'.join((class_name,method_name))
 
 def sun(interpolation_scheme="simple"):
-    pil_img = Image.open('doubleprom_soho_full.jpg')
+    path = os.path.join(os.path.dirname(__file__), 'doubleprom_soho_full.jpg')
+    pil_img = Image.open(path)
     img = fromstring(piltostring(pil_img), UInt8)
     img.resize((pil_img.size[1],pil_img.size[0],3))
 
