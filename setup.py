@@ -25,6 +25,10 @@ import setuptools
 
 import distutils
 import distutils.command.clean
+try:
+    from distutils.command.build_py import build_py_2to3 as build_py
+except ImportError:
+    from distutils.command.build_py import build_py
 
 import os
 import re
@@ -32,6 +36,7 @@ import shutil
 import subprocess
 
 from numpy.distutils.core import setup
+from numpy.distutils.misc_util import is_string
 
 MAJOR = 4
 MINOR = 6
@@ -138,6 +143,34 @@ def configuration(parent_package='', top_path=None):
     return config
 
 
+class MyBuildPy(build_py):
+    """ This is NumPy's version of build_py with 2to3 folded in """
+
+    def run(self):
+        build_src = self.get_finalized_command('build_src')
+        if build_src.py_modules_dict and self.packages is None:
+            self.packages = list(build_src.py_modules_dict.keys ())
+        build_py.run(self)
+
+    def find_package_modules(self, package, package_dir):
+        modules = build_py.find_package_modules(self, package, package_dir)
+
+        # Find build_src generated *.py files.
+        build_src = self.get_finalized_command('build_src')
+        modules += build_src.py_modules_dict.get(package, [])
+
+        return modules
+
+    def find_modules(self):
+        old_py_modules = self.py_modules[:]
+        new_py_modules = [_m for _m in self.py_modules if is_string(_m)]
+        self.py_modules[:] = new_py_modules
+        modules = build_py.find_modules(self)
+        self.py_modules[:] = old_py_modules
+
+        return modules
+
+
 class MyClean(distutils.command.clean.clean):
     '''
     Subclass to remove any files created in an inplace build.
@@ -233,6 +266,7 @@ if __name__ == "__main__":
               'sdist': setuptools.command.sdist.sdist,
               # Use our customized commands
               'clean': MyClean,
+              'build_py': MyBuildPy,
           },
           description='low-level drawing and interaction',
           long_description=open('README.rst').read(),
