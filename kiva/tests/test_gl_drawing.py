@@ -33,9 +33,10 @@ class TestGLDrawing(DrawingImageTester, unittest.TestCase):
         # FIXME: overriding test since it segfaults
         DrawingImageTester.test_star_clip(self)
 
-    @unittest.expectedFailure
+    @unittest.skip("gl graphics context does not clip text properly (#165)")
     def test_text_clip(self):
         # gl graphics context does not clip text properly (#165).
+        # may actually work under Wx?
         DrawingImageTester.test_text_clip(self)
 
     @contextlib.contextmanager
