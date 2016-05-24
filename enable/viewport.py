@@ -74,10 +74,16 @@ class Viewport(Component):
     #------------------------------------------------------------------------
 
     def __init__(self, **traits):
+        view_position = traits.pop('view_position', None)
+        view_bounds = traits.pop('view_bounds', None)
         Component.__init__(self, **traits)
         # can't use a default because need bounds to be set first
-        if 'view_position' not in traits and self.component is not None:
+        if self.component is not None:
             self._initialize_position()
+        if view_bounds is not None:
+            self.view_bounds = view_bounds
+        if view_position is not None:
+            self.view_position = view_position
         if 'zoom_tool' not in traits:
             self.zoom_tool = ViewportZoomTool(self)
         if self.enable_zoom:
