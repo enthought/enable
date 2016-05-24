@@ -7,10 +7,9 @@ from numpy import array, dot
 
 # Enthought library traits
 from enable.tools.viewport_zoom_tool import ViewportZoomTool
-from enable.simple_layout import simple_container_get_preferred_size, \
-                                            simple_container_do_layout
-from traits.api import (Bool, Delegate, Float, Instance, Enum, List,
-        Any, on_trait_change)
+from enable.simple_layout import simple_container_get_preferred_size
+from traits.api import (Bool, Delegate, Float, Instance, Enum, Any,
+                        on_trait_change)
 from kiva import affine
 
 # Local relative imports
@@ -134,7 +133,8 @@ class Viewport(Component):
         """If we're initiating layout, act like an OverlayPlotContainer,
            otherwise do the normal component action"""
         if self.initiate_layout:
-            self._component_preferred_size = simple_container_get_preferred_size(self, components=[container])
+            self._component_preferred_size = simple_container_get_preferred_size(
+                self, components=[self.container])
             return self._component_preferred_size
         else:
             return super(Viewport, self).get_preferred_size()
