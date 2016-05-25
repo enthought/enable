@@ -7,10 +7,9 @@ from numpy import array, dot
 
 # Enthought library traits
 from enable.tools.viewport_zoom_tool import ViewportZoomTool
-from enable.simple_layout import simple_container_get_preferred_size, \
-                                            simple_container_do_layout
-from traits.api import (Bool, Delegate, Float, Instance, Enum, List,
-        Any, on_trait_change)
+from enable.simple_layout import simple_container_get_preferred_size
+from traits.api import (Bool, Delegate, Float, Instance, Enum, Any,
+                        on_trait_change)
 from kiva import affine
 
 # Local relative imports
@@ -74,10 +73,20 @@ class Viewport(Component):
     #------------------------------------------------------------------------
 
     def __init__(self, **traits):
+        # ensure view_position and view_bounds are set after anchor traits
+        view_position = traits.pop('view_position', None)
+        view_bounds = traits.pop('view_bounds', None)
+
         Component.__init__(self, **traits)
+
         # can't use a default because need bounds to be set first
-        if 'view_position' not in traits and self.component is not None:
+        if self.component is not None:
             self._initialize_position()
+        if view_bounds is not None:
+            self.view_bounds = view_bounds
+        if view_position is not None:
+            self.view_position = view_position
+
         if 'zoom_tool' not in traits:
             self.zoom_tool = ViewportZoomTool(self)
         if self.enable_zoom:
@@ -128,7 +137,8 @@ class Viewport(Component):
         """If we're initiating layout, act like an OverlayPlotContainer,
            otherwise do the normal component action"""
         if self.initiate_layout:
-            self._component_preferred_size = simple_container_get_preferred_size(self, components=[container])
+            self._component_preferred_size = simple_container_get_preferred_size(
+                self, components=[self.container])
             return self._component_preferred_size
         else:
             return super(Viewport, self).get_preferred_size()
