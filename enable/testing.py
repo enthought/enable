@@ -256,7 +256,9 @@ class EnableTestAssistant(KivaTestAssistant):
                                         alt_down=alt_down,
                                         control_down=control_down,
                                         shift_down=shift_down)
-        window.get_pointer_position.return_value = (x, y)
+        if isinstance(window, _MockWindow):
+            # Note: Non-mock windows shouldn't try to get pointer position
+            window.get_pointer_position.return_value = (x, y)
         self._mouse_event_dispatch(interactor, event, 'mouse_move')
         return event
 
