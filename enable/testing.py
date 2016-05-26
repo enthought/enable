@@ -47,7 +47,9 @@ class EnableTestAssistant(KivaTestAssistant):
         window : AbstractWindow, optional
             The enable AbstractWindow to associate with the event. Default
             is to create a mock class instance. If the window has a mouse
-            owner then that interactor is used.
+            owner then that interactor is used.  If a non-Mocked window is
+            used, then either the test should not require the use of
+            get_pointer_position() or should use a mock for the method.
 
         alt_down : boolean, optional
             The button is pressed while `alt` is down. Default value is False.
@@ -231,7 +233,9 @@ class EnableTestAssistant(KivaTestAssistant):
         window : AbstractWindow, optional
             The enable AbstractWindow to associate with the event. Default
             is to create a mock class instance. If the window has a mouse
-            owner then that interactor is used.
+            owner then that interactor is used.  If a non-Mocked window is
+            used, then either the test should not require the use of
+            get_pointer_position() or should use a mock for the method.
 
         alt_down : boolean, optional
             The button is pressed while `alt` is down. Default value is False.
@@ -256,7 +260,7 @@ class EnableTestAssistant(KivaTestAssistant):
                                         alt_down=alt_down,
                                         control_down=control_down,
                                         shift_down=shift_down)
-        if isinstance(window, _MockWindow):
+        if hasattr(window.get_pointer_position, 'return_value'):
             # Note: Non-mock windows shouldn't try to get pointer position
             window.get_pointer_position.return_value = (x, y)
         self._mouse_event_dispatch(interactor, event, 'mouse_move')
