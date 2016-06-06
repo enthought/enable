@@ -93,7 +93,7 @@ class Renderer(NullRenderer):
         
         else:        
             if len(stops) > 2:
-                warnings.warn("Wx only supports 2 gradient stops, but %d were specified" % len(stops))
+                warnings.warn("wxPython 2.8 only supports 2 gradient stops, but %d were specified" % len(stops))
     
             start_offset, start_color = convert_stop(stops[0])
             end_offset, end_color = convert_stop(stops[1])
@@ -128,7 +128,7 @@ class Renderer(NullRenderer):
         else:
 
             if len(stops) > 2:
-                warnings.warn("Wx only supports 2 gradient stops, but %d were specified" % len(stops))
+                warnings.warn("wxPython 2.8 only supports 2 gradient stops, but %d were specified" % len(stops))
     
             start_offset, start_color = convert_stop(stops[0])
             end_offset, end_color = convert_stop(stops[-1])
