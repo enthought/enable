@@ -83,7 +83,7 @@
 }
 
 // --------------------------------------------------------------------------
-// Typemaps for (int* results, int Nresults)
+// Typemaps for (unsigned char* results, int Nresults)
 //
 //    For: points_in_polygon
 //
@@ -91,10 +91,10 @@
 //
 // --------------------------------------------------------------------------
 
-%typemap(in) (int* results, int Nresults) (PyArrayObject* ary=NULL,
+%typemap(in) (unsigned char* results, int Nresults) (PyArrayObject* ary=NULL,
                                            int is_new_object)
 {
-    ary = obj_to_array_contiguous_allow_conversion($input, PyArray_INT,
+    ary = obj_to_array_contiguous_allow_conversion($input, PyArray_BOOL,
                                                    is_new_object);
     int size[1] = {-1};
     if (!ary ||
@@ -103,11 +103,11 @@
     {
         goto fail;
     }
-    $1 = (int*) ary->data;
+    $1 = (unsigned char*) ary->data;
     $2 = ary->dimensions[0];
 }
 
-%typemap(freearg) (int* results, int Nresults)
+%typemap(freearg) (unsigned char* results, int Nresults)
 {
     if (is_new_object$argnum)
     {
