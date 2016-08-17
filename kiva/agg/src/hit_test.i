@@ -7,18 +7,18 @@
 
 %apply (double* point_array, int point_count) {(double* pts, int Npts)};
 %apply (double* point_array, int point_count) {(double* poly_pts, int Npoly_pts)};
-%apply (int* results, int Nresults) {(int* results, int Nresults)};
+%apply (unsigned char* results, int Nresults) {(unsigned char* results, int Nresults)};
 
 namespace kiva
 {
     bool point_in_polygon(double x, double y, double* poly_pts, int Npoly_pts);
     void points_in_polygon(double* pts, int Npts, 
                           double* poly_pts, int Npoly_pts,
-                          int* results, int Nresults);
+                          unsigned char* results, int Nresults);
     bool point_in_polygon_winding(double x, double y, double* poly_pts, int Npoly_pts);
     void points_in_polygon_winding(double* pts, int Npts, 
                           double* poly_pts, int Npoly_pts,
-                          int* results, int Nresults);
+                          unsigned char* results, int Nresults);
 }
 
 %pythoncode
@@ -88,7 +88,7 @@ def points_in_polygon(pts, poly_pts, use_winding=False):
         else:
             raise ValueError('poly_pts must be an Nx2 or 2xN array')
 
-    results = zeros(len(pts),int32)
+    results = zeros(len(pts), bool)
     if use_winding:
         _agg.points_in_polygon_winding(pts, poly_pts, results)
     else:
