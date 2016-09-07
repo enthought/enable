@@ -320,7 +320,7 @@ class Comparator(HasTraits):
             self.kiva_component.document = document.SVGDocument(self.current_xml,
                                                                 resources=resources,
                                                                 renderer=KivaRenderer)
-        except Exception, e:
+        except Exception as e:
             logger.exception('Error parsing document %s', new)
             self.kiva_component.document
 

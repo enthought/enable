@@ -244,7 +244,7 @@ class ViewFrame(wx.Frame):
         if element is None:
             return
         path = self.document.paths[element]
-        print path
+        print(path)
 
     def OnUpdateUI(self, evt):
         if self.render.lastRender is not None:

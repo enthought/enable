@@ -18,7 +18,7 @@ class DropCanvas(Canvas):
 
     def normal_dropped_on(self, event):
         self.window.set_drag_result("link")
-        print event.obj
+        print(event.obj)
 
         box = Box(x=event.x-2, y=event.y-2, width=4, height=4)
         self.add(box)

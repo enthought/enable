@@ -16,7 +16,7 @@ class ViewportTestCase(unittest.TestCase):
                         bounds=[50,50])
 
         self.assertEqual(view.view_position, [10, 10])
-        print view.components_at(0.0, 0.0), view.view_position
+        print(view.components_at(0.0, 0.0), view.view_position)
         self.assert_(view.components_at(0.0, 0.0)[0] == component)
         self.assert_(view.components_at(44.9, 0.0)[0] == component)
         self.assert_(view.components_at(0.0, 44.9)[0] == component)

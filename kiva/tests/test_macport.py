@@ -25,10 +25,10 @@ def test_macport():
 
             def OnPaint(self, evt):
                 dc = wx.PaintDC(self)
-                print "paintdc.this:", dc.this
-                print "paintdc.macport: %x" % get_macport(dc)
-                print "memdc.this:", self.memdc.this
-                print "memdc.macport: %x" % get_macport(self.memdc)
+                print("paintdc.this:", dc.this)
+                print("paintdc.macport: %x" % get_macport(dc))
+                print("memdc.this:", self.memdc.this)
+                print("memdc.macport: %x" % get_macport(self.memdc))
 
                 # We're done here
                 self.Close()

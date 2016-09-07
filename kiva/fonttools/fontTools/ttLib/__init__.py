@@ -244,7 +244,7 @@ class TTFont:
                 elif self.verbose:
                         debugmsg(report)
                 else:
-                        print report
+                        print(report)
                 if not self.has_key(tag):
                         return
                 xmlTag = tagToXML(tag)
@@ -324,7 +324,7 @@ class TTFont:
                                 try:
                                         table.decompile(data, self)
                                 except "_ _ F O O _ _": # dummy exception to disable exception catching
-                                        print "An exception occurred during the decompilation of the '%s' table" % tag
+                                        print("An exception occurred during the decompilation of the '%s' table" % tag)
                                         from tables.DefaultTable import DefaultTable
                                         import StringIO
                                         file = StringIO.StringIO()
@@ -335,14 +335,14 @@ class TTFont:
                                         table.decompile(data, self)
                                 return table
                         else:
-                                raise KeyError, "'%s' table not found" % tag
+                                raise KeyError("'%s' table not found" % tag)
 
         def __setitem__(self, tag, table):
                 self.tables[tag] = table
 
         def __delitem__(self, tag):
                 if not self.has_key(tag):
-                        raise KeyError, "'%s' table not found" % tag
+                        raise KeyError("'%s' table not found" % tag)
                 if self.tables.has_key(tag):
                         del self.tables[tag]
                 if self.reader and self.reader.has_key(tag):
@@ -486,9 +486,9 @@ class TTFont:
                                 self._buildReverseGlyphOrderDict()
                                 return self.getGlyphID(glyphName)
                         else:
-                                raise KeyError, glyphName
+                                raise KeyError(glyphName)
                 glyphID = d[glyphName]
-                if glyphName <> glyphOrder[glyphID]:
+                if glyphName != glyphOrder[glyphID]:
                         self._buildReverseGlyphOrderDict()
                         return self.getGlyphID(glyphName)
                 return glyphID
@@ -530,7 +530,7 @@ class TTFont:
                                 debugmsg("Reading '%s' table from disk" % tag)
                         return self.reader[tag]
                 else:
-                        raise KeyError, tag
+                        raise KeyError(tag)
 
 
 class GlyphOrder:
@@ -700,5 +700,5 @@ def xmlToTag(tag):
 
 def debugmsg(msg):
         import time
-        print msg + time.strftime("  (%H:%M:%S)", time.localtime(time.time()))
+        print(msg + time.strftime("  (%H:%M:%S)", time.localtime(time.time())))
 

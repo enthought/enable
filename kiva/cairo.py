@@ -1039,7 +1039,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
                         TEXT_INVISIBLE, TEXT_FILL_CLIP, TEXT_STROKE_CLIP,
                         TEXT_FILL_STROKE_CLIP, TEXT_CLIP, TEXT_OUTLINE):
             msg = "Invalid text drawing mode.  See documentation for valid modes"
-            raise ValueError, msg
+            raise ValueError(msg)
         self.state.text_drawing_mode = mode
 
     def set_text_position(self,x,y):

@@ -11,7 +11,7 @@ def configuration(parent_package='', top_path=None):
 
     def generate_c_from_cython(extension, build_dir):
         if not sys.platform == 'darwin':
-            print 'No %s will be built for this platform.' % (extension.name)
+            print('No %s will be built for this platform.' % (extension.name))
             return
         from distutils.dep_util import newer_group
         name = extension.name.split('.')[-1]
@@ -81,11 +81,11 @@ def configuration(parent_package='', top_path=None):
 
             def get_macport_cpp(extension, build_dir):
                 if sys.platform != 'darwin':
-                    print 'No %s will be built for this platform.'%(extension.name)
+                    print('No %s will be built for this platform.'%(extension.name))
                     return None
     
                 elif wx_release not in ('2.6', '2.8'):
-                    print ('No %s will be built because we do not recognize '
+                    print('No %s will be built because we do not recognize '
                            'wx version %s' % (extension.name, wx_release))
                     return None
     

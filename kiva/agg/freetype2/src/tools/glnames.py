@@ -5039,7 +5039,7 @@ def main():
   """main program body"""
 
   if len( sys.argv ) != 2:
-    print __doc__ % sys.argv[0]
+    print(__doc__ % sys.argv[0])
     sys.exit( 1 )
 
   file  = open( sys.argv[1], "w\n" )

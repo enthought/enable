@@ -112,7 +112,7 @@ class _Name2StandardEncodingMap(UserDict):
         y = x.lower()
         if y[-8:]=='encoding': y = y[:-8]
         y = self._XMap[y]
-        if y in self.keys(): raise IndexError, 'Encoding %s is already set' % y
+        if y in self.keys(): raise IndexError('Encoding %s is already set' % y)
         self.data[y] = v
 
     def __getitem__(self,x):

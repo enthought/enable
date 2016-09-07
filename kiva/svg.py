@@ -173,7 +173,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             contents = self.contents.getvalue()
             template = htmltemplate
         else:
-            raise ValueError, "don't know how to write a %s file" % ext
+            raise ValueError("don't know how to write a %s file" % ext)
         f.write(template % locals())
 
 

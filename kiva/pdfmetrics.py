@@ -72,7 +72,7 @@ def parseAFMFile(afmFileName):
         #likely to be a MAC file
         lines = string.split(lines,'\r')
         if len(lines)<=1:
-            raise ValueError, 'AFM file %s hasn\'t enough data' % afmFileName
+            raise ValueError('AFM file %s hasn\'t enough data' % afmFileName)
     topLevel = {}
     glyphLevel = []
 
@@ -118,7 +118,7 @@ def parseAFMFile(afmFileName):
             try:
                 left, right = string.split(line,' ',1)
             except:
-                raise ValueError, "Header information error in afm %s: line='%s'" % (afmFileName, line)
+                raise ValueError("Header information error in afm %s: line='%s'" % (afmFileName, line))
             try:
                 right = string.atoi(right)
             except:
@@ -327,7 +327,7 @@ class Font:
                     w[i] = width
                 except KeyError:
                     # XXX Kiva specific change
-                    print 'typeface "%s" does not have a glyph "%s", bad font!' % (self.face.name, glyphName)
+                    print('typeface "%s" does not have a glyph "%s", bad font!' % (self.face.name, glyphName))
         self.widths = w
 
     if not _stringWidth:
@@ -366,13 +366,13 @@ def _pfbSegLen(p,d):
 
 def _pfbCheck(p,d,m,fn):
     if d[p]!=PFB_MARKER or d[p+1]!=m:
-        raise ValueError, 'Bad pfb file\'%s\' expected chr(%d)chr(%d) at char %d, got chr(%d)chr(%d)' % (fn,ord(PFB_MARKER),ord(m),p,ord(d[p]),ord(d[p+1]))
+        raise ValueError('Bad pfb file\'%s\' expected chr(%d)chr(%d) at char %d, got chr(%d)chr(%d)' % (fn,ord(PFB_MARKER),ord(m),p,ord(d[p]),ord(d[p+1])))
     if m==PFB_EOF: return
     p = p + 2
     l = _pfbSegLen(p,d)
     p = p + 4
     if p+l>len(d):
-        raise ValueError, 'Bad pfb file\'%s\' needed %d+%d bytes have only %d!' % (fn,p,l,len(d))
+        raise ValueError('Bad pfb file\'%s\' needed %d+%d bytes have only %d!' % (fn,p,l,len(d)))
     return p, p+l
 
 
@@ -556,27 +556,27 @@ def _slowStringWidth(text, fontName, fontSize):
 stringWidth = _slowStringWidth
 
 def dumpFontData():
-    print 'Registered Encodings:'
+    print('Registered Encodings:')
     keys = _encodings.keys()
     keys.sort()
     for encName in keys:
-        print '   ',encName
+        print('   ',encName)
 
-    print
-    print 'Registered Typefaces:'
+    print()
+    print('Registered Typefaces:')
     faces = _typefaces.keys()
     faces.sort()
     for faceName in faces:
-        print '   ',faceName
+        print('   ', faceName)
 
 
-    print
-    print 'Registered Fonts:'
+    print()
+    print('Registered Fonts:')
     k = _fonts.keys()
     k.sort()
     for key in k:
         font = _fonts[key]
-        print '    %s (%s/%s)' % (font.fontName, font.face.name, font.encoding.name)
+        print('    %s (%s/%s)' % (font.fontName, font.face.name, font.encoding.name))
 
 
 
@@ -588,7 +588,7 @@ def test3widths(texts):
         for text in texts:
             l1 = _stringWidth(text, fontName, 10)
         t1 = time.time()
-        print 'fast stringWidth took %0.4f' % (t1 - t0)
+        print('fast stringWidth took %0.4f' % (t1 - t0))
 
         t0 = time.time()
         w = getFont(fontName).widths
@@ -597,33 +597,33 @@ def test3widths(texts):
             for ch in text:
                 l2 = l2 + w[ord(ch)]
         t1 = time.time()
-        print 'slow stringWidth took %0.4f' % (t1 - t0)
+        print('slow stringWidth took %0.4f' % (t1 - t0))
 
         t0 = time.time()
         for text in texts:
             l3 = getFont(fontName).stringWidth(text, 10)
         t1 = time.time()
-        print 'class lookup and stringWidth took %0.4f' % (t1 - t0)
-        print
+        print('class lookup and stringWidth took %0.4f' % (t1 - t0))
+        print()
 
 def testStringWidthAlgorithms():
     rawdata = open('../../rlextra/rml2pdf/doc/rml_user_guide.prep').read()
-    print 'rawdata length %d' % len(rawdata)
-    print 'test one huge string...'
+    print('rawdata length %d' % len(rawdata))
+    print('test one huge string...')
     test3widths([rawdata])
-    print
+    print()
     words = string.split(rawdata)
-    print 'test %d shorter strings (average length %0.2f chars)...' % (len(words), 1.0*len(rawdata)/len(words))
+    print('test %d shorter strings (average length %0.2f chars)...' % (len(words), 1.0*len(rawdata)/len(words)))
     test3widths(words)
 
 
 def test():
     helv = TypeFace('Helvetica')
     registerTypeFace(helv)
-    print helv.glyphNames[0:30]
+    print(helv.glyphNames[0:30])
 
     wombat = TypeFace('Wombat')
-    print wombat.glyphNames
+    print(wombat.glyphNames)
     registerTypeFace(wombat)
 
     dumpFontData()

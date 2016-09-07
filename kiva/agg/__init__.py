@@ -40,7 +40,7 @@ try:
                                           bottom_up)
             self.pixel_map = pixel_map
 
-except ImportError, ex:
+except ImportError as ex:
     # warn to stderr containing the exception. The warning should
     # be an ImportWarning, but that is python 2.5+ specific
     import warnings

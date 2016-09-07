@@ -130,7 +130,7 @@ class Container(Component):
                 component.container = None
                 self._components.remove(component)
             else:
-                raise RuntimeError, "Unable to remove component from container."
+                raise RuntimeError("Unable to remove component from container.")
 
             # Check to see if we need to compact.
             if self.auto_size:

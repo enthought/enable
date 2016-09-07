@@ -2,8 +2,8 @@
 
 
 import os
-if os.name <> "mac":
-        raise ImportError, "This module is Mac-only!"
+if os.name != "mac":
+        raise ImportError("This module is Mac-only!")
 
 import cStringIO
 import macfs
@@ -41,7 +41,7 @@ def openTTFonts(path):
                 for index in sfnts:
                         fonts.append(ttLib.TTFont(path, index))
                 if not fonts:
-                        raise ttLib.TTLibError, "no fonts found in file '%s'" % path
+                        raise ttLib.TTLibError("no fonts found in file '%s'" % path)
         return fonts
 
 
@@ -79,15 +79,15 @@ class SFNTResourceWriter:
                 psname = ttFont['name'].getName(6, 1, 0) # PostScript name, etc.
                 if fullname is None or fullname is None or psname is None:
                         from kiva.fonttools.fontTools import ttLib
-                        raise ttLib.TTLibError, "can't make 'sfnt' resource, no Macintosh 'name' table found"
+                        raise ttLib.TTLibError("can't make 'sfnt' resource, no Macintosh 'name' table found")
                 self.fullname = fullname.string
                 self.familyname = familyname.string
                 self.psname = psname.string
-                if self.familyname <> self.psname[:len(self.familyname)]:
+                if self.familyname != self.psname[:len(self.familyname)]:
                         # ugh. force fam name to be the same as first part of ps name,
                         # fondLib otherwise barfs.
                         for i in range(min(len(self.psname), len(self.familyname))):
-                                if self.familyname[i] <> self.psname[i]:
+                                if self.familyname[i] != self.psname[i]:
                                         break
                         self.familyname = self.psname[:i]
 

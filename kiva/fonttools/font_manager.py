@@ -206,7 +206,7 @@ def get_configdir():
     p = os.path.join(ETSConfig.application_data, 'kiva')
     try:
         os.makedirs(p)
-    except OSError, e:
+    except OSError as e:
         if e.errno != errno.EEXIST:
             raise
     if not _is_writable_dir(p):

@@ -55,7 +55,7 @@ class Shape(Component):
     def normal_key_pressed(self, event):
         """ Event handler. """
 
-        print 'normal_key_pressed', event.character
+        print('normal_key_pressed', event.character)
 
         return
 

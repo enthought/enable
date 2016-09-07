@@ -22,9 +22,9 @@ def test():
                     dims = metrics.get_text_extent(s)
             allmetrics.append(metrics)
         end = time.time()
-        print "finished count=%d" % count
-        print "   total time:", end - start
-        print "   time/set_font:", (end-start) / float(count * len(fonts))
+        print("finished count=%d" % count)
+        print("   total time:", end - start)
+        print("   time/set_font:", (end-start) / float(count * len(fonts)))
 
 if __name__ == "__main__":
     test()

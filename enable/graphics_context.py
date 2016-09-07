@@ -59,8 +59,8 @@ class EnableGCMixin(object):
         return
 
     def alpha(self, alpha):
-        raise NotImplementedError, \
-            "The alpha() method is not compatible with DisplayPDF; use clear() instead."
+        raise NotImplementedError(
+            "The alpha() method is not compatible with DisplayPDF; use clear() instead.")
 
     def stretch_draw(self, image, x, y, dx, dy):
         "Draws an image 'stretched' to fit a specified area"

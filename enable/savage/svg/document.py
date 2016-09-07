@@ -112,7 +112,7 @@ def valueToPixels(val, defaultUnits="px"):
         val, unit = values.length.parseString(val)
     except ParseException:
         import pdb;pdb.set_trace()
-        print 'valueToPixels(%r, %r)' % (val, defaultUnits)
+        print('valueToPixels(%r, %r)' % (val, defaultUnits))
         raise
     val *= units_to_px.get(unit, 1)
     return val
@@ -502,7 +502,7 @@ class SVGDocument(object):
             resources = self.resources
         try:
             element = self.dereference(href, resources)
-        except (OSError, IOError), e:
+        except (OSError, IOError) as e:
             # SVG file cannot be found.
             warnings.warn("Could not find SVG file %s. %s: %s" % (href, e.__class__.__name__, e))
             return None, []
@@ -556,7 +556,7 @@ class SVGDocument(object):
             return self.addUseToDocument(node)
         try:
             image = resources.open_image(uri)
-        except (OSError, IOError), e:
+        except (OSError, IOError) as e:
             # Image cannot be found.
             warnings.warn("Could not find image file %s. %s: %s" % (uri[:100], e.__class__.__name__, str(e)[:100]))
             return None, []
@@ -765,9 +765,9 @@ class SVGDocument(object):
                         yield (command, arg)
         try:
             parsed = svg_parser.parse(data)
-        except SyntaxError, e:
-            print 'SyntaxError: %s' % e
-            print 'data = %r' % data
+        except SyntaxError as e:
+            print('SyntaxError: %s' % e)
+            print('data = %r' % data)
         else:
             for stroke in normalizeStrokes(parsed):
                 self.addStrokeToPath(path, stroke)

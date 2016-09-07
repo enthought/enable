@@ -147,5 +147,5 @@ class SampleButtonButton(Button):
     label = Str('Sample Button')
 
     def perform(self, event):
-        print "this button is a sample"
+        print("this button is a sample")
         return

@@ -47,15 +47,15 @@ try:
 except ImportError:
     class FakeLogger:
         def debug(self, message):
-            print >> sys.stderr, "DEBUG:", message
+            print("DEBUG:", message, file=sys.stderr)
         def info(self, message):
-            print >> sys.stderr, "INFO:", message
+            print("INFO:", message, file=sys.stderr)
         def warn(self, message):
-            print >> sys.stderr, "WARN:", message
+            print("WARN:", message, file=sys.stderr)
         def error(self, message):
-            print >> sys.stderr, "ERROR:", message
+            print("ERROR:", message, file=sys.stderr)
         def critical(self, message):
-            print >> sys.stderr, "CRITICAL:", message
+            print("CRITICAL:", message, file=sys.stderr)
     log = FakeLogger()
 
 def _strpoints(points):
@@ -148,7 +148,7 @@ class PSGC(basecore2d.GraphicsContextBase):
             f.write("%!PS-Adobe-2.0\n")
             f.write(self.contents.getvalue())
         else:
-            raise ValueError, "don't know how to write a %s file" % ext
+            raise ValueError("don't know how to write a %s file" % ext)
 
     # Text handling code
 

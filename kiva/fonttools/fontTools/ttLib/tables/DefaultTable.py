@@ -29,8 +29,8 @@ class DefaultTable:
         def fromXML(self, (name, attrs, content), ttFont):
                 from kiva.fonttools.fontTools.misc.textTools import readHex
                 from kiva.fonttools.fontTools import ttLib
-                if name <> "hexdata":
-                        raise ttLib.TTLibError, "can't handle '%s' element" % name
+                if name != "hexdata":
+                        raise ttLib.TTLibError("can't handle '%s' element" % name)
                 self.decompile(readHex(content), ttFont)
 
         def __repr__(self):
