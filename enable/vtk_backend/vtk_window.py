@@ -1,5 +1,7 @@
 import warnings
 
+import six
+
 from tvtk.api import tvtk
 from tvtk import messenger
 from traits.api import HasTraits, Any, Callable, Property, Instance, \
@@ -290,11 +292,11 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
                 return self._pass_event_to_vtk(vtk_obj, eventname)
 
         if event_type == 'character':
-            key = unicode(self.control.key_sym)
+            key = six.u(self.control.key_sym)
         else:
             key = KEY_MAP.get(self.control.key_sym, None)
             if key is None:
-                key = unicode(self.control.key_sym)
+                key = six.u(self.control.key_sym)
             if not key:
                 return
 

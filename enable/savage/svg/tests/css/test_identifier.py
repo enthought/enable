@@ -2,6 +2,7 @@ import unittest
 import string
 import sys
 
+import six
 import six.moves as sm
 
 from pyparsing import ParseException, Regex, StringEnd
@@ -61,20 +62,20 @@ class TestHexUnicode(unittest.TestCase):
 class TestEscape(unittest.TestCase):
     def testEscapeValues(self):
         self.assertEqual(u"&", identifier.escape.parseString(r"\26")[0])
-        self.assertEqual(u'\x81', identifier.escape.parseString("\\" + unichr(129))[0])
+        self.assertEqual(u'\x81', identifier.escape.parseString("\\" + six.unichr(129))[0])
         self.assertEqual(u"~", identifier.escape.parseString(r'\~')[0])
 
 
 class TestNonAscii(unittest.TestCase):
     def testNoMatchInAsciiRange(self):
-        for c in map(unichr, range(128)):
+        for c in map(six.unichr, range(128)):
             self.assertRaises(
                 ParseException,
                 identifier.nonascii.parseString, c
             )
 
     def testMatchesOutsideAsciiRange(self):
-        for c in map(unichr, sm.range(128, sys.maxunicode+1)):
+        for c in map(six.unichr, sm.range(128, sys.maxunicode+1)):
             self.assertEqual(
                 c,
                 identifier.nonascii.parseString(c)[0]

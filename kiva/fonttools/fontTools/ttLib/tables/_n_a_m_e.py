@@ -1,4 +1,7 @@
 import DefaultTable
+
+import six
+
 import struct
 from kiva.fonttools import sstruct
 from kiva.fonttools.fontTools.misc.textTools import safeEval
@@ -117,12 +120,12 @@ class NameRecord:
                         s = ""
                         for element in content:
                                 s = s + element
-                        s = unicode(s, "utf8")
+                        s = six.text_type(s)
                         s = s.strip()
                         self.string = s.encode("utf_16_be")
                 else:
                         s = string.strip(string.join(content, ""))
-                        self.string = unicode(s, "utf8").encode("latin1")
+                        self.string = six.text_type(s).encode("latin1")
 
         def __cmp__(self, other):
                 """Compare method, so a list of NameRecords can be sorted
