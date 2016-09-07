@@ -3,6 +3,9 @@ import time
 from cStringIO import StringIO
 import xml.etree.cElementTree as etree
 
+import six
+import six.moves as sm
+
 import wx
 import wx.aui
 import enable.savage.svg.document as document
@@ -71,7 +74,7 @@ class XMLTree(wx.TreeCtrl):
         for child in element.getchildren():
             self.addElementToTree(child, node)
         #attributes
-        for key, value in element.items():
+        for key, value in six.iteritems(element):
             item = self.AppendItem(node, "%s:%s"%(key,value))
             self.SetPyData(item, element)
 
@@ -171,7 +174,7 @@ class ViewFrame(wx.Frame):
     def getFileList(self):
         #look for the test files in the w3c dir
         files = os.listdir(self.getSVGDir())
-        splitted = map(os.path.splitext, files)
+        splitted = sm.map(os.path.splitext, files)
 
         return sorted(fname for fname, ext in splitted)
 

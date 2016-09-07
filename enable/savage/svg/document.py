@@ -6,8 +6,10 @@ import warnings
 import math
 from functools import wraps
 import os
-import urllib
-import urlparse
+
+import six
+import six.moves as sm
+
 from xml.etree import cElementTree as ET
 try:
     from xml.etree.cElementTree import ParseError
@@ -62,12 +64,12 @@ def normalize_href(href):
     """
     if href.startswith('url(') and href.endswith(')'):
         href = href[4:-1]
-    scheme, netloc, path, params, query, fragment = urlparse.urlparse(href)
+    scheme, netloc, path, params, query, fragment = sm.urllib.parse.urlparse(href)
     # Normalize xpointer(id(...)) references.
     if fragment.startswith('xpointer(id(') and fragment.endswith('))'):
         # FIXME: whitespace?
         fragment = fragment[12:-2]
-    uri = urlparse.urlunparse((scheme, netloc, path, params, query, ''))
+    uri = sm.urllib.parse.urlunparse((scheme, netloc, path, params, query, ''))
     return uri, fragment
 
 def attrAsFloat(node, attr, defaultValue="0"):
@@ -178,12 +180,12 @@ class ResourceGetter(object):
         """ Resolve a path and the associated opener function against this
         context.
         """
-        scheme, netloc, path_part, _, _, _ = urlparse.urlparse(path)
+        scheme, netloc, path_part, _, _, _ = sm.urllib.parse.urlparse(path)
         if scheme not in ('', 'file'):
             # Plain URI. Pass it back.
             # Read the data and stuff it in a StringIO in order to satisfy
             # functions that need a functioning seek() and stuff.
-            return path, lambda uri: BytesIO(urllib.urlopen(uri).read())
+            return path, lambda uri: BytesIO(sm.urllib.request.urlopen(uri).read())
         path = os.path.abspath(os.path.join(self.dirname, path_part))
         return path, lambda fn: open(fn, 'rb')
 
@@ -359,9 +361,9 @@ class SVGDocument(object):
         if state is None:
             state = self.state
         current = dict(state)
-        element_items = [(k,v) for (k,v) in element.items() if v != 'inherit']
+        element_items = [(k,v) for (k,v) in six.iteritems(element) if v != 'inherit']
         current.update(element_items)
-        style_items = [(k,v) for (k,v) in css.inlineStyle(element.get("style", "")).items() if v != 'inherit']
+        style_items = [(k,v) for (k,v) in six.iteritems(css.inlineStyle(element.get("style", ""))) if v != 'inherit']
         current.update(style_items)
         return current
 
@@ -652,7 +654,7 @@ class SVGDocument(object):
 
         ops = []
 
-        if 'clip-path' in node.keys():
+        if 'clip-path' in node:
             element = self.dereference(node.get('clip-path'))
 
             ops = [
@@ -756,10 +758,10 @@ class SVGDocument(object):
                 else:
                     arguments = iter(arguments)
                     if command ==  'm':
-                        yield (command, arguments.next())
+                        yield (command, six.next(arguments))
                         command = "l"
                     elif command == "M":
-                        yield (command, arguments.next())
+                        yield (command, six.next(arguments))
                         command = "L"
                     for arg in arguments:
                         yield (command, arg)
@@ -821,8 +823,8 @@ class SVGDocument(object):
             pen.SetWidth(width)
         stroke_dasharray = self.state.get('stroke-dasharray', 'none')
         if stroke_dasharray != 'none':
-            stroke_dasharray = map(valueToPixels,
-                stroke_dasharray.replace(',', ' ').split())
+            stroke_dasharray = list(sm.map(valueToPixels,
+                stroke_dasharray.replace(',', ' ').split()))
             if len(stroke_dasharray) % 2:
                 # Repeat to get an even array.
                 stroke_dasharray = stroke_dasharray * 2
@@ -881,7 +883,7 @@ class SVGDocument(object):
         type, details = paintValue.parseString(brushcolour)
         if type == "URL":
             url, fallback = details
-            url = urlparse.urlunsplit(url)
+            url = sm.urllib.parse.urlunsplit(url)
             try:
                 element = self.dereference(url)
             except ParseError:
@@ -905,7 +907,7 @@ class SVGDocument(object):
                 seen = set([element])
                 # The attributes on the referencing element override those on the
                 # referenced element.
-                state = dict(element.items())
+                state = dict(six.iteritems(element))
                 while href is not None:
                     # Gradient is a reference.
                     element = self.dereference(href)
@@ -1003,7 +1005,7 @@ class SVGDocument(object):
             path.AddLineToPoint(*pt)
         elif type == 'C':
             #control1, control2, endpoint = arg
-            control1, control2, endpoint = map(
+            control1, control2, endpoint = sm.map(
                 normalizePoint, arg
             )
             self.lastControl = control2
@@ -1021,7 +1023,7 @@ class SVGDocument(object):
 
         elif type == 'S':
             #control2, endpoint = arg
-            control2, endpoint = map(
+            control2, endpoint = sm.map(
                 normalizePoint, arg
             )
             if self.lastControl:
@@ -1036,7 +1038,7 @@ class SVGDocument(object):
                 endpoint
             )
         elif type == "Q":
-            (cx, cy), (x,y) = map(normalizePoint, arg)
+            (cx, cy), (x,y) = sm.map(normalizePoint, arg)
             self.lastControlQ = (cx, cy)
             path.AddQuadCurveToPoint(cx, cy, x, y)
         elif type == "T":

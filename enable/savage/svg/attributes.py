@@ -1,7 +1,9 @@
 """
     Parsers for specific attributes
 """
-import urlparse
+import six
+import six.moves as sm
+
 from pyparsing import (Literal,
     Optional, oneOf, Group, StringEnd, Combine, Word, alphas, hexnums,
     CaselessLiteral, SkipTo
@@ -15,7 +17,7 @@ currentColor = CaselessLiteral("currentColor").setParseAction(lambda t: ["CURREN
 
 def parsePossibleURL(t):
     possibleURL, fallback = t[0]
-    return [urlparse.urlsplit(possibleURL), fallback]
+    return [sm.urllib.parse.urlsplit(possibleURL), fallback]
 
 #Normal color declaration
 colorDeclaration = none | currentColor | colourValue

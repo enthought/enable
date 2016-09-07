@@ -4,6 +4,7 @@ from __future__ import with_statement
 
 from uuid import uuid4
 
+import six
 # Enthought library imports
 from traits.api \
     import Any, Bool, Delegate, Enum, Float, Instance, Int, List, \
@@ -376,7 +377,7 @@ class Component(CoordinateBox, Interactor):
         # may override the bulk default.
         padding = traits.pop('padding', None)
         padding_traits = {}
-        for name in traits.keys():
+        for name in six.iterkeys(traits):
             # Use .keys() so we can modify the dict during iteration safely.
             if name in ['padding_top', 'padding_bottom', 'padding_left',
                 'padding_right']:

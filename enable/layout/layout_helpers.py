@@ -722,7 +722,7 @@ class GridHelper(BoxHelper):
             for cell in cells:
                 if cell.start_row == cell.end_row:
                     row_map[cell.start_row].append(cell.item)
-            for items in row_map.itervalues():
+            for items in six.itervalues(row_map):
                 if len(items) > 1:
                     helpers.append(AlignmentHelper(self.row_align, *items))
 
@@ -734,7 +734,7 @@ class GridHelper(BoxHelper):
             for cell in cells:
                 if cell.start_col == cell.end_col:
                     col_map[cell.start_col].append(cell.item)
-            for items in row_map.itervalues():
+            for items in six.itervalues(row_map):
                 if len(items) > 1:
                     helpers.append(AlignmentHelper(self.col_align, *items))
 

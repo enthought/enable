@@ -1,6 +1,8 @@
 
 import math
 
+import six
+
 from traits.api import Float, Property, List, Str, Range
 from enable.api import Component
 from kiva.trait_defs.kiva_font_trait import KivaFont
@@ -37,7 +39,8 @@ class VUMeter(Component):
 
     # Values of the percentage-based ticks; these are drawn and labeled along
     # the bottom of the curve axis.
-    percent_ticks = List(range(0, 101, 20))
+    # FIXME: Does it support iterable???
+    percent_ticks = List(list(six.moves.range(0, 101, 20)))
 
     # Text to write in the middle of the VU Meter.
     text = Str("VU")

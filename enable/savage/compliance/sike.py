@@ -5,6 +5,8 @@ from collections import defaultdict
 import os
 import pstats
 
+import six
+
 from traits.api import (Any, Bool, Constant, Dict, Event, Float,
     HasTraits, Instance, Int, List, Property, Str, on_trait_change)
 from traitsui import api as tui
@@ -304,9 +306,9 @@ class Sike(HasTraits):
         """
         records = []
         for file_line_name, (ncalls, nonrec_calls, inline_time, cum_time,
-            calls) in stats.items():
+            calls) in six.iteritems(stats):
             newcalls = []
-            for sub_file_line_name, sub_call in calls.items():
+            for sub_file_line_name, sub_call in six.iteritems(calls):
                 newcalls.append(Subrecord((sub_file_line_name,) + sub_call))
             records.append(Record((file_line_name, ncalls, nonrec_calls,
                 inline_time, cum_time, newcalls)))

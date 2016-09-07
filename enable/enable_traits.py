@@ -3,6 +3,7 @@ Define the base Enable object traits
 """
 
 # Major library imports
+import six
 from numpy import arange, array
 
 # Enthought library imports
@@ -75,7 +76,7 @@ __line_style_trait_values = {
     'dot':       array( [ 2.0, 2.0 ] ),
     'long dash': array( [ 9.0, 5.0 ] )
 }
-__line_style_trait_map_keys = __line_style_trait_values.keys()
+__line_style_trait_map_keys = list(six.iterkeys(__line_style_trait_values))
 LineStyleEditor = EnumEditor( values=__line_style_trait_map_keys)
 
 def __line_style_trait( value='solid', **metadata ):

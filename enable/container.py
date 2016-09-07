@@ -101,7 +101,7 @@ class Container(Component):
         Component.__init__(self, **traits)
         for component in components:
             self.add(component)
-        if "bounds" in traits.keys() and "auto_size" not in traits.keys():
+        if "bounds" in traits and "auto_size" not in traits:
             self.auto_size = False
 
         if 'intercept_events' in traits:
