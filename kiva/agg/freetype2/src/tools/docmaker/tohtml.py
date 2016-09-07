@@ -346,7 +346,7 @@ class  HtmlFormatter( Formatter ):
                 elif re_source_keywords.match( name ):
                     # this is a C keyword
                     result = result + prefix + keyword_prefix + name + keyword_suffix
-                elif self.identifiers.has_key( name ):
+                elif name in self.identifiers:
                     # this is a known identifier
                     block = self.identifiers[name]
                     result = result + prefix + '<a href="' + \

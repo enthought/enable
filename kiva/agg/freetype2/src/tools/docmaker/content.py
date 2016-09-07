@@ -352,7 +352,7 @@ class  ContentProcessor:
 
     def  set_section( self, section_name ):
         """set current section during parsing"""
-        if not self.sections.has_key( section_name ):
+        if section_name not in self.sections:
             section = DocSection( section_name )
             self.sections[section_name] = section
             self.section                = section
@@ -446,7 +446,7 @@ class  ContentProcessor:
         # listed there
         for chap in self.chapters:
             for sec in chap.order:
-                if self.sections.has_key( sec ):
+                if sec in self.sections:
                     section = self.sections[sec]
                     section.chapter = chap
                     section.reorder()

@@ -48,8 +48,8 @@ class SFNTReader:
                                 # *has* a zero-length table.
                                 pass
 
-        def has_key(self, tag):
-                return self.tables.has_key(tag)
+        def __contains__(self, item):
+                return item in self.tables
 
         def keys(self):
                 return self.tables.keys()
@@ -96,7 +96,7 @@ class SFNTWriter:
 
         def __setitem__(self, tag, data):
                 """Write raw table data to disk."""
-                if self.tables.has_key(tag):
+                if tag in self.tables:
                         # We've written this table to file before. If the length
                         # of the data is still the same, we allow overwriting it.
                         entry = self.tables[tag]

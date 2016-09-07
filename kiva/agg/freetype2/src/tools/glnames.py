@@ -4850,7 +4850,7 @@ class StringNode:
     letter = word[0]
     word   = word[1:]
 
-    if self.children.has_key( letter ):
+    if letter in self.children:
       child = self.children[letter]
     else:
       child = StringNode( letter, 0 )

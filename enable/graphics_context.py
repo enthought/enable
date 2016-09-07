@@ -27,7 +27,7 @@ class EnableGCMixin(object):
     window = None  #Instance(AbstractWindow)
 
     def __init__(self, *args, **kwargs):
-        if kwargs.has_key("window"):
+        if "window" in kwargs:
             self.window = kwargs.pop("window")
         super(EnableGCMixin, self).__init__(*args, **kwargs)
         return

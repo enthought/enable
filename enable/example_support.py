@@ -14,7 +14,7 @@ from traits.etsconfig.api import ETSConfig
 if not ETSConfig.toolkit:
     for toolkit, toolkit_module in (('wx', 'wx'), ('qt4', 'PyQt4')):
         try:
-            exec "import " + toolkit_module
+            exec("import " + toolkit_module)
             ETSConfig.toolkit = toolkit
             break
         except ImportError:

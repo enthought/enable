@@ -234,7 +234,7 @@ class TTFont:
                         debugmsg("Done dumping TTX")
 
         def _tableToXML(self, writer, tag, progress):
-                if self.has_key(tag):
+                if tag in self:
                         table = self[tag]
                         report = "Dumping '%s' table..." % tag
                 else:
@@ -245,7 +245,7 @@ class TTFont:
                         debugmsg(report)
                 else:
                         print(report)
-                if not self.has_key(tag):
+                if tag not in self:
                         return
                 xmlTag = tagToXML(tag)
                 if hasattr(table, "ERROR"):
@@ -265,7 +265,7 @@ class TTFont:
                 """Import a TTX file (an XML-based text format), so as to recreate
                 a font object.
                 """
-                if self.has_key("maxp") and self.has_key("post"):
+                if "maxp" in self and "post" in self:
                         # Make sure the glyph order is loaded, as it otherwise gets
                         # lost if the XML doesn't contain the glyph order, yet does
                         # contain the table which was originally used to extract the
@@ -277,17 +277,17 @@ class TTFont:
         def isLoaded(self, tag):
                 """Return true if the table identified by 'tag' has been
                 decompiled and loaded into memory."""
-                return self.tables.has_key(tag)
+                return tag in self.tables
 
-        def has_key(self, tag):
+        def __contains__(self, tag):
                 if self.isLoaded(tag):
-                        return 1
-                elif self.reader and self.reader.has_key(tag):
-                        return 1
+                        return True
+                elif self.reader and tag in self.reader:
+                        return True
                 elif tag == "GlyphOrder":
-                        return 1
+                        return True
                 else:
-                        return 0
+                        return False
 
         def keys(self):
                 keys = self.tables.keys()
@@ -341,11 +341,11 @@ class TTFont:
                 self.tables[tag] = table
 
         def __delitem__(self, tag):
-                if not self.has_key(tag):
+                if tag not in self:
                         raise KeyError("'%s' table not found" % tag)
-                if self.tables.has_key(tag):
+                if tag in self.tables:
                         del self.tables[tag]
-                if self.reader and self.reader.has_key(tag):
+                if self.reader and tag in self.reader:
                         del self.reader[tag]
 
         def setGlyphOrder(self, glyphOrder):
@@ -356,14 +356,14 @@ class TTFont:
                         return self.glyphOrder
                 except AttributeError:
                         pass
-                if self.has_key('CFF '):
+                if 'CFF ' in self:
                         cff = self['CFF ']
                         if cff.haveGlyphNames():
                                 self.glyphOrder = cff.getGlyphOrder()
                         else:
                                 # CID-keyed font, use cmap
                                 self._getGlyphNamesFromCmap()
-                elif self.has_key('post'):
+                elif 'post' in self:
                         # TrueType font
                         glyphOrder = self['post'].getGlyphOrder()
                         if glyphOrder is None:
@@ -428,9 +428,9 @@ class TTFont:
                         allNames = {}
                         for i in range(numGlyphs):
                                 tempName = glyphOrder[i]
-                                if reversecmap.has_key(tempName):
+                                if tempName in reversecmap:
                                         unicode = reversecmap[tempName]
-                                        if agl.UV2AGL.has_key(unicode):
+                                        if unicode in agl.UV2AGL:
                                                 # get name from the Adobe Glyph List
                                                 glyphName = agl.UV2AGL[unicode]
                                         else:
@@ -439,7 +439,7 @@ class TTFont:
                                                                 hex(unicode)[2:], 4))
                                         tempName = glyphName
                                         n = 1
-                                        while allNames.has_key(tempName):
+                                        while tempName in allNames:
                                                 tempName = glyphName + "#" + `n`
                                                 n = n + 1
                                         glyphOrder[i] = tempName
@@ -481,7 +481,7 @@ class TTFont:
                         self._buildReverseGlyphOrderDict()
                 glyphOrder = self.getGlyphOrder()
                 d = self._reverseGlyphOrderDict
-                if not d.has_key(glyphName):
+                if glyphName not in d:
                         if glyphName in glyphOrder:
                                 self._buildReverseGlyphOrderDict()
                                 return self.getGlyphID(glyphName)
@@ -508,7 +508,7 @@ class TTFont:
                 tableClass = getTableClass(tag)
                 for masterTable in tableClass.dependencies:
                         if masterTable not in done:
-                                if self.has_key(masterTable):
+                                if masterTable in self:
                                         self._writeTable(masterTable, writer, done)
                                 else:
                                         done.append(masterTable)
@@ -525,7 +525,7 @@ class TTFont:
                         if self.verbose:
                                 debugmsg("compiling '%s' table" % tag)
                         return self.tables[tag].compile(self)
-                elif self.reader and self.reader.has_key(tag):
+                elif self.reader and tag in self.reader:
                         if self.verbose:
                                 debugmsg("Reading '%s' table from disk" % tag)
                         return self.reader[tag]

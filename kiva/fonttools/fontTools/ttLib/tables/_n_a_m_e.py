@@ -49,7 +49,7 @@ class table__n_a_m_e(DefaultTable.DefaultTable):
                 lastoffset = 0
                 done = {}  # remember the data so we can reuse the "pointers"
                 for name in self.names:
-                        if done.has_key(name.string):
+                        if name.string in done:
                                 name.offset, name.length = done[name.string]
                         else:
                                 name.offset, name.length = done[name.string] = len(stringData), len(name.string)
@@ -61,7 +61,8 @@ class table__n_a_m_e(DefaultTable.DefaultTable):
                 for name in self.names:
                         name.toXML(writer, ttFont)
 
-        def fromXML(self, (name, attrs, content), ttFont):
+        def fromXML(self, content_tuple, ttFont):
+                (name, attrs, content) = content_tuple
                 if name != "namerecord":
                         return # ignore unknown tags
                 if not hasattr(self, "names"):
@@ -106,7 +107,8 @@ class NameRecord:
                 writer.endtag("namerecord")
                 writer.newline()
 
-        def fromXML(self, (name, attrs, content), ttFont):
+        def fromXML(self, content_tuple, ttFont):
+                (name, attrs, content) = content_tuple
                 self.nameID = safeEval(attrs["nameID"])
                 self.platformID = safeEval(attrs["platformID"])
                 self.platEncID = safeEval(attrs["platEncID"])

@@ -382,7 +382,7 @@ class Component(CoordinateBox, Interactor):
                 'padding_right']:
                 padding_traits[name] = traits.pop(name)
 
-        if traits.has_key("container"):
+        if "container" in traits:
             # After the component is otherwise configured, make sure our
             # container gets notified of our being added to it.
             container = traits.pop("container")

@@ -26,9 +26,10 @@ class DefaultTable:
                 writer.endtag("hexdata")
                 writer.newline()
 
-        def fromXML(self, (name, attrs, content), ttFont):
+        def fromXML(self, content_tuple, ttFont):
                 from kiva.fonttools.fontTools.misc.textTools import readHex
                 from kiva.fonttools.fontTools import ttLib
+                (name, attrs, content) = content_tuple
                 if name != "hexdata":
                         raise ttLib.TTLibError("can't handle '%s' element" % name)
                 self.decompile(readHex(content), ttFont)

@@ -455,7 +455,7 @@ def registerTypeFace(face):
 
 def registerEncoding(enc):
     assert isinstance(enc, Encoding), 'Not an Encoding: %s' % enc
-    if _encodings.has_key(enc.name):
+    if enc.name in _encodings:
         # already got one, complain if they are not the same
         if enc.isEqual(_encodings[enc.name]):
             enc.freeze()
