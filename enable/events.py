@@ -5,6 +5,8 @@ For a list of all the possible event suffixes, see interactor.py.
 """
 
 # Major library imports
+import six
+import six.moves as sm
 from numpy import array, dot
 
 # Enthought imports
@@ -103,7 +105,7 @@ class BasicEvent(HasTraits):
         if len(self._transform_stack) == 0:
             return affine.affine_identity()
         else:
-            return reduce(dot, self._transform_stack[::-1])
+            return sm.reduce(dot, self._transform_stack[::-1])
 
     def current_pointer_position(self):
         """

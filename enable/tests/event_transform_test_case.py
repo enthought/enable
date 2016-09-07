@@ -3,6 +3,8 @@
 import copy
 import unittest
 
+import six
+
 # Enthought library imports
 from traits.api import Any, Tuple
 
@@ -18,7 +20,7 @@ class EnableUnitTest(unittest.TestCase):
         checks that each of the named dimensions of the object are a
         certain value.  e.g.   assert_dims(component, x=5.0, y=7.0).
         """
-        for dim, val in dims.items():
+        for dim, val in six.iteritems(dims.items):
             self.assertTrue( getattr(obj, dim) == val )
         return
 

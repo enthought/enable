@@ -6,6 +6,7 @@ if os.name != "mac":
         raise ImportError("This module is Mac-only!")
 
 import six
+import six.moves as sm
 
 import cStringIO
 import macfs
@@ -25,7 +26,7 @@ def getSFNTResIndices(path):
         Res.UseResFile(resref)
         numSFNTs = Res.Count1Resources('sfnt')
         Res.CloseResFile(resref)
-        return range(1, numSFNTs + 1)
+        return sm.range(1, numSFNTs + 1)
 
 
 def openTTFonts(path):
