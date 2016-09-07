@@ -17,12 +17,12 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         gc = agg.GraphicsContextArray((5,5))
         gc2 = agg.GraphicsContextArray((5,5))
         gc2.clear()
-        self.assert_((gc.bmp_array == gc2.bmp_array).all())
+        self.assertTrue((gc.bmp_array == gc2.bmp_array).all())
 
     def test_init_with_bmp_doesnt_clear(self):
         a = ones((5,5,4), dtype('uint8'))
         gc = agg.GraphicsContextArray(a, pix_format='rgba32')
-        self.assert_((gc.bmp_array == a).all())
+        self.assertTrue((gc.bmp_array == a).all())
 
     def test_save_restore_state(self):
         gc = agg.GraphicsContextArray((100,100))
@@ -70,14 +70,14 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         with gc:
             # Change the values in the current context.
             gc.set_stroke_color((0,0,1,1))
-            self.assert_(all(gc.get_stroke_color() == (0,0,1,1)))
+            self.assertTrue(all(gc.get_stroke_color() == (0,0,1,1)))
             gc.set_antialias(1)
             self.assertEqual(gc.get_antialias(), 1)
             gc.set_alpha(0.75)
             self.assertEqual(gc.get_alpha(), 0.75)
 
         # Verify that we are back to the previous settings.
-        self.assert_(all(gc.get_stroke_color() == (1,0,0,1)))
+        self.assertTrue(all(gc.get_stroke_color() == (1,0,0,1)))
         self.assertEqual(gc.get_antialias(), 0)
         self.assertEqual(gc.get_alpha(), 0.25)
 
@@ -92,7 +92,7 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         with gc:
             # Change the values in the current context.
             gc.set_stroke_color((0,0,1,1))
-            self.assert_(all(gc.get_stroke_color() == (0,0,1,1)))
+            self.assertTrue(all(gc.get_stroke_color() == (0,0,1,1)))
             gc.set_antialias(1)
             self.assertEqual(gc.get_antialias(), 1)
             gc.set_alpha(0.75)
@@ -101,19 +101,19 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
             with gc:
                 # Change the values in the current context.
                 gc.set_stroke_color((1,0,1,1))
-                self.assert_(all(gc.get_stroke_color() == (1,0,1,1)))
+                self.assertTrue(all(gc.get_stroke_color() == (1,0,1,1)))
                 gc.set_antialias(0)
                 self.assertEqual(gc.get_antialias(), 0)
                 gc.set_alpha(1.0)
                 self.assertEqual(gc.get_alpha(), 1.0)
 
             # Verify that we are back to the previous settings.
-            self.assert_(all(gc.get_stroke_color() == (0,0,1,1)))
+            self.assertTrue(all(gc.get_stroke_color() == (0,0,1,1)))
             self.assertEqual(gc.get_antialias(), 1)
             self.assertEqual(gc.get_alpha(), 0.75)
 
         # Verify that we are back to the previous settings.
-        self.assert_(all(gc.get_stroke_color() == (1,0,0,1)))
+        self.assertTrue(all(gc.get_stroke_color() == (1,0,0,1)))
         self.assertEqual(gc.get_antialias(), 0)
         self.assertEqual(gc.get_alpha(), 0.25)
 
@@ -165,7 +165,7 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         path = gc._get_path()
         actual, flag = path._vertex()
         desired = array((1.0, 1.0))
-        self.assert_(allclose(actual, desired))
+        self.assertTrue(allclose(actual, desired))
 
     def test_move_to1(self):
         gc = agg.GraphicsContextArray((100, 100))
@@ -174,7 +174,7 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         path = gc._get_path()
         actual, flag = path._vertex()
         desired = array((2.0, 2.0))
-        self.assert_(allclose(actual, desired))
+        self.assertTrue(allclose(actual, desired))
 
     def test_quad_curve_to(self):
         gc = agg.GraphicsContextArray((100, 100))
@@ -228,7 +228,7 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         path2 = gc._get_path()
         desired = path1._vertices()
         actual = path2._vertices()
-        self.assert_(allclose(actual, desired))
+        self.assertTrue(allclose(actual, desired))
 
         desired = path1.get_ctm()
         actual = path2.get_ctm()
@@ -248,7 +248,7 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         #print 'desired:', desired
         #print 'actual:', actual
 
-        self.assert_(allclose(actual,desired))
+        self.assertTrue(allclose(actual,desired))
 
     def test_lines_array(self):
         lines = array(((3.0,3.0),
