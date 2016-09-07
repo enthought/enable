@@ -2,13 +2,13 @@ from __future__ import absolute_import
 
 from abc import ABCMeta, abstractmethod
 
+import six
+
 from .constants import FILL_STROKE, SQUARE_MARKER
 
-
+@six.add_metaclass(ABCMeta)
 class AbstractGraphicsContext(object):
     """ Abstract Base Class for Kiva Graphics Contexts """
-
-    __metaclass__ = ABCMeta
 
     # ----------------------------------------------------------------
     # Save/Restore graphics state.

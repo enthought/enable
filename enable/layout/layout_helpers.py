@@ -6,6 +6,8 @@ from abc import ABCMeta, abstractmethod
 from collections import defaultdict
 from uuid import uuid4
 
+import six
+
 from kiwisolver import Variable, Constraint
 
 from traits.api import HasTraits, Instance, Range
@@ -84,12 +86,12 @@ def is_spacer(item):
 #------------------------------------------------------------------------------
 # Deferred Constraints
 #------------------------------------------------------------------------------
+@six.add_metaclass(ABCMeta)
 class DeferredConstraints(object):
     """ Abstract base class for objects that will yield lists of
     constraints upon request.
 
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self):
         """ Initialize a DeferredConstraints instance.
@@ -745,14 +747,13 @@ class GridHelper(BoxHelper):
 #------------------------------------------------------------------------------
 # Abstract Constraint Factory
 #------------------------------------------------------------------------------
+@six.add_metaclass(ABCMeta)
 class AbstractConstraintFactory(object):
     """ An abstract constraint factory class. Subclasses must implement
     the 'constraints' method implement which returns a LinearConstraint
     instance.
 
     """
-    __metaclass__ = ABCMeta
-
     @staticmethod
     def validate(items):
         """ A validator staticmethod that insures a sequence of items is
@@ -1072,12 +1073,12 @@ class AlignmentConstraintFactory(SequenceConstraintFactory):
 #------------------------------------------------------------------------------
 # Spacers
 #------------------------------------------------------------------------------
+@six.add_metaclass(ABCMeta)
 class Spacer(object):
     """ An abstract base class for spacers. Subclasses must implement
     the 'constrain' method.
 
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self, amt, strength=None):
         self.amt = max(0, amt)
