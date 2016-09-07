@@ -7,6 +7,7 @@ from collections import defaultdict
 from uuid import uuid4
 
 import six
+import six.moves as sm
 
 from kiwisolver import Variable, Constraint
 
@@ -655,12 +656,12 @@ class GridHelper(BoxHelper):
         row_vars = []
         col_vars = []
         cn_id = self.constraints_id
-        for idx in xrange(num_rows + 1):
+        for idx in sm.range(num_rows + 1):
             name = 'row' + str(idx)
             var = Variable('{0}|{1}'.format(cn_id, name))
             row_vars.append(var)
             constraints.append(var >= 0)
-        for idx in xrange(num_cols + 1):
+        for idx in sm.range(num_cols + 1):
             name = 'col' + str(idx)
             var = Variable('{0}|{1}'.format(cn_id, name))
             col_vars.append(var)

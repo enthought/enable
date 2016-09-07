@@ -1,6 +1,9 @@
 import unittest
 import string
 import sys
+
+import six.moves as sm
+
 from pyparsing import ParseException, Regex, StringEnd
 import enable.savage.svg.css.identifier as identifier
 
@@ -71,7 +74,7 @@ class TestNonAscii(unittest.TestCase):
             )
 
     def testMatchesOutsideAsciiRange(self):
-        for c in map(unichr, xrange(128, sys.maxunicode+1)):
+        for c in map(unichr, sm.range(128, sys.maxunicode+1)):
             self.assertEqual(
                 c,
                 identifier.nonascii.parseString(c)[0]

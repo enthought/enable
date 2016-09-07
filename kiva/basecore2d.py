@@ -32,6 +32,8 @@ transform
 
 from __future__ import absolute_import, print_function
 
+import six.moves as sm
+
 import numpy as np
 from numpy import alltrue, array, asarray, float64, shape, pi, concatenate
 
@@ -512,7 +514,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
             The current point is moved to the last point in 'ends'.
         """
         self._new_subpath()
-        for i in xrange(min(len(starts), len(ends))):
+        for i in sm.range(min(len(starts), len(ends))):
             self.active_subpath.append((POINT, starts[i]))
             self.active_subpath.append((LINE, ends[i]))
         self.state.current_point = ends[i]

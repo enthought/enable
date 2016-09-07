@@ -38,6 +38,8 @@ trap attempts to access them and do it on first access.
 import string, os
 from types import list, tuple
 
+import six.moves as sm
+
 # XXX Kiva specific changes
 defaultEncoding = 'WinAnsiEncoding'       # 'WinAnsi' or 'MacRoman'
 import _fontdata
@@ -273,7 +275,7 @@ class Encoding:
 
         ranges = []
         curRange = None
-        for i in xrange(len(self.vector)):
+        for i in sm.range(len(self.vector)):
             glyph = self.vector[i]
             if glyph==otherEnc.vector[i]:
                 if curRange:

@@ -1,4 +1,6 @@
 import svg
+import six.moves as sm
+
 import wx
 import wx.py.shell
 import wx.aui
@@ -95,14 +97,14 @@ class DrawFrame(wx.Frame):
         self.panel.SetPath(path)
 
     def FillPath(self, path):
-        for row in xrange(100):
+        for row in sm.range(100):
             #~ print row,
             operation = self.grid.GetCellValue(row, 0)
             if not operation:
                 return
             #~ print operation,
             args = []
-            for col in xrange(1,20):
+            for col in sm.range(1,20):
                 v = self.grid.GetCellValue(row, col)
                 if not v:
                     break
