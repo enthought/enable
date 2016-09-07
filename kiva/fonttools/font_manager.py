@@ -61,6 +61,9 @@ try:
 except ImportError:
     import pickle
 
+import six
+import six.moves as sm
+
 from traits.etsconfig.api import ETSConfig
 from kiva.fonttools.fontTools.ttLib import TTFont, TTLibError
 
@@ -269,19 +272,19 @@ def win32FontDirectory():
     If the key is not found, $WINDIR/Fonts will be returned.
     """
     try:
-        import _winreg
+        from six.moves import winreg
     except ImportError:
         pass  # Fall through to default
     else:
         try:
-            user = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, MSFolders)
+            user = winreg.OpenKey(winreg.HKEY_CURRENT_USER, MSFolders)
             try:
                 try:
-                    return _winreg.QueryValueEx(user, 'Fonts')[0]
+                    return winreg.QueryValueEx(user, 'Fonts')[0]
                 except OSError:
                     pass  # Fall through to default
             finally:
-                _winreg.CloseKey(user)
+                winreg.CloseKey(user)
         except OSError:
             pass  # Fall through to default
     return os.path.join(os.environ['WINDIR'], 'Fonts')
@@ -294,8 +297,7 @@ def win32InstalledFonts(directory=None, fontext='ttf'):
     filenames are returned by default, or AFM fonts if *fontext* ==
     'afm'.
     """
-
-    import _winreg
+    from six.moves import winreg
     if directory is None:
         directory = win32FontDirectory()
 
@@ -304,7 +306,7 @@ def win32InstalledFonts(directory=None, fontext='ttf'):
     key, items = None, {}
     for fontdir in MSFontDirectories:
         try:
-            local = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, fontdir)
+            local = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, fontdir)
         except OSError:
             continue
 
@@ -314,9 +316,9 @@ def win32InstalledFonts(directory=None, fontext='ttf'):
                 files.extend(glob.glob(os.path.join(directory, '*.'+ext)))
             return files
         try:
-            for j in range(_winreg.QueryInfoKey(local)[1]):
+            for j in sm.range(winreg.QueryInfoKey(local)[1]):
                 try:
-                    key, direc, any = _winreg.EnumValue(local, j)
+                    key, direc, any = winreg.EnumValue(local, j)
                     if not os.path.dirname(direc):
                         direc = os.path.join(directory, direc)
                     direc = os.path.abspath(direc).lower()
@@ -327,9 +329,9 @@ def win32InstalledFonts(directory=None, fontext='ttf'):
                 except WindowsError:
                     continue
 
-            return items.keys()
+            return list(six.iterkeys(items))
         finally:
-            _winreg.CloseKey(local)
+            winreg.CloseKey(local)
     return None
 
 
@@ -476,7 +478,7 @@ def findSystemFonts(fontpaths=None, fontext='ttf'):
             else:
                 fontfiles[abs_path] = 1
 
-    return [fname for fname in fontfiles.keys() if os.path.exists(fname)]
+    return [fname for fname in six.iterkeys(fontfiles) if os.path.exists(fname)]
 
 
 def weight_as_number(weight):
@@ -570,7 +572,7 @@ def ttfFontProperty(fpath, font):
     #    lighter and bolder are also allowed.
 
     weight = None
-    for w in weight_dict.keys():
+    for w in six.iterkeys(weight_dict):
         if sfnt4.find(w) >= 0:
             weight = w
             break
@@ -998,12 +1000,12 @@ def ttfdict_to_fnames(d):
     flatten a ttfdict to all the filenames it contains
     """
     fnames = []
-    for named in d.values():
-        for styled in named.values():
-            for variantd in styled.values():
-                for weightd in variantd.values():
-                    for stretchd in weightd.values():
-                        for fname in stretchd.values():
+    for named in six.itervalues(d):
+        for styled in six.itervalues(named):
+            for variantd in six.itervalues(styled):
+                for weightd in six.itervalues(variantd):
+                    for stretchd in six.itervalues(weightd):
+                        for fname in six.itervalues(stretchd):
                             fnames.append(fname)
     return fnames
 

@@ -35,6 +35,7 @@ import string
 import os
 import sys
 
+import six
 from six.moves import UserDict
 
 # mapping of name to width vector, starts empty until fonts are added
@@ -112,7 +113,7 @@ class _Name2StandardEncodingMap(UserDict):
         y = x.lower()
         if y[-8:]=='encoding': y = y[:-8]
         y = self._XMap[y]
-        if y in self.keys(): raise IndexError('Encoding %s is already set' % y)
+        if y in self: raise IndexError('Encoding %s is already set' % y)
         self.data[y] = v
 
     def __getitem__(self,x):
@@ -1246,7 +1247,7 @@ widthsByFontGlyph['Helvetica-BoldOblique'] = {'A': 722,
 
 # Courier can be expressed more compactly!
 _w = {}
-for charname in widthsByFontGlyph['Helvetica'].keys():
+for charname in widthsByFontGlyph['Helvetica']:
     _w[charname] = 600
 widthsByFontGlyph['Courier'] = _w
 widthsByFontGlyph['Courier-Bold'] = _w

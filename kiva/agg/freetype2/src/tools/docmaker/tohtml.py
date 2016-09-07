@@ -1,6 +1,8 @@
 #  ToHTML (c) 2002, 2003, 2005, 2006, 2007, 2008
 #    David Turner <david@freetype.org>
 
+import six
+
 from sources import *
 from content import *
 from formatter import *
@@ -169,27 +171,27 @@ section_synopsis_footer = ''
 # Translate a single line of source to HTML.  This will convert
 # a "<" into "&lt.", ">" into "&gt.", etc.
 def  html_quote( line ):
-    result = string.replace( line, "&", "&amp;" )
-    result = string.replace( result, "<", "&lt;" )
-    result = string.replace( result, ">", "&gt;" )
+    result = line.replace("&", "&amp;" )
+    result = result.replace("<", "&lt;" )
+    result = result.replace(">", "&gt;" )
     return result
 
 
 # same as 'html_quote', but ignores left and right brackets
 def  html_quote0( line ):
-    return string.replace( line, "&", "&amp;" )
+    return line.replace("&", "&amp;" )
 
 
 def  dump_html_code( lines, prefix = "" ):
     # clean the last empty lines
-    l = len( self.lines )
-    while l > 0 and string.strip( self.lines[l - 1] ) == "":
+    l = len( lines )
+    while l > 0 and lines[l - 1].strip() == "":
         l = l - 1
 
     # The code footer should be directly appended to the last code
     # line to avoid an additional blank line.
     print(prefix + code_header, end=" ")
-    for line in self.lines[0 : l + 1]:
+    for line in lines[0 : l + 1]:
         print('\n' + prefix + html_quote( line ), end=" ")
     print(prefix + code_footer, end=" ")
 
@@ -296,7 +298,7 @@ class  HtmlFormatter( Formatter ):
                            r'\1&lsquo;\2&rsquo;\3', \
                            line )
             # convert tilde into non-breakable space
-            line = string.replace( line, "~", "&nbsp;" )
+            line = line.replace("~", "&nbsp;" )
 
         return para_header + line + para_footer
 
@@ -317,7 +319,7 @@ class  HtmlFormatter( Formatter ):
             else:
                 lines.append( self.make_html_para( item.words ) )
 
-        return string.join( lines, '\n' )
+        return '\n'.join(lines)
 
     def  print_html_items( self, items ):
         print(self.make_html_items( items ))
@@ -498,7 +500,7 @@ class  HtmlFormatter( Formatter ):
         print(section_title_footer)
 
         maxwidth = 0
-        for b in section.blocks.values():
+        for b in six.itervalues(section.blocks):
             if len( b.name ) > maxwidth:
                 maxwidth = len( b.name )
 
@@ -545,10 +547,10 @@ class  HtmlFormatter( Formatter ):
         # dump the block C source lines now
         if block.code:
             header = ''
-            for f in self.headers.keys():
+            for f in six.iterkeys(self.headers):
                 if block.source.filename.find( f ) >= 0:
                     header = self.headers[f] + ' (' + f + ')'
-                    break;
+                    break
 
 #           if not header:
 #               sys.stderr.write( \

@@ -20,8 +20,12 @@
 import os
 import sys
 from cStringIO import StringIO
-from numpy import arange, ravel, array
 import warnings
+
+import six
+
+from numpy import arange, ravel, array
+
 
 # Local, relative Kiva imports
 import affine
@@ -65,12 +69,12 @@ def _strpoints(points):
     return c.getvalue()
 
 def _mkstyle(kw):
-    return '"' + '; '.join([str(k) + ':' + str(v) for k,v in kw.items()]) +'"'
+    return '"' + '; '.join([str(k) + ':' + str(v) for k,v in six.iteritems(kw)]) +'"'
 
 
 def default_filter(kw1):
     kw = {}
-    for (k,v) in kw1.items():
+    for (k,v) in six.iteritems(kw1):
         if type(v) == type(()):
             if v[0] != v[1]:
                 kw[k] = v[0]

@@ -8,7 +8,9 @@
 from sources import *
 from utils import *
 import string, re
+import sys
 
+import six
 
 # this regular expression is used to detect code sequences. these
 # are simply code fragments embedded in '{' and '}' like in:
@@ -439,7 +441,7 @@ class  ContentProcessor:
         # process all sections to extract their abstract, description
         # and ordered list of items
         #
-        for sec in self.sections.values():
+        for sec in six.itervalues(self.sections):
             sec.process()
 
         # process chapters to check that all sections are correctly
@@ -459,7 +461,7 @@ class  ContentProcessor:
         # check that all sections are in a chapter
         #
         others = []
-        for sec in self.sections.values():
+        for sec in six.itervalues(self.sections):
             if not sec.chapter:
                 others.append( sec )
 

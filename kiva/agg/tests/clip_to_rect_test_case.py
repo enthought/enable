@@ -183,7 +183,7 @@ class ClipToRectTestCase(unittest.TestCase, Utils):
         gc = GraphicsContextArray((1,1), pix_format="rgb24")
         gc.rotate_ctm(1.0)
 
-        self.failUnlessRaises(NotImplementedError,
+        self.assertRaises(NotImplementedError,
                               gc.clip_to_rect, 0, 0, 1, 1)
 
     #------------------------------------------------------------------------

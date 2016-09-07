@@ -1307,7 +1307,7 @@ if __name__=="__main__":
         x = linspace(low, high, numpoints)
         pd = ArrayPlotData(index=x)
         p = Plot(pd, bgcolor="lightgray", padding=50, border_visible=True)
-        for t,i in sm.zip(cycle(['line','scatter']),range(10)):
+        for t,i in sm.zip(cycle(['line','scatter']),sm.range(10)):
             pd.set_data("y" + str(i), jn(i,x))
             p.plot(("index", "y" + str(i)), color=tuple(COLOR_PALETTE[i]),
                    width = 2.0 * dpi_scale, type=t)

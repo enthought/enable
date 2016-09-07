@@ -449,7 +449,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         if self.path_transform_indices:
             tf = array(self.active_subpath,
                        object)[self.path_transform_indices, :]
-            self.path_transform_indices = range(len(tf))
+            self.path_transform_indices = list(sm.range(len(tf)))
             self.active_subpath = list(tf)
         else:
             self.active_subpath = []

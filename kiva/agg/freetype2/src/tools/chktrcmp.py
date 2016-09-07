@@ -9,6 +9,7 @@
 import sys
 import os
 import re
+import six
 
 SRC_FILE_LIST   = []
 USED_COMPONENT  = {}
@@ -98,15 +99,13 @@ for f in TRACE_DEF_FILES:
 #
 
 print("# Trace component used in the implementations but not defined in fttrace.h.")
-cmpnt = USED_COMPONENT.keys()
-cmpnt.sort()
+cmpnt = sorted(six.iterkeys(USED_COMPONENT))
 for c in cmpnt:
   if c not in KNOWN_COMPONENT:
     print("Trace component %s (used in %s) is not defined." % ( c, ", ".join( USED_COMPONENT[c] ) ))
 
 print("# Trace component is defined but not used in the implementations.")
-cmpnt = KNOWN_COMPONENT.keys()
-cmpnt.sort()
+cmpnt = sorted(six.iterkeys(KNOWN_COMPONENT))
 for c in cmpnt:
   if c not in USED_COMPONENT:
     if c != "any":

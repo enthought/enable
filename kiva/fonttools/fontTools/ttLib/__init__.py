@@ -49,6 +49,7 @@ import os
 import string
 import types
 
+import six
 
 class TTLibError(Exception): pass
 
@@ -156,6 +157,7 @@ class TTFont:
                         # assume "file" is a writable file object
                         closeStream = 0
 
+                # THIS IS NOT STANDARD DICTIONARY
                 tags = self.keys()
                 tags.remove("GlyphOrder")
                 numTables = len(tags)
@@ -195,7 +197,7 @@ class TTFont:
                         idlefunc = None
 
                 writer = xmlWriter.XMLWriter(fileOrPath, idlefunc=idlefunc)
-                writer.begintag("ttFont", sfntVersion=`self.sfntVersion`[1:-1],
+                writer.begintag("ttFont", sfntVersion=repr(self.sfntVersion)[1:-1],
                                 ttLibVersion=version)
                 writer.newline()
 
@@ -289,8 +291,8 @@ class TTFont:
                 else:
                         return False
 
-        def keys(self):
-                keys = self.tables.keys()
+        def keys(self, **kwargs):
+                keys = list(self.tables.keys())
                 if self.reader:
                         for key in self.reader.keys():
                                 if key not in keys:
@@ -423,24 +425,23 @@ class TTFont:
                         cmap = tempcmap.cmap
                         # create a reverse cmap dict
                         reversecmap = {}
-                        for unicode, name in cmap.items():
-                                reversecmap[name] = unicode
+                        for temp_unicode, name in six.iteritems(cmap):
+                                reversecmap[name] = temp_unicode
                         allNames = {}
                         for i in range(numGlyphs):
                                 tempName = glyphOrder[i]
                                 if tempName in reversecmap:
-                                        unicode = reversecmap[tempName]
-                                        if unicode in agl.UV2AGL:
+                                        temp_unicode = reversecmap[tempName]
+                                        if temp_unicode in agl.UV2AGL:
                                                 # get name from the Adobe Glyph List
-                                                glyphName = agl.UV2AGL[unicode]
+                                                glyphName = agl.UV2AGL[temp_unicode]
                                         else:
                                                 # create uni<CODE> name
-                                                glyphName = "uni" + string.upper(string.zfill(
-                                                                hex(unicode)[2:], 4))
+                                                glyphName = "uni" + hex(temp_unicode)[2:].zfill(4).upper()
                                         tempName = glyphName
                                         n = 1
                                         while tempName in allNames:
-                                                tempName = glyphName + "#" + `n`
+                                                tempName = glyphName + "#" + repr(n)
                                                 n = n + 1
                                         glyphOrder[i] = tempName
                                         allNames[tempName] = 1

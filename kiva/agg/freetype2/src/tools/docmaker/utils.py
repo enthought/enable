@@ -20,8 +20,8 @@ def  index_sort( s1, s2 ):
 
     l1 = len( s1 )
     l2 = len( s2 )
-    m1 = string.lower( s1 )
-    m2 = string.lower( s2 )
+    m1 = s1.lower()
+    m2 = s2.lower()
 
     for i in range( l1 ):
         if i >= l2 or m1[i] > m2[i]:

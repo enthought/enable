@@ -41,6 +41,8 @@ from cStringIO import StringIO
 from numpy import arange, ravel, array
 import warnings
 
+import six
+
 # Local, relative Kiva imports
 import affine
 import basecore2d
@@ -56,12 +58,12 @@ def _strpoints(points):
     return c.getvalue()
 
 def _mkstyle(kw):
-    return '; '.join([str(k) + ':' + str(v) for k,v in kw.items()])
+    return '; '.join([str(k) + ':' + str(v) for k,v in six.iteritems(kw)])
 
 
 def default_filter(kw1):
     kw = {}
-    for (k,v) in kw1.items():
+    for (k,v) in six.iteritems(kw1):
         if type(v) == type(()):
             if v[0] != v[1]:
                 kw[k] = v[0]
@@ -340,7 +342,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
     def _build(self, elname, contents=None, **kw):
         x = '<' + elname + ' '
-        for k,v in kw.items():
+        for k,v in six.iteritems(kw):
             if type(v) == type(0.0):
                 v = '%3.3f' % v
             elif type(v) == type(0):
@@ -398,9 +400,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
     def _emit(self, name, contents=None, kw={}, **otherkw):
         self.contents.write('<svg:%(name)s ' % locals())
-        for k, v in kw.items():
+        for k, v in six.iteritems(kw):
             self.contents.write('%(k)s="%(v)s" ' % locals())
-        for k, v in otherkw.items():
+        for k, v in six.iteritems(otherkw):
             self.contents.write('%(k)s="%(v)s" ' % locals())
         if contents is None:
             self.contents.write('/>\n')

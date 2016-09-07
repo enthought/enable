@@ -5,6 +5,8 @@ import os
 if os.name != "mac":
         raise ImportError("This module is Mac-only!")
 
+import six
+
 import cStringIO
 import macfs
 try:
@@ -163,13 +165,13 @@ class SFNTResourceWriter:
                 cmap = self.ttFont['cmap'].getcmap(1, 0)
                 if cmap:
                         names = {}
-                        for code, name in cmap.cmap.items():
+                        for code, name in six.iteritems(cmap.cmap):
                                 names[name] = code
                         if 'kern' in self.ttFont:
                                 kern = self.ttFont['kern'].getkern(0)
                                 if kern:
                                         fondkerning = []
-                                        for (left, right), value in kern.kernTable.items():
+                                        for (left, right), value in six.iteritems(kern.kernTable):
                                                 if left in names and right in names:
                                                         fondkerning.append((names[left], names[right], scale * value))
                                         fondkerning.sort()
@@ -177,7 +179,7 @@ class SFNTResourceWriter:
                         if 'hmtx' in self.ttFont:
                                 hmtx = self.ttFont['hmtx']
                                 fondwidths = [2048] * 256 + [0, 0]  # default width, + plus two zeros.
-                                for name, (width, lsb) in hmtx.metrics.items():
+                                for name, (width, lsb) in six.iteritems(hmtx.metrics):
                                         if name in names:
                                                 fondwidths[names[name]] = scale * width
                                 fond.widthTables = {0: fondwidths}

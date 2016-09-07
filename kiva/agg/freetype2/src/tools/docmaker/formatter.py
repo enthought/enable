@@ -1,5 +1,7 @@
 #  Formatter (c) 2002, 2004, 2007, 2008 David Turner <david@freetype.org>
 #
+import sys
+import six
 
 from sources import *
 from content import *
@@ -20,13 +22,13 @@ class  Formatter:
         self.processor   = processor
         self.identifiers = {}
         self.chapters    = processor.chapters
-        self.sections    = processor.sections.values()
+        self.sections    = list(six.itervalues(processor.sections))
         self.block_index = []
 
         # store all blocks in a dictionary
         self.blocks = []
         for section in self.sections:
-            for block in section.blocks.values():
+            for block in six.itervalues(section.blocks):
                 self.add_identifier( block.name, block )
 
                 # add enumeration values to the index, since this is useful
@@ -34,9 +36,8 @@ class  Formatter:
                     if markup.tag == 'values':
                         for field in markup.fields:
                             self.add_identifier( field.name, block )
-
-        self.block_index = self.identifiers.keys()
-        self.block_index.sort( index_sort )
+        # FIXME: This is bogus code, the intent is loosely respected but it never worked in 2.7
+        self.block_index = sorted(six.iterkeys(self.identifiers), key=index_sort)
 
     def  add_identifier( self, name, block ):
         if name in self.identifiers:
