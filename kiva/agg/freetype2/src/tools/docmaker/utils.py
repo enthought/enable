@@ -3,6 +3,9 @@
 
 import string, sys, os, glob
 
+import six
+import six.moves as sm
+
 # current output directory
 #
 output_dir = None
@@ -125,7 +128,7 @@ def  make_file_list( args = None ):
         file_list = None
     else:
         # now filter the file list to remove non-existing ones
-        file_list = filter( file_exists, file_list )
+        file_list = list(sm.filter( file_exists, file_list ))
 
     return file_list
 

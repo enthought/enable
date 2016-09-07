@@ -68,14 +68,14 @@ class TestEscape(unittest.TestCase):
 
 class TestNonAscii(unittest.TestCase):
     def testNoMatchInAsciiRange(self):
-        for c in map(six.unichr, range(128)):
+        for c in sm.map(six.unichr, sm.range(128)):
             self.assertRaises(
                 ParseException,
                 identifier.nonascii.parseString, c
             )
 
     def testMatchesOutsideAsciiRange(self):
-        for c in map(six.unichr, sm.range(128, sys.maxunicode+1)):
+        for c in sm.map(six.unichr, sm.range(128, sys.maxunicode+1)):
             self.assertEqual(
                 c,
                 identifier.nonascii.parseString(c)[0]

@@ -3,7 +3,6 @@
 renderers.
 """
 
-from cStringIO import StringIO
 import glob
 import logging
 import os
@@ -11,6 +10,8 @@ import pstats
 import sys
 from xml.etree import cElementTree as ET
 import warnings
+
+import six
 
 from PIL import Image
 import numpy as np
@@ -256,7 +257,7 @@ class Comparator(HasTraits):
                 p[:] = para[:]
 
         tree = ET.ElementTree(html)
-        f = StringIO()
+        f = six.StringIO()
         tree.write(f)
         text = f.getvalue()
         self.description = text

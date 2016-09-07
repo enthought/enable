@@ -22,8 +22,10 @@
 #  Imports:
 #-------------------------------------------------------------------------------
 
-from cStringIO import StringIO
+
 from xml.etree.cElementTree import ElementTree
+
+import six
 
 from enable.savage.svg.document import SVGDocument
 
@@ -63,7 +65,7 @@ class SVGEditor(Editor):
         value = self.value
 
         if isinstance(value, SVGDocument):
-            string_io = StringIO()
+            string_io = six.StringIO()
             ElementTree(value.tree).write(string_io)
             value = string_io.getvalue()
 
