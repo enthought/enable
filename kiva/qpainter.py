@@ -13,7 +13,7 @@
 from __future__ import absolute_import, print_function
 
 from functools import partial
-from itertools import izip
+import six.moves as sm
 import numpy as np
 import warnings
 
@@ -342,7 +342,7 @@ class GraphicsContext(object):
     def line_set(self, starts, ends):
         """ Draw multiple disjoint line segments.
         """
-        for start, end in izip(starts, ends):
+        for start, end in sm.zip(starts, ends):
             self.path.path.moveTo(start[0], start[1])
             self.path.path.lineTo(end[0], end[1])
 

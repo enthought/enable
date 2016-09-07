@@ -552,7 +552,8 @@ class GlyphOrder:
                         writer.simpletag("GlyphID", id=i, name=glyphName)
                         writer.newline()
 
-        def fromXML(self, (name, attrs, content), ttFont):
+        def fromXML(self, content_tuple, ttFont):
+                (name, attrs, content) = content_tuple
                 if not hasattr(self, "glyphOrder"):
                         self.glyphOrder = []
                         ttFont.setGlyphOrder(self.glyphOrder)
