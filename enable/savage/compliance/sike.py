@@ -206,7 +206,7 @@ class SillyStatsWrapper(object):
             self.stats = {}
         elif isinstance(obj, dict):
             self.stats = obj
-        elif isinstance(obj, basestring):
+        elif isinstance(obj, six.string_types):
             # Load from a file.
             self.stats = pstats.Stats(obj)
         elif hasattr(obj, 'stats'):

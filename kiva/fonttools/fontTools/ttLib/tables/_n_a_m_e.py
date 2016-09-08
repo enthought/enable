@@ -151,8 +151,5 @@ class NameRecord:
                 returns a Python Long int.
                 This has been fixed in Python 1.5.2.
                 """
-                for attr in dir(self):
-                        val = getattr(self, attr)
-                        if type(val) == types.LongType:
-                                setattr(self, attr, int(val))
+                pass
 

@@ -107,9 +107,9 @@ class DeferredConstraints(object):
         strength.
 
         """
-        if isinstance(other, (float, int, long)):
+        if isinstance(other, (float, six.integer_types)):
             self.default_string = float(other)
-        elif isinstance(other, basestring):
+        elif isinstance(other, six.string_types):
             if other not in STRENGTHS:
                 raise ValueError('Invalid strength %r' % other)
             self.default_strength = other

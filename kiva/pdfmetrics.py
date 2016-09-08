@@ -224,7 +224,7 @@ class Encoding:
             # assume based on the usual one
             self.baseEncodingName = defaultEncoding
             self.vector = _fontdata.encodings[defaultEncoding]
-        elif isinstance(base, basestring):
+        elif isinstance(base, six.string_types):
             baseEnc = getEncoding(base)
             self.baseEncodingName = baseEnc.name
             self.vector = baseEnc.vector[:]

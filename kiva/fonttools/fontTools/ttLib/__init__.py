@@ -109,7 +109,7 @@ class TTFont:
                 if not file:
                         self.sfntVersion = sfntVersion
                         return
-                if isinstance(file, basestring):
+                if isinstance(file, six.string_types):
                         if os.name == "mac" and res_name_or_index is not None:
                                 # on the mac, we deal with sfnt resources as well as flat files
                                 from . import macUtils
@@ -142,7 +142,7 @@ class TTFont:
                 file will we made instead of a flat .ttf file.
                 """
                 from kiva.fonttools.fontTools.ttLib import sfnt
-                if isinstance(file, basestring):
+                if isinstance(file, six.string_types):
                         closeStream = 1
                         if os.name == "mac" and makeSuitcase:
                                 from . import macUtils

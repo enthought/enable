@@ -182,7 +182,7 @@ def _is_writable_dir(p):
     p is a string pointing to a putative writable dir -- return True p
     is such a string, else False
     """
-    if not isinstance(p, basestring):
+    if not isinstance(p, six.string_types):
         return False
 
     try:
@@ -216,7 +216,7 @@ def is_string_like(obj):
     'Return True if *obj* looks like a string'
     from numpy import ma
 
-    if isinstance(obj, basestring):
+    if isinstance(obj, six.string_types):
         return True
     # numpy strings are subclass of str, ma strings are not
     if ma.isMaskedArray(obj):
@@ -455,7 +455,7 @@ def findSystemFonts(fontpaths=None, fontext='ttf'):
             for f in get_fontconfig_fonts(fontext):
                 fontfiles[f] = 1
 
-    elif isinstance(fontpaths, (str, unicode)):
+    elif isinstance(fontpaths, six.string_types):
         fontpaths = [fontpaths]
 
     for path in fontpaths:
