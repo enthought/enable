@@ -1,4 +1,15 @@
-from .agg import *
+from .agg import (
+    pix_format_gray8,
+    pix_format_rgb555,
+    pix_format_rgb565,
+    pix_format_rgb24,
+    pix_format_bgr24,
+    pix_format_rgba32,
+    pix_format_argb32,
+    pix_format_abgr32,
+    pix_format_bgra32,
+    GraphicsContextArray
+)
 
 pix_format_string_map = {}
 pix_format_string_map["gray8"] = pix_format_gray8
@@ -26,7 +37,7 @@ try:
                      pix_format=default_pix_format,
                      interpolation="nearest",
                      bottom_up=True):
-            assert isinstance(size, types.TupleType), repr(size)
+            assert isinstance(size, tuple), repr(size)
             width,height = size
             pixel_map = PixelMap(
                 width,
