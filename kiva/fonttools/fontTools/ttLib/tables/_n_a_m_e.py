@@ -1,11 +1,11 @@
-import DefaultTable
+from . import DefaultTable
 
 import six
 
 import struct
 from kiva.fonttools import sstruct
 from kiva.fonttools.fontTools.misc.textTools import safeEval
-import string
+
 import types
 
 nameRecordFormat = """
@@ -44,7 +44,7 @@ class table__n_a_m_e(DefaultTable.DefaultTable):
                         # from the TTX file
                         self.names = []
                 self.names.sort()  # sort according to the spec; see NameRecord.__cmp__()
-                stringData = ""
+                stringData = b""
                 format = 0
                 n = len(self.names)
                 stringoffset = 6 + n * sstruct.calcsize(nameRecordFormat)
@@ -124,7 +124,7 @@ class NameRecord:
                         s = s.strip()
                         self.string = s.encode("utf_16_be")
                 else:
-                        s = string.strip(string.join(content, ""))
+                        s = "".join(content).strip()
                         self.string = six.text_type(s).encode("latin1")
 
         def __cmp__(self, other):

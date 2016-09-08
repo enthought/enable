@@ -67,7 +67,7 @@ class OldChacoRenderController(AbstractRenderController):
                         component._backbuffer = None
                         component.invalidate_draw()
                     if not self.draw_valid:
-                        from kiva_graphics_context import GraphicsContext
+                        from .kiva_graphics_context import GraphicsContext
                         bb = GraphicsContext(tuple(map(int, component.bounds)))
                         bb.translate_ctm(-component.x, -component.y)
                         self._do_draw(component, bb, view_bounds=None, mode=mode)

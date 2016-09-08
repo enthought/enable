@@ -1,1 +1,1 @@
-from rgba_color_editor import RGBAColorEditor
+from .rgba_color_editor import RGBAColorEditor

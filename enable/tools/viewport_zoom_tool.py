@@ -10,8 +10,9 @@ from traits.api import Bool, Enum, Float, Instance, Int, List, \
 from enable.base_tool import KeySpec
 from enable.colors import ColorTrait
 from enable.abstract_overlay import AbstractOverlay
-from base_zoom_tool import BaseZoomTool
-from tool_history_mixin import ToolHistoryMixin
+
+from .base_zoom_tool import BaseZoomTool
+from .tool_history_mixin import ToolHistoryMixin
 
 class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
     """ Selects a range along the index or value axis.

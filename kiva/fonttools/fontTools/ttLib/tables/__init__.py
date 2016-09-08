@@ -34,7 +34,7 @@ def _moduleFinderHint():
 ##      import _k_e_r_n
 ##      import _l_o_c_a
 ##      import _m_a_x_p
-        import _n_a_m_e
+        from . import _n_a_m_e
 ##      import _p_o_s_t
 ##      import _p_r_e_p
 ##      import _v_h_e_a

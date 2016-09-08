@@ -44,7 +44,8 @@ import six.moves as sm
 
 # XXX Kiva specific changes
 defaultEncoding = 'WinAnsiEncoding'       # 'WinAnsi' or 'MacRoman'
-import _fontdata
+
+from . import _fontdata
 
 standardFonts = _fontdata.standardFonts
 standardEncodings = _fontdata.standardEncodings

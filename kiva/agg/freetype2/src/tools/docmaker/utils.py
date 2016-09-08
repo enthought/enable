@@ -115,7 +115,7 @@ def  make_file_list( args = None ):
         args = sys.argv[1 :]
 
     for pathname in args:
-        if string.find( pathname, '*' ) >= 0:
+        if '*' in pathname:
             newpath = glob.glob( pathname )
             newpath.sort()  # sort files -- this is important because
                             # of the order of files

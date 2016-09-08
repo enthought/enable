@@ -19,7 +19,6 @@
 # Major library imports
 import os
 import sys
-from cStringIO import StringIO
 import warnings
 
 import six
@@ -28,11 +27,22 @@ from numpy import arange, ravel, array
 
 
 # Local, relative Kiva imports
-import affine
-import basecore2d
-import constants
-from constants import *
-import agg
+from . import affine
+from . import basecore2d
+from . import constants
+from .constants import (
+    FILL_STROKE,
+    EOF_FILL_STROKE,
+    FILL,
+    STROKE,
+    EOF_FILL,
+    LOAD_CTM,
+    CONCAT_CTM,
+    SCALE_CTM,
+    ROTATE_CTM,
+    TRANSLATE_CTM
+)
+from . import agg
 
 # This backend does not have compiled paths, yet.
 CompiledPath = None
@@ -63,7 +73,7 @@ except ImportError:
     log = FakeLogger()
 
 def _strpoints(points):
-    c = StringIO()
+    c = six.StringIO()
     for x,y in points:
         c.write('%3.2f,%3.2f ' % (x,y))
     return c.getvalue()
@@ -95,10 +105,6 @@ line_join_map = {
 }
 
 font_map = {'Arial': 'Helvetica'}
-
-import _fontdata
-
-font_map = {'Arial': 'Helvetica'}
 try:
     # reportlab supports more fonts
     import reportlab.pdfbase.pdfmetrics as pdfmetrics
@@ -106,8 +112,8 @@ try:
     _reportlab_loaded = 1
 except ImportError:
     # we support the basic 14
-    import pdfmetrics
-    import _fontdata
+    from . import _fontdata
+    from . import pdfmetrics
     _reportlab_loaded = 0
 
 font_face_map = {'Arial': 'Helvetica', '': 'Helvetica'}
@@ -128,12 +134,12 @@ class PSGC(basecore2d.GraphicsContextBase):
         super(PSGC, self).__init__(size, *args, **kwargs)
         self.size = size
         self._height = size[1]
-        self.contents = StringIO()
+        self.contents = six.StringIO()
         self._clipmap = {}
         self.clip_id = None
 
     def clear(self):
-        self.contents = StringIO()
+        self.contents = six.StringIO()
 
     def width(self):
         return self.size[0]
@@ -203,7 +209,7 @@ class PSGC(basecore2d.GraphicsContextBase):
 
         Requires the Python Imaging Library (PIL).
         """
-        from kiva.compat import pilfromstring, piltostring
+        from kiva.compat import pilfromstring, piltostring, Image as PilImage
 
         if type(img) == type(array([])):
             # Numeric array

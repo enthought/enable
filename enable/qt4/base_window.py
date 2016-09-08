@@ -24,7 +24,7 @@ from enable.events import KeyEvent, MouseEvent, DragEvent
 from traits.api import Instance
 
 # Local imports.
-from constants import BUTTON_NAME_MAP, KEY_MAP, POINTER_MAP, DRAG_RESULTS_MAP
+from .constants import BUTTON_NAME_MAP, KEY_MAP, POINTER_MAP, DRAG_RESULTS_MAP
 
 class _QtWindowHandler(object):
     def __init__(self, qt_window, enable_window):

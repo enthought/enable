@@ -1,2 +1,2 @@
-from transform import transformList
-from inline import inlineStyle
+from .transform import transformList
+from .inline import inlineStyle

@@ -4,7 +4,7 @@ from numpy import array, ones
 
 from kiva import agg
 
-from test_utils import Utils
+from .test_utils import Utils
 
 class RgbaTestCase(unittest.TestCase, Utils):
 

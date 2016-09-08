@@ -25,7 +25,7 @@ import nose
 from kiva.agg import GraphicsContextArray
 import kiva
 
-from test_utils import Utils
+from .test_utils import Utils
 
 class ClipToRectTestCase(unittest.TestCase, Utils):
 

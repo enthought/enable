@@ -56,11 +56,6 @@ import warnings
 import tempfile
 import errno
 
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
-
 import six
 import six.moves as sm
 
@@ -1017,7 +1012,7 @@ def pickle_dump(data, filename):
     """
     fh = open(filename, 'wb')
     try:
-        pickle.dump(data, fh)
+        sm.cPickle.dump(data, fh)
     finally:
         fh.close()
 
@@ -1029,7 +1024,7 @@ def pickle_load(filename):
     """
     fh = open(filename, 'rb')
     try:
-        data = pickle.load(fh)
+        data = sm.cPickle.load(fh)
     finally:
         fh.close()
     return data

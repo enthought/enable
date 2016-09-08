@@ -20,11 +20,11 @@ except ImportError:
 
 import numpy
 
-import css
-from css.colour import colourValue
-from css import values
-from attributes import paintValue
-from svg_regex import svg_parser
+from . import css
+from .css.colour import colourValue
+from .css import values
+from .attributes import paintValue
+from .svg_regex import svg_parser
 
 from enable.savage.svg.backends.null.null_renderer import NullRenderer, AbstractGradientBrush
 
@@ -1094,7 +1094,3 @@ class SVGDocument(object):
         for op, args in self.ops:
             #print op, context, args
             op(context, *args)
-
-if __name__ == '__main__':
-    from tests.test_document import TestBrushFromColourValue, TestValueToPixels, unittest
-    unittest.main()
