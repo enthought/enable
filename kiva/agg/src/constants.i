@@ -53,7 +53,7 @@ unsigned path_flags(unsigned c);
 #   marker_enum_map[enum] = string
 #
 #----------------------------------------------------------------------------
-
+import six
 kiva_marker_to_agg = {}
 kiva_marker_to_agg[1] = marker_square
 kiva_marker_to_agg[2] = marker_diamond
@@ -87,7 +87,7 @@ pix_format_string_map["abgr32"] = pix_format_abgr32
 pix_format_string_map["bgra32"] = pix_format_bgra32
 
 pix_format_enum_map = {}
-for key,value in pix_format_string_map.items():
+for key,value in six.iteritems(pix_format_string_map):
     pix_format_enum_map[value] = key
 
 #----------------------------------------------------------------------------
@@ -138,7 +138,7 @@ interp_string_map["blackman100"] = blackman100
 interp_string_map["blackman256"] = blackman256
 
 interp_enum_map = {}
-for key,value in interp_string_map.items():
+for key,value in six.iteritems(interp_string_map):
     interp_enum_map[value] = key
 
 %}
