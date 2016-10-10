@@ -1,4 +1,4 @@
-from __future__ import with_statement
+
 
 import time
 from kiva.fonttools import Font
@@ -28,7 +28,7 @@ with gc:
     gc.show_text("hello")
 
 t2 = time.clock()
-print 'aliased:', t2 - t1
+print('aliased:', t2 - t1)
 gc.save("text_aliased.bmp")
 
 gc = GraphicsContextArray((200,200))
@@ -52,7 +52,7 @@ with gc:
     gc.show_text("hello")
 
 t2 = time.clock()
-print 'antialiased:', t2 - t1
+print('antialiased:', t2 - t1)
 gc.save("text_antialiased.bmp")
 
 """

@@ -1,4 +1,4 @@
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Copyright (c) 2010, Enthought, Inc
 # All rights reserved.
 #
@@ -7,12 +7,10 @@
 # under the conditions described in the aforementioned license.  The license
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 # Thanks for using Enthought open source!
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 """ This is the QPainter backend for kiva. """
 
-
-# These are the symbols that a backend has to define.
-__all__ = ["CompiledPath", "Font", "font_metrics_provider", "GraphicsContext"]
+from __future__ import absolute_import, print_function
 
 from functools import partial
 from itertools import izip
@@ -23,14 +21,18 @@ import warnings
 from pyface.qt import QtCore, QtGui
 
 # Local imports.
-from arc_conversion import arc_to_tangent_points
-from fonttools import Font
-import constants
+from .abstract_graphics_context import AbstractGraphicsContext
+from .arc_conversion import arc_to_tangent_points
+from .fonttools import Font
+import kiva.constants as constants
+
+# These are the symbols that a backend has to define.
+__all__ = ["CompiledPath", "Font", "font_metrics_provider", "GraphicsContext"]
 
 cap_style = {}
-cap_style[constants.CAP_ROUND]  = QtCore.Qt.RoundCap
+cap_style[constants.CAP_ROUND] = QtCore.Qt.RoundCap
 cap_style[constants.CAP_SQUARE] = QtCore.Qt.SquareCap
-cap_style[constants.CAP_BUTT]   = QtCore.Qt.FlatCap
+cap_style[constants.CAP_BUTT] = QtCore.Qt.FlatCap
 
 join_style = {}
 join_style[constants.JOIN_ROUND] = QtCore.Qt.RoundJoin
@@ -38,10 +40,10 @@ join_style[constants.JOIN_BEVEL] = QtCore.Qt.BevelJoin
 join_style[constants.JOIN_MITER] = QtCore.Qt.MiterJoin
 
 draw_modes = {}
-draw_modes[constants.FILL]            = QtCore.Qt.OddEvenFill
-draw_modes[constants.EOF_FILL]        = QtCore.Qt.WindingFill
-draw_modes[constants.STROKE]          = 0
-draw_modes[constants.FILL_STROKE]     = QtCore.Qt.OddEvenFill
+draw_modes[constants.FILL] = QtCore.Qt.OddEvenFill
+draw_modes[constants.EOF_FILL] = QtCore.Qt.WindingFill
+draw_modes[constants.STROKE] = 0
+draw_modes[constants.FILL_STROKE] = QtCore.Qt.OddEvenFill
 draw_modes[constants.EOF_FILL_STROKE] = QtCore.Qt.WindingFill
 
 gradient_coord_modes = {}
@@ -84,8 +86,8 @@ class GraphicsContext(object):
         self.gc.setWorldTransform(trans)
 
         # enable antialiasing
-        self.gc.setRenderHints(QtGui.QPainter.Antialiasing|QtGui.QPainter.TextAntialiasing,
-                               True)
+        self.gc.setRenderHints(QtGui.QPainter.Antialiasing |
+                               QtGui.QPainter.TextAntialiasing, True)
         # set the pen and brush to useful defaults
         self.gc.setPen(QtCore.Qt.black)
         self.gc.setBrush(QtGui.QBrush(QtCore.Qt.SolidPattern))
@@ -95,9 +97,9 @@ class GraphicsContext(object):
         if self.gc.isActive():
             self.gc.end()
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Size info
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def height(self):
         """ Returns the height of the context.
@@ -109,12 +111,12 @@ class GraphicsContext(object):
         """
         return self._width
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Coordinate Transform Matrix Manipulation
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def scale_ctm(self, sx, sy):
-        """ Set the coordinate system scale to the given values, (sx,sy).
+        """ Set the coordinate system scale to the given values, (sx, sy).
 
             sx:float -- The new scale factor for the x axis
             sy:float -- The new scale factor for the y axis
@@ -122,7 +124,7 @@ class GraphicsContext(object):
         self.gc.scale(sx, sy)
 
     def translate_ctm(self, tx, ty):
-        """ Translate the coordinate system by the given value by (tx,ty)
+        """ Translate the coordinate system by the given value by (tx, ty)
 
             tx:float --  The distance to move in the x direction
             ty:float --   The distance to move in the y direction
@@ -143,8 +145,9 @@ class GraphicsContext(object):
             transform:affine_matrix -- the transform matrix to concatenate with
                                        the current coordinate matrix.
         """
-        m11,m12,m21,m22,tx,ty = transform
-        self.gc.setTransform(QtGui.QTransform(m11, m12, m21, m22, tx, ty), True)
+        m11, m12, m21, m22, tx, ty = transform
+        self.gc.setTransform(QtGui.QTransform(m11, m12, m21, m22, tx, ty),
+                             True)
 
     def get_ctm(self):
         """ Return the current coordinate transform matrix.
@@ -152,9 +155,9 @@ class GraphicsContext(object):
         t = self.gc.transform()
         return (t.m11(), t.m12(), t.m21(), t.m22(), t.dx(), t.dy())
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Save/Restore graphics state.
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def save_state(self):
         """ Save the current graphic's context state.
@@ -168,10 +171,9 @@ class GraphicsContext(object):
         """
         self.gc.restore()
 
-
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # context manager interface
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def __enter__(self):
         self.save_state()
@@ -179,17 +181,17 @@ class GraphicsContext(object):
     def __exit__(self, type, value, traceback):
         self.restore_state()
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Manipulate graphics state attributes.
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
-    def set_antialias(self,value):
+    def set_antialias(self, value):
         """ Set/Unset antialiasing for bitmap graphics context.
         """
-        self.gc.setRenderHints(QtGui.QPainter.Antialiasing|QtGui.QPainter.TextAntialiasing,
-                               value)
+        self.gc.setRenderHints(QtGui.QPainter.Antialiasing |
+                               QtGui.QPainter.TextAntialiasing, value)
 
-    def set_line_width(self,width):
+    def set_line_width(self, width):
         """ Set the line width for drawing
 
             width:float -- The new width for lines in user space units.
@@ -198,7 +200,7 @@ class GraphicsContext(object):
         pen.setWidthF(width)
         self.gc.setPen(pen)
 
-    def set_line_join(self,style):
+    def set_line_join(self, style):
         """ Set style for joining lines in a drawing.
 
             style:join_style -- The line joining style.  The available
@@ -207,14 +209,14 @@ class GraphicsContext(object):
         try:
             sjoin = join_style[style]
         except KeyError:
-            msg = "Invalid line join style.  See documentation for valid styles"
-            raise ValueError, msg
+            msg = "Invalid line join style. See documentation for valid styles"
+            raise ValueError(msg)
 
         pen = self.gc.pen()
         pen.setJoinStyle(sjoin)
         self.gc.setPen(pen)
 
-    def set_miter_limit(self,limit):
+    def set_miter_limit(self, limit):
         """ Specifies limits on line lengths for mitering line joins.
 
             If line_join is set to miter joins, the limit specifies which
@@ -229,23 +231,23 @@ class GraphicsContext(object):
         pen.setMiterLimit(limit)
         self.gc.setPen(pen)
 
-    def set_line_cap(self,style):
+    def set_line_cap(self, style):
         """ Specify the style of endings to put on line ends.
 
             style:cap_style -- the line cap style to use. Available styles
-                               are CAP_ROUND,CAP_BUTT,CAP_SQUARE
+                               are CAP_ROUND, CAP_BUTT, CAP_SQUARE
         """
         try:
             scap = cap_style[style]
         except KeyError:
             msg = "Invalid line cap style.  See documentation for valid styles"
-            raise ValueError, msg
+            raise ValueError(msg)
 
         pen = self.gc.pen()
         pen.setCapStyle(scap)
         self.gc.setPen(pen)
 
-    def set_line_dash(self,lengths,phase=0):
+    def set_line_dash(self, lengths, phase=0):
         """
 
             lengths:float array -- An array of floating point values
@@ -260,17 +262,17 @@ class GraphicsContext(object):
         pen.setDashOffset(phase)
         self.gc.setPen(pen)
 
-    def set_flatness(self,flatness):
+    def set_flatness(self, flatness):
         """ Not implemented
 
             It is device dependent and therefore not recommended by
             the PDF documentation.
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Sending drawing data to a device
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def flush(self):
         """ Send all drawing data to the destination device.
@@ -282,9 +284,9 @@ class GraphicsContext(object):
         """
         pass
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Page Definitions
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def begin_page(self):
         """ Create a new page within the graphics context.
@@ -296,7 +298,7 @@ class GraphicsContext(object):
         """
         pass
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Building paths (contours that are drawn)
     #
     # + Currently, nothing is drawn as the path is built.  Instead, the
@@ -309,31 +311,31 @@ class GraphicsContext(object):
     #
     # + I think we should keep the current_path_point hanging around.
     #
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def begin_path(self):
         """ Clear the current drawing path and begin a new one.
         """
         self.path = CompiledPath()
 
-    def move_to(self,x,y):
-        """ Start a new drawing subpath at place the current point at (x,y).
+    def move_to(self, x, y):
+        """ Start a new drawing subpath at place the current point at (x, y).
         """
-        self.path.move_to(x,y)
+        self.path.move_to(x, y)
 
-    def line_to(self,x,y):
-        """ Add a line from the current point to the given point (x,y).
+    def line_to(self, x, y):
+        """ Add a line from the current point to the given point (x, y).
 
-            The current point is moved to (x,y).
+            The current point is moved to (x, y).
         """
-        self.path.line_to(x,y)
+        self.path.line_to(x, y)
 
-    def lines(self,points):
+    def lines(self, points):
         """ Add a series of lines as a new subpath.
 
             Currently implemented by calling line_to a zillion times.
 
-            Points is an Nx2 array of x,y pairs.
+            Points is an Nx2 array of x, y pairs.
         """
         self.path.lines(points)
 
@@ -344,12 +346,12 @@ class GraphicsContext(object):
             self.path.path.moveTo(start[0], start[1])
             self.path.path.lineTo(end[0], end[1])
 
-    def rect(self,x,y,sx,sy):
+    def rect(self, x, y, sx, sy):
         """ Add a rectangle as a new subpath.
         """
-        self.path.rect(x,y,sx,sy)
+        self.path.rect(x, y, sx, sy)
 
-    def rects(self,rects):
+    def rects(self, rects):
         """ Add multiple rectangles as separate subpaths to the path.
         """
         self.path.rects(rects)
@@ -399,9 +401,9 @@ class GraphicsContext(object):
         """
         self.path.arc_to(x1, y1, x2, y2, radius)
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Getting infomration on paths
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def is_path_empty(self):
         """ Test to see if the current drawing path is empty
@@ -418,9 +420,9 @@ class GraphicsContext(object):
         """
         return self.path.get_bounding_box()
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Clipping path manipulation
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def clip(self):
         """
@@ -437,7 +439,8 @@ class GraphicsContext(object):
 
             Region should be a 4-tuple or a sequence.
         """
-        self.gc.setClipRect(QtCore.QRectF(x,y,w,h), operation=QtCore.Qt.IntersectClip)
+        self.gc.setClipRect(QtCore.QRectF(x, y, w, h),
+                            operation=QtCore.Qt.IntersectClip)
 
     def clip_to_rects(self, rects):
         """
@@ -450,58 +453,58 @@ class GraphicsContext(object):
         # Then intersect that region with the current clip region.
         self.gc.setClipRegion(clip_region, operation=QtCore.Qt.IntersectClip)
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Color space manipulation
     #
     # I'm not sure we'll mess with these at all.  They seem to
     # be for setting the color system.  Hard coding to RGB or
     # RGBA for now sounds like a reasonable solution.
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def set_fill_color_space(self):
         """
         """
         msg = "set_fill_color_space not implemented on Qt yet."
-        raise NotImplementedError, msg
+        raise NotImplementedError(msg)
 
     def set_stroke_color_space(self):
         """
         """
         msg = "set_stroke_color_space not implemented on Qt yet."
-        raise NotImplementedError, msg
+        raise NotImplementedError(msg)
 
     def set_rendering_intent(self):
         """
         """
         msg = "set_rendering_intent not implemented on Qt yet."
-        raise NotImplementedError, msg
+        raise NotImplementedError(msg)
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Color manipulation
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def set_fill_color(self, color):
         """
         """
-        r,g,b = color[:3]
+        r, g, b = color[:3]
         try:
             a = color[3]
         except IndexError:
             a = 1.0
         brush = self.gc.brush()
-        brush.setColor(QtGui.QColor.fromRgbF(r,g,b,a))
+        brush.setColor(QtGui.QColor.fromRgbF(r, g, b, a))
         self.gc.setBrush(brush)
 
     def set_stroke_color(self, color):
         """
         """
-        r,g,b = color[:3]
+        r, g, b = color[:3]
         try:
             a = color[3]
         except IndexError:
             a = 1.0
         pen = self.gc.pen()
-        pen.setColor(QtGui.QColor.fromRgbF(r,g,b,a))
+        pen.setColor(QtGui.QColor.fromRgbF(r, g, b, a))
         self.gc.setPen(pen)
 
     def set_alpha(self, alpha):
@@ -509,16 +512,17 @@ class GraphicsContext(object):
         """
         self.gc.setOpacity(alpha)
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Gradients
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def _apply_gradient(self, grad, stops, spread_method, units):
         """ Configures a gradient object and sets it as the current brush.
         """
         grad.setSpread(gradient_spread_modes.get(spread_method,
                                                  QtGui.QGradient.PadSpread))
-        grad.setCoordinateMode(gradient_coord_modes.get(units, QtGui.QGradient.LogicalMode))
+        grad.setCoordinateMode(gradient_coord_modes.get(
+            units, QtGui.QGradient.LogicalMode))
 
         for stop in stops:
             grad.setColorAt(stop[0], QtGui.QColor.fromRgbF(*stop[1:]))
@@ -529,7 +533,7 @@ class GraphicsContext(object):
                         units='userSpaceOnUse'):
         """ Sets a linear gradient as the current brush.
         """
-        grad = QtGui.QLinearGradient(x1, y1,x2, y2)
+        grad = QtGui.QLinearGradient(x1, y1, x2, y2)
         self._apply_gradient(grad, stops, spread_method, units)
 
     def radial_gradient(self, cx, cy, r, fx, fy, stops, spread_method,
@@ -539,15 +543,15 @@ class GraphicsContext(object):
         grad = QtGui.QRadialGradient(cx, cy, r, fx, fy)
         self._apply_gradient(grad, stops, spread_method, units)
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Drawing Images
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def draw_image(self, img, rect=None):
         """
         img is either a N*M*3 or N*M*4 numpy array, or a Kiva image
 
-        rect - a tuple (x,y,w,h)
+        rect - a tuple (x, y, w, h)
         """
         from kiva import agg
 
@@ -555,21 +559,21 @@ class GraphicsContext(object):
             """ Pad image width to a multiple of 4 pixels, and minimum dims of
                 12x12. QImage is very particular about its data.
             """
-            y,x,d = array.shape
-            pad = lambda v: (4-(v%4))%4
-            nx = max(x+pad(x),12)
-            ny = max(y,12)
+            y, x, d = array.shape
+            pad = lambda v: (4 - (v % 4)) % 4
+            nx = max(x + pad(x), 12)
+            ny = max(y, 12)
             if x == nx and y == ny:
                 return array
-            ret = np.zeros((ny,nx,d), dtype=np.uint8)
-            ret[:y,:x] = array[:]
+            ret = np.zeros((ny, nx, d), dtype=np.uint8)
+            ret[:y, :x] = array[:]
             return ret
 
         if type(img) == type(np.array([])):
             # Numeric array
-            if img.shape[2]==3:
+            if img.shape[2] == 3:
                 format = QtGui.QImage.Format_RGB888
-            elif img.shape[2]==4:
+            elif img.shape[2] == 4:
                 format = QtGui.QImage.Format_RGB32
             width, height = img.shape[:2]
             copy_array = copy_padded(img)
@@ -585,13 +589,17 @@ class GraphicsContext(object):
                                     QtGui.QImage.Format_RGB32)
             pixmap = QtGui.QPixmap.fromImage(draw_img)
         elif (isinstance(img, GraphicsContext) and
-              isinstance(img.gc.device(), QtGui.QPixmap)):
+              isinstance(img.qt_dc, QtGui.QPixmap) and img.gc.isActive()):
             # An offscreen Qt kiva context
-            pixmap = img.gc.device()
+            # Calling qpainter.device() appears to introduce a memory leak.
+            # using the display context and calling qpainter.isActive() has
+            # the same outcome.
+            pixmap = img.qt_dc
             width, height = pixmap.width(), pixmap.height()
         else:
-            warnings.warn("Cannot render image of type '%r' into Qt4 context." % \
-                    type(img))
+            msg = ("Cannot render image of type '%r' into Qt4 context." %
+                   type(img))
+            warnings.warn(msg)
             return
 
         # create a rect object to draw into
@@ -610,9 +618,9 @@ class GraphicsContext(object):
         # draw
         self.gc.drawPixmap(dest_rect, pixmap, source_rect)
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Drawing Text
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def select_font(self, name, size, textEncoding):
         """ Set the font for the current graphics context.
@@ -643,17 +651,17 @@ class GraphicsContext(object):
         """
         pass
 
-    def set_text_position(self,x,y):
+    def set_text_position(self, x, y):
         """
         """
-        self.text_pos = [x,y]
+        self.text_pos = [x, y]
 
     def get_text_position(self):
         """
         """
         return self.text_pos
 
-    def set_text_matrix(self,ttm):
+    def set_text_matrix(self, ttm):
         """
         """
         self.text_transform = ttm
@@ -684,15 +692,15 @@ class GraphicsContext(object):
         self.gc.restore()
 
     def show_text_at_point(self, text, x, y):
-        """ Draw text at some point (x,y).
+        """ Draw text at some point (x, y).
         """
-        self.show_text(text, (x,y))
+        self.show_text(text, (x, y))
 
     def show_glyphs(self):
         """
         """
         msg = "show_glyphs not implemented on Qt yet."
-        raise NotImplementedError, msg
+        raise NotImplementedError(msg)
 
     def get_text_extent(self, text):
         """ Returns the bounding rect of the rendered text
@@ -709,9 +717,9 @@ class GraphicsContext(object):
 
         return x2, y2, y1, x1
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Painting paths (drawing and filling contours)
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def stroke_path(self):
         """
@@ -728,16 +736,16 @@ class GraphicsContext(object):
     def eof_fill_path(self):
         """
         """
-        self.path.setFillRule(QtCore.Qt.OddEvenFill)
+        self.path.path.setFillRule(QtCore.Qt.OddEvenFill)
         self.gc.fillPath(self.path.path, self.gc.brush())
         self.begin_path()
 
-    def stroke_rect(self,rect):
+    def stroke_rect(self, rect):
         """
         """
         self.gc.drawRect(QtCore.QRectF(*rect))
 
-    def stroke_rect_with_width(self,rect,width):
+    def stroke_rect_with_width(self, rect, width):
         """
         """
         save_pen = self.gc.pen()
@@ -748,7 +756,7 @@ class GraphicsContext(object):
         self.stroke_rect(rect)
         self.gc.setPen(save_pen)
 
-    def fill_rect(self,rect):
+    def fill_rect(self, rect):
         """
         """
         self.gc.fillRect(QtCore.QRectF(*rect), self.gc.brush())
@@ -757,23 +765,23 @@ class GraphicsContext(object):
         """
         """
         msg = "fill_rects not implemented on Qt yet."
-        raise NotImplementedError, msg
+        raise NotImplementedError(msg)
 
     def clear_rect(self, rect):
         """
         """
         self.gc.eraseRect(QtCore.QRectF(*rect))
 
-    def clear(self, clear_color=(1.0,1.0,1.0,1.0)):
+    def clear(self, clear_color=(1.0, 1.0, 1.0, 1.0)):
         """
         """
         if len(clear_color) == 4:
-            r,g,b,a = clear_color
+            r, g, b, a = clear_color
         else:
-            r,g,b = clear_color
+            r, g, b = clear_color
             a = 1.0
-        self.gc.setBackground(QtGui.QBrush(QtGui.QColor.fromRgbF(r,g,b,a)))
-        self.gc.eraseRect(QtCore.QRectF(0,0,self.width(),self.height()))
+        self.gc.setBackground(QtGui.QBrush(QtGui.QColor.fromRgbF(r, g, b, a)))
+        self.gc.eraseRect(QtCore.QRectF(0, 0, self.width(), self.height()))
 
     def draw_path(self, mode=constants.FILL_STROKE):
         """ Walk through all the drawing subpaths and draw each element.
@@ -828,7 +836,7 @@ class GraphicsContext(object):
             self.qt_dc.save(filename, format=file_format)
         else:
             msg = "save not implemented for window contexts."
-            raise NotImplementedError, msg
+            raise NotImplementedError(msg)
 
 
 class CompiledPath(object):
@@ -842,7 +850,8 @@ class CompiledPath(object):
         self.path.moveTo(x, y)
 
     def arc(self, x, y, r, start_angle, end_angle, clockwise=False):
-        sweep_angle = end_angle-start_angle if not clockwise else start_angle-end_angle
+        sweep_angle = (end_angle-start_angle if not clockwise
+                       else start_angle-end_angle)
         self.path.moveTo(x, y)
         self.path.arcTo(QtCore.QRectF(x-r, y-r, r*2, r*2),
                         np.rad2deg(start_angle), np.rad2deg(sweep_angle))
@@ -852,20 +861,20 @@ class CompiledPath(object):
         current_point = self.get_current_point()
 
         # Get the two points on the curve where it touches the line segments
-        t1, t2 = arc_to_tangent_points(current_point, (x1,y1), (x2,y2), r)
+        t1, t2 = arc_to_tangent_points(current_point, (x1, y1), (x2, y2), r)
 
         # draw!
         self.path.lineTo(*t1)
-        self.path.quadTo(x1,y1,*t2)
-        self.path.lineTo(x2,y2)
+        self.path.quadTo(x1, y1, *t2)
+        self.path.lineTo(x2, y2)
 
     def line_to(self, x, y):
         self.path.lineTo(x, y)
 
     def lines(self, points):
-        self.path.moveTo(points[0][0],points[0][1])
-        for x,y in points[1:]:
-            self.path.lineTo(x,y)
+        self.path.moveTo(points[0][0], points[0][1])
+        for x, y in points[1:]:
+            self.path.lineTo(x, y)
 
     def curve_to(self, cx1, cy1, cx2, cy2, x, y):
         self.path.cubicTo(cx1, cy1, cx2, cy2, x, y)
@@ -877,8 +886,8 @@ class CompiledPath(object):
         self.path.addRect(x, y, sx, sy)
 
     def rects(self, rects):
-        for x,y,sx,sy in rects:
-            self.path.addRect(x,y,sx,sy)
+        for x, y, sx, sy in rects:
+            self.path.addRect(x, y, sx, sy)
 
     def add_path(self, other_path):
         if isinstance(other_path, CompiledPath):
@@ -899,8 +908,11 @@ class CompiledPath(object):
         return rect.x(), rect.y(), rect.width(), rect.height()
 
 
+# GraphicsContext should implement AbstractGraphicsContext
+AbstractGraphicsContext.register(GraphicsContext)
+
+
 def font_metrics_provider():
     """ Creates an object to be used for querying font metrics.
     """
-    return GraphicsContext((1,1))
-
+    return GraphicsContext((1, 1))

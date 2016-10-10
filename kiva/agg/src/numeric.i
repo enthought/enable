@@ -49,12 +49,12 @@ std::string pytype_string(PyObject* py_obj)
     if(PyDict_Check(py_obj)) return "dict";
     if(PyList_Check(py_obj)) return "list";
     if(PyTuple_Check(py_obj)) return "tuple";
-    if(PyFile_Check(py_obj)) return "file";
+    /*if(PyFile_Check(py_obj)) return "file";*/
     if(PyModule_Check(py_obj)) return "module";
 
     //should probably do more intergation (and thinking) on these.
-    if(PyCallable_Check(py_obj) && PyInstance_Check(py_obj)) return "callable";
-    if(PyInstance_Check(py_obj)) return "instance";
+    /*if(PyCallable_Check(py_obj) && PyInstance_Check(py_obj)) return "callable";
+    if(PyInstance_Check(py_obj)) return "instance";*/
     if(PyCallable_Check(py_obj)) return "callable";
     return "unkown type";
 }

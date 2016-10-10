@@ -15,8 +15,8 @@ pyglet.options['shadow_window'] = False
 from traits.api import Bool, Instance
 from kiva.gl import CompiledPath, GraphicsContext
 
-from base_window import BaseGLWindow
-from scrollbar import NativeScrollBar
+from .base_window import BaseGLWindow
+from .scrollbar import NativeScrollBar
 
 class Window(BaseGLWindow):
     def _create_gc(self, size, pix_format=None):

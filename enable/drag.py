@@ -12,10 +12,10 @@
 #
 #-------------------------------------------------------------------------------
 
-from base import add_rectangles, intersect_coordinates, send_event_to, \
+from .base import add_rectangles, intersect_coordinates, send_event_to, \
     bounds_to_coordinates
-from events import DragEvent
-from interactor import Interactor
+from .events import DragEvent
+from .interactor import Interactor
 
 #-------------------------------------------------------------------------------
 #  'DragHandler' class:
@@ -214,4 +214,3 @@ class DragHandler ( Interactor ):
         # Finally, release any references we have been using:
         self.components[:] = []
         self.drag_over     = self.drag_root = self.window = None
-

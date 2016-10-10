@@ -1,4 +1,4 @@
-# Copyright (c) 2008-2012 by Enthought, Inc.
+# Copyright (c) 2008-2013 by Enthought, Inc.
 # All rights reserved.
 
 # These are necessary to get the clib compiled.  The following also adds
@@ -24,19 +24,112 @@ from os.path import join
 import setuptools
 
 import distutils
+import distutils.command.clean
+try:
+    from distutils.command.build_py import build_py_2to3 as build_py
+except ImportError:
+    from distutils.command.build_py import build_py
+
 import os
+import re
 import shutil
+import subprocess
 
 from numpy.distutils.core import setup
+from numpy.distutils.misc_util import is_string
+
+MAJOR = 4
+MINOR = 6
+MICRO = 0
+
+IS_RELEASED = False
+
+VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
 
-info = {}
-execfile(join('enable', '__init__.py'), info)
+# Return the git revision as a string
+def git_version():
+    def _minimal_ext_cmd(cmd):
+        # construct minimal environment
+        env = {}
+        for k in ['SYSTEMROOT', 'PATH']:
+            v = os.environ.get(k)
+            if v is not None:
+                env[k] = v
+        # LANGUAGE is used on win32
+        env['LANGUAGE'] = 'C'
+        env['LANG'] = 'C'
+        env['LC_ALL'] = 'C'
+        out = subprocess.Popen(
+            cmd, stdout=subprocess.PIPE, env=env,
+        ).communicate()[0]
+        return out
+
+    try:
+        out = _minimal_ext_cmd(['git', 'describe', '--tags'])
+    except OSError:
+        out = ''
+
+    git_description = out.strip().decode('ascii')
+    expr = r'.*?\-(?P<count>\d+)-g(?P<hash>[a-fA-F0-9]+)'
+    match = re.match(expr, git_description)
+    if match is None:
+        git_revision, git_count = 'Unknown', '0'
+    else:
+        git_revision, git_count = match.group('hash'), match.group('count')
+
+    return git_revision, git_count
+
+
+def write_version_py(filename):
+    template = """\
+# THIS FILE IS GENERATED FROM ENABLE SETUP.PY
+version = '{version}'
+full_version = '{full_version}'
+git_revision = '{git_revision}'
+is_released = {is_released}
+
+if not is_released:
+    version = full_version
+"""
+    # Adding the git rev number needs to be done inside
+    # write_version_py(), otherwise the import of kiva._version messes
+    # up the build under Python 3.
+    fullversion = VERSION
+    if os.path.exists('.git'):
+        git_revision, dev_num = git_version()
+    elif os.path.exists('kiva/_version.py'):
+        # must be a source distribution, use existing version file
+        try:
+            from kiva._version import git_revision, full_version
+        except ImportError:
+            raise ImportError("Unable to import git_revision. Try removing "
+                              "kiva/_version.py and the build directory "
+                              "before building.")
+
+        match = re.match(r'.*?\.dev(?P<dev_num>\d+)', full_version)
+        if match is None:
+            dev_num = '0'
+        else:
+            dev_num = match.group('dev_num')
+    else:
+        git_revision = 'Unknown'
+        dev_num = '0'
+
+    if not IS_RELEASED:
+        fullversion += '.dev{0}'.format(dev_num)
+
+    with open(filename, "wt") as fp:
+        fp.write(template.format(version=VERSION,
+                                 full_version=fullversion,
+                                 git_revision=git_revision,
+                                 is_released=IS_RELEASED))
 
 
 # Configure python extensions.
 def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
+
     config = Configuration(None, parent_package, top_path)
     config.set_options(
         ignore_setup_xxx_py=True,
@@ -50,14 +143,32 @@ def configuration(parent_package='', top_path=None):
     return config
 
 
+class MyBuildPy(build_py):
+    """ This is NumPy's version of build_py with 2to3 folded in """
 
-# Build the full set of packages by appending any found by setuptools'
-# find_packages to those discovered by numpy.distutils.
-config = configuration().todict()
-packages = setuptools.find_packages(exclude=config['packages'] +
-                                    ['docs', 'examples'])
-packages += ['enable.savage.trait_defs.ui.wx.data']
-config['packages'] += packages
+    def run(self):
+        build_src = self.get_finalized_command('build_src')
+        if build_src.py_modules_dict and self.packages is None:
+            self.packages = list(build_src.py_modules_dict.keys ())
+        build_py.run(self)
+
+    def find_package_modules(self, package, package_dir):
+        modules = build_py.find_package_modules(self, package, package_dir)
+
+        # Find build_src generated *.py files.
+        build_src = self.get_finalized_command('build_src')
+        modules += build_src.py_modules_dict.get(package, [])
+
+        return modules
+
+    def find_modules(self):
+        old_py_modules = self.py_modules[:]
+        new_py_modules = [_m for _m in self.py_modules if is_string(_m)]
+        self.py_modules[:] = new_py_modules
+        modules = build_py.find_modules(self)
+        self.py_modules[:] = old_py_modules
+
+        return modules
 
 
 class MyClean(distutils.command.clean.clean):
@@ -113,49 +224,63 @@ class MyClean(distutils.command.clean.clean):
                 os.remove(f)
 
 
-setup(
-    name = 'enable',
-    version = info['__version__'],
-    author = 'Enthought, Inc',
-    author_email = 'info@enthought.com',
-    maintainer = 'ETS Developers',
-    maintainer_email = 'enthought-dev@enthought.com',
-    url = 'http://code.enthought.com/projects/enable',
-    classifiers = [c.strip() for c in """\
-        Development Status :: 5 - Production/Stable
-        Intended Audience :: Developers
-        Intended Audience :: Science/Research
-        License :: OSI Approved :: BSD License
-        Operating System :: MacOS
-        Operating System :: Microsoft :: Windows
-        Operating System :: OS Independent
-        Operating System :: POSIX
-        Operating System :: Unix
-        Programming Language :: C
-        Programming Language :: Python
-        Topic :: Scientific/Engineering
-        Topic :: Software Development
-        Topic :: Software Development :: Libraries
-        """.splitlines() if len(c.strip()) > 0],
-    cmdclass = {
-        # Work around a numpy distutils bug by forcing the use of the
-        # setuptools' sdist command.
-        'sdist': setuptools.command.sdist.sdist,
+if __name__ == "__main__":
+    write_version_py(filename='enable/_version.py')
+    write_version_py(filename='kiva/_version.py')
+    from enable import __version__, __requires__
 
-        # Use our customized commands
-        'clean': MyClean,
-        },
-    description = 'low-level drawing and interaction',
-    long_description = open('README.rst').read(),
-    download_url = ('http://www.enthought.com/repo/ets/enable-%s.tar.gz' %
-                    info['__version__']),
-    install_requires = info['__requires__'],
-    license = 'BSD',
-    package_data = {'': ['*.zip', '*.svg', 'images/*']},
-    platforms = ["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
-    setup_requires = [
-        'cython',
-    ],
-    zip_safe = False,
-    **config
-)
+    # Build the full set of packages by appending any found by setuptools'
+    # find_packages to those discovered by numpy.distutils.
+    config = configuration().todict()
+    packages = setuptools.find_packages(exclude=config['packages'] +
+                                        ['docs', 'examples'])
+    packages += ['enable.savage.trait_defs.ui.wx.data']
+    config['packages'] += packages
+
+    setup(name='enable',
+          version=__version__,
+          author='Enthought, Inc',
+          author_email='info@enthought.com',
+          maintainer='ETS Developers',
+          maintainer_email='enthought-dev@enthought.com',
+          url='https://github.com/enthought/enable/',
+          classifiers=[c.strip() for c in """\
+              Development Status :: 5 - Production/Stable
+              Intended Audience :: Developers
+              Intended Audience :: Science/Research
+              License :: OSI Approved :: BSD License
+              Operating System :: MacOS
+              Operating System :: Microsoft :: Windows
+              Operating System :: OS Independent
+              Operating System :: POSIX
+              Operating System :: Unix
+              Programming Language :: C
+              Programming Language :: Python
+              Topic :: Scientific/Engineering
+              Topic :: Software Development
+              Topic :: Software Development :: Libraries
+              """.splitlines() if len(c.strip()) > 0],
+          cmdclass={
+              # Work around a numpy distutils bug by forcing the use of the
+              # setuptools' sdist command.
+              'sdist': setuptools.command.sdist.sdist,
+              # Use our customized commands
+              'clean': MyClean,
+              'build_py': MyBuildPy,
+          },
+          description='low-level drawing and interaction',
+          long_description=open('README.rst').read(),
+          # Note that this URL is only valid for tagged releases.
+          download_url=('https://github.com/enthought/enable/archive/'
+                        '{0}.tar.gz'.format(__version__)),
+          install_requires=__requires__,
+          license='BSD',
+          package_data = {
+              '': ['*.zip', '*.svg', 'images/*'],
+              'enable': ['tests/primitives/data/PngSuite/*.png'],
+              'kiva': ['tests/agg/doubleprom_soho_full.jpg'],
+          },
+          platforms=["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
+          zip_safe=False,
+          use_2to3=True,
+          **config)

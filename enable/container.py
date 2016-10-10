@@ -11,39 +11,9 @@ from traits.api import Any, Bool, Enum, HasTraits, Instance, List, \
         Property, Tuple
 
 # Local, relative imports
-from base import empty_rectangle, intersect_bounds
-from component import Component
-from events import BlobEvent, BlobFrameEvent, DragEvent, MouseEvent
-from abstract_layout_controller import AbstractLayoutController
-
-
-class AbstractResolver(HasTraits):
-    """
-    A Resolver traverses a component DB and matches a specifier.
-    """
-
-    def match(self, db, query):
-        """ Queries a component DB using a dict of keyword-val conditions.
-        Each resolver defines its set of allowed keywords.
-        """
-        raise NotImplementedError
-
-
-class DefaultResolver(AbstractResolver):
-    """
-    Basic resolver that searches a container's DB of components using the
-    following conditions:
-
-        id=foo :  the component's .id must be 'foo'
-
-        class=['foo','bar'] :  the component's .class must be in the list
-
-        target='foo' :  the component's .target is 'foo'; this usually applies
-                        to tools, overlays, and decorators
-    """
-
-    def match(self, db, query):
-        pass
+from .base import empty_rectangle, intersect_bounds
+from .component import Component
+from .events import BlobEvent, BlobFrameEvent, DragEvent, MouseEvent
 
 
 class Container(Component):
@@ -105,21 +75,6 @@ class Container(Component):
     container_under_layers = Tuple("background", "image", "underlay", "mainlayer")
 
     #------------------------------------------------------------------------
-    # DOM-related traits
-    # (Note: These are unused as of 8/13/2007)
-    #------------------------------------------------------------------------
-
-    # The layout controller determines how the container's internal layout
-    # mechanism works.  It can perform the actual layout or defer to an
-    # enclosing container's layout controller.  The default controller is
-    # a cooperative/recursive layout controller.
-    layout_controller = Instance(AbstractLayoutController)
-
-    # This object resolves queries for components
-    resolver = Instance(AbstractResolver)
-
-
-    #------------------------------------------------------------------------
     # Private traits
     #------------------------------------------------------------------------
 
@@ -130,9 +85,6 @@ class Container(Component):
     # this so that we can generate mouse_enter and mouse_leave events of
     # our own.
     _prev_event_handlers = Instance( set, () )
-
-    # Used by the resolver to cache previous lookups
-    _lookup_cache = Any
 
     # This container can render itself in a different mode than what it asks of
     # its contained components.  This attribute stores the rendering mode that
@@ -223,13 +175,6 @@ class Container(Component):
     def lower_component(self, component):
         """ Puts the indicated component to the very bottom of the Z-order """
         raise NotImplementedError
-
-    def get(self, **kw):
-        """
-        Allows for querying of this container's components.
-        """
-        # TODO: cache requests
-        return self.resolver.query(self._components, kw)
 
     def cleanup(self, window):
         """When a window viewing or containing a component is destroyed,
@@ -644,7 +589,7 @@ class Container(Component):
         """
         with gc:
             gc.set_antialias(False)
-    
+
             self._draw_container(gc, mode)
             self._draw_background(gc, view_bounds, mode)
             self._draw_underlay(gc, view_bounds, mode)

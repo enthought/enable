@@ -1,7 +1,7 @@
 """
     SVGDocument
 """
-from cStringIO import StringIO
+from io import BytesIO
 import warnings
 import math
 from functools import wraps
@@ -9,6 +9,12 @@ import os
 import urllib
 import urlparse
 from xml.etree import cElementTree as ET
+try:
+    from xml.etree.cElementTree import ParseError
+except ImportError:
+    # ParseError doesn't exist in Python 2.6 and SyntaxError is raised instead
+    ParseError = SyntaxError
+
 
 import numpy
 
@@ -177,7 +183,7 @@ class ResourceGetter(object):
             # Plain URI. Pass it back.
             # Read the data and stuff it in a StringIO in order to satisfy
             # functions that need a functioning seek() and stuff.
-            return path, lambda uri: StringIO(urllib.urlopen(uri).read())
+            return path, lambda uri: BytesIO(urllib.urlopen(uri).read())
         path = os.path.abspath(os.path.join(self.dirname, path_part))
         return path, lambda fn: open(fn, 'rb')
 
@@ -198,12 +204,13 @@ class ResourceGetter(object):
         path, open = self.resolve(path)
         fin = open(path)
 
-        import Image
+        from PIL import Image
+        from kiva.compat import piltostring
         import numpy
         pil_img = Image.open(fin)
         if pil_img.mode not in ('RGB', 'RGBA'):
             pil_img = pil_img.convert('RGBA')
-        img = numpy.fromstring(pil_img.tostring(), numpy.uint8)
+        img = numpy.fromstring(piltostring(pil_img), numpy.uint8)
         shape = (pil_img.size[1],pil_img.size[0],len(pil_img.mode))
         img.shape = shape
         return img
@@ -875,7 +882,10 @@ class SVGDocument(object):
         if type == "URL":
             url, fallback = details
             url = urlparse.urlunsplit(url)
-            element = self.dereference(url)
+            try:
+                element = self.dereference(url)
+            except ParseError:
+                element = None
             if element is None:
                 if fallback:
                     type, details = fallback

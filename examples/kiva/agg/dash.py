@@ -26,7 +26,7 @@ def dash(sz=(1000,1000)):
     t2 = time.clock()
     gc.save("dash.bmp")
     tot_time = t2 - t1
-    print 'time:', tot_time
+    print('time:', tot_time)
 
 if __name__ == "__main__":
     dash()

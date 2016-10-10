@@ -1,8 +1,8 @@
 """ Defines the base DragTool class.
 """
 # Enthought library imports
-from traits.api import Bool, Enum, Tuple
-from enable.base_tool import BaseTool
+from traits.api import Bool, Enum, Tuple, Property, cached_property, List, Str
+from enable.base_tool import BaseTool, KeySpec
 
 
 class DragTool(BaseTool):
@@ -19,7 +19,7 @@ class DragTool(BaseTool):
     end_drag_on_leave = Bool(True)
 
     # These keys, if pressed during drag, cause the drag operation to reset.
-    cancel_keys = Tuple("Esc")
+    cancel_keys = List(Str, ["Esc"])
 
     # The position of the initial mouse click that started the drag.
     # Typically, tools that move things around use this
@@ -41,12 +41,15 @@ class DragTool(BaseTool):
     _drag_state = Enum("nondrag", "dragging")
 
     # Records whether a mouse_down event has been received while in
-    # "nondrag" state.  This is a safety check to prevent the tool from suddenly
-    # getting mouse focus while the mouse button is down (either from
+    # "nondrag" state.  This is a safety check to prevent the tool from
+    # suddenly getting mouse focus while the mouse button is down (either from
     # window_enter or programmatically) and erroneously
     # initiating a drag.
     _mouse_down_received = Bool(False)
 
+    # private property to hold the current list of KeySpec instances of the
+    # cancel keys
+    _cancel_keys = Property(List(KeySpec), depends_on='cancel_keys')
 
     #------------------------------------------------------------------------
     # Interface for subclasses
@@ -121,19 +124,17 @@ class DragTool(BaseTool):
         return
 
     def _cancel_drag(self, event):
-        old_state = self._drag_state
         self._drag_state = "nondrag"
-        if old_state == "dragging":
-            self.drag_cancel(event)
+        outcome = self.drag_cancel(event)
         self._mouse_down_received = False
         if event.window.mouse_owner == self:
             event.window.set_mouse_owner(None)
-        return
+        return outcome
 
     def _drag_cancel_keypressed(self, event):
-        if self._drag_state != "nondrag":
-            self._cancel_drag(event)
-            return True
+        if self._drag_state != "nondrag" and \
+                         any(map(lambda x: x.match(event), self._cancel_keys)):
+            return self._cancel_drag(event)
         else:
             return False
 
@@ -145,8 +146,9 @@ class DragTool(BaseTool):
                    self.is_draggable(*self.mouse_down_position):
                 self._drag_state = "dragging"
                 if self.capture_mouse:
-                    event.window.set_mouse_owner(self, transform=event.net_transform(),
-                                                 history=event.dispatch_history)
+                    event.window.set_mouse_owner(
+                        self, transform=event.net_transform(),
+                        history=event.dispatch_history)
                 self.drag_start(event)
                 return self._drag_mouse_move(event)
             return False
@@ -156,7 +158,8 @@ class DragTool(BaseTool):
             else:
                 return self._drag_button_up(event)
 
-        # If we don't invoke the subclass drag handler, then don't consume the event.
+        # If we don't invoke the subclass drag handler, then don't consume the
+        # event.
         return False
 
     def _drag_button_down(self, event):
@@ -174,18 +177,13 @@ class DragTool(BaseTool):
             self._drag_state = "nondrag"
             return self.drag_end(event)
 
-        # If we don't invoke the subclass drag handler, then don't consume the event.
+        # If we don't invoke the subclass drag handler, then don't consume the
+        # event.
         return False
 
     def _drag_mouse_leave(self, event):
-        state = self._drag_state
-        if self.end_drag_on_leave:
-            self._mouse_down_received = False
-            if state == "dragging":
-                return self.drag_cancel(event)
-            else:
-                if event.window.mouse_owner == self:
-                    event.window.set_mouse_owner(None)
+        if self.end_drag_on_leave and self._drag_state == "dragging":
+            return self._cancel_drag(event)
         return False
 
     def _drag_mouse_enter(self, event):
@@ -195,6 +193,14 @@ class DragTool(BaseTool):
         elif state == "dragging":
             pass
         return False
+
+    #------------------------------------------------------------------------
+    # Private methods for trait getter/setters
+    #------------------------------------------------------------------------
+
+    @cached_property
+    def _get__cancel_keys(self):
+        return [KeySpec(key) for key in self.cancel_keys]
 
 
 # EOF

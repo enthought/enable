@@ -11,7 +11,7 @@
 from enable.api import Line, Pointer
 from traits.api import Event, Instance
 
-from drawing_tool import DrawingTool
+from .drawing_tool import DrawingTool
 
 class DragSegment(DrawingTool):
     """A dragged line segment"""

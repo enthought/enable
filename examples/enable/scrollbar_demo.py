@@ -1,7 +1,4 @@
-
-
-from enable.api import Component, Container, Label, \
-        NativeScrollBar, Window
+from enable.api import Container, Label, NativeScrollBar, Window
 from enable.example_support import DemoFrame, demo_main
 
 
@@ -59,5 +56,6 @@ class MyFrame(DemoFrame):
 
 
 if __name__ == "__main__":
-    demo_main(MyFrame, title="Scrollbar demo", size=(250,250))
-
+    # Save demo so that it doesn't get garbage collected when run within
+    # existing event loop (i.e. from ipython).
+    demo = demo_main(MyFrame, title="Scrollbar demo", size=(250,250))

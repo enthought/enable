@@ -15,8 +15,8 @@ import wx
 
 from kiva.agg import CompiledPath, GraphicsContextSystem as GraphicsContext
 
-from base_window import BaseWindow
-from scrollbar import NativeScrollBar
+from .base_window import BaseWindow
+from .scrollbar import NativeScrollBar
 
 def _wx_bitmap_from_buffer(buf, width, height):
     """ Given a pixel buffer in ARGB order, return a WX bitmap

@@ -5,10 +5,16 @@
 // they?
 #ifdef SWIGPYTHON
 %typemap(in) std::string * {
-  if (PyString_Check ($input))
+  if (PyBytes_Check ($input))
   {
-    $1 = new std::string((char *)PyString_AsString($input));
+    $1 = new std::string((char *)PyBytes_AsString($input));
   }
+#if PY_VERSION_HEX >= 0x03030000
+  else if (PyUnicode_Check($input))
+  {
+    $1 = new std::string((char *)PyUnicode_AsUTF8($input));
+  }
+#endif
   else
   {
     PyErr_SetString (PyExc_TypeError, "not a String");
@@ -16,7 +22,7 @@
   }
 }
 %typemap(out) std::string * {
-  $result = PyString_FromString((const char *)$1->c_str()); 
+  $result = SWIG_Python_str_FromChar((const char *)$1->c_str());
 }
 %typemap(freearg) std::string * {
   if ($1)

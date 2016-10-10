@@ -1,4 +1,4 @@
-from __future__ import with_statement
+
 
 from math import sin, cos, pi
 
@@ -80,8 +80,8 @@ line_color = (0.0,0.0,0.0)
 gc = agg.GraphicsContextArray((800,800))
 gc.scale_ctm(8.0,8.0)
 gc.translate_ctm(50,50)
-print 'line color:', line_color
-print 'fill color:', fill_color
+print('line color:', line_color)
+print('fill color:', fill_color)
 gc.set_stroke_color(line_color)
 gc.set_fill_color(fill_color)
 gc.set_line_width(12)
@@ -102,14 +102,14 @@ gc.scale_ctm(4.0,4.0)
 
 offsets = array(((0,0),(80,0),(160,0),(240,0),(320,0)))
 modes = [agg.FILL, agg.EOF_FILL, agg.STROKE, agg.FILL_STROKE, agg.EOF_FILL_STROKE]
-pairs = zip(modes, offsets)
+pairs = list(zip(modes, offsets))
 center = array((50,50))
 for mode, offset in pairs:
     with gc:
         xo,yo = center+offset
         gc.translate_ctm(xo,yo)
-        print 'line color:', line_color
-        print 'fill color:', fill_color
+        print('line color:', line_color)
+        print('fill color:', fill_color)
         gc.set_stroke_color(line_color)
         gc.set_fill_color(fill_color)
         gc.set_line_width(12)

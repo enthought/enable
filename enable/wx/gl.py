@@ -7,8 +7,8 @@ from wx.glcanvas import GLCanvas
 from traits.api import Instance
 from kiva.gl import CompiledPath, GraphicsContext
 
-from base_window import BaseWindow
-from scrollbar import NativeScrollBar
+from .base_window import BaseWindow
+from .scrollbar import NativeScrollBar
 
 class Window(BaseWindow):
 

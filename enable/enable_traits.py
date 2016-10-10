@@ -4,7 +4,6 @@ Define the base Enable object traits
 
 # Major library imports
 from numpy import arange, array
-from types import ListType, TupleType
 
 # Enthought library imports
 from kiva.trait_defs.kiva_font_trait import KivaFont
@@ -19,8 +18,8 @@ except ImportError:
     CList = List
 
 # Relative imports
-import base
-from base import default_font_name
+import enable.base as base
+from .base import default_font_name
 
 #------------------------------------------------------------------------------
 #  Constants:
@@ -30,10 +29,10 @@ from base import default_font_name
 ArrayType = type( arange( 1.0 ) )
 
 # Basic sequence types:
-basic_sequence_types = ( ListType, TupleType )
+basic_sequence_types = ( list, tuple )
 
 # Sequence types:
-sequence_types = [ ArrayType, ListType, TupleType ]
+sequence_types = [ ArrayType, list, tuple ]
 
 # Valid pointer shape names:
 pointer_shapes = [
@@ -122,4 +121,3 @@ TimeInterval = Trait(None, None, Range(0.0, 3600.0))
 # Stretch traits:
 Stretch = Range(0.0, 1.0, value = 1.0)
 NoStretch = Stretch(0.0)
-

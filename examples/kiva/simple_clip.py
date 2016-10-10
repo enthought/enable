@@ -26,7 +26,7 @@ t1 = time.clock()
 for i in range(samples):
     gc_main.draw_image(gc_img)
 t2 = time.clock()
-print 'with clip', t2 - t1
+print('with clip', t2 - t1)
 
 gc_main.save("with_clip.bmp")
 
@@ -42,7 +42,7 @@ t1 = time.clock()
 for i in range(samples):
     gc_main.draw_image(gc_img)
 t2 = time.clock()
-print 'without clip', t2 - t1
+print('without clip', t2 - t1)
 
 gc_main.save("without_clip.bmp")
 

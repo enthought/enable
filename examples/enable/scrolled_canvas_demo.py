@@ -1,10 +1,10 @@
-
-from numpy import arange, array
+from numpy import array
 
 from enable.api import Canvas, Viewport, Window, Scrolled
 from enable.tools.api import ViewportPanTool
 from enable.primitives.api import Box
 from enable.example_support import demo_main, DemoFrame
+
 
 class MyFrame(DemoFrame):
 
@@ -32,8 +32,10 @@ class MyFrame(DemoFrame):
                                j*spacing + offset - boxsize/2 + 0.5]
                 canvas.add(box)
 
-        viewport = Viewport(component=canvas, enable_zoom=True)
-        viewport.view_position = [0,0]
+        viewport = Viewport(component=canvas, enable_zoom=True,
+                            vertical_anchor='center',
+                            horizontal_anchor='center')
+        #viewport.view_position = [0,0]
         viewport.tools.append(ViewportPanTool(viewport))
 
         # Uncomment the following to enforce limits on the zoom
@@ -50,4 +52,4 @@ class MyFrame(DemoFrame):
         return Window(self, -1, component=scrolled)
 
 if __name__ == "__main__":
-    demo_main(MyFrame, title="Canvas example")
+    demo = demo_main(MyFrame, title="Canvas example")

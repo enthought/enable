@@ -44,7 +44,7 @@
 unsigned path_cmd(unsigned c);
 unsigned path_flags(unsigned c);
 
-%pythoncode {
+%pythoncode %{
 
 #----------------------------------------------------------------------------
 #
@@ -141,4 +141,4 @@ interp_enum_map = {}
 for key,value in interp_string_map.items():
     interp_enum_map[value] = key
 
-}
+%}

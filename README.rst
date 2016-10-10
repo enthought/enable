@@ -4,6 +4,13 @@ enable: low-level drawing and interaction
 
 http://github.enthought.com/enable
 
+.. image:: https://travis-ci.org/enthought/enable.svg?branch=master
+   :target: https://travis-ci.org/enthought/enable
+   :alt: Build status
+
+.. image:: https://coveralls.io/repos/enthought/enable/badge.png
+   :target: https://coveralls.io/r/enthought/enable
+   :alt: Coverage status
 
 The Enable *project* provides two related multi-platform *packages* for drawing
 GUI objects.
@@ -57,17 +64,37 @@ Kiva currently implements the following features:
 - RGB, RGBA, or grayscale color depths
 - transparency
 
-
 Prerequisites
 -------------
 
-You must have the following libraries installed before building or installing
-the Enable project:
+You must have the following libraries installed before building
+the Enable/Kiva project:
 
-* `distribute <http://pypi.python.org/pypi/distribute>`_
-* `SWIG <http://www.swig.org/>`_
-* `Cython <http://www.cython.org>`_
-* `Numpy <http://pypi.python.org/pypi/numpy>`_
-* `ReportLab Toolkit <http://www.reportlab.org/rl_toolkit.html/>`_ for PDF
-  backend support in Kiva.
-* (on Linux) X11-devel (development tools for X11)
+- `Setuptools <https://pypi.python.org/pypi/setuptools>`_
+- `Numpy <http://pypi.python.org/pypi/numpy>`_
+- `SWIG <http://www.swig.org/>`_
+- (on Linux) X11-devel (development tools for X11)
+- (on Mac OS X) `Cython <http://www.cython.org>`_
+
+Enable/Kiva also have the following requirements:
+
+.. rubric:: Runtime:
+
+- `Numpy <http://pypi.python.org/pypi/numpy>`_
+- `PIL <http://www.pythonware.com/products/pil>`_ or preferably `pillow <https://pypi.python.org/pypi/Pillow/2.8.1>`_
+- `traits 4.5.0 <https://pypi.python.org/pypi/traits>`_
+- `traitsui 4.4.0 <https://pypi.python.org/pypi/traitsui>`_
+- `pyface 4.5.0 <https://pypi.python.org/pypi/pyface>`_
+- `six 1.9.0 <https://pypi.python.org/pypi/six>`_
+
+.. rubric:: Optional:
+
+- `apptools 4.3.0 <https://pypi.python.org/pypi/apptools/>`_
+- (Qt backend) `PySide <https://pypi.python.org/pypi/PySide>`_ or `PyQt4 <https://pypi.python.org/pypi/PyQt4>`_
+- (WX backend) `WxPython version 2.8.11.0 <https://pypi.python.org/pypi/wxPython/2.8.11.0>`_
+- (GL backend) `pyglet version 1.1.4 <https://bitbucket.org/pyglet/pyglet/get/pyglet-1.1.4.zip>`_
+- (GL backend) `pygarrayimage <https://pypi.python.org/pypi/pygarrayimage>`_
+- (SVG backend) `PyParsing <https://pypi.python.org/pypi/pyparsing>`_
+- (PDF backend) `ReportLab Toolkit version 3.1 <http://www.reportlab.org/rl_toolkit.html/>`_
+- (Cairo backend) `PyCairo 1.10.0 <http://cairographics.org/releases/py2cairo-1.10.0.tar.bz2>`_
+- (Constrained layout) `kiwisolver <https://pypi.python.org/pypi/kiwisolver>`_

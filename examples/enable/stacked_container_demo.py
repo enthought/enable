@@ -1,15 +1,17 @@
-
-
 from enable.example_support import DemoFrame, demo_main
 
 from enable.api import Container, Window, TextField
 from enable.stacked_container import VStackedContainer, HStackedContainer
-from enable.overlay_container import OverlayContainer
+
+
+size = (240, 240)
+
 
 class MyFrame(DemoFrame):
+
     def _create_window(self):
 
-        stack = VStackedContainer(position=[0,0], bounds=[500,500],
+        stack = VStackedContainer(position=[0,0],
             halign='center', valign='center', #border_visible=True,
             fit_components='hv', auto_size=True, stack_order='top_to_bottom',
             bgcolor='red')
@@ -23,7 +25,7 @@ class MyFrame(DemoFrame):
                 text_offset=1)
             number = TextField(text=str(i+1), resizable='',
                 bgcolor='blue', #border_visible=True,
-                text_offset=1, can_edit=False, bounds=[20,20])
+                text_offset=1, can_edit=False, bounds=[20, 20])
             row = HStackedContainer(fit_components='hv', auto_size=True,
                 resizable='',
                 valign='top', border_visible=True)
@@ -31,13 +33,14 @@ class MyFrame(DemoFrame):
             row.add(label)
             stack.add(row)
 
-        #print stack.components
-        container = Container(position=[20,20], bounds=[500,500])
+        container = Container(position=[20, 20], bounds=size)
         container.add(stack)
-        container2 = Container(bounds=[600,600])
+        container2 = Container(bounds=size)
         container2.add(container)
         return Window(self, -1, component=container2)
 
-if __name__ == "__main__":
-    demo_main(MyFrame, size=[600,600])
 
+if __name__ == "__main__":
+    # Save demo so that it doesn't get garbage collected when run within
+    # existing event loop (i.e. from ipython).
+    demo = demo_main(MyFrame, size=size)

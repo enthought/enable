@@ -17,6 +17,13 @@ from pyface.qt import QtCore
 
 from ..toolkit_constants import key_names, pointer_names
 
+DRAG_RESULTS_MAP = { "error":   QtCore.Qt.IgnoreAction,
+                     "none":    QtCore.Qt.IgnoreAction,
+                     "copy":    QtCore.Qt.CopyAction,
+                     "move":    QtCore.Qt.MoveAction,
+                     "link":    QtCore.Qt.LinkAction,
+                     "cancel":  QtCore.Qt.IgnoreAction }
+
 BUTTON_NAME_MAP = {
     QtCore.Qt.LeftButton:   "left",
     QtCore.Qt.RightButton:  "right",
@@ -75,15 +82,12 @@ if len(pointer_names) != len(pointer_shapes):
 POINTER_MAP = dict(zip(pointer_names, pointer_shapes))
 
 KEY_MAP = {
-    #QtCore.Qt.Key_Plus: 'Add',
     QtCore.Qt.Key_Backspace: 'Backspace',
     QtCore.Qt.Key_Cancel: 'Cancel',
     QtCore.Qt.Key_CapsLock: 'Capital',
     QtCore.Qt.Key_Clear: 'Clear',
     QtCore.Qt.Key_Control: 'Control',
-    #QtCore.Qt.Key_Period: 'Decimal',
     QtCore.Qt.Key_Delete: 'Delete',
-    #QtCore.Qt.Key_Slash: 'Divide',
     QtCore.Qt.Key_Down: 'Down',
     QtCore.Qt.Key_End: 'End',
     QtCore.Qt.Key_Return: 'Enter',
@@ -121,16 +125,6 @@ KEY_MAP = {
     QtCore.Qt.Key_Meta: 'Menu',
     QtCore.Qt.Key_Asterisk: 'Multiply',
     QtCore.Qt.Key_NumLock: 'Num Lock',
-    #QtCore.Qt.Key_0: 'Numpad 0',
-    #QtCore.Qt.Key_1: 'Numpad 1',
-    #QtCore.Qt.Key_2: 'Numpad 2',
-    #QtCore.Qt.Key_3: 'Numpad 3',
-    #QtCore.Qt.Key_4: 'Numpad 4',
-    #QtCore.Qt.Key_5: 'Numpad 5',
-    #QtCore.Qt.Key_6: 'Numpad 6',
-    #QtCore.Qt.Key_7: 'Numpad 7',
-    #QtCore.Qt.Key_8: 'Numpad 8',
-    #QtCore.Qt.Key_9: 'Numpad 9',
     QtCore.Qt.Key_PageDown: 'Page Down',
     QtCore.Qt.Key_PageUp: 'Page Up',
     QtCore.Qt.Key_Pause: 'Pause',
@@ -139,13 +133,18 @@ KEY_MAP = {
     QtCore.Qt.Key_ScrollLock: 'Scroll Lock',
     QtCore.Qt.Key_Select: 'Select',
     QtCore.Qt.Key_Shift: 'Shift',
-    #QtCore.Qt.Key_Minus: 'Subtract',
     QtCore.Qt.Key_Tab: 'Tab',
     QtCore.Qt.Key_Up: 'Up',
     QtCore.Qt.Key_Alt: 'Alt',
 }
 
-#if len(key_symbols) != len(key_names):
-#    warnings.warn("The Qt4 toolkit backend keymap is out of sync!")
-
-#KEY_MAP = dict(zip(key_symbols, key_names))
+# Add all of the other keys registered by Qt.
+# This should work for both PySide and PyQt4.
+for enum_name in dir(QtCore.Qt):
+    if enum_name.startswith('Key_'):
+        enum = getattr(QtCore.Qt, enum_name)
+        # Ignore everything in latin-1 as we just want the unichr() conversion.
+        if enum <= 255 or enum in KEY_MAP:
+            continue
+        key_name = enum_name[len('Key_'):]
+        KEY_MAP[enum] = key_name

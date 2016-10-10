@@ -157,7 +157,7 @@ namespace agg24
     };
 };
 
-%pythoncode {
+%pythoncode %{
 def is_sequence(arg):
     try:
         len(arg)
@@ -184,7 +184,7 @@ class AffineMatrix(_AffineMatrix):
         """
         self.multiply(other)
         return self
-}
+%}
 
 %extend agg24::trans_affine
 {

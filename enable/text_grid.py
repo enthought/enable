@@ -13,10 +13,10 @@ from traits.api import Any, Array, Bool, Int, List, Property, \
 from kiva.trait_defs.kiva_font_trait import KivaFont
 
 # Relative imports
-from component import Component
-from colors import black_color_trait, ColorTrait
-from enable_traits import LineStyle
-from font_metrics_provider import font_metrics_provider
+from .component import Component
+from .colors import black_color_trait, ColorTrait
+from .enable_traits import LineStyle
+from .font_metrics_provider import font_metrics_provider
 
 
 
@@ -107,10 +107,10 @@ class TextGrid(Component):
             gc.set_fill_color(text_color)
             gc.set_font(self.font)
             gc.set_text_position(0,0)
-    
+
             width, height = self._get_actual_cell_size()
             numrows, numcols = self.string_array.shape
-    
+
             # draw selected backgrounds
             # XXX should this be in the background layer?
             for j, row in enumerate(self.string_array):
@@ -124,14 +124,14 @@ class TextGrid(Component):
                             height+2*padding + border_width)
                         gc.fill_path()
                         gc.set_fill_color(text_color)
-    
+
             self._draw_grid_lines(gc)
-    
+
             for j, row in enumerate(self.string_array):
                 for i, text in enumerate(row):
                     x,y = self._cached_cell_coords[i,j+1] + self._text_offset + \
                         padding + border_width/2.0
-    
+
                     if (i,j) in self.selected_cells:
                         gc.set_fill_color(highlight_color)
                         gc.set_stroke_color(highlight_color)

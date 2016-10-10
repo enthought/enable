@@ -1,4 +1,6 @@
 
+from __future__ import absolute_import, print_function
+
 # Major library imports
 import ctypes
 from math import floor
@@ -12,23 +14,19 @@ from numpy import array, ndarray
 import pyglet
 pyglet.options['shadow_window'] = False
 
-#from pyglet.font import Text
 from pyglet.text import Label
 from pyglet.font import load as load_font
 from pyglet.font.base import Font as PygletFont
-from pyglet.graphics import Batch
 from pyglet import gl
 from pygarrayimage.arrayimage import ArrayInterfaceImage
 
 # Local kiva imports
-from affine import affine_from_values, transform_points
-from agg import GraphicsContextGL as _GCL
-from agg import GraphicsContextArray
-from agg import AggFontType
-from agg import Image
-from agg import CompiledPath
-from constants import BOLD, BOLD_ITALIC, ITALIC
-from fonttools import Font
+from .affine import affine_from_values, transform_points
+from .agg import GraphicsContextGL as _GCL
+from .agg import AggFontType
+from .agg import CompiledPath
+from .constants import BOLD, BOLD_ITALIC, ITALIC
+from .fonttools import Font
 
 
 class ArrayImage(ArrayInterfaceImage):
@@ -73,25 +71,29 @@ class ArrayImage(ArrayInterfaceImage):
         internalformat = self._get_internalformat(self.format)
 
         gl.glBindTexture(texture.target, texture.id)
-        gl.glTexParameteri(texture.target, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE)
-        gl.glTexParameteri(texture.target, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE)
-        gl.glTexParameteri(texture.target, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
-        gl.glTexParameteri(texture.target, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
+        gl.glTexParameteri(texture.target, gl.GL_TEXTURE_WRAP_S,
+                           gl.GL_CLAMP_TO_EDGE)
+        gl.glTexParameteri(texture.target, gl.GL_TEXTURE_WRAP_T,
+                           gl.GL_CLAMP_TO_EDGE)
+        gl.glTexParameteri(texture.target, gl.GL_TEXTURE_MAG_FILTER,
+                           gl.GL_LINEAR)
+        gl.glTexParameteri(texture.target, gl.GL_TEXTURE_MIN_FILTER,
+                           gl.GL_LINEAR)
 
         if subimage:
             width = texture.owner.width
             height = texture.owner.height
             blank = (ctypes.c_ubyte * (width * height * 4))()
             gl.glTexImage2D(texture.target, texture.level,
-                         internalformat,
-                         width, height,
-                         1,
-                         gl.GL_RGBA, gl.GL_UNSIGNED_BYTE,
-                         blank)
+                            internalformat,
+                            width, height,
+                            1,
+                            gl.GL_RGBA, gl.GL_UNSIGNED_BYTE,
+                            blank)
             internalformat = None
 
         self.blit_to_texture(texture.target, texture.level,
-            0, 0, 0, internalformat)
+                             0, 0, 0, internalformat)
 
         return texture
 
@@ -110,7 +112,8 @@ class ArrayImage(ArrayInterfaceImage):
         format, type = self._get_gl_format_and_type(data_format)
         if format is None:
             if (len(data_format) in (3, 4) and
-                gl.gl_info.have_extension('GL_ARB_imaging')):
+                    gl.gl_info.have_extension('GL_ARB_imaging')):
+
                 # Construct a color matrix to convert to GL_RGBA
                 def component_column(component):
                     try:
@@ -118,6 +121,7 @@ class ArrayImage(ArrayInterfaceImage):
                         return [0] * pos + [1] + [0] * (3 - pos)
                     except ValueError:
                         return [0, 0, 0, 0]
+
                 # pad to avoid index exceptions
                 lookup_format = data_format + 'XXX'
                 matrix = (component_column(lookup_format[0]) +
@@ -166,27 +170,16 @@ class ArrayImage(ArrayInterfaceImage):
         gl.glTexParameteri(target, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
         gl.glTexParameteri(target, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
 
-
         if target == gl.GL_TEXTURE_3D:
             assert not internalformat
-            gl.glTexSubImage3D(target, level,
-                            x, y, z,
-                            self.width, self.height, 1,
-                            format, type,
-                            data)
+            gl.glTexSubImage3D(target, level, x, y, z, self.width, self.height,
+                               1, format, type, data)
         elif internalformat:
-            gl.glTexImage2D(target, level,
-                         internalformat,
-                         self.width, self.height,
-                         0,
-                         format, type,
-                         data)
+            gl.glTexImage2D(target, level, internalformat, self.width,
+                            self.height, 0, format, type, data)
         else:
-            gl.glTexSubImage2D(target, level,
-                            x, y,
-                            self.width, self.height,
-                            format, type,
-                            data)
+            gl.glTexSubImage2D(target, level, x, y, self.width, self.height,
+                               format, type, data)
         gl.glPopClientAttrib()
 
         if matrix:
@@ -206,11 +199,14 @@ def image_as_array(img):
     elif isinstance(img, ndarray):
         return img
     else:
-        raise NotImplementedError("can't convert %r into a numpy array" % (img,))
+        msg = "can't convert %r into a numpy array" % (img,)
+        raise NotImplementedError(msg)
+
 
 def get_dpi():
     """ Returns the appropriate DPI setting for the system"""
     pass
+
 
 class MRU(dict):
     def __init__(self, *args, **kw):
@@ -238,7 +234,8 @@ class MRU(dict):
         """ Puts **key** as the most recently used item """
         if len(self.__order__) == 0:
             self.__order__.append(key)
-        if (len(self.__order__) == self.__maxlength__) and key not in self.__order__:
+        if (len(self.__order__) == self.__maxlength__) and \
+                key not in self.__order__:
             # The MRU is full, so pop the oldest element
             del self[self.__order__[0]]
         if key != self.__order__[-1]:
@@ -254,8 +251,11 @@ class MRU(dict):
                     self.__order__.append(key)
         return
 
+
 # Use a singleton for the font cache
 GlobalFontCache = MRU()
+
+
 def GetFont(font):
     """ Returns a Pylget Font object for the given Agg or Kiva font """
     if isinstance(font, PygletFont):
@@ -266,17 +266,16 @@ def GetFont(font):
         if key not in GlobalFontCache:
             if isinstance(font, AggFontType):
                 agg_font = font
-                font = Font(face_name = agg_font.name,
-                            size = agg_font.size,
-                            family = agg_font.family,
-                            style = agg_font.style)
+                font = Font(face_name=agg_font.name, size=agg_font.size,
+                            family=agg_font.family, style=agg_font.style)
             bold = False
             italic = False
-            if font.style == BOLD or font.style == BOLD_ITALIC or font.weight == BOLD:
+            if font.style in [BOLD, BOLD_ITALIC] or font.weight == BOLD:
                 bold = True
-            if font.style == ITALIC or font.style == BOLD_ITALIC:
+            if font.style in [ITALIC, BOLD_ITALIC]:
                 italic = True
-            pyglet_font = load_font(font.findfontname(), font.size, bold, italic)
+            pyglet_font = load_font(font.findfontname(), font.size, bold,
+                                    italic)
             GlobalFontCache[key] = pyglet_font
         else:
             pyglet_font = GlobalFontCache[key]
@@ -289,6 +288,8 @@ def GetFont(font):
 # (We typically expect that the same numbers of labels will be rendered.)
 GlobalTextCache = MRU()
 GlobalTextCache.__maxlength__ = 100
+
+
 def GetLabel(text, pyglet_font):
     """ Returns a Pyglet Label object for the given text and font """
     key = (text, pyglet_font)
@@ -297,8 +298,8 @@ def GetLabel(text, pyglet_font):
         # the y coordinate given.  Unfortunately, it doesn't expose a per-Text
         # descent (only a per-Font descent), so it's impossible to know how to
         # offset the y value properly for a given string.
-        label = Label(text, font_name=pyglet_font.name, font_size=pyglet_font.size,
-                      anchor_y="bottom")
+        label = Label(text, font_name=pyglet_font.name,
+                      font_size=pyglet_font.size, anchor_y="bottom")
         GlobalTextCache[key] = label
     else:
         label = GlobalTextCache[key]
@@ -336,9 +337,9 @@ class GraphicsContext(_GCL):
         label = GetLabel(text, pyglet_font)
         return (0, 0, label.content_width, label.content_height)
 
-    def show_text(self, text, point = None):
+    def show_text(self, text, point=None):
         if point is None:
-            point = (0,0)
+            point = (0, 0)
         return self.show_text_at_point(text, *point)
 
     def show_text_at_point(self, text, x, y):
@@ -363,7 +364,8 @@ class GraphicsContext(_GCL):
         label.x = x
         label.y = y
         c = self.get_fill_color()
-        label.color = (int(c[0]*255), int(c[1]*255), int(c[2]*255), int(c[3]*255))
+        label.color = (int(c[0]*255), int(c[1]*255), int(c[2]*255),
+                       int(c[3]*255))
         label.draw()
         return True
 
@@ -382,8 +384,6 @@ class GraphicsContext(_GCL):
     def draw_image(self, img, rect=None, force_copy=False):
         """ Renders a GraphicsContextArray into this GC """
         xform = self.get_ctm()
-        x0 = xform[4]
-        y0 = xform[5]
 
         image = image_as_array(img)
         shape = image.shape
@@ -409,14 +409,14 @@ class GraphicsContext(_GCL):
         ])
         p = transform_points(affine_from_values(*xform), points)
         a = (gl.GLfloat*32)(
-            t[0],   t[1],   t[2],  1.,
-            p[0,0], p[0,1], 0,     1.,
-            t[3],   t[4],   t[5],  1.,
-            p[1,0], p[1,1], 0,     1.,
-            t[6],   t[7],   t[8],  1.,
-            p[2,0], p[2,1], 0,     1.,
-            t[9],   t[10],  t[11], 1.,
-            p[3,0], p[3,1], 0,     1.,
+            t[0],    t[1],    t[2],  1.,
+            p[0, 0], p[0, 1], 0,     1.,
+            t[3],    t[4],    t[5],  1.,
+            p[1, 0], p[1, 1], 0,     1.,
+            t[6],    t[7],    t[8],  1.,
+            p[2, 0], p[2, 1], 0,     1.,
+            t[9],    t[10],   t[11], 1.,
+            p[3, 0], p[3, 1], 0,     1.,
         )
         gl.glPushAttrib(gl.GL_ENABLE_BIT)
         gl.glEnable(texture.target)
@@ -427,5 +427,6 @@ class GraphicsContext(_GCL):
         gl.glPopClientAttrib()
         gl.glPopAttrib()
 
+
 def font_metrics_provider():
-    return GraphicsContext((1,1))
+    return GraphicsContext((1, 1))

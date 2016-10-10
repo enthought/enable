@@ -1,13 +1,11 @@
 """
 This allows a simple component to be moved around the screen.
 """
-
-from __future__ import with_statement
-
 from enable.example_support import DemoFrame, demo_main
 
-from traits.api import Float, Tuple
-from enable.api import Component, Container, Pointer, Window
+from traits.api import Float
+from enable.api import Component, Pointer, Window
+
 
 class Box(Component):
     """
@@ -37,13 +35,14 @@ class Box(Component):
 
             # draw line around outer box
             gc.set_stroke_color((0,0,0,1))
-            gc.rect(self.outer_x, self.outer_y, self.outer_width, self.outer_height)
+            gc.rect(self.outer_x, self.outer_y, self.outer_width,
+                    self.outer_height)
             gc.stroke_path()
 
         return
 
     def normal_key_pressed(self, event):
-        print "Key:", event.character
+        print("Key:", event.character)
 
     def normal_left_down(self, event):
         self.event_state = "moving"
@@ -73,13 +72,15 @@ class Box(Component):
         event.handled = True
         return
 
+
 class MyFrame(DemoFrame):
 
     def _create_window(self):
         box = Box(bounds=[100,100], position=[50,50], padding=15)
         return Window(self, -1, component=box)
 
-if __name__ == "__main__":
-    demo_main(MyFrame, title="Click and drag to move the box")
 
-# EOF
+if __name__ == "__main__":
+    # Save demo so that it doesn't get garbage collected when run within
+    # existing event loop (i.e. from ipython).
+    demo = demo_main(MyFrame, title="Click and drag to move the box")

@@ -1,4 +1,4 @@
-from __future__ import with_statement
+
 
 import os.path
 import xml.etree.cElementTree as etree
@@ -134,10 +134,10 @@ class ButtonCanvasView(HasTraits):
                                             label="Paste", x=250, y=150))
 
     def do_copy(self):
-        print "copying something"
+        print("copying something")
 
     def do_paste(self):
-        print "pasting something"
+        print("pasting something")
 
 
 if __name__ == "__main__":

@@ -11,7 +11,7 @@ from enable.api import AbstractWindow, MouseEvent, KeyEvent, \
 from enable.graphics_context import ImageGraphicsContextEnable
 
 # Local imports.
-from constants import KEY_MAP
+from .constants import KEY_MAP
 
 
 class EnableVTKWindow(AbstractWindow, CoordinateBox):
@@ -209,7 +209,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
                 meth_name += "Press"
             else:
                 meth_name += "Release"
-        
+
         elif "Char" in eventname:
             meth_name = "OnChar"
 
@@ -556,5 +556,3 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
             self._actor2d.height = self.height
         self._redraw_needed = True
         self._layout_needed = True
-
-

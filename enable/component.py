@@ -2,6 +2,8 @@
 
 from __future__ import with_statement
 
+from uuid import uuid4
+
 # Enthought library imports
 from traits.api \
     import Any, Bool, Delegate, Enum, Float, Instance, Int, List, \
@@ -9,16 +11,17 @@ from traits.api \
 from kiva.constants import FILL, STROKE
 
 # Local relative imports
-from colors import black_color_trait, white_color_trait
-from coordinate_box import CoordinateBox
-from enable_traits import bounds_trait, coordinate_trait, LineStyle
-from interactor import Interactor
+from .colors import black_color_trait, white_color_trait
+from .coordinate_box import CoordinateBox
+from .enable_traits import bounds_trait, coordinate_trait, LineStyle
+from .interactor import Interactor
 
 
 coordinate_delegate = Delegate("inner", modify=True)
 
 
 DEFAULT_DRAWING_ORDER = ["background", "underlay", "mainlayer", "border", "overlay"]
+
 
 class Component(CoordinateBox, Interactor):
     """
@@ -313,8 +316,8 @@ class Component(CoordinateBox, Interactor):
     # into more than one class and that class
     classes = List
 
-    # The optional element ID of this component.
-    id = Str("")
+    # The element ID of this component.
+    id = Str
 
     # These will be used by the new layout system, but are currently unused.
     #max_width = Any
@@ -464,15 +467,15 @@ class Component(CoordinateBox, Interactor):
             width -= 2*inset
             height -= 2*inset
             rect = (x, y, width, height)
-    
+
             gc.set_stroke_color(bgcolor)
             gc.set_line_dash(None)
             gc.draw_rect(rect, STROKE)
-    
+
             gc.set_stroke_color(color)
             gc.set_line_dash(dash)
             gc.draw_rect(rect, STROKE)
-    
+
             if marker_size > 0:
                 gc.set_fill_color(bgcolor)
                 half_y = y + height/2.0
@@ -507,7 +510,7 @@ class Component(CoordinateBox, Interactor):
         else:
             offset_x, offset_y = self.position
         return (offset_x + coords[0], offset_y + coords[1])
- 
+
     def get_relative_coords(self, *coords):
         """ Given absolute coordinates (where the origin is the top-left corner
         of the frame in the top-level parent Window) return coordinates relative
@@ -1027,13 +1030,18 @@ class Component(CoordinateBox, Interactor):
     def _get_layout_needed(self):
         return self._layout_needed
 
-
     def _tools_items_changed(self):
         self.invalidate_and_redraw()
 
     #------------------------------------------------------------------------
     # Event handlers
     #------------------------------------------------------------------------
+
+    def _id_default(self):
+        """ Generate a random UUID for the ID.
+        """
+        # The first 32bits is plenty.
+        return uuid4().hex[:8]
 
     def _aspect_ratio_changed(self, old, new):
         if new is not None:
@@ -1219,7 +1227,6 @@ class Component(CoordinateBox, Interactor):
     #------------------------------------------------------------------------
 
     def _get_outer_bounds(self):
-        border = self._get_visible_border()
         bounds = self.bounds
         return (bounds[0] + self.hpadding, bounds[1] + self.vpadding)
 

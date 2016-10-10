@@ -1,7 +1,7 @@
 
 
-from container import Container
-from simple_layout import simple_container_get_preferred_size, \
+from .container import Container
+from .simple_layout import simple_container_get_preferred_size, \
     simple_container_do_layout
 
 class OverlayContainer(Container):
@@ -21,5 +21,3 @@ class OverlayContainer(Container):
         """
         simple_container_do_layout(self)
         return
-
-

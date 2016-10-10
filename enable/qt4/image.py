@@ -12,8 +12,8 @@
 from pyface.qt import QtCore, QtGui
 from kiva.agg import CompiledPath, GraphicsContextSystem as GraphicsContext
 
-from base_window import BaseWindow
-from scrollbar import NativeScrollBar
+from .base_window import BaseWindow
+from .scrollbar import NativeScrollBar
 
 class Window(BaseWindow):
     def _create_gc(self, size, pix_format="bgra32"):
@@ -34,7 +34,7 @@ class Window(BaseWindow):
         w = self._gc.width()
         h = self._gc.height()
         data = self._gc.pixel_map.convert_to_argb32string()
-        image = QtGui.QImage(data, w, h, QtGui.QImage.Format_RGB32)
+        image = QtGui.QImage(data, w, h, QtGui.QImage.Format_ARGB32)
         rect = QtCore.QRect(0,0,w,h)
         painter = QtGui.QPainter(self.control)
         painter.drawImage(rect, image)

@@ -264,7 +264,7 @@ namespace kiva {
             # Later we can add full-blown support with wchar_t/Py_UNICODE
             # typemaps etc.
             try:
-                if isinstance(text, unicode):
+                if '' == b'' and isinstance(text, unicode):
                     text = text.encode("utf8")
                 return text
             except:
@@ -492,6 +492,20 @@ namespace kiva {
 
             bool is_font_initialized();
 
+            %feature("shadow") set_text_matrix(agg24::trans_affine& value)
+            %{
+            def set_text_matrix(self, matrix):
+                """ Set the text matrix.
+
+                `matrix` must be either a kiva.agg.AffineMatrix instance, or
+                a 3x3 numpy array.
+                """
+                if isinstance(matrix, ndarray) and matrix.shape == (3,3):
+                    matrix = AffineMatrix(matrix[0, 0], matrix[0, 1],
+                                          matrix[1, 0], matrix[1, 1],
+                                          matrix[2, 0], matrix[2, 1])
+                _agg.GraphicsContextArray_set_text_matrix(self, matrix)
+            %}
             void set_text_matrix(agg24::trans_affine& value);
 
             agg24::trans_affine get_text_matrix();
@@ -800,7 +814,6 @@ namespace kiva {
                     rgb24 format.
                 """
                 FmtsWithoutAlpha = ('jpg', 'bmp', 'eps', "jpeg")
-                import Image as PilImage
                 size = (self.width(), self.height())
                 fmt = self.format()
 
@@ -825,7 +838,8 @@ namespace kiva {
                 else:
                     bmp = self.bmp_array
 
-                img = PilImage.fromstring(pilformat, size, bmp.tostring())
+                from kiva import compat
+                img = compat.pilfromstring(pilformat, size, bmp.tostring())
                 img.save(filename, format=file_format, options=pil_options)
 
 
@@ -835,7 +849,7 @@ namespace kiva {
 
             def __enter__(self):
                 self.save_state()
-                
+
             def __exit__(self, type, value, traceback):
                 self.restore_state()
 
@@ -881,11 +895,13 @@ def init(self, ary_or_size, pix_format="bgra32",
         ary = ary_or_size
         sh = shape(ary)
         if len(sh) == 2:
-            msg = "2D arrays must use a format that is one byte per pixel"
-            assert img_depth == 1, msg
+            if img_depth != 1:
+                msg = "2D arrays must use a format that is one byte per pixel"
+                raise ValueError(msg)
         elif len(sh) == 3:
-            msg = "Image depth and format are incompatible"
-            assert img_depth == sh[2], msg
+            if img_depth != sh[2]:
+                msg = "Image depth and format are incompatible"
+                raise ValueError(msg)
         else:
             msg = "only 2 or 3 dimensional arrays are supported as images"
             msg += " but got sh=%r" % (sh,)
@@ -944,7 +960,8 @@ class Image(GraphicsContextArray):
             another GraphicsContextArray
         """
         # read the file using PIL
-        import Image as PilImage
+        from PIL import Image as PilImage
+        from kiva.compat import piltostring
         pil_img = PilImage.open(file)
 
         # Convert image to a numeric array
@@ -952,7 +969,7 @@ class Image(GraphicsContextArray):
             (cvar.ALWAYS_32BIT_WORKAROUND_FLAG and pil_img.mode != "RGBA")):
             pil_img = pil_img.convert(mode="RGBA")
         depth = pil_depth_map[pil_img.mode]
-        img = fromstring(pil_img.tostring(),uint8)
+        img = fromstring(piltostring(pil_img),uint8)
         img = resize(img, (pil_img.size[1],pil_img.size[0],depth))
         format = pil_format_map[pil_img.mode]
 
@@ -1083,5 +1100,3 @@ namespace kiva {
     };
 
 }
-
-

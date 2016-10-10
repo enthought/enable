@@ -10,9 +10,9 @@ from traits.api import (Bool, Int, Event, Instance, Any, Property,
                                   List, DelegatesTo)
 
 # Local, relative imports
-from component import Component
-from font_metrics_provider import font_metrics_provider
-from text_field_style import TextFieldStyle
+from .component import Component
+from .font_metrics_provider import font_metrics_provider
+from .text_field_style import TextFieldStyle
 
 
 StyleDelegate = DelegatesTo("_style")
@@ -307,7 +307,7 @@ class TextField(Component):
         elif len(event.character) == 1:
             # XXX normal keypress, so let it go through
             return
-            
+
         event.handled = True
         self.invalidate_draw()
         self.request_redraw()
@@ -332,7 +332,7 @@ class TextField(Component):
                 else:
                     y_offset = char_h - self._style.line_spacing
                 y = self.y2 - y_offset - self._style.text_offset
-    
+
                 # Show text at the same scale as the graphics context
                 ctm = gc.get_ctm()
                 if hasattr(ctm, "__len__") and len(ctm) == 6:
@@ -345,7 +345,7 @@ class TextField(Component):
                 x *= scale
                 y *= scale
                 gc.show_text_at_point(line, x, y)
-        
+
             if self._draw_cursor:
                 j, i = self._cursor_pos
                 j -= self._draw_text_ystart
@@ -355,14 +355,14 @@ class TextField(Component):
                 y = self.y2 - y_offset - self._style.text_offset
                 if not self.multiline:
                     char_h -= float(self._style.line_spacing)*.5
-    
+
                 gc.set_line_width(self._style.cursor_width)
                 gc.set_stroke_color(self._style.cursor_color)
                 gc.begin_path()
                 x_position = self.x + x_offset + self._style.text_offset
                 gc.move_to(x_position, y)
                 gc.line_to(x_position, y - char_h)
-    
+
                 gc.stroke_path()
 
 
@@ -555,4 +555,3 @@ class TextField(Component):
         #                   self._style.text_offset*2)
 
         self.request_redraw()
-

@@ -5,6 +5,7 @@ demo programs have to use.
 from __future__ import absolute_import
 from traits.etsconfig.api import ETSConfig
 
+
 # FIXME - it should be enough to do the following import, but because of the
 # PyQt/traits problem (see below) we can't because it would drag in traits too
 # early.  Until it is fixed we just assume wx if we can import it.
@@ -24,6 +25,7 @@ if not ETSConfig.toolkit:
 
 if ETSConfig.toolkit == 'wx':
     import wx
+    from pyface.util.guisupport import start_event_loop_wx, get_app_wx
 
     class DemoFrame(wx.Frame):
         def __init__ ( self, *args, **kw ):
@@ -54,21 +56,15 @@ if ETSConfig.toolkit == 'wx':
 
     def demo_main(demo_class, size=(400,400), title="Enable Demo"):
         "Takes the class of the demo to run as an argument."
-        app = wx.GetApp()
-        if app is None:
-            app = wx.PySimpleApp()
+        app = get_app_wx()
         frame = demo_class(None, size=size, title=title)
         app.SetTopWindow(frame)
-        app.MainLoop()
+        start_event_loop_wx(app)
+        return frame
 
 elif ETSConfig.toolkit == 'qt4':
     from pyface.qt import QtGui
-
-    _app = QtGui.QApplication.instance()
-
-    if _app is None:
-        import sys
-        _app = QtGui.QApplication(sys.argv)
+    from pyface.util.guisupport import start_event_loop_qt4, get_app_qt4
 
     class DemoFrame(QtGui.QWidget):
         def __init__ (self, parent, **kw):
@@ -95,11 +91,12 @@ elif ETSConfig.toolkit == 'qt4':
             "Subclasses should override this method and return an enable.Window"
             raise NotImplementedError
 
-
     def demo_main(demo_class, size=(400,400), title="Enable Demo"):
         "Takes the class of the demo to run as an argument."
+        app = get_app_qt4()
         frame = demo_class(None, size=size, title=title)
-        _app.exec_()
+        start_event_loop_qt4(app)
+        return frame
 
 
 elif ETSConfig.toolkit == 'pyglet':
@@ -142,7 +139,3 @@ elif ETSConfig.toolkit == 'pyglet':
             window.set_caption(title)
 
         app.run()
-
-
-
-# EOF

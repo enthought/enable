@@ -1,0 +1,6 @@
+include kiva/agg/agg.i
+include docs/Makefile
+include docs/kiva/agg/notes
+recursive-include docs *.py *.rst *.txt *.css *.png *.ico *.doc
+recursive-include examples *.py *.txt *.gif *.jpg *.enaml
+recursive-include kiva/quartz *.pyx *.pxi *.pxd mac_context*.*

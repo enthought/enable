@@ -1,14 +1,32 @@
-
-from __future__ import with_statement
-
+"""
+Use mouse wheel to zoom and right-click to pan the viewport.
+"""
 from traits.api import Float
 
-from enable.api import AbstractOverlay, Canvas, Viewport, \
-        Window, ColorTrait, Scrolled, Container
+from enable.api import (AbstractOverlay, Canvas, Viewport, Window, ColorTrait,
+                        Scrolled)
 from enable.tools.api import ViewportPanTool
+from enable.primitives.api import Box
 from enable.example_support import demo_main, DemoFrame
 
+class DropCanvas(Canvas):
+    """ Adds a Box at a drop location """
 
+    def normal_drag_over(self, event):
+        self.window.set_drag_result("link")
+        event.handled = True
+
+    def normal_dropped_on(self, event):
+        self.window.set_drag_result("link")
+        print event.obj
+
+        box = Box(x=event.x-2, y=event.y-2, width=4, height=4)
+        self.add(box)
+
+        self.request_redraw()
+        event.handled = True
+        
+        
 class EventTracer(AbstractOverlay):
     """ Draws a marker under the mouse cursor where an event is occurring. """
 
@@ -42,35 +60,24 @@ class MyFrame(DemoFrame):
 
     def _create_window(self):
 
-        canvas = Canvas(bgcolor="lightsteelblue", draw_axes=True)
+        canvas = DropCanvas(bgcolor="lightsteelblue", draw_axes=True)
         canvas.overlays.append(EventTracer(canvas, color="green", size=8,
                                            angle=45.0))
-
+        
         viewport = Viewport(component=canvas, enable_zoom=True)
         viewport.view_position = [0,0]
         viewport.tools.append(ViewportPanTool(viewport, drag_button="right"))
         viewport.overlays.append(EventTracer(viewport))
 
-        if 1:
-            scrolled = Scrolled(canvas, inside_padding_width = 0,
-                            mousewheel_scroll = False,
-                            viewport_component = viewport,
-                            always_show_sb = True,
-                            continuous_drag_update = True)
-            return Window(self, -1, component=scrolled)
+        scrolled = Scrolled(canvas, inside_padding_width = 0,
+                        mousewheel_scroll = False,
+                        viewport_component = viewport,
+                        always_show_sb = True,
+                        continuous_drag_update = True)
+        return Window(self, -1, component=scrolled)
 
-        elif 1:
-            viewport.bounds = [300, 300]
-            viewport.position = [10,10]
-            container = Container(fit_window=True, auto_size=False,
-                                  border_visible=True,
-                                  border_color = "blue")
-            container.padding = 20
-            container.add(viewport)
-            return Window(self, -1, component=container)
-
-        else:
-            return Window(self, -1, component=viewport)
 
 if __name__ == "__main__":
-    demo_main(MyFrame, title="Canvas example")
+    # Save demo so that it doesn't get garbage collected when run within
+    # existing event loop (i.e. from ipython).
+    demo = demo_main(MyFrame, title="Canvas example")

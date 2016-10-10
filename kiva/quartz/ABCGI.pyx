@@ -537,7 +537,8 @@ cdef class CGContext:
     def close_path(self):
         """ Close the path of the current subpath.
         """
-        CGContextClosePath(self.context)
+        if not CGContextIsPathEmpty(self.context):
+            CGContextClosePath(self.context)
 
     def curve_to(self, float cp1x, float cp1y, float cp2x, float cp2y,
         float x, float y):
@@ -602,7 +603,8 @@ cdef class CGContext:
     def clip(self):
         """
         """
-        CGContextClip(self.context)
+        if not CGContextIsPathEmpty(self.context):
+            CGContextClip(self.context)
 
     def even_odd_clip(self):
         """
@@ -908,7 +910,7 @@ cdef class CGContext:
         cdef size_t pointer
         cdef CTFontRef ct_font
         cdef CTLineRef ct_line
-        
+
         if not text:
             # Nothing to draw
             return
@@ -918,7 +920,7 @@ cdef class CGContext:
         ct_line = _create_ct_line(text, ct_font, self.stroke_color)
         if ct_line == NULL:
             return
-        
+
         if xy is None:
             x = 0.0
             y = 0.0
@@ -1602,9 +1604,9 @@ cdef class CGBitmapContext(CGContext):
         """
 
         try:
-            import Image
+            from kiva.compat import pilfromstring
         except ImportError:
-            raise ImportError("need PIL to save images")
+            raise ImportError("need PIL (or Pillow) to save images")
 
         if self.bits_per_pixel == 32:
             if self.alpha_info == kCGImageAlphaPremultipliedLast:
@@ -1621,7 +1623,7 @@ cdef class CGBitmapContext(CGContext):
         if file_format is None:
             file_format = ''
 
-        img = Image.fromstring(mode, (self.width(), self.height()), self)
+        img = pilfromstring(mode, (self.width(), self.height()), self)
         if 'A' in mode:
             # Check the output format to see if it can handle an alpha channel.
             no_alpha_formats = ('jpg', 'bmp', 'eps', 'jpeg')
@@ -1778,7 +1780,8 @@ cdef class CGImageFile(CGImage):
         cdef int width, height, bits_per_component, bits_per_pixel, bytes_per_row
         cdef CGImageAlphaInfo alpha_info
 
-        import Image
+        from PIL import Image
+        from kiva.compat import piltostring
         import types
 
         if type(image_or_filename) is str:
@@ -1820,7 +1823,7 @@ cdef class CGImageFile(CGImage):
         self.bmp_array = c_numpy.PyArray_SimpleNew(3, &(dims[0]), c_numpy.NPY_UBYTE)
 
         data = self.bmp_array.data
-        s = img.tostring()
+        s = piltostring(img)
         py_data = PyString_AsString(s)
 
         memcpy(<void*>data, <void*>py_data, len(s))
@@ -2772,14 +2775,14 @@ cdef CTLineRef _create_ct_line(object the_string, CTFontRef font, object stroke_
 
     CFAttributedStringSetAttribute(cf_attr_string, CFRangeMake(0, text_len),
         kCTFontAttributeName, font)
-    
+
     if stroke_color is not None:
         cg_color = _create_cg_color(stroke_color)
         CFAttributedStringSetAttribute(cf_attr_string, CFRangeMake(0, text_len),
             kCTForegroundColorAttributeName, cg_color)
         CGColorRelease(cg_color)
-    
-    # Stroke Color is supported by OS X 10.6 and greater using the 
+
+    # Stroke Color is supported by OS X 10.6 and greater using the
     # kCTStrokeColorAttributeName attribute.
 
     ct_line = CTLineCreateWithAttributedString(cf_attr_string)

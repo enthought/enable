@@ -177,11 +177,11 @@ def build_paths(lion_string):
         else:
             fields = array(fields,'O')
             cmd = fields[::2]
-            pts = map(lambda x: array(eval(x), dtype=float), fields[1::2])
+            pts = [array(eval(x), dtype=float) for x in fields[1::2]]
             mins.append(amin(pts,axis=0))
             maxs.append(amax(pts,axis=0))
 
-            path_def = zip (cmd,pts)
+            path_def = list(zip (cmd,pts))
             for cmd, pt in path_def:
                 pt[0] -= 119
                 pt[1] -= 190.5
@@ -194,7 +194,7 @@ def build_paths(lion_string):
 
     sz = max_pt - min_pt
     center = min_pt + sz/2.0
-    return zip(paths, colors), sz, center
+    return list(zip(paths, colors)), sz, center
 
 def get_lion():
     """get_lion() -> path_and_color, size, center

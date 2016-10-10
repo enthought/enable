@@ -362,6 +362,14 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         except TypeError:
             pass
 
+    def test_set_text_matrix_ndarray(self):
+        """ Test that gc.set_text_matrix accepts 3x3 ndarrays. """
+        gc = agg.GraphicsContextArray((5, 5))
+        m = array([[1.0, 2.0, 0.0], [3.0, 4.0, 0.0], [5.0, 6.0, 1.0]])
+        gc.set_text_matrix(m)
+        m2 = gc.get_text_matrix()
+        self.assertEqual(m2, agg.AffineMatrix(1.0, 2.0, 3.0, 4.0, 5.0, 6.0))
+
 
 if __name__ == "__main__":
     unittest.main()

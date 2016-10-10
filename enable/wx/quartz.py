@@ -11,8 +11,8 @@ from kiva.fonttools import Font
 from kiva.quartz import get_macport, ABCGI
 
 # Local imports.
-from base_window import BaseWindow
-from scrollbar import NativeScrollBar
+from .base_window import BaseWindow
+from .scrollbar import NativeScrollBar
 
 CompiledPath = ABCGI.CGMutablePath
 
@@ -34,7 +34,7 @@ class GraphicsContext(ABCGI.CGLayerContext):
             # No initialization.
             image = None
             width, height = size_or_array
-        
+
         super(GraphicsContext, self).__init__((width, height), gc, *args, **kwds)
         if image is not None:
             self.draw_image(image)

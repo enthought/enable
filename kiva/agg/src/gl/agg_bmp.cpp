@@ -6,6 +6,8 @@
 #include "agg_pixfmt_rgba.h"
 #include "agg_color_rgba.h"
 
+#include "bytesobject.h"
+
 #if 0
 #define DEBUG_MTH(NAME) fprintf(stderr, NAME "\n");
 #define DEBUG_MTH2(STR,ARG1,ARG2) fprintf(stderr, STR "\n",(ARG1),(ARG2));
@@ -243,12 +245,12 @@ namespace agg24
     unsigned w = width();
     unsigned h = height();
 
-    PyObject *str = PyString_FromStringAndSize(NULL, w * h * 4);
+    PyObject *str = PyBytes_FromStringAndSize(NULL, w * h * 4);
 
     if (str == NULL)
       return NULL;
 
-    unsigned *data = (unsigned *)PyString_AS_STRING(str);
+    unsigned *data = (unsigned *)PyBytes_AS_STRING(str);
 
     pix_format_e format = get_pix_format();
 

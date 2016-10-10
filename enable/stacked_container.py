@@ -4,8 +4,8 @@
 
 from traits.api import Enum, Float
 
-from container import Container
-from stacked_layout import stacked_preferred_size, stack_layout
+from .container import Container
+from .stacked_layout import stacked_preferred_size, stack_layout
 
 class StackedContainer(Container):
     """ Base class for stacked containers

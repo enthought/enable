@@ -7,12 +7,12 @@ namespace kiva
                           double* poly_pts, int Npoly_pts);
     void points_in_polygon(double* pts, int Npts, 
                           double* poly_pts, int Npoly_pts,
-                          int* results, int Nresults);
+                          unsigned char* results, int Nresults);
     bool point_in_polygon_winding(double x, double y, 
                                   double* poly_pts, int Npoly_pts);
     void points_in_polygon_winding(double* pts, int Npts, 
                                    double* poly_pts, int Npoly_pts,
-                                   int* results, int Nresults);
+                                   unsigned char* results, int Nresults);
 	    		  
 }
 #endif

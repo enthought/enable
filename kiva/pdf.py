@@ -1,5 +1,4 @@
-#------------------------------------------------------------------------------
-# Copyright (c) 2005-2011, Enthought, Inc.
+# Copyright (c) 2005-2014, Enthought, Inc.
 # some parts copyright 2002 by Space Telescope Science Institute
 # All rights reserved.
 #
@@ -8,7 +7,7 @@
 # under the conditions described in the aforementioned license.  The license
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 # Thanks for using Enthought open source!
-#------------------------------------------------------------------------------
+
 """ PDF implementation of the core2d drawing library
 
     :Author:      Eric Jones, Enthought, Inc., eric@enthought.com
@@ -17,6 +16,9 @@
 
     The PDF implementation relies heavily on the ReportLab project.
 """
+
+from __future__ import absolute_import, print_function
+
 # standard library imports
 from itertools import izip
 import warnings
@@ -29,17 +31,18 @@ import reportlab.pdfbase._fontdata
 from reportlab.pdfgen import canvas
 
 # local, relative Kiva imports
-from arc_conversion import arc_to_tangent_points
-import basecore2d
-import constants
-from constants import FILL, STROKE, EOF_FILL
-import affine
+from .arc_conversion import arc_to_tangent_points
+from .basecore2d import GraphicsContextBase
+from .line_state import is_dashed
+from .constants import FILL, STROKE, EOF_FILL
+import kiva.constants as constants
+import kiva.affine as affine
 
 
 cap_style = {}
-cap_style[constants.CAP_ROUND]  = 1
+cap_style[constants.CAP_ROUND] = 1
 cap_style[constants.CAP_SQUARE] = 2
-cap_style[constants.CAP_BUTT]   = 0
+cap_style[constants.CAP_BUTT] = 0
 
 join_style = {}
 join_style[constants.JOIN_ROUND] = 1
@@ -48,10 +51,10 @@ join_style[constants.JOIN_MITER] = 0
 
 # stroke, fill, mode
 path_mode = {}
-path_mode[constants.FILL_STROKE]     = (1, 1, canvas.FILL_NON_ZERO)
-path_mode[constants.FILL]            = (0, 1, canvas.FILL_NON_ZERO)
-path_mode[constants.EOF_FILL]        = (0, 1, canvas.FILL_EVEN_ODD)
-path_mode[constants.STROKE]          = (1, 0, canvas.FILL_NON_ZERO)
+path_mode[constants.FILL_STROKE] = (1, 1, canvas.FILL_NON_ZERO)
+path_mode[constants.FILL] = (0, 1, canvas.FILL_NON_ZERO)
+path_mode[constants.EOF_FILL] = (0, 1, canvas.FILL_EVEN_ODD)
+path_mode[constants.STROKE] = (1, 0, canvas.FILL_NON_ZERO)
 path_mode[constants.EOF_FILL_STROKE] = (1, 1, canvas.FILL_EVEN_ODD)
 
 
@@ -59,12 +62,13 @@ path_mode[constants.EOF_FILL_STROKE] = (1, 1, canvas.FILL_EVEN_ODD)
 class CompiledPath(object):
     pass
 
-class GraphicsContext(basecore2d.GraphicsContextBase):
+
+class GraphicsContext(GraphicsContextBase):
     """
     Simple wrapper around a PDF graphics context.
     """
     def __init__(self, pdf_canvas, *args, **kwargs):
-        from image import GraphicsContext as GraphicsContextImage
+        from .image import GraphicsContext as GraphicsContextImage
         self.gc = pdf_canvas
         self.current_pdf_path = None
         self.current_point = (0, 0)
@@ -73,15 +77,15 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self._agg_gc = GraphicsContextImage((1, 1))
         super(GraphicsContext, self).__init__(self, *args, **kwargs)
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Coordinate Transform Matrix Manipulation
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def scale_ctm(self, sx, sy):
         """
         scale_ctm(sx: float, sy: float) -> None
 
-        Sets the coordinate system scale to the given values, (sx,sy).
+        Sets the coordinate system scale to the given values, (sx, sy).
         """
         self.gc.scale(sx, sy)
 
@@ -89,7 +93,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         translate_ctm(tx: float, ty: float) -> None
 
-        Translates the coordinate syetem by the given value by (tx,ty)
+        Translates the coordinate syetem by the given value by (tx, ty)
         """
         self.gc.translate(tx, ty)
 
@@ -116,11 +120,22 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             XXX: This should really return a 3x3 matrix (or maybe an affine
                  object?) like the other API's.  Needs thought.
         """
-        return copy.copy(self.gc._currentMatrix)
+        return affine.affine_from_values(*copy.copy(self.gc._currentMatrix))
 
-    #----------------------------------------------------------------
+    def set_ctm(self, transform):
+        """ Set the coordinate transform matrix
+
+        """
+        # We have to do this by inverting the current state to zero it out,
+        # then transform by desired transform, as Reportlab Canvas doesn't
+        # provide a method to directly set the ctm.
+        current = self.get_ctm()
+        self.concat_ctm(affine.invert(current))
+        self.concat_ctm(transform)
+
+    # ----------------------------------------------------------------
     # Save/Restore graphics state.
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def save_state(self):
         """ Saves the current graphic's context state.
@@ -134,15 +149,15 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         self.gc.restoreState()
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Manipulate graphics state attributes.
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def set_should_antialias(self, value):
         """ Sets/Unsets anti-aliasing for bitmap graphics context.
         """
         msg = "antialias is not part of the PDF canvas.  Should it be?"
-        raise NotImplementedError, msg
+        raise NotImplementedError(msg)
 
     def set_line_width(self, width):
         """ Sets the line width for drawing
@@ -164,8 +179,8 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         try:
             sjoin = join_style[style]
         except KeyError:
-            msg = "Invalid line join style.  See documentation for valid styles"
-            raise ValueError, msg
+            msg = "Invalid line join style. See documentation for valid styles"
+            raise ValueError(msg)
         self.gc.setLineJoin(sjoin)
 
     def set_miter_limit(self, limit):
@@ -197,7 +212,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             scap = cap_style[style]
         except KeyError:
             msg = "Invalid line cap style.  See documentation for valid styles"
-            raise ValueError, msg
+            raise ValueError(msg)
         self.gc.setLineCap(scap)
 
     def set_line_dash(self, lengths, phase=0):
@@ -212,7 +227,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
                 Specifies how many units into dash pattern
                 to start.  phase defaults to 0.
         """
-        if basecore2d.is_dashed((phase,lengths)):
+        if is_dashed((phase, lengths)):
             lengths = list(lengths) if lengths is not None else []
             self.gc.setDash(lengths, phase)
 
@@ -223,9 +238,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         raise NotImplementedError("Flatness not implemented yet on PDF")
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Sending drawing data to a device
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def flush(self):
         """ Sends all drawing data to the destination device.
@@ -236,7 +251,6 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             I think save() affects the paging of a document I think.
             We'll have to look into this more.
         """
-        #self.gc.save()
         pass
 
     def synchronize(self):
@@ -247,9 +261,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         pass
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Page Definitions
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def begin_page(self):
         """ Creates a new page within the graphics context.
@@ -267,7 +281,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         self.gc.showPage()
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Building paths (contours that are drawn)
     #
     # + Currently, nothing is drawn as the path is built.  Instead, the
@@ -280,17 +294,16 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     #
     # + I think we should keep the current_path_point hanging around.
     #
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def begin_path(self):
         """ Clears the current drawing path and begins a new one.
         """
         self.current_pdf_path = self.gc.beginPath()
-        self.current_point = (0,0)
-
+        self.current_point = (0, 0)
 
     def move_to(self, x, y):
-        """ Starts a new drawing subpath at place the current point at (x,y).
+        """ Starts a new drawing subpath at place the current point at (x, y).
         """
         if self.current_pdf_path is None:
             self.begin_path()
@@ -299,9 +312,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.current_point = (x, y)
 
     def line_to(self, x, y):
-        """ Adds a line from the current point to the given point (x,y).
+        """ Adds a line from the current point to the given point (x, y).
 
-            The current point is moved to (x,y).
+            The current point is moved to (x, y).
         """
         if self.current_pdf_path is None:
             self.begin_path()
@@ -314,14 +327,14 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
             Currently implemented by calling line_to a zillion times.
 
-            Points is an Nx2 array of x,y pairs.
+            Points is an Nx2 array of x, y pairs.
 
             current_point is moved to the last point in points
         """
         if self.current_pdf_path is None:
             self.begin_path()
 
-        self.current_pdf_path.moveTo(points[0][0],points[0][1])
+        self.current_pdf_path.moveTo(points[0][0], points[0][1])
         for x, y in points[1:]:
             self.current_pdf_path.lineTo(x, y)
             self.current_point = (x, y)
@@ -338,7 +351,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     def rect(self, *args):
         """ Adds a rectangle as a new subpath.  Can be called in two ways:
               rect(x, y, w, h)
-              rect( (x,y,w,h) )
+              rect( (x, y, w, h) )
 
         """
         if self.current_pdf_path is None:
@@ -385,7 +398,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         """
         msg = "quad curve to not implemented yet on PDF"
-        raise NotImplementedError, msg
+        raise NotImplementedError(msg)
 
     def arc(self, x, y, radius, start_angle, end_angle, clockwise=False):
         """
@@ -397,7 +410,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
                                   x + radius, y + radius,
                                   start_angle * 180.0 / pi,
                                   (end_angle-start_angle) * 180.0 / pi)
-        self.current_point = (x,y)
+        self.current_point = (x, y)
 
     def arc_to(self, x1, y1, x2, y2, radius):
         """
@@ -415,15 +428,15 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.current_pdf_path.lineTo(x2, y2)
         self.current_point = (x2, y2)
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Getting infomration on paths
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def is_path_empty(self):
         """ Tests to see whether the current drawing path is empty
         """
         msg = "is_path_empty not implemented yet on PDF"
-        raise NotImplementedError, msg
+        raise NotImplementedError(msg)
 
     def get_path_current_point(self):
         """ Returns the current point from the graphics context.
@@ -438,11 +451,11 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             Should return a tuple or array instead of a strange object.
         """
         msg = "get_path_bounding_box not implemented yet on PDF"
-        raise NotImplementedError, msg
+        raise NotImplementedError(msg)
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Clipping path manipulation
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def clip(self):
         """
@@ -469,7 +482,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         """
         msg = "clip_to_rects not implemented yet on PDF."
-        raise NotImplementedError, msg
+        raise NotImplementedError(msg)
 
     def clear_clip_path(self):
         """
@@ -477,40 +490,38 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
         return
         self.clip_to_rect(0, 0, 10000, 10000)
-#       msg = "clear_clip_path not implemented yet on PDF"
-#       raise NotImplementedError, msg
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Color space manipulation
     #
     # I'm not sure we'll mess with these at all.  They seem to
     # be for setting the color syetem.  Hard coding to RGB or
     # RGBA for now sounds like a reasonable solution.
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def set_fill_color_space(self):
         """
         """
-        raise NotImplementedError(
-            "set_fill_color_space not implemented on PDF yet.")
+        msg = "set_fill_color_space not implemented on PDF yet."
+        raise NotImplementedError(msg)
 
     def set_stroke_color_space(self):
         """
         """
-        raise NotImplementedError(
-            "set_stroke_color_space not implemented on PDF yet.")
+        msg = "set_stroke_color_space not implemented on PDF yet."
+        raise NotImplementedError(msg)
 
     def set_rendering_intent(self):
         """
         """
-        raise NotImplementedError(
-            "set_rendering_intent not implemented on PDF yet.")
+        msg = "set_rendering_intent not implemented on PDF yet."
+        raise NotImplementedError(msg)
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Color manipulation
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
-    def set_fill_color(self,color):
+    def set_fill_color(self, color):
         """
         """
         r, g, b = color[:3]
@@ -520,7 +531,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             a = 1.0
         self.gc.setFillColorRGB(r, g, b, a)
 
-    def set_stroke_color(self,color):
+    def set_stroke_color(self, color):
         """
         """
         r, g, b = color[:3]
@@ -539,48 +550,18 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.gc.setStrokeAlpha(alpha)
         super(GraphicsContext, self).set_alpha(alpha)
 
-    #def set_gray_fill_color(self):
-    #    """
-    #    """
-    #    pass
-
-    #def set_gray_stroke_color(self):
-    #    """
-    #    """
-    #    pass
-
-    #def set_rgb_fill_color(self):
-    #    """
-    #    """
-    #    pass
-
-    #def set_rgb_stroke_color(self):
-    #    """
-    #    """
-    #    pass
-
-    #def cmyk_fill_color(self):
-    #    """
-    #    """
-    #    pass
-
-    #def cmyk_stroke_color(self):
-    #    """
-    #    """
-    #    pass
-
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Drawing Images
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def draw_image(self, img, rect=None):
         """
-        draw_image(img_gc, rect=(x,y,w,h))
+        draw_image(img_gc, rect=(x, y, w, h))
 
         Draws another gc into this one.  If 'rect' is not provided, then
-        the image gc is drawn into this one, rooted at (0,0) and at full
+        the image gc is drawn into this one, rooted at (0, 0) and at full
         pixel size.  If 'rect' is provided, then the image is resized
-        into the (w,h) given and drawn into this GC at point (x,y).
+        into the (w, h) given and drawn into this GC at point (x, y).
 
         img_gc is either a Numeric array (WxHx3 or WxHx4) or a GC from Kiva's
         Agg backend (kiva.agg.GraphicsContextArray).
@@ -588,15 +569,14 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         Requires the Python Imaging Library (PIL).
         """
 
-
         # We turn img into a PIL object, since that is what ReportLab
         # requires.  To do this, we first determine if the input image
         # GC needs to be converted to RGBA/RGB.  If so, we see if we can
         # do it nicely (using convert_pixel_format), and if not, we do
         # it brute-force using Agg.
         from reportlab.lib.utils import ImageReader
-        from PIL import Image as PilImage
         from kiva import agg
+        from kiva.compat import pilfromstring, piltostring
 
         if type(img) == type(array([])):
             # Numeric array
@@ -616,12 +596,12 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             return
 
         # converted_img now holds an Agg graphics context with the image
-        pil_img = PilImage.fromstring(format,
-                                      (converted_img.width(),
-                                       converted_img.height()),
-                                      converted_img.bmp_array.tostring())
+        pil_img = pilfromstring(format,
+                                (converted_img.width(),
+                                 converted_img.height()),
+                                piltostring(converted_img.bmp_array))
 
-        if rect == None:
+        if rect is None:
             rect = (0, 0, img.width(), img.height())
 
         # Draw the actual image.
@@ -630,23 +610,14 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.gc.drawImage(ImageReader(pil_img),
                           rect[0], rect[1], rect[2], rect[3])
 
-    #----------------------------------------------------------------
-    # Drawing PDF documents
-    #----------------------------------------------------------------
-
-    #def draw_pdf_document(self):
-    #    """
-    #    """
-    #    pass
-
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Drawing Text
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def select_font(self, name, size, textEncoding):
         """ PDF ignores the Encoding variable.
         """
-        self.gc.setFont(name,size)
+        self.gc.setFont(name, size)
 
     def set_font(self, font):
         """ Sets the font for the current graphics context.
@@ -654,18 +625,26 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         # TODO: Make this actually do the right thing
         if font.face_name == "":
             font.face_name = "Helvetica"
-        self.gc.setFont(font.face_name,font.size)
+        self.gc.setFont(font.face_name, font.size)
 
-    def set_font_size(self,size):
+    def get_font(self):
+        """ Get the current font """
+        raise NotImplementedError
+
+    def set_font_size(self, size):
         """
         """
         font = self.gc._fontname
-        self.gc.setFont(font,size)
+        self.gc.setFont(font, size)
 
     def set_character_spacing(self):
         """
         """
         pass
+
+    def get_character_spacing(self):
+        """ Get the current font """
+        raise NotImplementedError
 
     def set_text_drawing_mode(self):
         """
@@ -680,27 +659,21 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     def get_text_position(self):
         """
         """
-        return self.state.text_matrix[2,:2]
+        return self.state.text_matrix[2, :2]
 
-    def set_text_matrix(self,ttm):
+    def set_text_matrix(self, ttm):
         """
         """
         a, b, c, d, tx, ty = affine.affine_params(ttm)
-        #print "set text matrix", a,b,c,d,tx,ty
-        self.gc._textMatrix=(a, b, c, d, tx, ty)
-        #self.gc.CGContextGetTextMatrix(ttm)
+        self.gc._textMatrix = (a, b, c, d, tx, ty)
 
     def get_text_matrix(self):
         """
-            temporarily not implemented.  can perhaps get the _textmatrix object off
-            of the canvas if we need to.
         """
         a, b, c, d, tx, ty = self.gc._textMatrix
-        #print "get text matrix", a,b,c,d,tx,ty
         return affine.affine_from_values(a, b, c, d, tx, ty)
-        #self.gc.CGContextGetTextMatrix(self.gc)
 
-    def show_text(self, text, x = None, y = None):
+    def show_text(self, text, x=None, y=None):
         """ Draws text on the device at current text position.
 
             This is also used for showing text at a particular point
@@ -721,17 +694,11 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         """
         msg = "show_glyphs not implemented on PDF yet."
-        raise NotImplementedError, msg
-
+        raise NotImplementedError(msg)
 
     def get_full_text_extent(self, textstring):
-        fontname=self.gc._fontname
-        fontsize=self.gc._fontsize
-
-        #this call does not seem to work. returns zero
-        #ascent=(reportlab.pdfbase.pdfmetrics.getFont(fontname).face.ascent)
-        #this call does not seem to work. returns -1
-        #descent=(reportlab.pdfbase.pdfmetrics.getFont(fontname).face.descent)
+        fontname = self.gc._fontname
+        fontsize = self.gc._fontsize
 
         ascent, descent = reportlab.pdfbase._fontdata.ascent_descent[fontname]
 
@@ -742,21 +709,24 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         descent = 0.0 if ad == 0.0 else descent * fontsize / 1000.0
         ascent = ascent * fontsize / 1000.0
         height = ascent + abs(descent)
-        width = self.gc.stringWidth(textstring,fontname,fontsize)
+        width = self.gc.stringWidth(textstring, fontname, fontsize)
 
-        #the final return value is defined as leading. do not know
-        #how to get that number so returning zero
+        # the final return value is defined as leading. do not know
+        # how to get that number so returning zero
         return width, height, descent, 0
 
-
-    def get_text_extent(self,textstring):
+    def get_text_extent(self, textstring):
         w, h, d, l = self.get_full_text_extent(textstring)
         return w, h
 
-
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Painting paths (drawing and filling contours)
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
+
+    def clear(self):
+        """
+        """
+        warnings.warn("clear() is ignored for the pdf backend")
 
     def stroke_path(self):
         """
@@ -773,20 +743,20 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         self.draw_path(mode=EOF_FILL)
 
-    def stroke_rect(self,rect):
+    def stroke_rect(self, rect):
         """
         """
         self.begin_path()
         self.rect(rect[0], rect[1], rect[2], rect[3])
         self.stroke_path()
 
-    def stroke_rect_with_width(self,rect,width):
+    def stroke_rect_with_width(self, rect, width):
         """
         """
         msg = "stroke_rect_with_width not implemented on PDF yet."
-        raise NotImplementedError, msg
+        raise NotImplementedError(msg)
 
-    def fill_rect(self,rect):
+    def fill_rect(self, rect):
         """
         """
         self.begin_path()
@@ -796,22 +766,22 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     def fill_rects(self):
         """
         """
-        raise NotImplementedError(
-            "fill_rects not implemented on PDF yet.")
+        msg = "fill_rects not implemented on PDF yet."
+        raise NotImplementedError(msg)
 
-    def clear_rect(self,rect):
+    def clear_rect(self, rect):
         """
         """
-        raise NotImplementedError(
-            "clear_rect not implemented on PDF yet.")
+        msg = "clear_rect not implemented on PDF yet."
+        raise NotImplementedError(msg)
 
-    def draw_path(self,mode=constants.FILL_STROKE):
+    def draw_path(self, mode=constants.FILL_STROKE):
         """ Walks through all the drawing subpaths and draw each element.
 
             Each subpath is drawn separately.
         """
         if self.current_pdf_path is not None:
-            stroke,fill,mode = path_mode[mode]
+            stroke, fill, mode = path_mode[mode]
             self.gc._fillMode = mode
             self.gc.drawPath(self.current_pdf_path, stroke=stroke, fill=fill)
             # erase the current path.

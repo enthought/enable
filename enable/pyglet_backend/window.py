@@ -19,7 +19,7 @@ from enable.graphics_context import GraphicsContextEnable
 from enable.abstract_window import AbstractWindow
 
 # local, relative imports
-from constants import ASCII_CONTROL_KEYS, KEY_MAP, \
+from .constants import ASCII_CONTROL_KEYS, KEY_MAP, \
         POINTER_MAP, TEXT_KEYS
 
 
@@ -117,7 +117,7 @@ class PygletWindow(window.Window):
 
     def on_text(self, text):
         self._on_character(text)
-        
+
     def _create_key_event(self, event_type, event):
         if self.enable_window.focus_owner is None:
             focus_owner = self.enable_window.component
@@ -146,7 +146,7 @@ class PygletWindow(window.Window):
             shift_down = keys[key.LSHIFT] | keys[key.RSHIFT],
             x = self._mouse_x,
             y = self._mouse_y,
-            window = self.enable_window)        
+            window = self.enable_window)
 
     def on_text_motion(self, motion):
         # TODO: See notes.
@@ -515,4 +515,3 @@ class Window(AbstractWindow):
     def popup_menu(self, menu, x, y):
         "Pop-up a Menu at a specified location"
         raise NotImplementedError("popup_menu() is not implemented in Pyglet backend.")
-

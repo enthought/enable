@@ -4,7 +4,7 @@
 from enable.primitives.api import Polygon
 from traits.api import Int, Instance
 
-from drawing_tool import DrawingTool
+from .drawing_tool import DrawingTool
 
 class PointPolygon(DrawingTool):
     """ A point-to-point drawn polygon. """

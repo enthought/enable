@@ -33,7 +33,7 @@ def _init_toolkit():
     backend = 'enable.%s.%s' % (ETSConfig.toolkit, ETSConfig.kiva_backend)
     try:
         __import__(backend)
-    except ImportError, SystemExit:
+    except (ImportError, SystemExit):
         t, v, _tb = sys.exc_info()
         raise ImportError, "Unable to import the %s backend for the %s " \
                 "toolkit (reason: %s)." % (ETSConfig.kiva_backend, ETSConfig.toolkit,

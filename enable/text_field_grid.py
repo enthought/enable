@@ -3,8 +3,8 @@ from enable.api import Container, TextField
 from traits.api import Float, Int, List
 
 # Local imports
-from enable_traits import LineStyle
-from colors import black_color_trait
+from .enable_traits import LineStyle
+from .colors import black_color_trait
 
 
 class TextFieldGrid(Container):
