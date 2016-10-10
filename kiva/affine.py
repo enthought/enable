@@ -41,8 +41,8 @@
         in case the implementation is changed at some future date.
 """
 
-from numpy import (array, array_equal, arctan2, cos, dot, eye, float64, ones,
-                   ravel, sin, zeros)
+from numpy import (array, array_equal, arctan2, cos, dot, eye, float64,
+                   sin, zeros, ones)
 
 
 # -----------------------------------------------------------------------------
@@ -268,33 +268,34 @@ def trs_factor(m):
         Needs Test!
     """
 
-    #-------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Extract Values from Matrix
     #
     # Translation values are correct as extracted.  Rotation and
     # scaling need a little massaging.
-    #-------------------------------------------------------------------------
-    a,b,c,d,tx,ty = affine_params(m)
+    # ------------------------------------------------------------------------
+    a, b, c, d, tx, ty = affine_params(m)
 
-    #-------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Rotation -- tan(angle) = -c/d
-    #-------------------------------------------------------------------------
-    angle = arctan2(-c,d)
+    # ------------------------------------------------------------------------
+    angle = arctan2(-c, d)
 
-    #-------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Scaling
     #
     # sx = a/cos(angle) or sx =  b/sin(angle)
     # sy = d/cos(angle) or sy =  -c/sin(angle)
-    #-------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     cos_ang = cos(angle)
     sin_ang = sin(angle)
     if cos_ang != 0.0:
-        sx,sy = a/cos_ang, d/cos_ang
+        sx, sy = a/cos_ang, d/cos_ang
     else:
-        sx,sy = b/sin_ang, -c/sin_ang
+        sx, sy = b/sin_ang, -c/sin_ang
 
-    return tx,ty,sx,sy,angle
+    return tx, ty, sx, sy, angle
+
 
 # -----------------------------------------------------------------------------
 # Transforming points and arrays of points
