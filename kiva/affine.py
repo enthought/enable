@@ -41,8 +41,8 @@
         in case the implementation is changed at some future date.
 """
 
-from numpy import (array, array_equal, arctan2, cos, dot, eye, float64,
-                   sin, zeros, ones)
+from numpy import (array, array_equal, arctan2, cos, dot, eye, float64, ones,
+                   sin, zeros)
 
 
 # -----------------------------------------------------------------------------
