@@ -343,13 +343,12 @@ def OSXFontDirectory():
 
     fontpaths = []
 
-    def add(arg, directory, files):
-        fontpaths.append(directory)
-
     for fontdir in OSXFontDirectories:
         try:
             if os.path.isdir(fontdir):
-                os.path.walk(fontdir, add, None)
+                for dirpath, dirs, _files in os.walk(fontdir):
+                    fontpaths.extend([os.path.join(dirpath, d) for d in dirs])
+
         except (IOError, OSError, TypeError, ValueError):
             pass
     return fontpaths
@@ -383,9 +382,6 @@ def x11FontDirectory():
     within them.
     """
     fontpaths = []
-
-    def add(arg, directory, files):
-        fontpaths.append(directory)
 
     for fontdir in X11FontDirectories:
         try:
