@@ -413,7 +413,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
     def _color(self, color):
         r,g,b,a = color
-        return '#%02x%02x%02x' % (r*255,g*255,b*255)
+        return '#%02x%02x%02x' % (int(r*255),int(g*255),int(b*255))
 
     def _dasharray(self):
         dasharray = ''
