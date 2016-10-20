@@ -173,7 +173,7 @@ class AffineMatrix(_AffineMatrix):
         if len(args) == 1 and is_sequence(args[0]):
             args = tuple(args[0])
             if len(args) != 6:
-                raise ValueError, "array argument must be 1x6"
+                raise ValueError("array argument must be 1x6")
         _AffineMatrix.__init__(self,*args)
 
     def __imul__(self,other):
