@@ -1,7 +1,7 @@
 import unittest
 import enable.savage.svg.document as document
 import xml.etree.cElementTree as etree
-from cStringIO import StringIO
+from six import StringIO
 
 from enable.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
 

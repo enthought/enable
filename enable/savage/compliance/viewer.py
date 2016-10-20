@@ -1,6 +1,6 @@
 import os
 import time
-from cStringIO import StringIO
+from six import StringIO
 import xml.etree.cElementTree as etree
 
 import wx
