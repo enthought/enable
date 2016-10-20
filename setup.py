@@ -25,10 +25,7 @@ import setuptools
 
 import distutils
 import distutils.command.clean
-try:
-    from distutils.command.build_py import build_py_2to3 as build_py
-except ImportError:
-    from distutils.command.build_py import build_py
+from setuptools.command.build_py import build_py
 
 import os
 import re
