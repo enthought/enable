@@ -14,7 +14,7 @@ none = CaselessLiteral("none").setParseAction(lambda t: ["NONE", ()])
 currentColor = CaselessLiteral("currentColor").setParseAction(lambda t: ["CURRENTCOLOR", ()])
 
 def parsePossibleURL(t):
-    # Workaround for PyParsing versions <= 2.1.0, for which t is wrapped in an
+    # Workaround for PyParsing versions < 2.1.0, for which t is wrapped in an
     # extra level of nesting. See enthought/enable#224.
     if len(t) == 1:
         t = t[0]
