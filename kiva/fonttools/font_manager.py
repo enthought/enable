@@ -56,10 +56,7 @@ import warnings
 import tempfile
 import errno
 
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
+from six.moves import cPickle as pickle
 
 from traits.etsconfig.api import ETSConfig
 from kiva.fonttools.fontTools.ttLib import TTFont, TTLibError
@@ -269,19 +266,19 @@ def win32FontDirectory():
     If the key is not found, $WINDIR/Fonts will be returned.
     """
     try:
-        import _winreg
+        from six.moves import winreg
     except ImportError:
         pass  # Fall through to default
     else:
         try:
-            user = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, MSFolders)
+            user = winreg.OpenKey(winreg.HKEY_CURRENT_USER, MSFolders)
             try:
                 try:
-                    return _winreg.QueryValueEx(user, 'Fonts')[0]
+                    return winreg.QueryValueEx(user, 'Fonts')[0]
                 except OSError:
                     pass  # Fall through to default
             finally:
-                _winreg.CloseKey(user)
+                winreg.CloseKey(user)
         except OSError:
             pass  # Fall through to default
     return os.path.join(os.environ['WINDIR'], 'Fonts')
@@ -295,7 +292,7 @@ def win32InstalledFonts(directory=None, fontext='ttf'):
     'afm'.
     """
 
-    import _winreg
+    from six.moves import winreg
     if directory is None:
         directory = win32FontDirectory()
 
@@ -304,7 +301,7 @@ def win32InstalledFonts(directory=None, fontext='ttf'):
     key, items = None, {}
     for fontdir in MSFontDirectories:
         try:
-            local = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, fontdir)
+            local = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, fontdir)
         except OSError:
             continue
 
@@ -314,9 +311,9 @@ def win32InstalledFonts(directory=None, fontext='ttf'):
                 files.extend(glob.glob(os.path.join(directory, '*.'+ext)))
             return files
         try:
-            for j in range(_winreg.QueryInfoKey(local)[1]):
+            for j in range(winreg.QueryInfoKey(local)[1]):
                 try:
-                    key, direc, any = _winreg.EnumValue(local, j)
+                    key, direc, any = winreg.EnumValue(local, j)
                     if not os.path.dirname(direc):
                         direc = os.path.join(directory, direc)
                     direc = os.path.abspath(direc).lower()
@@ -329,7 +326,7 @@ def win32InstalledFonts(directory=None, fontext='ttf'):
 
             return items.keys()
         finally:
-            _winreg.CloseKey(local)
+            winreg.CloseKey(local)
     return None
 
 
@@ -343,13 +340,12 @@ def OSXFontDirectory():
 
     fontpaths = []
 
-    def add(arg, directory, files):
-        fontpaths.append(directory)
-
     for fontdir in OSXFontDirectories:
         try:
             if os.path.isdir(fontdir):
-                os.path.walk(fontdir, add, None)
+                for dirpath, dirs, _files in os.walk(fontdir):
+                    fontpaths.extend([os.path.join(dirpath, d) for d in dirs])
+
         except (IOError, OSError, TypeError, ValueError):
             pass
     return fontpaths
@@ -383,9 +379,6 @@ def x11FontDirectory():
     within them.
     """
     fontpaths = []
-
-    def add(arg, directory, files):
-        fontpaths.append(directory)
 
     for fontdir in X11FontDirectories:
         try:

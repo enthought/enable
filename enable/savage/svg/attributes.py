@@ -1,7 +1,7 @@
 """
     Parsers for specific attributes
 """
-import urlparse
+import six.moves.urllib.parse as urlparse
 from pyparsing import (Literal,
     Optional, oneOf, Group, StringEnd, Combine, Word, alphas, hexnums,
     CaselessLiteral, SkipTo

@@ -7,7 +7,7 @@ import math
 from functools import wraps
 import os
 import urllib
-import urlparse
+import six.moves.urllib.parse as urlparse
 from xml.etree import cElementTree as ET
 try:
     from xml.etree.cElementTree import ParseError

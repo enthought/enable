@@ -333,24 +333,24 @@ def numpy_check(obj, typecode,
     elif allow_coersion:
         ary = asarray(obj,typecode)
     else:
-        raise TypeError, "input is not an array or the array has the wrong type"
+        raise TypeError("input is not an array or the array has the wrong type")
 
     if must_be_contiguous and not ary.flags["CONTIGUOUS"]:
         if allow_coersion:
             ary = ary.copy()
         else:
-            raise TypeError, "input array must be contiguous"
+            raise TypeError("input array must be contiguous")
 
     # check number of dimensions
     required_dims = len(exact_size)
     if required_dims and required_dims != len(ary.shape):
-        raise ValueError, "The input array does not have the correct shape"
+        raise ValueError("The input array does not have the correct shape")
 
     # check exact shape of each dimension
     cnt = 0
     for desired,actual in zip(exact_size,ary.shape):
         if desired != -1 and desired != actual:
-            raise ValueError, "The %d dimensions of the array has the wrong shape" % (cnt)
+            raise ValueError("The %d dimensions of the array has the wrong shape" % (cnt))
         cnt += 1
 
     return ary

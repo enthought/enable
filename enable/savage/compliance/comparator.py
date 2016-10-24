@@ -3,7 +3,7 @@
 renderers.
 """
 
-from cStringIO import StringIO
+from six import StringIO
 import glob
 import logging
 import os

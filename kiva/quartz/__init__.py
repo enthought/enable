@@ -4,7 +4,7 @@
 import sys
 
 if sys.platform == "darwin":
-    from mac_context import get_mac_context
+    from kiva.quartz.mac_context import get_mac_context
 
 
     def get_macport(dc):

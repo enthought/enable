@@ -88,7 +88,7 @@ class Rgba(_Rgba):
         if len(args) == 1 and is_sequence(args[0]):
             args = tuple(args[0])
             if len(args) not in [3,4]:
-                raise ValueError, "array argument must be 1x3 or 1x4"
+                raise ValueError("array argument must be 1x3 or 1x4")
         _Rgba.__init__(self,*args)
 %}
 

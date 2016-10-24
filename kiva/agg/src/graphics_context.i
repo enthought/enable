@@ -268,7 +268,7 @@ namespace kiva {
                     text = text.encode("utf8")
                 return text
             except:
-                raise UnicodeError, "Error encoding text to utf8."
+                raise UnicodeError("Error encoding text to utf8.")
     %}
 
     void cleanup_font_threading_primitives();
@@ -327,7 +327,7 @@ namespace kiva {
                     else:
                         msg = "only 2 or 3 dimensional arrays are supported as images"
                         msg += " but got sh=%r" % (sh,)
-                        raise TypeError, msg
+                        raise TypeError(msg)
                     msg = "Only UnsignedInt8 arrays are supported but got "
                     assert(ary.dtype == dtype('uint8')), msg + repr(ary.dtype)
 
@@ -475,7 +475,7 @@ namespace kiva {
                 if point:
                     self.set_text_position(*savepoint)
                 if not success:
-                    raise RuntimeError, "Font not loaded/initialized."
+                    raise RuntimeError("Font not loaded/initialized.")
 
             %}
 
@@ -483,7 +483,7 @@ namespace kiva {
             %{
             def get_text_extent(self, text):
                 if not self.is_font_initialized():
-                    raise RuntimeError, "Font not loaded/initialized."
+                    raise RuntimeError("Font not loaded/initialized.")
                 else:
                     text = handle_unicode(text)
                     return _agg.GraphicsContextArray_get_text_extent(self, text)
@@ -545,9 +545,9 @@ namespace kiva {
                 try:
                     retval = _agg.GraphicsContextArray_set_font(self, agg_font)
                     if not retval:
-                        raise RuntimeError, "Unable to load font."
+                        raise RuntimeError("Unable to load font.")
                 except:
-                    raise RuntimeError, "Unable to load font."
+                    raise RuntimeError("Unable to load font.")
             %}
             bool set_font(kiva::font_type& font);
 
@@ -555,7 +555,7 @@ namespace kiva {
             %{
             def set_font_size(self, size):
                 if not _agg.GraphicsContextArray_set_font_size(self, size):
-                    raise RuntimeError, "Font not loaded/initialized."
+                    raise RuntimeError("Font not loaded/initialized.")
             %}
             bool set_font_size(int size);
 
@@ -905,7 +905,7 @@ def init(self, ary_or_size, pix_format="bgra32",
         else:
             msg = "only 2 or 3 dimensional arrays are supported as images"
             msg += " but got sh=%r" % (sh,)
-            raise TypeError, msg
+            raise TypeError(msg)
         msg = "Only UnsignedInt8 arrays are supported but got "
         assert ary.dtype == dtype('uint8'), msg + repr(ary.dtype)
 
