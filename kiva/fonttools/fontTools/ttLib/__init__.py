@@ -69,12 +69,6 @@ class TTFont:
                 When reading a font from disk, 'file' should be either a pathname
                 pointing to a file, or a readable file object.
 
-                It we're running on a Macintosh, 'res_name_or_index' maybe an sfnt
-                resource name or an sfnt resource index number or zero. The latter
-                case will cause TTLib to autodetect whether the file is a flat file
-                or a suitcase. (If it's a suitcase, only the first 'sfnt' resource
-                will be read!)
-
                 The 'checkChecksums' argument is used to specify how sfnt
                 checksums are treated upon reading a file from disk:
 
@@ -109,19 +103,7 @@ class TTFont:
                         self.sfntVersion = sfntVersion
                         return
                 if isinstance(file, basestring):
-                        if os.name == "mac" and res_name_or_index is not None:
-                                # on the mac, we deal with sfnt resources as well as flat files
-                                import macUtils
-                                if res_name_or_index == 0:
-                                        if macUtils.getSFNTResIndices(file):
-                                                # get the first available sfnt font.
-                                                file = macUtils.SFNTResourceReader(file, 1)
-                                        else:
-                                                file = open(file, "rb")
-                                else:
-                                        file = macUtils.SFNTResourceReader(file, res_name_or_index)
-                        else:
-                                file = open(file, "rb")
+                        file = open(file, "rb")
                 else:
                         pass # assume "file" is a readable file object
                 self.reader = sfnt.SFNTReader(file, checkChecksums)
@@ -132,26 +114,15 @@ class TTFont:
                 if self.reader is not None:
                         self.reader.close()
 
-        def save(self, file, makeSuitcase=0):
+        def save(self, file):
                 """Save the font to disk. Similarly to the constructor,
                 the 'file' argument can be either a pathname or a writable
                 file object.
-
-                On the Mac, if makeSuitcase is true, a suitcase (resource fork)
-                file will we made instead of a flat .ttf file.
                 """
                 from kiva.fonttools.fontTools.ttLib import sfnt
                 if isinstance(file, basestring):
                         closeStream = 1
-                        if os.name == "mac" and makeSuitcase:
-                                import macUtils
-                                file = macUtils.SFNTResourceWriter(file, self)
-                        else:
-                                file = open(file, "wb")
-                                if os.name == "mac":
-                                        import macfs
-                                        fss = macfs.FSSpec(file.name)
-                                        fss.SetCreatorType('mdos', 'BINA')
+                        file = open(file, "wb")
                 else:
                         # assume "file" is a writable file object
                         closeStream = 0
