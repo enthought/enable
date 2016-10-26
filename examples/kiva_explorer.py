@@ -6,7 +6,7 @@ Interactive editor for exploring Kiva drawing commands.
 
 """
 
-from traits.api import Any, Code, DelegatesTo, Instance, Str
+from traits.api import Any, Code, Instance, Str
 from traitsui.api import HSplit, ModelView, UItem, VGroup, View
 from enable.api import Component, ComponentEditor
 
