@@ -42,6 +42,7 @@ with gc:
 
 
 class ScriptedComponent(Component):
+    """ An Enable component that draws its mainlayer from a script """
 
     #: kiva drawing code for mainlayer
     draw_script = Code(default_script)
@@ -53,6 +54,7 @@ class ScriptedComponent(Component):
     _draw_code = Any
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
+        """ Try running the compiled code with the graphics context as `gc` """
         with gc:
             try:
                 self.error = ''
@@ -61,6 +63,7 @@ class ScriptedComponent(Component):
                 self.error = str(exc)
 
     def _compile_script(self):
+        """ Try compiling the script to bytecode """
         try:
             self.error = ''
             return compile(self.draw_script, "<script>", "exec")
@@ -82,19 +85,20 @@ class ScriptedComponent(Component):
 
 
 class ScriptedComponentView(ModelView):
+    """ ModelView of a ScriptedComponent displaying the script and image """
 
+    #: the component we are editing
     model = Instance(ScriptedComponent, ())
-
-    script = DelegatesTo('model', 'draw_script')
-
-    error = DelegatesTo('model')
 
     view = View(
         HSplit(
             VGroup(
-                UItem('script'),
-                UItem('error', visible_when="error != ''", style='readonly',
-                      height=100)
+                UItem('model.draw_script'),
+                UItem(
+                    'model.error',
+                    visible_when="model.error != ''",
+                    style='readonly',
+                    height=100)
             ),
             UItem('model', editor=ComponentEditor()),
         ),
