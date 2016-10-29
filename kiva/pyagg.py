@@ -409,9 +409,8 @@ class GraphicsContext(object):
 
             Region should be a 4-tuple or a sequence.
         """
-        x1, y1, x2, y2 = x, y, x + w, y + h
         tx, ty = self.transform.tx, self.transform.ty
-        self.canvas_state.clip_box = agg.Rect(tx+x1, ty+y1, tx+x2, ty+y2)
+        self.canvas_state.clip_box = agg.Rect(tx+x, ty+y, w, h)
 
     def clip_to_rects(self, rects):
         """ Clip context to a collection of rectangles
@@ -715,9 +714,7 @@ class GraphicsContext(object):
 
         XXX: This is currently broken for some reason
         """
-        # set up drawing state and function
-        shape = agg.ShapeAtPoints(self.path.path, points)
-
+        shape = agg.ShapeAtPoints(path.path, points)
         self.canvas_state.drawing_mode = draw_modes[mode]
         self.gc.draw_shape(shape, self.transform, self.stroke_paint,
                            self.fill_paint, self.canvas_state)
@@ -797,7 +794,7 @@ class CompiledPath(object):
 
     def add_path(self, other_path):
         if isinstance(other_path, CompiledPath):
-            self.path.addPath(other_path.path)
+            self.path.add_path(other_path.path)
 
     def close_path(self):
         self.path.close()
