@@ -11,6 +11,7 @@
 from __future__ import absolute_import, print_function, division
 
 from collections import namedtuple
+import os
 import warnings
 
 import numpy as np
@@ -546,7 +547,7 @@ class GraphicsContext(object):
     def select_font(self, name, size, textEncoding):
         """ Set the font for the current graphics context.
         """
-        self.font = agg.Font(name, size, agg.FontCacheType.VectorFontCache)
+        self.font = agg.Font(name, size, agg.FontCacheType.RasterFontCache)
 
     def set_font(self, font):
         """ Set the font for the current graphics context.
@@ -554,8 +555,13 @@ class GraphicsContext(object):
         self.select_font(font.findfont(), font.size, None)
 
     def set_font_size(self, size):
-        msg = "set_font_size not implemented on pyagg yet."
-        raise NotImplementedError(msg)
+        """ Set the font size for the current graphics context.
+        """
+        if self.font is None:
+            return
+
+        font = self.font
+        self.select_font(font.filepath, size, font.cache_type)
 
     def set_character_spacing(self, spacing):
         msg = "set_character_spacing not implemented on pyagg yet."
@@ -587,6 +593,9 @@ class GraphicsContext(object):
             This is also used for showing text at a particular point
             specified by x and y.
         """
+        if self.font is None:
+            raise RuntimeError("show_text called before setting a font!")
+
         if point is None:
             pos = tuple(self.text_pos)
         else:
@@ -611,7 +620,10 @@ class GraphicsContext(object):
     def get_text_extent(self, text):
         """ Returns the bounding rect of the rendered text
         """
-        x, y = self.transform.tx, self.transform.ty
+        if self.font is None:
+            raise RuntimeError("get_text_extent called before setting a font!")
+
+        x, y = self.text_pos
         width = self.font.width(text)
         height = self.font.height
         return x, y, x + width, y + height
@@ -665,13 +677,20 @@ class GraphicsContext(object):
         self.gc.draw_shape(shape, self.transform, self.stroke_paint,
                            self.fill_paint, self.canvas_state)
 
-    def fill_rects(self):
-        msg = "fill_rects not implemented on pyagg yet."
-        raise NotImplementedError(msg)
+    def fill_rects(self, rects):
+        path = agg.Path()
+        path.rects(rects)
+        self.canvas_state.drawing_mode = agg.DrawingMode.DrawFill
+        self.gc.draw_shape(path, self.transform, self.stroke_paint,
+                           self.fill_paint, self.canvas_state)
 
     def clear_rect(self, rect):
-        msg = "clear_rect not implemented on pyagg yet."
-        raise NotImplementedError(msg)
+        shape = agg.Path()
+        shape.rect(*rect)
+        paint = agg.SolidPaint(0.0, 0.0, 0.0, 0.0)
+        self.canvas_state.drawing_mode = agg.DrawingMode.DrawFill
+        self.gc.draw_shape(shape, self.transform, paint, paint,
+                           self.canvas_state)
 
     def clear(self, clear_color=(1.0, 1.0, 1.0, 1.0)):
         self.gc.clear(*clear_color)
@@ -706,8 +725,32 @@ class GraphicsContext(object):
     def save(self, filename, file_format=None):
         """ Save the contents of the context to a file
         """
-        msg = "save not implemented on pyagg yet."
-        raise NotImplementedError(msg)
+        try:
+            from kiva.compat import pilfromstring
+        except ImportError:
+            raise ImportError("need PIL (or Pillow) to save images")
+
+        if file_format is None:
+            file_format = ''
+
+        # Data is BGRA; Convert to RGBA
+        pixels = self.gc.array
+        data = np.empty(pixels.shape, dtype=np.uint8)
+        data[..., 0] = pixels[..., 2]
+        data[..., 1] = pixels[..., 1]
+        data[..., 2] = pixels[..., 0]
+        data[..., 3] = pixels[..., 3]
+        size = (int(self._width), int(self._height))
+        img = pilfromstring('RGBA', size, data)
+
+        # Check the output format to see if it can handle an alpha channel.
+        no_alpha_formats = ('jpg', 'bmp', 'eps', 'jpeg')
+        if ((isinstance(filename, str) and
+                os.path.splitext(filename)[1][1:] in no_alpha_formats) or
+                (file_format.lower() in no_alpha_formats)):
+            img = img.convert('RGB')
+
+        img.save(filename, format=file_format)
 
 
 class CompiledPath(object):
