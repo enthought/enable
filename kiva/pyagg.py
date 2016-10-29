@@ -76,7 +76,8 @@ class GraphicsContext(object):
                                    bottom_up=True)
 
         # init the state variables
-        self.canvas_state = agg.GraphicsState()
+        clip = agg.Rect(0, 0, self._width, self._height)
+        self.canvas_state = agg.GraphicsState(clip_box=clip)
         self.stroke_paint = agg.SolidPaint(0.0, 0.0, 0.0)
         self.fill_paint = agg.SolidPaint(0.0, 0.0, 0.0)
         self.path = CompiledPath()
@@ -247,7 +248,7 @@ class GraphicsContext(object):
             phase:float -- Specifies how many units into dash pattern
                            to start.  phase defaults to 0.
         """
-        if lengths:
+        if lengths is not None:
             count = len(lengths)
             lengths = np.array(lengths).reshape(count//2, 2)
         else:
@@ -407,7 +408,9 @@ class GraphicsContext(object):
 
             Region should be a 4-tuple or a sequence.
         """
-        self.canvas_state.clip_box = agg.Rect(x, y, x + w, y + h)
+        x1, y1, x2, y2 = x, y, x + w, y + h
+        tx, ty = self.transform.tx, self.transform.ty
+        self.canvas_state.clip_box = agg.Rect(tx+x1, ty+y1, tx+x2, ty+y2)
 
     def clip_to_rects(self, rects):
         """ Clip context to a collection of rectangles
@@ -500,41 +503,41 @@ class GraphicsContext(object):
 
         rect - a tuple (x, y, w, h)
         """
+        def get_format(array):
+            if array.shape[2] == 3:
+                return agg.PixelFormat.RGB24
+            elif array.shape[2] == 4:
+                return agg.PixelFormat.RGBA32
+
         img_format = agg.PixelFormat.RGB24
         if isinstance(img, np.ndarray):
             # Numeric array
             img_array = img.astype(np.uint8)
-            if img.shape[2] == 3:
-                img_format = agg.PixelFormat.RGB24
-            elif img.shape[2] == 4:
-                img_format = agg.PixelFormat.RGBA32
-        elif isinstance(img, agg.CanvasBGRA32):
-            img_array = img.array
+            img_format = get_format(img_array)
+        elif isinstance(img, GraphicsContext):
+            img_array = img.gc.array
             img_format = agg.PixelFormat.BGRA32
         elif hasattr(img, 'bmp_array'):
             # An offscreen kiva context
             # XXX: Use a copy to kill the read-only flag which plays havoc
             # with the Cython memoryviews used by pyagg
             img_array = img.bmp_array.copy()
-            img_format = agg.PixelFormat.RGB24
+            img_format = get_format(img_array)
         else:
             msg = "Cannot render image of type '{}' into pyagg context."
             warnings.warn(msg.format(type(img)))
             return
 
-        # Calculate the scale to use
-        rw, rh = rect[2:]
-        ih, iw = img_array.shape[:2]
-        sx, sy = rw / iw, rh / ih
-
+        x, y, w, h = rect
+        img_height, img_width = img_array.shape[:2]
+        sx, sy = w / img_width, h / img_height
         transform = agg.Transform()
         transform.multiply(self.transform)
-        if sx != 0.0 or sy != 0.0:
-            transform.scale(sx, sy)
-        transform.translate(*rect[:2])
+        transform.translate(x, y)
+        transform.scale(sx, sy)
 
-        self.gc.draw_image(img_array, img_format, transform, self.canvas_state,
-                           bottom_up=True)
+        self.gc.draw_image(img_array, img_format, transform,
+                           self.canvas_state, bottom_up=True)
 
     # ----------------------------------------------------------------
     # Drawing Text
