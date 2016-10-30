@@ -622,10 +622,9 @@ class GraphicsContext(object):
         if self.font is None:
             raise RuntimeError("get_text_extent called before setting a font!")
 
-        x, y = self.text_pos
-        width = self.font.width(text)
-        height = self.font.height
-        return x, y, x + width, y + height
+        x1, x2 = 0.0, self.font.width(text)
+        y1, y2 = 0.0, self.font.height
+        return x1, y1, x2, y2
 
     def get_full_text_extent(self, text):
         """ Backwards compatibility API over .get_text_extent() for Enable
