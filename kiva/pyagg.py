@@ -342,8 +342,8 @@ class GraphicsContext(object):
         path.rect(*rect)
 
         self.canvas_state.drawing_mode = draw_modes[mode]
-        self.gc.draw_shape(path, self.transform, self.stroke_paint,
-                           self.fill_paint, self.canvas_state)
+        self.gc.draw_shape(path, self.transform, self.canvas_state,
+                           stroke=self.stroke_paint, fill=self.fill_paint)
 
     def add_path(self, path):
         """ Add a subpath to the current path.
@@ -604,8 +604,8 @@ class GraphicsContext(object):
         transform.multiply(self.transform)
         transform.translate(*pos)
 
-        self.gc.draw_text(text, self.font, transform, self.stroke_paint,
-                          self.stroke_paint, self.canvas_state)
+        self.gc.draw_text(text, self.font, transform, self.canvas_state,
+                          stroke=self.stroke_paint)
 
     def show_text_at_point(self, text, x, y):
         """ Draw text at some point (x, y).
@@ -639,20 +639,20 @@ class GraphicsContext(object):
 
     def stroke_path(self):
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawStroke
-        self.gc.draw_shape(self.path.path, self.transform, self.stroke_paint,
-                           self.fill_paint, self.canvas_state)
+        self.gc.draw_shape(self.path.path, self.transform, self.canvas_state,
+                           stroke=self.stroke_paint)
         self.begin_path()
 
     def fill_path(self):
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawFill
-        self.gc.draw_shape(self.path.path, self.transform, self.stroke_paint,
-                           self.fill_paint, self.canvas_state)
+        self.gc.draw_shape(self.path.path, self.transform, self.canvas_state,
+                           fill=self.fill_paint)
         self.begin_path()
 
     def eof_fill_path(self):
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawEofFill
-        self.gc.draw_shape(self.path.path, self.transform, self.stroke_paint,
-                           self.fill_paint, self.canvas_state)
+        self.gc.draw_shape(self.path.path, self.transform, self.canvas_state,
+                           fill=self.fill_paint)
         self.begin_path()
 
     def stroke_rect(self, rect):
@@ -664,31 +664,31 @@ class GraphicsContext(object):
 
         self.canvas_state.line_width = width
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawStroke
-        self.gc.draw_shape(shape, self.transform, self.stroke_paint,
-                           self.fill_paint, self.canvas_state)
+        self.gc.draw_shape(shape, self.transform, self.canvas_state,
+                           stroke=self.stroke_paint)
 
     def fill_rect(self, rect):
         shape = agg.Path()
         shape.rect(*rect)
 
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawFill
-        self.gc.draw_shape(shape, self.transform, self.stroke_paint,
-                           self.fill_paint, self.canvas_state)
+        self.gc.draw_shape(shape, self.transform, self.canvas_state,
+                           fill=self.fill_paint)
 
     def fill_rects(self, rects):
         path = agg.Path()
         path.rects(rects)
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawFill
-        self.gc.draw_shape(path, self.transform, self.stroke_paint,
-                           self.fill_paint, self.canvas_state)
+        self.gc.draw_shape(path, self.transform, self.canvas_state,
+                           fill=self.fill_paint)
 
     def clear_rect(self, rect):
         shape = agg.Path()
         shape.rect(*rect)
         paint = agg.SolidPaint(0.0, 0.0, 0.0, 0.0)
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawFill
-        self.gc.draw_shape(shape, self.transform, paint, paint,
-                           self.canvas_state)
+        self.gc.draw_shape(shape, self.transform, self.canvas_state,
+                           fill=paint)
 
     def clear(self, clear_color=(1.0, 1.0, 1.0, 1.0)):
         self.gc.clear(*clear_color)
@@ -699,8 +699,8 @@ class GraphicsContext(object):
             Each subpath is drawn separately.
         """
         self.canvas_state.drawing_mode = draw_modes[mode]
-        self.gc.draw_shape(self.path.path, self.transform, self.stroke_paint,
-                           self.fill_paint, self.canvas_state)
+        self.gc.draw_shape(self.path.path, self.transform, self.canvas_state,
+                           stroke=self.stroke_paint, fill=self.fill_paint)
         self.begin_path()
 
     def get_empty_path(self):
@@ -715,8 +715,8 @@ class GraphicsContext(object):
         """
         shape = agg.ShapeAtPoints(path.path, points)
         self.canvas_state.drawing_mode = draw_modes[mode]
-        self.gc.draw_shape(shape, self.transform, self.stroke_paint,
-                           self.fill_paint, self.canvas_state)
+        self.gc.draw_shape(shape, self.transform, self.canvas_state,
+                           stroke=self.stroke_paint, fill=self.fill_paint)
 
     def save(self, filename, file_format=None):
         """ Save the contents of the context to a file
