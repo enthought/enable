@@ -7,9 +7,17 @@ Enable 4.6.0
 Enhancements
 ------------
 
+* PR #209: Python 3 Support
+* PR #222: New markers: 2 triangles, star, cross-plus, 2 hexagons, and pentagon
+* PR #246: Kiva explorer demo
+
 Fixes
 -----
 
+* Numerous build/stability fixes
+* PR #241: Fixes the trs_factor function
+* PR #238: points_in_polygon now returns a bool array
+* PRs #215 & 217: Support for Pillow 3.0
 
 Enable 4.5.0 (March 23, 2015)
 =============================
