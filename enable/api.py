@@ -63,4 +63,6 @@ from .text_field_grid import TextFieldGrid
 from .viewport import Viewport
 from .window import Window
 
+from ._cython_speedups import points_in_polygon
+
 from .primitives.api import Annotater, Box, Line, Polygon

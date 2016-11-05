@@ -32,6 +32,7 @@ import re
 import shutil
 import subprocess
 
+from numpy import get_include
 from numpy.distutils.core import setup
 from numpy.distutils.misc_util import is_string
 
@@ -134,6 +135,10 @@ def configuration(parent_package='', top_path=None):
         delegate_options_to_subpackages=True,
         quiet=True,
     )
+
+    ext_sources = ['enable/_cython_speedups.cpp', 'enable/_hit_test.cpp']
+    config.add_extension('enable._cython_speedups', sources=ext_sources,
+                         include_dirs=['enable', get_include()])
 
     config.add_subpackage('kiva')
 
@@ -272,7 +277,7 @@ if __name__ == "__main__":
                         '{0}.tar.gz'.format(__version__)),
           install_requires=__requires__,
           license='BSD',
-          package_data = {
+          package_data={
               '': ['*.zip', '*.svg', 'images/*'],
               'enable': ['tests/primitives/data/PngSuite/*.png'],
               'kiva': ['tests/agg/doubleprom_soho_full.jpg'],

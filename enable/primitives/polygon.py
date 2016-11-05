@@ -6,13 +6,12 @@ from numpy import array
 
 # Enthought library imports.
 from kiva.constants import EOF_FILL_STROKE, FILL, FILL_STROKE
-from kiva.agg import points_in_polygon
-from traits.api import Any, Event, Float, HasTraits, Instance, List, \
-                             Property, Trait, Tuple
+from traits.api import (Any, Event, Float, HasTraits, Instance, List,
+                        Property, Trait, Tuple)
 from traitsui.api import Group, View
 
 # Local imports.
-from enable.api import border_size_trait, Component
+from enable.api import border_size_trait, points_in_polygon, Component
 from enable.colors import ColorTrait
 
 
