@@ -61,6 +61,20 @@ gradient_spread_modes = {
     'repeat': agg.GradientSpread.SpreadRepeat,
     'reflect': agg.GradientSpread.SpreadReflect,
 }
+pix_formats = {
+    'gray8': agg.PixelFormat.Gray8,
+    'rgb24': agg.PixelFormat.RGB24,
+    'bgr24': agg.PixelFormat.BGR24,
+    'rgba32': agg.PixelFormat.RGBA32,
+    'argb32': agg.PixelFormat.ARGB32,
+    'abgr32': agg.PixelFormat.ABGR32,
+    'bgra32': agg.PixelFormat.BGRA32,
+}
+pix_format_canvases = {
+    'rgba32': agg.CanvasRGBA32,
+    'bgra32': agg.CanvasBGRA32,
+    'rgb24': agg.CanvasRGB24,
+}
 StateBundle = namedtuple('StateBundle',
                          ['state', 'path', 'stroke', 'fill', 'transform',
                           'text_transform', 'font'])
@@ -71,10 +85,11 @@ class GraphicsContext(object):
         super(GraphicsContext, self).__init__()
         self._width = size[0]
         self._height = size[1]
+        self.pix_format = kwargs.get('pix_format', 'rgba32')
 
         shape = (self._height, self._width, 4)
-        self.gc = agg.CanvasBGRA32(np.zeros(shape, dtype=np.uint8),
-                                   bottom_up=True)
+        canvas_klass = pix_format_canvases[self.pix_format]
+        self.gc = canvas_klass(np.zeros(shape, dtype=np.uint8), bottom_up=True)
 
         # init the state variables
         clip = agg.Rect(0, 0, self._width, self._height)
@@ -516,7 +531,7 @@ class GraphicsContext(object):
             img_format = get_format(img_array)
         elif isinstance(img, GraphicsContext):
             img_array = img.gc.array
-            img_format = agg.PixelFormat.BGRA32
+            img_format = pix_formats[img.pix_format]
         elif hasattr(img, 'bmp_array'):
             # An offscreen kiva context
             # XXX: Use a copy to kill the read-only flag which plays havoc
