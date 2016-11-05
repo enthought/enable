@@ -106,13 +106,13 @@ class ImageTest(unittest.TestCase, UnittestTools):
 
     def test_image_gc_24(self):
         # this is non-contiguous, because data comes from slice
-        image_gc = self.image_24._image
-        assert_array_equal(image_gc.bmp_array, self.data[..., :3])
+        image = self.image_24._image
+        assert_array_equal(image, self.data[..., :3])
 
     def test_image_gc_32(self):
         # this is contiguous
-        image_gc = self.image_32._image
-        assert_array_equal(image_gc.bmp_array, self.data)
+        image = self.image_32._image
+        assert_array_equal(image, self.data)
 
     def test_draw_24(self):
         gc = GraphicsContext((256, 128), pix_format="rgb24")
