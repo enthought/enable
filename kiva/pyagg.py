@@ -441,9 +441,10 @@ class GraphicsContext(object):
         stencil = agg.CanvasG8(np.empty(size, dtype=np.uint8), bottom_up=True)
         stencil.clear(0.0, 0.0, 0.0)
 
-        gs = agg.GraphicsState(drawing_mode=drawing_mode)
+        clip_box = agg.Rect(0, 0, self._width, self._height)
+        gs = agg.GraphicsState(drawing_mode=drawing_mode, clip_box=clip_box)
         paint = agg.SolidPaint(1.0, 1.0, 1.0)
-        stencil.draw_shape(shape, self.transform, paint, paint, gs)
+        stencil.draw_shape(shape, self.transform, gs, stroke=paint, fill=paint)
 
         self.canvas_state.stencil = stencil.image
 
