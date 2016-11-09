@@ -8,7 +8,7 @@
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 # Thanks for using Enthought open source!
 # -----------------------------------------------------------------------------
-from kiva.pyagg import CompiledPath, GraphicsContext  # noqa
+from kiva.celiagg import CompiledPath, GraphicsContext  # noqa
 
 
 class NativeScrollBar(object):

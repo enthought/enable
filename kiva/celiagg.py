@@ -15,7 +15,7 @@ import os
 import warnings
 
 import numpy as np
-import pyagg as agg
+import celiagg as agg
 
 from .abstract_graphics_context import AbstractGraphicsContext
 from .fonttools import Font
@@ -278,7 +278,7 @@ class GraphicsContext(object):
             It is device dependent and therefore not recommended by
             the PDF documentation.
         """
-        msg = "set_flatness not implemented for pyagg"
+        msg = "set_flatness not implemented for celiagg"
         raise NotImplementedError(msg)
 
     # ----------------------------------------------------------------
@@ -457,15 +457,15 @@ class GraphicsContext(object):
     # ----------------------------------------------------------------
 
     def set_fill_color_space(self):
-        msg = "set_fill_color_space not implemented for pyagg yet."
+        msg = "set_fill_color_space not implemented for celiagg yet."
         raise NotImplementedError(msg)
 
     def set_stroke_color_space(self):
-        msg = "set_stroke_color_space not implemented for pyagg yet."
+        msg = "set_stroke_color_space not implemented for celiagg yet."
         raise NotImplementedError(msg)
 
     def set_rendering_intent(self):
-        msg = "set_rendering_intent not implemented for pyagg yet."
+        msg = "set_rendering_intent not implemented for celiagg yet."
         raise NotImplementedError(msg)
 
     # ----------------------------------------------------------------
@@ -536,11 +536,11 @@ class GraphicsContext(object):
         elif hasattr(img, 'bmp_array'):
             # An offscreen kiva context
             # XXX: Use a copy to kill the read-only flag which plays havoc
-            # with the Cython memoryviews used by pyagg
+            # with the Cython memoryviews used by celiagg
             img_array = img.bmp_array.copy()
             img_format = get_format(img_array)
         else:
-            msg = "Cannot render image of type '{}' into pyagg context."
+            msg = "Cannot render image of type '{}' into celiagg context."
             warnings.warn(msg.format(type(img)))
             return
 
@@ -579,7 +579,7 @@ class GraphicsContext(object):
         self.select_font(font.filepath, size, font.cache_type)
 
     def set_character_spacing(self, spacing):
-        msg = "set_character_spacing not implemented on pyagg yet."
+        msg = "set_character_spacing not implemented on celiagg yet."
         raise NotImplementedError(msg)
 
     def set_text_drawing_mode(self, mode):
@@ -629,7 +629,7 @@ class GraphicsContext(object):
         self.show_text(text, (x, y))
 
     def show_glyphs(self):
-        msg = "show_glyphs not implemented on pyagg"
+        msg = "show_glyphs not implemented on celiagg"
         raise NotImplementedError(msg)
 
     def get_text_extent(self, text):

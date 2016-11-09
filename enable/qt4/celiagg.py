@@ -10,7 +10,7 @@
 # -----------------------------------------------------------------------------
 
 import numpy as np
-from kiva.pyagg import CompiledPath, GraphicsContext  # noqa
+from kiva.celiagg import CompiledPath, GraphicsContext  # noqa
 from pyface.qt import QtCore, QtGui
 from traits.api import Array
 
