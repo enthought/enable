@@ -7,8 +7,42 @@ Enable 4.6.0
 Enhancements
 ------------
 
+* PR #246: Kiva explorer demo
+* PR #222: New markers: 2 triangles, star, cross-plus, 2 hexagons, and pentagon
+* PR #209: Python 3 Support
+* PR #207: Viewport resizing
+
 Fixes
 -----
+
+* PR #243: Make savage compatible with newer PyParsing versions.
+* PR #241: Fixed the trs_factor function
+* PR #238: points_in_polygon now returns a bool array
+* PR #234: allow multiple gradient stops with wx toolkit
+* PR #231: Be deterministic about initial state of viewport position and bounds
+* PRs #215 & 217: Support for Pillow 3.0
+* PR #205: Fix scrolling problem with Qt native scrollbar
+* PR #203: numpy.rank() is deprecated
+
+
+Maintainence
+------------
+
+* PR #244: Remove support for Mac font suitcases.
+* PR #240: add quartz to MANIFEST file
+* PR #232: Don't assume window is MockWindow when dealing with pointer position
+* PR #230: Fix for build issues
+* PR #227: Create codecov.yml
+* PRs #226 & #201: Fix g++ version string parsing
+* PR #223: Fix SVG Tests
+* PR #214: Add docs and examples to the source distribution
+* PR #206: Containerize Travis CI Builds
+* PR #195: Multiple build environments
+* PR #177: fixes for recent swig
+* PR #192: Add the auto-generated enable/_version.py to .gitignore
+* PR #191: fix missing framework when building kiva.quartz.
+* PR #180: fix minor errors in sphinx build
+
 
 
 Enable 4.5.0 (March 23, 2015)
