@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Enable Drag and Drop Events &mdash; enable 4.5.0 documentation</title>
+    <title>Enable Drag and Drop Events &mdash; enable 4.6.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4.5.0',
+        VERSION:     '4.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,54 +24,43 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/et.ico"/>
-    <link rel="top" title="enable 4.5.0 documentation" href="index.html" />
+    <link rel="top" title="enable 4.6.0 documentation" href="index.html" />
     <link rel="next" title="Enable Apptools Integration" href="enable_apptools_integration.html" />
-    <link rel="prev" title="Enable Tools" href="enable_basic_tools.html" /> 
+    <link rel="prev" title="Enable Tools" href="enable_basic_tools.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
   </head>
-  <body>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="enable_apptools_integration.html" title="Enable Apptools Integration"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="enable_basic_tools.html" title="Enable Tools"
-             accesskey="P">previous</a> |</li>
-        <li><a href="index.html">enable 4.5.0 documentation</a> &raquo;</li> 
-      </ul>
-    </div>  
+  <body role="document">  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="enable-drag-and-drop-events">
 <h1>Enable Drag and Drop Events<a class="headerlink" href="#enable-drag-and-drop-events" title="Permalink to this headline">¶</a></h1>
 <p>Enable has support for objects being dropped onto components built on top of
 the backend&#8217;s (and, in practice, PyFace&#8217;s) support for drag and drop.</p>
-<p>All drag-and-drop related events have type <tt class="docutils literal"><span class="pre">DragEvent</span></tt> and provide the
-<tt class="docutils literal"><span class="pre">x</span></tt> and <tt class="docutils literal"><span class="pre">y</span></tt> coordinates of the event, and the object being dragged or
-dropped (if it is available from the backend, otherwise this will be <tt class="docutils literal"><span class="pre">None</span></tt>).</p>
+<p>All drag-and-drop related events have type <code class="docutils literal"><span class="pre">DragEvent</span></code> and provide the
+<code class="docutils literal"><span class="pre">x</span></code> and <code class="docutils literal"><span class="pre">y</span></code> coordinates of the event, and the object being dragged or
+dropped (if it is available from the backend, otherwise this will be <code class="docutils literal"><span class="pre">None</span></code>).</p>
 <p>The system generates 3 types of drag and drop events:</p>
 <dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">drag_over</span></tt></dt>
+<dt><code class="docutils literal"><span class="pre">drag_over</span></code></dt>
 <dd>These events are generated when the user is moving a dragged object over
 the Enable window. Tools or other Interactors which want to indicate that
 they can accept the drag should indicate this by calling the
-<tt class="docutils literal"><span class="pre">set_drag_result()</span></tt> method of the Enable window indicating the type of
+<code class="docutils literal"><span class="pre">set_drag_result()</span></code> method of the Enable window indicating the type of
 operation that will be performed on the object (the default is a &#8220;copy&#8221;,
 but other possibilties include &#8220;move&#8221; or &#8220;link&#8221;, the full list of
-possibilites is found in the appropriate <tt class="docutils literal"><span class="pre">constants</span></tt> module).  The value
+possibilites is found in the appropriate <code class="docutils literal"><span class="pre">constants</span></code> module).  The value
 of the drag result influences the way that the operating system displays
 the dragged objects and cursor whil dragging.</dd>
-<dt><tt class="docutils literal"><span class="pre">drag_leave</span></tt></dt>
+<dt><code class="docutils literal"><span class="pre">drag_leave</span></code></dt>
 <dd>This event is generated when the user drags objects out of the window.</dd>
-<dt><tt class="docutils literal"><span class="pre">dropped_on</span></tt></dt>
+<dt><code class="docutils literal"><span class="pre">dropped_on</span></code></dt>
 <dd>This event is generated when the user releases the mouse button over the
 Enable window while dragging.  Tools or other Interactors should handle
 this event to perform whatever operations need to be performed with the
@@ -79,32 +68,32 @@ dropped objects.</dd>
 </dl>
 <div class="section" id="basedroptool">
 <h2>BaseDropTool<a class="headerlink" href="#basedroptool" title="Permalink to this headline">¶</a></h2>
-<p>As a convenience, there is a <tt class="docutils literal"><span class="pre">BaseDropTool</span></tt> class which handles most of the
+<p>As a convenience, there is a <code class="docutils literal"><span class="pre">BaseDropTool</span></code> class which handles most of the
 drag and drop interactions for you correctly.  To use this, you need to
-subclass and override at least the <tt class="docutils literal"><span class="pre">accept_drop</span></tt> and <tt class="docutils literal"><span class="pre">handle_drop</span></tt> methods.</p>
+subclass and override at least the <code class="docutils literal"><span class="pre">accept_drop</span></code> and <code class="docutils literal"><span class="pre">handle_drop</span></code> methods.</p>
 <dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">accept_drop</span></tt></dt>
+<dt><code class="docutils literal"><span class="pre">accept_drop</span></code></dt>
 <dd>This method is given the position and object instance and should return
-<tt class="docutils literal"><span class="pre">True</span></tt> if the drop is accepted or <tt class="docutils literal"><span class="pre">False</span></tt> if it is not.</dd>
-<dt><tt class="docutils literal"><span class="pre">handle_drop</span></tt></dt>
+<code class="docutils literal"><span class="pre">True</span></code> if the drop is accepted or <code class="docutils literal"><span class="pre">False</span></code> if it is not.</dd>
+<dt><code class="docutils literal"><span class="pre">handle_drop</span></code></dt>
 <dd>If the drop is accepted, this method is called with the position and the
 objects, and should perform whatever actions are required with the dropped
 objects.</dd>
 </dl>
 <p>The behaviour is slightly different between the Wx and Qt backends: Qt provides
-a reference to the dragged objects during <tt class="docutils literal"><span class="pre">drag_over</span></tt> events, and so the
-<tt class="docutils literal"><span class="pre">BaseDropTool</span></tt> will call <tt class="docutils literal"><span class="pre">accept_drop</span></tt> during <tt class="docutils literal"><span class="pre">drag_over</span></tt> events to give
+a reference to the dragged objects during <code class="docutils literal"><span class="pre">drag_over</span></code> events, and so the
+<code class="docutils literal"><span class="pre">BaseDropTool</span></code> will call <code class="docutils literal"><span class="pre">accept_drop</span></code> during <code class="docutils literal"><span class="pre">drag_over</span></code> events to give
 better feedback about the state of the drag and drop operation; whereas Wx does
 not provide that information, so will always indicate to the operating system
 that a drop is possible.</p>
-<p>The type of drag result returned during <tt class="docutils literal"><span class="pre">drag_over</span></tt> events is controlled by
-the <tt class="docutils literal"><span class="pre">default_drag_result</span></tt> attribute.</p>
-<p>If you want more control over the response to <tt class="docutils literal"><span class="pre">drag_over</span></tt> events, then you
-can additionally override the <tt class="docutils literal"><span class="pre">get_drag_result</span></tt> method to return one of the
+<p>The type of drag result returned during <code class="docutils literal"><span class="pre">drag_over</span></code> events is controlled by
+the <code class="docutils literal"><span class="pre">default_drag_result</span></code> attribute.</p>
+<p>If you want more control over the response to <code class="docutils literal"><span class="pre">drag_over</span></code> events, then you
+can additionally override the <code class="docutils literal"><span class="pre">get_drag_result</span></code> method to return one of the
 drag result constants dependin on the position and (possibly) the objects
 being dragged.  If you want cross-toolkit compatibility, you must handle the
-case where the <tt class="docutils literal"><span class="pre">get_drag_result</span></tt> method is called with the object being
-<tt class="docutils literal"><span class="pre">None</span></tt>, which indicates that the object is not known yet.</p>
+case where the <code class="docutils literal"><span class="pre">get_drag_result</span></code> method is called with the object being
+<code class="docutils literal"><span class="pre">None</span></code>, which indicates that the object is not known yet.</p>
 </div>
 </div>
 
@@ -112,7 +101,7 @@ case where the <tt class="docutils literal"><span class="pre">get_drag_result</s
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/e-logo-rev.png" alt="Logo"/>
@@ -124,19 +113,23 @@ case where the <tt class="docutils literal"><span class="pre">get_drag_result</s
 </ul>
 </li>
 </ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="enable_basic_tools.html"
-                        title="previous chapter">Enable Tools</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="enable_apptools_integration.html"
-                        title="next chapter">Enable Apptools Integration</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/enable_drag_and_drop.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="enable_basic_tools.html" title="previous chapter">Enable Tools</a></li>
+      <li>Next: <a href="enable_apptools_integration.html" title="next chapter">Enable Apptools Integration</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/enable_drag_and_drop.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -144,34 +137,26 @@ case where the <tt class="docutils literal"><span class="pre">get_drag_result</s
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="enable_apptools_integration.html" title="Enable Apptools Integration"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="enable_basic_tools.html" title="Enable Tools"
-             >previous</a> |</li>
-        <li><a href="index.html">enable 4.5.0 documentation</a> &raquo;</li> 
-      </ul>
-    </div>
     <div class="footer">
-        &copy; Copyright 2008-2015, Enthought.
-      Last updated on Apr 01, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      &copy;2008-2015, Enthought.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/enable_drag_and_drop.txt"
+          rel="nofollow">Page source</a>
     </div>
+
+    
+
+    
   </body>
 </html>

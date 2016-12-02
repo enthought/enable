@@ -30,7 +30,7 @@ state changes.
 
 By default, the tool responds to clicks that are within the associated
 component, but subclasses can override this behaviour by replacing the
-:py:method:`is_clickable` method with something else.
+:py:meth:`is_clickable` method with something else.
 
 It will commonly be the case that components or :py:class:`ButtonTool`
 subclasses which draw may wish to respond to user interactions by drawing
