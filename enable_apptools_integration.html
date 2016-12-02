@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Enable Apptools Integration &mdash; enable 4.5.0 documentation</title>
+    <title>Enable Apptools Integration &mdash; enable 4.6.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4.5.0',
+        VERSION:     '4.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,31 +24,20 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/et.ico"/>
-    <link rel="top" title="enable 4.5.0 documentation" href="index.html" />
+    <link rel="top" title="enable 4.6.0 documentation" href="index.html" />
     <link rel="next" title="Kiva" href="kiva.html" />
-    <link rel="prev" title="Enable Drag and Drop Events" href="enable_drag_and_drop.html" /> 
+    <link rel="prev" title="Enable Drag and Drop Events" href="enable_drag_and_drop.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
   </head>
-  <body>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="kiva.html" title="Kiva"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="enable_drag_and_drop.html" title="Enable Drag and Drop Events"
-             accesskey="P">previous</a> |</li>
-        <li><a href="index.html">enable 4.5.0 documentation</a> &raquo;</li> 
-      </ul>
-    </div>  
+  <body role="document">  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="enable-apptools-integration">
 <h1>Enable Apptools Integration<a class="headerlink" href="#enable-apptools-integration" title="Permalink to this headline">¶</a></h1>
@@ -70,17 +59,17 @@ redo requests to the apptools UndoManager.</p>
 <h3>High-Level Tools<a class="headerlink" href="#high-level-tools" title="Permalink to this headline">¶</a></h3>
 <p>There are three tools that provide convenient facilities and reference
 implementations of interacting with the undo/redo stack.</p>
-<p><tt class="docutils literal"><span class="pre">UndoTool</span></tt></p>
+<p><code class="docutils literal"><span class="pre">UndoTool</span></code></p>
 <blockquote>
-<div><p>The <tt class="docutils literal"><span class="pre">UndoTool</span></tt> binds keystrokes to undo and redo operations.  The
-<tt class="docutils literal"><span class="pre">undo_keys</span></tt> and <tt class="docutils literal"><span class="pre">redo_keys</span></tt> attributes each take a list of <tt class="docutils literal"><span class="pre">KeySpec</span></tt>
+<div><p>The <code class="docutils literal"><span class="pre">UndoTool</span></code> binds keystrokes to undo and redo operations.  The
+<code class="docutils literal"><span class="pre">undo_keys</span></code> and <code class="docutils literal"><span class="pre">redo_keys</span></code> attributes each take a list of <code class="docutils literal"><span class="pre">KeySpec</span></code>
 objects which should trigger the relevant operations.  The default
 values bind undo to &#8216;Ctrl+Z&#8217; and redo to &#8216;Ctrl+Shift+Z&#8217;.</p>
-<p>The <tt class="docutils literal"><span class="pre">UndoTool</span></tt> must be provided with an <tt class="docutils literal"><span class="pre">IUndoManager</span></tt> that will
+<p>The <code class="docutils literal"><span class="pre">UndoTool</span></code> must be provided with an <code class="docutils literal"><span class="pre">IUndoManager</span></code> that will
 actually perform the undo and redo operations.</p>
 <p>For example, to bind undo to &#8216;Ctrl+Left arrow&#8217;, and redo to &#8216;Ctrl+Right
 arrow&#8217;:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">undo_tool</span> <span class="o">=</span> <span class="n">UndoTool</span><span class="p">(</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="n">undo_tool</span> <span class="o">=</span> <span class="n">UndoTool</span><span class="p">(</span>
     <span class="n">my_component</span><span class="p">,</span>
     <span class="n">undo_manager</span><span class="o">=</span><span class="n">my_undo_manager</span><span class="p">,</span>
     <span class="n">undo_keys</span><span class="o">=</span><span class="p">[</span><span class="n">KeySpec</span><span class="p">(</span><span class="s">&#39;Left&#39;</span><span class="p">,</span> <span class="s">&#39;control&#39;</span><span class="p">)],</span>
@@ -90,136 +79,136 @@ arrow&#8217;:</p>
 </pre></div>
 </div>
 </div></blockquote>
-<p><tt class="docutils literal"><span class="pre">MoveCommandTool</span></tt></p>
+<p><code class="docutils literal"><span class="pre">MoveCommandTool</span></code></p>
 <blockquote>
-<div><p>The <tt class="docutils literal"><span class="pre">MoveCommandTool</span></tt> is a subclass of <tt class="docutils literal"><span class="pre">MoveTool</span></tt> that by default
-issues a <tt class="docutils literal"><span class="pre">MoveCommand</span></tt> at the end of every successful drag move.
-A <tt class="docutils literal"><span class="pre">MoveCommand</span></tt> stores the new and previous position of the
-component so that it can undo and redo the move.  The <tt class="docutils literal"><span class="pre">MoveCommandTool</span></tt>
-needs to be provided with an <tt class="docutils literal"><span class="pre">ICommandStack</span></tt> instance that it will
-push commands to, but is otherwise identical to the usual <tt class="docutils literal"><span class="pre">MoveTool</span></tt>.</p>
-<p>The command tool has a <tt class="docutils literal"><span class="pre">mergeable</span></tt> attribute which indicates whether
+<div><p>The <code class="docutils literal"><span class="pre">MoveCommandTool</span></code> is a subclass of <code class="docutils literal"><span class="pre">MoveTool</span></code> that by default
+issues a <code class="docutils literal"><span class="pre">MoveCommand</span></code> at the end of every successful drag move.
+A <code class="docutils literal"><span class="pre">MoveCommand</span></code> stores the new and previous position of the
+component so that it can undo and redo the move.  The <code class="docutils literal"><span class="pre">MoveCommandTool</span></code>
+needs to be provided with an <code class="docutils literal"><span class="pre">ICommandStack</span></code> instance that it will
+push commands to, but is otherwise identical to the usual <code class="docutils literal"><span class="pre">MoveTool</span></code>.</p>
+<p>The command tool has a <code class="docutils literal"><span class="pre">mergeable</span></code> attribute which indicates whether
 subsequent move operations with the same component immediately following
 this one can be merged into one single move operation.</p>
 <p>Typical usage would be something like this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">move_tool</span> <span class="o">=</span> <span class="n">MoveCommandTool</span><span class="p">(</span><span class="n">my_component</span><span class="p">,</span> <span class="n">command_stack</span><span class="o">=</span><span class="n">my_command_stack</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="n">move_tool</span> <span class="o">=</span> <span class="n">MoveCommandTool</span><span class="p">(</span><span class="n">my_component</span><span class="p">,</span> <span class="n">command_stack</span><span class="o">=</span><span class="n">my_command_stack</span><span class="p">)</span>
 <span class="n">my_component</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">move_tool</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Users of the tool can provide a different factory to create appropriate
-<tt class="docutils literal"><span class="pre">Command</span></tt> instances by setting the <tt class="docutils literal"><span class="pre">command</span></tt> trait to a callable
-that should expect keyword arguments <tt class="docutils literal"><span class="pre">component</span></tt>, <tt class="docutils literal"><span class="pre">data</span></tt> (the new
-position), <tt class="docutils literal"><span class="pre">previous_position</span></tt>, and <tt class="docutils literal"><span class="pre">mergeable</span></tt>.</p>
+<code class="docutils literal"><span class="pre">Command</span></code> instances by setting the <code class="docutils literal"><span class="pre">command</span></code> trait to a callable
+that should expect keyword arguments <code class="docutils literal"><span class="pre">component</span></code>, <code class="docutils literal"><span class="pre">data</span></code> (the new
+position), <code class="docutils literal"><span class="pre">previous_position</span></code>, and <code class="docutils literal"><span class="pre">mergeable</span></code>.</p>
 </div></blockquote>
-<p><tt class="docutils literal"><span class="pre">ResizeCommandTool</span></tt></p>
+<p><code class="docutils literal"><span class="pre">ResizeCommandTool</span></code></p>
 <blockquote>
-<div><p>The <tt class="docutils literal"><span class="pre">ResizeCommandTool</span></tt> is a subclass of <tt class="docutils literal"><span class="pre">ResizeTool</span></tt> that issues
-<tt class="docutils literal"><span class="pre">ResizeCommand</span></tt> s at the end of every successful drag move.
-A <tt class="docutils literal"><span class="pre">ResizeCommand</span></tt> stores the new and previous position and bounds of the
+<div><p>The <code class="docutils literal"><span class="pre">ResizeCommandTool</span></code> is a subclass of <code class="docutils literal"><span class="pre">ResizeTool</span></code> that issues
+<code class="docutils literal"><span class="pre">ResizeCommand</span></code> s at the end of every successful drag move.
+A <code class="docutils literal"><span class="pre">ResizeCommand</span></code> stores the new and previous position and bounds of the
 component so that it can undo and redo the resize.  The
-<tt class="docutils literal"><span class="pre">ResizeCommandTool</span></tt> needs to be provided with an <tt class="docutils literal"><span class="pre">ICommandStack</span></tt>
+<code class="docutils literal"><span class="pre">ResizeCommandTool</span></code> needs to be provided with an <code class="docutils literal"><span class="pre">ICommandStack</span></code>
 instance that it will push commands to, but is otherwise identical to the
-usual <tt class="docutils literal"><span class="pre">ResizeTool</span></tt>.</p>
-<p>The command tool has a <tt class="docutils literal"><span class="pre">mergeable</span></tt> attribute which indicates whether
+usual <code class="docutils literal"><span class="pre">ResizeTool</span></code>.</p>
+<p>The command tool has a <code class="docutils literal"><span class="pre">mergeable</span></code> attribute which indicates whether
 subsequent resize operations with the same component immediately following
 this one can be merged into one single resize operation.</p>
 <p>Typical usage would be something like this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">move_tool</span> <span class="o">=</span> <span class="n">ResizeTool</span><span class="p">(</span><span class="n">my_component</span><span class="p">,</span> <span class="n">command_stack</span><span class="o">=</span><span class="n">my_command_stack</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="n">move_tool</span> <span class="o">=</span> <span class="n">ResizeTool</span><span class="p">(</span><span class="n">my_component</span><span class="p">,</span> <span class="n">command_stack</span><span class="o">=</span><span class="n">my_command_stack</span><span class="p">)</span>
 <span class="n">my_component</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">move_tool</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Users of the tool can provide a different factory to create appropriate
-<tt class="docutils literal"><span class="pre">Command</span></tt> instances by setting the <tt class="docutils literal"><span class="pre">command</span></tt> trait to a callable
-that should expect keyword arguments <tt class="docutils literal"><span class="pre">component</span></tt>, <tt class="docutils literal"><span class="pre">data</span></tt> (the new
-rectangle as a tuple <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">width,</span> <span class="pre">height)</span></tt>), <tt class="docutils literal"><span class="pre">previous_rectangle</span></tt>,
-and <tt class="docutils literal"><span class="pre">mergeable</span></tt>.</p>
+<code class="docutils literal"><span class="pre">Command</span></code> instances by setting the <code class="docutils literal"><span class="pre">command</span></code> trait to a callable
+that should expect keyword arguments <code class="docutils literal"><span class="pre">component</span></code>, <code class="docutils literal"><span class="pre">data</span></code> (the new
+rectangle as a tuple <code class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">width,</span> <span class="pre">height)</span></code>), <code class="docutils literal"><span class="pre">previous_rectangle</span></code>,
+and <code class="docutils literal"><span class="pre">mergeable</span></code>.</p>
 </div></blockquote>
 </div>
 <div class="section" id="command-classes">
 <h3>Command Classes<a class="headerlink" href="#command-classes" title="Permalink to this headline">¶</a></h3>
-<p>The library provides some useful <tt class="docutils literal"><span class="pre">Command</span></tt> subclasses that users may want
+<p>The library provides some useful <code class="docutils literal"><span class="pre">Command</span></code> subclasses that users may want
 to create specialized instances or subclass to customize the behaviour
-of their applications.  They may also be of use to <tt class="docutils literal"><span class="pre">CommandAction</span></tt> subclasses
+of their applications.  They may also be of use to <code class="docutils literal"><span class="pre">CommandAction</span></code> subclasses
 outside of the Enable framework (such as menu items or toolbar buttons) which
 want to interact with Enable components.</p>
-<p><tt class="docutils literal"><span class="pre">ResizeCommand</span></tt></p>
+<p><code class="docutils literal"><span class="pre">ResizeCommand</span></code></p>
 <blockquote>
 <div><p>This command handles changing the size of a component.  The constructor
-expects arguments <tt class="docutils literal"><span class="pre">component</span></tt>, <tt class="docutils literal"><span class="pre">new_rectangle</span></tt> and (optionally)
-<tt class="docutils literal"><span class="pre">previous_rectangle</span></tt>, plus optional additional traits.  If
-<tt class="docutils literal"><span class="pre">previous_rectangle</span></tt> is not provided, then the component&#8217;s current
+expects arguments <code class="docutils literal"><span class="pre">component</span></code>, <code class="docutils literal"><span class="pre">new_rectangle</span></code> and (optionally)
+<code class="docutils literal"><span class="pre">previous_rectangle</span></code>, plus optional additional traits.  If
+<code class="docutils literal"><span class="pre">previous_rectangle</span></code> is not provided, then the component&#8217;s current
 rectangle is used.</p>
-<p>Instances hold references to the <tt class="docutils literal"><span class="pre">Component</span></tt> being resized in the
-<tt class="docutils literal"><span class="pre">component</span></tt> attribute, the new and previous rectangles of the component
-as tuples <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">width,</span> <span class="pre">height)</span></tt> in the <tt class="docutils literal"><span class="pre">data</span></tt> and
-<tt class="docutils literal"><span class="pre">previous_rectangle</span></tt> attributes, and whether or not subsequent resize
+<p>Instances hold references to the <code class="docutils literal"><span class="pre">Component</span></code> being resized in the
+<code class="docutils literal"><span class="pre">component</span></code> attribute, the new and previous rectangles of the component
+as tuples <code class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">width,</span> <span class="pre">height)</span></code> in the <code class="docutils literal"><span class="pre">data</span></code> and
+<code class="docutils literal"><span class="pre">previous_rectangle</span></code> attributes, and whether or not subsequent resize
 operations on the same component should be merged together.</p>
 <p>The tool handles the logic of changing the position and bounds of the
 component appropriately, as well as invalidating layout and requesting
 redraws.</p>
-<p>It also provides a default <tt class="docutils literal"><span class="pre">name</span></tt> attribute of <tt class="docutils literal"><span class="pre">Resize</span> <span class="pre">``</span> <span class="pre">plus</span> <span class="pre">the</span>
-<span class="pre">``component_name</span></tt> (which in turn defaults to a more human-readable
+<p>It also provides a default <code class="docutils literal"><span class="pre">name</span></code> attribute of <code class="docutils literal"><span class="pre">Resize</span> <span class="pre">``</span> <span class="pre">plus</span> <span class="pre">the</span>
+<span class="pre">``component_name</span></code> (which in turn defaults to a more human-readable
 variant of the component&#8217;s class).  Instances can improve this by
-either supplying a full replacement for the <tt class="docutils literal"><span class="pre">name</span></tt> attribute, or
-for the <tt class="docutils literal"><span class="pre">component_name</span></tt>.</p>
-<p>Finally, there is a <tt class="docutils literal"><span class="pre">move_command</span></tt> class method that creates a
-<tt class="docutils literal"><span class="pre">ResizeCommand</span></tt> that just performs a move and is suitable as the
-command factory of a <tt class="docutils literal"><span class="pre">MoveCommandTool</span></tt>, which allows easy merging
+either supplying a full replacement for the <code class="docutils literal"><span class="pre">name</span></code> attribute, or
+for the <code class="docutils literal"><span class="pre">component_name</span></code>.</p>
+<p>Finally, there is a <code class="docutils literal"><span class="pre">move_command</span></code> class method that creates a
+<code class="docutils literal"><span class="pre">ResizeCommand</span></code> that just performs a move and is suitable as the
+command factory of a <code class="docutils literal"><span class="pre">MoveCommandTool</span></code>, which allows easy merging
 between resize and move operations, if required for the application.</p>
 </div></blockquote>
-<p><tt class="docutils literal"><span class="pre">MoveCommand</span></tt></p>
+<p><code class="docutils literal"><span class="pre">MoveCommand</span></code></p>
 <blockquote>
 <div><p>This command handles changing the position of a component.  The constructor
-expects arguments <tt class="docutils literal"><span class="pre">component</span></tt>, <tt class="docutils literal"><span class="pre">previous_position</span></tt> and (optionally)
-<tt class="docutils literal"><span class="pre">new_position</span></tt>, plus optional additional traits.  If <tt class="docutils literal"><span class="pre">new_position</span></tt>
+expects arguments <code class="docutils literal"><span class="pre">component</span></code>, <code class="docutils literal"><span class="pre">previous_position</span></code> and (optionally)
+<code class="docutils literal"><span class="pre">new_position</span></code>, plus optional additional traits.  If <code class="docutils literal"><span class="pre">new_position</span></code>
 is not provided, then the component&#8217;s current position is used.</p>
-<p>Instances hold references to the <tt class="docutils literal"><span class="pre">Component</span></tt> being moved in the
-<tt class="docutils literal"><span class="pre">component</span></tt> attribute, the new and previous positions of the component as
-tuples <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y)</span></tt> in the <tt class="docutils literal"><span class="pre">data</span></tt> and <tt class="docutils literal"><span class="pre">previous_position</span></tt> attributes, and
+<p>Instances hold references to the <code class="docutils literal"><span class="pre">Component</span></code> being moved in the
+<code class="docutils literal"><span class="pre">component</span></code> attribute, the new and previous positions of the component as
+tuples <code class="docutils literal"><span class="pre">(x,</span> <span class="pre">y)</span></code> in the <code class="docutils literal"><span class="pre">data</span></code> and <code class="docutils literal"><span class="pre">previous_position</span></code> attributes, and
 whether or not subsequent move operations on the same component should
 be merged together.</p>
 <p>The tool handles the logic of changing the position of the component
 appropriately, as well as invalidating layout and requesting
 redraws.</p>
-<p>It also provides a default <tt class="docutils literal"><span class="pre">name</span></tt> attribute of <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">``</span> <span class="pre">plus</span> <span class="pre">the</span>
-<span class="pre">``component_name</span></tt> (which in turn defaults to a more human-readable
+<p>It also provides a default <code class="docutils literal"><span class="pre">name</span></code> attribute of <code class="docutils literal"><span class="pre">Move</span> <span class="pre">``</span> <span class="pre">plus</span> <span class="pre">the</span>
+<span class="pre">``component_name</span></code> (which in turn defaults to a more human-readable
 variant of the component&#8217;s class).  Instances can improve this by
-either supplying a full replacement for the <tt class="docutils literal"><span class="pre">name</span></tt> attribute, or
-for the <tt class="docutils literal"><span class="pre">component_name</span></tt>.</p>
+either supplying a full replacement for the <code class="docutils literal"><span class="pre">name</span></code> attribute, or
+for the <code class="docutils literal"><span class="pre">component_name</span></code>.</p>
 </div></blockquote>
 </div>
 <div class="section" id="base-classes">
 <h3>Base Classes<a class="headerlink" href="#base-classes" title="Permalink to this headline">¶</a></h3>
 <p>There are two simple base classes of tools that are potentially of use to
 authors of new tools.</p>
-<p><tt class="docutils literal"><span class="pre">BaseUndoTool</span></tt></p>
+<p><code class="docutils literal"><span class="pre">BaseUndoTool</span></code></p>
 <blockquote>
 <div><p>Tools which need to be able to trigger undo and redo actions, or otherwise
 interact with an undo manager (for example, to set the current command
 stack or clear the command history) can inherit from this class.</p>
-<p>It has an <tt class="docutils literal"><span class="pre">undo_manager</span></tt> attribute which holds a reference to an
-<tt class="docutils literal"><span class="pre">IUndoManager</span></tt> and provides convenience methods for <tt class="docutils literal"><span class="pre">undo</span></tt> and <tt class="docutils literal"><span class="pre">redo</span></tt>
+<p>It has an <code class="docutils literal"><span class="pre">undo_manager</span></code> attribute which holds a reference to an
+<code class="docutils literal"><span class="pre">IUndoManager</span></code> and provides convenience methods for <code class="docutils literal"><span class="pre">undo</span></code> and <code class="docutils literal"><span class="pre">redo</span></code>
 using the undo manager.</p>
 </div></blockquote>
-<p><tt class="docutils literal"><span class="pre">BaseCommandTool</span></tt></p>
+<p><code class="docutils literal"><span class="pre">BaseCommandTool</span></code></p>
 <blockquote>
 <div>Tools which need to perform undoable actions may want to inherit from this
-class.  It provides a standard <tt class="docutils literal"><span class="pre">command_stack</span></tt> attribute which
-holds a reference to an <tt class="docutils literal"><span class="pre">ICommandStack</span></tt>.  It also has a <tt class="docutils literal"><span class="pre">command</span></tt>
+class.  It provides a standard <code class="docutils literal"><span class="pre">command_stack</span></code> attribute which
+holds a reference to an <code class="docutils literal"><span class="pre">ICommandStack</span></code>.  It also has a <code class="docutils literal"><span class="pre">command</span></code>
 callable trait that can be overriden by subclasses to create an
 appropriate command when demanded by the UI.</div></blockquote>
 <p>In addition to these simple base tools, authors of Tools or Actions that
 perform undoable operations on Enable or Chaco components may want to make use
-of the following <tt class="docutils literal"><span class="pre">Command</span></tt> subclass:</p>
-<p><tt class="docutils literal"><span class="pre">ComponentCommand</span></tt></p>
+of the following <code class="docutils literal"><span class="pre">Command</span></code> subclass:</p>
+<p><code class="docutils literal"><span class="pre">ComponentCommand</span></code></p>
 <blockquote>
 <div><p>This class is an abstract base class for commands which act on Enable
-<tt class="docutils literal"><span class="pre">Components</span></tt>.  It provides a <tt class="docutils literal"><span class="pre">component</span></tt> attribute which holds a
+<code class="docutils literal"><span class="pre">Components</span></code>.  It provides a <code class="docutils literal"><span class="pre">component</span></code> attribute which holds a
 reference to the component that the command should be performed on, and
-a <tt class="docutils literal"><span class="pre">component_name</span></tt> attribute that can be used to help build the <tt class="docutils literal"><span class="pre">name</span></tt>
-of the <tt class="docutils literal"><span class="pre">Command</span></tt> to be used in textual representations of the command
+a <code class="docutils literal"><span class="pre">component_name</span></code> attribute that can be used to help build the <code class="docutils literal"><span class="pre">name</span></code>
+of the <code class="docutils literal"><span class="pre">Command</span></code> to be used in textual representations of the command
 (eg. in menu item labels).</p>
-<p>The default <tt class="docutils literal"><span class="pre">component_name</span></tt> is just a more human-friendly version of
+<p>The default <code class="docutils literal"><span class="pre">component_name</span></code> is just a more human-friendly version of
 the component&#8217;s class name, with camel-case converted to words.  Users
 are encouraged to override with something even more user-friendly.</p>
 </div></blockquote>
@@ -231,7 +220,7 @@ are encouraged to override with something even more user-friendly.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/e-logo-rev.png" alt="Logo"/>
@@ -248,19 +237,23 @@ are encouraged to override with something even more user-friendly.</p>
 </ul>
 </li>
 </ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="enable_drag_and_drop.html"
-                        title="previous chapter">Enable Drag and Drop Events</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="kiva.html"
-                        title="next chapter">Kiva</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/enable_apptools_integration.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="enable_drag_and_drop.html" title="previous chapter">Enable Drag and Drop Events</a></li>
+      <li>Next: <a href="kiva.html" title="next chapter">Kiva</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/enable_apptools_integration.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -268,34 +261,26 @@ are encouraged to override with something even more user-friendly.</p>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="kiva.html" title="Kiva"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="enable_drag_and_drop.html" title="Enable Drag and Drop Events"
-             >previous</a> |</li>
-        <li><a href="index.html">enable 4.5.0 documentation</a> &raquo;</li> 
-      </ul>
-    </div>
     <div class="footer">
-        &copy; Copyright 2008-2015, Enthought.
-      Last updated on Apr 01, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      &copy;2008-2015, Enthought.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/enable_apptools_integration.txt"
+          rel="nofollow">Page source</a>
     </div>
+
+    
+
+    
   </body>
 </html>

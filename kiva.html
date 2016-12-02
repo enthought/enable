@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Kiva &mdash; enable 4.5.0 documentation</title>
+    <title>Kiva &mdash; enable 4.6.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4.5.0',
+        VERSION:     '4.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,27 +24,19 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/et.ico"/>
-    <link rel="top" title="enable 4.5.0 documentation" href="index.html" />
-    <link rel="prev" title="Enable Apptools Integration" href="enable_apptools_integration.html" /> 
+    <link rel="top" title="enable 4.6.0 documentation" href="index.html" />
+    <link rel="prev" title="Enable Apptools Integration" href="enable_apptools_integration.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
   </head>
-  <body>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="enable_apptools_integration.html" title="Enable Apptools Integration"
-             accesskey="P">previous</a> |</li>
-        <li><a href="index.html">enable 4.5.0 documentation</a> &raquo;</li> 
-      </ul>
-    </div>  
+  <body role="document">  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="kiva">
 <h1>Kiva<a class="headerlink" href="#kiva" title="Permalink to this headline">¶</a></h1>
@@ -81,22 +73,22 @@ Kiva.</p>
 <div class="section" id="the-graphics-context">
 <h3>The Graphics Context<a class="headerlink" href="#the-graphics-context" title="Permalink to this headline">¶</a></h3>
 <p>The heart of the Kiva drawing API is the &#8220;graphics context&#8221;, frequently
-abbreviated as <tt class="docutils literal"><span class="pre">gc</span></tt> in code.  The graphics context holds the current drawing
+abbreviated as <code class="docutils literal"><span class="pre">gc</span></code> in code.  The graphics context holds the current drawing
 state (such as pen and fill colors, font state, and affine transformations to
 be applied to points) and provides methods for changing the state and
 performing drawing actions.</p>
 <p>In many common use-cases (such as writing renderers for Chaco), you will be
 provided a graphics context by other code, but it is straight-forward to create
 your own graphics context:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
 
 <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>This is an graphics context for the Agg or &#8220;image&#8221; backend which has a size of
-400x400 pixels.  If instead we wanted to draw into a Qt <tt class="docutils literal"><span class="pre">QPainter</span></tt> drawing
+400x400 pixels.  If instead we wanted to draw into a Qt <code class="docutils literal"><span class="pre">QPainter</span></code> drawing
 context in a <cite>QWidget</cite> called <cite>my_qwidget</cite> we would use:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.qpainter</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.qpainter</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
 
 <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">),</span> <span class="n">parent</span><span class="o">=</span><span class="n">my_qwidget</span><span class="p">)</span>
 </pre></div>
@@ -107,21 +99,21 @@ requirements of the backend.</p>
 <p>Once you have a graphics context, you can use it to draw vector graphics.
 For example, the following code will draw a translucent gray line from
 (100, 100) to (100, 200):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>For many of the backends, you can save the rendered image out as an image file
-using the <tt class="docutils literal"><span class="pre">save()</span></tt> method:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;my_line.png&quot;</span><span class="p">)</span>
+using the <code class="docutils literal"><span class="pre">save()</span></code> method:</p>
+<div class="highlight-default"><div class="highlight"><pre><span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;my_line.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Kiva is numpy-aware, and has a number of methods that allow you to pass numpy
 arrays of points to draw many things in one operation, with loops being
 performed in C where possible:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">empty</span><span class="p">,</span> <span class="n">linspace</span><span class="p">,</span> <span class="n">random</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">empty</span><span class="p">,</span> <span class="n">linspace</span><span class="p">,</span> <span class="n">random</span>
 
 <span class="c"># Nx2 array of points</span>
 <span class="n">pts</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
@@ -144,7 +136,7 @@ and the positive y axis goes <em>down</em> from top to bottom.</p>
 represent the <em>corner</em> of pixels, rather than the center of pixels.  This has
 consequences when rendering thin lines.  Compare the two lines in this example,
 for instance:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
 
 <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
 
@@ -170,8 +162,8 @@ is drawn through the center of the pixels:</p>
 <p>The Kiva API allows arbitrary affine transforms to be applied to the graphics
 context during drawing.  The API provides convenience methods for common
 transformations, such as rotation and scaling:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">empty</span><span class="p">,</span> <span class="n">linspace</span><span class="p">,</span> <span class="n">random</span><span class="p">,</span> <span class="n">pi</span>
-<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">empty</span><span class="p">,</span> <span class="n">linspace</span><span class="p">,</span> <span class="n">random</span><span class="p">,</span> <span class="n">pi</span>
+<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
 
 <span class="c"># Nx2 array of points</span>
 <span class="n">pts</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
@@ -222,30 +214,30 @@ transformations, such as rotation and scaling:</p>
 <h2>Paths<a class="headerlink" href="#paths" title="Permalink to this headline">¶</a></h2>
 <p>The basic drawing operations are performed by building a path out of primitive
 operations, and then performing stroking and/or filling operations with it.</p>
-<p>The simplest path operations are <tt class="docutils literal"><span class="pre">move_to()</span></tt> and <tt class="docutils literal"><span class="pre">line_to()</span></tt> which
+<p>The simplest path operations are <code class="docutils literal"><span class="pre">move_to()</span></code> and <code class="docutils literal"><span class="pre">line_to()</span></code> which
 respectively move the current point in the path to the specified point, and
 add a line to the path from the current point to the specified point.</p>
 <p>In addition to the straight line commands, there are 4 arc commands for adding
-curves to a path: <tt class="docutils literal"><span class="pre">curve_to()</span></tt> which draws a cubic bezier curve,
-<tt class="docutils literal"><span class="pre">quad_curve_to()</span></tt> which draws a quadratic bezier curve, <tt class="docutils literal"><span class="pre">arc()</span></tt> which
-draws a circular arc based on a center and radius, and <tt class="docutils literal"><span class="pre">arc_to()</span></tt> which
+curves to a path: <code class="docutils literal"><span class="pre">curve_to()</span></code> which draws a cubic bezier curve,
+<code class="docutils literal"><span class="pre">quad_curve_to()</span></code> which draws a quadratic bezier curve, <code class="docutils literal"><span class="pre">arc()</span></code> which
+draws a circular arc based on a center and radius, and <code class="docutils literal"><span class="pre">arc_to()</span></code> which
 draws a circular arc from one point to another.</p>
-<p>Finally, the <tt class="docutils literal"><span class="pre">rect()</span></tt> method adds a rectangle to the path.</p>
-<p>In addition there are convenience methods <tt class="docutils literal"><span class="pre">lines()</span></tt>, <tt class="docutils literal"><span class="pre">rects()</span></tt> and
-<tt class="docutils literal"><span class="pre">line_set()</span></tt> which add multiple lines or rectangles to a path, reading from
+<p>Finally, the <code class="docutils literal"><span class="pre">rect()</span></code> method adds a rectangle to the path.</p>
+<p>In addition there are convenience methods <code class="docutils literal"><span class="pre">lines()</span></code>, <code class="docutils literal"><span class="pre">rects()</span></code> and
+<code class="docutils literal"><span class="pre">line_set()</span></code> which add multiple lines or rectangles to a path, reading from
 appropriately shaped numpy arrays.</p>
 <p>None of these methods make any change to the visible image until the path is
-either stroked with <tt class="docutils literal"><span class="pre">stroke_path()</span></tt> or filled with <tt class="docutils literal"><span class="pre">fill_path()</span></tt>.  The way
+either stroked with <code class="docutils literal"><span class="pre">stroke_path()</span></code> or filled with <code class="docutils literal"><span class="pre">fill_path()</span></code>.  The way
 these actions are performed depends upon certain state of the graphics context.</p>
 <p>For stroking, the graphics context keeps track of the color to use with
-<tt class="docutils literal"><span class="pre">set_stroke_color()</span></tt>, the thickness of the line with <tt class="docutils literal"><span class="pre">set_line_width()</span></tt>,
-the way that lines are joined with <tt class="docutils literal"><span class="pre">set_line_join()</span></tt> and
-<tt class="docutils literal"><span class="pre">set_miter_limit()</span></tt>, and the way that they are ended with <tt class="docutils literal"><span class="pre">set_line_cap()</span></tt>.
-Lines can also be dashed using the <tt class="docutils literal"><span class="pre">set_line_dash()</span></tt> method which takes a
-pattern of numbers to use for lengths of on and off, and an optional <tt class="docutils literal"><span class="pre">phase</span></tt>
+<code class="docutils literal"><span class="pre">set_stroke_color()</span></code>, the thickness of the line with <code class="docutils literal"><span class="pre">set_line_width()</span></code>,
+the way that lines are joined with <code class="docutils literal"><span class="pre">set_line_join()</span></code> and
+<code class="docutils literal"><span class="pre">set_miter_limit()</span></code>, and the way that they are ended with <code class="docutils literal"><span class="pre">set_line_cap()</span></code>.
+Lines can also be dashed using the <code class="docutils literal"><span class="pre">set_line_dash()</span></code> method which takes a
+pattern of numbers to use for lengths of on and off, and an optional <code class="docutils literal"><span class="pre">phase</span></code>
 for where to start in the pattern.</p>
 <p>Thicknesses:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
 
 <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
 
@@ -263,8 +255,8 @@ for where to start in the pattern.</p>
 </div>
 <img alt="_images/thicknesses.png" src="_images/thicknesses.png" />
 <p>Joins:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
-<span class="kn">from</span> <span class="nn">kiva.constants</span> <span class="kn">import</span> <span class="n">JOIN_ROUND</span><span class="p">,</span> <span class="n">JOIN_BEVEL</span><span class="p">,</span> <span class="n">JOIN_MITER</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+<span class="kn">from</span> <span class="nn">kiva.constants</span> <span class="k">import</span> <span class="n">JOIN_ROUND</span><span class="p">,</span> <span class="n">JOIN_BEVEL</span><span class="p">,</span> <span class="n">JOIN_MITER</span>
 
 <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
@@ -283,8 +275,8 @@ for where to start in the pattern.</p>
 </div>
 <img alt="_images/joins.png" src="_images/joins.png" />
 <p>Caps:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
-<span class="kn">from</span> <span class="nn">kiva.constants</span> <span class="kn">import</span> <span class="n">CAP_ROUND</span><span class="p">,</span> <span class="n">CAP_BUTT</span><span class="p">,</span> <span class="n">CAP_SQUARE</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+<span class="kn">from</span> <span class="nn">kiva.constants</span> <span class="k">import</span> <span class="n">CAP_ROUND</span><span class="p">,</span> <span class="n">CAP_BUTT</span><span class="p">,</span> <span class="n">CAP_SQUARE</span>
 
 <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
@@ -302,7 +294,7 @@ for where to start in the pattern.</p>
 </div>
 <img alt="_images/caps.png" src="_images/caps.png" />
 <p>Dashes:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
 
 <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
 <span class="n">dashes</span> <span class="o">=</span> <span class="p">([</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">9.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">])</span>
@@ -320,16 +312,16 @@ for where to start in the pattern.</p>
 </pre></div>
 </div>
 <img alt="_images/dashes.png" src="_images/dashes.png" />
-<p>Before filling a path, the colour of the fill is via the <tt class="docutils literal"><span class="pre">set_fill_color()</span></tt>
-method, and gradient fills can be done via the <tt class="docutils literal"><span class="pre">set_linear_gradient()</span></tt> and
-<tt class="docutils literal"><span class="pre">set_radial_gradient()</span></tt> methods.  Finally, there are two different fill modes
+<p>Before filling a path, the colour of the fill is via the <code class="docutils literal"><span class="pre">set_fill_color()</span></code>
+method, and gradient fills can be done via the <code class="docutils literal"><span class="pre">set_linear_gradient()</span></code> and
+<code class="docutils literal"><span class="pre">set_radial_gradient()</span></code> methods.  Finally, there are two different fill modes
 available:
 <a class="reference external" href="http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule">even-odd fill</a> and
 <a class="reference external" href="http://en.wikipedia.org/wiki/Nonzero-rule">non-zero winding fill</a></p>
 <p>Winding vs. Even-Odd Fill:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span>
-<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
-<span class="kn">from</span> <span class="nn">kiva.constants</span> <span class="kn">import</span> <span class="n">FILL</span><span class="p">,</span> <span class="n">EOF_FILL</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">pi</span>
+<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+<span class="kn">from</span> <span class="nn">kiva.constants</span> <span class="k">import</span> <span class="n">FILL</span><span class="p">,</span> <span class="n">EOF_FILL</span>
 
 <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
@@ -360,10 +352,10 @@ available:
 <div class="section" id="text">
 <h3>Text<a class="headerlink" href="#text" title="Permalink to this headline">¶</a></h3>
 <p>Text can be rendered at a point by first setting the font to use, then setting
-the text location using <tt class="docutils literal"><span class="pre">set_text_position()</span></tt> and then <tt class="docutils literal"><span class="pre">show_text()</span></tt> to
+the text location using <code class="docutils literal"><span class="pre">set_text_position()</span></code> and then <code class="docutils literal"><span class="pre">show_text()</span></code> to
 render the text:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.fonttools</span> <span class="kn">import</span> <span class="n">Font</span>
-<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="kn">import</span> <span class="n">GraphicsContext</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.fonttools</span> <span class="k">import</span> <span class="n">Font</span>
+<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
 
 <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
 
@@ -450,7 +442,7 @@ are called:</p>
 </tbody>
 </table>
 <p>The following factory methods are available in the top-level &#8220;agg&#8221; namespace
-to create specific kinds of <tt class="xref py py-class docutils literal"><span class="pre">AffineMatrix</span></tt> instances:</p>
+to create specific kinds of <code class="xref py py-class docutils literal"><span class="pre">AffineMatrix</span></code> instances:</p>
 <p><strong>translation_matrix(float x, float x)</strong></p>
 <p><strong>rotation_matrix(float angle_in_radians)</strong></p>
 <p><strong>scaling_matrix(float x_scale, float y_scale)</strong></p>
@@ -463,7 +455,7 @@ to create specific kinds of <tt class="xref py py-class docutils literal"><span 
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name" colspan="2">__init__(name, size=12, family=0, style=0):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">constructs a <tt class="xref py py-class docutils literal"><span class="pre">FontType</span></tt> instance</td>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">constructs a <code class="xref py py-class docutils literal"><span class="pre">FontType</span></code> instance</td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">is_loaded() -&gt; bool:</th></tr>
 <tr class="field-even field"><td>&nbsp;</td><td class="field-body">returns True if a font was actually loaded</td>
@@ -494,7 +486,7 @@ map between their names and integer values</p>
 </tr>
 <tr class="field-odd field"><th class="field-name">text_draw_mode:</th><td class="field-body">TEXT_FILL, TEXT_INVISIBLE (currently unused)</td>
 </tr>
-<tr class="field-even field"><th class="field-name">pix_format:</th><td class="field-body">(NOTE: the strings in the dicts omit the <tt class="docutils literal"><span class="pre">pix_format_</span></tt> prefix)</td>
+<tr class="field-even field"><th class="field-name">pix_format:</th><td class="field-body">(NOTE: the strings in the dicts omit the <code class="docutils literal"><span class="pre">pix_format_</span></code> prefix)</td>
 </tr>
 </tbody>
 </table>
@@ -531,7 +523,7 @@ pix_format_abgr32, pix_format_bgra32</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">marker:</th><td class="field-body">(NOTE: the strings in the dicts omit the <tt class="docutils literal"><span class="pre">marker_</span></tt> prefix)</td>
+<tr class="field-odd field"><th class="field-name">marker:</th><td class="field-body">(NOTE: the strings in the dicts omit the <code class="docutils literal"><span class="pre">marker_</span></code> prefix)</td>
 </tr>
 </tbody>
 </table>
@@ -704,7 +696,7 @@ calculate the intersection of the current path and the current clipping path.</t
 <tr class="field-even field"><th class="field-name">close_path():</th><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">get_empty_path() -&gt; <a class="reference internal" href="#compiledpath">CompiledPath</a>:</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">returns a blank <tt class="xref py py-class docutils literal"><span class="pre">CompiledPath</span></tt> instance</p>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">returns a blank <code class="xref py py-class docutils literal"><span class="pre">CompiledPath</span></code> instance</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">add_path(<a class="reference internal" href="#compiledpath">CompiledPath</a>):</th></tr>
@@ -935,7 +927,7 @@ rgb24 format.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/e-logo-rev.png" alt="Logo"/>
@@ -978,16 +970,22 @@ rgb24 format.</p>
 </ul>
 </li>
 </ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="enable_apptools_integration.html"
-                        title="previous chapter">Enable Apptools Integration</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/kiva.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="enable_apptools_integration.html" title="previous chapter">Enable Apptools Integration</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/kiva.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -995,31 +993,26 @@ rgb24 format.</p>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="enable_apptools_integration.html" title="Enable Apptools Integration"
-             >previous</a> |</li>
-        <li><a href="index.html">enable 4.5.0 documentation</a> &raquo;</li> 
-      </ul>
-    </div>
     <div class="footer">
-        &copy; Copyright 2008-2015, Enthought.
-      Last updated on Apr 01, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      &copy;2008-2015, Enthought.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/kiva.txt"
+          rel="nofollow">Page source</a>
     </div>
+
+    
+
+    
   </body>
 </html>
