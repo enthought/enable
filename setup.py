@@ -36,10 +36,10 @@ from numpy.distutils.core import setup
 from numpy.distutils.misc_util import is_string
 
 MAJOR = 4
-MINOR = 6
+MINOR = 7
 MICRO = 0
 
-IS_RELEASED = True
+IS_RELEASED = False
 
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 

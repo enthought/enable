@@ -1,6 +1,19 @@
 Enable CHANGELOG
 ================
 
+Enable 4.7.0
+============
+
+Enhancements
+------------
+
+Fixes
+-----
+
+Maintainence
+------------
+
+
 Enable 4.6.0
 ============
 
