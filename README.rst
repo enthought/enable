@@ -2,7 +2,7 @@
 enable: low-level drawing and interaction
 =========================================
 
-http://github.enthought.com/enable
+http://docs.enthought.com/enable
 
 .. image:: https://travis-ci.org/enthought/enable.svg?branch=master
    :target: https://travis-ci.org/enthought/enable
