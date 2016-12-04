@@ -18,7 +18,7 @@ if 'develop' in sys.argv:
     sys.argv[idx:idx] = ['build_src', '--inplace', 'build_clib'] + compiler + \
         ['build_ext', '--inplace'] + compiler
 
-from os.path import join
+from os.path import dirname, exists, join
 
 # Setuptools must be imported BEFORE numpy.distutils for things to work right!
 import setuptools
@@ -102,12 +102,13 @@ if not is_released:
     # write_version_py(), otherwise the import of kiva._version messes
     # up the build under Python 3.
     fullversion = VERSION
-    if os.path.exists('.git'):
+    kiva_version_path = join(dirname(__file__), 'kiva', '_version.py')
+    if exists(join(dirname(__file__), '.git')):
         git_revision, dev_num = git_version()
-    elif os.path.exists('kiva/_version.py'):
+    elif exists(kiva_version_path):
         # must be a source distribution, use existing version file
         try:
-            git_revision, full_version = read_version_py('kiva/_version.py')
+            git_revision, full_version = read_version_py(kiva_version_path)
         except (SyntaxError, KeyError):
             raise RuntimeError("Unable to read git_revision. Try removing "
                                "kiva/_version.py and the build directory "
