@@ -5,8 +5,9 @@ Kiva Explorer
 Interactive editor for exploring Kiva drawing commands.
 
 """
+import time
 
-from traits.api import Any, Code, Instance, Str
+from traits.api import Any, Code, Float, Instance, Property, Str
 from traitsui.api import HSplit, ModelView, UItem, VGroup, View
 from enable.api import Component, ComponentEditor
 
@@ -50,6 +51,10 @@ class ScriptedComponent(Component):
     #: any errors which occur
     error = Str
 
+    #: how long did the last draw take
+    last_draw_time = Float(0.0)
+    fps_display = Property(Str, depends_on='last_draw_time')
+
     #: compiled code
     _draw_code = Any
 
@@ -58,7 +63,9 @@ class ScriptedComponent(Component):
         with gc:
             try:
                 self.error = ''
+                start_time = time.time()
                 exec self._draw_code in {}, {'gc': gc}
+                self.last_draw_time = time.time() - start_time
             except Exception as exc:
                 self.error = str(exc)
 
@@ -83,6 +90,14 @@ class ScriptedComponent(Component):
             code = compile("", "<script>", "exec")
         return code
 
+    def _get_fps_display(self):
+        if self.last_draw_time == 0.0:
+            return ""
+
+        draw_time_ms = self.last_draw_time * 1000.0
+        draw_fps = 1000.0 / draw_time_ms
+        return "{:.2f}ms ({:.2f} fps)".format(draw_time_ms, draw_fps)
+
 
 class ScriptedComponentView(ModelView):
     """ ModelView of a ScriptedComponent displaying the script and image """
@@ -100,7 +115,10 @@ class ScriptedComponentView(ModelView):
                     style='readonly',
                     height=100)
             ),
-            UItem('model', editor=ComponentEditor()),
+            VGroup(
+                UItem('model', editor=ComponentEditor()),
+                UItem('model.fps_display', height=20)
+            ),
         ),
         resizable=True
     )
