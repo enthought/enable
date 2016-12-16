@@ -14,6 +14,15 @@ Maintainence
 ------------
 
 
+Enable 4.6.1
+============
+
+Fixes
+-----
+
+* PR #257: Fix a problem encountered when installing from pip
+
+
 Enable 4.6.0
 ============
 

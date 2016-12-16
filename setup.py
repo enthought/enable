@@ -36,8 +36,8 @@ from numpy.distutils.core import setup
 from numpy.distutils.misc_util import is_string
 
 MAJOR = 4
-MINOR = 7
-MICRO = 0
+MINOR = 6
+MICRO = 2
 
 IS_RELEASED = False
 
