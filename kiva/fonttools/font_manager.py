@@ -58,10 +58,10 @@ import errno
 
 from six.moves import cPickle as pickle
 
+from fontTools.ttLib import TTFont, TTLibError
 from traits.etsconfig.api import ETSConfig
-from kiva.fonttools.fontTools.ttLib import TTFont, TTLibError
 
-from kiva.fonttools import afm
+from . import afm
 
 USE_FONTCONFIG = False
 

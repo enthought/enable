@@ -11,6 +11,7 @@ __requires__ = [
     'traitsui',
     'pyface',
     'six',
+    'fonttools'
 ]
 
 # Do not force installation of pillow if PIL is already available.
