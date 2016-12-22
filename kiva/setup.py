@@ -26,10 +26,7 @@ def configuration(parent_package=None, top_path=None):
 
     config.add_subpackage('agg')
     config.add_subpackage('fonttools')
-    config.add_subpackage('fonttools.*')
-    config.add_subpackage('fonttools.*.*')
-    config.add_subpackage('fonttools.*.*.*')
-    config.add_data_files('fonttools/fontTools/*.txt')
+    config.add_subpackage('fonttools.tests')
     config.add_subpackage('trait_defs')
     config.add_subpackage('trait_defs.ui')
     config.add_subpackage('trait_defs.ui.*')
