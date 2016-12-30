@@ -1,7 +1,7 @@
-#ifndef ENABLE_HIT_TEST_H
-#define ENABLE_HIT_TEST_H
+#ifndef KIVA_HIT_TEST_H
+#define KIVA_HIT_TEST_H
 
-namespace enable
+namespace kiva
 {
     bool point_in_polygon(double x, double y, 
                           double* poly_pts, int Npoly_pts);

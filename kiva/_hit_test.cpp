@@ -1,6 +1,6 @@
 #include "_hit_test.h"
 
-namespace enable
+namespace kiva
 {
     // Adapted from: http://www.alienryderflex.com/polygon/
     //

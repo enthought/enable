@@ -2,7 +2,7 @@ import unittest
 
 from numpy import array, allclose
 
-from enable.api import points_in_polygon
+from kiva.api import points_in_polygon
 
 
 class TestPointsInPolygon(unittest.TestCase):
