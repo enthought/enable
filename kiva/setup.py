@@ -41,7 +41,7 @@ def configuration(parent_package=None, top_path=None):
     config.get_version()
 
     ext_sources = ['_cython_speedups.cpp', '_hit_test.cpp']
-    config.add_extension('kiva._cython_speedups', sources=ext_sources,
+    config.add_extension('_cython_speedups', sources=ext_sources,
                          include_dirs=['.', get_include()])
 
     return config
