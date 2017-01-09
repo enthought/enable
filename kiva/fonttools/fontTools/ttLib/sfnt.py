@@ -32,7 +32,7 @@ class SFNTReader:
                         from kiva.fonttools.fontTools import ttLib
                         raise ttLib.TTLibError("Not a TrueType or OpenType font (not enough data)")
                 sstruct.unpack(sfntDirectoryFormat, data, self)
-                if self.sfntVersion not in ("\000\001\000\000", "OTTO", "true"):
+                if self.sfntVersion not in (b"\000\001\000\000", b"OTTO", b"true"):
                         from kiva.fonttools.fontTools import ttLib
                         raise ttLib.TTLibError("Not a TrueType or OpenType font (bad sfntVersion)")
                 self.tables = {}
@@ -56,7 +56,7 @@ class SFNTReader:
 
         def __getitem__(self, tag):
                 """Fetch the raw table data."""
-                entry = self.tables[tag]
+                entry = self.tables[tag.encode()]
                 self.file.seek(entry.offset)
                 data = self.file.read(entry.length)
                 if self.checkChecksums:

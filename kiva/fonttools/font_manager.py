@@ -525,7 +525,7 @@ def ttfFontProperty(fpath, font):
     *font* is a :class:`FT2Font` instance.
     """
     props = getPropDict(font)
-    name = props[(1, 0, 0, 1)]
+    name = props[(1, 0, 0, 1)].decode()
 
     #  Styles are: italic, oblique, and normal (default)
 
@@ -538,13 +538,14 @@ def ttfFontProperty(fpath, font):
     except:
         sfnt4 = None
     if sfnt2:
-        sfnt2 = sfnt2.lower()
+        sfnt2 = sfnt2.lower().decode()
     else:
         sfnt2 = ''
     if sfnt4:
-        sfnt4 = sfnt4.lower()
+        sfnt4 = sfnt4.lower().decode()
     else:
         sfnt4 = ''
+
     if sfnt4.find('oblique') >= 0:
         style = 'oblique'
     elif sfnt4.find('italic') >= 0:
@@ -691,6 +692,7 @@ def createFontList(fontfiles, fontext='ttf'):
                 fh = open(fpath, 'r')
             except:
                 verbose.report("Could not open font file %s" % fpath)
+                raise
                 continue
             try:
                 try:
@@ -698,24 +700,28 @@ def createFontList(fontfiles, fontext='ttf'):
                 finally:
                     fh.close()
             except RuntimeError:
+                raise
                 verbose.report("Could not parse font file %s" % fpath)
                 continue
             try:
                 prop = afmFontProperty(fpath, font)
             except:
+                raise
                 continue
         else:
             try:
                 font = TTFont(str(fpath))
             except (RuntimeError, TTLibError):
+                raise
                 verbose.report("Could not open font file %s" % fpath)
                 continue
             except UnicodeError:
+                raise
                 verbose.report("Cannot handle unicode filenames")
                 continue
             try:
                 prop = ttfFontProperty(fpath, font)
-            except:
+            except KeyError:
                 continue
 
         fontlist.append(prop)
@@ -1068,13 +1074,16 @@ class FontManager:
 
         self.ttffiles = findSystemFonts(paths) + findSystemFonts()
         self.defaultFamily = {
-            'ttf': 'Bitstream Vera Sans',
-            'afm': 'Helvetica'}
+            #'ttf': 'Bitstream Vera Sans',
+            "ttf": "DejaVu Serif",
+            'afm': 'Helvetica'
+
+        }
         self.defaultFont = {}
 
         for fname in self.ttffiles:
             verbose.report('trying fontname %s' % fname, 'debug')
-            if fname.lower().find('vera.ttf') >= 0:
+            if fname.lower().find('DejaVuSerif.ttf') >= 0:
                 self.defaultFont['ttf'] = fname
                 break
         else:
@@ -1282,8 +1291,8 @@ class FontManager:
 
         best_score = 1e64
         best_font = None
-
         for font in fontlist:
+
             fname = font.fname
             if (directory is not None and
                     os.path.commonprefix([fname, directory]) != directory):
@@ -1410,16 +1419,17 @@ if USE_FONTCONFIG and sys.platform != 'win32':
         return result
 
 else:
-    try:
-        fontManager = pickle_load(_fmcache)
-        if (not hasattr(fontManager, '_version') or
-                fontManager._version != FontManager.__version__):
-            _rebuild()
-        else:
-            fontManager.default_size = None
-            verbose.report("Using fontManager instance from %s" % _fmcache)
-    except:
-        _rebuild()
+    _rebuild()
+    #try:
+    #    fontManager = pickle_load(_fmcache)
+    #    if (not hasattr(fontManager, '_version') or
+    #            fontManager._version != FontManager.__version__):
+    #        _rebuild()
+    #    else:
+    #        fontManager.default_size = None
+    #        verbose.report("Using fontManager instance from %s" % _fmcache)
+    #except:
+    #    _rebuild()
 
     def findfont(prop, **kw):
         global fontManager

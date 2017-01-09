@@ -63,7 +63,7 @@ class TTFont:
         """
 
         def __init__(self, file=None, res_name_or_index=None,
-                        sfntVersion="\000\001\000\000", checkChecksums=0,
+                        sfntVersion=b"\000\001\000\000", checkChecksums=0,
                         verbose=0, recalcBBoxes=1):
 
                 """The constructor can be called with a few different arguments.
