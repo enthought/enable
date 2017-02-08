@@ -43,16 +43,7 @@ class CompiledPath(KivaCompiledPath):
             self.curve_to(x2,y2, x3,y3, x4,y4)
 
     def elliptical_arc_to(self, rx, ry, phi, large_arc_flag, sweep_flag, x2, y2):
-        if sys.platform == 'darwin':
-            x1, y1 = self.get_current_point()
-        else:
-            def _get_current_point(path):
-                total_vertices = path.total_vertices()
-                if total_vertices == 0:
-                    return (0.0, 0.0)
-                return path.vertex(total_vertices-1)[0]
-            x1, y1 = _get_current_point(self)
-
+        x1, y1 = self.GetCurrentPoint()
         arcs = svg_extras.elliptical_arc_to(self, rx, ry, phi,
                                             large_arc_flag, sweep_flag,
                                             x1, y1, x2, y2)
