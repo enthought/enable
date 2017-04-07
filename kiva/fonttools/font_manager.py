@@ -343,6 +343,7 @@ def OSXFontDirectory():
     for fontdir in OSXFontDirectories:
         try:
             if os.path.isdir(fontdir):
+                fontpaths.append(fontdir)
                 for dirpath, dirs, _files in os.walk(fontdir):
                     fontpaths.extend([os.path.join(dirpath, d) for d in dirs])
 
@@ -1075,10 +1076,7 @@ class FontManager:
                 break
         else:
             # use anything
-            try:
-                self.defaultFont['ttf'] = self.ttffiles[0]
-            except IndexError:
-                pass
+            self.defaultFont['ttf'] = self.ttffiles[0]
 
         self.ttflist = createFontList(self.ttffiles)
 
