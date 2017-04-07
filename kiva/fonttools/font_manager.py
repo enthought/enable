@@ -1075,7 +1075,10 @@ class FontManager:
                 break
         else:
             # use anything
-            self.defaultFont['ttf'] = self.ttffiles[0]
+            try:
+                self.defaultFont['ttf'] = self.ttffiles[0]
+            except IndexError:
+                pass
 
         self.ttflist = createFontList(self.ttffiles)
 
