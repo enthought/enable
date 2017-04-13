@@ -384,6 +384,7 @@ def x11FontDirectory():
     for fontdir in X11FontDirectories:
         try:
             if os.path.isdir(fontdir):
+                fontpaths.append(fontdir)
                 for dirpath, dirs, _files in os.walk(fontdir):
                     fontpaths.extend([os.path.join(dirpath, d) for d in dirs])
 
