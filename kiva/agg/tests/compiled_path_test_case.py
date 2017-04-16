@@ -33,24 +33,24 @@ class TestCompiledPath(unittest.TestCase, Utils):
         m1 = agg.translation_matrix(5.0,5.0)
         path.set_ctm(m1)
         m2 = path.get_ctm()
-        self.assertRavelEqual(m1, m2)
+        assert m1 == m2
         path.restore_ctm()
         m3 = path.get_ctm()
-        self.assertRavelEqual(m0, m3)
+        assert m0 == m3
 
     def test_translate_ctm(self):
         path = agg.CompiledPath()
         path.translate_ctm(2.0,2.0)
         actual = path.get_ctm()
         desired = agg.translation_matrix(2.0,2.0)
-        self.assertRavelEqual(actual, desired)
+        assert actual == desired
 
     def test_scale_ctm(self):
         path = agg.CompiledPath()
         path.scale_ctm(2.0,2.0)
         actual = path.get_ctm()
         desired = agg.scaling_matrix(2.0,2.0)
-        self.assertRavelEqual(actual, desired)
+        assert actual == desired
 
     def test_rotate_ctm(self):
         angle = pi/4.
@@ -58,7 +58,7 @@ class TestCompiledPath(unittest.TestCase, Utils):
         path.rotate_ctm(angle)
         actual = path.get_ctm()
         desired = agg.rotation_matrix(angle)
-        self.assertRavelEqual(actual, desired)
+        assert actual == desired
 
     def test_concat_ctm(self):
         path = agg.CompiledPath()
@@ -72,7 +72,7 @@ class TestCompiledPath(unittest.TestCase, Utils):
         desired = m0
         des = desired.asarray()
         act = actual.asarray()
-        self.assertRavelEqual(actual, desired)
+        self.assertRavelEqual(act, des)
 
     def test_vertex(self):
         # !! should get this value from the agg enum value
@@ -191,7 +191,7 @@ class TestCompiledPath(unittest.TestCase, Utils):
 
         desired = path1.get_ctm()
         actual = path2.get_ctm()
-        self.assertRavelEqual(actual, desired)
+        assert actual == desired
 
     def base_helper_lines(self,lines):
         path = agg.CompiledPath()
