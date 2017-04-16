@@ -119,6 +119,10 @@ class ValueDragTool(DragTool):
         self.visible = False
         return True
 
+    def drag_cancel(self, event):
+        self.set_delta(self.original_value, 0, 0)
+        return True
+
     def _drag_button_down(self, event):
         # override button down to handle modifier keys correctly
         if not event.handled and self._drag_state == "nondrag":
