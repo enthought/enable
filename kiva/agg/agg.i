@@ -13,5 +13,4 @@
 %include "compiled_path.i"
 //%include "image.i"
 %include "graphics_context.i"
-%include "hit_test.i"
 
