@@ -241,7 +241,6 @@ if __name__ == "__main__":
     config = configuration().todict()
     packages = setuptools.find_packages(exclude=config['packages'] +
                                         ['docs', 'examples'])
-    packages += ['enable.savage.trait_defs.ui.wx.data']
     config['packages'] += packages
 
     setup(name='enable',
@@ -285,6 +284,7 @@ if __name__ == "__main__":
           package_data={
               '': ['*.zip', '*.svg', 'images/*'],
               'enable': ['tests/primitives/data/PngSuite/*.png'],
+              'enable.savage.trait_defs.ui.wx': ['data/*.svg'],
               'kiva': ['tests/agg/doubleprom_soho_full.jpg'],
           },
           platforms=["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
