@@ -14,6 +14,18 @@ Maintainence
 ------------
 
 
+Enable 4.6.2
+============
+
+Fixes
+-----
+
+* PR #272: Fix import failure when no fonts are installed on the system.
+* PR #269: Fix floating-point numbers used as NumPy shapes (incompatible
+           with NumPy 1.12.0).
+* PR #268: Fix "no attribute 'get_current_point'" error from savage on OS X.
+
+
 Enable 4.6.1
 ============
 
