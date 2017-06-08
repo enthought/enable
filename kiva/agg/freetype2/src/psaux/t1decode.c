@@ -199,6 +199,7 @@
 #ifdef FT_CONFIG_OPTION_INCREMENTAL
     T1_Face      face  = (T1_Face)decoder->builder.face;
 #endif
+    int decoder_glyph_names;
 
 
     if ( decoder->seac )
@@ -213,11 +214,12 @@
     /* `glyph_names' is set to 0 for CID fonts which do not */
     /* include an encoding.  How can we deal with these?    */
 #ifdef FT_CONFIG_OPTION_INCREMENTAL
-    if ( decoder->glyph_names == 0                   &&
-         !face->root.internal->incremental_interface )
+    decoder_glyph_names = ( decoder->glyph_names == 0                   &&
+         !face->root.internal->incremental_interface );
 #else
-    if ( decoder->glyph_names == 0 )
+    decoder_glyph_names = ( decoder->glyph_names == 0 );
 #endif /* FT_CONFIG_OPTION_INCREMENTAL */
+    if (decoder_glyph_names)
     {
       FT_ERROR(( "t1operator_seac:"
                  " glyph names table not available in this font\n" ));
