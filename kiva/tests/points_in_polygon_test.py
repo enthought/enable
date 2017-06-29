@@ -1,11 +1,25 @@
 import unittest
+import warnings
 
 from numpy import array, allclose
 
 from kiva.api import points_in_polygon
+from kiva.agg import points_in_polygon as points_in_polygon_deprecated
 
 
 class TestPointsInPolygon(unittest.TestCase):
+
+    def test_deprecated_import(self):
+        polygon = array(((0.0, 0.0), (10.0, 0.0), (0.0, 10.0)))
+        points = array(((5.0, 5.0),))
+
+        with warnings.catch_warnings(record=True) as collector:
+            warnings.simplefilter("always")
+            points_in_polygon_deprecated(points, polygon)
+
+            assert len(collector) == 1
+            warn = collector[0]
+            assert issubclass(warn.category, DeprecationWarning)
 
     def test_simple_points_in_polygon(self):
 
