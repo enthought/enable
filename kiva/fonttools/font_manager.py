@@ -1074,8 +1074,7 @@ class FontManager:
 
         self.ttffiles = findSystemFonts(paths) + findSystemFonts()
         self.defaultFamily = {
-            #'ttf': 'Bitstream Vera Sans',
-            "ttf": "DejaVu Serif",
+            'ttf': 'Bitstream Vera Sans',
             'afm': 'Helvetica'
 
         }
@@ -1083,7 +1082,7 @@ class FontManager:
 
         for fname in self.ttffiles:
             verbose.report('trying fontname %s' % fname, 'debug')
-            if fname.lower().find('DejaVuSerif.ttf') >= 0:
+            if fname.lower().find('vera.ttf') >= 0:
                 self.defaultFont['ttf'] = fname
                 break
         else:
