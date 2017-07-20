@@ -1,6 +1,6 @@
 """ Test the interaction between traitsui and enable's ComponentEditor.
 """
-
+import nose
 
 from enable.component_editor import ComponentEditor
 from traits.has_traits import HasTraits
@@ -8,7 +8,9 @@ from traits.trait_types import Any
 from traitsui.item import Item
 from traitsui.view import View
 
-from traitsui.tests._tools import *
+from traitsui.tests._tools import get_dialog_size, skip_if_null
+
+ITEM_WIDTH, ITEM_HEIGHT = 700, 200
 
 
 class _ComponentDialog(HasTraits):
@@ -17,11 +19,10 @@ class _ComponentDialog(HasTraits):
 
     traits_view = View(
         Item('thing', editor=ComponentEditor(), show_label=False),
-        resizable = True
+        resizable=True
     )
 
 
-ITEM_WIDTH, ITEM_HEIGHT = 700, 200
 class _ComponentDialogWithSize(HasTraits):
     """ View containing an item with ComponentEditor and given size. """
     thing = Any
@@ -29,7 +30,7 @@ class _ComponentDialogWithSize(HasTraits):
     traits_view = View(
         Item('thing', editor=ComponentEditor(), show_label=False,
              width=ITEM_WIDTH, height=ITEM_HEIGHT),
-        resizable = True
+        resizable=True
     )
 
 
@@ -63,9 +64,7 @@ def test_initial_component_with_item_size():
     nose.tools.assert_less(size[1], ITEM_HEIGHT+30)
 
 
-
 if __name__ == '__main__':
     # Executing the file opens the dialog for manual testing
     vw = _ComponentDialogWithSize()
     vw.configure_traits()
-

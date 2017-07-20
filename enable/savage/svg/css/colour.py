@@ -9,9 +9,7 @@
     * named color: black
 """
 import string
-import six
-import six.moves as sm
-
+import six.moves.urllib.parse as urlparse
 from pyparsing import nums, Literal, Optional, oneOf, Group, StringEnd, Combine, Word, alphas, hexnums
 from enable.savage.svg.pathdata import number, sign
 

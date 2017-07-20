@@ -59,10 +59,10 @@ import errno
 import six
 import six.moves as sm
 
+from fontTools.ttLib import TTFont, TTLibError
 from traits.etsconfig.api import ETSConfig
-from kiva.fonttools.fontTools.ttLib import TTFont, TTLibError
 
-from kiva.fonttools import afm
+from . import afm
 
 USE_FONTCONFIG = False
 
@@ -292,6 +292,7 @@ def win32InstalledFonts(directory=None, fontext='ttf'):
     filenames are returned by default, or AFM fonts if *fontext* ==
     'afm'.
     """
+
     from six.moves import winreg
     if directory is None:
         directory = win32FontDirectory()
@@ -340,13 +341,13 @@ def OSXFontDirectory():
 
     fontpaths = []
 
-    def add(arg, directory, files):
-        fontpaths.append(directory)
-
     for fontdir in OSXFontDirectories:
         try:
             if os.path.isdir(fontdir):
-                os.path.walk(fontdir, add, None)
+                fontpaths.append(fontdir)
+                for dirpath, dirs, _files in os.walk(fontdir):
+                    fontpaths.extend([os.path.join(dirpath, d) for d in dirs])
+
         except (IOError, OSError, TypeError, ValueError):
             pass
     return fontpaths
@@ -381,12 +382,10 @@ def x11FontDirectory():
     """
     fontpaths = []
 
-    def add(arg, directory, files):
-        fontpaths.append(directory)
-
     for fontdir in X11FontDirectories:
         try:
             if os.path.isdir(fontdir):
+                fontpaths.append(fontdir)
                 for dirpath, dirs, _files in os.walk(fontdir):
                     fontpaths.extend([os.path.join(dirpath, d) for d in dirs])
 
@@ -1075,9 +1074,7 @@ class FontManager:
         self.ttffiles = findSystemFonts(paths) + findSystemFonts()
         self.defaultFamily = {
             'ttf': 'Bitstream Vera Sans',
-            'afm': 'Helvetica'
-
-        }
+            'afm': 'Helvetica'}
         self.defaultFont = {}
 
         for fname in self.ttffiles:
@@ -1290,8 +1287,8 @@ class FontManager:
 
         best_score = 1e64
         best_font = None
-        for font in fontlist:
 
+        for font in fontlist:
             fname = font.fname
             if (directory is not None and
                     os.path.commonprefix([fname, directory]) != directory):

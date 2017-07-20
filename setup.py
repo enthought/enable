@@ -18,17 +18,14 @@ if 'develop' in sys.argv:
     sys.argv[idx:idx] = ['build_src', '--inplace', 'build_clib'] + compiler + \
         ['build_ext', '--inplace'] + compiler
 
-from os.path import join
+from os.path import dirname, exists, join
 
 # Setuptools must be imported BEFORE numpy.distutils for things to work right!
 import setuptools
 
 import distutils
 import distutils.command.clean
-try:
-    from distutils.command.build_py import build_py_2to3 as build_py
-except ImportError:
-    from distutils.command.build_py import build_py
+from setuptools.command.build_py import build_py
 
 import os
 import re
@@ -40,15 +37,24 @@ from numpy.distutils.misc_util import is_string
 
 MAJOR = 4
 MINOR = 6
-MICRO = 0
+MICRO = 2
 
 IS_RELEASED = False
 
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
 
-# Return the git revision as a string
+def read_version_py(path):
+    """ Read a _version.py file in a safe way. """
+    with open(path, 'r') as fp:
+        code = compile(fp.read(), 'kiva._version', 'exec')
+    context = {}
+    exec(code, context)
+    return context['git_revision'], context['full_version']
+
+
 def git_version():
+    """ Return the git revision as a string """
     def _minimal_ext_cmd(cmd):
         # construct minimal environment
         env = {}
@@ -96,16 +102,17 @@ if not is_released:
     # write_version_py(), otherwise the import of kiva._version messes
     # up the build under Python 3.
     fullversion = VERSION
-    if os.path.exists('.git'):
+    kiva_version_path = join(dirname(__file__), 'kiva', '_version.py')
+    if exists(join(dirname(__file__), '.git')):
         git_revision, dev_num = git_version()
-    elif os.path.exists('kiva/_version.py'):
+    elif exists(kiva_version_path):
         # must be a source distribution, use existing version file
         try:
-            from kiva._version import git_revision, full_version
-        except ImportError:
-            raise ImportError("Unable to import git_revision. Try removing "
-                              "kiva/_version.py and the build directory "
-                              "before building.")
+            git_revision, full_version = read_version_py(kiva_version_path)
+        except (SyntaxError, KeyError):
+            raise RuntimeError("Unable to read git_revision. Try removing "
+                               "kiva/_version.py and the build directory "
+                               "before building.")
 
         match = re.match(r'.*?\.dev(?P<dev_num>\d+)', full_version)
         if match is None:
@@ -149,7 +156,7 @@ class MyBuildPy(build_py):
     def run(self):
         build_src = self.get_finalized_command('build_src')
         if build_src.py_modules_dict and self.packages is None:
-            self.packages = list(build_src.py_modules_dict.keys ())
+            self.packages = list(build_src.py_modules_dict.keys())
         build_py.run(self)
 
     def find_package_modules(self, package, package_dir):
@@ -234,7 +241,6 @@ if __name__ == "__main__":
     config = configuration().todict()
     packages = setuptools.find_packages(exclude=config['packages'] +
                                         ['docs', 'examples'])
-    packages += ['enable.savage.trait_defs.ui.wx.data']
     config['packages'] += packages
 
     setup(name='enable',
@@ -275,9 +281,10 @@ if __name__ == "__main__":
                         '{0}.tar.gz'.format(__version__)),
           install_requires=__requires__,
           license='BSD',
-          package_data = {
+          package_data={
               '': ['*.zip', '*.svg', 'images/*'],
               'enable': ['tests/primitives/data/PngSuite/*.png'],
+              'enable.savage.trait_defs.ui.wx': ['data/*.svg'],
               'kiva': ['tests/agg/doubleprom_soho_full.jpg'],
           },
           platforms=["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],

@@ -1,7 +1,9 @@
+six
 numpy
 coverage
 pillow
-pyparsing==2.0.3
+pyparsing
+fonttools==3.10.0
 PyPDF2
 https://bitbucket.org/pyglet/pyglet/get/pyglet-1.1.4.zip ; python_version <= "2.7"
 pygarrayimage

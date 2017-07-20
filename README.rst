@@ -2,7 +2,7 @@
 enable: low-level drawing and interaction
 =========================================
 
-http://github.enthought.com/enable
+http://docs.enthought.com/enable
 
 .. image:: https://travis-ci.org/enthought/enable.svg?branch=master
    :target: https://travis-ci.org/enthought/enable
@@ -73,6 +73,7 @@ the Enable/Kiva project:
 - `Setuptools <https://pypi.python.org/pypi/setuptools>`_
 - `Numpy <http://pypi.python.org/pypi/numpy>`_
 - `SWIG <http://www.swig.org/>`_
+- `fonttools <https://pypi.python.org/pypi/FontTools>`_
 - (on Linux) X11-devel (development tools for X11)
 - (on Mac OS X) `Cython <http://www.cython.org>`_
 

@@ -1,5 +1,6 @@
 import os
 import time
+from six import StringIO
 import xml.etree.cElementTree as etree
 
 import six
@@ -31,7 +32,7 @@ class ProfileResults(wx.TextCtrl):
         if results is None:
             self.SetValue("")
             return
-        buf = six.StringIO()
+        buf = StringIO()
         results.stream = buf
         results.strip_dirs()
         results.sort_stats(-1)

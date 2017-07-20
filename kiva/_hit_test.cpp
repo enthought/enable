@@ -1,4 +1,4 @@
-#include "kiva_hit_test.h"
+#include "_hit_test.h"
 
 namespace kiva
 {
@@ -19,12 +19,12 @@ namespace kiva
     // coordinate system.
 
     inline bool toggle_odd_node(double x, double y,
-                            double p1x, double p1y,
-                            double p2x, double p2y)
+                                double p1x, double p1y,
+                                double p2x, double p2y)
     {
         bool toggle = false;
-        if(   ((p1y<y) && (p2y>=y))
-           || ((p2y<y) && (p1y>=y)) )
+        if ( ((p1y<y) && (p2y>=y))
+          || ((p2y<y) && (p1y>=y)) )
         {
             if (p1x + (y-p1y)/(p2y-p1y) * (p2x-p1x) < x)
             {
@@ -63,12 +63,12 @@ namespace kiva
     }
 
     void points_in_polygon(double* pts, int Npts,
-                          double* poly_pts, int Npoly_pts,
-                          unsigned char* results, int Nresults)
+                           double* poly_pts, int Npoly_pts,
+                           unsigned char* results, int Nresults)
     {
         // Nresults and Npts should match.
 
-        for(int i=0; i < Npts; i++)
+        for (int i=0; i < Npts; i++)
         {
             int ii = i*2;
             double x = pts[ii];
@@ -77,12 +77,16 @@ namespace kiva
         }
     }
 
-    inline double is_left(double x, double y, double x1, double y1, double x2, double y2)
+    inline double is_left(double x, double y,
+                          double x1, double y1,
+                          double x2, double y2)
     {
         return ( (x2 - x1) * (y - y1) - (x - x1) * (y2 - y1) );
     }
 
-    inline int winding_increment(double x, double y, double x1, double y1, double x2, double y2)
+    inline int winding_increment(double x, double y,
+                                 double x1, double y1,
+                                 double x2, double y2)
     {
         if (y1 <= y)
         {
@@ -108,7 +112,8 @@ namespace kiva
     }
 
 
-    bool point_in_polygon_winding(double x, double y, double* poly_pts, int Npoly_pts)
+    bool point_in_polygon_winding(double x, double y,
+                                  double* poly_pts, int Npoly_pts)
     {
         int winding_number = 0;
         double p1_x, p1_y, p2_x, p2_y;
@@ -120,7 +125,7 @@ namespace kiva
             p2_x = poly_pts[ii+2];
             p2_y = poly_pts[ii+3];
 
-            winding_number += winding_increment(x,y,p1_x,p1_y,p2_x,p2_y);
+            winding_number += winding_increment(x, y, p1_x, p1_y, p2_x, p2_y);
         }
 
         // Last point wraps to the beginning.
@@ -129,18 +134,18 @@ namespace kiva
         p2_x = poly_pts[0];
         p2_y = poly_pts[1];
 
-        winding_number += winding_increment(x,y,p1_x,p1_y,p2_x,p2_y);
+        winding_number += winding_increment(x, y, p1_x, p1_y, p2_x, p2_y);
 
         return winding_number != 0;
     }
 
     void points_in_polygon_winding(double* pts, int Npts,
-                          double* poly_pts, int Npoly_pts,
-                          unsigned char* results, int Nresults)
+                                   double* poly_pts, int Npoly_pts,
+                                   unsigned char* results, int Nresults)
     {
         // Nresults and Npts should match.
 
-        for(int i=0; i < Npts; i++)
+        for (int i=0; i < Npts; i++)
         {
             int ii = i*2;
             double x = pts[ii];

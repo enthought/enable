@@ -15,7 +15,6 @@ compiled_path.i     wrapper for kiva_compiled_path.h
 constants.i         common enumerations and constants used by Agg and Kiva
 font_type.i         wrapper for kiva_font_type.h
 graphic_context.i   the main wrapper defining the Agg graphics context
-hit_test.i          defines a point-in-polygon test; currently not used
 numeric.i           typemaps and wrappers for Numeric array used in kiva
 numeric_ext.i       same as numeric.i
 rect.i              wrapper for kiva_rect.h
@@ -42,7 +41,6 @@ kiva_graphics_context_base.h/.cpp  non-templatized base class for graphics
                                    format)
 kiva_graphics_context.h            template graphics_context class and typedef
                                    specializations for various pixel formats.
-kiva_hit_test.h/.cpp
 kiva_image_filters.h    A helper class that associates the right types of
                         image filters for various pixel formats
 kiva_pix_format.h       defines agg_pix_to_kiva()

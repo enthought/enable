@@ -256,30 +256,6 @@
 				RelativePath="kiva_graphics_state.h">
 			</File>
 			<File
-				RelativePath="kiva_hit_test.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="kiva_hit_test.h">
-			</File>
-			<File
 				RelativePath="kiva_image_filters.h">
 			</File>
 			<File

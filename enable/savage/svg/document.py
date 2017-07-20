@@ -7,9 +7,10 @@ import math
 from functools import wraps
 import os
 
-import six
 import six.moves as sm
+from six.moves import urllib
 
+import six.moves.urllib.parse as urlparse
 from xml.etree import cElementTree as ET
 try:
     from xml.etree.cElementTree import ParseError
@@ -64,12 +65,12 @@ def normalize_href(href):
     """
     if href.startswith('url(') and href.endswith(')'):
         href = href[4:-1]
-    scheme, netloc, path, params, query, fragment = sm.urllib.parse.urlparse(href)
+    scheme, netloc, path, params, query, fragment = urlparse.urlparse(href)
     # Normalize xpointer(id(...)) references.
     if fragment.startswith('xpointer(id(') and fragment.endswith('))'):
         # FIXME: whitespace?
         fragment = fragment[12:-2]
-    uri = sm.urllib.parse.urlunparse((scheme, netloc, path, params, query, ''))
+    uri = urlparse.urlunparse((scheme, netloc, path, params, query, ''))
     return uri, fragment
 
 def attrAsFloat(node, attr, defaultValue="0"):
@@ -180,7 +181,7 @@ class ResourceGetter(object):
         """ Resolve a path and the associated opener function against this
         context.
         """
-        scheme, netloc, path_part, _, _, _ = sm.urllib.parse.urlparse(path)
+        scheme, netloc, path_part, _, _, _ = urlparse.urlparse(path)
         if scheme not in ('', 'file'):
             # Plain URI. Pass it back.
             # Read the data and stuff it in a StringIO in order to satisfy
@@ -883,7 +884,7 @@ class SVGDocument(object):
         type, details = paintValue.parseString(brushcolour)
         if type == "URL":
             url, fallback = details
-            url = sm.urllib.parse.urlunsplit(url)
+            url = urlparse.urlunsplit(url)
             try:
                 element = self.dereference(url)
             except ParseError:
@@ -1094,3 +1095,7 @@ class SVGDocument(object):
         for op, args in self.ops:
             #print op, context, args
             op(context, *args)
+
+if __name__ == '__main__':
+    from tests.test_document import TestBrushFromColourValue, TestValueToPixels, unittest
+    unittest.main()

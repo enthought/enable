@@ -1,12 +1,11 @@
 import unittest
 import enable.savage.svg.document as document
 import xml.etree.cElementTree as etree
-
-import six
+from six import StringIO
 
 from enable.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
 
-minimalSVG = etree.parse(six.StringIO(r"""<?xml version="1.0" standalone="no"?>
+minimalSVG = etree.parse(StringIO(r"""<?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>"""))

@@ -144,14 +144,6 @@ SOURCE=.\kiva_graphics_state.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\kiva_hit_test.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\kiva_hit_test.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\kiva_image_filters.h
 # End Source File
 # Begin Source File

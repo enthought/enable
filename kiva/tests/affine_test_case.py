@@ -140,12 +140,22 @@ class AffineInformationTestCase(unittest.TestCase):
 
     def test_trs_factor(self):
         trans = affine.affine_identity()
-        trans = affine.translate(trans,5,5)
+        trans = affine.translate(trans,6,5)
         trans = affine.rotate(trans,2.4)
-        trans = affine.scale(trans,10,10)
+        trans = affine.scale(trans,0.2,10)
         tx,ty,sx,sy,angle = affine.trs_factor(trans)
-        assert( (tx,ty) == (5,5))
-        assert( (sx,sy) == (10,10))
+        assert( (tx,ty) == (6,5))
+        assert( (sx,sy) == (0.2,10))
+        assert( angle == 2.4)
+
+    def test_tsr_factor(self):
+        trans = affine.affine_identity()
+        trans = affine.translate(trans,6,5)
+        trans = affine.scale(trans,0.2,10)
+        trans = affine.rotate(trans,2.4)
+        tx,ty,sx,sy,angle = affine.tsr_factor(trans)
+        assert( (tx,ty) == (6,5))
+        assert( (sx,sy) == (0.2,10))
         assert( angle == 2.4)
 
 class TransformPointsTestCase(unittest.TestCase):

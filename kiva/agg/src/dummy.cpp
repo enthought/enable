@@ -1,7 +1,6 @@
 #include "agg_trans_affine.h"
 #include "kiva_graphics_context.h"
 #include "kiva_compiled_path.h"
-#include "kiva_hit_test.h"
 #include "kiva_font_type.h"
 #include "kiva_rect.h"
 
@@ -537,39 +536,3 @@ int main(int argc, char **argv)
 
     return 0;
 }
-
-
-
-/*
-void hit_test_example()
-{
-	double x_max = 20.0; // 100000.0;
-	double y_max = 20.0; //100000.0;
-
-	kiva::compiled_path mypath;
-    mypath.begin_path();
-    mypath.move_to(0.0, 0.0);
-	mypath.line_to(x_max, 0.0);
-    mypath.line_to(x_max,y_max);
-    mypath.line_to(0.0, y_max);
-    mypath.close_path();
-
-	agg24::trans_affine ctm;
-
-	int x_list[] = {-1, 0, 10, 19, 19, 20, 20, 21};
-	int y_list[] = {-1, 0, 10, 19, 20, 19, 20, 21};
-	for (int i=0; i < 8; i++)
-	{
-		int res;
-		int x = x_list[i];
-		int y = y_list[i];
-
-		res = kiva::hit_test(x, y, mypath, ctm, agg24::fill_non_zero);
-		
-		if (res)
-			printf("%d: %d, %d is in (0,0)->(20,20) square\n", res, x, y);
-		else
-			printf("%d: %d, %d is not in (0,0)->(20,20) square\n", res, x, y);
-	}
-}
-*/
