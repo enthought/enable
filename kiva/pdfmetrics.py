@@ -14,6 +14,7 @@
 #copyright ReportLab Inc. 2001
 #see license.txt for license details
 #history http://cvs.sourceforge.net/cgi-bin/cvsweb.cgi/reportlab/pdfbase/pdfmetrics.py?cvsroot=reportlab
+from __future__ import print_function
 
 # MODIFIED from reportlab's version for the sake of easier integration in Kiva -- David Ascher
 

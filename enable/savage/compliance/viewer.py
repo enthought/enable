@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import os
 import time
 from six import StringIO
