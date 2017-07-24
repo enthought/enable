@@ -365,7 +365,7 @@ class SVGDocument(object):
         if state is None:
             state = self.state
         current = dict(state)
-        element_items = [(k,v) for (k,v) in six.iteritems(element) if v != 'inherit']
+        element_items = [(k,v) for (k,v) in element.items() if v != 'inherit']
         current.update(element_items)
         style_items = [(k,v) for (k,v) in six.iteritems(css.inlineStyle(element.get("style", ""))) if v != 'inherit']
         current.update(style_items)

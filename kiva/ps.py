@@ -15,6 +15,7 @@
     :Author:      David Ascher (davida@activestate.com)
     :Version:     $Revision: 1.2 $
 """
+from __future__ import print_function
 
 # Major library imports
 import os
