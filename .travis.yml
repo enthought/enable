@@ -32,8 +32,12 @@ matrix:
       env: ETS_TOOLKIT=wx PILLOW='pillow'
     - python: 3.5
       env: ETS_TOOLKIT=wx PILLOW='pillow'
+    - python: 3.5
+      env: ETS_TOOLKIT=qt4 PILLOW='pillow'
     - python: 3.6
       env: ETS_TOOLKIT=wx PILLOW='pillow'
+    - python: 3.6
+      env: ETS_TOOLKIT=qt4 PILLOW='pillow'
 cache:
   directories:
     - $HOME/.cache
