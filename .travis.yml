@@ -30,6 +30,10 @@ matrix:
   exclude:
     - python: 3.4
       env: ETS_TOOLKIT=wx PILLOW='pillow'
+    - python: 3.5
+      env: ETS_TOOLKIT=wx PILLOW='pillow'
+    - python: 3.6
+      env: ETS_TOOLKIT=wx PILLOW='pillow'
 cache:
   directories:
     - $HOME/.cache
@@ -39,6 +43,8 @@ before_install:
   - export PATH=/usr/lib/ccache:${PATH}
   - pip install --upgrade pip
   - if [[ ${TRAVIS_PYTHON_VERSION} == "3.4" && ${ETS_TOOLKIT} == "qt4" ]]; then ./build_pyside_wheel.sh; fi
+  - if [[ ${TRAVIS_PYTHON_VERSION} == "3.5" && ${ETS_TOOLKIT} == "qt4" ]]; then ./build_pyside_wheel.sh; fi
+  - if [[ ${TRAVIS_PYTHON_VERSION} == "3.6" && ${ETS_TOOLKIT} == "qt4" ]]; then ./build_pyside_wheel.sh; fi
   # setup X11 for the tests
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
