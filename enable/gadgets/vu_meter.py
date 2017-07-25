@@ -2,6 +2,7 @@
 import math
 
 import six
+from six.moves as sm
 
 from traits.api import Float, Property, List, Str, Range
 from enable.api import Component
@@ -39,8 +40,7 @@ class VUMeter(Component):
 
     # Values of the percentage-based ticks; these are drawn and labeled along
     # the bottom of the curve axis.
-    # FIXME: Does it support iterable???
-    percent_ticks = List(list(six.moves.range(0, 101, 20)))
+    percent_ticks = List(list(sm.range(0, 101, 20)))
 
     # Text to write in the middle of the VU Meter.
     text = Str("VU")

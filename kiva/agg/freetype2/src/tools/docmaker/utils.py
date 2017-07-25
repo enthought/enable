@@ -3,7 +3,6 @@
 
 import string, sys, os, glob
 
-import six
 import six.moves as sm
 
 # current output directory
@@ -86,7 +85,7 @@ def  check_output():
     if output_dir:
         if output_dir != "":
             if not os.path.isdir( output_dir ):
-                sys.stderr.write( "argument" + " '" + output_dir + "' " + \
+                sys.stderr.write( "argument" + " '" + output_dir + "' " +
                                   "is not a valid directory" )
                 sys.exit( 2 )
         else:

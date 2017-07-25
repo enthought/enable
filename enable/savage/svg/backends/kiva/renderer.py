@@ -296,7 +296,7 @@ def font_style(font):
     elif font.style in [0, 'regular','normal']:
         style = 'regular'
     else:
-        print("Font style '%s' and weight: '%s' not known." \
+        print("Font style '%s' and weight: '%s' not known."
               " Using style='regular'" % (font.style, font.weight))
         style = 'regular'
 

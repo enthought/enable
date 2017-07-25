@@ -55,8 +55,8 @@ def  main( argv ):
     global output_dir
 
     try:
-        opts, args = getopt.getopt( sys.argv[1:], \
-                                    "hb",         \
+        opts, args = getopt.getopt( sys.argv[1:],
+                                    "hb",
                                     ["help", "backup"] )
     except getopt.GetoptError:
         usage()

@@ -58,13 +58,17 @@ namespace kiva
 
 %pythoncode
 %{
-
-import six
-
 def unicode_safe_init(self, _name="Arial", _size=12, _family=0, _style=0,
                       _encoding=0, validate=True):
-    if isinstance(_name, six.text_type):
-        _name = _name.encode('latin1')
+    ### HACK:  C++ stuff expects a string (not unicode) for the face_name, so fix
+    ###        if needed.  See ticket #2111 in the CP Trac.
+    ### Only for python < 3
+    if '' == b'':
+        if isinstance(_name, unicode):
+            _name = _name.encode("latin1")
+    else:
+        if isinstance(_name, bytes):
+            _name = _name.decode()
     obj = _agg.new_AggFontType(_name, _size, _family, _style,
                                _encoding, validate)
     _swig_setattr(self, AggFontType, "this", obj)

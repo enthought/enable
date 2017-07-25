@@ -3,9 +3,9 @@
 
 import six
 
-from sources import *
-from content import *
-from formatter import *
+from .sources import *
+from .content import *
+from .formatter import *
 
 import time
 
@@ -429,8 +429,8 @@ class  HtmlFormatter( Formatter ):
 
         print("</table>")
 
-        print(index_footer_start +            \
-              self.file_prefix + "toc.html" + \
+        print(index_footer_start +
+              self.file_prefix + "toc.html" +
               index_footer_end)
 
         print(self.html_footer)
@@ -456,7 +456,7 @@ class  HtmlFormatter( Formatter ):
 
     def  toc_section_enter( self, section ):
         print('<tr valign=top><td class="left">')
-        print('<a href="' + self.make_section_url( section ) + '">' + \
+        print('<a href="' + self.make_section_url( section ) + '">' +
                section.title + '</a></td><td>')
 
         print(self.make_html_para( section.abstract ))
@@ -469,13 +469,13 @@ class  HtmlFormatter( Formatter ):
         print(chapter_footer)
 
     def  toc_index( self, index_filename ):
-        print(chapter_header +                                      \
-              '<a href="' + index_filename + '">Global Index</a>' + \
+        print(chapter_header +
+              '<a href="' + index_filename + '">Global Index</a>' +
               chapter_inter + chapter_footer)
 
     def  toc_exit( self ):
-        print(toc_footer_start +                \
-              self.file_prefix + "index.html" + \
+        print(toc_footer_start +
+              self.file_prefix + "index.html" +
               toc_footer_end)
 
         print(self.html_footer)
@@ -581,8 +581,8 @@ class  HtmlFormatter( Formatter ):
             print(marker_footer)
 
     def  block_exit( self, block ):
-        print(block_footer_start + self.file_prefix + "index.html" + \
-              block_footer_middle + self.file_prefix + "toc.html" +  \
+        print(block_footer_start + self.file_prefix + "index.html" +
+              block_footer_middle + self.file_prefix + "toc.html" +
               block_footer_end)
 
     def  section_exit( self, section ):

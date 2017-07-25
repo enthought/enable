@@ -54,6 +54,7 @@ unsigned path_flags(unsigned c);
 #
 #----------------------------------------------------------------------------
 import six
+
 kiva_marker_to_agg = {}
 kiva_marker_to_agg[1] = marker_square
 kiva_marker_to_agg[2] = marker_diamond

@@ -3,7 +3,6 @@ Define a standard horizontal and vertical Enable scrollbar component that wraps
 the standard Qt one.
 """
 
-import six
 import six.moves as sm
 
 from pyface.qt import QtCore, QtGui

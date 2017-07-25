@@ -5,12 +5,14 @@
 #  comment blocks and build more structured objects out of them.
 #
 
-from sources import *
-from utils import *
 import string, re
 import sys
 
 import six
+
+from .sources import *
+from .utils import *
+
 
 # this regular expression is used to detect code sequences. these
 # are simply code fragments embedded in '{' and '}' like in:
@@ -62,7 +64,7 @@ class  DocCode:
 
         # remove margin spaces
         for l in lines:
-            if string.strip( l[:margin] ) == "":
+            if l[:margin].strip() == "":
                 l = l[margin:]
             self.lines.append( l )
 

@@ -4861,7 +4861,7 @@ class StringNode:
   def optimize( self ):
     # optimize all children first
     # Create a copy
-    children      = list(self.children.values())
+    children      = list(six.itervalues(self.children))
     self.children = {}
 
     for child in children:

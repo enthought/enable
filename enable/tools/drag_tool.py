@@ -1,6 +1,5 @@
 """ Defines the base DragTool class.
 """
-import six
 import six.moves as sm
 # Enthought library imports
 from traits.api import Bool, Enum, Tuple, Property, cached_property, List, Str

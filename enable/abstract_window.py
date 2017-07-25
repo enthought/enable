@@ -1,6 +1,5 @@
 
 # Major library imports
-import six
 import six.moves as sm
 from numpy import dot
 

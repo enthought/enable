@@ -841,7 +841,7 @@ class FontProperties(object):
         """
         filename = str(fontManager.findfont(self))
         if filename.endswith('.afm'):
-            return afm.AFM(file(filename)).get_familyname()
+            return afm.AFM(open(filename)).get_familyname()
 
         font = fontManager.findfont(self)
         return getPropDict(TTFont(str(font)))[(1, 0, 0, 1)]

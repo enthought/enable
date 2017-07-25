@@ -283,6 +283,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
             self._pass_event_to_vtk(vtk_obj, eventname)
 
     def _create_key_event(self, vtk_event, event_type):
+        # FIXME: THIS IS A BUG
         focus_owner = self.focus_owner
 
         if focus_owner is None:

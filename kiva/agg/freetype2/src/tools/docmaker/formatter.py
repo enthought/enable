@@ -1,11 +1,12 @@
 #  Formatter (c) 2002, 2004, 2007, 2008 David Turner <david@freetype.org>
 #
 import sys
+
 import six
 
-from sources import *
-from content import *
-from utils   import *
+from .sources import *
+from .content import *
+from .utils   import *
 
 # This is the base Formatter class.  Its purpose is to convert
 # a content processor's data into specific documents (i.e., table of

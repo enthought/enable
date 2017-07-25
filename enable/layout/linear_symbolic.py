@@ -5,6 +5,7 @@
 from abc import ABCMeta
 
 import six
+
 import kiwisolver as kiwi
 
 

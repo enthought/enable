@@ -87,7 +87,7 @@ for f in TRACE_DEF_FILES:
       component_name = trace_def_pat_opn.sub( '', hdr_line )
       component_name = trace_def_pat_cls.sub( '', component_name )
       if component_name in KNOWN_COMPONENT:
-        print("trace component %s is defined twice, see %s and fttrace.h:%d" % \
+        print("trace component %s is defined twice, see %s and fttrace.h:%d" %
           ( component_name, KNOWN_COMPONENT[component_name], line_num ))
       else:
         KNOWN_COMPONENT[component_name] = "%s:%d" % \

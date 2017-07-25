@@ -471,6 +471,7 @@ def registerEncoding(enc):
 
 def registerFont(font):
     "Registers a font, including setting up info for accelerated stringWidth"
+    # FIXME: This doesn't work
     #assert isinstance(font, Font), 'Not a Font: %s' % font
     fontName = font.fontName
     _fonts[fontName] = font

@@ -11,7 +11,6 @@ import os
 
 import six
 import six.moves as sm
-from six.moves import urllib
 
 import six.moves.urllib.parse as urlparse
 from xml.etree import cElementTree as ET

@@ -2,8 +2,9 @@
 Define the base Enable object traits
 """
 
-# Major library imports
 import six
+
+# Major library imports
 from numpy import arange, array
 
 # Enthought library imports

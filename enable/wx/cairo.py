@@ -9,7 +9,6 @@
 # Thanks for using Enthought open source!
 #------------------------------------------------------------------------------
 
-import six
 import six.moves as sm
 
 import wx
@@ -28,6 +27,7 @@ class Window(BaseWindow):
 
     def _window_paint(self, event):
         "Do a GUI toolkit specific screen update"
+        # FIXME: THIS IS A BUG
         if self.control is None:
             event.Skip()
             return

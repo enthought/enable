@@ -3,10 +3,9 @@ Define the event objects and traits used by Enable components.
 
 For a list of all the possible event suffixes, see interactor.py.
 """
+import six.moves as sm
 
 # Major library imports
-import six
-import six.moves as sm
 from numpy import array, dot
 
 # Enthought imports

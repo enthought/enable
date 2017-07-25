@@ -31,11 +31,9 @@ __doc__="""
     widthVectorsByFont
         fontName -> vector of widths
 """
-import string
 import os
 import sys
 
-import six
 from six.moves import UserDict
 
 # mapping of name to width vector, starts empty until fonts are added

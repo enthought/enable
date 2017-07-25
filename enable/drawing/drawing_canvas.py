@@ -6,6 +6,7 @@ from kiva.constants import FILL, FILL_STROKE
 from kiva.trait_defs.kiva_font_trait import KivaFont
 from traits.api import Any, Bool, Delegate, Enum, Instance, Int, List, Str
 
+
 class Button(Component):
 
     color = ColorTrait("lightblue")
@@ -181,6 +182,7 @@ class DrawingCanvas(Container):
 
     def dispatch(self, event, suffix):
         # See if the event happened on the toolbar:
+
         event.offset_xy(*self.position)
         if self.toolbar.is_in(event.x, event.y):
             self.toolbar.dispatch(event, suffix)
