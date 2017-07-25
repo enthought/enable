@@ -143,7 +143,8 @@ class test_text_image(unittest.TestCase):
         gc.show_text(text)
         save(gc,test_name()+'.bmp')
 
-@unittest.skipIf(six.PY3, reason="Crash python 3")
+
+@unittest.skipIf(six.PY3, reason="Crashes on python 3. See GH #95.")
 class test_sun(unittest.TestCase):
     def generic_sun(self,scheme):
         img = sun(scheme)
