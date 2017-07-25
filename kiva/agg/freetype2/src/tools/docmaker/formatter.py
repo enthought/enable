@@ -43,9 +43,9 @@ class  Formatter:
     def  add_identifier( self, name, block ):
         if name in self.identifiers:
             # duplicate name!
-            sys.stderr.write(                                           \
-               "WARNING: duplicate definition for '" + name + "' in " + \
-               block.location() + ", previous definition in " +         \
+            sys.stderr.write(
+               "WARNING: duplicate definition for '" + name + "' in " +
+               block.location() + ", previous definition in " +
                self.identifiers[name].location() + "\n" )
         else:
             self.identifiers[name] = block

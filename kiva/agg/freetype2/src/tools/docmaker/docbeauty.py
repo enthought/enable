@@ -6,11 +6,11 @@
 # in the FreeType 2 public headers.
 #
 
-from sources import *
-from content import *
-from utils   import *
+from .sources import *
+from .content import *
+from .utils   import *
 
-import utils
+from . import utils
 
 import sys, os, time, string, getopt
 

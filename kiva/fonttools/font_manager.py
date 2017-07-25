@@ -544,7 +544,6 @@ def ttfFontProperty(fpath, font):
         sfnt4 = sfnt4.lower().decode()
     else:
         sfnt4 = ''
-
     if sfnt4.find('oblique') >= 0:
         style = 'oblique'
     elif sfnt4.find('italic') >= 0:
@@ -675,7 +674,7 @@ def createFontList(fontfiles, fontext='ttf'):
     a list of TrueType fonts.  An AFM font list can optionally be
     created.
     """
-
+    # FIXME: This function is particularly difficult to debug
     fontlist = []
     #  Add fonts from list of known font files.
     seen = {}
@@ -691,7 +690,6 @@ def createFontList(fontfiles, fontext='ttf'):
                 fh = open(fpath, 'r')
             except:
                 verbose.report("Could not open font file %s" % fpath)
-                raise
                 continue
             try:
                 try:
@@ -699,28 +697,24 @@ def createFontList(fontfiles, fontext='ttf'):
                 finally:
                     fh.close()
             except RuntimeError:
-                raise
                 verbose.report("Could not parse font file %s" % fpath)
                 continue
             try:
                 prop = afmFontProperty(fpath, font)
             except:
-                raise
                 continue
         else:
             try:
                 font = TTFont(str(fpath))
             except (RuntimeError, TTLibError):
-                raise
                 verbose.report("Could not open font file %s" % fpath)
                 continue
             except UnicodeError:
-                raise
                 verbose.report("Cannot handle unicode filenames")
                 continue
             try:
                 prop = ttfFontProperty(fpath, font)
-            except KeyError:
+            except:
                 continue
 
         fontlist.append(prop)
@@ -1415,17 +1409,16 @@ if USE_FONTCONFIG and sys.platform != 'win32':
         return result
 
 else:
-    _rebuild()
-    #try:
-    #    fontManager = pickle_load(_fmcache)
-    #    if (not hasattr(fontManager, '_version') or
-    #            fontManager._version != FontManager.__version__):
-    #        _rebuild()
-    #    else:
-    #        fontManager.default_size = None
-    #        verbose.report("Using fontManager instance from %s" % _fmcache)
-    #except:
-    #    _rebuild()
+    try:
+        fontManager = pickle_load(_fmcache)
+        if (not hasattr(fontManager, '_version') or
+                fontManager._version != FontManager.__version__):
+            _rebuild()
+        else:
+            fontManager.default_size = None
+            verbose.report("Using fontManager instance from %s" % _fmcache)
+    except:
+        _rebuild()
 
     def findfont(prop, **kw):
         global fontManager

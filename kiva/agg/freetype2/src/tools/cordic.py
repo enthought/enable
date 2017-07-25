@@ -1,6 +1,6 @@
 # compute arctangent table for CORDIC computations in fttrigon.c
 import sys, math
-import six
+
 import six.moves as sm
 
 #units  = 64*65536.0   # don't change !!
