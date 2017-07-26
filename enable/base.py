@@ -104,8 +104,8 @@ def str_to_font ( object, name, value ):
                     underline = underline)
     except:
         pass
-    raise TraitError(( object, name, 'a font descriptor string',
-                        repr( value ) ))
+    raise TraitError(object, name, 'a font descriptor string',
+                        repr( value ) )
 
 str_to_font.info = ( "a string describing a font (e.g. '12 pt bold italic " +
                      "swiss family Arial' or 'default 12')" )
