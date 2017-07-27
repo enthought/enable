@@ -1,17 +1,10 @@
-six
-numpy
-coverage
-pillow
-pyparsing
-fonttools==3.10.0
-PyPDF2
-https://bitbucket.org/pyglet/pyglet/get/pyglet-1.1.4.zip ; python_version <= "2.7"
 pygarrayimage
+hypothesis<3.0.0
+fonttools==3.10.0
 reportlab<=3.1
 kiwisolver ; python_version <= "2.7"
+https://bitbucket.org/pyglet/pyglet/get/pyglet-1.1.4.zip ; python_version <= "2.7"
 git+http://github.com/enthought/traits.git#egg=traits
 git+http://github.com/enthought/pyface.git#egg=pyface
 git+http://github.com/enthought/traitsui.git#egg=traitsui
 git+http://github.com/enthought/apptools.git#egg=apptools
-unittest2
-hypothesis<3.0.0
