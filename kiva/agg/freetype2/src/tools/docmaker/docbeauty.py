@@ -45,7 +45,7 @@ def  usage():
     print("using the following options:\n")
     print("  -h : print this page")
     print("  -b : backup original files with the 'orig' extension")
-    print("")
+    print()
     print("  --backup : same as -b")
 
 

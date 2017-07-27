@@ -6,7 +6,7 @@ from traits.testing.unittest_tools import unittest
 class TestAggDrawing(DrawingImageTester, unittest.TestCase):
 
     def create_graphics_context(self, width, height):
-        return GraphicsContext((width, height), pix_format="rgba32")
+        return GraphicsContext((width, height))
 
 
 if __name__ == "__main__":

@@ -13,8 +13,6 @@ from __future__ import absolute_import
 
 import warnings
 
-import six.moves as sm
-
 import wx
 
 from ..toolkit_constants import pointer_names, key_names
@@ -64,7 +62,7 @@ pointer_shapes = [
 if len(pointer_names) != len(pointer_shapes):
     warnings.warn("The WX toolkit backend pointer map is out of sync!")
 
-POINTER_MAP = dict(sm.zip(pointer_names, pointer_shapes))
+POINTER_MAP = dict(zip(pointer_names, pointer_shapes))
 
 # Map from wxPython special key names into Enable key names:
 key_symbols = [
@@ -143,4 +141,4 @@ key_symbols = [
 if len(key_symbols) != len(key_names):
     warnings.warn("The WX toolkit backend keymap is out of sync!")
 
-KEY_MAP = dict(sm.zip(key_symbols, key_names))
+KEY_MAP = dict(zip(key_symbols, key_names))

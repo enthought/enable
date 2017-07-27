@@ -358,7 +358,7 @@ class _Window(AbstractWindow):
                 return None
 
         if event_type == 'character':
-            key = six.u(event.text())
+            key = six.text_type(event.text())
         else:
             # Convert the keypress to a standard enable key if possible, otherwise
             # to text.

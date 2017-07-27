@@ -46,7 +46,7 @@ class PathPanel(wx.Panel):
 class DrawFrame(wx.Frame):
     def __init__(self, parent, *args, **kwargs):
         wx.Frame.__init__(self, parent, *args, **kwargs)
-        self.pathOps = dict((k,v) for (k,v) in six.iteritems(wx.GraphicsPath.__dict__) if k.startswith("Add"))
+        self.pathOps = {k: v for (k,v) in six.iteritems(wx.GraphicsPath.__dict__) if k.startswith("Add")}
         self.pathOps["CloseSubpath"] = wx.GraphicsPath.CloseSubpath
         self.pathOps["MoveToPoint"] = wx.GraphicsPath.MoveToPoint
         self.pathOps[""] = None

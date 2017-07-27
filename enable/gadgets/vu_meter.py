@@ -1,7 +1,6 @@
 
 import math
 
-import six
 from six.moves as sm
 
 from traits.api import Float, Property, List, Str, Range

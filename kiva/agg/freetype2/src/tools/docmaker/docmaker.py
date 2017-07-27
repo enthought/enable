@@ -32,7 +32,7 @@ def  usage():
     print("  -t : set project title, as in '-t \"My Project\"'")
     print("  -o : set output directory, as in '-o mydir'")
     print("  -p : set documentation prefix, as in '-p ft2'")
-    print("")
+    print()
     print("  --title  : same as -t, as in '--title=\"My Project\"'")
     print("  --output : same as -o, as in '--output=mydir'")
     print("  --prefix : same as -p, as in '--prefix=ft2'")

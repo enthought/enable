@@ -13,7 +13,6 @@ from __future__ import absolute_import
 
 import warnings
 
-import six
 import six.moves as sm
 
 from pyface.qt import QtCore

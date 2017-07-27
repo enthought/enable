@@ -293,11 +293,11 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
                 return self._pass_event_to_vtk(vtk_obj, eventname)
 
         if event_type == 'character':
-            key = six.u(self.control.key_sym)
+            key = six.text_type(self.control.key_sym)
         else:
             key = KEY_MAP.get(self.control.key_sym, None)
             if key is None:
-                key = six.u(self.control.key_sym)
+                key = six.text_type(self.control.key_sym)
             if not key:
                 return
 

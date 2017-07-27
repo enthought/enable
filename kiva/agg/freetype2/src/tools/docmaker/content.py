@@ -208,7 +208,7 @@ class  DocField:
         first = 1
         for p in self.items:
             if not first:
-                print("")
+                print()
             p.dump( prefix )
             first = 0
 
