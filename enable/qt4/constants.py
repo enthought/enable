@@ -15,7 +15,7 @@ import warnings
 
 from pyface.qt import QtCore
 
-from ..toolkit_constants import key_names, pointer_names
+from ..toolkit_constants import key_names, mouse_wheel_axes_names, pointer_names
 
 DRAG_RESULTS_MAP = { "error":   QtCore.Qt.IgnoreAction,
                      "none":    QtCore.Qt.IgnoreAction,
@@ -148,3 +148,7 @@ for enum_name in dir(QtCore.Qt):
             continue
         key_name = enum_name[len('Key_'):]
         KEY_MAP[enum] = key_name
+
+# set up mouse wheel axes constants
+mouse_wheel_axes = [QtCore.Qt.Vertical, QtCore.Qt.Horizontal]
+MOUSE_WHEEL_AXIS_MAP = dict(zip(mouse_wheel_axes, mouse_wheel_axes_names))
