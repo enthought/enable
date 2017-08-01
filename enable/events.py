@@ -118,14 +118,16 @@ class BasicEvent(HasTraits):
             self.y, self.handled)
         return s
 
+
 class MouseEvent(BasicEvent):
-    alt_down     = ReadOnly
+    alt_down = ReadOnly
     control_down = ReadOnly
-    shift_down   = ReadOnly
-    left_down    = ReadOnly
-    middle_down  = ReadOnly
-    right_down   = ReadOnly
-    mouse_wheel  = ReadOnly
+    shift_down = ReadOnly
+    left_down = ReadOnly
+    middle_down = ReadOnly
+    right_down = ReadOnly
+    mouse_wheel = ReadOnly
+    mouse_wheel_axis = ReadOnly
 
 mouse_event_trait = Event(MouseEvent)
 
