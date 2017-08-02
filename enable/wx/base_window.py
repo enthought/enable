@@ -19,7 +19,9 @@ from traitsui.wx.menu import MakeMenu
 from enable.events import MouseEvent, KeyEvent, DragEvent
 from enable.abstract_window import AbstractWindow
 
-from .constants import DRAG_RESULTS_MAP, POINTER_MAP, KEY_MAP
+from .constants import (
+    DRAG_RESULTS_MAP, MOUSE_WHEEL_AXIS_MAP, POINTER_MAP, KEY_MAP
+)
 
 try:
     from pyface.wx.drag_and_drop import clipboard, PythonDropTarget
@@ -305,7 +307,7 @@ class BaseWindow(AbstractWindow):
         handled = self._handle_key_event('key_released', event)
         if not handled:
             event.Skip()
-    
+
     def _create_key_event(self, event_type, event):
         """ Convert a GUI toolkit keyboard event into a KeyEvent.
         """
@@ -313,7 +315,7 @@ class BaseWindow(AbstractWindow):
             focus_owner = self.component
         else:
             focus_owner = self.focus_owner
-        
+
         if focus_owner is not None:
             if event_type == 'character':
                 key = six.unichr(event.GetUniChar())
@@ -325,7 +327,7 @@ class BaseWindow(AbstractWindow):
                     key = KEY_MAP.get(key_code)
                 else:
                     key = six.unichr(event.GetUniChar()).lower()
- 
+
             # Use the last-seen mouse coordinates instead of GetX/GetY due
             # to wx bug.
             x, y = self._last_mouse_pos
@@ -346,7 +348,7 @@ class BaseWindow(AbstractWindow):
                 window = self)
         else:
             event.Skip()
-        
+
         return None
 
     def _create_mouse_event ( self, event ):
@@ -355,9 +357,11 @@ class BaseWindow(AbstractWindow):
             x           = event.GetX()
             y           = event.GetY()
             self._last_mouse_pos = (x, y)
-            mouse_wheel = ((event.GetLinesPerAction() *
+
+            mouse_wheel = ((float(event.GetLinesPerAction()) *
                             event.GetWheelRotation()) /
                             (event.GetWheelDelta() or 1))
+            wheel_axis = MOUSE_WHEEL_AXIS_MAP[event.GetWheelAxis()]
 
             # Note: The following code fixes a bug in wxPython that returns
             # 'mouse_wheel' events in screen coordinates, rather than window
@@ -365,16 +369,19 @@ class BaseWindow(AbstractWindow):
             if float(wx.VERSION_STRING[:3]) < 2.8:
                 if mouse_wheel != 0 and sys.platform == "win32":
                     x, y = self.control.ScreenToClientXY( x, y )
-            return MouseEvent( x            = x,
-                               y            = self._flip_y( y ),
-                               alt_down     = event.AltDown(),
-                               control_down = event.ControlDown(),
-                               shift_down   = event.ShiftDown(),
-                               left_down    = event.LeftIsDown(),
-                               middle_down  = event.MiddleIsDown(),
-                               right_down   = event.RightIsDown(),
-                               mouse_wheel  = mouse_wheel,
-                               window = self )
+            return MouseEvent(
+                x=x,
+                y=self._flip_y(y),
+                alt_down=event.AltDown(),
+                control_down=event.ControlDown(),
+                shift_down=event.ShiftDown(),
+                left_down=event.LeftIsDown(),
+                middle_down=event.MiddleIsDown(),
+                right_down=event.RightIsDown(),
+                mouse_wheel=mouse_wheel,
+                mouse_wheel_axis=wheel_axis,
+                window=self,
+            )
 
         # If no event specified, make one up:
         x, y = wx.GetMousePosition()

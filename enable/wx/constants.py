@@ -15,7 +15,9 @@ import warnings
 
 import wx
 
-from ..toolkit_constants import pointer_names, key_names
+from ..toolkit_constants import (
+    pointer_names, key_names, mouse_wheel_axes_names
+)
 
 DRAG_RESULTS_MAP = { "error":   wx.DragError,
                      "none":    wx.DragNone,
@@ -142,3 +144,13 @@ if len(key_symbols) != len(key_names):
     warnings.warn("The WX toolkit backend keymap is out of sync!")
 
 KEY_MAP = dict(zip(key_symbols, key_names))
+
+if tuple(float(v) for v in wx.__version__.split('.')) < (2, 9, 4):
+    mouse_wheel_axes = [0, 1]
+else:
+    mouse_wheel_axes = [wx.MOUSE_WHEEL_VERTICAL, wx.MOUSE_WHEEL_HORIZONTAL]
+
+if len(mouse_wheel_axes) != len(mouse_wheel_axes_names):
+    warnings.warn("The WX toolkit backend mouse wheel axes are out of sync!")
+
+MOUSE_WHEEL_AXIS_MAP = dict(zip(mouse_wheel_axes, mouse_wheel_axes_names))

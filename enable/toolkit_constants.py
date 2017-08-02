@@ -122,3 +122,4 @@ key_names = [
     'Alt',
 ]
 
+mouse_wheel_axes_names = ['vertical', 'horizontal']
