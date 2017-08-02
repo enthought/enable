@@ -61,7 +61,7 @@ namespace kiva
 def unicode_safe_init(self, _name="Arial", _size=12, _family=0, _style=0,
                       _encoding=0, validate=True):
     ### HACK:  C++ stuff expects a string (not unicode) for the face_name, so fix
-    ###        if needed.  See ticket #2111 in the CP Trac.
+    ###        if needed.
     ### Only for python < 3
     if '' == b'':
         if isinstance(_name, unicode):

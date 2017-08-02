@@ -184,8 +184,8 @@ def  html_quote0( line ):
 
 def  dump_html_code( lines, prefix = "" ):
     # clean the last empty lines
-    l = len( lines )
-    while l > 0 and lines[l - 1].strip() == "":
+    l = len( self.lines )
+    while l > 0 and self.lines[l - 1].strip() == "":
         l = l - 1
 
     # The code footer should be directly appended to the last code

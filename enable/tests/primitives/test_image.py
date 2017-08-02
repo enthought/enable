@@ -123,6 +123,11 @@ class ImageTest(unittest.TestCase, UnittestTools):
         # smoke test: image isn't all white
         assert_array_equal(gc.bmp_array[..., :3], self.data[..., :3])
 
+        gc2 = GraphicsContext((256, 128), pix_format='rgba32')
+        self.image_24.draw(gc2)
+        assert_array_equal(gc2.bmp_array[..., :3], self.data[..., :3])
+
+
     @unittest.skipIf(six.PY3, reason="Crashes on python 3. See GH #95.")
     def test_draw_32(self):
         gc = GraphicsContext((256, 128), pix_format='rgba32')

@@ -72,12 +72,13 @@ def parseAFMFile(afmFileName):
     options for what data you wwanted, and preserve the
     order."""
     with open(afmFileName, 'r') as f:
-        lines = [line.strip() for line in f]
-    #FIXME: This condition probably doesn't work...
-    if len(lines)<=1:
+        lines = f.readlines()
+    if len(lines) < 1:
+        raise ValueError('AFM file %s is empty' % afmFileName)
+    if len(lines) == 1:
         #likely to be a MAC file
-        lines = string.split(lines,'\r')
-        if len(lines)<=1:
+        lines = lines[0].split('\r')
+        if len(lines) <= 1:
             raise ValueError('AFM file %s hasn\'t enough data' % afmFileName)
     topLevel = {}
     glyphLevel = []
@@ -85,6 +86,7 @@ def parseAFMFile(afmFileName):
     #pass 1 - get the widths
     inMetrics = 0  # os 'TOP', or 'CHARMETRICS'
     for line in lines:
+        line = line.strip()
         if line[0:16] == 'StartCharMetrics':
             inMetrics = 1
         elif line[0:14] == 'EndCharMetrics':

@@ -18,6 +18,9 @@ from kiva.cairo import CompiledPath, GraphicsContext, font_metrics_provider
 from .base_window import BaseWindow
 from .scrollbar import NativeScrollBar
 
+from enable.base import union_bounds
+
+
 class Window(BaseWindow):
     def _create_gc(self, size, pix_format="bgra32"):
         "Create a Kiva graphics context of a specified size"
@@ -27,7 +30,6 @@ class Window(BaseWindow):
 
     def _window_paint(self, event):
         "Do a GUI toolkit specific screen update"
-        # FIXME: THIS IS A BUG
         if self.control is None:
             event.Skip()
             return
