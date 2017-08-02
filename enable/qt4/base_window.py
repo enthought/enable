@@ -24,7 +24,10 @@ from enable.events import KeyEvent, MouseEvent, DragEvent
 from traits.api import Instance
 
 # Local imports.
-from constants import BUTTON_NAME_MAP, KEY_MAP, POINTER_MAP, DRAG_RESULTS_MAP
+from constants import (
+    BUTTON_NAME_MAP, KEY_MAP, MOUSE_WHEEL_AXIS_MAP, POINTER_MAP,
+    DRAG_RESULTS_MAP
+)
 
 class _QtWindowHandler(object):
     def __init__(self, qt_window, enable_window):
@@ -407,17 +410,24 @@ class _Window(AbstractWindow):
             delta = event.delta()
             degrees_per_step = 15.0
             mouse_wheel = delta / float(8 * degrees_per_step)
+            mouse_wheel_axis = MOUSE_WHEEL_AXIS_MAP[event.orientation()]
         else:
             mouse_wheel = 0
+            mouse_wheel_axis = 'vertical'
 
-        return MouseEvent(x=x, y=self._flip_y(y), mouse_wheel=mouse_wheel,
-                alt_down=bool(modifiers & QtCore.Qt.AltModifier),
-                shift_down=bool(modifiers & QtCore.Qt.ShiftModifier),
-                control_down=bool(modifiers & QtCore.Qt.ControlModifier),
-                left_down=bool(buttons & QtCore.Qt.LeftButton),
-                middle_down=bool(buttons & QtCore.Qt.MidButton),
-                right_down=bool(buttons & QtCore.Qt.RightButton),
-                window=self)
+        return MouseEvent(
+            x=x,
+            y=self._flip_y(y),
+            mouse_wheel=mouse_wheel,
+            mouse_wheel_axis=mouse_wheel_axis,
+            alt_down=bool(modifiers & QtCore.Qt.AltModifier),
+            shift_down=bool(modifiers & QtCore.Qt.ShiftModifier),
+            control_down=bool(modifiers & QtCore.Qt.ControlModifier),
+            left_down=bool(buttons & QtCore.Qt.LeftButton),
+            middle_down=bool(buttons & QtCore.Qt.MidButton),
+            right_down=bool(buttons & QtCore.Qt.RightButton),
+            window=self
+        )
 
     def _create_drag_event(self, event):
 

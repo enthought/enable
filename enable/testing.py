@@ -151,6 +151,8 @@ class EnableTestAssistant(KivaTestAssistant):
             'alt_down': False,
             'control_down': False,
             'shift_down': False,
+            'mouse_wheel': 0,
+            'mouse_wheel_axis': 'vertical',
         }
         event_attributes.update(**kwargs)
         event = MouseEvent(**event_attributes)
