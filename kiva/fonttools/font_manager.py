@@ -325,7 +325,7 @@ def win32InstalledFonts(directory=None, fontext='ttf'):
                 except WindowsError:
                     continue
 
-            return list(six.iterkeys(items))
+            return list(items.keys())
         finally:
             winreg.CloseKey(local)
     return None
@@ -472,7 +472,7 @@ def findSystemFonts(fontpaths=None, fontext='ttf'):
             else:
                 fontfiles[abs_path] = 1
 
-    return [fname for fname in six.iterkeys(fontfiles) if os.path.exists(fname)]
+    return [fname for fname in fontfiles.keys() if os.path.exists(fname)]
 
 
 def weight_as_number(weight):
@@ -566,7 +566,7 @@ def ttfFontProperty(fpath, font):
     #    lighter and bolder are also allowed.
 
     weight = None
-    for w in six.iterkeys(weight_dict):
+    for w in weight_dict.keys():
         if sfnt4.find(w) >= 0:
             weight = w
             break
@@ -994,12 +994,12 @@ def ttfdict_to_fnames(d):
     flatten a ttfdict to all the filenames it contains
     """
     fnames = []
-    for named in six.itervalues(d):
-        for styled in six.itervalues(named):
-            for variantd in six.itervalues(styled):
-                for weightd in six.itervalues(variantd):
-                    for stretchd in six.itervalues(weightd):
-                        for fname in six.itervalues(stretchd):
+    for named in d.values():
+        for styled in named.values():
+            for variantd in styled.values():
+                for weightd in variantd.values():
+                    for stretchd in weightd.values():
+                        for fname in stretchd.values():
                             fnames.append(fname)
     return fnames
 

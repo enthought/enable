@@ -103,7 +103,7 @@ class Compass(Component):
                   "w": array((-far, -half_width, -near, half_width)) }
         if self.enable_center:
             rects["c"] = array((-near, -near, near, near))
-        for direction, rect in six.iteritems(rects):
+        for direction, rect in rects.items():
             if (rect[0] <= x <= rect[2]) and (rect[1] <= y <= rect[3]):
                 self.event_state = "clicked"
                 self.clicked = direction

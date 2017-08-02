@@ -124,7 +124,7 @@ class ValueDragTool(DragTool):
         # override button down to handle modifier keys correctly
         if not event.handled and self._drag_state == "nondrag":
             key_states = dict((key, key in self.modifier_keys) for key in keys)
-            if not all(getattr(event, key+'_down') == state for key, state in six.iteritems(key_states)):
+            if not all(getattr(event, key+'_down') == state for key, state in key_states.items()):
                 return False
             self.mouse_down_position = (event.x, event.y)
             if not self.is_draggable(*self.mouse_down_position):

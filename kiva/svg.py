@@ -63,12 +63,12 @@ def _strpoints(points):
     return c.getvalue()
 
 def _mkstyle(kw):
-    return '; '.join([str(k) + ':' + str(v) for k,v in six.iteritems(kw)])
+    return '; '.join([str(k) + ':' + str(v) for k,v in kw.items()])
 
 
 def default_filter(kw1):
     kw = {}
-    for (k,v) in six.iteritems(kw1):
+    for (k,v) in kw1.items():
         if type(v) == type(()):
             if v[0] != v[1]:
                 kw[k] = v[0]
@@ -343,7 +343,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
     def _build(self, elname, contents=None, **kw):
         x = '<' + elname + ' '
-        for k,v in six.iteritems(kw):
+        for k,v in kw.items():
             if type(v) == type(0.0):
                 v = '%3.3f' % v
             elif type(v) == type(0):
@@ -401,9 +401,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
     def _emit(self, name, contents=None, kw={}, **otherkw):
         self.contents.write('<svg:%(name)s ' % locals())
-        for k, v in six.iteritems(kw):
+        for k, v in kw.items():
             self.contents.write('%(k)s="%(v)s" ' % locals())
-        for k, v in six.iteritems(otherkw):
+        for k, v in otherkw.items():
             self.contents.write('%(k)s="%(v)s" ' % locals())
         if contents is None:
             self.contents.write('/>\n')

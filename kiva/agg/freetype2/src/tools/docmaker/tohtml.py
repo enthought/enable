@@ -500,7 +500,7 @@ class  HtmlFormatter( Formatter ):
         print(section_title_footer)
 
         maxwidth = 0
-        for b in six.itervalues(section.blocks):
+        for b in section.blocks.values():
             if len( b.name ) > maxwidth:
                 maxwidth = len( b.name )
 
@@ -547,7 +547,7 @@ class  HtmlFormatter( Formatter ):
         # dump the block C source lines now
         if block.code:
             header = ''
-            for f in six.iterkeys(self.headers):
+            for f in self.headers.keys():
                 if block.source.filename.find( f ) >= 0:
                     header = self.headers[f] + ' (' + f + ')'
                     break

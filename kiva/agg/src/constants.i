@@ -88,7 +88,7 @@ pix_format_string_map["abgr32"] = pix_format_abgr32
 pix_format_string_map["bgra32"] = pix_format_bgra32
 
 pix_format_enum_map = {}
-for key,value in six.iteritems(pix_format_string_map):
+for key,value in pix_format_string_map.items():
     pix_format_enum_map[value] = key
 
 #----------------------------------------------------------------------------
@@ -139,7 +139,7 @@ interp_string_map["blackman100"] = blackman100
 interp_string_map["blackman256"] = blackman256
 
 interp_enum_map = {}
-for key,value in six.iteritems(interp_string_map):
+for key,value in interp_string_map.items():
     interp_enum_map[value] = key
 
 %}

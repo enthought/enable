@@ -80,12 +80,12 @@ def _strpoints(points):
     return c.getvalue()
 
 def _mkstyle(kw):
-    return '"' + '; '.join([str(k) + ':' + str(v) for k,v in six.iteritems(kw)]) +'"'
+    return '"' + '; '.join([str(k) + ':' + str(v) for k,v in kw.items()]) +'"'
 
 
 def default_filter(kw1):
     kw = {}
-    for (k,v) in six.iteritems(kw1):
+    for (k,v) in kw1.items():
         if type(v) == type(()):
             if v[0] != v[1]:
                 kw[k] = v[0]

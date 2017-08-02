@@ -4861,7 +4861,7 @@ class StringNode:
   def optimize( self ):
     # optimize all children first
     # Create a copy
-    children      = list(six.itervalues(self.children))
+    children      = list(self.children.values())
     self.children = {}
 
     for child in children:
@@ -4896,7 +4896,7 @@ class StringNode:
 
     if self.children:
       margin += "| "
-      for child in six.itervalues(self.children):
+      for child in self.children.values():
         child.dump_debug( write, margin )
 
   def locate( self, index ):
@@ -4909,7 +4909,7 @@ class StringNode:
     if self.value != 0:
       index += 2
 
-    children = sorted(six.itervalues(self.children))
+    children = sorted(self.children.values())
 
     index += 2 * len( children )
     for child in children:
@@ -4930,7 +4930,7 @@ class StringNode:
         storage += struct.pack( "B", val )
 
     # write the count
-    children = sorted(six.itervalues(self.children))
+    children = sorted(self.children.values())
 
     count = len( children )
 

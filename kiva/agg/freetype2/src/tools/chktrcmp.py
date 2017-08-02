@@ -99,13 +99,13 @@ for f in TRACE_DEF_FILES:
 #
 
 print("# Trace component used in the implementations but not defined in fttrace.h.")
-cmpnt = sorted(six.iterkeys(USED_COMPONENT))
+cmpnt = sorted(USED_COMPONENT.keys())
 for c in cmpnt:
   if c not in KNOWN_COMPONENT:
     print("Trace component %s (used in %s) is not defined." % ( c, ", ".join( USED_COMPONENT[c] ) ))
 
 print("# Trace component is defined but not used in the implementations.")
-cmpnt = sorted(six.iterkeys(KNOWN_COMPONENT))
+cmpnt = sorted(KNOWN_COMPONENT.keys())
 for c in cmpnt:
   if c not in USED_COMPONENT:
     if c != "any":

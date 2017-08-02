@@ -443,7 +443,7 @@ class  ContentProcessor:
         # process all sections to extract their abstract, description
         # and ordered list of items
         #
-        for sec in six.itervalues(self.sections):
+        for sec in self.sections.values():
             sec.process()
 
         # process chapters to check that all sections are correctly
@@ -463,7 +463,7 @@ class  ContentProcessor:
         # check that all sections are in a chapter
         #
         others = []
-        for sec in six.itervalues(self.sections):
+        for sec in self.sections.values():
             if not sec.chapter:
                 others.append( sec )
 

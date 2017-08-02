@@ -366,7 +366,7 @@ class SVGDocument(object):
         current = dict(state)
         element_items = [(k,v) for (k,v) in element.items() if v != 'inherit']
         current.update(element_items)
-        style_items = [(k,v) for (k,v) in six.iteritems(css.inlineStyle(element.get("style", ""))) if v != 'inherit']
+        style_items = [(k,v) for (k,v) in css.inlineStyle(element.get("style", "")).items() if v != 'inherit']
         current.update(style_items)
         return current
 
@@ -910,7 +910,7 @@ class SVGDocument(object):
                 seen = set([element])
                 # The attributes on the referencing element override those on the
                 # referenced element.
-                state = dict(six.iteritems(element))
+                state = dict(element.items())
                 while href is not None:
                     # Gradient is a reference.
                     element = self.dereference(href)

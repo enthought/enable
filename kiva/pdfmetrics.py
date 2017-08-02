@@ -159,7 +159,7 @@ class TypeFace:
 
         We presume they never change so this can be a shared reference."""
         self.glyphWidths = _fontdata.widthsByFontGlyph[name]
-        self.glyphNames = list(six.iterkeys(self.glyphWidths))
+        self.glyphNames = list(self.glyphWidths.keys())
         self.ascent,self.descent = _fontdata.ascent_descent[name]
 
     def findT1File(self, ext='.pfb'):
@@ -435,7 +435,7 @@ class EmbeddedType1Face(TypeFace):
         for (cid, width, name) in glyphData:
             glyphWidths[name] = width
         self.glyphWidths = glyphWidths
-        self.glyphNames = sorted(six.iterkeys(glyphWidths))
+        self.glyphNames = sorted(glyphWidths.keys())
 
         # for font-specific encodings like Symbol, Dingbats, Carta we
         # need to make a new encoding as well....
@@ -563,20 +563,20 @@ stringWidth = _slowStringWidth
 
 def dumpFontData():
     print('Registered Encodings:')
-    keys = sorted(six.iterkeys(_encodings))
+    keys = sorted(_encodings.keys())
     for encName in keys:
         print('   ',encName)
 
     print()
     print('Registered Typefaces:')
-    faces = sorted(six.iterkeys(_typefaces))
+    faces = sorted(_typefaces.keys())
     for faceName in faces:
         print('   ', faceName)
 
 
     print()
     print('Registered Fonts:')
-    k = sorted(six.iterkeys(_fonts))
+    k = sorted(_fonts.keys())
     for key in k:
         font = _fonts[key]
         print('    %s (%s/%s)' % (font.fontName, font.face.name, font.encoding.name))
