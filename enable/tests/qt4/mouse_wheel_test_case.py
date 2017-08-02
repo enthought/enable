@@ -1,8 +1,6 @@
 
 from unittest import TestCase
 
-from mock import MagicMock
-
 from traits.api import Any
 from traitsui.tests._tools import skip_if_not_qt4
 
@@ -12,7 +10,9 @@ from enable.window import Window
 
 
 class MouseEventTool(BaseTool):
+    """ Tool that captures a single mouse wheel event """
 
+    #: the captured mouse event
     event = Any
 
     def normal_mouse_wheel(self, event):
@@ -42,12 +42,11 @@ class MouseWheelTestCase(TestCase):
 
     def test_vertical_mouse_wheel(self):
         from pyface.qt import QtCore, QtGui
-        from enable.qt4.constants import mouse_wheel_axes
 
         # create and mock a mouse wheel event
         qt_event = QtGui.QWheelEvent(
             QtCore.QPoint(0, 0), 200, QtCore.Qt.NoButton, QtCore.Qt.NoModifier,
-            mouse_wheel_axes[0]
+            QtCore.Qt.Vertical
         )
 
         # dispatch event
@@ -59,12 +58,11 @@ class MouseWheelTestCase(TestCase):
 
     def test_horizontal_mouse_wheel(self):
         from pyface.qt import QtCore, QtGui
-        from enable.qt4.constants import mouse_wheel_axes
 
         # create and mock a mouse wheel event
         qt_event = QtGui.QWheelEvent(
             QtCore.QPoint(0, 0), 200, QtCore.Qt.NoButton, QtCore.Qt.NoModifier,
-            mouse_wheel_axes[1]
+            QtCore.Qt.Horizontal
         )
 
         # dispatch event
