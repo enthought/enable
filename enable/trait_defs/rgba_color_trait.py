@@ -82,7 +82,7 @@ convert_to_color.info = ('a tuple of the form (red,green,blue,alpha), where '
 
 # RGBA versions of standard colors
 rgba_standard_colors = {}
-for name, color in six.iteritems(standard_colors):
+for name, color in standard_colors.items():
     rgba_standard_colors[ name ] = rgba_color(color)
 rgba_standard_colors[ 'clear' ] = ( 0, 0, 0, 0 )
 
