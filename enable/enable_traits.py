@@ -2,8 +2,6 @@
 Define the base Enable object traits
 """
 
-import six
-
 # Major library imports
 from numpy import arange, array
 

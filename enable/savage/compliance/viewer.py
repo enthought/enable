@@ -5,7 +5,6 @@ import time
 from six import StringIO
 import xml.etree.cElementTree as etree
 
-import six
 import six.moves as sm
 
 import wx

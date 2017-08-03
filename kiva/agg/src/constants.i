@@ -53,7 +53,6 @@ unsigned path_flags(unsigned c);
 #   marker_enum_map[enum] = string
 #
 #----------------------------------------------------------------------------
-import six
 
 kiva_marker_to_agg = {}
 kiva_marker_to_agg[1] = marker_square

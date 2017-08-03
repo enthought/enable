@@ -18,8 +18,6 @@
   RR is red, GG is green, and BB is blue.
 """
 
-import six
-
 from traits.etsconfig.api import ETSConfig
 from traits.api import Trait, TraitError, TraitFactory
 from traits.trait_base import SequenceTypes

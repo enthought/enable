@@ -28,7 +28,6 @@ usage: %s <output-file>
 
 
 import sys, string, struct, re, os.path
-import six
 
 # This table lists the glyphs according to the Macintosh specification.
 # It is used by the TrueType Postscript names table.

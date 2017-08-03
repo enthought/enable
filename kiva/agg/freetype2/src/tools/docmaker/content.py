@@ -5,13 +5,10 @@
 #  comment blocks and build more structured objects out of them.
 #
 
-import string, re
-import sys
-
-import six
-
 from .sources import *
 from .utils import *
+import string, re
+import sys
 
 
 # this regular expression is used to detect code sequences. these

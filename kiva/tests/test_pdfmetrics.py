@@ -3,8 +3,6 @@ import unittest
 import tempfile
 from contextlib import contextmanager
 
-from six.moves import StringIO
-
 from kiva.pdfmetrics import parseAFMFile
 
 

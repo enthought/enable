@@ -9,7 +9,6 @@
 import sys
 import os
 import re
-import six
 
 SRC_FILE_LIST   = []
 USED_COMPONENT  = {}

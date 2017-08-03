@@ -1,7 +1,7 @@
 
 import math
 
-from six.moves as sm
+import six.moves as sm
 
 from traits.api import Float, Property, List, Str, Range
 from enable.api import Component

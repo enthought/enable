@@ -1,7 +1,5 @@
 import unittest
 
-import six
-
 from enable.api import Component, Container
 
 

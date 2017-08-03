@@ -3,7 +3,6 @@
 import copy
 import unittest
 
-import six
 
 # Enthought library imports
 from traits.api import Any, Tuple

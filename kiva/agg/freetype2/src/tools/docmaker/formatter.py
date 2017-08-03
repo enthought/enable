@@ -2,8 +2,6 @@
 #
 import sys
 
-import six
-
 from .sources import *
 from .content import *
 from .utils   import *

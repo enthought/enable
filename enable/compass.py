@@ -1,8 +1,6 @@
 
 from __future__ import with_statement
 
-import six
-
 from numpy import array, pi
 
 # Enthought library imports
