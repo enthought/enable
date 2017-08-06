@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from enable.api import OverlayContainer, Compass, Window
 from enable.example_support import demo_main, DemoFrame
 

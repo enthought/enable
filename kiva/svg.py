@@ -37,20 +37,27 @@ Miscellaneous notes:
 # Major library imports
 import os
 import sys
-from six import StringIO
 from numpy import arange, ravel, array
 import warnings
 
+import six
+
 # Local, relative Kiva imports
-import affine
-import basecore2d
-import constants
-from constants import FILL, FILL_STROKE, EOF_FILL_STROKE, EOF_FILL, STROKE
-import agg
+from . import affine
+from . import basecore2d
+from . import constants
+from .constants import (
+    FILL,
+    FILL_STROKE,
+    EOF_FILL_STROKE,
+    EOF_FILL,
+    STROKE
+)
+from . import agg
 from base64 import b64encode
 
 def _strpoints(points):
-    c = StringIO()
+    c = six.StringIO()
     for x,y in points:
         c.write('%3.2f,%3.2f ' % (x,y))
     return c.getvalue()
@@ -80,10 +87,6 @@ line_join_map = {
     constants.JOIN_BEVEL: 'bevel',
     constants.JOIN_MITER: 'miter'
     }
-
-font_map = {'Arial': 'Helvetica',
-            }
-import _fontdata
 
 xmltemplate = """<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
@@ -126,8 +129,8 @@ try:
     import reportlab.pdfbase._fontdata as _fontdata
     _reportlab_loaded = 1
 except ImportError:
-    import pdfmetrics
-    import _fontdata
+    from . import pdfmetrics
+    from . import _fontdata
     _reportlab_loaded = 0
 
 font_face_map = {'Arial': 'Helvetica', '': 'Helvetica'}
@@ -143,7 +146,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         super(GraphicsContext, self).__init__(self, size, *args, **kwargs)
         self.size = size
         self._height = size[1]
-        self.contents = StringIO()
+        self.contents = six.StringIO()
         self._clipmap = {}
 
     def render(self, format):
@@ -153,7 +156,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         return xmltemplate % locals()
 
     def clear(self):
-        self.contents = StringIO()
+        self.contents = six.StringIO()
 
     def width(self):
         return self.size[0]
@@ -173,7 +176,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             contents = self.contents.getvalue()
             template = htmltemplate
         else:
-            raise ValueError, "don't know how to write a %s file" % ext
+            raise ValueError("don't know how to write a %s file" % ext)
         f.write(template % locals())
 
 
@@ -262,7 +265,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             # This is not strictly required.
             pil_img = pil_img.resize((int(width), int(height)), PilImage.NEAREST)
 
-        png_buffer = StringIO()
+        png_buffer = six.StringIO()
         pil_img.save(png_buffer, 'png')
         b64_img_data = b64encode(png_buffer.getvalue())
         png_buffer.close()

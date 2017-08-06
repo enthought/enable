@@ -5,9 +5,10 @@
 #  comment blocks and build more structured objects out of them.
 #
 
-from sources import *
-from utils import *
+from .sources import *
+from .utils import *
 import string, re
+import sys
 
 
 # this regular expression is used to detect code sequences. these
@@ -60,14 +61,14 @@ class  DocCode:
 
         # remove margin spaces
         for l in lines:
-            if string.strip( l[:margin] ) == "":
+            if l[:margin].strip() == "":
                 l = l[margin:]
             self.lines.append( l )
 
     def  dump( self, prefix = "", width = 60 ):
         lines = self.dump_lines( 0, width )
         for l in lines:
-            print prefix + l
+            print(prefix + l)
 
     def  dump_lines( self, margin = 0, width = 60 ):
         result = []
@@ -95,7 +96,7 @@ class  DocPara:
     def  dump( self, prefix = "", width = 60 ):
         lines = self.dump_lines( 0, width )
         for l in lines:
-            print prefix + l
+            print(prefix + l)
 
     def  dump_lines( self, margin = 0, width = 60 ):
         cur    = ""  # current line
@@ -198,13 +199,13 @@ class  DocField:
 
     def  dump( self, prefix = "" ):
         if self.field:
-            print prefix + self.field + " ::"
+            print(prefix + self.field + " ::")
             prefix = prefix + "----"
 
         first = 1
         for p in self.items:
             if not first:
-                print ""
+                print()
             p.dump( prefix )
             first = 0
 
@@ -278,10 +279,10 @@ class  DocMarkup:
             return "ERROR"
 
     def  dump( self, margin ):
-        print " " * margin + "<" + self.tag + ">"
+        print(" " * margin + "<" + self.tag + ">")
         for f in self.fields:
             f.dump( "  " )
-        print " " * margin + "</" + self.tag + ">"
+        print(" " * margin + "</" + self.tag + ">")
 
 
 
@@ -352,7 +353,7 @@ class  ContentProcessor:
 
     def  set_section( self, section_name ):
         """set current section during parsing"""
-        if not self.sections.has_key( section_name ):
+        if section_name not in self.sections:
             section = DocSection( section_name )
             self.sections[section_name] = section
             self.section                = section
@@ -446,7 +447,7 @@ class  ContentProcessor:
         # listed there
         for chap in self.chapters:
             for sec in chap.order:
-                if self.sections.has_key( sec ):
+                if sec in self.sections:
                     section = self.sections[sec]
                     section.chapter = chap
                     section.reorder()

@@ -26,7 +26,7 @@ try:
                      pix_format=default_pix_format,
                      interpolation="nearest",
                      bottom_up=True):
-            assert isinstance(size, types.TupleType), repr(size)
+            assert isinstance(size, tuple), repr(size)
             width,height = size
             pixel_map = PixelMap(
                 width,
@@ -40,7 +40,7 @@ try:
                                           bottom_up)
             self.pixel_map = pixel_map
 
-except ImportError, ex:
+except ImportError as ex:
     # warn to stderr containing the exception. The warning should
     # be an ImportWarning, but that is python 2.5+ specific
     import warnings

@@ -10,7 +10,8 @@
 from __future__ import absolute_import
 import cairo
 import copy
-from itertools import izip
+import six.moves as sm
+
 import numpy
 import warnings
 
@@ -588,7 +589,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             N.B. Cairo cannot make disjointed lines as a single subpath,
             thus each line forms it's own subpath
         """
-        for start, end in izip(starts, ends):
+        for start, end in sm.zip(starts, ends):
             self._ctx.move_to(*start)
             self._ctx.line_to(*end)
 
@@ -1039,7 +1040,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
                         TEXT_INVISIBLE, TEXT_FILL_CLIP, TEXT_STROKE_CLIP,
                         TEXT_FILL_STROKE_CLIP, TEXT_CLIP, TEXT_OUTLINE):
             msg = "Invalid text drawing mode.  See documentation for valid modes"
-            raise ValueError, msg
+            raise ValueError(msg)
         self.state.text_drawing_mode = mode
 
     def set_text_position(self,x,y):
@@ -1293,7 +1294,7 @@ if __name__=="__main__":
     from chaco.api import ArrayPlotData, Plot, PlotGraphicsContext
     from chaco.example_support import COLOR_PALETTE
 
-    from itertools import cycle, izip
+    from itertools import cycle
 
     DPI = 72.0
     dpi_scale = DPI / 72.0
@@ -1305,7 +1306,7 @@ if __name__=="__main__":
         x = linspace(low, high, numpoints)
         pd = ArrayPlotData(index=x)
         p = Plot(pd, bgcolor="lightgray", padding=50, border_visible=True)
-        for t,i in izip(cycle(['line','scatter']),range(10)):
+        for t,i in sm.zip(cycle(['line','scatter']),sm.range(10)):
             pd.set_data("y" + str(i), jn(i,x))
             p.plot(("index", "y" + str(i)), color=tuple(COLOR_PALETTE[i]),
                    width = 2.0 * dpi_scale, type=t)

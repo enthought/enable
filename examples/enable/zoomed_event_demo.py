@@ -1,6 +1,8 @@
 """
 Use mouse wheel to zoom and right-click to pan the viewport.
 """
+from __future__ import print_function
+
 from traits.api import Float
 
 from enable.api import (AbstractOverlay, Canvas, Viewport, Window, ColorTrait,
@@ -18,7 +20,7 @@ class DropCanvas(Canvas):
 
     def normal_dropped_on(self, event):
         self.window.set_drag_result("link")
-        print event.obj
+        print(event.obj)
 
         box = Box(x=event.x-2, y=event.y-2, width=4, height=4)
         self.add(box)

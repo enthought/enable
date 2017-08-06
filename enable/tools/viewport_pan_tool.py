@@ -4,7 +4,7 @@
 from enable.enable_traits import Pointer
 from traits.api import Bool, Enum, Float, Tuple
 
-from drag_tool import DragTool
+from .drag_tool import DragTool
 
 class ViewportPanTool(DragTool):
     """ A tool that enables the user to pan around a viewport by clicking a

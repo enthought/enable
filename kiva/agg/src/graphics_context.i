@@ -207,6 +207,7 @@ namespace kiva {
 
     %pythoncode
     %{
+        import six
         # used in GraphicsContextArray constructors
         from numpy import array, zeros, uint8, fromstring, shape, ndarray, resize, dtype
         import numpy
@@ -829,7 +830,7 @@ namespace kiva {
                 if fmt.endswith("32"):
                     pilformat = "RGBA"
                     pixelformat = "rgba32"
-                    if (isinstance(filename, basestring) and filename[-3:].lower() in FmtsWithoutAlpha) or \
+                    if (isinstance(filename, six.string_types) and filename[-3:].lower() in FmtsWithoutAlpha) or \
                        (file_format is not None and file_format.lower() in FmtsWithoutAlpha):
                         pilformat = "RGB"
                         pixelformat = "rgb24"

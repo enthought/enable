@@ -3,6 +3,7 @@
 import copy
 import unittest
 
+
 # Enthought library imports
 from traits.api import Any, Tuple
 
@@ -19,7 +20,7 @@ class EnableUnitTest(unittest.TestCase):
         certain value.  e.g.   assert_dims(component, x=5.0, y=7.0).
         """
         for dim, val in dims.items():
-            self.assert_( getattr(obj, dim) == val )
+            self.assertTrue( getattr(obj, dim) == val )
         return
 
 class TestComponent(Component):
@@ -95,10 +96,10 @@ class EventTransformTestCase(EnableUnitTest):
         event = BasicEvent(x=105, y=105)
         outer_container.dispatch(event, "left_down")
 
-        self.assert_(comp.last_event.x == 55)
-        self.assert_(comp.last_event.y == 55)
-        self.assert_(inner_container.last_event.x == 105)
-        self.assert_(inner_container.last_event.y == 105)
+        self.assertTrue(comp.last_event.x == 55)
+        self.assertTrue(comp.last_event.y == 55)
+        self.assertTrue(inner_container.last_event.x == 105)
+        self.assertTrue(inner_container.last_event.y == 105)
         return
 
     def test_viewport_container(self):
@@ -115,10 +116,10 @@ class EventTransformTestCase(EnableUnitTest):
         event = BasicEvent(x=105, y=105)
         viewport.dispatch(event, "left_down")
 
-        self.assert_(container.last_event.x == 75)
-        self.assert_(container.last_event.y == 75)
-        self.assert_(comp.last_event.x == 25)
-        self.assert_(comp.last_event.y == 25)
+        self.assertTrue(container.last_event.x == 75)
+        self.assertTrue(container.last_event.y == 75)
+        self.assertTrue(comp.last_event.x == 25)
+        self.assertTrue(comp.last_event.y == 25)
 
         # Translate the viewport's view_position
         container.last_event = None
@@ -127,10 +128,10 @@ class EventTransformTestCase(EnableUnitTest):
         event = BasicEvent(x=115, y=115)
         viewport.dispatch(event, "left_down")
 
-        self.assert_(container.last_event.x == 75)
-        self.assert_(container.last_event.y == 75)
-        self.assert_(comp.last_event.x == 25)
-        self.assert_(comp.last_event.y == 25)
+        self.assertTrue(container.last_event.x == 75)
+        self.assertTrue(container.last_event.y == 75)
+        self.assertTrue(comp.last_event.x == 25)
+        self.assertTrue(comp.last_event.y == 25)
 
         # Do a zoom
         container.last_event = None
@@ -143,10 +144,10 @@ class EventTransformTestCase(EnableUnitTest):
         event = BasicEvent(x=280, y=280)
         viewport.dispatch(event, "left_down")
 
-        self.assert_(container.last_event.x == 75)
-        self.assert_(container.last_event.y == 75)
-        self.assert_(comp.last_event.x == 25)
-        self.assert_(comp.last_event.y == 25)
+        self.assertTrue(container.last_event.x == 75)
+        self.assertTrue(container.last_event.y == 75)
+        self.assertTrue(comp.last_event.x == 25)
+        self.assertTrue(comp.last_event.y == 25)
         return
 
     def test_mouse_capture(self):
@@ -176,15 +177,15 @@ class EventTransformTestCase(EnableUnitTest):
         event = BasicEvent(x=105, y=105, window=window)
         window._handle_mouse_event("left_down", event)
 
-        self.assert_(window.mouse_owner == comp)
+        self.assertTrue(window.mouse_owner == comp)
 
         # Create the second event
         event = BasicEvent(x=107, y=107, window=window)
         old_pos = comp.captured_event_pos
         window._handle_mouse_event("left_down", event)
         new_pos = comp.captured_event_pos
-        self.assert_(new_pos[0] == old_pos[0] + 2)
-        self.assert_(new_pos[1] == old_pos[1] + 2)
+        self.assertTrue(new_pos[0] == old_pos[0] + 2)
+        self.assertTrue(new_pos[1] == old_pos[1] + 2)
 
         return
 

@@ -11,7 +11,7 @@ class EnableUnitTest(unittest.TestCase):
         certain value.  e.g.   assert_dims(component, x=5.0, y=7.0).
         """
         for dim, val in dims.items():
-            self.assert_( getattr(obj, dim) == val )
+            self.assertTrue( getattr(obj, dim) == val )
         return
 
 
@@ -33,20 +33,20 @@ class ContainerTestCase(EnableUnitTest):
 
     def test_add_remove(self):
         container = self.create_simple_components()
-        self.assert_(len(container.components) == 3)
+        self.assertTrue(len(container.components) == 3)
         components = container.components
         container.remove(components[0])
         container.remove(components[0])
         container.remove(components[0])
-        self.assert_(len(container.components) == 0)
+        self.assertTrue(len(container.components) == 0)
         return
 
     def test_position(self):
         container = self.create_simple_components()
         components = container.components
-        self.assert_(components[0].position == [20,10])
-        self.assert_(components[1].position == [40,10])
-        self.assert_(components[2].position == [60,10])
+        self.assertTrue(components[0].position == [20,10])
+        self.assertTrue(components[1].position == [40,10])
+        self.assertTrue(components[2].position == [60,10])
         return
 
     def test_position_bounds(self):
@@ -56,7 +56,7 @@ class ContainerTestCase(EnableUnitTest):
 
     def test_auto_size(self):
         container = Container(bounds=[100.0, 100.0])
-        self.assert_(container.auto_size == False)
+        self.assertTrue(container.auto_size == False)
 
         # Add some components
         c1 = Component(position=[10.0, 10.0], bounds=[50.0, 60.0])

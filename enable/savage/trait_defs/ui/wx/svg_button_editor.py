@@ -32,7 +32,7 @@ from traitsui.wx.constants import WindowColor
 from traitsui.wx.editor import Editor
 
 # Local imports
-from wx_render_panel import RenderPanel
+from .wx_render_panel import RenderPanel
 
 
 class ButtonRenderPanel(RenderPanel):

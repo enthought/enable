@@ -56,7 +56,8 @@ import warnings
 import tempfile
 import errno
 
-from six.moves import cPickle as pickle
+import six
+import six.moves as sm
 
 from fontTools.ttLib import TTFont, TTLibError
 from traits.etsconfig.api import ETSConfig
@@ -181,7 +182,7 @@ def _is_writable_dir(p):
     p is a string pointing to a putative writable dir -- return True p
     is such a string, else False
     """
-    if not isinstance(p, basestring):
+    if not isinstance(p, six.string_types):
         return False
 
     try:
@@ -203,7 +204,7 @@ def get_configdir():
     p = os.path.join(ETSConfig.application_data, 'kiva')
     try:
         os.makedirs(p)
-    except OSError, e:
+    except OSError as e:
         if e.errno != errno.EEXIST:
             raise
     if not _is_writable_dir(p):
@@ -215,7 +216,7 @@ def is_string_like(obj):
     'Return True if *obj* looks like a string'
     from numpy import ma
 
-    if isinstance(obj, basestring):
+    if isinstance(obj, six.string_types):
         return True
     # numpy strings are subclass of str, ma strings are not
     if ma.isMaskedArray(obj):
@@ -311,7 +312,7 @@ def win32InstalledFonts(directory=None, fontext='ttf'):
                 files.extend(glob.glob(os.path.join(directory, '*.'+ext)))
             return files
         try:
-            for j in range(winreg.QueryInfoKey(local)[1]):
+            for j in sm.range(winreg.QueryInfoKey(local)[1]):
                 try:
                     key, direc, any = winreg.EnumValue(local, j)
                     if not os.path.dirname(direc):
@@ -324,7 +325,7 @@ def win32InstalledFonts(directory=None, fontext='ttf'):
                 except WindowsError:
                     continue
 
-            return items.keys()
+            return list(items.keys())
         finally:
             winreg.CloseKey(local)
     return None
@@ -453,7 +454,7 @@ def findSystemFonts(fontpaths=None, fontext='ttf'):
             for f in get_fontconfig_fonts(fontext):
                 fontfiles[f] = 1
 
-    elif isinstance(fontpaths, (str, unicode)):
+    elif isinstance(fontpaths, six.string_types):
         fontpaths = [fontpaths]
 
     for path in fontpaths:
@@ -523,7 +524,7 @@ def ttfFontProperty(fpath, font):
     *font* is a :class:`FT2Font` instance.
     """
     props = getPropDict(font)
-    name = props[(1, 0, 0, 1)]
+    name = props[(1, 0, 0, 1)].decode()
 
     #  Styles are: italic, oblique, and normal (default)
 
@@ -536,11 +537,11 @@ def ttfFontProperty(fpath, font):
     except:
         sfnt4 = None
     if sfnt2:
-        sfnt2 = sfnt2.lower()
+        sfnt2 = sfnt2.lower().decode()
     else:
         sfnt2 = ''
     if sfnt4:
-        sfnt4 = sfnt4.lower()
+        sfnt4 = sfnt4.lower().decode()
     else:
         sfnt4 = ''
     if sfnt4.find('oblique') >= 0:
@@ -673,7 +674,7 @@ def createFontList(fontfiles, fontext='ttf'):
     a list of TrueType fonts.  An AFM font list can optionally be
     created.
     """
-
+    # FIXME: This function is particularly difficult to debug
     fontlist = []
     #  Add fonts from list of known font files.
     seen = {}
@@ -834,7 +835,7 @@ class FontProperties(object):
         """
         filename = str(fontManager.findfont(self))
         if filename.endswith('.afm'):
-            return afm.AFM(file(filename)).get_familyname()
+            return afm.AFM(open(filename)).get_familyname()
 
         font = fontManager.findfont(self)
         return getPropDict(TTFont(str(font)))[(1, 0, 0, 1)]
@@ -1010,7 +1011,7 @@ def pickle_dump(data, filename):
     """
     fh = open(filename, 'wb')
     try:
-        pickle.dump(data, fh)
+        sm.cPickle.dump(data, fh)
     finally:
         fh.close()
 
@@ -1022,7 +1023,7 @@ def pickle_load(filename):
     """
     fh = open(filename, 'rb')
     try:
-        data = pickle.load(fh)
+        data = sm.cPickle.load(fh)
     finally:
         fh.close()
     return data

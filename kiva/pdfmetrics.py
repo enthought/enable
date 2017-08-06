@@ -14,6 +14,7 @@
 #copyright ReportLab Inc. 2001
 #see license.txt for license details
 #history http://cvs.sourceforge.net/cgi-bin/cvsweb.cgi/reportlab/pdfbase/pdfmetrics.py?cvsroot=reportlab
+from __future__ import print_function
 
 # MODIFIED from reportlab's version for the sake of easier integration in Kiva -- David Ascher
 
@@ -36,10 +37,15 @@ would be pre-loaded, but due to a nasty circularity problem we
 trap attempts to access them and do it on first access.
 """
 import string, os
+import warnings
+
+import six
+import six.moves as sm
 
 # XXX Kiva specific changes
 defaultEncoding = 'WinAnsiEncoding'       # 'WinAnsi' or 'MacRoman'
-import _fontdata
+
+from . import _fontdata
 
 standardFonts = _fontdata.standardFonts
 standardEncodings = _fontdata.standardEncodings
@@ -65,41 +71,42 @@ def parseAFMFile(afmFileName):
     needed for embedding.  A better parser would accept
     options for what data you wwanted, and preserve the
     order."""
-
-    lines = open(afmFileName, 'r').readlines()
-    if len(lines)<=1:
+    with open(afmFileName, 'r') as f:
+        lines = f.readlines()
+    if len(lines) < 1:
+        raise ValueError('AFM file %s is empty' % afmFileName)
+    if len(lines) == 1:
         #likely to be a MAC file
-        lines = string.split(lines,'\r')
-        if len(lines)<=1:
-            raise ValueError, 'AFM file %s hasn\'t enough data' % afmFileName
+        lines = lines[0].split('\r')
+        if len(lines) <= 1:
+            raise ValueError('AFM file %s hasn\'t enough data' % afmFileName)
     topLevel = {}
     glyphLevel = []
 
-    lines = map(string.strip, lines)
     #pass 1 - get the widths
     inMetrics = 0  # os 'TOP', or 'CHARMETRICS'
     for line in lines:
+        line = line.strip()
         if line[0:16] == 'StartCharMetrics':
             inMetrics = 1
         elif line[0:14] == 'EndCharMetrics':
             inMetrics = 0
         elif inMetrics:
-            chunks = string.split(line, ';')
-            chunks = map(string.strip, chunks)
+            chunks = [x.strip() for x in line.split(';')]
             cidChunk, widthChunk, nameChunk = chunks[0:3]
 
             # character ID
-            l, r = string.split(cidChunk)
+            l, r = cidChunk.split()
             assert l == 'C', 'bad line in font file %s' % line
-            cid = string.atoi(r)
+            cid = int(r)
 
             # width
-            l, r = string.split(widthChunk)
+            l, r = widthChunk.split()
             assert l == 'WX', 'bad line in font file %s' % line
-            width = string.atoi(r)
+            width = int(r)
 
             # name
-            l, r = string.split(nameChunk)
+            l, r = nameChunk.split()
             assert l == 'N', 'bad line in font file %s' % line
             name = r
 
@@ -115,11 +122,11 @@ def parseAFMFile(afmFileName):
         elif inHeader:
             if line[0:7] == 'Comment': pass
             try:
-                left, right = string.split(line,' ',1)
+                left, right = line.split(' ',1)
             except:
-                raise ValueError, "Header information error in afm %s: line='%s'" % (afmFileName, line)
+                raise ValueError("Header information error in afm %s: line='%s'" % (afmFileName, line))
             try:
-                right = string.atoi(right)
+                right = int(right)
             except:
                 pass
             topLevel[left] = right
@@ -152,11 +159,11 @@ class TypeFace:
 
         We presume they never change so this can be a shared reference."""
         self.glyphWidths = _fontdata.widthsByFontGlyph[name]
-        self.glyphNames = self.glyphWidths.keys()
+        self.glyphNames = list(self.glyphWidths.keys())
         self.ascent,self.descent = _fontdata.ascent_descent[name]
 
     def findT1File(self, ext='.pfb'):
-        possible_exts = (string.lower(ext), string.upper(ext))
+        possible_exts = (ext.lower(), ext.upper())
         if hasattr(self,'pfbFileName'):
             r_basename = os.path.splitext(self.pfbFileName)[0]
             for e in possible_exts:
@@ -167,19 +174,19 @@ class TypeFace:
         except:
             afm = bruteForceSearchForAFM(self.name)
             if afm:
-                if string.lower(ext) == '.pfb':
+                if ext.lower() == '.pfb':
                     for e in possible_exts:
                         pfb = os.path.splitext(afm)[0] + e
                         if os.path.isfile(pfb):
                             r = pfb
                         else:
                             r = None
-                elif string.lower(ext) == '.afm':
+                elif ext.lower() == '.afm':
                     r = afm
             else:
                 r = None
         if r is None:
-            warnOnce("Can't find %s for face '%s'" % (ext, self.name))
+            warnings.warn("Can't find %s for face '%s'" % (ext, self.name))
         return r
 
 def bruteForceSearchForAFM(faceName):
@@ -219,7 +226,7 @@ class Encoding:
             # assume based on the usual one
             self.baseEncodingName = defaultEncoding
             self.vector = _fontdata.encodings[defaultEncoding]
-        elif isinstance(base, basestring):
+        elif isinstance(base, six.string_types):
             baseEnc = getEncoding(base)
             self.baseEncodingName = baseEnc.name
             self.vector = baseEnc.vector[:]
@@ -249,7 +256,7 @@ class Encoding:
         self.frozen = 1
 
     def isEqual(self, other):
-        return ((enc.name == other.name) and (enc.vector == other.vector))
+        return ((self.name == other.name) and (self.vector == other.vector))
 
     def modifyRange(self, base, newNames):
         """Sets a group of character names starting at the code point 'base'."""
@@ -272,7 +279,7 @@ class Encoding:
 
         ranges = []
         curRange = None
-        for i in xrange(len(self.vector)):
+        for i in sm.range(len(self.vector)):
             glyph = self.vector[i]
             if glyph==otherEnc.vector[i]:
                 if curRange:
@@ -326,7 +333,7 @@ class Font:
                     w[i] = width
                 except KeyError:
                     # XXX Kiva specific change
-                    print 'typeface "%s" does not have a glyph "%s", bad font!' % (self.face.name, glyphName)
+                    print('typeface "%s" does not have a glyph "%s", bad font!' % (self.face.name, glyphName))
         self.widths = w
 
     if not _stringWidth:
@@ -365,13 +372,13 @@ def _pfbSegLen(p,d):
 
 def _pfbCheck(p,d,m,fn):
     if d[p]!=PFB_MARKER or d[p+1]!=m:
-        raise ValueError, 'Bad pfb file\'%s\' expected chr(%d)chr(%d) at char %d, got chr(%d)chr(%d)' % (fn,ord(PFB_MARKER),ord(m),p,ord(d[p]),ord(d[p+1]))
+        raise ValueError('Bad pfb file\'%s\' expected chr(%d)chr(%d) at char %d, got chr(%d)chr(%d)' % (fn,ord(PFB_MARKER),ord(m),p,ord(d[p]),ord(d[p+1])))
     if m==PFB_EOF: return
     p = p + 2
     l = _pfbSegLen(p,d)
     p = p + 4
     if p+l>len(d):
-        raise ValueError, 'Bad pfb file\'%s\' needed %d+%d bytes have only %d!' % (fn,p,l,len(d))
+        raise ValueError('Bad pfb file\'%s\' needed %d+%d bytes have only %d!' % (fn,p,l,len(d)))
     return p, p+l
 
 
@@ -418,18 +425,17 @@ class EmbeddedType1Face(TypeFace):
         self.stemV = topLevel.get('stemV', 0)
         self.xHeight = topLevel.get('XHeight', 1000)
 
-        strBbox = topLevel.get('FontBBox', [0,0,1000,1000])
-        tokens = string.split(strBbox)
-        self.bbox = []
-        for tok in tokens:
-            self.bbox.append(string.atoi(tok))
+        try:
+            strBbox = topLevel['FontBBox']
+            self.bbox = [int(tok) for tok in strBbox.split()]
+        except KeyError:
+            self.bbox = [0,0,1000,1000]
 
         glyphWidths = {}
         for (cid, width, name) in glyphData:
             glyphWidths[name] = width
         self.glyphWidths = glyphWidths
-        self.glyphNames = glyphWidths.keys()
-        self.glyphNames.sort()
+        self.glyphNames = sorted(glyphWidths.keys())
 
         # for font-specific encodings like Symbol, Dingbats, Carta we
         # need to make a new encoding as well....
@@ -454,7 +460,7 @@ def registerTypeFace(face):
 
 def registerEncoding(enc):
     assert isinstance(enc, Encoding), 'Not an Encoding: %s' % enc
-    if _encodings.has_key(enc.name):
+    if enc.name in _encodings:
         # already got one, complain if they are not the same
         if enc.isEqual(_encodings[enc.name]):
             enc.freeze()
@@ -467,12 +473,13 @@ def registerEncoding(enc):
 
 def registerFont(font):
     "Registers a font, including setting up info for accelerated stringWidth"
+    # FIXME: This doesn't work
     #assert isinstance(font, Font), 'Not a Font: %s' % font
     fontName = font.fontName
     _fonts[fontName] = font
     if not font._multiByte:
         if _stringWidth:
-            _rl_accel.setFontInfo(string.lower(fontName),
+            _rl_accel.setFontInfo(fontName.lower(),
                                   _dummyEncoding,
                                   font.face.ascent,
                                   font.face.descent,
@@ -555,27 +562,24 @@ def _slowStringWidth(text, fontName, fontSize):
 stringWidth = _slowStringWidth
 
 def dumpFontData():
-    print 'Registered Encodings:'
-    keys = _encodings.keys()
-    keys.sort()
+    print('Registered Encodings:')
+    keys = sorted(_encodings.keys())
     for encName in keys:
-        print '   ',encName
+        print('   ',encName)
 
-    print
-    print 'Registered Typefaces:'
-    faces = _typefaces.keys()
-    faces.sort()
+    print()
+    print('Registered Typefaces:')
+    faces = sorted(_typefaces.keys())
     for faceName in faces:
-        print '   ',faceName
+        print('   ', faceName)
 
 
-    print
-    print 'Registered Fonts:'
-    k = _fonts.keys()
-    k.sort()
+    print()
+    print('Registered Fonts:')
+    k = sorted(_fonts.keys())
     for key in k:
         font = _fonts[key]
-        print '    %s (%s/%s)' % (font.fontName, font.face.name, font.encoding.name)
+        print('    %s (%s/%s)' % (font.fontName, font.face.name, font.encoding.name))
 
 
 
@@ -587,7 +591,7 @@ def test3widths(texts):
         for text in texts:
             l1 = _stringWidth(text, fontName, 10)
         t1 = time.time()
-        print 'fast stringWidth took %0.4f' % (t1 - t0)
+        print('fast stringWidth took %0.4f' % (t1 - t0))
 
         t0 = time.time()
         w = getFont(fontName).widths
@@ -596,33 +600,33 @@ def test3widths(texts):
             for ch in text:
                 l2 = l2 + w[ord(ch)]
         t1 = time.time()
-        print 'slow stringWidth took %0.4f' % (t1 - t0)
+        print('slow stringWidth took %0.4f' % (t1 - t0))
 
         t0 = time.time()
         for text in texts:
             l3 = getFont(fontName).stringWidth(text, 10)
         t1 = time.time()
-        print 'class lookup and stringWidth took %0.4f' % (t1 - t0)
-        print
+        print('class lookup and stringWidth took %0.4f' % (t1 - t0))
+        print()
 
 def testStringWidthAlgorithms():
     rawdata = open('../../rlextra/rml2pdf/doc/rml_user_guide.prep').read()
-    print 'rawdata length %d' % len(rawdata)
-    print 'test one huge string...'
+    print('rawdata length %d' % len(rawdata))
+    print('test one huge string...')
     test3widths([rawdata])
-    print
-    words = string.split(rawdata)
-    print 'test %d shorter strings (average length %0.2f chars)...' % (len(words), 1.0*len(rawdata)/len(words))
+    print()
+    words = rawdata.split()
+    print('test %d shorter strings (average length %0.2f chars)...' % (len(words), 1.0*len(rawdata)/len(words)))
     test3widths(words)
 
 
 def test():
     helv = TypeFace('Helvetica')
     registerTypeFace(helv)
-    print helv.glyphNames[0:30]
+    print(helv.glyphNames[0:30])
 
     wombat = TypeFace('Wombat')
-    print wombat.glyphNames
+    print(wombat.glyphNames)
     registerTypeFace(wombat)
 
     dumpFontData()

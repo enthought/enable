@@ -118,11 +118,11 @@ class TraitKivaFont ( TraitHandler ):
             facename   = []
             for word in value.split():
                 lword = word.lower()
-                if font_families.has_key( lword ):
+                if lword in font_families:
                     family = font_families[ lword ]
-                elif font_styles.has_key( lword ):
+                elif lword in font_styles:
                     style = font_styles[ lword ]
-                elif font_weights.has_key( lword ):
+                elif lword in font_weights:
                     weight = font_weights[ lword ]
                 elif lword == 'underline':
                     underline = 1
@@ -147,7 +147,7 @@ class TraitKivaFont ( TraitHandler ):
         except:
             pass
 
-        raise TraitError, ( object, name, 'a font descriptor string',
+        raise TraitError( object, name, 'a font descriptor string',
                             repr( value ) )
 
     def info ( self ):

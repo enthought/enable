@@ -1,7 +1,7 @@
 import unittest
 import enable.savage.svg.attributes as a
 
-from css.test_color import TestValueParser
+from .css.test_color import TestValueParser
 
 
 class TestURLParser(unittest.TestCase):

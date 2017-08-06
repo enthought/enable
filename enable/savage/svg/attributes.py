@@ -6,7 +6,7 @@ from pyparsing import (Literal,
     Optional, oneOf, Group, StringEnd, Combine, Word, alphas, hexnums,
     CaselessLiteral, SkipTo
 )
-from css.colour import colourValue
+from .css.colour import colourValue
 import string
 
 ##Paint values

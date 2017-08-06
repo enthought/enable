@@ -19,6 +19,8 @@
 #  Imports:
 #-------------------------------------------------------------------------------
 
+import six
+
 from enable.savage.trait_defs.ui.toolkit import toolkit_object
 
 from traits.api import Bool, Enum, Int, Property, Range, Str, Any
@@ -99,7 +101,7 @@ class SVGButtonEditor(BasicEditorFactory):
 
     def _set_value ( self, value ):
         self._value = value
-        if isinstance(value, basestring):
+        if isinstance(value, six.string_types):
             try:
                 self._value = int( value )
             except:

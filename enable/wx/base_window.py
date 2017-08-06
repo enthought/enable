@@ -7,6 +7,9 @@ from __future__ import absolute_import
 
 import sys
 import time
+
+import six
+
 import wx
 
 from traits.api import Any, Instance, Trait
@@ -315,7 +318,7 @@ class BaseWindow(AbstractWindow):
 
         if focus_owner is not None:
             if event_type == 'character':
-                key = unichr(event.GetUniChar())
+                key = six.unichr(event.GetUniChar())
                 if not key:
                     return None
             else:
@@ -323,7 +326,7 @@ class BaseWindow(AbstractWindow):
                 if key_code in KEY_MAP:
                     key = KEY_MAP.get(key_code)
                 else:
-                    key = unichr(event.GetUniChar()).lower()
+                    key = six.unichr(event.GetUniChar()).lower()
 
             # Use the last-seen mouse coordinates instead of GetX/GetY due
             # to wx bug.
@@ -473,7 +476,7 @@ class BaseWindow(AbstractWindow):
 
     def set_drag_result(self, result):
         if result not in DRAG_RESULTS_MAP:
-            raise RuntimeError, "Unknown drag result '%s'" % result
+            raise RuntimeError("Unknown drag result '%s'" % result)
         self._drag_result = DRAG_RESULTS_MAP[result]
         return
 

@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import numpy
 
 from kiva.api import points_in_polygon

@@ -80,7 +80,7 @@ class Demo(HasTraits):
 
         try:
             new_cns = eval(self.constraints_def)
-        except Exception, ex:
+        except Exception as ex:
             return
 
         canvas.layout_constraints = new_cns
@@ -99,7 +99,7 @@ class Demo(HasTraits):
 
         try:
             new_cns = eval(self.child_constraints_def)
-        except Exception, ex:
+        except Exception as ex:
             return
 
         canvas.layout_constraints = new_cns

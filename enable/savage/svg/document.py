@@ -1,12 +1,17 @@
 """
     SVGDocument
 """
+from __future__ import print_function
+
 from io import BytesIO
 import warnings
 import math
 from functools import wraps
 import os
-import urllib
+
+import six
+import six.moves as sm
+
 import six.moves.urllib.parse as urlparse
 from xml.etree import cElementTree as ET
 try:
@@ -18,11 +23,11 @@ except ImportError:
 
 import numpy
 
-import css
-from css.colour import colourValue
-from css import values
-from attributes import paintValue
-from svg_regex import svg_parser
+from . import css
+from .css.colour import colourValue
+from .css import values
+from .attributes import paintValue
+from .svg_regex import svg_parser
 
 from enable.savage.svg.backends.null.null_renderer import NullRenderer, AbstractGradientBrush
 
@@ -112,7 +117,7 @@ def valueToPixels(val, defaultUnits="px"):
         val, unit = values.length.parseString(val)
     except ParseException:
         import pdb;pdb.set_trace()
-        print 'valueToPixels(%r, %r)' % (val, defaultUnits)
+        print('valueToPixels(%r, %r)' % (val, defaultUnits))
         raise
     val *= units_to_px.get(unit, 1)
     return val
@@ -183,7 +188,7 @@ class ResourceGetter(object):
             # Plain URI. Pass it back.
             # Read the data and stuff it in a StringIO in order to satisfy
             # functions that need a functioning seek() and stuff.
-            return path, lambda uri: BytesIO(urllib.urlopen(uri).read())
+            return path, lambda uri: BytesIO(sm.urllib.request.urlopen(uri).read())
         path = os.path.abspath(os.path.join(self.dirname, path_part))
         return path, lambda fn: open(fn, 'rb')
 
@@ -502,7 +507,7 @@ class SVGDocument(object):
             resources = self.resources
         try:
             element = self.dereference(href, resources)
-        except (OSError, IOError), e:
+        except (OSError, IOError) as e:
             # SVG file cannot be found.
             warnings.warn("Could not find SVG file %s. %s: %s" % (href, e.__class__.__name__, e))
             return None, []
@@ -556,7 +561,7 @@ class SVGDocument(object):
             return self.addUseToDocument(node)
         try:
             image = resources.open_image(uri)
-        except (OSError, IOError), e:
+        except (OSError, IOError) as e:
             # Image cannot be found.
             warnings.warn("Could not find image file %s. %s: %s" % (uri[:100], e.__class__.__name__, str(e)[:100]))
             return None, []
@@ -652,7 +657,7 @@ class SVGDocument(object):
 
         ops = []
 
-        if 'clip-path' in node.keys():
+        if 'clip-path' in node:
             element = self.dereference(node.get('clip-path'))
 
             ops = [
@@ -756,18 +761,18 @@ class SVGDocument(object):
                 else:
                     arguments = iter(arguments)
                     if command ==  'm':
-                        yield (command, arguments.next())
+                        yield (command, six.next(arguments))
                         command = "l"
                     elif command == "M":
-                        yield (command, arguments.next())
+                        yield (command, six.next(arguments))
                         command = "L"
                     for arg in arguments:
                         yield (command, arg)
         try:
             parsed = svg_parser.parse(data)
-        except SyntaxError, e:
-            print 'SyntaxError: %s' % e
-            print 'data = %r' % data
+        except SyntaxError as e:
+            print('SyntaxError: %s' % e)
+            print('data = %r' % data)
         else:
             for stroke in normalizeStrokes(parsed):
                 self.addStrokeToPath(path, stroke)
@@ -821,8 +826,8 @@ class SVGDocument(object):
             pen.SetWidth(width)
         stroke_dasharray = self.state.get('stroke-dasharray', 'none')
         if stroke_dasharray != 'none':
-            stroke_dasharray = map(valueToPixels,
-                stroke_dasharray.replace(',', ' ').split())
+            stroke_dasharray = list(sm.map(valueToPixels,
+                stroke_dasharray.replace(',', ' ').split()))
             if len(stroke_dasharray) % 2:
                 # Repeat to get an even array.
                 stroke_dasharray = stroke_dasharray * 2
@@ -1003,7 +1008,7 @@ class SVGDocument(object):
             path.AddLineToPoint(*pt)
         elif type == 'C':
             #control1, control2, endpoint = arg
-            control1, control2, endpoint = map(
+            control1, control2, endpoint = sm.map(
                 normalizePoint, arg
             )
             self.lastControl = control2
@@ -1021,7 +1026,7 @@ class SVGDocument(object):
 
         elif type == 'S':
             #control2, endpoint = arg
-            control2, endpoint = map(
+            control2, endpoint = sm.map(
                 normalizePoint, arg
             )
             if self.lastControl:
@@ -1036,7 +1041,7 @@ class SVGDocument(object):
                 endpoint
             )
         elif type == "Q":
-            (cx, cy), (x,y) = map(normalizePoint, arg)
+            (cx, cy), (x,y) = sm.map(normalizePoint, arg)
             self.lastControlQ = (cx, cy)
             path.AddQuadCurveToPoint(cx, cy, x, y)
         elif type == "T":

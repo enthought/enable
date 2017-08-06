@@ -15,6 +15,7 @@ drag operation has a direct effect on some underlying value.  This can
 potentially be used as the basis for many different interactions,
 
 """
+import six
 
 
 from traits.api import Str, Float, Set, Enum, Bool, Tuple, Dict, Event, Any, Either
@@ -208,13 +209,13 @@ class AttributeDragTool(ValueDragTool):
         if self.x_attr:
             x_value =  value[0] + delta_x
             if self.x_bounds[0] is not None:
-                if isinstance(self.x_bounds[0], basestring):
+                if isinstance(self.x_bounds[0], six.string_types):
                     m = getattr(self.model, self.x_bounds[0])
                 else:
                     m = self.x_bounds[0]
                 x_value = max(x_value, m)
             if self.x_bounds[1] is not None:
-                if isinstance(self.x_bounds[1], basestring):
+                if isinstance(self.x_bounds[1], six.string_types):
                     M = getattr(self.model, self.x_bounds[1])
                 else:
                     M = self.x_bounds[1]
@@ -224,13 +225,13 @@ class AttributeDragTool(ValueDragTool):
         if self.y_attr:
             y_value = value[1] + delta_y
             if self.y_bounds[0] is not None:
-                if isinstance(self.y_bounds[0], basestring):
+                if isinstance(self.y_bounds[0], six.string_types):
                     m = getattr(self.model, self.y_bounds[0])
                 else:
                     m = self.y_bounds[0]
                 y_value = max(y_value, m)
             if self.y_bounds[1] is not None:
-                if isinstance(self.y_bounds[1], basestring):
+                if isinstance(self.y_bounds[1], six.string_types):
                     M = getattr(self.model, self.y_bounds[1])
                 else:
                     M = self.y_bounds[1]

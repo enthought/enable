@@ -22,4 +22,4 @@
 #  Imports:
 #-------------------------------------------------------------------------------
 
-from svg_editor import SVGEditor
+from .svg_editor import SVGEditor

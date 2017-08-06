@@ -4,7 +4,7 @@ from numpy import array, alltrue, ravel, pi
 
 from kiva import agg
 
-from test_utils import Utils
+from .test_utils import Utils
 
 # UNCOMMENT THIS TO SEE THE IMPORT ISSUES FROM TICKET
 # https://svn.enthought.com/enthought/ticket/537 (agg causes python crash during unit tests)

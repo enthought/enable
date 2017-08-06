@@ -1,7 +1,7 @@
 # :Author:    Robert Kern
 # :Copyright: 2004, 2007, Enthought, Inc.
 # :License:   BSD Style
-
+from __future__ import print_function
 
 include "Python.pxi"
 include "CoreFoundation.pxi"
@@ -2619,28 +2619,28 @@ cdef class PiecewiseLinearColorFunction(ShadingFunction):
 
     def dump(self):
         cdef int i
-        print 'PiecewiseLinearColorFunction'
-        print '  num_stops = %i' % self.num_stops
-        print '  stops = ',
+        print('PiecewiseLinearColorFunction')
+        print('  num_stops = %i' % self.num_stops)
+        print('  stops = ', end=" ")
         for i from 0 <= i < self.num_stops:
-            print self.stops[i],
-        print
-        print '  red = ',
+            print(self.stops[i], end=" ")
+        print()
+        print('  red = ', end=" ")
         for i from 0 <= i < self.num_stops:
-            print self.red[i],
-        print
-        print '  green = ',
+            print(self.red[i], end=" ")
+        print()
+        print('  green = ', end=" ")
         for i from 0 <= i < self.num_stops:
-            print self.green[i],
-        print
-        print '  blue = ',
+            print(self.green[i], end=" ")
+        print()
+        print('  blue = ', end=" ")
         for i from 0 <= i < self.num_stops:
-            print self.blue[i],
-        print
-        print '  alpha = ',
+            print(self.blue[i], end=" ")
+        print()
+        print('  alpha = ', end=" ")
         for i from 0 <= i < self.num_stops:
-            print self.alpha[i],
-        print
+            print(self.alpha[i], end=" ")
+        print()
 
     def __dealloc__(self):
         safe_free(self.stops)

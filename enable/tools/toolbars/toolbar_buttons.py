@@ -1,5 +1,5 @@
 
-from __future__ import with_statement
+from __future__ import with_statement, print_function
 
 # Enthought library imports
 from enable.api import ColorTrait, Component
@@ -147,5 +147,5 @@ class SampleButtonButton(Button):
     label = Str('Sample Button')
 
     def perform(self, event):
-        print "this button is a sample"
+        print("this button is a sample")
         return

@@ -1,9 +1,10 @@
 #  Formatter (c) 2002, 2004, 2007, 2008 David Turner <david@freetype.org>
 #
+import sys
 
-from sources import *
-from content import *
-from utils   import *
+from .sources import *
+from .content import *
+from .utils   import *
 
 # This is the base Formatter class.  Its purpose is to convert
 # a content processor's data into specific documents (i.e., table of
@@ -20,7 +21,7 @@ class  Formatter:
         self.processor   = processor
         self.identifiers = {}
         self.chapters    = processor.chapters
-        self.sections    = processor.sections.values()
+        self.sections    = list(processor.sections.values())
         self.block_index = []
 
         # store all blocks in a dictionary
@@ -34,16 +35,15 @@ class  Formatter:
                     if markup.tag == 'values':
                         for field in markup.fields:
                             self.add_identifier( field.name, block )
-
-        self.block_index = self.identifiers.keys()
-        self.block_index.sort( index_sort )
+        # FIXME: This is bogus code, the intent is loosely respected but it never worked in 2.7
+        self.block_index = sorted(self.identifiers.keys(), key=index_sort)
 
     def  add_identifier( self, name, block ):
-        if self.identifiers.has_key( name ):
+        if name in self.identifiers:
             # duplicate name!
-            sys.stderr.write(                                           \
-               "WARNING: duplicate definition for '" + name + "' in " + \
-               block.location() + ", previous definition in " +         \
+            sys.stderr.write(
+               "WARNING: duplicate definition for '" + name + "' in " +
+               block.location() + ", previous definition in " +
                self.identifiers[name].location() + "\n" )
         else:
             self.identifiers[name] = block

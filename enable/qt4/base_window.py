@@ -14,6 +14,7 @@
 # been on my list of things to do.
 #------------------------------------------------------------------------------
 
+import six
 
 # Qt imports.
 from pyface.qt import QtCore, QtGui, QtOpenGL
@@ -24,7 +25,7 @@ from enable.events import KeyEvent, MouseEvent, DragEvent
 from traits.api import Instance
 
 # Local imports.
-from constants import (
+from .constants import (
     BUTTON_NAME_MAP, KEY_MAP, MOUSE_WHEEL_AXIS_MAP, POINTER_MAP,
     DRAG_RESULTS_MAP
 )
@@ -359,14 +360,14 @@ class _Window(AbstractWindow):
                 return None
 
         if event_type == 'character':
-            key = unicode(event.text())
+            key = six.text_type(event.text())
         else:
             # Convert the keypress to a standard enable key if possible, otherwise
             # to text.
             key_code = event.key()
             key = KEY_MAP.get(key_code)
             if key is None:
-                key = unichr(key_code).lower()
+                key = six.unichr(key_code).lower()
 
         if not key:
             return None

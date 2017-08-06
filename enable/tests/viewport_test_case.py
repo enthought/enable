@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import unittest
 
 from enable.api import Component, Container, Viewport
@@ -16,16 +18,16 @@ class ViewportTestCase(unittest.TestCase):
                         bounds=[50,50])
 
         self.assertEqual(view.view_position, [10, 10])
-        print view.components_at(0.0, 0.0), view.view_position
-        self.assert_(view.components_at(0.0, 0.0)[0] == component)
-        self.assert_(view.components_at(44.9, 0.0)[0] == component)
-        self.assert_(view.components_at(0.0, 44.9)[0] == component)
-        self.assert_(view.components_at(44.9, 44.9)[0] == component)
+        print(view.components_at(0.0, 0.0), view.view_position)
+        self.assertTrue(view.components_at(0.0, 0.0)[0] == component)
+        self.assertTrue(view.components_at(44.9, 0.0)[0] == component)
+        self.assertTrue(view.components_at(0.0, 44.9)[0] == component)
+        self.assertTrue(view.components_at(44.9, 44.9)[0] == component)
 
-        self.assert_(view.components_at(46.0, 45.0) == [])
-        self.assert_(view.components_at(46.0, 0.0) == [])
-        self.assert_(view.components_at(45.0, 46.0) == [])
-        self.assert_(view.components_at(0.0, 46.0) == [])
+        self.assertTrue(view.components_at(46.0, 45.0) == [])
+        self.assertTrue(view.components_at(46.0, 0.0) == [])
+        self.assertTrue(view.components_at(45.0, 46.0) == [])
+        self.assertTrue(view.components_at(0.0, 46.0) == [])
 
     def test_initial_position(self):
         container = Container(bounds=[100.0, 100.0])

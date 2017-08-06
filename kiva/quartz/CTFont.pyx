@@ -1,7 +1,7 @@
 # :Author:    John Wiggins
 # :Copyright: 2011, Enthought, Inc.
 # :License:   BSD Style
-
+from __future__ import print_function
 
 include "CoreFoundation.pxi"
 include "CoreGraphics.pxi"
@@ -183,7 +183,7 @@ cdef class FontLookup:
 
     def list_fonts(self):
         for name in self.names():
-            print name, self.styles(name)
+            print(name, self.styles(name))
 
 default_font_info = FontLookup()
 default_font_info.default_font = 'Helvetica'

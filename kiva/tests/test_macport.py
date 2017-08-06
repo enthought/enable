@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import sys
 
 from traitsui.tests._tools import skip_if_not_wx
@@ -32,10 +34,10 @@ def test_macport():
 
         def OnPaint(self, evt):
             dc = wx.PaintDC(self)
-            print "paintdc.this:", dc.this
-            print "paintdc.macport: %x" % get_macport(dc)
-            print "memdc.this:", self.memdc.this
-            print "memdc.macport: %x" % get_macport(self.memdc)
+            print("paintdc.this:", dc.this)
+            print("paintdc.macport: %x" % get_macport(dc))
+            print("memdc.this:", self.memdc.this)
+            print("memdc.macport: %x" % get_macport(self.memdc))
 
             # We're done here
             self.Close()

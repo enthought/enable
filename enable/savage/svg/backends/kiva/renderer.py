@@ -1,6 +1,10 @@
+from __future__ import print_function
+
 from math import sqrt, pi
 import sys
 import warnings
+
+import six
 
 import numpy as np
 
@@ -292,8 +296,8 @@ def font_style(font):
     elif font.style in [0, 'regular','normal']:
         style = 'regular'
     else:
-        print "Font style '%s' and weight: '%s' not known." \
-              " Using style='regular'" % (font.style, font.weight)
+        print("Font style '%s' and weight: '%s' not known."
+              " Using style='regular'" % (font.style, font.weight))
         style = 'regular'
 
     return style
@@ -402,7 +406,7 @@ class Renderer(NullRenderer):
 
     @classmethod
     def setFontStyle(cls, font, style):
-        if isinstance(style, basestring):
+        if isinstance(style, six.string_types):
             if style not in fonttools.font.font_styles:
                 warnings.warn('font style "%s" not supported' % style)
             else:
@@ -412,7 +416,7 @@ class Renderer(NullRenderer):
 
     @classmethod
     def setFontWeight(cls, font, weight):
-        if isinstance(weight, basestring):
+        if isinstance(weight, six.string_types):
             if weight not in fonttools.font.font_weights:
                 warnings.warn('font weight "%s" not supported' % weight)
             else:

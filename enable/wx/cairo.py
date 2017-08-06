@@ -9,12 +9,17 @@
 # Thanks for using Enthought open source!
 #------------------------------------------------------------------------------
 
+import six.moves as sm
+
 import wx
 
 from kiva.cairo import CompiledPath, GraphicsContext, font_metrics_provider
 
 from .base_window import BaseWindow
 from .scrollbar import NativeScrollBar
+
+from enable.base import union_bounds
+
 
 class Window(BaseWindow):
     def _create_gc(self, size, pix_format="bgra32"):
@@ -34,7 +39,7 @@ class Window(BaseWindow):
         wdc = control._dc = wx.PaintDC(control)
         self._update_region = None
         if self._update_region is not None:
-            update_bounds = reduce(union_bounds, self._update_region)
+            update_bounds = sm.reduce(union_bounds, self._update_region)
             pixel_map.draw_to_wxwindow(control, int(update_bounds[0]), int(update_bounds[1]),
                                        width=int(update_bounds[2]), height=int(update_bounds[3]))
         else:

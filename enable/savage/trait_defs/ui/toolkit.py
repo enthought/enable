@@ -31,9 +31,9 @@ def _init_toolkit():
     backend = 'enable.savage.trait_defs.ui.%s' % ETSConfig.toolkit
     try:
         __import__(backend)
-    except ImportError, SystemExit:
-        raise ImportError, "Unable to import a Savage backend for the %s " \
-            "toolkit." % ETSConfig.toolkit
+    except (ImportError, SystemExit):
+        raise ImportError("Unable to import a Savage backend for the %s "
+            "toolkit." % ETSConfig.toolkit)
 
     # Save the imported toolkit module.
     global _toolkit_backend
@@ -67,9 +67,9 @@ def toolkit_object(name, raise_exceptions=False):
         __import__(be_mname)
         try:
             be_obj = getattr(sys.modules[be_mname], oname)
-        except AttributeError, e:
+        except AttributeError as e:
             if raise_exceptions: raise e
-    except ImportError, e:
+    except ImportError as e:
         if raise_exceptions: raise e
 
     return be_obj

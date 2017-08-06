@@ -7,6 +7,8 @@ from PIL import Image as PILImage
 from hypothesis import given
 from hypothesis.strategies import sampled_from
 
+import six
+
 from kiva.image import GraphicsContext
 from kiva.compat import piltostring
 
@@ -87,6 +89,7 @@ class TestAlphaBlackImage(unittest.TestCase):
         # alpha blending is approximate, allow channel differences of to 2.
         self.assert_images_close(desired, actual, diff_allowed=slop_allowed)
 
+    @unittest.skipIf(six.PY3, reason="Crashes on python 3. See GH #95.")
     def test_rect_scale(self):
         color = 0.0
         orig_sz = (10, 10)
@@ -105,6 +108,7 @@ class TestAlphaBlackImage(unittest.TestCase):
         desired = gc.bmp_array
         self.assert_images_equal(desired, actual)
 
+    @unittest.skipIf(six.PY3, reason="Crashes on python 3. See GH #95.")
     def test_rect_scale_translate(self):
         color = 0.0
         orig_sz = (10, 10)

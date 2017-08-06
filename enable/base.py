@@ -24,6 +24,7 @@ Enable package.
 from __future__ import generators
 
 # Major library imports
+import six.moves as sm
 
 # Enthought library imports
 from traits.api import TraitError
@@ -82,11 +83,11 @@ def str_to_font ( object, name, value ):
         face_name  = []
         for word in value.split():
             lword = word.lower()
-            if font_families.has_key( lword ):
+            if lword in font_families:
                family = font_families[ lword ]
-            elif font_styles.has_key( lword ):
+            elif lword in font_styles:
                style = font_styles[ lword ]
-            elif font_weights.has_key( lword ):
+            elif lword in font_weights:
                weight = font_weights[ lword ]
             elif lword == 'underline':
                underline = 1
@@ -103,7 +104,7 @@ def str_to_font ( object, name, value ):
                     underline = underline)
     except:
         pass
-    raise TraitError, ( object, name, 'a font descriptor string',
+    raise TraitError(object, name, 'a font descriptor string',
                         repr( value ) )
 
 str_to_font.info = ( "a string describing a font (e.g. '12 pt bold italic " +
@@ -239,7 +240,7 @@ def send_event_to ( components, event_name, event ):
         setattr( component, pre_event_name, event )
         if event.handled:
             return len( components )
-    for i in xrange( len( components ) - 1, -1, -1 ):
+    for i in sm.range( len( components ) - 1, -1, -1 ):
         setattr( components[i], event_name, event )
         if event.handled:
             return i

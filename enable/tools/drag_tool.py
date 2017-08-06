@@ -1,5 +1,6 @@
 """ Defines the base DragTool class.
 """
+import six.moves as sm
 # Enthought library imports
 from traits.api import Bool, Enum, Tuple, Property, cached_property, List, Str
 from enable.base_tool import BaseTool, KeySpec
@@ -133,7 +134,7 @@ class DragTool(BaseTool):
 
     def _drag_cancel_keypressed(self, event):
         if self._drag_state != "nondrag" and \
-                         any(map(lambda x: x.match(event), self._cancel_keys)):
+                         any(sm.map(lambda x: x.match(event), self._cancel_keys)):
             return self._cancel_drag(event)
         else:
             return False

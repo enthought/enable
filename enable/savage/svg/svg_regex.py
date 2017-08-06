@@ -14,6 +14,9 @@ Out[5]: [('M', [(100.0, -200.0)])]
 """
 
 import re
+from functools import partial
+
+import six
 
 
 # Sentinel.
@@ -114,9 +117,9 @@ class SVGPathParser(object):
     def parse(self, text):
         """ Parse a string of SVG <path> data.
         """
-        next = self.lexer.lex(text).next
-        token = next()
-        return self.rule_svg_path(next, token)
+        svg_iterator = self.lexer.lex(text)
+        token = six.next(svg_iterator)
+        return self.rule_svg_path(partial(six.next, svg_iterator), token)
 
     def rule_svg_path(self, next, token):
         commands = []

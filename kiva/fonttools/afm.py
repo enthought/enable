@@ -433,6 +433,6 @@ if __name__ == '__main__':
     pathname = '/usr/local/share/fonts/afms/adobe'
 
     for fname in os.listdir(pathname):
-        fh = file(os.path.join(pathname, fname))
+        fh = open(os.path.join(pathname, fname))
         afm = AFM(fh)
         w, h = afm.string_width_height('John Hunter is the Man!')

@@ -2,6 +2,8 @@
 This demonstrates the most basic drawing capabilities using Enable.  A new
 component is created and added to a container.
 """
+from __future__ import print_function
+
 from enable.example_support import DemoFrame, demo_main
 from enable.api import Component, Container, Window
 from enable.tools.pyface.context_menu_tool import ContextMenuTool
@@ -22,7 +24,7 @@ class Box(Component):
 
 class MyFrame(DemoFrame):
     def hello(self):
-        print "Hello World"
+        print("Hello World")
 
     def _create_window(self):
         box = Box(bounds=[100.0, 100.0], position=[50.0, 50.0])

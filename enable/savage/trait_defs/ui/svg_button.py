@@ -16,7 +16,7 @@
 from traits.api import Event
 
 # Local imports
-from svg_button_editor import SVGButtonEditor
+from .svg_button_editor import SVGButtonEditor
 
 
 class SVGButton ( Event ):

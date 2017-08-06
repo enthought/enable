@@ -6,11 +6,11 @@
 # in the FreeType 2 public headers.
 #
 
-from sources import *
-from content import *
-from utils   import *
+from .sources import *
+from .content import *
+from .utils   import *
 
-import utils
+from . import utils
 
 import sys, os, time, string, getopt
 
@@ -40,13 +40,13 @@ def  beautify_block( block ):
 
 
 def  usage():
-    print "\nDocBeauty 0.1 Usage information\n"
-    print "  docbeauty [options] file1 [file2 ...]\n"
-    print "using the following options:\n"
-    print "  -h : print this page"
-    print "  -b : backup original files with the 'orig' extension"
-    print ""
-    print "  --backup : same as -b"
+    print("\nDocBeauty 0.1 Usage information\n")
+    print("  docbeauty [options] file1 [file2 ...]\n")
+    print("using the following options:\n")
+    print("  -h : print this page")
+    print("  -b : backup original files with the 'orig' extension")
+    print()
+    print("  --backup : same as -b")
 
 
 def  main( argv ):
@@ -55,8 +55,8 @@ def  main( argv ):
     global output_dir
 
     try:
-        opts, args = getopt.getopt( sys.argv[1:], \
-                                    "hb",         \
+        opts, args = getopt.getopt( sys.argv[1:],
+                                    "hb",
                                     ["help", "backup"] )
     except getopt.GetoptError:
         usage()

@@ -376,21 +376,24 @@ class Component(CoordinateBox, Interactor):
         # may override the bulk default.
         padding = traits.pop('padding', None)
         padding_traits = {}
-        for name in traits.keys():
-            # Use .keys() so we can modify the dict during iteration safely.
-            if name in ['padding_top', 'padding_bottom', 'padding_left',
-                'padding_right']:
+        for name in ['padding_top',
+                     'padding_bottom',
+                     'padding_left',
+                     'padding_right']:
+            try:
                 padding_traits[name] = traits.pop(name)
+            except KeyError:
+                pass
 
-        if traits.has_key("container"):
+        if "container" in traits:
             # After the component is otherwise configured, make sure our
             # container gets notified of our being added to it.
             container = traits.pop("container")
-            super(Component,self).__init__(**traits)
+            super(Component, self).__init__(**traits)
             self._set_padding_traits(padding, padding_traits)
             container.add(self)
         else:
-            super(Component,self).__init__(**traits)
+            super(Component, self).__init__(**traits)
             self._set_padding_traits(padding, padding_traits)
         return
 

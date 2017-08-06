@@ -26,11 +26,11 @@ from enable.savage.trait_defs.ui.svg_editor import SVGEditor
 from enable.savage.svg.backends.wx.renderer import Renderer as WxRenderer
 from enable.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
 
-from crosshair import Crosshair, MultiController
-from profile_this import ProfileThis
-from sike import Sike
-from svg_component import ImageComponent, SVGComponent
-from xml_view import xml_to_tree, xml_tree_editor
+from .crosshair import Crosshair, MultiController
+from .profile_this import ProfileThis
+from .sike import Sike
+from .svg_component import ImageComponent, SVGComponent
+from .xml_view import xml_to_tree, xml_tree_editor
 
 
 logger = logging.getLogger()
@@ -320,7 +320,7 @@ class Comparator(HasTraits):
             self.kiva_component.document = document.SVGDocument(self.current_xml,
                                                                 resources=resources,
                                                                 renderer=KivaRenderer)
-        except Exception, e:
+        except Exception as e:
             logger.exception('Error parsing document %s', new)
             self.kiva_component.document
 

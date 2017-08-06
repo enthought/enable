@@ -33,7 +33,7 @@ class ConstraintsContainerTestCase(unittest.TestCase):
             self.c2.layout_height == 10
         ]
 
-        self.assert_(self.c1.bounds == self.c2.bounds)
+        self.assertTrue(self.c1.bounds == self.c2.bounds)
 
     def test_hbox_order(self):
         """ Test the order of components in an hbox.
@@ -46,7 +46,7 @@ class ConstraintsContainerTestCase(unittest.TestCase):
         ]
 
         dx = self.c2.position[0] - self.c1.position[0]
-        self.assert_(dx > 0)
+        self.assertTrue(dx > 0)
 
     def test_vbox_order(self):
         """ Test the order of components in a vbox.
@@ -59,7 +59,7 @@ class ConstraintsContainerTestCase(unittest.TestCase):
         ]
 
         dy = self.c2.position[1] - self.c1.position[1]
-        self.assert_(dy < 0)
+        self.assertTrue(dy < 0)
 
     def test_alignment_vertical(self):
         """ Test alignment of components vertically with constraints.
@@ -78,8 +78,8 @@ class ConstraintsContainerTestCase(unittest.TestCase):
         pos2 = self.c2.position
         bound2 = self.c2.bounds
 
-        self.assert_(pos1[1] + bound1[1] / 2 == self.container.bounds[1] / 2)
-        self.assert_(pos2[1] + bound2[1] / 2 == self.container.bounds[1] / 2)
+        self.assertTrue(pos1[1] + bound1[1] / 2 == self.container.bounds[1] / 2)
+        self.assertTrue(pos2[1] + bound2[1] / 2 == self.container.bounds[1] / 2)
 
     def test_alignment_horizontal(self):
         """ Test alignment of components horizontally with constraints.
@@ -98,8 +98,8 @@ class ConstraintsContainerTestCase(unittest.TestCase):
         pos2 = self.c2.position
         bound2 = self.c2.bounds
 
-        self.assert_(pos1[0] + bound1[0] / 2 == self.container.bounds[0] / 2)
-        self.assert_(pos2[0] + bound2[0] / 2 == self.container.bounds[0] / 2)
+        self.assertTrue(pos1[0] + bound1[0] / 2 == self.container.bounds[0] / 2)
+        self.assertTrue(pos2[0] + bound2[0] / 2 == self.container.bounds[0] / 2)
 
     def test_constraint_function(self):
         """ Test using a function to create constraints.
@@ -117,7 +117,7 @@ class ConstraintsContainerTestCase(unittest.TestCase):
 
         self.container.layout_constraints = get_constraints
 
-        self.assert_(self.c1.bounds[0] == self.c2.bounds[0])
+        self.assertTrue(self.c1.bounds[0] == self.c2.bounds[0])
 
     def test_invalid_layout(self):
         """ Make sure proper exceptions are thrown with an invalid layout.
@@ -151,7 +151,7 @@ class ConstraintsContainerTestCase(unittest.TestCase):
         space = DefaultSpacing.ABUTMENT
         c2_pos = [self.c1.position[0] + self.c1.bounds[0] + space,
                   self.c1.position[1]]
-        self.assert_(self.c2.position == c2_pos)
+        self.assertTrue(self.c2.position == c2_pos)
 
     def test_invalid_grid_layout(self):
         """ Test an invalid grid layout.
@@ -172,7 +172,7 @@ class ConstraintsContainerTestCase(unittest.TestCase):
             (self.c1.layout_width == 20) | 'strong'
         ]
 
-        self.assert_(self.c1.bounds[0] == 20)
+        self.assertTrue(self.c1.bounds[0] == 20)
 
     def test_share_layout(self):
         """ Test sharing layouts with a child container.
@@ -191,12 +191,12 @@ class ConstraintsContainerTestCase(unittest.TestCase):
             align('layout_width', self.c1, self.c2, c3)
         ]
 
-        self.assert_(self.c1.bounds[0] == self.c2.bounds[0] != c3.bounds[0])
+        self.assertTrue(self.c1.bounds[0] == self.c2.bounds[0] != c3.bounds[0])
 
         self.child_container.share_layout = True
         self.container.relayout()
 
-        self.assert_(self.c1.bounds[0] == self.c2.bounds[0] == c3.bounds[0])
+        self.assertTrue(self.c1.bounds[0] == self.c2.bounds[0] == c3.bounds[0])
 
     def test_layout_manager_initialize(self):
         """ Ensure that a layout manager can only be initialized once.
@@ -222,8 +222,8 @@ class ConstraintsContainerTestCase(unittest.TestCase):
         manager.initialize(cns)
         manager.replace_constraints(cns, new_cns)
 
-        self.assert_(not manager._solver.hasConstraint(cns[0]))
-        self.assert_(manager._solver.hasConstraint(new_cns[0]))
+        self.assertTrue(not manager._solver.hasConstraint(cns[0]))
+        self.assertTrue(manager._solver.hasConstraint(new_cns[0]))
 
     def test_layout_manager_max_size(self):
         """ Test the max_size method of the LayoutManager.
@@ -232,7 +232,7 @@ class ConstraintsContainerTestCase(unittest.TestCase):
         manager = self.container._layout_manager
         max_size = manager.get_max_size(self.container.layout_width,
                                         self.container.layout_height)
-        self.assert_(max_size == (-1, -1))
+        self.assertTrue(max_size == (-1, -1))
 
 
 @unittest.skipIf(not ENABLE_CONSTRAINTS, 'kiwisolver not available')
@@ -246,9 +246,9 @@ class GeometryTestCase(unittest.TestCase):
 
         rect = Rect(10, 20, 60, 40)
 
-        self.assert_(rect.box == Box(20, 70, 60, 10))
-        self.assert_(rect.pos == Pos(10, 20))
-        self.assert_(rect.size == Size(60, 40))
+        self.assertTrue(rect.box == Box(20, 70, 60, 10))
+        self.assertTrue(rect.pos == Pos(10, 20))
+        self.assertTrue(rect.size == Size(60, 40))
 
     def test_rect_f(self):
         """ Test the RectF class.
@@ -258,9 +258,9 @@ class GeometryTestCase(unittest.TestCase):
 
         rect_f = RectF(10.5, 20.5, 60.5, 40.5)
 
-        self.assert_(rect_f.box == BoxF(20.5, 71.0, 61.0, 10.5))
-        self.assert_(rect_f.pos == PosF(10.5, 20.5))
-        self.assert_(rect_f.size == SizeF(60.5, 40.5))
+        self.assertTrue(rect_f.box == BoxF(20.5, 71.0, 61.0, 10.5))
+        self.assertTrue(rect_f.pos == PosF(10.5, 20.5))
+        self.assertTrue(rect_f.size == SizeF(60.5, 40.5))
 
     def test_box(self):
         """ Test the Box class.
@@ -269,10 +269,10 @@ class GeometryTestCase(unittest.TestCase):
         from enable.layout.geometry import Rect, Box, Pos, Size
 
         box = Box(20, 70, 60, 10)
-        self.assert_(box == Box((20, 70, 60, 10)))
-        self.assert_(box.rect == Rect(10, 20, 60, 40))
-        self.assert_(box.pos == Pos(10, 20))
-        self.assert_(box.size == Size(60, 40))
+        self.assertTrue(box == Box((20, 70, 60, 10)))
+        self.assertTrue(box.rect == Rect(10, 20, 60, 40))
+        self.assertTrue(box.pos == Pos(10, 20))
+        self.assertTrue(box.size == Size(60, 40))
 
     def test_box_f(self):
         """ Test the BoxF class.
@@ -281,10 +281,10 @@ class GeometryTestCase(unittest.TestCase):
         from enable.layout.geometry import RectF, BoxF, PosF, SizeF
 
         box_f = BoxF(20.5, 71.0, 61.0, 10.5)
-        self.assert_(box_f == BoxF((20.5, 71.0, 61.0, 10.5)))
-        self.assert_(box_f.rect == RectF(10.5, 20.5, 60.5, 40.5))
-        self.assert_(box_f.pos == PosF(10.5, 20.5))
-        self.assert_(box_f.size == SizeF(60.5, 40.5))
+        self.assertTrue(box_f == BoxF((20.5, 71.0, 61.0, 10.5)))
+        self.assertTrue(box_f.rect == RectF(10.5, 20.5, 60.5, 40.5))
+        self.assertTrue(box_f.pos == PosF(10.5, 20.5))
+        self.assertTrue(box_f.size == SizeF(60.5, 40.5))
 
     def test_pos(self):
         """ Test the Pos class.
@@ -293,8 +293,8 @@ class GeometryTestCase(unittest.TestCase):
         from enable.layout.geometry import Pos
 
         pos = Pos(10, 20)
-        self.assert_(pos.x == 10)
-        self.assert_(pos.y == 20)
+        self.assertTrue(pos.x == 10)
+        self.assertTrue(pos.y == 20)
 
     def test_pos_f(self):
         """ Test the PosF class.
@@ -303,8 +303,8 @@ class GeometryTestCase(unittest.TestCase):
         from enable.layout.geometry import PosF
 
         pos_f = PosF(10.5, 20.5)
-        self.assert_(pos_f.x == 10.5)
-        self.assert_(pos_f.y == 20.5)
+        self.assertTrue(pos_f.x == 10.5)
+        self.assertTrue(pos_f.y == 20.5)
 
     def test_size(self):
         """ Test the Size class.
@@ -313,9 +313,9 @@ class GeometryTestCase(unittest.TestCase):
         from enable.layout.geometry import Size
 
         size = Size(40, 20)
-        self.assert_(size == Size((40, 20)))
-        self.assert_(size.width == 40)
-        self.assert_(size.height == 20)
+        self.assertTrue(size == Size((40, 20)))
+        self.assertTrue(size.width == 40)
+        self.assertTrue(size.height == 20)
 
     def test_size_f(self):
         """ Test the SizeF class.
@@ -324,9 +324,9 @@ class GeometryTestCase(unittest.TestCase):
         from enable.layout.geometry import SizeF
 
         size_f = SizeF(40.5, 20.5)
-        self.assert_(size_f == SizeF((40.5, 20.5)))
-        self.assert_(size_f.width == 40.5)
-        self.assert_(size_f.height == 20.5)
+        self.assertTrue(size_f == SizeF((40.5, 20.5)))
+        self.assertTrue(size_f.width == 40.5)
+        self.assertTrue(size_f.height == 20.5)
 
 
 if __name__ == '__main__':
