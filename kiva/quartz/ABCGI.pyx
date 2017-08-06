@@ -2625,7 +2625,7 @@ cdef class PiecewiseLinearColorFunction(ShadingFunction):
         for i from 0 <= i < self.num_stops:
             print(self.stops[i], end=" ")
         print()
-        print('  red = ', end=" "
+        print('  red = ', end=" ")
         for i from 0 <= i < self.num_stops:
             print(self.red[i], end=" ")
         print()
