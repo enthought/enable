@@ -64,7 +64,7 @@ class ScriptedComponent(Component):
             try:
                 self.error = ''
                 start_time = time.time()
-                exec(self._draw_code in {}, {'gc': gc})
+                exec(self._draw_code, {}, {'gc': gc})
                 self.last_draw_time = time.time() - start_time
             except Exception as exc:
                 self.error = str(exc)
