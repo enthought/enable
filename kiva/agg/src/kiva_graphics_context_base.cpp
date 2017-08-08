@@ -84,9 +84,9 @@ int graphics_context_base::bottom_up()
 }
 
 
-agg24::rendering_buffer* graphics_context_base::rendering_buffer_ptr()
+agg24::rendering_buffer& graphics_context_base::rendering_buffer()
 {
-    return &(this->buf);
+    return this->buf;
 }
 
 

@@ -31,41 +31,12 @@
 
 #include "agg_rasterizer_cells_aa.h"
 #include "agg_rasterizer_sl_clip.h"
+#include "agg_rasterizer_scanline_aa_nogamma.h"
 #include "agg_gamma_functions.h"
 
 
 namespace agg24
 {
-
-
-    //-----------------------------------------------------------------cell_aa
-    // A pixel cell. There're no constructors defined and it was done 
-    // intentionally in order to avoid extra overhead when allocating an 
-    // array of cells.
-    struct cell_aa
-    {
-        int x;
-        int y;
-        int cover;
-        int area;
-
-        void initial()
-        {
-            x = 0x7FFFFFFF;
-            y = 0x7FFFFFFF;
-            cover = 0;
-            area  = 0;
-        }
-
-        void style(const cell_aa&) {}
-
-        int not_equal(int ex, int ey, const cell_aa&) const
-        {
-            return (ex - x) | (ey - y);
-        }
-    };
-
-
     //==================================================rasterizer_scanline_aa
     // Polygon rasterizer that is used to render filled polygons with 
     // high-quality Anti-Aliasing. Internally, by default, the class uses 
@@ -122,8 +93,8 @@ namespace agg24
         };
 
         //--------------------------------------------------------------------
-        rasterizer_scanline_aa() : 
-            m_outline(),
+        rasterizer_scanline_aa(unsigned cell_block_limit=1024) :
+            m_outline(cell_block_limit),
             m_clipper(),
             m_filling_rule(fill_non_zero),
             m_auto_close(true),
@@ -136,9 +107,9 @@ namespace agg24
         }
 
         //--------------------------------------------------------------------
-        template<class GammaF> 
-        rasterizer_scanline_aa(const GammaF& gamma_function) : 
-            m_outline(),
+        template<class GammaF>
+        rasterizer_scanline_aa(const GammaF& gamma_function, unsigned cell_block_limit) :
+            m_outline(cell_block_limit),
             m_clipper(m_outline),
             m_filling_rule(fill_non_zero),
             m_auto_close(true),
@@ -357,7 +328,7 @@ namespace agg24
     template<class Clip> 
     void rasterizer_scanline_aa<Clip>::close_polygon()
     {
-        if(m_auto_close && m_status == status_line_to)
+        if(m_status == status_line_to)
         {
             m_clipper.line_to(m_outline, m_start_x, m_start_y);
             m_status = status_closed;
@@ -369,7 +340,7 @@ namespace agg24
     void rasterizer_scanline_aa<Clip>::move_to(int x, int y)
     {
         if(m_outline.sorted()) reset();
-        if(m_status == status_line_to) close_polygon();
+        if(m_auto_close) close_polygon();
         m_clipper.move_to(m_start_x = conv_type::downscale(x), 
                           m_start_y = conv_type::downscale(y));
         m_status = status_move_to;
@@ -390,7 +361,7 @@ namespace agg24
     void rasterizer_scanline_aa<Clip>::move_to_d(double x, double y) 
     { 
         if(m_outline.sorted()) reset();
-        if(m_status == status_line_to) close_polygon();
+        if(m_auto_close) close_polygon();
         m_clipper.move_to(m_start_x = conv_type::upscale(x), 
                           m_start_y = conv_type::upscale(y)); 
         m_status = status_move_to;
@@ -415,11 +386,14 @@ namespace agg24
             move_to_d(x, y);
         }
         else 
+        if(is_vertex(cmd))
         {
-            if(is_vertex(cmd))
-            {
-                line_to_d(x, y);
-            }
+            line_to_d(x, y);
+        }
+        else
+        if(is_close(cmd))
+        {
+            close_polygon();
         }
     }
 
@@ -452,6 +426,7 @@ namespace agg24
     template<class Clip> 
     void rasterizer_scanline_aa<Clip>::sort()
     {
+        if(m_auto_close) close_polygon();
         m_outline.sort_cells();
     }
 
@@ -459,7 +434,7 @@ namespace agg24
     template<class Clip> 
     AGG_INLINE bool rasterizer_scanline_aa<Clip>::rewind_scanlines()
     {
-        close_polygon();
+        if(m_auto_close) close_polygon();
         m_outline.sort_cells();
         if(m_outline.total_cells() == 0) 
         {
@@ -474,7 +449,7 @@ namespace agg24
     template<class Clip> 
     AGG_INLINE bool rasterizer_scanline_aa<Clip>::navigate_scanline(int y)
     {
-        close_polygon();
+        if(m_auto_close) close_polygon();
         m_outline.sort_cells();
         if(m_outline.total_cells() == 0 || 
            y < m_outline.min_y() || 

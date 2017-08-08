@@ -83,7 +83,7 @@ namespace kiva
 
 		virtual kiva::pix_format_e format() = 0;
 
-        agg24::rendering_buffer* rendering_buffer_ptr();
+        agg24::rendering_buffer& rendering_buffer();
         kiva::interpolation_e get_image_interpolation();
         void set_image_interpolation(interpolation_e interpolation);
 

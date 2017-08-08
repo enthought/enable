@@ -572,7 +572,6 @@ namespace agg24
                 case marker_dash:              dash(x, y, r);              break;
                 case marker_dot:               dot(x, y, r);               break;
                 case marker_pixel:             pixel(x, y, r);             break;
-                case end_of_markers:           break;
             }
         }
 

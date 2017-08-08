@@ -35,7 +35,7 @@ namespace agg24
         typedef typename base_ren_type::color_type color_type;
 
         //--------------------------------------------------------------------
-        renderer_primitives(base_ren_type& ren) :
+        explicit renderer_primitives(base_ren_type& ren) :
             m_ren(&ren),
             m_fill_color(),
             m_line_color(),

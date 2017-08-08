@@ -490,14 +490,14 @@ namespace agg24
             m_stop(false)
         {}
 
-        poly_container_reverse_adaptor(const Container& data, bool closed) :
+        poly_container_reverse_adaptor(Container& data, bool closed) :
             m_container(&data), 
             m_index(-1),
             m_closed(closed),
             m_stop(false)
         {}
 
-        void init(const Container& data, bool closed)
+        void init(Container& data, bool closed)
         {
             m_container = &data;
             m_index = m_container->size() - 1;
@@ -531,7 +531,7 @@ namespace agg24
         }
 
     private:
-        const Container* m_container;
+        Container* m_container;
         int  m_index;
         bool m_closed;
         bool m_stop;
@@ -769,7 +769,7 @@ namespace agg24
                 while(!is_stop(cmd = vs.vertex(&x, &y)))
                 {
                     m_vertices.add_vertex(x, y, is_move_to(cmd) ? 
-                                                    path_cmd_line_to : 
+                                                    unsigned(path_cmd_line_to) :
                                                     cmd);
                 }
             }
@@ -794,6 +794,46 @@ namespace agg24
             poly_plain_adaptor<T> poly(data, num_points, closed);
             join_path(poly);
         }
+
+        //--------------------------------------------------------------------
+        void translate(double dx, double dy, unsigned path_id=0);
+        void translate_all_paths(double dx, double dy);
+
+        //--------------------------------------------------------------------
+        template<class Trans>
+        void transform(const Trans& trans, unsigned path_id=0)
+        {
+            unsigned num_ver = m_vertices.total_vertices();
+            for(; path_id < num_ver; path_id++)
+            {
+                double x, y;
+                unsigned cmd = m_vertices.vertex(path_id, &x, &y);
+                if(is_stop(cmd)) break;
+                if(is_vertex(cmd))
+                {
+                    trans.transform(&x, &y);
+                    m_vertices.modify_vertex(path_id, x, y);
+                }
+            }
+        }
+
+        //--------------------------------------------------------------------
+        template<class Trans>
+        void transform_all_paths(const Trans& trans)
+        {
+            unsigned idx;
+            unsigned num_ver = m_vertices.total_vertices();
+            for(idx = 0; idx < num_ver; idx++)
+            {
+                double x, y;
+                if(is_vertex(m_vertices.vertex(idx, &x, &y)))
+                {
+                    trans.transform(&x, &y);
+                    m_vertices.modify_vertex(idx, x, y);
+                }
+            }
+        }
+
 
 
     private:
@@ -1170,7 +1210,6 @@ namespace agg24
         return m_vertices.vertex(m_iterator++, x, y);
     }
 
-
     //------------------------------------------------------------------------
     template<class VC> 
     unsigned path_base<VC>::perceive_polygon_orientation(unsigned start,
@@ -1190,7 +1229,6 @@ namespace agg24
         }
         return (area < 0.0) ? path_flags_cw : path_flags_ccw;
     }
-
 
     //------------------------------------------------------------------------
     template<class VC> 
@@ -1235,10 +1273,7 @@ namespace agg24
         while(end < m_vertices.total_vertices() && 
               !is_next_poly(m_vertices.command(end))) ++end;
 
-        if(end - start > 2)
-        {
-            invert_polygon(start, end);
-        }
+        invert_polygon(start, end);
     }
 
     //------------------------------------------------------------------------
@@ -1279,7 +1314,6 @@ namespace agg24
         return end;
     }
 
-
     //------------------------------------------------------------------------
     template<class VC> 
     unsigned path_base<VC>::arrange_orientations(unsigned start, 
@@ -1300,7 +1334,6 @@ namespace agg24
         return start;
     }
 
-
     //------------------------------------------------------------------------
     template<class VC> 
     void path_base<VC>::arrange_orientations_all_paths(path_flags_e orientation)
@@ -1314,7 +1347,6 @@ namespace agg24
             }
         }
     }
-
 
     //------------------------------------------------------------------------
     template<class VC> 
@@ -1332,7 +1364,6 @@ namespace agg24
         }
     }
 
-
     //------------------------------------------------------------------------
     template<class VC> 
     void path_base<VC>::flip_y(double y1, double y2)
@@ -1349,9 +1380,42 @@ namespace agg24
         }
     }
 
+    //------------------------------------------------------------------------
+    template<class VC>
+    void path_base<VC>::translate(double dx, double dy, unsigned path_id)
+    {
+        unsigned num_ver = m_vertices.total_vertices();
+        for(; path_id < num_ver; path_id++)
+        {
+            double x, y;
+            unsigned cmd = m_vertices.vertex(path_id, &x, &y);
+            if(is_stop(cmd)) break;
+            if(is_vertex(cmd))
+            {
+                x += dx;
+                y += dy;
+                m_vertices.modify_vertex(path_id, x, y);
+            }
+        }
+    }
 
-
-
+    //------------------------------------------------------------------------
+    template<class VC>
+    void path_base<VC>::translate_all_paths(double dx, double dy)
+    {
+        unsigned idx;
+        unsigned num_ver = m_vertices.total_vertices();
+        for(idx = 0; idx < num_ver; idx++)
+        {
+            double x, y;
+            if(is_vertex(m_vertices.vertex(idx, &x, &y)))
+            {
+                x += dx;
+                y += dy;
+                m_vertices.modify_vertex(idx, x, y);
+            }
+        }
+    }
 
     //-----------------------------------------------------vertex_stl_storage
     template<class Container> class vertex_stl_storage

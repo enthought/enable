@@ -32,13 +32,14 @@ namespace agg24
         enum pix_width_e { pix_width = pixfmt_type::pix_width };
 
         image_accessor_clip() {}
-        image_accessor_clip(const pixfmt_type& pixf, const color_type& bk) : 
+        explicit image_accessor_clip(pixfmt_type& pixf,
+                                     const color_type& bk) :
             m_pixf(&pixf)
         {
             pixfmt_type::make_pix(m_bk_buf, bk);
         }
 
-        void attach(const pixfmt_type& pixf)
+        void attach(pixfmt_type& pixf)
         {
             m_pixf = &pixf;
         }
@@ -64,9 +65,8 @@ namespace agg24
         {
             m_x = m_x0 = x;
             m_y = y;
-            // comparison between signed and unsigned
             if(y >= 0 && y < (int)m_pixf->height() &&
-               x >= 0 && (int)(x+len) <= (int)m_pixf->width())
+               x >= 0 && x+(int)len <= (int)m_pixf->width())
             {
                 return m_pix_ptr = m_pixf->pix_ptr(x, y);
             }
@@ -96,7 +96,7 @@ namespace agg24
 
     private:
         const pixfmt_type* m_pixf;
-        int8u              m_bk_buf[4];
+        int8u              m_bk_buf[pix_width];
         int                m_x, m_x0, m_y;
         const int8u*       m_pix_ptr;
     };
@@ -115,9 +115,11 @@ namespace agg24
         enum pix_width_e { pix_width = pixfmt_type::pix_width };
 
         image_accessor_no_clip() {}
-        image_accessor_no_clip(const pixfmt_type& pixf) : m_pixf(&pixf) {}
+        explicit image_accessor_no_clip(pixfmt_type& pixf) :
+            m_pixf(&pixf)
+        {}
 
-        void attach(const pixfmt_type& pixf)
+        void attach(pixfmt_type& pixf)
         {
             m_pixf = &pixf;
         }
@@ -160,9 +162,11 @@ namespace agg24
         enum pix_width_e { pix_width = pixfmt_type::pix_width };
 
         image_accessor_clone() {}
-        image_accessor_clone(const pixfmt_type& pixf) : m_pixf(&pixf) {}
+        explicit image_accessor_clone(pixfmt_type& pixf) :
+            m_pixf(&pixf)
+        {}
 
-        void attach(const pixfmt_type& pixf)
+        void attach(pixfmt_type& pixf)
         {
             m_pixf = &pixf;
         }
@@ -234,13 +238,13 @@ namespace agg24
         enum pix_width_e { pix_width = pixfmt_type::pix_width };
 
         image_accessor_wrap() {}
-        image_accessor_wrap(const pixfmt_type& pixf) : 
+        explicit image_accessor_wrap(pixfmt_type& pixf) :
             m_pixf(&pixf), 
             m_wrap_x(pixf.width()), 
             m_wrap_y(pixf.height())
         {}
 
-        void attach(const pixfmt_type& pixf)
+        void attach(pixfmt_type& pixf)
         {
             m_pixf = &pixf;
         }
@@ -248,7 +252,7 @@ namespace agg24
         AGG_INLINE const int8u* span(int x, int y, unsigned)
         {
             m_x = x;
-            m_row_ptr = m_pixf->row_ptr(m_wrap_y(y));
+            m_row_ptr = m_pixf->pix_ptr(0, m_wrap_y(y));
             return m_row_ptr + m_wrap_x(x) * pix_width;
         }
 
@@ -260,7 +264,7 @@ namespace agg24
 
         AGG_INLINE const int8u* next_y()
         {
-            m_row_ptr = m_pixf->row_ptr(++m_wrap_y);
+            m_row_ptr = m_pixf->pix_ptr(0, ++m_wrap_y);
             return m_row_ptr + m_wrap_x(m_x) * pix_width;
         }
 

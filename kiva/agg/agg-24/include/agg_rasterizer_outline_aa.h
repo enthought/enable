@@ -85,7 +85,7 @@ namespace agg24
         typedef line_aa_vertex                  vertex_type;
         typedef vertex_sequence<vertex_type, 6> vertex_storage_type;
 
-        rasterizer_outline_aa(Renderer& ren) : 
+        explicit rasterizer_outline_aa(Renderer& ren) :
             m_ren(&ren), 
             m_line_join(ren.accurate_join_only() ? 
                             outline_miter_accurate_join : 

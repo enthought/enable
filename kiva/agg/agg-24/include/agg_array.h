@@ -1044,7 +1044,6 @@ namespace agg24
         return j;
     }
 
-
     //--------------------------------------------------------invert_container
     template<class Array> void invert_container(Array& arr)
     {
@@ -1055,7 +1054,6 @@ namespace agg24
             swap_elements(arr[i++], arr[j--]);
         }
     }
-
 
     //------------------------------------------------------binary_search_pos
     template<class Array, class Value, class Less>
@@ -1082,6 +1080,40 @@ namespace agg24
         return end;
     }
 
+    //----------------------------------------------------------range_adaptor
+    template<class Array> class range_adaptor
+    {
+    public:
+        typedef typename Array::value_type value_type;
+
+        range_adaptor(Array& array, unsigned start, unsigned size) :
+            m_array(array), m_start(start), m_size(size)
+        {}
+
+        unsigned size() const { return m_size; }
+        const value_type& operator [] (unsigned i) const { return m_array[m_start + i]; }
+              value_type& operator [] (unsigned i)       { return m_array[m_start + i]; }
+        const value_type& at(unsigned i) const           { return m_array[m_start + i]; }
+              value_type& at(unsigned i)                 { return m_array[m_start + i]; }
+        value_type  value_at(unsigned i) const           { return m_array[m_start + i]; }
+
+    private:
+        Array& m_array;
+        unsigned m_start;
+        unsigned m_size;
+    };
+
+    //---------------------------------------------------------------int_less
+    inline bool int_less(int a, int b) { return a < b; }
+
+    //------------------------------------------------------------int_greater
+    inline bool int_greater(int a, int b) { return a > b; }
+
+    //----------------------------------------------------------unsigned_less
+    inline bool unsigned_less(unsigned a, unsigned b) { return a < b; }
+
+    //-------------------------------------------------------unsigned_greater
+    inline bool unsigned_greater(unsigned a, unsigned b) { return a > b; }
 }
 
 #endif
