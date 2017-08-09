@@ -588,7 +588,7 @@ namespace kiva
 
 
             agg24::path_storage img_outline = img.boundary_path(img_mtx);
-            agg_pixfmt src_pix(img.rendering_buffer());
+            other_format src_pix(img.rendering_buffer());
 
             agg24::trans_affine inv_img_mtx = img_mtx;
             inv_img_mtx.invert();
@@ -602,8 +602,8 @@ namespace kiva
             {
                 case nearest:
                 {
-                    typedef typename kiva::image_filters<agg_pixfmt>::nearest_type span_gen_type;
-                    typedef typename kiva::image_filters<agg_pixfmt>::source_type source_type;
+                    typedef typename kiva::image_filters<other_format>::nearest_type span_gen_type;
+                    typedef typename kiva::image_filters<other_format>::source_type source_type;
 
                     source_type source(src_pix, back_color);
                     span_gen_type span_generator(source, interpolator);
@@ -612,8 +612,8 @@ namespace kiva
                 }
                 case bilinear:
                 {
-                    typedef typename kiva::image_filters<agg_pixfmt>::bilinear_type span_gen_type;
-                    typedef typename kiva::image_filters<agg_pixfmt>::source_type source_type;
+                    typedef typename kiva::image_filters<other_format>::bilinear_type span_gen_type;
+                    typedef typename kiva::image_filters<other_format>::source_type source_type;
 
                     source_type source(src_pix, back_color);
                     span_gen_type span_generator(source, interpolator);
@@ -666,8 +666,8 @@ namespace kiva
                             break;
                     }
 
-                    typedef typename kiva::image_filters<agg_pixfmt>::general_type span_gen_type;
-                    typedef typename kiva::image_filters<agg_pixfmt>::source_type source_type;
+                    typedef typename kiva::image_filters<other_format>::general_type span_gen_type;
+                    typedef typename kiva::image_filters<other_format>::source_type source_type;
 
                     source_type source(src_pix, back_color);
                     span_gen_type span_generator(source, interpolator, filter);
