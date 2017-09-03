@@ -1,6 +1,8 @@
 """
 Test to see what level of click latency is noticeable.
 """
+from __future__ import print_function
+
 import time
 
 from traits.api import Float
