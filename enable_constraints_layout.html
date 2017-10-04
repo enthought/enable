@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Enable Constraints Layout &mdash; enable 4.6.0 documentation</title>
+    <title>Enable Constraints Layout &#8212; enable 4.7.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,25 +14,30 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4.6.0',
+        VERSION:     '4.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/et.ico"/>
-    <link rel="top" title="enable 4.6.0 documentation" href="index.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Enable Keyboard Events" href="enable_key_events.html" />
     <link rel="prev" title="Enable Concepts" href="enable_concepts.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -78,7 +83,7 @@ to the <code class="xref py py-class docutils literal"><span class="pre">Compone
 </div></blockquote>
 <p>These variables can be used in linear inequality expressions which make up the
 layout constraints of a container:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="k">def</span> <span class="nf">build_hierarchy</span><span class="p">():</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">build_hierarchy</span><span class="p">():</span>
   <span class="n">container</span> <span class="o">=</span> <span class="n">ConstraintsContainer</span><span class="p">()</span>
   <span class="n">one</span> <span class="o">=</span> <span class="n">Component</span><span class="p">()</span>
   <span class="n">two</span> <span class="o">=</span> <span class="n">Component</span><span class="p">()</span>
@@ -86,7 +91,7 @@ layout constraints of a container:</p>
   <span class="n">container</span><span class="o">.</span><span class="n">layout_constraints</span> <span class="o">=</span> <span class="p">[</span>
       <span class="n">one</span><span class="o">.</span><span class="n">layout_width</span> <span class="o">==</span> <span class="n">two</span><span class="o">.</span><span class="n">layout_width</span> <span class="o">*</span> <span class="mf">2.0</span><span class="p">,</span>
       <span class="n">one</span><span class="o">.</span><span class="n">layout_height</span> <span class="o">==</span> <span class="n">two</span><span class="o">.</span><span class="n">layout_height</span><span class="p">,</span>
-      <span class="c"># ... and so on ...</span>
+      <span class="c1"># ... and so on ...</span>
   <span class="p">]</span>
 
   <span class="k">return</span> <span class="n">container</span>
@@ -96,7 +101,7 @@ layout constraints of a container:</p>
 <code class="xref py py-class docutils literal"><span class="pre">ConstraintsContainer</span></code> can be a <code class="xref py py-class docutils literal"><span class="pre">callable</span></code>. The function is
 passed a reference to the container and should return a list of
 <code class="xref py py-class docutils literal"><span class="pre">LinearContraints</span></code> objects or layout helper instances (as described below).</p>
-<div class="highlight-default"><div class="highlight"><pre> <span class="k">def</span> <span class="nf">create_container</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span> <span class="k">def</span> <span class="nf">create_container</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="n">ConstraintsContainer</span><span class="p">()</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bar</span><span class="p">)</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">layout_constraints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">my_layout_constraints</span>
@@ -302,15 +307,15 @@ and <cite>&#8216;weak&#8217;</cite>.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/enable_constraints_layout.txt"
+      <li><a href="_sources/enable_constraints_layout.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -321,14 +326,14 @@ and <cite>&#8216;weak&#8217;</cite>.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2008-2015, Enthought.
+      &copy;2008-2017, Enthought.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
-      <a href="_sources/enable_constraints_layout.txt"
+      <a href="_sources/enable_constraints_layout.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

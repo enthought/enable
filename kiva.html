@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Kiva &mdash; enable 4.6.0 documentation</title>
+    <title>Kiva &#8212; enable 4.7.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,24 +14,29 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4.6.0',
+        VERSION:     '4.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/et.ico"/>
-    <link rel="top" title="enable 4.6.0 documentation" href="index.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="Enable Apptools Integration" href="enable_apptools_integration.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -80,7 +85,7 @@ performing drawing actions.</p>
 <p>In many common use-cases (such as writing renderers for Chaco), you will be
 provided a graphics context by other code, but it is straight-forward to create
 your own graphics context:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
 
 <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
 </pre></div>
@@ -88,7 +93,7 @@ your own graphics context:</p>
 <p>This is an graphics context for the Agg or &#8220;image&#8221; backend which has a size of
 400x400 pixels.  If instead we wanted to draw into a Qt <code class="docutils literal"><span class="pre">QPainter</span></code> drawing
 context in a <cite>QWidget</cite> called <cite>my_qwidget</cite> we would use:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.qpainter</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kiva.qpainter</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
 
 <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">),</span> <span class="n">parent</span><span class="o">=</span><span class="n">my_qwidget</span><span class="p">)</span>
 </pre></div>
@@ -99,7 +104,7 @@ requirements of the backend.</p>
 <p>Once you have a graphics context, you can use it to draw vector graphics.
 For example, the following code will draw a translucent gray line from
 (100, 100) to (100, 200):</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
@@ -107,15 +112,15 @@ For example, the following code will draw a translucent gray line from
 </div>
 <p>For many of the backends, you can save the rendered image out as an image file
 using the <code class="docutils literal"><span class="pre">save()</span></code> method:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;my_line.png&quot;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;my_line.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Kiva is numpy-aware, and has a number of methods that allow you to pass numpy
 arrays of points to draw many things in one operation, with loops being
 performed in C where possible:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">empty</span><span class="p">,</span> <span class="n">linspace</span><span class="p">,</span> <span class="n">random</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">empty</span><span class="p">,</span> <span class="n">linspace</span><span class="p">,</span> <span class="n">random</span>
 
-<span class="c"># Nx2 array of points</span>
+<span class="c1"># Nx2 array of points</span>
 <span class="n">pts</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 <span class="n">pts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
 <span class="n">pts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span> <span class="o">+</span> <span class="mi">100</span>
@@ -136,7 +141,7 @@ and the positive y axis goes <em>down</em> from top to bottom.</p>
 represent the <em>corner</em> of pixels, rather than the center of pixels.  This has
 consequences when rendering thin lines.  Compare the two lines in this example,
 for instance:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
 
 <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
 
@@ -149,7 +154,7 @@ for instance:</p>
 <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
 
-<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;pixel_coordinates.png&quot;</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;pixel_coordinates.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Notice that the line on the bottom (the first of the two lines) is fuzzier
@@ -162,17 +167,17 @@ is drawn through the center of the pixels:</p>
 <p>The Kiva API allows arbitrary affine transforms to be applied to the graphics
 context during drawing.  The API provides convenience methods for common
 transformations, such as rotation and scaling:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">empty</span><span class="p">,</span> <span class="n">linspace</span><span class="p">,</span> <span class="n">random</span><span class="p">,</span> <span class="n">pi</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">empty</span><span class="p">,</span> <span class="n">linspace</span><span class="p">,</span> <span class="n">random</span><span class="p">,</span> <span class="n">pi</span>
 <span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
 
-<span class="c"># Nx2 array of points</span>
+<span class="c1"># Nx2 array of points</span>
 <span class="n">pts</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 <span class="n">pts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
 <span class="n">pts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span> <span class="o">+</span> <span class="mi">100</span>
 
 <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
 
-<span class="c"># draw a simple graph</span>
+<span class="c1"># draw a simple graph</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
@@ -183,16 +188,16 @@ transformations, such as rotation and scaling:</p>
 <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
 
-<span class="c"># translate by 100 pixels in the x direction</span>
+<span class="c1"># translate by 100 pixels in the x direction</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-<span class="c"># rotate by 45 degrees</span>
+<span class="c1"># rotate by 45 degrees</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">rotate_ctm</span><span class="p">(</span><span class="n">pi</span><span class="o">/</span><span class="mf">4.0</span><span class="p">)</span>
 
-<span class="c"># scale by 1.5 in the x direction</span>
+<span class="c1"># scale by 1.5 in the x direction</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">scale_ctm</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 
-<span class="c"># now draw in the transformed coordinates</span>
+<span class="c1"># now draw in the transformed coordinates</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
@@ -203,7 +208,7 @@ transformations, such as rotation and scaling:</p>
 <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
 
-<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;transformed_lines.png&#39;</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;transformed_lines.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/transformed_lines.png" src="_images/transformed_lines.png" />
@@ -237,7 +242,7 @@ Lines can also be dashed using the <code class="docutils literal"><span class="p
 pattern of numbers to use for lengths of on and off, and an optional <code class="docutils literal"><span class="pre">phase</span></code>
 for where to start in the pattern.</p>
 <p>Thicknesses:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
 
 <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
 
@@ -250,12 +255,12 @@ for where to start in the pattern.</p>
     <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="n">thickness</span><span class="p">)</span>
     <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
 
-<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;thicknesses.png&#39;</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;thicknesses.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/thicknesses.png" src="_images/thicknesses.png" />
 <p>Joins:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
 <span class="kn">from</span> <span class="nn">kiva.constants</span> <span class="k">import</span> <span class="n">JOIN_ROUND</span><span class="p">,</span> <span class="n">JOIN_BEVEL</span><span class="p">,</span> <span class="n">JOIN_MITER</span>
 
 <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
@@ -270,12 +275,12 @@ for where to start in the pattern.</p>
     <span class="n">gc</span><span class="o">.</span><span class="n">set_line_join</span><span class="p">(</span><span class="n">join</span><span class="p">)</span>
     <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
 
-<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;joins.png&#39;</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;joins.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/joins.png" src="_images/joins.png" />
 <p>Caps:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
 <span class="kn">from</span> <span class="nn">kiva.constants</span> <span class="k">import</span> <span class="n">CAP_ROUND</span><span class="p">,</span> <span class="n">CAP_BUTT</span><span class="p">,</span> <span class="n">CAP_SQUARE</span>
 
 <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
@@ -289,12 +294,12 @@ for where to start in the pattern.</p>
     <span class="n">gc</span><span class="o">.</span><span class="n">set_line_cap</span><span class="p">(</span><span class="n">cap</span><span class="p">)</span>
     <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
 
-<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;caps.png&#39;</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;caps.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/caps.png" src="_images/caps.png" />
 <p>Dashes:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
 
 <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
 <span class="n">dashes</span> <span class="o">=</span> <span class="p">([</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">9.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">])</span>
@@ -308,7 +313,7 @@ for where to start in the pattern.</p>
     <span class="n">gc</span><span class="o">.</span><span class="n">set_line_dash</span><span class="p">(</span><span class="n">dash</span><span class="p">)</span>
     <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
 
-<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;dashes.png&#39;</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;dashes.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/dashes.png" src="_images/dashes.png" />
@@ -319,7 +324,7 @@ available:
 <a class="reference external" href="http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule">even-odd fill</a> and
 <a class="reference external" href="http://en.wikipedia.org/wiki/Nonzero-rule">non-zero winding fill</a></p>
 <p>Winding vs. Even-Odd Fill:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">pi</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">pi</span>
 <span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
 <span class="kn">from</span> <span class="nn">kiva.constants</span> <span class="k">import</span> <span class="n">FILL</span><span class="p">,</span> <span class="n">EOF_FILL</span>
 
@@ -345,7 +350,7 @@ available:
 
 <span class="n">gc</span><span class="o">.</span><span class="n">eof_fill_path</span><span class="p">()</span>
 
-<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;fill.png&#39;</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;fill.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/fill.png" src="_images/fill.png" />
@@ -354,16 +359,16 @@ available:
 <p>Text can be rendered at a point by first setting the font to use, then setting
 the text location using <code class="docutils literal"><span class="pre">set_text_position()</span></code> and then <code class="docutils literal"><span class="pre">show_text()</span></code> to
 render the text:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">kiva.fonttools</span> <span class="k">import</span> <span class="n">Font</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kiva.fonttools</span> <span class="k">import</span> <span class="n">Font</span>
 <span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
 
 <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
 
 <span class="n">gc</span><span class="o">.</span><span class="n">set_font</span><span class="p">(</span><span class="n">Font</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">24</span><span class="p">))</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">set_text_position</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
-<span class="n">gc</span><span class="o">.</span><span class="n">show_text</span><span class="p">(</span><span class="s">&quot;Hello World&quot;</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">show_text</span><span class="p">(</span><span class="s2">&quot;Hello World&quot;</span><span class="p">)</span>
 
-<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;text.png&#39;</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;text.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/text.png" src="_images/text.png" />
@@ -397,7 +402,7 @@ graphics context&#8217;s pixel format.</td>
 <tr class="field-odd field"><th class="field-name">rect_array:</th><td class="field-body">an array/sequence of rects ((x,y,w,h), (x2,y2,w2,h2), ...)</td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">color_stop_array:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body">an array/sequence of color stops ((offset,r,g,b,a),
+<tr class="field-even field"><td>&#160;</td><td class="field-body">an array/sequence of color stops ((offset,r,g,b,a),
 (offset2,r2,g2,b2,a2), ...) where offset is some number between 0 and 1
 inclusive and the entries are sorted from lowest offset to highest.</td>
 </tr>
@@ -413,12 +418,12 @@ are called:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name" colspan="2">__init__(v0, v1, v2, v3, v4, v5):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">also __init__()</td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">also __init__()</td>
 </tr>
 <tr class="field-even field"><th class="field-name">reset():</th><td class="field-body">Sets this matrix to the identity</td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">multiply(<cite>AffineMatrix</cite>):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">multiples this matrix by another</td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">multiples this matrix by another</td>
 </tr>
 <tr class="field-even field"><th class="field-name">invert():</th><td class="field-body">sets this matrix to the inverse of itself</td>
 </tr>
@@ -434,10 +439,10 @@ are called:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name" colspan="2">scale() -&gt; float:</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">returns the average scale of this matrix</td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">returns the average scale of this matrix</td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">determinant() -&gt; float:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body">returns the determinant</td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">returns the determinant</td>
 </tr>
 </tbody>
 </table>
@@ -455,10 +460,10 @@ to create specific kinds of <code class="xref py py-class docutils literal"><spa
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name" colspan="2">__init__(name, size=12, family=0, style=0):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">constructs a <code class="xref py py-class docutils literal"><span class="pre">FontType</span></code> instance</td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">constructs a <code class="xref py py-class docutils literal"><span class="pre">FontType</span></code> instance</td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">is_loaded() -&gt; bool:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body">returns True if a font was actually loaded</td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">returns True if a font was actually loaded</td>
 </tr>
 </tbody>
 </table>
@@ -490,14 +495,12 @@ map between their names and integer values</p>
 </tr>
 </tbody>
 </table>
-<ul>
-<li><p class="first">dicts: pix_format_string_map, pix_format_enum_map</p>
-</li>
+<ul class="simple">
+<li>dicts: pix_format_string_map, pix_format_enum_map</li>
 <li><dl class="first docutils">
 <dt>values: pix_format_gray8, pix_format_rgb555, pix_format_rgb565,</dt>
-<dd><p class="first last">pix_format_rgb24, pix_format_bgr24, pix_format_rgba32, pix_format_argb32,
-pix_format_abgr32, pix_format_bgra32</p>
-</dd>
+<dd>pix_format_rgb24, pix_format_bgr24, pix_format_rgba32, pix_format_argb32,
+pix_format_abgr32, pix_format_bgra32</dd>
 </dl>
 </li>
 </ul>
@@ -509,13 +512,11 @@ pix_format_abgr32, pix_format_bgra32</p>
 </tr>
 </tbody>
 </table>
-<ul>
-<li><p class="first">dicts: interp_enum_map, interp_string_map</p>
-</li>
+<ul class="simple">
+<li>dicts: interp_enum_map, interp_string_map</li>
 <li><dl class="first docutils">
 <dt>values: nearest, bilinear, bicubic, spline16, spline36, sinc64, sinc144,</dt>
-<dd><p class="first last">sinc256, blackman64, blackman100, blackman256</p>
-</dd>
+<dd>sinc256, blackman64, blackman100, blackman256</dd>
 </dl>
 </li>
 </ul>
@@ -527,17 +528,15 @@ pix_format_abgr32, pix_format_bgra32</p>
 </tr>
 </tbody>
 </table>
-<ul>
-<li><p class="first">dicts: marker_string_map, marker_enum_map</p>
-</li>
+<ul class="simple">
+<li>dicts: marker_string_map, marker_enum_map</li>
 <li><dl class="first docutils">
 <dt>values: marker_circle, marker_cross, marker_crossed_circle, marker_dash,</dt>
-<dd><p class="first last">marker_diamond, marker_dot, marker_four_rays, marker_pixel,
+<dd>marker_diamond, marker_dot, marker_four_rays, marker_pixel,
 marker_semiellipse_down, marker_semiellipse_left, marker_x,
 marker_semiellipse_right, marker_semiellipse_up, marker_square,
 marker_triangle_down, marker_triangle_left, marker_triangle_right,
-marker_triangle_up</p>
-</dd>
+marker_triangle_up</dd>
 </dl>
 </li>
 </ul>
@@ -566,7 +565,7 @@ path_flags_mask, path_flags_none</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name" colspan="2">__init__(size, pix_format):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">Size is a tuple (width, height), pix_format
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">Size is a tuple (width, height), pix_format
 is a string.</td>
 </tr>
 </tbody>
@@ -581,85 +580,85 @@ is a string.</td>
 <tr class="field-odd field"><th class="field-name">save_state():</th><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">restore_state():</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">set_stroke_color(color):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">get_stroke_color() -&gt; color:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">set_line_width(float):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">set_line_join(line_join):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">set_line_cap(line_cap):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">set_line_dash(array):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body">array is an even-length tuple of floats that represents
+<tr class="field-even field"><td>&#160;</td><td class="field-body">array is an even-length tuple of floats that represents
 the width of each dash and gap in the dash pattern.</td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">set_fill_color(color):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">get_fill_color() -&gt; color:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">linear_gradient(x1, y1, x2, y2, color_stop_array, spread_method, units):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">spread_method
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">spread_method
 is one of the following strings: pad, reflect, repeat. units is one of the
 following strings: userSpaceOnUse, objectBoundingBox. This method modifies
 the current fill pattern.</td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">radial_gradient(cx, cy, r, fx, fy, color_stop_array, spread_method, units):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body">same
+<tr class="field-even field"><td>&#160;</td><td class="field-body">same
 arguments as linear gradient. The direction of the gradient is from the focus
 point to the center point.</td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">set_alpha(float):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">get_alpha() -&gt; float:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">set_antialias(bool):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">get_antialias() -&gt; bool:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">set_miter_limit(float):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">set_flatness(float):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">get_image_interpolation() -&gt; interpolation:</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">set_image_interpolation(interpolation):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">translate_ctm(float x, float y):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">rotate_ctm(float angle_in_radians):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">concat_ctm(<a class="reference internal" href="#affinematrix">AffineMatrix</a>):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">scale_ctm(float x_scale, float y_scale):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">set_ctm(<a class="reference internal" href="#affinematrix">AffineMatrix</a>):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">get_ctm() -&gt; <a class="reference internal" href="#affinematrix">AffineMatrix</a>:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -671,15 +670,15 @@ point to the center point.</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name" colspan="2">clip_to_rect(rect):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">clip_to_rects(rect_array):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name">clip():</th><td class="field-body">clips using the current path</td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">even_odd_clip():</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body">modifies the current clipping path using the even-odd rule to
+<tr class="field-even field"><td>&#160;</td><td class="field-body">modifies the current clipping path using the even-odd rule to
 calculate the intersection of the current path and the current clipping path.</td>
 </tr>
 </tbody>
@@ -696,38 +695,38 @@ calculate the intersection of the current path and the current clipping path.</t
 <tr class="field-even field"><th class="field-name">close_path():</th><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">get_empty_path() -&gt; <a class="reference internal" href="#compiledpath">CompiledPath</a>:</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">returns a blank <code class="xref py py-class docutils literal"><span class="pre">CompiledPath</span></code> instance</p>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><p class="first">returns a blank <code class="xref py py-class docutils literal"><span class="pre">CompiledPath</span></code> instance</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">add_path(<a class="reference internal" href="#compiledpath">CompiledPath</a>):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name">move_to(x, y):</th><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name">line_to(x, y):</th><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">lines(point_array):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">rect(x, y, w, h):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">rects(rect_array):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">curve_to(x1, y1, x2, y2, end_x, end_y):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">draws a cubic bezier curve with
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first">draws a cubic bezier curve with
 control points (x1,y1) and (x2,y2) that ends at point (end_x, end_y)</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">quad_curve_to(cp_x, cp_y, end_x, end_y):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">draws a quadratic bezier curve from
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><p class="first">draws a quadratic bezier curve from
 the current point using control point (cp_x, cp_y) and ending at
 (end_x, end_y)</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">arc(x, y, radius, start_angle, end_angle, bool cw=false):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">draws a circular arc
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first">draws a circular arc
 of the given radius, centered at (x,y) with angular span as indicated.
 Angles are measured counter-clockwise from the positive X axis. If &#8220;cw&#8221; is
 true, then the arc is swept from the end_angle back to the start_angle
@@ -735,7 +734,7 @@ true, then the arc is swept from the end_angle back to the start_angle
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">arc_to(x1, y1, x2, y2, radius):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">Sweeps a circular arc from the pen position to
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><p class="first">Sweeps a circular arc from the pen position to
 a point on the line from (x1,y1) to (x2,y2).</p>
 <p>The arc is tangent to the line from the current pen position
 to (x1,y1), and it is also tangent to the line from (x1,y1)
@@ -768,22 +767,22 @@ pen position be (x_left + r, y_top).  Then (x2,y2) would be
 <tr class="field-even field"><th class="field-name">fill_path():</th><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">eof_fill_path():</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">draw_path(draw_mode=FILL_STROKE):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">draw_rect(rect, draw_mode=FILL_STROKE):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">draw_marker_at_points(point_array, int size, marker=marker_square):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">draw_path_at_points(point_array, <a class="reference internal" href="#compiledpath">CompiledPath</a>, draw_mode):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">draw_image(graphics_context img, rect=None):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body">if rect is defined, then img is
+<tr class="field-even field"><td>&#160;</td><td class="field-body">if rect is defined, then img is
 scaled and drawn into it. Otherwise, img is overlaid exactly on top of this
 graphics context</td>
 </tr>
@@ -797,56 +796,56 @@ graphics context</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name" colspan="2">set_text_drawing_mode(text_draw_mode):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">set_text_matrix(<a class="reference internal" href="#affinematrix">AffineMatrix</a>):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">get_text_matrix() -&gt; <a class="reference internal" href="#affinematrix">AffineMatrix</a>:</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">set_text_position(float x, float x):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">get_text_position() -&gt; (x, y):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">show_text(string):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">show_text_translate(string, float y, float y):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">get_text_extent(string) -&gt; (x,y,w,h):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">get_full_text_extent(string) -&gt; (w,h,x,y):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">deprecated. Order has been changed
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">deprecated. Order has been changed
 for backwards-compatibility with existing Enable.</td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">select_font(name, size, style):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">set_font(<a class="reference internal" href="#fonttype">FontType</a>):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">get_font() -&gt; <a class="reference internal" href="#fonttype">FontType</a>:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">set_font_size(int):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">set_character_spacing():</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">get_character_spacing():</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">set_text_drawing_mode():</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">show_text_at_point():</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -860,16 +859,16 @@ for backwards-compatibility with existing Enable.</td>
 <tr class="field-odd field"><th class="field-name">width() -&gt; int:</th><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">height() -&gt; int:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">stride() -&gt; int:</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">bottom_up() -&gt; bool:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">format() -&gt; pix_format:</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name">flush():</th><td class="field-body"><p class="first">Force all pending drawing operations to be rendered immediately. This
 only makes sense in window contexts, ie- the Mac Quartz backend.</p>
@@ -883,14 +882,14 @@ only makes sense in window contexts, ie- the Mac Quartz backend.</p>
 <tr class="field-odd field"><th class="field-name">end_page():</th><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">clear_rect(rect):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">Clears a rect. Not available in PDF context.</p>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first">Clears a rect. Not available in PDF context.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">convert_pixel_format(pix_format, bool inplace=0):</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">save(filename, file_format=None, pil_options=None):</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">Save the GraphicsContext
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first">Save the GraphicsContext
 to a file.  Output files are always saved in RGB or RGBA format; if this GC is
 not in one of these formats, it is automatically converted.</p>
 <p>If filename includes an extension, the image format is
@@ -915,7 +914,7 @@ rgb24 format.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name" colspan="2">show_glyphs_at_point():</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -981,15 +980,15 @@ rgb24 format.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/kiva.txt"
+      <li><a href="_sources/kiva.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -1000,14 +999,14 @@ rgb24 format.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2008-2015, Enthought.
+      &copy;2008-2017, Enthought.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
-      <a href="_sources/kiva.txt"
+      <a href="_sources/kiva.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

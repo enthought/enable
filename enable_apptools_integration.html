@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Enable Apptools Integration &mdash; enable 4.6.0 documentation</title>
+    <title>Enable Apptools Integration &#8212; enable 4.7.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,25 +14,30 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4.6.0',
+        VERSION:     '4.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/et.ico"/>
-    <link rel="top" title="enable 4.6.0 documentation" href="index.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Kiva" href="kiva.html" />
     <link rel="prev" title="Enable Drag and Drop Events" href="enable_drag_and_drop.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -69,11 +74,11 @@ values bind undo to &#8216;Ctrl+Z&#8217; and redo to &#8216;Ctrl+Shift+Z&#8217;.
 actually perform the undo and redo operations.</p>
 <p>For example, to bind undo to &#8216;Ctrl+Left arrow&#8217;, and redo to &#8216;Ctrl+Right
 arrow&#8217;:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="n">undo_tool</span> <span class="o">=</span> <span class="n">UndoTool</span><span class="p">(</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">undo_tool</span> <span class="o">=</span> <span class="n">UndoTool</span><span class="p">(</span>
     <span class="n">my_component</span><span class="p">,</span>
     <span class="n">undo_manager</span><span class="o">=</span><span class="n">my_undo_manager</span><span class="p">,</span>
-    <span class="n">undo_keys</span><span class="o">=</span><span class="p">[</span><span class="n">KeySpec</span><span class="p">(</span><span class="s">&#39;Left&#39;</span><span class="p">,</span> <span class="s">&#39;control&#39;</span><span class="p">)],</span>
-    <span class="n">redo_keys</span><span class="o">=</span><span class="p">[</span><span class="n">KeySpec</span><span class="p">(</span><span class="s">&#39;Right&#39;</span><span class="p">,</span> <span class="s">&#39;control&#39;</span><span class="p">)]</span>
+    <span class="n">undo_keys</span><span class="o">=</span><span class="p">[</span><span class="n">KeySpec</span><span class="p">(</span><span class="s1">&#39;Left&#39;</span><span class="p">,</span> <span class="s1">&#39;control&#39;</span><span class="p">)],</span>
+    <span class="n">redo_keys</span><span class="o">=</span><span class="p">[</span><span class="n">KeySpec</span><span class="p">(</span><span class="s1">&#39;Right&#39;</span><span class="p">,</span> <span class="s1">&#39;control&#39;</span><span class="p">)]</span>
 <span class="p">)</span>
 <span class="n">my_component</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">undo_tool</span><span class="p">)</span>
 </pre></div>
@@ -91,7 +96,7 @@ push commands to, but is otherwise identical to the usual <code class="docutils 
 subsequent move operations with the same component immediately following
 this one can be merged into one single move operation.</p>
 <p>Typical usage would be something like this:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="n">move_tool</span> <span class="o">=</span> <span class="n">MoveCommandTool</span><span class="p">(</span><span class="n">my_component</span><span class="p">,</span> <span class="n">command_stack</span><span class="o">=</span><span class="n">my_command_stack</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">move_tool</span> <span class="o">=</span> <span class="n">MoveCommandTool</span><span class="p">(</span><span class="n">my_component</span><span class="p">,</span> <span class="n">command_stack</span><span class="o">=</span><span class="n">my_command_stack</span><span class="p">)</span>
 <span class="n">my_component</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">move_tool</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -113,7 +118,7 @@ usual <code class="docutils literal"><span class="pre">ResizeTool</span></code>.
 subsequent resize operations with the same component immediately following
 this one can be merged into one single resize operation.</p>
 <p>Typical usage would be something like this:</p>
-<div class="highlight-default"><div class="highlight"><pre><span class="n">move_tool</span> <span class="o">=</span> <span class="n">ResizeTool</span><span class="p">(</span><span class="n">my_component</span><span class="p">,</span> <span class="n">command_stack</span><span class="o">=</span><span class="n">my_command_stack</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">move_tool</span> <span class="o">=</span> <span class="n">ResizeTool</span><span class="p">(</span><span class="n">my_component</span><span class="p">,</span> <span class="n">command_stack</span><span class="o">=</span><span class="n">my_command_stack</span><span class="p">)</span>
 <span class="n">my_component</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">move_tool</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -249,15 +254,15 @@ are encouraged to override with something even more user-friendly.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/enable_apptools_integration.txt"
+      <li><a href="_sources/enable_apptools_integration.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -268,14 +273,14 @@ are encouraged to override with something even more user-friendly.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2008-2015, Enthought.
+      &copy;2008-2017, Enthought.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
-      <a href="_sources/enable_apptools_integration.txt"
+      <a href="_sources/enable_apptools_integration.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
