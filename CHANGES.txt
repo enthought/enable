@@ -1,8 +1,8 @@
 Enable CHANGELOG
 ================
 
-Enable 4.7.0
-============
+Changes since Enable 4.7.0
+==========================
 
 Enhancements
 ------------
@@ -10,9 +10,25 @@ Enhancements
 Fixes
 -----
 
-Maintainence
-------------
+Maintenance
+-----------
 
+Enable 4.7.0
+============
+
+This is a maintenance release, with the most significant change being an
+upgrade to the vendorized Agg code. This should resolve issues with hard
+crashes in (packages that use) Kiva.
+
+Maintenance
+-----------
+
+* PR #288: Upgrade to a newer Agg version
+* PR #287: Improve mouse wheel support
+* PR #285: Add Python 3.5, 3.6 to CI
+* PR #284, #289, #290: Support Python 3 without 2to3
+* PR #281: Use EDM for CI testing
+* PR #280: Clean up circular import in test
 
 Enable 4.6.1
 ============
@@ -47,8 +63,8 @@ Fixes
 * PR #203: numpy.rank() is deprecated
 
 
-Maintainence
-------------
+Maintenance
+-----------
 
 * PR #244: Remove support for Mac font suitcases.
 * PR #240: add quartz to MANIFEST file
