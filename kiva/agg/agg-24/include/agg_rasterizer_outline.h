@@ -23,7 +23,7 @@ namespace agg24
     template<class Renderer> class rasterizer_outline
     {
     public:
-        rasterizer_outline(Renderer& ren) : 
+        explicit rasterizer_outline(Renderer& ren) :
             m_ren(&ren), 
             m_start_x(0), 
             m_start_y(0), 

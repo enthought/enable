@@ -19,6 +19,8 @@
 #include <string.h>
 #include <stdio.h>
 #include "agg_gsv_text.h"
+#include "agg_bounding_rect.h"
+
 
 
 namespace agg24
@@ -504,8 +506,6 @@ namespace agg24
         if(*(char*)&t == 0) m_big_endian = true;
     }
 
-
-
     //-------------------------------------------------------------------------
     void gsv_text::font(const void* font)
     {
@@ -540,7 +540,6 @@ namespace agg24
         //if(m_flip) m_y += m_height;
     }
 
-
     //-------------------------------------------------------------------------
     void gsv_text::load_font(const char* file)
     {
@@ -563,7 +562,6 @@ namespace agg24
         }
     }
 
-
     //-------------------------------------------------------------------------
     void gsv_text::text(const char* text)
     {
@@ -582,8 +580,6 @@ namespace agg24
         m_text = &m_text_buf[0];
     }
 
-
-
     //-------------------------------------------------------------------------
     void gsv_text::rewind(unsigned)
     {
@@ -600,7 +596,6 @@ namespace agg24
         m_cur_chr = m_text;
     }
 
-
     //-------------------------------------------------------------------------
     unsigned gsv_text::vertex(double* x, double* y)
     {
@@ -608,7 +603,6 @@ namespace agg24
         int8 yc, yf;
         int dx, dy;
         bool quit = false;
-
         
         while(!quit)
         {
@@ -669,6 +663,13 @@ namespace agg24
         return path_cmd_stop;
     }
 
+    //-------------------------------------------------------------------------
+    double gsv_text::text_width()
+    {
+        double x1, y1, x2, y2;
+        bounding_rect_single(*this, 0, &x1, &y1, &x2, &y2);
+        return x2 - x1;
+    }
 
 
 }

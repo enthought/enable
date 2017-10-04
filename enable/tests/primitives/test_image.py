@@ -113,7 +113,6 @@ class ImageTest(unittest.TestCase, UnittestTools):
         image_gc = self.image_32._image
         assert_array_equal(image_gc.bmp_array, self.data)
 
-    @unittest.skipIf(six.PY3, reason="Crashes on python 3. See GH #95.")
     def test_draw_24(self):
         gc = GraphicsContext((256, 128), pix_format='rgb24')
         self.image_24.draw(gc)
@@ -127,8 +126,6 @@ class ImageTest(unittest.TestCase, UnittestTools):
         self.image_24.draw(gc2)
         assert_array_equal(gc2.bmp_array[..., :3], self.data[..., :3])
 
-
-    @unittest.skipIf(six.PY3, reason="Crashes on python 3. See GH #95.")
     def test_draw_32(self):
         gc = GraphicsContext((256, 128), pix_format='rgba32')
         self.image_32.draw(gc)
@@ -140,7 +137,6 @@ class ImageTest(unittest.TestCase, UnittestTools):
         white_image = np.ones(shape=(256, 128, 4), dtype='uint8')*255
         self.assertFalse(np.array_equal(white_image, gc.bmp_array))
 
-    @unittest.skipIf(six.PY3, reason="Crashes on python 3. See GH #95.")
     def test_draw_stretched(self):
         gc = GraphicsContext((256, 256), pix_format='rgba32')
         self.image_32.bounds = [128, 258]

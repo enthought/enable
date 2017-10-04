@@ -25,7 +25,7 @@ namespace agg24
     template<class VertexSource, class VPGen> class conv_adaptor_vpgen
     {
     public:
-        conv_adaptor_vpgen(VertexSource& source) : m_source(&source) {}
+        explicit conv_adaptor_vpgen(VertexSource& source) : m_source(&source) {}
         void attach(VertexSource& source) { m_source = &source; }
 
         VPGen& vpgen() { return m_vpgen; }

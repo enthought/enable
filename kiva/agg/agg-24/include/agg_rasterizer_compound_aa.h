@@ -70,6 +70,15 @@ namespace agg24
     };
 
 
+    //===========================================================layer_order_e
+    enum layer_order_e
+    {
+        layer_unsorted, //------layer_unsorted
+        layer_direct,   //------layer_direct
+        layer_inverse   //------layer_inverse
+    };
+
+
     //==================================================rasterizer_compound_aa
     template<class Clip=rasterizer_sl_clip_int> class rasterizer_compound_aa
     {
@@ -86,8 +95,9 @@ namespace agg24
         };
 
     public:
-        typedef Clip                     clip_type;
-        typedef typename Clip::conv_type conv_type;
+        typedef Clip                      clip_type;
+        typedef typename Clip::conv_type  conv_type;
+        typedef typename Clip::coord_type coord_type;
 
         enum aa_scale_e
         {
@@ -99,17 +109,23 @@ namespace agg24
         };
 
         //--------------------------------------------------------------------
-        rasterizer_compound_aa() : 
-            m_outline(),
+        rasterizer_compound_aa(unsigned cell_block_limit=1024) :
+            m_outline(cell_block_limit),
             m_clipper(),
             m_filling_rule(fill_non_zero),
+            m_layer_order(layer_direct),
             m_styles(),  // Active Styles
             m_ast(),     // Active Style Table (unique values)
             m_asm(),     // Active Style Mask 
             m_cells(),
+            m_cover_buf(),
             m_min_style(0x7FFFFFFF),
             m_max_style(-0x7FFFFFFF),
-            m_scan_y(0x7FFFFFFF)
+            m_start_x(0),
+            m_start_y(0),
+            m_scan_y(0x7FFFFFFF),
+            m_sl_start(0),
+            m_sl_len(0)
         {}
 
         //--------------------------------------------------------------------
@@ -117,6 +133,7 @@ namespace agg24
         void reset_clipping();
         void clip_box(double x1, double y1, double x2, double y2);
         void filling_rule(filling_rule_e filling_rule);
+        void layer_order(layer_order_e order);
 
         //--------------------------------------------------------------------
         void styles(int left, int right);
@@ -158,7 +175,11 @@ namespace agg24
         void sort();
         bool rewind_scanlines();
         unsigned sweep_styles();
+        int      scanline_start()  const { return m_sl_start; }
+        unsigned scanline_length() const { return m_sl_len;   }
         unsigned style(unsigned style_idx) const;
+
+        cover_type* allocate_cover_buffer(unsigned len);
 
         //--------------------------------------------------------------------
         bool navigate_scanline(int y); 
@@ -191,8 +212,14 @@ namespace agg24
 
             sl.reset_spans();
 
-            if(style_idx < 0) style_idx = 0;
-            else              style_idx++;
+            if(style_idx < 0)
+            {
+                style_idx = 0;
+            }
+            else
+            {
+                style_idx++;
+            }
 
             const style_info& st = m_styles[m_ast[style_idx]];
 
@@ -230,7 +257,6 @@ namespace agg24
             if(sl.num_spans() == 0) return false;
             sl.finalize(scan_y);
             return true;
-
         }
 
     private:
@@ -246,14 +272,20 @@ namespace agg24
         rasterizer_cells_aa<cell_style_aa> m_outline;
         clip_type              m_clipper;
         filling_rule_e         m_filling_rule;
+        layer_order_e          m_layer_order;
         pod_vector<style_info> m_styles;  // Active Styles
         pod_vector<unsigned>   m_ast;     // Active Style Table (unique values)
         pod_vector<int8u>      m_asm;     // Active Style Mask 
         pod_vector<cell_info>  m_cells;
+        pod_vector<cover_type> m_cover_buf;
 
-        int      m_min_style;
-        int      m_max_style;
-        int      m_scan_y;
+        int        m_min_style;
+        int        m_max_style;
+        coord_type m_start_x;
+        coord_type m_start_y;
+        int        m_scan_y;
+        int        m_sl_start;
+        unsigned   m_sl_len;
     };
 
 
@@ -273,6 +305,8 @@ namespace agg24
         m_min_style =  0x7FFFFFFF;
         m_max_style = -0x7FFFFFFF;
         m_scan_y    =  0x7FFFFFFF;
+        m_sl_start  =  0;
+        m_sl_len    = 0;
     }
 
     //------------------------------------------------------------------------
@@ -280,6 +314,13 @@ namespace agg24
     void rasterizer_compound_aa<Clip>::filling_rule(filling_rule_e filling_rule) 
     { 
         m_filling_rule = filling_rule; 
+    }
+
+    //------------------------------------------------------------------------
+    template<class Clip>
+    void rasterizer_compound_aa<Clip>::layer_order(layer_order_e order)
+    {
+        m_layer_order = order;
     }
 
     //------------------------------------------------------------------------
@@ -320,7 +361,8 @@ namespace agg24
     void rasterizer_compound_aa<Clip>::move_to(int x, int y)
     {
         if(m_outline.sorted()) reset();
-        m_clipper.move_to(conv_type::downscale(x), conv_type::downscale(y));
+        m_clipper.move_to(m_start_x = conv_type::downscale(x),
+                          m_start_y = conv_type::downscale(y));
     }
 
     //------------------------------------------------------------------------
@@ -337,7 +379,8 @@ namespace agg24
     void rasterizer_compound_aa<Clip>::move_to_d(double x, double y) 
     { 
         if(m_outline.sorted()) reset();
-        m_clipper.move_to(conv_type::upscale(x), conv_type::upscale(y)); 
+        m_clipper.move_to(m_start_x = conv_type::upscale(x),
+                          m_start_y = conv_type::upscale(y));
     }
 
     //------------------------------------------------------------------------
@@ -358,11 +401,14 @@ namespace agg24
             move_to_d(x, y);
         }
         else 
+        if(is_vertex(cmd))
         {
-            if(is_vertex(cmd))
-            {
-                line_to_d(x, y);
-            }
+            line_to_d(x, y);
+        }
+        else
+        if(is_close(cmd))
+        {
+            m_clipper.line_to(m_outline, m_start_x, m_start_y);
         }
     }
 
@@ -457,83 +503,96 @@ namespace agg24
             m_asm.allocate((num_styles + 7) >> 3, 8);
             m_asm.zero();
 
-            // Pre-add zero (for no-fill style, that is, -1).
-            // We need that to ensure that the "-1 style" would go first.
-            m_asm[0] |= 1; 
-            m_ast.add(0);
-            style = &m_styles[0];
-            style->start_cell = 0;
-            style->num_cells = 0;
-            style->last_x = -0x7FFFFFFF;
-
-            while(num_cells--)
+            if(num_cells)
             {
-                curr_cell = *cells++;
-                add_style(curr_cell->left);
-                add_style(curr_cell->right);
-            }
+                // Pre-add zero (for no-fill style, that is, -1).
+                // We need that to ensure that the "-1 style" would go first.
+                m_asm[0] |= 1;
+                m_ast.add(0);
+                style = &m_styles[0];
+                style->start_cell = 0;
+                style->num_cells = 0;
+                style->last_x = -0x7FFFFFFF;
 
-            // Convert the Y-histogram into the array of starting indexes
-            unsigned i;
-            unsigned start_cell = 0;
-            for(i = 0; i < m_ast.size(); i++)
-            {
-                style_info& st = m_styles[m_ast[i]];
-                unsigned v = st.start_cell;
-                st.start_cell = start_cell;
-                start_cell += v;
-            }
-
-            cells = m_outline.scanline_cells(m_scan_y);
-            num_cells = m_outline.scanline_num_cells(m_scan_y);
-
-            while(num_cells--)
-            {
-                curr_cell = *cells++;
-                style_id = (curr_cell->left < 0) ? 0 : 
-                            curr_cell->left - m_min_style + 1;
-
-                style = &m_styles[style_id];
-                if(curr_cell->x == style->last_x)
+                m_sl_start = cells[0]->x;
+                m_sl_len   = cells[num_cells-1]->x - m_sl_start + 1;
+                while(num_cells--)
                 {
-                    cell = &m_cells[style->start_cell + style->num_cells - 1];
-                    cell->area  += curr_cell->area;
-                    cell->cover += curr_cell->cover;
-                }
-                else
-                {
-                    cell = &m_cells[style->start_cell + style->num_cells];
-                    cell->x       = curr_cell->x;
-                    cell->area    = curr_cell->area;
-                    cell->cover   = curr_cell->cover;
-                    style->last_x = curr_cell->x;
-                    style->num_cells++;
+                    curr_cell = *cells++;
+                    add_style(curr_cell->left);
+                    add_style(curr_cell->right);
                 }
 
-                style_id = (curr_cell->right < 0) ? 0 : 
-                            curr_cell->right - m_min_style + 1;
-
-                style = &m_styles[style_id];
-                if(curr_cell->x == style->last_x)
+                // Convert the Y-histogram into the array of starting indexes
+                unsigned i;
+                unsigned start_cell = 0;
+                for(i = 0; i < m_ast.size(); i++)
                 {
-                    cell = &m_cells[style->start_cell + style->num_cells - 1];
-                    cell->area  -= curr_cell->area;
-                    cell->cover -= curr_cell->cover;
+                    style_info& st = m_styles[m_ast[i]];
+                    unsigned v = st.start_cell;
+                    st.start_cell = start_cell;
+                    start_cell += v;
                 }
-                else
+
+                cells = m_outline.scanline_cells(m_scan_y);
+                num_cells = m_outline.scanline_num_cells(m_scan_y);
+
+                while(num_cells--)
                 {
-                    cell = &m_cells[style->start_cell + style->num_cells];
-                    cell->x       =  curr_cell->x;
-                    cell->area    = -curr_cell->area;
-                    cell->cover   = -curr_cell->cover;
-                    style->last_x =  curr_cell->x;
-                    style->num_cells++;
+                    curr_cell = *cells++;
+                    style_id = (curr_cell->left < 0) ? 0 :
+                                curr_cell->left - m_min_style + 1;
+
+                    style = &m_styles[style_id];
+                    if(curr_cell->x == style->last_x)
+                    {
+                        cell = &m_cells[style->start_cell + style->num_cells - 1];
+                        cell->area  += curr_cell->area;
+                        cell->cover += curr_cell->cover;
+                    }
+                    else
+                    {
+                        cell = &m_cells[style->start_cell + style->num_cells];
+                        cell->x       = curr_cell->x;
+                        cell->area    = curr_cell->area;
+                        cell->cover   = curr_cell->cover;
+                        style->last_x = curr_cell->x;
+                        style->num_cells++;
+                    }
+
+                    style_id = (curr_cell->right < 0) ? 0 :
+                                curr_cell->right - m_min_style + 1;
+
+                    style = &m_styles[style_id];
+                    if(curr_cell->x == style->last_x)
+                    {
+                        cell = &m_cells[style->start_cell + style->num_cells - 1];
+                        cell->area  -= curr_cell->area;
+                        cell->cover -= curr_cell->cover;
+                    }
+                    else
+                    {
+                        cell = &m_cells[style->start_cell + style->num_cells];
+                        cell->x       =  curr_cell->x;
+                        cell->area    = -curr_cell->area;
+                        cell->cover   = -curr_cell->cover;
+                        style->last_x =  curr_cell->x;
+                        style->num_cells++;
+                    }
                 }
             }
             if(m_ast.size() > 1) break;
             ++m_scan_y;
         }
         ++m_scan_y;
+
+        if(m_layer_order != layer_unsorted)
+        {
+            range_adaptor<pod_vector<unsigned> > ra(m_ast, 1, m_ast.size() - 1);
+            if(m_layer_order == layer_direct) quick_sort(ra, unsigned_greater);
+            else                              quick_sort(ra, unsigned_less);
+        }
+
         return m_ast.size() - 1;
     }
 
@@ -588,8 +647,13 @@ namespace agg24
         return sl.hit();
     }
 
-
-
+    //------------------------------------------------------------------------
+    template<class Clip>
+    cover_type* rasterizer_compound_aa<Clip>::allocate_cover_buffer(unsigned len)
+    {
+        m_cover_buf.allocate(len, 256);
+        return &m_cover_buf[0];
+    }
 
 }
 

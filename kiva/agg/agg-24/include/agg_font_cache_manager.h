@@ -276,6 +276,12 @@ namespace agg24
         {}
 
         //--------------------------------------------------------------------
+        void reset_last_glyph()
+        {
+            m_prev_glyph = m_last_glyph = 0;
+        }
+
+        //--------------------------------------------------------------------
         const glyph_cache* glyph(unsigned glyph_code)
         {
             synchronize();

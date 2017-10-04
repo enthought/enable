@@ -60,7 +60,7 @@ namespace agg24
         typedef Curve4 curve4_type;
         typedef conv_curve<VertexSource, Curve3, Curve4> self_type;
 
-        conv_curve(VertexSource& source) :
+        explicit conv_curve(VertexSource& source) :
           m_source(&source), m_last_x(0.0), m_last_y(0.0) {}
         void attach(VertexSource& source) { m_source = &source; }
 
@@ -154,10 +154,10 @@ namespace agg24
             return path_cmd_line_to;
         }
 
-        double ct2_x = 0.0;
-        double ct2_y = 0.0;
-        double end_x = 0.0;
-        double end_y = 0.0;
+        double ct2_x;
+        double ct2_y;
+        double end_x;
+        double end_y;
 
         unsigned cmd = m_source->vertex(x, y);
         switch(cmd)

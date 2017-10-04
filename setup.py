@@ -215,6 +215,7 @@ class MyClean(distutils.command.clean.clean):
             join("agg", "_agg.pyd"),
             join("agg", "_plat_support.pyd"),
             join("agg", "src", "win32", "plat_support.pyd"),
+            join("agg", "src", "win32", "plat_support_wrap.cpp"),
 
             # *nix Agg
             join("agg", "_agg.so"),

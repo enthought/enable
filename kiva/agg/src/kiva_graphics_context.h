@@ -588,7 +588,7 @@ namespace kiva
 
 
             agg24::path_storage img_outline = img.boundary_path(img_mtx);
-            agg24::rendering_buffer* src_buf = img.rendering_buffer_ptr();
+            other_format src_pix(img.rendering_buffer());
 
             agg24::trans_affine inv_img_mtx = img_mtx;
             inv_img_mtx.invert();
@@ -605,7 +605,7 @@ namespace kiva
                     typedef typename kiva::image_filters<other_format>::nearest_type span_gen_type;
                     typedef typename kiva::image_filters<other_format>::source_type source_type;
 
-                    source_type source(*src_buf, back_color);
+                    source_type source(src_pix, back_color);
                     span_gen_type span_generator(source, interpolator);
                     this->transform_image_final(img_outline, span_generator);
 					break;
@@ -615,7 +615,7 @@ namespace kiva
                     typedef typename kiva::image_filters<other_format>::bilinear_type span_gen_type;
                     typedef typename kiva::image_filters<other_format>::source_type source_type;
 
-                    source_type source(*src_buf, back_color);
+                    source_type source(src_pix, back_color);
                     span_gen_type span_generator(source, interpolator);
                     this->transform_image_final(img_outline, span_generator);
                     break;
@@ -669,7 +669,7 @@ namespace kiva
                     typedef typename kiva::image_filters<other_format>::general_type span_gen_type;
                     typedef typename kiva::image_filters<other_format>::source_type source_type;
 
-                    source_type source(*src_buf, back_color);
+                    source_type source(src_pix, back_color);
                     span_gen_type span_generator(source, interpolator, filter);
                     this->transform_image_final(img_outline, span_generator);
 

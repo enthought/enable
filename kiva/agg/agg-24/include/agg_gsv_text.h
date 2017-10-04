@@ -54,6 +54,8 @@ namespace agg24
         void start_point(double x, double y);
         void text(const char* text);
 
+        double text_width();
+
         void rewind(unsigned path_id);
         unsigned vertex(double* x, double* y);
 
@@ -110,7 +112,7 @@ namespace agg24
     template<class Transformer = trans_affine> class gsv_text_outline
     {
     public:
-        gsv_text_outline(gsv_text& text, const Transformer& trans) :
+        gsv_text_outline(gsv_text& text, Transformer& trans) :
           m_polyline(text),
           m_trans(m_polyline, trans)
         {

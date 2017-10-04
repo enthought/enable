@@ -86,7 +86,7 @@ class AffineMatrixTestCase(unittest.TestCase):
 
     def test_determinant(self):
         orig = array((1.0,2.0,3.0,1.0,4.0,5.0))
-        desired = -0.2
+        desired = -5.0
         m = agg.AffineMatrix(orig)
         result = m.determinant()
         assert(alltrue(result == desired))

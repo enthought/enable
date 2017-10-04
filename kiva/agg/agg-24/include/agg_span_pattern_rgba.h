@@ -75,7 +75,7 @@ namespace agg24
                 span->g = p[order_type::G];
                 span->b = p[order_type::B];
                 span->a = p[order_type::A];
-                p = m_src->next_x();
+                p = (const value_type*)m_src->next_x();
                 ++span;
             }
             while(--len);
