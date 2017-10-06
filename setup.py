@@ -1,4 +1,4 @@
-# Copyright (c) 2008-2013 by Enthought, Inc.
+# Copyright (c) 2008-2017 by Enthought, Inc.
 # All rights reserved.
 
 # These are necessary to get the clib compiled.  The following also adds
@@ -36,8 +36,8 @@ from numpy.distutils.core import setup
 from numpy.distutils.misc_util import is_string
 
 MAJOR = 4
-MINOR = 6
-MICRO = 3
+MINOR = 7
+MICRO = 1
 
 IS_RELEASED = False
 
