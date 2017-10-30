@@ -1,5 +1,5 @@
 import numpy as np
-cimport numpy as np
+from numpy cimport uint8_t
 cimport _hit_test
 
 
@@ -67,7 +67,7 @@ def points_in_polygon(pts, poly_pts, use_winding=False):
 
     cdef double[:, ::1] pts_view = pts
     cdef double[:, ::1] poly_pts_view = poly_pts
-    cdef np.uint8_t[::1] results = np.zeros(len(pts), dtype=np.uint8)
+    cdef uint8_t[::1] results = np.zeros(len(pts), dtype=np.uint8)
 
     if use_winding:
         _hit_test.points_in_polygon_winding(&pts_view[0][0], pts_view.shape[0],
