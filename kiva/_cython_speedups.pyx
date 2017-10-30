@@ -1,5 +1,5 @@
-from libc.stdint cimport uint8_t
 import numpy as np
+from numpy cimport uint8_t
 cimport _hit_test
 
 
