@@ -36,7 +36,7 @@ master_doc = 'index'
 
 # General substitutions.
 project = 'enable'
-copyright = '2008-2015, Enthought'
+copyright = '2008-2017, Enthought'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
