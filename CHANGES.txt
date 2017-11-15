@@ -10,6 +10,8 @@ Enhancements
 Fixes
 -----
 
+* PR #295: Use uint8_t from numpy instead of stdint
+
 Maintenance
 -----------
 
