@@ -5,6 +5,16 @@ import sys
 from traitsui.tests._tools import skip_if_not_wx
 
 
+def test_quartz_importable():
+    if sys.platform != 'darwin':
+        from unittest.case import SkipTest
+        raise SkipTest("quartz is only built on OS X")
+
+    from kiva.quartz import ABCGI
+    from kiva.quartz import CTFont
+    from kiva.quartz import mac_context
+
+
 @skip_if_not_wx
 def test_macport():
     if sys.platform != 'darwin':
