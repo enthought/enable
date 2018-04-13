@@ -60,6 +60,7 @@ class MouseWheelTestCase(TestCase):
         # validate results
         self.assertEqual(self.tool.event.mouse_wheel_axis, 'vertical')
         self.assertAlmostEqual(self.tool.event.mouse_wheel, 5.0/3.0)
+        self.assertEqual(self.tool.event.mouse_wheel_delta, (0, 200))
 
     def test_horizontal_mouse_wheel(self):
         import wx
@@ -78,3 +79,4 @@ class MouseWheelTestCase(TestCase):
         # validate results
         self.assertEqual(self.tool.event.mouse_wheel_axis, 'horizontal')
         self.assertAlmostEqual(self.tool.event.mouse_wheel, 5.0/3.0)
+        self.assertEqual(self.tool.event.mouse_wheel_delta, (200, 0))

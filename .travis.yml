@@ -10,7 +10,6 @@ addons:
     - python-wxtools
     - ccache
     - cmake
-    - swig
     - zlib1g-dev
     - libpng-dev
     - libfreetype6-dev
