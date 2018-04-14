@@ -432,6 +432,7 @@ class _Window(AbstractWindow):
                     mouse_wheel_axis = 'vertical'
         else:
             mouse_wheel = 0
+            mouse_wheel_delta = (0, 0)
             mouse_wheel_axis = 'vertical'
 
         return MouseEvent(

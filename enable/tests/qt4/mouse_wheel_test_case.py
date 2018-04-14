@@ -60,8 +60,6 @@ class MouseWheelTestCase(TestCase):
                 QtCore.Qt.ScrollUpdate
             )
 
-
-
         # dispatch event
         self.window._on_mouse_wheel(qt_event)
 
@@ -79,11 +77,11 @@ class MouseWheelTestCase(TestCase):
         if is_qt4:
             qt_event = QtGui.QWheelEvent(
                 QtCore.QPoint(0, 0), 200, QtCore.Qt.NoButton,
-                QtCore.Qt.NoModifier, QtCore.Qt.Vertical
+                QtCore.Qt.NoModifier, QtCore.Qt.Horizontal
             )
         else:
             qt_event = QtGui.QWheelEvent(
-                QtCore.QPointF(0, 0),
+                QtCore.QPoint(0, 0),
                 self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),
                 QtCore.QPoint(200, 0), QtCore.QPoint(200.0/120, 0), 200,
                 QtCore.Qt.Vertical, QtCore.Qt.NoButton, QtCore.Qt.NoModifier,
