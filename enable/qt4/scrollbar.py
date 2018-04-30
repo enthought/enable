@@ -44,7 +44,9 @@ def valid_scroll_position(object, name, value):
 
 
 class QResizableScrollBar(QtGui.QScrollBar):
+
     resized = QtCore.Signal()
+
     def resizeEvent(self, event):
         super(QResizableScrollBar, self).resizeEvent(event)
         self.resized.emit()
@@ -175,6 +177,7 @@ class NativeScrollBar(Component):
         self._control.sliderPressed.connect(self._on_slider_pressed)
         self._control.sliderReleased.connect(self._on_slider_released)
         self._control.resized.connect(self._control_resized)
+        self._control.destroyed.connect(self._on_destroyed)
         self._control.setVisible(True)
 
     def _update_control(self, enable_range, value):
@@ -230,6 +233,9 @@ class NativeScrollBar(Component):
     def _control_resized(self):
         self._widget_moved = True
         self.request_redraw()
+
+    def _on_destroyed(self):
+        self._control = None
 
     #------------------------------------------------------------------------
     # Basic trait event handlers

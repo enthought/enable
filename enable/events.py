@@ -129,6 +129,7 @@ class MouseEvent(BasicEvent):
     right_down = ReadOnly
     mouse_wheel = ReadOnly
     mouse_wheel_axis = ReadOnly
+    mouse_wheel_delta = ReadOnly
 
 mouse_event_trait = Event(MouseEvent)
 

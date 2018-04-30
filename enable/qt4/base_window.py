@@ -30,6 +30,10 @@ from .constants import (
     DRAG_RESULTS_MAP
 )
 
+
+is_qt4 = (QtCore.__version_info__[0] <= 4)
+
+
 class _QtWindowHandler(object):
     def __init__(self, qt_window, enable_window):
         self._enable_window = enable_window
@@ -408,12 +412,27 @@ class _Window(AbstractWindow):
         # A bit crap, because AbstractWindow was written with wx in mind, and
         # we treat wheel events like mouse events.
         if isinstance(event, QtGui.QWheelEvent):
-            delta = event.delta()
             degrees_per_step = 15.0
-            mouse_wheel = delta / float(8 * degrees_per_step)
-            mouse_wheel_axis = MOUSE_WHEEL_AXIS_MAP[event.orientation()]
+            if is_qt4:
+                delta = event.delta()
+                mouse_wheel = delta / float(8 * degrees_per_step)
+                mouse_wheel_axis = MOUSE_WHEEL_AXIS_MAP[event.orientation()]
+                if mouse_wheel_axis == 'horizontal':
+                    mouse_wheel_delta = (delta, 0)
+                else:
+                    mouse_wheel_delta = (0, delta)
+            else:
+                delta = event.pixelDelta()
+                mouse_wheel_delta = (delta.x(), delta.y())
+                if abs(mouse_wheel_delta[0]) > abs(mouse_wheel_delta[1]):
+                    mouse_wheel = mouse_wheel_delta[0] / float(8 * degrees_per_step)
+                    mouse_wheel_axis = 'horizontal'
+                else:
+                    mouse_wheel = mouse_wheel_delta[1] / float(8 * degrees_per_step)
+                    mouse_wheel_axis = 'vertical'
         else:
             mouse_wheel = 0
+            mouse_wheel_delta = (0, 0)
             mouse_wheel_axis = 'vertical'
 
         return MouseEvent(
@@ -421,6 +440,7 @@ class _Window(AbstractWindow):
             y=self._flip_y(y),
             mouse_wheel=mouse_wheel,
             mouse_wheel_axis=mouse_wheel_axis,
+            mouse_wheel_delta=mouse_wheel_delta,
             alt_down=bool(modifiers & QtCore.Qt.AltModifier),
             shift_down=bool(modifiers & QtCore.Qt.ShiftModifier),
             control_down=bool(modifiers & QtCore.Qt.ControlModifier),

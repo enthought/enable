@@ -362,6 +362,10 @@ class BaseWindow(AbstractWindow):
                             event.GetWheelRotation()) /
                             (event.GetWheelDelta() or 1))
             wheel_axis = MOUSE_WHEEL_AXIS_MAP[event.GetWheelAxis()]
+            if wheel_axis == 'horizontal':
+                mouse_wheel_delta = (mouse_wheel * 120/200., 0)
+            else:
+                mouse_wheel_delta = (0, mouse_wheel * 120/200.)
 
             # Note: The following code fixes a bug in wxPython that returns
             # 'mouse_wheel' events in screen coordinates, rather than window

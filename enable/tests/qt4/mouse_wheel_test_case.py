@@ -43,11 +43,22 @@ class MouseWheelTestCase(TestCase):
     def test_vertical_mouse_wheel(self):
         from pyface.qt import QtCore, QtGui
 
+        is_qt4 = (QtCore.__version_info__[0] <= 4)
+
         # create and mock a mouse wheel event
-        qt_event = QtGui.QWheelEvent(
-            QtCore.QPoint(0, 0), 200, QtCore.Qt.NoButton, QtCore.Qt.NoModifier,
-            QtCore.Qt.Vertical
-        )
+        if is_qt4:
+            qt_event = QtGui.QWheelEvent(
+                QtCore.QPoint(0, 0), 200, QtCore.Qt.NoButton,
+                QtCore.Qt.NoModifier, QtCore.Qt.Vertical
+            )
+        else:
+            qt_event = QtGui.QWheelEvent(
+                QtCore.QPointF(0, 0),
+                self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),
+                QtCore.QPoint(0, 200), QtCore.QPoint(0, 200.0/120), 200,
+                QtCore.Qt.Vertical, QtCore.Qt.NoButton, QtCore.Qt.NoModifier,
+                QtCore.Qt.ScrollUpdate
+            )
 
         # dispatch event
         self.window._on_mouse_wheel(qt_event)
@@ -55,15 +66,27 @@ class MouseWheelTestCase(TestCase):
         # validate results
         self.assertEqual(self.tool.event.mouse_wheel_axis, 'vertical')
         self.assertAlmostEqual(self.tool.event.mouse_wheel, 5.0/3.0)
+        self.assertEqual(self.tool.event.mouse_wheel_delta, (0, 200))
 
     def test_horizontal_mouse_wheel(self):
         from pyface.qt import QtCore, QtGui
 
+        is_qt4 = (QtCore.__version_info__[0] <= 4)
+
         # create and mock a mouse wheel event
-        qt_event = QtGui.QWheelEvent(
-            QtCore.QPoint(0, 0), 200, QtCore.Qt.NoButton, QtCore.Qt.NoModifier,
-            QtCore.Qt.Horizontal
-        )
+        if is_qt4:
+            qt_event = QtGui.QWheelEvent(
+                QtCore.QPoint(0, 0), 200, QtCore.Qt.NoButton,
+                QtCore.Qt.NoModifier, QtCore.Qt.Horizontal
+            )
+        else:
+            qt_event = QtGui.QWheelEvent(
+                QtCore.QPoint(0, 0),
+                self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),
+                QtCore.QPoint(200, 0), QtCore.QPoint(200.0/120, 0), 200,
+                QtCore.Qt.Vertical, QtCore.Qt.NoButton, QtCore.Qt.NoModifier,
+                QtCore.Qt.ScrollUpdate
+            )
 
         # dispatch event
         self.window._on_mouse_wheel(qt_event)
@@ -71,3 +94,4 @@ class MouseWheelTestCase(TestCase):
         # validate results
         self.assertEqual(self.tool.event.mouse_wheel_axis, 'horizontal')
         self.assertAlmostEqual(self.tool.event.mouse_wheel, 5.0/3.0)
+        self.assertEqual(self.tool.event.mouse_wheel_delta, (200, 0))
