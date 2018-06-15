@@ -109,7 +109,7 @@ weight_dict = {
 }
 
 font_family_aliases = set(['serif', 'sans-serif', 'sans serif', 'cursive',
-                           'fantasy', 'monospace', 'sans'])
+                           'fantasy', 'monospace', 'sans', 'modern'])
 
 #  OS Font paths
 MSFolders = \
@@ -1138,7 +1138,7 @@ class FontManager:
         for i, family1 in enumerate(families):
             family1 = family1.lower()
             if family1 in font_family_aliases:
-                if family1 in ('sans', 'sans serif'):
+                if family1 in ('sans', 'sans serif', 'modern'):
                     family1 = 'sans-serif'
                 options = preferred_fonts[family1]
                 options = [x.lower() for x in options]
