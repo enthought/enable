@@ -445,11 +445,14 @@ def findSystemFonts(fontpaths=None, fontext='ttf'):
                 if len(ext) > 1 and ext[1:].lower() in fontexts:
                     fontfiles[f] = 1
         else:
-            fontpaths = x11FontDirectory()
             # check for OS X & load its fonts if present
             if sys.platform == 'darwin':
+                fontpaths = []
                 for f in OSXInstalledFonts(fontext=fontext):
                     fontfiles[f] = 1
+            else:
+                # Otherwise, check X11.
+                fontpaths = x11FontDirectory()
 
             for f in get_fontconfig_fonts(fontext):
                 fontfiles[f] = 1
