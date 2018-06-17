@@ -26,3 +26,11 @@ kiva/quartz/CTFont.c
 # Auto-generated version info
 enable/_version.py
 kiva/_version.py
+
+# Unclean test crud.
+arc.png
+arc_to.png
+dash.bmp
+sun.test_*.bmp
+text_image.test_*.bmp
+.hypothesis/
