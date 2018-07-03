@@ -31,6 +31,16 @@ class TestPointsInPolygon(unittest.TestCase):
 
         return
 
+    def test_transposed_points_in_polygon(self):
+
+        polygon = array(((0.0, 10.0, 10.0, 0.0), (0.0, 0.0, 10.0, 10.0)))
+        points = array(((-1.0, 5.0, 15.0), (-1.0, 5.0, 15.0)))
+
+        result = points_in_polygon(points, polygon)
+        self.assertTrue(allclose(array([0, 1, 0]), result))
+
+        return
+
     def test_asymmetric_points_in_polygon(self):
 
         polygon = array(((0.0, 0.0), (20.0, 0.0), (20.0, 10.0), (0.0, 10.0)))
