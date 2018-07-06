@@ -10,13 +10,14 @@
 #include <string.h>
 #include <stack>
 
-#if defined(_WIN32) || defined(__WIN32__) || defined(__CYGWIN__)
-#include <windows.h>
-#endif
+// #if defined(_WIN32) || defined(__WIN32__) || defined(__CYGWIN__)
+// #include <windows.h>
+// #endif
 
 #include <iostream>
 #include <memory>
-#include <locale>
+
+#include "utf8.h"
 
 #include "agg_trans_affine.h"
 #include "agg_path_storage.h"
@@ -56,6 +57,7 @@
 #include "kiva_graphics_context_base.h"
 #include "kiva_alpha_gamma.h"
 #include "kiva_gradient.h"
+
 
 namespace kiva
 {
@@ -1292,21 +1294,14 @@ namespace kiva
         ScanlineRendererType scanlineRenderer(this->renderer);
 
         const agg24::glyph_cache *glyph = NULL;
-#if defined(_WIN32) || defined(__WIN32__) || defined(__CYGWIN__)
-        int required = MultiByteToWideChar(CP_UTF8, 0, text, -1, 0, 0);
-        std::vector<wchar_t> p_(required + 1);
-        MultiByteToWideChar(CP_UTF8, 0, text, -1, &p_[0], required);
-        wchar_t *p = &p_[0];
-#else
-        std::vector <wchar_t> p_(1024);
-        size_t length = mbstowcs(&p_[0], text, 1024);
-        if (length > 1024)
-          {
-            p_.resize (length + 1);
-            mbstowcs(&p_[0], text, length);
-          }
-        wchar_t *p = &p_[0];
-#endif
+
+        // Explicitly decode UTF8 bytes to 32-bit codepoints to feed into the
+        // font API.
+        std::vector<utf8::uint32_t> codepoints;
+        std::vector<utf8::uint32_t>::iterator p;
+        std::string utf8text(text);
+        utf8::utf8to32(utf8text.begin(), utf8text.end(), std::back_inserter(codepoints));
+
         bool retval = true;
 
         // Check to make sure the font's loaded.
@@ -1353,7 +1348,7 @@ namespace kiva
         double advance_x = 0.0;
         double advance_y = 0.0;
 
-        while (*p)
+        for (p=codepoints.begin(); p!=codepoints.end(); ++p)
         {
             double x = start_x + advance_x;
             double y = start_y + advance_y;
@@ -1375,7 +1370,6 @@ namespace kiva
 
             advance_x += glyph->advance_x;
             advance_y += glyph->advance_y;
-            p++;
         }
 
         agg24::trans_affine null_xform = agg24::trans_affine_translation(0., 0.);
