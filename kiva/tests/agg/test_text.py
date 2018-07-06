@@ -11,7 +11,10 @@ def locale_context(category, new=None):
     """ Temporarily set the locale.
     """
     old = locale.getlocale(category)
-    locale.setlocale(category, new)
+    try:
+        locale.setlocale(category, new)
+    except locale.Error as e:
+        raise unittest.SkipTest(str(e))
     try:
         yield
     finally:
