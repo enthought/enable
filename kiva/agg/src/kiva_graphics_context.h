@@ -10,10 +10,6 @@
 #include <string.h>
 #include <stack>
 
-// #if defined(_WIN32) || defined(__WIN32__) || defined(__CYGWIN__)
-// #include <windows.h>
-// #endif
-
 #include <iostream>
 #include <memory>
 
@@ -1297,10 +1293,9 @@ namespace kiva
 
         // Explicitly decode UTF8 bytes to 32-bit codepoints to feed into the
         // font API.
-        std::vector<utf8::uint32_t> codepoints;
-        std::vector<utf8::uint32_t>::iterator p;
-        std::string utf8text(text);
-        utf8::utf8to32(utf8text.begin(), utf8text.end(), std::back_inserter(codepoints));
+        size_t text_length = strlen(text);
+        utf8::iterator<char*> p(text, text, text+text_length);
+        utf8::iterator<char*> p_end(text+text_length, text, text+text_length);
 
         bool retval = true;
 
@@ -1348,7 +1343,7 @@ namespace kiva
         double advance_x = 0.0;
         double advance_y = 0.0;
 
-        for (p=codepoints.begin(); p!=codepoints.end(); ++p)
+        for (; p!=p_end; ++p)
         {
             double x = start_x + advance_x;
             double y = start_y + advance_y;

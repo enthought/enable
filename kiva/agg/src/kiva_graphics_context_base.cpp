@@ -585,10 +585,9 @@ kiva::rect_type graphics_context_base::get_text_extent(char *text)
 
     // Explicitly decode UTF8 bytes to 32-bit codepoints to feed into the
     // font API.
-    std::vector<utf8::uint32_t> codepoints;
-    std::vector<utf8::uint32_t>::iterator p;
-    std::string utf8text(text);
-    utf8::utf8to32(utf8text.begin(), utf8text.end(), std::back_inserter(codepoints));
+    size_t text_length = strlen(text);
+    utf8::iterator<char*> p(text, text, text+text_length);
+    utf8::iterator<char*> p_end(text+text_length, text, text+text_length);
 
     double x1 = 0.0, x2 = 0.0, y1 = 0.0, y2= 0.0;
 
@@ -602,7 +601,7 @@ kiva::rect_type graphics_context_base::get_text_extent(char *text)
     //typedef agg24::glyph_raster_bin<agg24::rgba8> GlyphGeneratorType;
     //GlyphGeneratorType glyphGen(this->font_manager.glyph(*p)->data);
 
-    for (p=codepoints.begin(); p!=codepoints.end(); ++p)
+    for (; p!=p_end; ++p)
     {
         glyph = font_manager->glyph(*p);
         if (glyph == NULL)
