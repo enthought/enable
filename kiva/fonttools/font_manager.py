@@ -109,7 +109,7 @@ weight_dict = {
 }
 
 font_family_aliases = set(['serif', 'sans-serif', 'sans serif', 'cursive',
-                           'fantasy', 'monospace', 'sans'])
+                           'fantasy', 'monospace', 'sans', 'modern'])
 
 #  OS Font paths
 MSFolders = \
@@ -445,11 +445,14 @@ def findSystemFonts(fontpaths=None, fontext='ttf'):
                 if len(ext) > 1 and ext[1:].lower() in fontexts:
                     fontfiles[f] = 1
         else:
-            fontpaths = x11FontDirectory()
             # check for OS X & load its fonts if present
             if sys.platform == 'darwin':
+                fontpaths = []
                 for f in OSXInstalledFonts(fontext=fontext):
                     fontfiles[f] = 1
+            else:
+                # Otherwise, check X11.
+                fontpaths = x11FontDirectory()
 
             for f in get_fontconfig_fonts(fontext):
                 fontfiles[f] = 1
@@ -1135,7 +1138,7 @@ class FontManager:
         for i, family1 in enumerate(families):
             family1 = family1.lower()
             if family1 in font_family_aliases:
-                if family1 in ('sans', 'sans serif'):
+                if family1 in ('sans', 'sans serif', 'modern'):
                     family1 = 'sans-serif'
                 options = preferred_fonts[family1]
                 options = [x.lower() for x in options]

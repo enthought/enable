@@ -102,6 +102,7 @@ dependencies = {
     "numpy",
     "pygments",
     "pyparsing",
+    "swig",
     "unittest2",
     "pypdf2",
 }

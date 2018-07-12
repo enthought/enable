@@ -51,7 +51,7 @@ def points_in_polygon(pts, poly_pts, use_winding=False):
         pts = np.reshape(pts, (1,) + np.shape(pts))
     if np.shape(pts)[1] != 2:
         if np.shape(pts)[0] == 2:
-            pts = np.transpose(pts)
+            pts = np.ascontiguousarray(np.transpose(pts))
         else:
             raise ValueError('pts must be an Nx2 or 2xN array')
 
@@ -61,7 +61,7 @@ def points_in_polygon(pts, poly_pts, use_winding=False):
         poly_pts = np.reshape(poly_pts, (1,) + np.shape(poly_pts))
     if np.shape(poly_pts)[1] != 2:
         if np.shape(poly_pts)[0] == 2:
-            poly_pts = np.transpose(poly_pts)
+            poly_pts = np.ascontiguousarray(np.transpose(poly_pts))
         else:
             raise ValueError('poly_pts must be an Nx2 or 2xN array')
 

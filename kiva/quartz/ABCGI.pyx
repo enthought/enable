@@ -1824,7 +1824,7 @@ cdef class CGImageFile(CGImage):
 
         data = self.bmp_array.data
         s = piltostring(img)
-        py_data = PyString_AsString(s)
+        py_data = PyBytes_AsString(s)
 
         memcpy(<void*>data, <void*>py_data, len(s))
 
@@ -2766,7 +2766,7 @@ cdef CTLineRef _create_ct_line(object the_string, CTFontRef font, object stroke_
         return NULL
 
     the_string = the_string.encode('utf-8')
-    c_string = PyString_AsString(the_string)
+    c_string = PyBytes_AsString(the_string)
 
     cf_string = CFStringCreateWithCString(NULL, c_string, kCFStringEncodingUTF8)
     cf_attr_string = CFAttributedStringCreateMutable(NULL, 0)

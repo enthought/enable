@@ -7,7 +7,7 @@ ctypedef void (*cobject_destr)(void *)
 cdef extern from "Python.h":
     ctypedef int size_t
     ctypedef int Py_ssize_t
-    char* PyString_AsString(object string)
+    char* PyBytes_AsString(object string)
     object PyString_FromString(char* c_string)
     object PyString_FromStringAndSize(char* v, Py_ssize_t len)
     int PyString_AsStringAndSize(object obj, char **buffer, Py_ssize_t *length)

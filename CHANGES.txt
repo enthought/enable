@@ -1,19 +1,29 @@
 Enable CHANGELOG
 ================
 
-Changes since Enable 4.7.0
-==========================
+Enable 4.7.2
+============
 
-Enhancements
-------------
+Fixes
+-----
+
+* PR #310: Remove locale-dependence in Agg text rendering
+* PR #309: FIX: Ensure contiguous transposed arrays
+* PR #305: Ignore X11 fonts on macOS
+* PR #299: BUG: Remove use of C API not available in Python 3
+
+Maintenance
+-----------
+
+* PR #308: Update to the most recent release of fonttools
+
+Enable 4.7.1
+============
 
 Fixes
 -----
 
 * PR #295: Use uint8_t from numpy instead of stdint
-
-Maintenance
------------
 
 Enable 4.7.0
 ============
