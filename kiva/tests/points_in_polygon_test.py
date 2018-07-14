@@ -1,7 +1,7 @@
 import unittest
 import warnings
 
-from numpy import array, allclose
+from numpy import array, allclose, zeros
 
 from kiva.api import points_in_polygon
 from kiva.agg import points_in_polygon as points_in_polygon_deprecated
@@ -128,6 +128,27 @@ class TestPointsInPolygon(unittest.TestCase):
                          "Interior polygon inside: odd-even")
         self.assertEqual(0, w_result[0],
                          "Interior polygon inside: winding")
+
+    def test_discontiguous_inputs(self):
+        polygon = array(((0.0, 0.0),
+                         (10.0, 0.0),
+                         (10.0, 10.0),
+                         (0.0, 10.0)))
+        points = array(((-1.0, -1.0),
+                        (5.0, 5.0),
+                        (15.0, 15.0),
+                        (7.0, 7.0)))
+
+        # Create a discontiguous polygon array
+        poly3 = zeros((polygon.shape[0], 3))
+        poly3[:, :2] = polygon
+        polygon = poly3[:, :2]
+
+        # Create a discontiguous points array.
+        points = points[1::2]
+
+        result = points_in_polygon(points, polygon)
+        self.assertTrue(allclose(array([1, 1]), result))
 
 
 if __name__ == "__main__":

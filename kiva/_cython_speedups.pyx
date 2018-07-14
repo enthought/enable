@@ -65,8 +65,8 @@ def points_in_polygon(pts, poly_pts, use_winding=False):
         else:
             raise ValueError('poly_pts must be an Nx2 or 2xN array')
 
-    cdef double[:, ::1] pts_view = pts
-    cdef double[:, ::1] poly_pts_view = poly_pts
+    cdef double[:, ::1] pts_view = np.ascontiguousarray(pts)
+    cdef double[:, ::1] poly_pts_view = np.ascontiguousarray(poly_pts)
     cdef uint8_t[::1] results = np.zeros(len(pts), dtype=np.uint8)
 
     if use_winding:
