@@ -1,6 +1,9 @@
 # Copyright (c) 2008-2013 by Enthought, Inc.
 # All rights reserved.
-from mock import Mock
+try:
+    from unittest.mock import Mock
+except ImportError:
+    from mock import Mock
 
 from enable.abstract_window import AbstractWindow
 from enable.events import MouseEvent, KeyEvent, DragEvent

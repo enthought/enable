@@ -1,4 +1,7 @@
-import mock
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 import nose
 
 from traitsui.tests._tools import skip_if_null
