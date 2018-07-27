@@ -11,7 +11,10 @@ from __future__ import (division, absolute_import, print_function,
                         unicode_literals)
 
 # Third party library imports
-from mock import MagicMock
+try:
+    from unittest.mock import MagicMock
+except ImportError:
+    from mock import MagicMock
 
 # Enthought library imports
 from apptools.undo.api import UndoManager

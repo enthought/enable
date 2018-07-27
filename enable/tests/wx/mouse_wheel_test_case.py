@@ -1,7 +1,10 @@
 
 from unittest import TestCase
 
-from mock import MagicMock
+try:
+    from unittest.mock import MagicMock
+except ImportError:
+    from mock import MagicMock
 
 from traits.api import Any
 from traitsui.tests._tools import skip_if_not_wx
