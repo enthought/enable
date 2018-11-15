@@ -1,3 +1,9 @@
+include CHANGES.txt
+include CONTRIBUTING.rst
+include LICENSE.txt
+include image_LICENSE.txt
+include image_LICENSE_*.txt
+include TODO.txt
 include kiva/agg/agg.i
 include docs/Makefile
 include docs/kiva/agg/notes
