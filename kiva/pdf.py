@@ -623,9 +623,10 @@ class GraphicsContext(GraphicsContextBase):
         """ Sets the font for the current graphics context.
         """
         # TODO: Make this actually do the right thing
-        if font.face_name == "":
-            font.face_name = "Helvetica"
-        self.gc.setFont(font.face_name, font.size)
+        face_name = font.face_name
+        if face_name == "":
+            face_name = "Helvetica"
+        self.gc.setFont(face_name, font.size)
 
     def get_font(self):
         """ Get the current font """
