@@ -130,9 +130,8 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
         self._add_observer(istyle, "MouseWheelForwardEvent", self._vtk_mouse_wheel)
         self._add_observer(istyle, "MouseWheelBackwardEvent", self._vtk_mouse_wheel)
 
-        self._add_observer(istyle, "KeyPressEvent", self._on_key_pressed)
-        self._add_observer(istyle, "KeyReleaseEvent", self._on_key_released)
-        self._add_observer(istyle, "CharEvent", self._on_character)
+        self._add_observer(istyle, "KeyPressEvent", self._vtk_key_updown)
+        self._add_observer(istyle, "KeyReleaseEvent", self._vtk_key_updown)
 
         # We want _vtk_render_event to be called before rendering, so we
         # observe the StartEvent on the RenderWindow.
@@ -212,9 +211,6 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
             else:
                 meth_name += "Release"
 
-        elif "Char" in eventname:
-            meth_name = "OnChar"
-
         elif eventname == "MouseMoveEvent":
             meth_name = "OnMouseMove"
 
@@ -282,8 +278,8 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
         if self.event_passthrough and not handled:
             self._pass_event_to_vtk(vtk_obj, eventname)
 
-    def _create_key_event(self, vtk_event, event_type):
-        # FIXME: THIS IS A BUG
+    def _vtk_key_updown(self, vtk_obj, eventname):
+        # find out who's going to handle the event
         focus_owner = self.focus_owner
 
         if focus_owner is None:
@@ -292,26 +288,29 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
             if focus_owner is None:
                 return self._pass_event_to_vtk(vtk_obj, eventname)
 
-        if event_type == 'character':
+        # Convert the keypress to a standard enable key if possible, otherwise
+        # to text.
+        key = KEY_MAP.get(self.control.key_sym, None)
+
+        if key is None:
             key = six.text_type(self.control.key_sym)
-        else:
-            key = KEY_MAP.get(self.control.key_sym, None)
-            if key is None:
-                key = six.text_type(self.control.key_sym)
+
             if not key:
                 return
 
+        # Use the last-seen mouse position as the coordinates of this event.
         x, y = self.control.event_position
 
-        return KeyEvent(event_type = event_type,
-                character=key, x=x, y=y,
-                alt_down=bool(self.control.alt_key),
-                shift_down=bool(self.control.shift_key),
-                control_down=bool(self.control.control_key),
-                event=eventname,
-                window=self.control)
+        enable_event = KeyEvent(
+            character=key, x=x, y=y,
+            alt_down=bool(self.control.alt_key),
+            shift_down=bool(self.control.shift_key),
+            control_down=bool(self.control.control_key),
+            event=eventname,
+            window=self.control
+        )
 
-
+        focus_owner.dispatch(enable_event, "key_pressed")
 
     def _create_mouse_event(self, event_string):
         """ Returns an enable.MouseEvent that reflects the VTK mouse event.
@@ -418,7 +417,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
         if self._vtk_image_data is None or any(self._vtk_image_data.dimensions != imagedata_dimensions):
             sz = (width, height, 4)
             img = tvtk.ImageData()
-            img.whole_extent = (0, width-1, 0, height-1, 0, 0)
+            img.extent = (0, width-1, 0, height-1, 0, 0)
             # note the transposed height and width for VTK (row, column, depth)
             img.dimensions = imagedata_dimensions
             # create a 2d view of the array.  This is a bit superfluous because
@@ -438,7 +437,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
 
             self._actor2d.width = width
             self._actor2d.height = height
-            self._mapper.input = img
+            self._mapper.set_input_data(img)
             self._vtk_image_data = img
         return gc
 
