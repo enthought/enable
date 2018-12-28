@@ -7,9 +7,9 @@ from __future__ import absolute_import
 
 # Enthought library imports
 from enable.base_tool import BaseTool
-from traits.etsconfig.api import ETSConfig
-from pyface.toolkit import toolkit_object
 from traits.api import Any, Callable, Enum, Float, Int
+from traits.etsconfig.api import ETSConfig
+from pyface.timer.api import Timer
 
 # Define a toolkit-specific function for determining the global mouse position
 if ETSConfig.toolkit == 'wx':
@@ -149,5 +149,4 @@ class HoverTool(BaseTool):
             return any((t, b, r, l))
 
     def _create_timer(self, event):
-        klass = toolkit_object("timer.timer:Timer")
-        self._timer = klass(self.hover_delay, self.on_timer)
+        self._timer = Timer(self.hover_delay, self.on_timer)
