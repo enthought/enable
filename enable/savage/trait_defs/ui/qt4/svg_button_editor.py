@@ -82,8 +82,7 @@ class SVGButtonEditor(Editor):
             control.setCheckable(True)
             control.toggled.connect(self._toggle_button)
 
-        QtCore.QObject.connect(control, QtCore.SIGNAL('clicked()'),
-                               self.update_object)
+        control.clicked.connect(self.update_object)
 
         if self.factory.tooltip:
             control.setToolTip(self.factory.tooltip)
