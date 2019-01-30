@@ -139,11 +139,9 @@ def configuration(parent_package='', top_path=None):
     if sys.platform == 'darwin':
         define_macros = [('__DARWIN__', None)]
         macros = [('__DARWIN__', None)]
-        extra_link_args = ['-framework', 'Carbon']
     else:
         define_macros = []
         macros = []
-        extra_link_args = []
 
     kiva_include_dirs = ['src'] + agg_include_dirs
     config.add_library('kiva_src',
@@ -184,12 +182,17 @@ def configuration(parent_package='', top_path=None):
         darwin_frameworks = ['Carbon', 'ApplicationServices', 'OpenGL']
     else:
         darwin_frameworks = ['ApplicationServices', 'OpenGL']    
+
+    darwin_extra_link_args = []
+    for framework in darwin_frameworks:
+        darwin_extra_link_args.extend(['-framework', framework])
+
     darwin_opengl_opts = dict(
             include_dirs = [
               '/System/Library/Frameworks/%s.framework/Versions/A/Headers' % x
               for x in darwin_frameworks],
             define_macros = [('__DARWIN__',None)],
-            extra_link_args = ['-framework %s' % x for x in darwin_frameworks]
+            extra_link_args = darwin_extra_link_args
             )
 
     build_info = {}
@@ -208,7 +211,7 @@ def configuration(parent_package='', top_path=None):
                 libraries = build_libraries,
                 depends = ['src/*.[ih]'],
                 extra_compile_args = extra_compile_args,
-                extra_link_args = extra_link_args,
+                extra_link_args = [],
                 define_macros=define_macros,
                 )
     dict_append(build_info, **numerix_info)
