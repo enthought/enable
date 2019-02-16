@@ -59,7 +59,7 @@ import errno
 import six
 import six.moves as sm
 
-from fontTools.ttLib import TTFont, TTLibError
+from fontTools.ttLib import TTCollection, TTFont, TTLibError
 from traits.etsconfig.api import ETSConfig
 
 from . import afm
@@ -671,6 +671,26 @@ def afmFontProperty(fontpath, font):
 
     return FontEntry(fontpath, name, style, variant, weight, stretch, size)
 
+def extractTTC(fpath):
+    """
+    Extract a list of ttfFontProperty objects from a ttc file
+    """
+    props = []
+    try:
+        collection = TTCollection(str(fpath))
+    except (RuntimeError, TTLibError):
+        verbose.report("Could not open font collection %s" % fpath)
+        return props
+    except UnicodeError:
+        verbose.report("Cannot handle unicode filenames")
+        return props
+
+    for font in collection.fonts:
+        try:
+            props.append(ttfFontProperty(fpath, font))
+        except:
+            continue
+    return props
 
 def createFontList(fontfiles, fontext='ttf'):
     """
@@ -708,6 +728,11 @@ def createFontList(fontfiles, fontext='ttf'):
             except:
                 continue
         else:
+            _, ext = os.path.splitext(fpath)
+            if ext.lower() == ".ttc":
+                props = extractTTC(fpath)
+                fontlist.extend(props)
+                continue
             try:
                 font = TTFont(str(fpath))
             except (RuntimeError, TTLibError):
