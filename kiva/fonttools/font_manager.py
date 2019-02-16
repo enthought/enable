@@ -690,6 +690,7 @@ def extractTTC(fpath):
             props.append(ttfFontProperty(fpath, font))
         except:
             continue
+
     return props
 
 def createFontList(fontfiles, fontext='ttf'):
