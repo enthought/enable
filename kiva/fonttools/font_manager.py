@@ -244,8 +244,9 @@ def getPropDict(font):
 #  matplotlib code below
 ###############################################################################
 
-synonyms = {'ttf': ('ttf', 'otf'),
-            'otf': ('ttf', 'otf'),
+synonyms = {'ttf': ('ttf', 'otf', 'ttc'),
+            'otf': ('ttf', 'otf', 'ttc'),
+            'ttc': ('ttf', 'otf', 'ttc'),
             'afm': ('afm',)}
 
 
