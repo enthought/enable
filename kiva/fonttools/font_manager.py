@@ -723,23 +723,20 @@ def createFontList(fontfiles, fontext='ttf'):
                 continue
         else:
             _, ext = os.path.splitext(fpath)
-            if ext.lower() == ".ttc":
-                try:
+            try:
+                if ext.lower() == ".ttc":
                     props = extractTTC(fpath)
                     fontlist.extend(props)
-                except (RuntimeError, TTLibError):
-                    verbose.report("Could not open font collection %s" % fpath)
-                except UnicodeError:
-                    verbose.report("Cannot handle unicode filenames")
-                continue
-            try:
-                font = TTFont(str(fpath))
+                    continue
+                else:
+                    font = TTFont(str(fpath))
             except (RuntimeError, TTLibError):
                 verbose.report("Could not open font file %s" % fpath)
                 continue
             except UnicodeError:
                 verbose.report("Cannot handle unicode filenames")
                 continue
+
             try:
                 prop = ttfFontProperty(fpath, font)
             except:
