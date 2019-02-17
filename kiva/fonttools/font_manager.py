@@ -675,16 +675,9 @@ def extractTTC(fpath):
     """
     Extract a list of ttfFontProperty objects from a ttc file
     """
-    props = []
-    try:
-        collection = TTCollection(str(fpath))
-    except (RuntimeError, TTLibError):
-        verbose.report("Could not open font collection %s" % fpath)
-        return props
-    except UnicodeError:
-        verbose.report("Cannot handle unicode filenames")
-        return props
+    collection = TTCollection(str(fpath))
 
+    props = []
     for font in collection.fonts:
         try:
             props.append(ttfFontProperty(fpath, font))
@@ -731,8 +724,13 @@ def createFontList(fontfiles, fontext='ttf'):
         else:
             _, ext = os.path.splitext(fpath)
             if ext.lower() == ".ttc":
-                props = extractTTC(fpath)
-                fontlist.extend(props)
+                try:
+                    props = extractTTC(fpath)
+                    fontlist.extend(props)
+                except (RuntimeError, TTLibError):
+                    verbose.report("Could not open font collection %s" % fpath)
+                except UnicodeError:
+                    verbose.report("Cannot handle unicode filenames")
                 continue
             try:
                 font = TTFont(str(fpath))
