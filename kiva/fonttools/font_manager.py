@@ -722,8 +722,8 @@ def createFontList(fontfiles, fontext='ttf'):
                         continue
                     except Exception:
                         logger.error(
-                            "Could not covert font to FontEntry for file %s"
-                            % fpath
+                            "Could not covert font to FontEntry for file %s",
+                            fpath, exc_info=True
                         )
                         continue
                 else:
