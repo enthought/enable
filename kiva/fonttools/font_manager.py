@@ -171,15 +171,6 @@ preferred_fonts = {
 }
 
 
-class verbose(object):
-    ''' class to fake matplotlibs verbose module. No idea why logging
-        module isnt used instead
-    '''
-    @staticmethod
-    def report(text, level='info'):
-        return
-
-
 def _is_writable_dir(p):
     """
     p is a string pointing to a putative writable dir -- return True p
@@ -1097,7 +1088,7 @@ class FontManager:
                 else:
                     paths.append(ttfpath)
 
-        verbose.report('font search path %s' % (str(paths)))
+        logger.debug("font search path %s", str(paths))
         #  Load TrueType fonts and create font dictionary.
 
         self.ttffiles = findSystemFonts(paths) + findSystemFonts()
@@ -1107,7 +1098,7 @@ class FontManager:
         self.defaultFont = {}
 
         for fname in self.ttffiles:
-            verbose.report('trying fontname %s' % fname, 'debug')
+            logger.debug("trying fontname %s", fname)
             if fname.lower().find('vera.ttf') >= 0:
                 self.defaultFont['ttf'] = fname
                 break
@@ -1299,7 +1290,7 @@ class FontManager:
             prop = FontProperties(prop)
         fname = prop.get_file()
         if fname is not None:
-            verbose.report('findfont returning %s' % fname, 'debug')
+            logger.debug("findfont returning %s", fname)
             return fname
 
         if fontext == 'afm':
@@ -1354,15 +1345,16 @@ class FontManager:
                     UserWarning)
                 result = self.defaultFont[fontext]
         else:
-            verbose.report(
-                'findfont: Matching %s to %s (%s) with score of %f' %
-                (prop, best_font.name, best_font.fname, best_score))
+            logger.debug(
+                "findfont: Matching %s to %s (%s) with score of %f",
+                prop, best_font.name, best_font.fname, best_score
+            )
             result = best_font.fname
 
         if not os.path.isfile(result):
             if rebuild_if_missing:
-                verbose.report(
-                    'findfont: Found a missing font file.  Rebuilding cache.')
+                logger.debug(
+                    "findfont: Found a missing font file.  Rebuilding cache.")
                 _rebuild()
                 return fontManager.findfont(
                     prop, fontext, directory, True, False)
@@ -1404,7 +1396,7 @@ def _rebuild():
     global fontManager
     fontManager = FontManager()
     pickle_dump(fontManager, _fmcache)
-    verbose.report("generated new fontManager")
+    logger.debug("generated new fontManager")
 
 
 # The experimental fontconfig-based backend.
@@ -1451,7 +1443,7 @@ else:
             _rebuild()
         else:
             fontManager.default_size = None
-            verbose.report("Using fontManager instance from %s" % _fmcache)
+            logger.debug("Using fontManager instance from %s", _fmcache)
     except:
         _rebuild()
 
