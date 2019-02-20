@@ -1,14 +1,20 @@
 import os
 import unittest
+try:
+    from unittest import mock
+except:
+    import mock
+
+from pkg_resources import resource_filename
 
 from ..font_manager import FontEntry, createFontList
 
-HERE = os.path.dirname(__file__)
+data_dir = resource_filename('kiva.fonttools.tests', 'data')
 
 class TestCreateFontList(unittest.TestCase):
 
     def setUp(self):
-        self.ttc_fontpath = os.path.join(HERE, "data", "TestTTC.ttc")
+        self.ttc_fontpath = os.path.join(data_dir, "TestTTC.ttc")
 
     def test_fontlist_from_ttc(self):
         # When
