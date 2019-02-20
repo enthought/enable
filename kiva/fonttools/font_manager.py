@@ -717,7 +717,11 @@ def createFontList(fontfiles, fontext='ttf'):
                             props.append(ttfFontProperty(fpath, font))
                         fontlist.extend(props)
                         continue
-                    except:
+                    except Exception:
+                        verbose.report(
+                            "Could not covert font to FontEntry for file %s"
+                            % fpath
+                        )
                         continue
                 else:
                     font = TTFont(str(fpath))
