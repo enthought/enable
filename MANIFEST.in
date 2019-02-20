@@ -5,10 +5,9 @@ include image_LICENSE.txt
 include image_LICENSE_*.txt
 include TODO.txt
 include kiva/agg/agg.i
-include kiva/fonttools/tests/data/source.txt
-include kiva/fonttools/tests/data/fonttools_LICENSE.txt
 include docs/Makefile
 include docs/kiva/agg/notes
 recursive-include docs *.py *.rst *.txt *.css *.png *.ico *.doc
 recursive-include examples *.py *.txt *.gif *.jpg *.enaml
 recursive-include kiva/quartz *.pyx *.pxi *.pxd mac_context*.*
+recusive-include kiva/fonttools/tests/data *.txt *.ttc
