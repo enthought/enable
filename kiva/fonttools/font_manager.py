@@ -685,7 +685,7 @@ def createFontList(fontfiles, fontext='ttf'):
     #  Add fonts from list of known font files.
     seen = {}
     for fpath in fontfiles:
-        verbose.report('createFontDict: %s' % (fpath), 'debug')
+        logger.debug("createFontDict %s", fpath)
         fname = os.path.split(fpath)[1]
         if fname in seen:
             continue
@@ -695,7 +695,8 @@ def createFontList(fontfiles, fontext='ttf'):
             try:
                 fh = open(fpath, 'r')
             except:
-                verbose.report("Could not open font file %s" % fpath)
+                logger.error(
+                    "Could not open font file %s", fpath, exc_info=True)
                 continue
             try:
                 try:
@@ -703,11 +704,16 @@ def createFontList(fontfiles, fontext='ttf'):
                 finally:
                     fh.close()
             except RuntimeError:
-                verbose.report("Could not parse font file %s" % fpath)
+                logger.error(
+                    "Could not parse font file %s", fpath, exc_info=True)
                 continue
             try:
                 prop = afmFontProperty(fpath, font)
-            except:
+            except Exception:
+                logger.error(
+                    "Could not covert font to FontEntry for file %s", fpath,
+                    exc_info=True
+                )
                 continue
         else:
             _, ext = os.path.splitext(fpath)
@@ -729,10 +735,12 @@ def createFontList(fontfiles, fontext='ttf'):
                 else:
                     font = TTFont(str(fpath))
             except (RuntimeError, TTLibError):
-                verbose.report("Could not open font file %s" % fpath)
+                logger.error(
+                    "Could not open font file %s", fpath, exc_info=True)
                 continue
             except UnicodeError:
-                verbose.report("Cannot handle unicode filenames")
+                logger.error(
+                    "Cannot handle unicode file: %s", fpath, exc_info=True)
                 continue
 
             try:
