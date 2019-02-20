@@ -1,24 +1,20 @@
+import os
 import unittest
-try:
-    from unittest import mock
-except ImportError:
-    import mock
 
-from ..font_manager import createFontList
+from ..font_manager import FontEntry, createFontList
 
+HERE = os.path.dirname(__file__)
 
 class TestCreateFontList(unittest.TestCase):
 
-    @mock.patch("kiva.fonttools.font_manager.TTCollection")
-    def test_fontlist_from_ttc(self, m_TTCollection):
+    def test_fontlist_from_ttc(self):
         # Given
-        mocked_collection = mock.MagicMock()
-        m_TTCollection.return_value = mocked_collection
-        mocked_collection.fonts = [mock.MagicMock(), mock.MagicMock()]
+        fontpath = os.path.join(HERE, "data", "TestTTC.ttc")
 
         # When
-        with mock.patch("kiva.fonttools.font_manager.ttfFontProperty"):
-            fontlist = createFontList(['/foo/bar/bazFont.ttc'])
+        fontlist = createFontList([fontpath])
 
         # Then
         self.assertEqual(len(fontlist), 2)
+        for fontprop in fontlist:
+            self.assertIsInstance(fontprop, FontEntry)
