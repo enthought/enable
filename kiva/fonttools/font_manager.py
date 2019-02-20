@@ -48,6 +48,7 @@ License   : matplotlib license (PSF compatible)
 
 from __future__ import absolute_import, print_function
 
+import logging
 import os
 import sys
 import glob
@@ -63,6 +64,8 @@ from fontTools.ttLib import TTCollection, TTFont, TTLibError
 from traits.etsconfig.api import ETSConfig
 
 from . import afm
+
+logger = logging.getLogger(__name__)
 
 USE_FONTCONFIG = False
 
@@ -718,7 +721,7 @@ def createFontList(fontfiles, fontext='ttf'):
                         fontlist.extend(props)
                         continue
                     except Exception:
-                        verbose.report(
+                        logger.error(
                             "Could not covert font to FontEntry for file %s"
                             % fpath
                         )
