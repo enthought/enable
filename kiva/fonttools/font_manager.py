@@ -671,21 +671,6 @@ def afmFontProperty(fontpath, font):
 
     return FontEntry(fontpath, name, style, variant, weight, stretch, size)
 
-def extractTTC(fpath):
-    """
-    Extract a list of ttfFontProperty objects from a ttc file
-    """
-    collection = TTCollection(str(fpath))
-
-    props = []
-    for font in collection.fonts:
-        try:
-            props.append(ttfFontProperty(fpath, font))
-        except:
-            continue
-
-    return props
-
 def createFontList(fontfiles, fontext='ttf'):
     """
     A function to create a font lookup list.  The default is to create
@@ -725,9 +710,15 @@ def createFontList(fontfiles, fontext='ttf'):
             _, ext = os.path.splitext(fpath)
             try:
                 if ext.lower() == ".ttc":
-                    props = extractTTC(fpath)
-                    fontlist.extend(props)
-                    continue
+                    collection = TTCollection(str(fpath))
+                    try:
+                        props = []
+                        for font in collection.fonts:
+                            props.append(ttfFontProperty(fpath, font))
+                        fontlist.extend(props)
+                        continue
+                    except:
+                        continue
                 else:
                     font = TTFont(str(fpath))
             except (RuntimeError, TTLibError):
