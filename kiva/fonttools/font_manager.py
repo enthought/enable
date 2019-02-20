@@ -746,10 +746,10 @@ def createFontList(fontfiles, fontext='ttf'):
             try:
                 prop = ttfFontProperty(fpath, font)
             except Exception:
-                    logger.error(
-                        "Could not covert font to FontEntry for file %s",
-                        fpath, exc_info=True
-                    )
+                logger.error(
+                    "Could not covert font to FontEntry for file %s", fpath,
+                    exc_info=True
+                )
                 continue
 
         fontlist.append(prop)
