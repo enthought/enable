@@ -24,3 +24,23 @@ class TestCreateFontList(unittest.TestCase):
         self.assertEqual(len(fontlist), 2)
         for fontprop in fontlist:
             self.assertIsInstance(fontprop, FontEntry)
+
+    @mock.patch(
+        "kiva.fonttools.font_manager.ttfFontProperty", side_effect=ValueError)
+    def test_ttc_exception_on_ttfFontProperty(self, m_ttfFontProperty):
+        # When
+        fontlist = createFontList([self.ttc_fontpath])
+
+        # Then
+        self.assertEqual(len(fontlist), 0)
+        m_ttfFontProperty.assert_called_once()
+
+    @mock.patch(
+        "kiva.fonttools.font_manager.TTCollection", side_effect=RuntimeError)
+    def test_ttc_exception_on_TTCollection(self, m_TTCollection):
+        # When
+        fontlist = createFontList([self.ttc_fontpath])
+
+        # Then
+        self.assertEqual(len(fontlist), 0)
+        m_TTCollection.assert_called_once()
