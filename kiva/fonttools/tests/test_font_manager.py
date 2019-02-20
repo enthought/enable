@@ -33,7 +33,7 @@ class TestCreateFontList(unittest.TestCase):
 
         # Then
         self.assertEqual(len(fontlist), 0)
-        m_ttfFontProperty.assert_called_once()
+        self.assertEqual(m_ttfFontProperty.call_count, 1)
 
     @mock.patch(
         "kiva.fonttools.font_manager.TTCollection", side_effect=RuntimeError)
@@ -43,4 +43,4 @@ class TestCreateFontList(unittest.TestCase):
 
         # Then
         self.assertEqual(len(fontlist), 0)
-        m_TTCollection.assert_called_once()
+        self.assertEqual(m_TTCollection.call_count, 1)
