@@ -2,7 +2,7 @@ import os
 import unittest
 try:
     from unittest import mock
-except:
+except ImportError:
     import mock
 
 from pkg_resources import resource_filename
