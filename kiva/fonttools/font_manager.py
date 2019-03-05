@@ -48,6 +48,7 @@ License   : matplotlib license (PSF compatible)
 
 from __future__ import absolute_import, print_function
 
+import logging
 import os
 import sys
 import glob
@@ -59,10 +60,12 @@ import errno
 import six
 import six.moves as sm
 
-from fontTools.ttLib import TTFont, TTLibError
+from fontTools.ttLib import TTCollection, TTFont, TTLibError
 from traits.etsconfig.api import ETSConfig
 
 from . import afm
+
+logger = logging.getLogger(__name__)
 
 USE_FONTCONFIG = False
 
@@ -168,15 +171,6 @@ preferred_fonts = {
 }
 
 
-class verbose(object):
-    ''' class to fake matplotlibs verbose module. No idea why logging
-        module isnt used instead
-    '''
-    @staticmethod
-    def report(text, level='info'):
-        return
-
-
 def _is_writable_dir(p):
     """
     p is a string pointing to a putative writable dir -- return True p
@@ -244,8 +238,9 @@ def getPropDict(font):
 #  matplotlib code below
 ###############################################################################
 
-synonyms = {'ttf': ('ttf', 'otf'),
-            'otf': ('ttf', 'otf'),
+synonyms = {'ttf': ('ttf', 'otf', 'ttc'),
+            'otf': ('ttf', 'otf', 'ttc'),
+            'ttc': ('ttf', 'otf', 'ttc'),
             'afm': ('afm',)}
 
 
@@ -670,7 +665,6 @@ def afmFontProperty(fontpath, font):
 
     return FontEntry(fontpath, name, style, variant, weight, stretch, size)
 
-
 def createFontList(fontfiles, fontext='ttf'):
     """
     A function to create a font lookup list.  The default is to create
@@ -682,7 +676,7 @@ def createFontList(fontfiles, fontext='ttf'):
     #  Add fonts from list of known font files.
     seen = {}
     for fpath in fontfiles:
-        verbose.report('createFontDict: %s' % (fpath), 'debug')
+        logger.debug("createFontDict %s", fpath)
         fname = os.path.split(fpath)[1]
         if fname in seen:
             continue
@@ -692,7 +686,8 @@ def createFontList(fontfiles, fontext='ttf'):
             try:
                 fh = open(fpath, 'r')
             except:
-                verbose.report("Could not open font file %s" % fpath)
+                logger.error(
+                    "Could not open font file %s", fpath, exc_info=True)
                 continue
             try:
                 try:
@@ -700,24 +695,52 @@ def createFontList(fontfiles, fontext='ttf'):
                 finally:
                     fh.close()
             except RuntimeError:
-                verbose.report("Could not parse font file %s" % fpath)
+                logger.error(
+                    "Could not parse font file %s", fpath, exc_info=True)
                 continue
             try:
                 prop = afmFontProperty(fpath, font)
-            except:
+            except Exception:
+                logger.error(
+                    "Could not covert font to FontEntry for file %s", fpath,
+                    exc_info=True
+                )
                 continue
         else:
+            _, ext = os.path.splitext(fpath)
             try:
-                font = TTFont(str(fpath))
+                if ext.lower() == ".ttc":
+                    collection = TTCollection(str(fpath))
+                    try:
+                        props = []
+                        for font in collection.fonts:
+                            props.append(ttfFontProperty(fpath, font))
+                        fontlist.extend(props)
+                        continue
+                    except Exception:
+                        logger.error(
+                            "Could not covert font to FontEntry for file %s",
+                            fpath, exc_info=True
+                        )
+                        continue
+                else:
+                    font = TTFont(str(fpath))
             except (RuntimeError, TTLibError):
-                verbose.report("Could not open font file %s" % fpath)
+                logger.error(
+                    "Could not open font file %s", fpath, exc_info=True)
                 continue
             except UnicodeError:
-                verbose.report("Cannot handle unicode filenames")
+                logger.error(
+                    "Cannot handle unicode file: %s", fpath, exc_info=True)
                 continue
+
             try:
                 prop = ttfFontProperty(fpath, font)
-            except:
+            except Exception:
+                logger.error(
+                    "Could not covert font to FontEntry for file %s", fpath,
+                    exc_info=True
+                )
                 continue
 
         fontlist.append(prop)
@@ -1065,7 +1088,7 @@ class FontManager:
                 else:
                     paths.append(ttfpath)
 
-        verbose.report('font search path %s' % (str(paths)))
+        logger.debug("font search path %s", str(paths))
         #  Load TrueType fonts and create font dictionary.
 
         self.ttffiles = findSystemFonts(paths) + findSystemFonts()
@@ -1075,7 +1098,7 @@ class FontManager:
         self.defaultFont = {}
 
         for fname in self.ttffiles:
-            verbose.report('trying fontname %s' % fname, 'debug')
+            logger.debug("trying fontname %s", fname)
             if fname.lower().find('vera.ttf') >= 0:
                 self.defaultFont['ttf'] = fname
                 break
@@ -1267,7 +1290,7 @@ class FontManager:
             prop = FontProperties(prop)
         fname = prop.get_file()
         if fname is not None:
-            verbose.report('findfont returning %s' % fname, 'debug')
+            logger.debug("findfont returning %s", fname)
             return fname
 
         if fontext == 'afm':
@@ -1322,15 +1345,16 @@ class FontManager:
                     UserWarning)
                 result = self.defaultFont[fontext]
         else:
-            verbose.report(
-                'findfont: Matching %s to %s (%s) with score of %f' %
-                (prop, best_font.name, best_font.fname, best_score))
+            logger.debug(
+                "findfont: Matching %s to %s (%s) with score of %f",
+                prop, best_font.name, best_font.fname, best_score
+            )
             result = best_font.fname
 
         if not os.path.isfile(result):
             if rebuild_if_missing:
-                verbose.report(
-                    'findfont: Found a missing font file.  Rebuilding cache.')
+                logger.debug(
+                    "findfont: Found a missing font file.  Rebuilding cache.")
                 _rebuild()
                 return fontManager.findfont(
                     prop, fontext, directory, True, False)
@@ -1372,7 +1396,7 @@ def _rebuild():
     global fontManager
     fontManager = FontManager()
     pickle_dump(fontManager, _fmcache)
-    verbose.report("generated new fontManager")
+    logger.debug("generated new fontManager")
 
 
 # The experimental fontconfig-based backend.
@@ -1419,7 +1443,7 @@ else:
             _rebuild()
         else:
             fontManager.default_size = None
-            verbose.report("Using fontManager instance from %s" % _fmcache)
+            logger.debug("Using fontManager instance from %s", _fmcache)
     except:
         _rebuild()
 
