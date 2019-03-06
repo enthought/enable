@@ -48,6 +48,13 @@ class _QtWindowHandler(object):
         qt_window.setMouseTracking(True)
         qt_window.setSizePolicy(QtGui.QSizePolicy.Expanding,
                                 QtGui.QSizePolicy.Expanding)
+        # We prevent context menu events being generated from inside this
+        # widget. If a containing parent widget handles a context menu event,
+        # then Enable might not get the right-click events. Enable does not
+        # represent context menu events in its Event API. Users should use the
+        # ContextMenuTool or just handle the right-click explicitly in other
+        # ways.
+        qt_window.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
 
     def closeEvent(self, event):
         self._enable_window.cleanup()
