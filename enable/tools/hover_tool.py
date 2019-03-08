@@ -1,3 +1,6 @@
+# (C) Copyright 2008-2019 Enthought, Inc., Austin, TX
+# All rights reserved.
+
 """
 Tool to detect when the user hovers over a specific part of an underlying
 components.
@@ -9,7 +12,8 @@ from __future__ import absolute_import
 from enable.base_tool import BaseTool
 from traits.api import Any, Callable, Enum, Float, Int
 from traits.etsconfig.api import ETSConfig
-from pyface.timer.api import Timer
+from pyface.timer.api import DoLaterTimer
+
 
 # Define a toolkit-specific function for determining the global mouse position
 if ETSConfig.toolkit == 'wx':
@@ -103,15 +107,11 @@ class HoverTool(BaseTool):
             # update xy and restart the timer
             self._start_xy = GetGlobalMousePosition()
             self.restart_hover_timer(event)
-        else:
-            if self._timer:
-                self._timer.Stop()
 
     def restart_hover_timer(self, event):
         if self._timer is None:
             self._create_timer(event)
-        else:
-            self._timer.Start()
+        self._timer.start()
 
     def on_timer(self):
         position = GetGlobalMousePosition()
@@ -121,15 +121,13 @@ class HoverTool(BaseTool):
         if (diffx < self.hover_threshold) and (diffy < self.hover_threshold):
             self.on_hover()
 
-        self._timer.Stop()
-
-
     #-------------------------------------------------------------------------
     # Private methods
     #-------------------------------------------------------------------------
 
     def _is_in(self, x, y):
-        """ Returns True if local coordinates (x,y) is inside our hover region """
+        """ Returns True if local coordinates (x,y) is inside our hover region
+        """
         area_type = self.area_type.lower()
         c = self.component
 
@@ -149,4 +147,4 @@ class HoverTool(BaseTool):
             return any((t, b, r, l))
 
     def _create_timer(self, event):
-        self._timer = Timer(self.hover_delay, self.on_timer)
+        self._timer = DoLaterTimer(self.hover_delay, self.on_timer, (), {})
