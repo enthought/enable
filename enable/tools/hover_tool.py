@@ -89,7 +89,7 @@ class HoverTool(BaseTool):
     # Public methods
     #-------------------------------------------------------------------------
 
-    def on_hover(self):
+    def on_hover(self, *args, **kwargs):
         """ This gets called when all the conditions of the hover action have
         been met, and the tool determines that the mouse is, in fact, hovering
         over a target region on the component.
