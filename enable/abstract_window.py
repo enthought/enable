@@ -76,6 +76,8 @@ class AbstractWindow(HasTraits):
     # The regions to update upon redraw
     _update_region = Any
 
+    # When exceeding this, the entire window is marked damaged to save memory
+    MAX_DAMAGED_REGIONS = 100
 
 
     #---------------------------------------------------------------------------
@@ -232,7 +234,8 @@ class AbstractWindow(HasTraits):
         return
 
     def invalidate_draw(self, damaged_regions=None, self_relative=False):
-        if damaged_regions is not None and self._update_region is not None:
+        if damaged_regions is not None and self._update_region is not None \
+                and len(self._update_region) < self.MAX_DAMAGED_REGIONS:
             self._update_region += damaged_regions
         else:
             self._update_region = None
