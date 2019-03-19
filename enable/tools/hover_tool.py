@@ -135,12 +135,17 @@ class HoverTool(BaseTool):
         b = (y - c.y <= self.area)
         r = (c.x2 - x <= self.area)
         l = (x - c.x <= self.area)
+        corner_mapping = {
+            "ul": t & l,
+            "ur": t & r,
+            "ll": b & l,
+            "lr": b & r,
+        }
 
         if area_type in ("top", "bottom", "left", "right"):
             return locals()[area_type[0]]
         elif area_type.lower() in ("ul", "ur", "ll", "lr"):
-            u = t
-            return locals()[area_type[0]] and locals()[area_type[1]]
+            return corner_mapping[area_type]
         elif area_type == "corners":
             return (t | b) & (l | r)
         elif area_type == "borders":
