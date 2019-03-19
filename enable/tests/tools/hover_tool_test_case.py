@@ -3,7 +3,6 @@
 
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
-import time
 from unittest import TestCase, skipIf
 from unittest.mock import patch
 
@@ -50,33 +49,36 @@ class HoverToolTestCase(EnableTestAssistant, GuiTestAssistant, TestCase):
         self.component.tools.append(self.tool)
 
     @patch('enable.tools.hover_tool.GetGlobalMousePosition')
-    def test_basic_hover(self, mock_global_mouse_position):
+    def test_basic_hover(self, mock_mouse_pos):
         for i, (area_type, x_pos, y_pos) in enumerate(LOCATIONS):
             self.component.tools = []
             tool = HoverTool(component=self.component, area_type=area_type)
             self.component.tools.append(tool)
             xy_pos = (x_pos, y_pos)
-            mock_global_mouse_position.return_value = xy_pos
+            mock_mouse_pos.return_value = xy_pos
             with self.assertTraitChanges(tool, '_timer', count=1):
                 with self.assertTraitChanges(tool, '_start_xy', count=1):
-                    condition = lambda: mock_global_mouse_position.call_count == 2 * (i + 1)
+
+                    def condition():
+                        return mock_mouse_pos.call_count == 2 * (i + 1)
+
                     with self.event_loop_until_condition(condition):
                         self.mouse_move(self.component, *xy_pos)
 
             self.assertEqual(
-                mock_global_mouse_position.call_count,
+                mock_mouse_pos.call_count,
                 2 * (i + 1),
             )
             self.assertEqual(tool.event_state, 'normal')
 
     @patch('enable.tools.hover_tool.GetGlobalMousePosition')
-    def test_out_of_hover_zone(self, mock_global_mouse_position):
+    def test_out_of_hover_zone(self, mock_mouse_pos):
         tool = self.tool
         xy_pos = (145, 145)  # mouse in upper-right corner of component
-        mock_global_mouse_position.return_value = xy_pos
+        mock_mouse_pos.return_value = xy_pos
         with self.assertTraitDoesNotChange(tool, '_timer'):
             with self.assertTraitDoesNotChange(tool, '_start_xy'):
                     self.mouse_move(self.component, *xy_pos)
 
-        self.assertEqual(mock_global_mouse_position.call_count, 0)
+        self.assertEqual(mock_mouse_pos.call_count, 0)
         self.assertEqual(tool.event_state, 'normal')

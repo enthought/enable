@@ -18,6 +18,7 @@ from pyface.timer.api import DoLaterTimer
 # Define a toolkit-specific function for determining the global mouse position
 if ETSConfig.toolkit == 'wx':
     import wx
+
     def GetGlobalMousePosition():
         pos = wx.GetMousePosition()
         if isinstance(pos, tuple):
@@ -29,6 +30,7 @@ if ETSConfig.toolkit == 'wx':
 
 elif ETSConfig.toolkit == 'qt4':
     from pyface.qt import QtGui
+
     def GetGlobalMousePosition():
         pos = QtGui.QCursor.pos()
         return (pos.x(), pos.y())
@@ -36,14 +38,14 @@ elif ETSConfig.toolkit == 'qt4':
 else:
     def GetGlobalMousePosition():
         raise NotImplementedError("GetGlobalMousePosition is not defined for"
-            "toolkit '%s'." % ETSConfig.toolkit)
+                                  "toolkit '%s'." % ETSConfig.toolkit)
 
 
 class HoverTool(BaseTool):
     """
     Tool to detect when the user hovers over a certain area on a component.
-    The type of area to detect can be configured by the 'area_type' and 'bounds'
-    traits.
+    The type of area to detect can be configured by the 'area_type' and
+    'bounds' traits.
 
     Users of the class should either set the 'callback' attribute, or
     subclass and override on_hover().
@@ -74,20 +76,20 @@ class HoverTool(BaseTool):
     # An optional parameter that gets passed to the callback.
     cb_param = Any
 
-    #-------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Private traits
-    #-------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
-    # A tuple (x,y) of the mouse position (in global coordinate) when we set the timer
+    # A tuple (x,y) of the mouse position (in global coordinate) when we set
+    # the timer
     _start_xy = Any
 
     # The timer
     _timer = Any
 
-
-    #-------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Public methods
-    #-------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def on_hover(self, *args, **kwargs):
         """ This gets called when all the conditions of the hover action have
@@ -121,9 +123,9 @@ class HoverTool(BaseTool):
         if (diffx < self.hover_threshold) and (diffy < self.hover_threshold):
             self.on_hover()
 
-    #-------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Private methods
-    #-------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def _is_in(self, x, y):
         """ Returns True if local coordinates (x,y) is inside our hover region
@@ -144,7 +146,7 @@ class HoverTool(BaseTool):
 
         if area_type in ("top", "bottom", "left", "right"):
             return locals()[area_type[0]]
-        elif area_type.lower() in ("ul", "ur", "ll", "lr"):
+        elif area_type in ("ul", "ur", "ll", "lr"):
             return corner_mapping[area_type]
         elif area_type == "corners":
             return (t | b) & (l | r)
