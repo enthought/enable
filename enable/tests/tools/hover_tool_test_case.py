@@ -4,7 +4,10 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 from unittest import TestCase, skipIf
-from unittest.mock import patch
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 
 from pyface.toolkit import toolkit_object
 
@@ -48,7 +51,7 @@ class HoverToolTestCase(EnableTestAssistant, GuiTestAssistant, TestCase):
         self.tool = HoverTool(component=self.component, area_type='LL')
         self.component.tools.append(self.tool)
 
-    @patch('enable.tools.hover_tool.GetGlobalMousePosition')
+    @mock.patch('enable.tools.hover_tool.GetGlobalMousePosition')
     def test_basic_hover(self, mock_mouse_pos):
         for i, (area_type, x_pos, y_pos) in enumerate(LOCATIONS):
             self.component.tools = []
@@ -71,7 +74,7 @@ class HoverToolTestCase(EnableTestAssistant, GuiTestAssistant, TestCase):
             )
             self.assertEqual(tool.event_state, 'normal')
 
-    @patch('enable.tools.hover_tool.GetGlobalMousePosition')
+    @mock.patch('enable.tools.hover_tool.GetGlobalMousePosition')
     def test_out_of_hover_zone(self, mock_mouse_pos):
         tool = self.tool
         xy_pos = (145, 145)  # mouse in upper-right corner of component
