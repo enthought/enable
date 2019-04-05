@@ -115,7 +115,7 @@ class HoverTool(BaseTool):
             self._create_timer(event)
         self._timer.start()
 
-    def on_timer(self):
+    def on_timer(self, *args, **kwargs):
         position = GetGlobalMousePosition()
         diffx = abs(position[0] - self._start_xy[0])
         diffy = abs(position[1] - self._start_xy[1])
