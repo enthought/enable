@@ -3,7 +3,7 @@
 
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
-from unittest import TestCase, skipIf
+from unittest import TestCase
 try:
     from unittest import mock
 except ImportError:
@@ -15,9 +15,10 @@ from enable.component import Component
 from enable.testing import EnableTestAssistant
 from enable.tools.hover_tool import HoverTool
 
+from traitsui.tests._tools import skip_if_null
+
 
 GuiTestAssistant = toolkit_object('util.gui_test_assistant:GuiTestAssistant')
-no_gui_test_assistant = (GuiTestAssistant.__name__ == 'Unimplemented')
 
 
 LOWER_BOUND = 50
@@ -38,7 +39,7 @@ LOCATIONS = [
 ]
 
 
-@skipIf(no_gui_test_assistant, 'No GuiTestAssistant')
+@skip_if_null
 class HoverToolTestCase(EnableTestAssistant, GuiTestAssistant, TestCase):
 
     def setUp(self):
