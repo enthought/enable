@@ -383,7 +383,7 @@ class Renderer(NullRenderer):
 
     @classmethod
     def makeMatrix(cls, *args):
-        raise NotImplementedErrorError()
+        raise NotImplementedError()
 
     @classmethod
     def makePath(cls):
