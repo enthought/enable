@@ -75,7 +75,10 @@ class SVGButtonEditor(Editor):
         control.setIconSize(QtCore.QSize(self.factory.width, self.factory.height))
 
         if self.factory.label:
-            control.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+            if self.factory.orientation == 'horizontal':
+                control.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
+            else:
+                control.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         else:
             control.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
         if self.factory.toggle:
