@@ -430,6 +430,8 @@ class _Window(AbstractWindow):
                     mouse_wheel_delta = (0, delta)
             else:
                 delta = event.pixelDelta()
+                if delta.x() == 0 and delta.y() == 0:  # pixelDelta is optional
+                    delta = event.angleDelta()
                 mouse_wheel_delta = (delta.x(), delta.y())
                 if abs(mouse_wheel_delta[0]) > abs(mouse_wheel_delta[1]):
                     mouse_wheel = mouse_wheel_delta[0] / float(8 * degrees_per_step)
