@@ -209,7 +209,7 @@ namespace kiva {
     %{
         import six
         # used in GraphicsContextArray constructors
-        from numpy import array, zeros, uint8, fromstring, shape, ndarray, resize, dtype
+        from numpy import array, zeros, uint8, frombuffer, shape, ndarray, resize, dtype
         import numpy
 
         # Define paths for the two markers that Agg renders incorrectly
@@ -914,7 +914,7 @@ class Image(GraphicsContextArray):
             (cvar.ALWAYS_32BIT_WORKAROUND_FLAG and pil_img.mode != "RGBA")):
             pil_img = pil_img.convert(mode="RGBA")
         depth = pil_depth_map[pil_img.mode]
-        img = fromstring(piltostring(pil_img),uint8)
+        img = frombuffer(piltostring(pil_img),uint8)
         img = resize(img, (pil_img.size[1],pil_img.size[0],depth))
         format = pil_format_map[pil_img.mode]
 

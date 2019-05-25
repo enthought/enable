@@ -7,7 +7,7 @@ import unittest
 import six
 
 from PIL import Image
-from numpy import alltrue, array, concatenate, dtype, fromstring, newaxis, \
+from numpy import alltrue, array, concatenate, dtype, frombuffer, newaxis, \
                   pi, ravel, ones, zeros
 
 from kiva import agg
@@ -49,7 +49,7 @@ def test_name():
 def sun(interpolation_scheme="simple"):
     path = os.path.join(os.path.dirname(__file__), 'doubleprom_soho_full.jpg')
     pil_img = Image.open(path)
-    img = fromstring(piltostring(pil_img), UInt8)
+    img = frombuffer(piltostring(pil_img), UInt8)
     img.resize((pil_img.size[1],pil_img.size[0],3))
 
     alpha = ones(pil_img.size,UInt8) * 255
