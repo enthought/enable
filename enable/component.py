@@ -1091,9 +1091,9 @@ class Component(CoordinateBox, Interactor):
                 new_pos = self.position[:]
                 new_pos[0] += (old_w - new_w) / 2.0
 
-        self.set(bounds=[new_w, new_h], trait_change_notify=notify)
+        self.trait_set(bounds=[new_w, new_h], trait_change_notify=notify)
         if new_pos:
-            self.set(position=new_pos, trait_change_notify=notify)
+            self.trait_set(position=new_pos, trait_change_notify=notify)
         return
 
     def _bounds_changed(self, old, new):
