@@ -2,7 +2,7 @@ from traits.testing.unittest_tools import unittest
 
 from numpy import (
     alltrue, array, concatenate, dtype,
-    fromstring, newaxis, ravel, ones, zeros)
+    frombuffer, newaxis, ravel, ones, zeros)
 from PIL import Image as PILImage
 from hypothesis import given
 from hypothesis.strategies import sampled_from
@@ -129,7 +129,7 @@ class TestAlphaBlackImage(unittest.TestCase):
 
     def sun(self, interpolation_scheme="simple"):
         pil_img = PILImage.open('doubleprom_soho_full.jpg')
-        img = fromstring(piltostring(pil_img), UInt8)
+        img = frombuffer(piltostring(pil_img), UInt8)
         img.resize((pil_img.size[1], pil_img.size[0], 3))
         alpha = ones(pil_img.size, UInt8) * 255
         img = concatenate((img[:, :, ::-1], alpha[:, :, newaxis]), -1).copy()

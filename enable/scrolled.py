@@ -492,8 +492,9 @@ class Scrolled(Container):
             if self._hsb_generates_events:
                 viewport.view_position[0] = position
             else:
-                viewport.set(view_position=[position, viewport.view_position[1]],
-                             trait_change_notify=False)
+                viewport.trait_setq(
+                    view_position=[position, viewport.view_position[1]]
+                )
         return
 
     def _handle_vertical_scroll(self, position):
@@ -508,8 +509,9 @@ class Scrolled(Container):
             if self._vsb_generates_events:
                 viewport.view_position[1] = position
             else:
-                viewport.set(view_position=[viewport.view_position[0], position],
-                             trait_change_notify=False)
+                viewport.trait_setq(
+                    view_position=[viewport.view_position[0], position]
+                )
         return
 
     def _mouse_thumb_changed(self, object, attrname, event):

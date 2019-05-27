@@ -199,8 +199,9 @@ class Container(Component):
             # Update our position and the positions of all of our components,
             # but do it quietly
             for component in self._components:
-                component.set(position = [component.x-ll_x, component.y-ll_y],
-                              trait_change_notify = False)
+                component.trait_setq(
+                    position=[component.x-ll_x, component.y-ll_y]
+                )
 
             # Change our position (in our parent's coordinate frame) and
             # update our bounds
