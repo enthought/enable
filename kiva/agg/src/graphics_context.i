@@ -33,6 +33,8 @@
 %apply (unsigned char *image_data, int width, int height, int stride) {
             (unsigned char *data, int width, int height, int stride) };
 %apply (owned_pointer) { kiva::graphics_context* };
+%apply (const char* gradient_arg) {(const char* spread_method)};
+%apply (const char* gradient_arg) {(const char* units)};
 
 // map string input into standard string and back
 %include "agg_std_string.i"
