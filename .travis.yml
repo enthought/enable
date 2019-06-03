@@ -27,8 +27,6 @@ matrix:
   - env: RUNTIME=2.7 TOOLKIT=null PILLOW='pillow<3.0.0'
   - env: RUNTIME=3.5 TOOLKIT=null PILLOW='pillow<3.0.0'
   - env: RUNTIME=3.6 TOOLKIT=null PILLOW='pillow<3.0.0'
-  allow_failures:
-  - env: RUNTIME=2.7 TOOLKIT=wx PILLOW='pillow'
   fast_finish: true
 
 branches:
