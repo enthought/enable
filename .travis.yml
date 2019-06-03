@@ -21,15 +21,9 @@ env:
 
 matrix:
   include:
-  - env: RUNTIME=2.7 TOOLKIT=wx PILLOW='pillow'
-  - env: RUNTIME=2.7 TOOLKIT=pyqt PILLOW='pillow'
-  - env: RUNTIME=3.5 TOOLKIT=pyqt PILLOW='pillow'
-  - env: RUNTIME=3.5 TOOLKIT=pyqt5 PILLOW='pillow'
-  - env: RUNTIME=3.6 TOOLKIT=pyqt PILLOW='pillow'
-  - env: RUNTIME=3.6 TOOLKIT=pyqt5 PILLOW='pillow'
-  - env: RUNTIME=2.7 TOOLKIT=null PILLOW='pillow'
-  - env: RUNTIME=3.5 TOOLKIT=null PILLOW='pillow'
-  - env: RUNTIME=3.6 TOOLKIT=null PILLOW='pillow'
+  - env: RUNTIME=2.7 TOOLKITS="null wx pyqt" PILLOW='pillow'
+  - env: RUNTIME=3.5 TOOLKITS="null pyqt pyqt5" PILLOW='pillow'
+  - env: RUNTIME=3.6 TOOLKITS="null pyqt pyqt5" PILLOW='pillow'
   - env: RUNTIME=2.7 TOOLKIT=null PILLOW='pillow<3.0.0'
   - env: RUNTIME=3.5 TOOLKIT=null PILLOW='pillow<3.0.0'
   - env: RUNTIME=3.6 TOOLKIT=null PILLOW='pillow<3.0.0'
@@ -55,9 +49,9 @@ before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
 install:
-  - edm run -- python ci/edmtool.py install --runtime=${RUNTIME} --toolkit=${TOOLKIT} --pillow=${PILLOW}
+  - for toolkit in ${TOOLKITS}; do edm run -- python ci/edmtool.py install --runtime=${RUNTIME} --toolkit=${toolkit} --pillow=${PILLOW} || exit; done
 script:
-  - edm run -- python ci/edmtool.py test --runtime=${RUNTIME} --toolkit=${TOOLKIT} --pillow=${PILLOW}
+  - for toolkit in ${TOOLKITS}; do edm run -- python ci/edmtool.py test --runtime=${RUNTIME} --toolkit=${toolkit} --pillow=${PILLOW} || exit; done
 
 after_success:
   - edm run -- coverage combine
