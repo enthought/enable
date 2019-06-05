@@ -1,4 +1,5 @@
 import contextlib
+import sys
 
 try:
     import pyglet
@@ -12,6 +13,7 @@ from kiva.tests.drawing_tester import DrawingImageTester
 from traits.testing.unittest_tools import unittest
 
 
+@unittest.skipIf("win" in sys.platform, "Pyglet/GL backend issues on Windows")
 @unittest.skipIf(PYGLET_NOT_AVAILABLE, "Cannot import pyglet")
 class TestGLDrawing(DrawingImageTester, unittest.TestCase):
 
