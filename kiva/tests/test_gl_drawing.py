@@ -1,5 +1,6 @@
 import contextlib
 import sys
+import unittest
 
 try:
     import pyglet
@@ -10,7 +11,6 @@ else:
 
 
 from kiva.tests.drawing_tester import DrawingImageTester
-from traits.testing.unittest_tools import unittest
 
 
 @unittest.skipIf("win" in sys.platform, "Pyglet/GL backend issues on Windows")

@@ -1,5 +1,6 @@
+import unittest
+
 from kiva.tests.drawing_tester import DrawingImageTester
-from traits.testing.unittest_tools import unittest
 
 try:
     import cairo  # noqa

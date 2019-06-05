@@ -1,9 +1,9 @@
 import contextlib
 from xml.etree import ElementTree
+import unittest
 
 from kiva.tests.drawing_tester import DrawingTester
 from kiva.svg import GraphicsContext
-from traits.testing.unittest_tools import unittest
 
 
 class TestSVGDrawing(DrawingTester, unittest.TestCase):

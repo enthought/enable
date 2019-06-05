@@ -9,6 +9,7 @@
 
 from __future__ import (division, absolute_import, print_function,
                         unicode_literals)
+import unittest
 
 # Third party library imports
 try:
@@ -18,7 +19,7 @@ except ImportError:
 
 # Enthought library imports
 from apptools.undo.api import UndoManager
-from traits.testing.unittest_tools import UnittestTools, unittest
+from traits.testing.unittest_tools import UnittestTools
 
 # Local library imports
 from enable.base_tool import KeySpec

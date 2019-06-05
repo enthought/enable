@@ -1,9 +1,9 @@
 import contextlib
+import unittest
 
 import six
 
 from kiva.tests.drawing_tester import DrawingTester
-from traits.testing.unittest_tools import unittest
 
 try:
     import PyPDF2  # Tests require the PyPDF2 library.

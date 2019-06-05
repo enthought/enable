@@ -9,6 +9,7 @@
 
 from __future__ import (division, absolute_import, print_function,
                         unicode_literals)
+import unittest
 
 # Third party library imports
 try:
@@ -17,7 +18,7 @@ except ImportError:
     from mock import MagicMock
 
 # Enthought library imports
-from traits.testing.unittest_tools import UnittestTools, unittest
+from traits.testing.unittest_tools import UnittestTools
 
 # Local library imports
 from enable.component import Component
