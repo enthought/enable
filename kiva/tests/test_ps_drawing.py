@@ -1,8 +1,8 @@
 import contextlib
+import unittest
 
 from kiva.tests.drawing_tester import DrawingTester
 from kiva.ps import PSGC
-from traits.testing.unittest_tools import unittest
 
 
 class TestPSDrawing(DrawingTester, unittest.TestCase):

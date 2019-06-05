@@ -1,7 +1,6 @@
-
 from contextlib import contextmanager
+import unittest
 
-from traits.testing.unittest_tools import unittest
 from traitsui.tests._tools import skip_if_not_qt4
 from pyface.gui import GUI
 

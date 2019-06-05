@@ -1,11 +1,12 @@
 import os
 import shutil
 import tempfile
+import unittest
 
 from PIL import Image as PILImage
 
 from kiva.image import Image, GraphicsContext
-from traits.testing.unittest_tools import unittest
+
 
 class TestImage(unittest.TestCase):
 
