@@ -21,38 +21,41 @@ class TestPointsInPolygon(unittest.TestCase):
             warn = collector[0]
             assert issubclass(warn.category, DeprecationWarning)
 
-    def test_simple_points_in_polygon(self):
+    def test_empty_points_in_polygon(self):
+        polygon = array(((0.0, 0.0), (10.0, 0.0), (10.0, 10.0), (0.0, 10.0)))
+        points = zeros((0, 2))
 
+        result = points_in_polygon(points, polygon)
+        self.assertTrue(len(result) == len(points))
+
+        polygon = array([])
+        points = array(((-1.0, -1.0), (5.0, 5.0), (15.0, 15.0)))
+
+        result = points_in_polygon(points, polygon)
+        self.assertTrue(allclose(array([0, 0, 0]), result))
+
+    def test_simple_points_in_polygon(self):
         polygon = array(((0.0, 0.0), (10.0, 0.0), (10.0, 10.0), (0.0, 10.0)))
         points = array(((-1.0, -1.0), (5.0, 5.0), (15.0, 15.0)))
 
         result = points_in_polygon(points, polygon)
         self.assertTrue(allclose(array([0, 1, 0]), result))
 
-        return
-
     def test_transposed_points_in_polygon(self):
-
         polygon = array(((0.0, 10.0, 10.0, 0.0), (0.0, 0.0, 10.0, 10.0)))
         points = array(((-1.0, 5.0, 15.0), (-1.0, 5.0, 15.0)))
 
         result = points_in_polygon(points, polygon)
         self.assertTrue(allclose(array([0, 1, 0]), result))
 
-        return
-
     def test_asymmetric_points_in_polygon(self):
-
         polygon = array(((0.0, 0.0), (20.0, 0.0), (20.0, 10.0), (0.0, 10.0)))
         points = array(((5.0, 5.0), (10.0, 5.0), (15.0, 5.0)))
 
         result = points_in_polygon(points, polygon)
         self.assertTrue(allclose(array([1, 1, 1]), result))
 
-        return
-
     def test_rectangle(self):
-
         vertices = array(((0, 0), (0, 10), (10, 10), (10, 0)))
 
         # Try the lower left.
@@ -81,8 +84,6 @@ class TestPointsInPolygon(unittest.TestCase):
                          "Top-right in polygon. OEF")
         self.assertEqual(0, w_result[0],
                          "Top-right in polygon. Winding")
-
-        return
 
     def test_center_removed(self):
         # Tests a polygon which resembles the following:
