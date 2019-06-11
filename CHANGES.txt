@@ -1,7 +1,7 @@
 Enable CHANGELOG
 ================
 
-Changes since Enable 4.7.0
+Changes since Enable 4.8.0
 ==========================
 
 Enhancements
@@ -10,10 +10,67 @@ Enhancements
 Fixes
 -----
 
-* PR #295: Use uint8_t from numpy instead of stdint
+Maintenance
+-----------
+
+Enable 4.8.0
+============
+
+Enhancements
+------------
+
+* PR #302: Qt5 Support
+* PR #330: Add support for ttc fonts
+* PR #345: Add more Qt mouse button names
+
+Fixes
+-----
+
+* PR #312: Ensure contiguity for memoryview arrays in points_in_polygon
+* PR #317: Fix rect drawing with celiagg
+* PR #321: Kiva PDF backend: Don't clobber a passed-in font object
+* PR #331: Prevent context menus in Enable Qt widgets.
+* PR #346: Fix TypeError when passing unicode args to agg gradient methods
+* PR #350: Don't fail when empty arrays are passed to points_in_polygon
+* PR #354: Fix typo in MANIFEST.in
+* PR #358: Fix paths to static files.
 
 Maintenance
 -----------
+
+* PR #322: Remove `sudo: false` from Travis config
+* PR #343: Fix code which triggered DeprecationWarnings
+* PR #347: Setup Appveyor
+* PR #348: Update EDM version for CI script
+* PR #349: Update `unittest` imports
+* PR #352: Quick and Dirty Documentation Improvements
+* PR #353: Update Travis CI configuration to be compatible with Ubuntu Xenial.
+* PR #356: CI failures on wx, python 2.7, win expected
+* PR #357: Remove unnecessary Ubuntu package.
+
+Enable 4.7.2
+============
+
+Fixes
+-----
+
+* PR #310: Remove locale-dependence in Agg text rendering
+* PR #309: FIX: Ensure contiguous transposed arrays
+* PR #305: Ignore X11 fonts on macOS
+* PR #299: BUG: Remove use of C API not available in Python 3
+
+Maintenance
+-----------
+
+* PR #308: Update to the most recent release of fonttools
+
+Enable 4.7.1
+============
+
+Fixes
+-----
+
+* PR #295: Use uint8_t from numpy instead of stdint
 
 Enable 4.7.0
 ============
