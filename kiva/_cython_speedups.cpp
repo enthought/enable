@@ -2628,8 +2628,8 @@ static PyObject *__pyx_pf_4kiva_16_cython_speedups_points_in_polygon(CYTHON_UNUS
   PyObject *__pyx_t_5 = NULL;
   int __pyx_t_6;
   int __pyx_t_7;
-  __Pyx_memviewslice __pyx_t_8 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  Py_ssize_t __pyx_t_9;
+  Py_ssize_t __pyx_t_8;
+  __Pyx_memviewslice __pyx_t_9 = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_t_10 = { 0, 0, { 0 }, { 0 }, { 0 } };
   Py_ssize_t __pyx_t_11;
   Py_ssize_t __pyx_t_12;
@@ -3043,7 +3043,7 @@ static PyObject *__pyx_pf_4kiva_16_cython_speedups_points_in_polygon(CYTHON_UNUS
  *     poly_pts = np.asarray(poly_pts, dtype=np.float64)
  *     if poly_pts.size == 0:             # <<<<<<<<<<<<<<
  *         # Quick exit for empty poly array
- *         return np.zeros(pts.size, dtype=np.uint8)
+ *         return np.zeros(len(pts), dtype=np.uint8)
  */
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_poly_pts, __pyx_n_s_size); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
@@ -3057,7 +3057,7 @@ static PyObject *__pyx_pf_4kiva_16_cython_speedups_points_in_polygon(CYTHON_UNUS
     /* "kiva/_cython_speedups.pyx":65
  *     if poly_pts.size == 0:
  *         # Quick exit for empty poly array
- *         return np.zeros(pts.size, dtype=np.uint8)             # <<<<<<<<<<<<<<
+ *         return np.zeros(len(pts), dtype=np.uint8)             # <<<<<<<<<<<<<<
  *     if poly_pts.ndim == 1:
  *         poly_pts = np.reshape(poly_pts, (1,) + np.shape(poly_pts))
  */
@@ -3067,7 +3067,8 @@ static PyObject *__pyx_pf_4kiva_16_cython_speedups_points_in_polygon(CYTHON_UNUS
     __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 65, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_pts, __pyx_n_s_size); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __pyx_t_8 = PyObject_Length(__pyx_v_pts); if (unlikely(__pyx_t_8 == ((Py_ssize_t)-1))) __PYX_ERR(0, 65, __pyx_L1_error)
+    __pyx_t_5 = PyInt_FromSsize_t(__pyx_t_8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 65, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 65, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
@@ -3097,13 +3098,13 @@ static PyObject *__pyx_pf_4kiva_16_cython_speedups_points_in_polygon(CYTHON_UNUS
  *     poly_pts = np.asarray(poly_pts, dtype=np.float64)
  *     if poly_pts.size == 0:             # <<<<<<<<<<<<<<
  *         # Quick exit for empty poly array
- *         return np.zeros(pts.size, dtype=np.uint8)
+ *         return np.zeros(len(pts), dtype=np.uint8)
  */
   }
 
   /* "kiva/_cython_speedups.pyx":66
  *         # Quick exit for empty poly array
- *         return np.zeros(pts.size, dtype=np.uint8)
+ *         return np.zeros(len(pts), dtype=np.uint8)
  *     if poly_pts.ndim == 1:             # <<<<<<<<<<<<<<
  *         poly_pts = np.reshape(poly_pts, (1,) + np.shape(poly_pts))
  *     if np.shape(poly_pts)[1] != 2:
@@ -3118,7 +3119,7 @@ static PyObject *__pyx_pf_4kiva_16_cython_speedups_points_in_polygon(CYTHON_UNUS
   if (__pyx_t_6) {
 
     /* "kiva/_cython_speedups.pyx":67
- *         return np.zeros(pts.size, dtype=np.uint8)
+ *         return np.zeros(len(pts), dtype=np.uint8)
  *     if poly_pts.ndim == 1:
  *         poly_pts = np.reshape(poly_pts, (1,) + np.shape(poly_pts))             # <<<<<<<<<<<<<<
  *     if np.shape(poly_pts)[1] != 2:
@@ -3204,7 +3205,7 @@ static PyObject *__pyx_pf_4kiva_16_cython_speedups_points_in_polygon(CYTHON_UNUS
 
     /* "kiva/_cython_speedups.pyx":66
  *         # Quick exit for empty poly array
- *         return np.zeros(pts.size, dtype=np.uint8)
+ *         return np.zeros(len(pts), dtype=np.uint8)
  *     if poly_pts.ndim == 1:             # <<<<<<<<<<<<<<
  *         poly_pts = np.reshape(poly_pts, (1,) + np.shape(poly_pts))
  *     if np.shape(poly_pts)[1] != 2:
@@ -3398,11 +3399,11 @@ static PyObject *__pyx_pf_4kiva_16_cython_speedups_points_in_polygon(CYTHON_UNUS
   if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(__pyx_t_5, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(__pyx_t_5, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_v_pts_view = __pyx_t_8;
-  __pyx_t_8.memview = NULL;
-  __pyx_t_8.data = NULL;
+  __pyx_v_pts_view = __pyx_t_9;
+  __pyx_t_9.memview = NULL;
+  __pyx_t_9.data = NULL;
 
   /* "kiva/_cython_speedups.pyx":75
  * 
@@ -3431,11 +3432,11 @@ static PyObject *__pyx_pf_4kiva_16_cython_speedups_points_in_polygon(CYTHON_UNUS
   if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(__pyx_t_5, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(__pyx_t_5, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_v_poly_pts_view = __pyx_t_8;
-  __pyx_t_8.memview = NULL;
-  __pyx_t_8.data = NULL;
+  __pyx_v_poly_pts_view = __pyx_t_9;
+  __pyx_t_9.memview = NULL;
+  __pyx_t_9.data = NULL;
 
   /* "kiva/_cython_speedups.pyx":76
  *     cdef double[:, ::1] pts_view = np.ascontiguousarray(pts)
@@ -3449,8 +3450,8 @@ static PyObject *__pyx_pf_4kiva_16_cython_speedups_points_in_polygon(CYTHON_UNUS
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_9 = PyObject_Length(__pyx_v_pts); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 76, __pyx_L1_error)
-  __pyx_t_5 = PyInt_FromSsize_t(__pyx_t_9); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_8 = PyObject_Length(__pyx_v_pts); if (unlikely(__pyx_t_8 == ((Py_ssize_t)-1))) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_5 = PyInt_FromSsize_t(__pyx_t_8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -3700,7 +3701,7 @@ static PyObject *__pyx_pf_4kiva_16_cython_speedups_points_in_polygon(CYTHON_UNUS
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __PYX_XDEC_MEMVIEW(&__pyx_t_8, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_9, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_10, 1);
   __Pyx_AddTraceback("kiva._cython_speedups.points_in_polygon", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
