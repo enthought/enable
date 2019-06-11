@@ -373,14 +373,19 @@ Primitive types
 ~~~~~~~~~~~~~~~
 The following conventions are used to describe input and output types:
 
-:color:
+color:
     Either a 3-tuple or 4-tuple. The represented color depends on the
     graphics context's pixel format.
-:rect: (origin_x, origin_y, width, height)
-:bool: an int that is 1 or 0
-:point_array: an array/sequence of length-2 arrays, e.g. ((x,y), (x2,y2),...)
-:rect_array: an array/sequence of rects ((x,y,w,h), (x2,y2,w2,h2), ...)
-:color_stop_array: an array/sequence of color stops ((offset,r,g,b,a),
+rect:
+    (origin_x, origin_y, width, height)
+bool:
+    an int that is 1 or 0
+point_array:
+    an array/sequence of length-2 arrays, e.g. ((x,y), (x2,y2),...)
+rect_array:
+    an array/sequence of rects ((x,y,w,h), (x2,y2,w2,h2), ...)
+color_stop_array:
+    an array/sequence of color stops ((offset,r,g,b,a),
     (offset2,r2,g2,b2,a2), ...) where offset is some number between 0 and 1
     inclusive and the entries are sorted from lowest offset to highest.
 
@@ -389,17 +394,25 @@ AffineMatrix
 All of the following member functions modify the instance on which they
 are called:
 
-:__init__(v0, v1, v2, v3, v4, v5): also __init__()
-:reset(): Sets this matrix to the identity
-:multiply(`AffineMatrix`): multiples this matrix by another
-:invert(): sets this matrix to the inverse of itself
-:flip_x(): mirrors around X
-:flip_y(): mirrors around Y
+__init__(v0, v1, v2, v3, v4, v5):
+    also __init__()
+reset():
+    Sets this matrix to the identity
+multiply(`AffineMatrix`):
+    multiples this matrix by another
+invert():
+    sets this matrix to the inverse of itself
+flip_x():
+    mirrors around X
+flip_y():
+    mirrors around Y
 
 The rest of the member functions return information about the matrix.
 
-:scale() -> float: returns the average scale of this matrix
-:determinant() -> float: returns the determinant
+scale() -> float:
+    returns the average scale of this matrix
+determinant() -> float:
+    returns the determinant
 
 The following factory methods are available in the top-level "agg" namespace
 to create specific kinds of :class:`AffineMatrix` instances:
@@ -414,8 +427,10 @@ to create specific kinds of :class:`AffineMatrix` instances:
 
 FontType
 ~~~~~~~~
-:__init__(name, size=12, family=0, style=0): constructs a :class:`FontType` instance
-:is_loaded() -> bool: returns True if a font was actually loaded
+__init__(name, size=12, family=0, style=0):
+    constructs a :class:`FontType` instance
+is_loaded() -> bool:
+    returns True if a font was actually loaded
 
 CompiledPath
 ~~~~~~~~~~~~
@@ -427,44 +442,52 @@ The following enumerations are represented by top-level constants in the "agg"
 namespace.  They are fundamentally integers.  Some of them also have dicts that
 map between their names and integer values
 
-:line_cap: CAP_BUTT, CAP_ROUND, CAP_SQUARE
-:line_join: JOIN_ROUND, JOIN_BEVEL, JOIN_MITER
+line_cap:
+    CAP_BUTT, CAP_ROUND, CAP_SQUARE
+line_join:
+    JOIN_ROUND, JOIN_BEVEL, JOIN_MITER
+draw_mode:
+    FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE
 
-:draw_mode: FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE
-
-:text_style: NORMAL, BOLD, ITALIC
-:text_draw_mode: TEXT_FILL, TEXT_INVISIBLE (currently unused)
-
-:pix_format: (NOTE: the strings in the dicts omit the ``pix_format_`` prefix)
-
-- dicts: pix_format_string_map, pix_format_enum_map
-- values: pix_format_gray8, pix_format_rgb555, pix_format_rgb565,
-    pix_format_rgb24, pix_format_bgr24, pix_format_rgba32, pix_format_argb32,
-    pix_format_abgr32, pix_format_bgra32
-
-:interpolation:
-
-- dicts: interp_enum_map, interp_string_map
-- values: nearest, bilinear, bicubic, spline16, spline36, sinc64, sinc144,
-    sinc256, blackman64, blackman100, blackman256
-
-:marker: (NOTE: the strings in the dicts omit the ``marker_`` prefix)
-
-- dicts: marker_string_map, marker_enum_map
-- values: marker_circle, marker_cross, marker_crossed_circle, marker_dash,
-    marker_diamond, marker_dot, marker_four_rays, marker_pixel,
-    marker_semiellipse_down, marker_semiellipse_left, marker_x,
-    marker_semiellipse_right, marker_semiellipse_up, marker_square,
-    marker_triangle_down, marker_triangle_left, marker_triangle_right,
-    marker_triangle_up
+text_style:
+    NORMAL, BOLD, ITALIC
+text_draw_mode:
+    TEXT_FILL, TEXT_INVISIBLE (currently unused)
+pix_format:
+    (NOTE: the strings in the dicts omit the ``pix_format_`` prefix)
+    dicts:
+        pix_format_string_map, pix_format_enum_map
+    values:
+        pix_format_gray8, pix_format_rgb555, pix_format_rgb565,
+        pix_format_rgb24, pix_format_bgr24, pix_format_rgba32, pix_format_argb32,
+        pix_format_abgr32, pix_format_bgra32
+interpolation:
+    dicts:
+        interp_enum_map, interp_string_map
+    values:
+        nearest, bilinear, bicubic, spline16, spline36, sinc64, sinc144,
+        sinc256, blackman64, blackman100, blackman256
+marker:
+    (NOTE: the strings in the dicts omit the ``marker_`` prefix)
+    dicts:
+        marker_string_map, marker_enum_map
+    values:
+        marker_circle, marker_cross, marker_crossed_circle, marker_dash,
+        marker_diamond, marker_dot, marker_four_rays, marker_pixel,
+        marker_semiellipse_down, marker_semiellipse_left, marker_x,
+        marker_semiellipse_right, marker_semiellipse_up, marker_square,
+        marker_triangle_down, marker_triangle_left, marker_triangle_right,
+        marker_triangle_up
 
 path_cmd and path_flags are low-level Agg path attributes.  See the Agg
 documentation for more information about them.  We just pass them through in Kiva.
 
-:path_cmd: path_cmd_curve3, path_cmd_curve4, path_cmd_end_poly,
+path_cmd:
+    path_cmd_curve3, path_cmd_curve4, path_cmd_end_poly,
     path_cmd_line_to, path_cmd_mask, path_cmd_move_to, path_cmd_stop
 
-:path_flags: path_flags, path_flags_ccw, path_flags_close, path_flags_cw,
+path_flags:
+    path_flags, path_flags_ccw, path_flags_close, path_flags_cw,
     path_flags_mask, path_flags_none
 
 
@@ -473,8 +496,8 @@ Graphics Context
 
 Construction
 ~~~~~~~~~~~~
-:__init__(size, pix_format): Size is a tuple (width, height), pix_format
-    is a string.
+__init__(size, pix_format):
+    Size is a tuple (width, height), pix_format is a string.
 
 State functions
 ~~~~~~~~~~~~~~~
@@ -485,15 +508,18 @@ State functions
 :set_line_width(float):
 :set_line_join(line_join):
 :set_line_cap(line_cap):
-:set_line_dash(array): array is an even-length tuple of floats that represents
+:set_line_dash(array):
+    array is an even-length tuple of floats that represents
     the width of each dash and gap in the dash pattern.
 :set_fill_color(color):
 :get_fill_color() -> color:
-:linear_gradient(x1, y1, x2, y2, color_stop_array, spread_method, units): spread_method
+:linear_gradient(x1, y1, x2, y2, color_stop_array, spread_method, units):
+    spread_method
     is one of the following strings: pad, reflect, repeat. units is one of the
     following strings: userSpaceOnUse, objectBoundingBox. This method modifies
     the current fill pattern.
-:radial_gradient(cx, cy, r, fx, fy, color_stop_array, spread_method, units): same
+:radial_gradient(cx, cy, r, fx, fy, color_stop_array, spread_method, units):
+    same
     arguments as linear gradient. The direction of the gradient is from the focus
     point to the center point.
 :set_alpha(float):
@@ -518,7 +544,8 @@ Clipping functions
 :clip_to_rect(rect):
 :clip_to_rects(rect_array):
 :clip(): clips using the current path
-:even_odd_clip(): modifies the current clipping path using the even-odd rule to
+:even_odd_clip():
+    modifies the current clipping path using the even-odd rule to
     calculate the intersection of the current path and the current clipping path.
 
 Path functions
@@ -532,10 +559,12 @@ Path functions
 :lines(point_array):
 :rect(x, y, w, h):
 :rects(rect_array):
-:curve_to(x1, y1, x2, y2, end_x, end_y): draws a cubic bezier curve with
+:curve_to(x1, y1, x2, y2, end_x, end_y):
+    draws a cubic bezier curve with
     control points (x1,y1) and (x2,y2) that ends at point (end_x, end_y)
 
-:quad_curve_to(cp_x, cp_y, end_x, end_y): draws a quadratic bezier curve from
+:quad_curve_to(cp_x, cp_y, end_x, end_y):
+    draws a quadratic bezier curve from
     the current point using control point (cp_x, cp_y) and ending at
     (end_x, end_y)
 

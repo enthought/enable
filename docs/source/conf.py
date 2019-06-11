@@ -36,7 +36,7 @@ master_doc = 'index'
 
 # General substitutions.
 project = 'enable'
-copyright = '2008-2015, Enthought'
+copyright = '2008-2019, Enthought'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
@@ -77,11 +77,36 @@ pygments_style = 'sphinx'
 
 # Options for HTML output
 # -----------------------
+# Use enthought-sphinx-theme if available
+try:
+    import enthought_sphinx_theme
 
-# The style sheet to use for HTML and HTML Help pages. A file of that name
-# must exist either in Sphinx' static/ path, or in one of the custom paths
-# given in html_static_path.
-html_style = 'default.css'
+    html_theme_path = [enthought_sphinx_theme.theme_path]
+    html_theme = "enthought"
+except ImportError as exc:
+    import warnings
+
+    msg = """Can't find Enthought Sphinx Theme, using default.
+                Exception was: {}
+                Enthought Sphinx Theme can be downloaded from
+                https://github.com/enthought/enthought-sphinx-theme"""
+    warnings.warn(RuntimeWarning(msg.format(exc)))
+
+    # Use old defaults if enthought-sphinx-theme not available
+
+    # The name of an image file (within the static path) to place at the top
+    # of the sidebar.
+    html_logo = "e-logo-rev.png"
+
+    # The name of an image file (within the static path) to use as favicon of
+    # the docs.  This file should be a Windows icon file (.ico) being 16x16
+    # or 32x32 pixels large.
+    html_favicon = "et.ico"
+
+    # The style sheet to use for HTML and HTML Help pages. A file of that name
+    # must exist either in Sphinx' static/ path, or in one of the custom paths
+    # given in html_static_path.
+    html_style = "default.css"
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -89,15 +114,6 @@ html_style = 'default.css'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = None
-
-# The name of an image file (within the static path) to place at the top of
-# the sidebar.
-html_logo = "_static/e-logo-rev.png"
-
-# The name of an image file (within the static path) to use as favicon of the
-# docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
-# pixels large.
-html_favicon = "et.ico"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
