@@ -47,6 +47,9 @@ def points_in_polygon(pts, poly_pts, use_winding=False):
 
     # Check the shape of pts and transpose if necessary.
     pts = np.asarray(pts, dtype=np.float64)
+    if pts.size == 0:
+        # Quick exit for empty pts array
+        return np.zeros(0, dtype=np.uint8)
     if pts.ndim == 1:
         pts = np.reshape(pts, (1,) + np.shape(pts))
     if np.shape(pts)[1] != 2:
@@ -57,6 +60,9 @@ def points_in_polygon(pts, poly_pts, use_winding=False):
 
     # Check the shape of poly_pts and transpose if necessary
     poly_pts = np.asarray(poly_pts, dtype=np.float64)
+    if poly_pts.size == 0:
+        # Quick exit for empty poly array
+        return np.zeros(pts.size, dtype=np.uint8)
     if poly_pts.ndim == 1:
         poly_pts = np.reshape(poly_pts, (1,) + np.shape(poly_pts))
     if np.shape(poly_pts)[1] != 2:
