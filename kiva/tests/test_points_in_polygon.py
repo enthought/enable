@@ -26,7 +26,7 @@ class TestPointsInPolygon(unittest.TestCase):
         points = zeros((0, 2))
 
         result = points_in_polygon(points, polygon)
-        self.assertTrue(len(result), len(points))
+        self.assertTrue(len(result) == len(points))
 
         polygon = array([])
         points = array(((-1.0, -1.0), (5.0, 5.0), (15.0, 15.0)))
