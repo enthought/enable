@@ -16,6 +16,8 @@ addons:
     - libpng-dev
     - libfreetype6-dev
     - libcairo2-dev
+    - libglu1-mesa-dev
+    - mesa-common-dev
 
 env:
   global:
