@@ -1,4 +1,7 @@
 language: generic
+dist: xenial
+services:
+  - xvfb
 
 addons:
   apt:
@@ -13,6 +16,8 @@ addons:
     - libpng-dev
     - libfreetype6-dev
     - libcairo2-dev
+    - libglu1-mesa-dev
+    - mesa-common-dev
 
 env:
   global:
@@ -47,8 +52,6 @@ before_install:
   - ci/install-edm.sh
   - export PATH="${HOME}/edm/bin:/usr/lib/ccache:${PATH}"
   - edm install -y wheel click coverage
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
 install:
   - for toolkit in ${TOOLKITS}; do edm run -- python ci/edmtool.py install --runtime=${RUNTIME} --toolkit=${toolkit} --pillow=${PILLOW} || exit; done
 script:
