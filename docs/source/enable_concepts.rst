@@ -104,13 +104,13 @@ them get the event.
 
 .. note::
 
-  (The notion of an active tool is not used in current code, just older client
+  The notion of an active tool is not used in current code, just older client
   code. Experience has shown that the notion of a tool promoting itself to be
   the "active" tool isn't really useful, because usually the tools need to
   interact with each other. For newer tools, such as Pan, Zoom, or !DragZoom,
   when the user starts interacting with a tool, that tool calls capture_mouse()
   at the window level, and then all mouse events go to that tool, circumventing
-  the entire dispatch() mechanism.)
+  the entire dispatch() mechanism.
 
 The event handlers that :class:`Component` dispatches to are of the form
 :samp:`{event_state}{event_suffix}`, where *event_suffix* corresponds to the
@@ -129,9 +129,9 @@ event handler method name in its definition.
 
 .. note::
 
-  (This scheme is difficult to implement when the number of states and events
+  This scheme is difficult to implement when the number of states and events
   gets large. There's nothing to tell you if you've forgotten to implement one
-  of the possible combinations.)
+  of the possible combinations.
 
 If an interactor transforms an event, then it has to return the full
 transformation that it applies to the event.
@@ -163,14 +163,14 @@ that event to be in the coordinate system of its parent container.
 
 .. note::
 
-  (This introduces some complexity in trying to handle mouse event capture. If a
+  This introduces some complexity in trying to handle mouse event capture. If a
   tool or component captures the mouse, the top-level window has no idea what
   the coordinate system of that object is. It has to be able to ask an event,
   "give me your total transformation up to this point", and then apply that
   transformation to all subsequent events. Programmers using Chaco or Enable
   don't usually have to think about this, but the interactor does have to be
   able to do it. Containers implement this, so if you're just writing a standard
-  component, you don't have to worry about it.)
+  component, you don't have to worry about it.
 
 Viewports
 ~~~~~~~~~
