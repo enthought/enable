@@ -455,6 +455,7 @@ text_draw_mode:
     TEXT_FILL, TEXT_INVISIBLE (currently unused)
 pix_format:
     (NOTE: the strings in the dicts omit the ``pix_format_`` prefix)
+
     dicts:
         pix_format_string_map, pix_format_enum_map
     values:
@@ -469,6 +470,7 @@ interpolation:
         sinc256, blackman64, blackman100, blackman256
 marker:
     (NOTE: the strings in the dicts omit the ``marker_`` prefix)
+
     dicts:
         marker_string_map, marker_enum_map
     values:
