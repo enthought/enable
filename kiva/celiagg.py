@@ -363,7 +363,7 @@ class GraphicsContext(object):
         if (not self.canvas_state.anti_aliased and
                 self.canvas_state.line_width in (0.0, 1.0) and
                 fabs(self.transform.shx) < 1e-3 and
-                fabs(self.transform.shx) < 1e-3):
+                fabs(self.transform.shy) < 1e-3):
             scale_x = self.transform.sx
             scale_y = self.transform.sy
             tx = self.transform.tx
