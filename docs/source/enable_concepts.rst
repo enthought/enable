@@ -14,9 +14,9 @@ receives input for it (keyboard, mouse, and multitouch events).
 
 Basic traits of Component include:
 
- * :attr:`visible`: Whether it's visible
- * :attr:`invisible_layout`: Whether it uses space even when not visible (by 
-   default, invisible objects don't take up space in layout)
+* :attr:`visible`: Whether it's visible
+* :attr:`invisible_layout`: Whether it uses space even when not visible (by
+  default, invisible objects don't take up space in layout)
 
 Padding
 ~~~~~~~
@@ -25,19 +25,19 @@ Layout in Enable uses padding, similar to CSS. In Chaco, it's used for things
 around the edges of plot, like labels and tick marks that extend outside the
 main plot area.
 
- * :attr:`fill_padding`: Whether the background color fills the padding area as 
-   well as the main area of the component.
- * :attr:`padding_left`
- * :attr:`padding_right`
- * :attr:`padding_top`
- * :attr:`padding_bottom`
- * :attr:`padding`: Sets or gets all 4 padding size traits at once
- * :attr:`hpadding`: Read-only convenience property for the total amount of 
-   horizontal padding
- * :attr:`vpadding`: Read-only convenience property for the total amount of 
-   vertical padding
- * :attr:`padding_accepts_focus`: Whether the component responds to mouse events
-   over the padding area
+* :attr:`fill_padding`: Whether the background color fills the padding area as
+  well as the main area of the component.
+* :attr:`padding_left`
+* :attr:`padding_right`
+* :attr:`padding_top`
+* :attr:`padding_bottom`
+* :attr:`padding`: Sets or gets all 4 padding size traits at once
+* :attr:`hpadding`: Read-only convenience property for the total amount of
+  horizontal padding
+* :attr:`vpadding`: Read-only convenience property for the total amount of
+  vertical padding
+* :attr:`padding_accepts_focus`: Whether the component responds to mouse events
+  over the padding area
 
 Parent Classes
 ~~~~~~~~~~~~~~
@@ -53,8 +53,8 @@ something that doesn't draw but does respond to events, subclass
 
 :class:`Interactor` defines common traits for screen interaction, including:
 
- * :attr:`pointer`: The cursor shape when the interactor is active
- * :attr:`event_state`: The object's event state, used for event dispatch
+* :attr:`pointer`: The cursor shape when the interactor is active
+* :attr:`event_state`: The object's event state, used for event dispatch
 
 Containers
 ~~~~~~~~~~
@@ -81,7 +81,7 @@ creating a context menu.
 Event Dispatch
 ~~~~~~~~~~~~~~
 
-The key methods of :class:`Interactor` are :meth:`dispatch` and 
+The key methods of :class:`Interactor` are :meth:`dispatch` and
 :meth:`\_dispatch_stateful_event`. There's a complex method resolution that
 occurs beween :class:`Interactor`, :class:`Component`, :class:`Container`
 (which is a subclass of :class:`Component`), and the Chaco-based subclasses of
@@ -90,11 +90,11 @@ Enable :class:`Component` and :class:`Container`.
 When a component gets an event, it tries to handle it in a standard way, which
 is to dispatch to:
 
- 1. its active tool
- 2. its overlays 
- 3. itself, so that any event handler methods on itself get called
- 4. its underlays
- 5. its listener tools
+1. its active tool
+2. its overlays
+3. itself, so that any event handler methods on itself get called
+4. its underlays
+5. its listener tools
 
 That logic is in :class:`Component`, in the :meth:`\_new_dispatch` method, which
 is called from :meth:`Component.dispatch` (:meth:`\_old_dispatch` will be
@@ -102,13 +102,15 @@ removed in 3.0). If any of these handlers sets event.handled to True, event
 propagation stops. If an event gets as far as the listener tools, then all of
 them get the event.
 
-  (The notion of an active tool is not used in current code, just older client
+.. note::
+
+  The notion of an active tool is not used in current code, just older client
   code. Experience has shown that the notion of a tool promoting itself to be
   the "active" tool isn't really useful, because usually the tools need to
   interact with each other. For newer tools, such as Pan, Zoom, or !DragZoom,
   when the user starts interacting with a tool, that tool calls capture_mouse()
   at the window level, and then all mouse events go to that tool, circumventing
-  the entire dispatch() mechanism.)
+  the entire dispatch() mechanism.
 
 The event handlers that :class:`Component` dispatches to are of the form
 :samp:`{event_state}{event_suffix}`, where *event_suffix* corresponds to the
@@ -125,9 +127,11 @@ system with new kinds of events and new suffixes (as was done for multitouch). A
 disadvantage is that you don't necessarily get feedback when you misspell an
 event handler method name in its definition.
 
-  (This scheme is difficult to implement when the number of states and events
+.. note::
+
+  This scheme is difficult to implement when the number of states and events
   gets large. There's nothing to tell you if you've forgotten to implement one
-  of the possible combinations.)
+  of the possible combinations.
 
 If an interactor transforms an event, then it has to return the full
 transformation that it applies to the event.
@@ -157,14 +161,16 @@ system, and the container is responsible for offsetting the GC, and setting up
 the transform correctly. Likewise, when a component gets an event, it expects
 that event to be in the coordinate system of its parent container.
 
-  (This introduces some complexity in trying to handle mouse event capture. If a
+.. note::
+
+  This introduces some complexity in trying to handle mouse event capture. If a
   tool or component captures the mouse, the top-level window has no idea what
   the coordinate system of that object is. It has to be able to ask an event,
   "give me your total transformation up to this point", and then apply that
   transformation to all subsequent events. Programmers using Chaco or Enable
   don't usually have to think about this, but the interactor does have to be
   able to do it. Containers implement this, so if you're just writing a standard
-  component, you don't have to worry about it.)
+  component, you don't have to worry about it.
 
 Viewports
 ~~~~~~~~~
@@ -178,11 +184,11 @@ plot without duplicating it.
 
 Layout
 ~~~~~~
-Containers are the sizers that do layout. Components within containers can 
+Containers are the sizers that do layout. Components within containers can
 declare that they are resizable, for example, but that doesn't matter if
 the container they are in doesn't do layout.
 
-The basic traits on :class:`Component` for layout are :attr:`resizable`, 
+The basic traits on :class:`Component` for layout are :attr:`resizable`,
 :attr:`aspect_ratio`, :attr:`auto_center`. For the :attr:`resizable` trait,
 you can specify which directions the component is resizable in. Components
 also have lists of overlays and underlays.
@@ -196,13 +202,13 @@ Rendering
 
 Every component can have several layers:
 
- * background
- * image (Chaco only, not Enable)
- * underlay
- * main layer (the actual component)
- * overlay
+* background
+* image (Chaco only, not Enable)
+* underlay
+* main layer (the actual component)
+* overlay
 
-These are defined by DEFAULT_DRAWING_ORDER, and stored in the 
+These are defined by DEFAULT_DRAWING_ORDER, and stored in the
 :attr:`drawing_order` trait.
 
 Complexity arises when you have multiple components in a container: How do
@@ -210,13 +216,13 @@ their layers affect each other? Do you want the "overlay" layer of a component
 to draw on top of all components? Do you want the "background" elements
 to be behind everything else?
 
-This is resolved by the :attr:`unified_draw` trait. If it is False (the 
+This is resolved by the :attr:`unified_draw` trait. If it is False (the
 default), the corresponding layers of all components are drawn in sequence. The
 container is responsible for calling the components to draw their layers in
 the correct sequence. If it is True, then all layers of the component are drawn
 in strict sequence. The point is the overall sequence at which a component
 with ``unified_draw==True`` is drawn is determined by its :attr:`draw_layer`
-trait, which by default is 'mainlayer'. 
+trait, which by default is 'mainlayer'.
 
 For example, if you want a plot to act as an overlay, you could set
 ``unified_draw==True`` and ``draw_layer=='overlay'``. These values tell the
@@ -227,8 +233,8 @@ the overlay; otherwise it draws as part of the background. By default,
 the border is drawn just inside the plot area; set :attr:`inset_border` to
 False to draw it just outside the plot area.
 
-Backbuffer 
-^^^^^^^^^^ 
+Backbuffer
+^^^^^^^^^^
 
 A backbuffer provides the ability to render into an offscreen buffer, which is
 blitted on every draw, until it is invalidated. Various traits such as
@@ -241,7 +247,7 @@ Users typically subclass Chaco :class:`PlotComponent`, but may need features
 from Enable :class:`Component`.
 
 
-Enable Container 
+Enable Container
 ----------------
 
 :class:`Container` is a subclass of Enable :class:`Component`. Containers can be

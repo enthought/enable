@@ -14,26 +14,26 @@ Cassowary_ constraint solver to determine the layout of its child
 :class:`Component` instances. This is achieved by adding constraint variables
 to the :class:`Component` class which define a simple box model:
 
- * :attr:`layout_height`: The height of the component.
- * :attr:`layout_width`: The width of the component.
- * :attr:`left`: The left edge of the component.
- * :attr:`right`: The right edge of the component.
- * :attr:`top`: The top edge of the component.
- * :attr:`bottom`: The bottom edge of the component.
- * :attr:`h_center`: The vertical center line between the left and right edges
- * :attr:`v_center`: The  horizontal center line between the top and bottom edges
+* :attr:`layout_height`: The height of the component.
+* :attr:`layout_width`: The width of the component.
+* :attr:`left`: The left edge of the component.
+* :attr:`right`: The right edge of the component.
+* :attr:`top`: The top edge of the component.
+* :attr:`bottom`: The bottom edge of the component.
+* :attr:`h_center`: The vertical center line between the left and right edges
+* :attr:`v_center`: The  horizontal center line between the top and bottom edges
 
 Additionally, there are some constraints which only exist on
 :class:`ConstraintsContainer`:
 
- * :attr:`contents_height`: The height of the container.
- * :attr:`contents_width`: The width of the container.
- * :attr:`contents_left`: The left edge of the container.
- * :attr:`contents_right`: The right edge of the container.
- * :attr:`contents_top`: The top edge of the container.
- * :attr:`contents_bottom`: The bottom edge of the container.
- * :attr:`contents_h_center`: The vertical center line of the container.
- * :attr:`contents_v_center`: The  horizontal center line of the container.
+* :attr:`contents_height`: The height of the container.
+* :attr:`contents_width`: The width of the container.
+* :attr:`contents_left`: The left edge of the container.
+* :attr:`contents_right`: The right edge of the container.
+* :attr:`contents_top`: The top edge of the container.
+* :attr:`contents_bottom`: The bottom edge of the container.
+* :attr:`contents_h_center`: The vertical center line of the container.
+* :attr:`contents_v_center`: The  horizontal center line of the container.
 
 These variables can be used in linear inequality expressions which make up the
 layout constraints of a container:
@@ -171,10 +171,10 @@ controls the minimum size of a component when it's part of a contraints layout.
 Additionally, :class:`Component` defines some strength traits that can be used
 to fine tune the behavior of a component instance during layout. They are:
 
- * :attr:`hug_height`: How strongly a component prefers the height of its size hint when it could grow.
- * :attr:`hug_width`: How strongly a component prefers the width of its size hint when it could grow.
- * :attr:`resist_height`: How strongly a component resists its height being made smaller than its size hint.
- * :attr:`resist_width`: How strongly a component resists its width being made smaller than its size hint.
+* :attr:`hug_height`: How strongly a component prefers the height of its size hint when it could grow.
+* :attr:`hug_width`: How strongly a component prefers the width of its size hint when it could grow.
+* :attr:`resist_height`: How strongly a component resists its height being made smaller than its size hint.
+* :attr:`resist_width`: How strongly a component resists its width being made smaller than its size hint.
 
 The allow values for these strengths are: `'required'`, `'strong'`, `'medium'`,
 and `'weak'`.
