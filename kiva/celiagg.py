@@ -11,6 +11,7 @@
 from __future__ import absolute_import, print_function, division
 
 from collections import namedtuple
+from math import fabs
 import os
 import warnings
 
@@ -353,11 +354,33 @@ class GraphicsContext(object):
     def draw_rect(self, rect, mode=constants.FILL_STROKE):
         """ Draw a rect.
         """
+
+        # XXX: kiva::graphics_context<>::_draw_rect_simple() does a VERY
+        # specific optimization for drawing rectangles in certain circumstances
+        # which results in chaco plot borders which are sharp.
+        # This implements that same special case.  - JW 2018/09/01
+        transform = self.transform
+        if (not self.canvas_state.anti_aliased and
+                self.canvas_state.line_width in (0.0, 1.0) and
+                fabs(self.transform.shx) < 1e-3 and
+                fabs(self.transform.shy) < 1e-3):
+            scale_x = self.transform.sx
+            scale_y = self.transform.sy
+            tx = self.transform.tx
+            ty = self.transform.ty
+            x1 = int(rect[0] * scale_x + tx)
+            y1 = int(rect[1] * scale_y + ty)
+            x2 = int((rect[0] + rect[2]) * scale_x + tx)
+            y2 = int((rect[1] + rect[3]) * scale_y + ty)
+            rect = (x1, y1, abs(x2-x1), abs(y2-y1))
+            # XXX: The base transform is a half-pixel translate
+            transform = agg.Transform(tx=0.5, ty=0.5)
+
         path = agg.Path()
         path.rect(*rect)
 
         self.canvas_state.drawing_mode = draw_modes[mode]
-        self.gc.draw_shape(path, self.transform, self.canvas_state,
+        self.gc.draw_shape(path, transform, self.canvas_state,
                            stroke=self.stroke_paint, fill=self.fill_paint)
 
     def add_path(self, path):
