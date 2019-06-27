@@ -96,12 +96,12 @@ except ImportError as exc:
 
     # The name of an image file (within the static path) to place at the top
     # of the sidebar.
-    html_logo = "e-logo-rev.png"
+    html_logo = os.path.join("_static", "e-logo-rev.png")
 
     # The name of an image file (within the static path) to use as favicon of
     # the docs.  This file should be a Windows icon file (.ico) being 16x16
     # or 32x32 pixels large.
-    html_favicon = "et.ico"
+    html_favicon = os.path.join("_static", "et.ico")
 
     # The style sheet to use for HTML and HTML Help pages. A file of that name
     # must exist either in Sphinx' static/ path, or in one of the custom paths
