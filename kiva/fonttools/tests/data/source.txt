@@ -1,10 +1,9 @@
 Project                 License                   File
 ----------------------------------------------------------------------------
 fonttools               MIT                 fonttools_LICENSE.txt
-matplotlib              PSF                 matplotlib_LICENSE.txt
 
 Files and orginal authors:
 ----------------------------------------------------------------------------
 kiva/fonttools/tests/data:
                     TestTTC.ttc | fonttools
-                    mpltest.ttf | matplotlib
+                    TestTTF.ttf | fonttools
