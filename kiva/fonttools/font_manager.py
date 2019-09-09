@@ -220,7 +220,7 @@ def is_string_like(obj):
             return False
         try:
             obj + ''
-        except:
+        except Exception:
             return False
         return True
 
@@ -528,11 +528,11 @@ def ttfFontProperty(fpath, font):
 
     try:
         sfnt2 = props[(1, 0, 0, 2)]
-    except:
+    except Exception:
         sfnt2 = None
     try:
         sfnt4 = props[(1, 0, 0, 4)]
-    except:
+    except Exception:
         sfnt4 = None
     if sfnt2:
         sfnt2 = sfnt2.lower().decode()
@@ -685,7 +685,7 @@ def createFontList(fontfiles, fontext='ttf'):
         if fontext == 'afm':
             try:
                 fh = open(fpath, 'r')
-            except:
+            except Exception:
                 logger.error(
                     "Could not open font file %s", fpath, exc_info=True)
                 continue
@@ -1444,7 +1444,7 @@ else:
         else:
             fontManager.default_size = None
             logger.debug("Using fontManager instance from %s", _fmcache)
-    except:
+    except Exception:
         _rebuild()
 
     def findfont(prop, **kw):
