@@ -11,6 +11,7 @@ from ..font_manager import FontEntry, createFontList
 
 data_dir = resource_filename('kiva.fonttools.tests', 'data')
 
+
 class TestCreateFontList(unittest.TestCase):
 
     def setUp(self):
