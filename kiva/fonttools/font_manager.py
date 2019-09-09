@@ -842,8 +842,8 @@ class FontProperties(object):
         self.set_size(size)
 
     def __hash__(self):
-        l = [(k, getattr(self, "get" + k)()) for k in sorted(self.__dict__)]
-        return hash(repr(l))
+        lst = [(k, getattr(self, "get" + k)()) for k in sorted(self.__dict__)]
+        return hash(repr(lst))
 
     def __str__(self):
         return str((self._family, self._slant, self._variant,
