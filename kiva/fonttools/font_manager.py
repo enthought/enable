@@ -229,8 +229,13 @@ def getPropDict(font):
     n = font['name']
     propdict = {}
     for prop in n.names:
-        prop_key = (prop.platformID, prop.platEncID, prop.langID, prop.nameID)
-        propdict[prop_key] = prop.string
+        if prop.nameID == 1 and 'name' not in propdict:
+            propdict['name'] = prop.string
+        elif prop.nameID == 2 and 'sfnt2' not in propdict:
+            propdict['sfnt2'] = prop.string
+        elif prop.nameID == 4 and 'sfnt4' not in propdict:
+            propdict['sfnt4'] = prop.string
+
     return propdict
 
 
@@ -522,25 +527,19 @@ def ttfFontProperty(fpath, font):
     *font* is a :class:`FT2Font` instance.
     """
     props = getPropDict(font)
-    name = props[(1, 0, 0, 1)].decode()
+    name = props.get('name', b'')
+    name = decode_prop(name)
 
     #  Styles are: italic, oblique, and normal (default)
-
+    sfnt2 = props.get('sfnt2', b'')
     try:
-        sfnt2 = props[(1, 0, 0, 2)]
-    except Exception:
-        sfnt2 = None
-    try:
-        sfnt4 = props[(1, 0, 0, 4)]
-    except Exception:
-        sfnt4 = None
-    if sfnt2:
-        sfnt2 = sfnt2.lower().decode()
-    else:
+        sfnt2 = decode_prop(sfnt2)
+    except UnicodeDecodeError:
         sfnt2 = ''
-    if sfnt4:
-        sfnt4 = sfnt4.lower().decode()
-    else:
+    sfnt4 = props.get('sfnt4', b'')
+    try:
+        sfnt4 = decode_prop(sfnt4)
+    except UnicodeDecodeError:
         sfnt4 = ''
     if sfnt4.find('oblique') >= 0:
         style = 'oblique'
@@ -865,7 +864,7 @@ class FontProperties(object):
             return afm.AFM(open(filename)).get_familyname()
 
         font = fontManager.findfont(self)
-        return getPropDict(TTFont(str(font)))[(1, 0, 0, 1)]
+        return getPropDict(TTFont(str(font)))['name']
 
     def get_style(self):
         """
