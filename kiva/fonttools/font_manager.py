@@ -665,6 +665,7 @@ def afmFontProperty(fontpath, font):
 
     return FontEntry(fontpath, name, style, variant, weight, stretch, size)
 
+
 def createFontList(fontfiles, fontext='ttf'):
     """
     A function to create a font lookup list.  The default is to create
