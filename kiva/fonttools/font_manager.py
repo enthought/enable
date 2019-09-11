@@ -231,8 +231,6 @@ def getPropDict(font):
     for prop in n.names:
         if prop.nameID == 1 and 'name' not in propdict:
             propdict['name'] = prop.string
-        elif prop.nameID == 2 and 'sfnt2' not in propdict:
-            propdict['sfnt2'] = prop.string
         elif prop.nameID == 4 and 'sfnt4' not in propdict:
             propdict['sfnt4'] = prop.string
 
@@ -530,15 +528,12 @@ def ttfFontProperty(fpath, font):
     name = props.get('name', b'').decode()
 
     #  Styles are: italic, oblique, and normal (default)
-    sfnt2 = props.get('sfnt2', b'').decode()
     sfnt4 = props.get('sfnt4', b'').decode()
 
     if sfnt4.find('oblique') >= 0:
         style = 'oblique'
     elif sfnt4.find('italic') >= 0:
         style = 'italic'
-    elif sfnt2.find('regular') >= 0:
-        style = 'normal'
     else:
         style = 'normal'
 
