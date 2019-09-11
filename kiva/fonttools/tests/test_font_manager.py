@@ -6,8 +6,9 @@ except ImportError:
     import mock
 
 from pkg_resources import resource_filename
+from fontTools.ttLib import TTFont
 
-from ..font_manager import FontEntry, createFontList
+from ..font_manager import FontEntry, createFontList, ttfFontProperty
 
 data_dir = resource_filename('kiva.fonttools.tests', 'data')
 
@@ -71,3 +72,5 @@ class TestTTFFontProperty(unittest.TestCase):
         self.assertEqual(entry.size, exp_size)
 
 
+if __name__ == "__main__":
+    unittest.main()

@@ -527,20 +527,12 @@ def ttfFontProperty(fpath, font):
     *font* is a :class:`FT2Font` instance.
     """
     props = getPropDict(font)
-    name = props.get('name', b'')
-    name = decode_prop(name)
+    name = props.get('name', b'').decode()
 
     #  Styles are: italic, oblique, and normal (default)
-    sfnt2 = props.get('sfnt2', b'')
-    try:
-        sfnt2 = decode_prop(sfnt2)
-    except UnicodeDecodeError:
-        sfnt2 = ''
-    sfnt4 = props.get('sfnt4', b'')
-    try:
-        sfnt4 = decode_prop(sfnt4)
-    except UnicodeDecodeError:
-        sfnt4 = ''
+    sfnt2 = props.get('sfnt2', b'').decode()
+    sfnt4 = props.get('sfnt4', b'').decode()
+
     if sfnt4.find('oblique') >= 0:
         style = 'oblique'
     elif sfnt4.find('italic') >= 0:
@@ -864,7 +856,7 @@ class FontProperties(object):
             return afm.AFM(open(filename)).get_familyname()
 
         font = fontManager.findfont(self)
-        return getPropDict(TTFont(str(font)))['name']
+        return getPropDict(TTFont(str(font)))['name'].decode()
 
     def get_style(self):
         """
