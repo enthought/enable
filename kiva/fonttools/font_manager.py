@@ -229,7 +229,9 @@ def getPropDict(font):
     n = font['name']
     propdict = {}
     for prop in n.names:
-        if prop.nameID == 1 and 'name' not in propdict:
+        if 'name' in propdict and 'sfnt4' in propdict:
+            break
+        elif prop.nameID == 1 and 'name' not in propdict:
             propdict['name'] = prop.string
         elif prop.nameID == 4 and 'sfnt4' not in propdict:
             propdict['sfnt4'] = prop.string
