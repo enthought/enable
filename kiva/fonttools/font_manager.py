@@ -246,18 +246,15 @@ def getPropDict(font):
     n = font['name']
     propdict = {}
     for prop in n.names:
-        if 'name' in propdict and 'sfnt4' in propdict:
-            break
-        elif prop.nameID == 1 and 'name' not in propdict:
-            name = prop.string
-            try:
-                # Ensure that the name can be decoded
-                decode_prop(name)
-                propdict['name'] = name
-            except UnicodeDecodeError:
-                continue
-        elif prop.nameID == 4 and 'sfnt4' not in propdict:
-            propdict['sfnt4'] = prop.string
+        try:
+            if 'name' in propdict and 'sfnt4' in propdict:
+                break
+            elif prop.nameID == 1 and 'name' not in propdict:
+                propdict['name'] = decode_prop(prop.string)
+            elif prop.nameID == 4 and 'sfnt4' not in propdict:
+                propdict['sfnt4'] = decode_prop(prop.string)
+        except UnicodeDecodeError:
+            continue
 
     return propdict
 
@@ -553,13 +550,9 @@ def ttfFontProperty(fpath, font):
     name = props.get('name')
     if name is None:
         raise KeyError("No name could be found for: {}".format(fpath))
-    name = decode_prop(props['name'])
 
     #  Styles are: italic, oblique, and normal (default)
-    try:
-        sfnt4 = decode_prop(props.get('sfnt4', b''))
-    except UnicodeDecodeError:
-        sfnt4 = ""
+    sfnt4 = decode_prop(props.get('sfnt4', ''))
 
     if sfnt4.find('oblique') >= 0:
         style = 'oblique'
@@ -882,7 +875,7 @@ class FontProperties(object):
             return afm.AFM(open(filename)).get_familyname()
 
         font = fontManager.findfont(self)
-        return decode_prop(getPropDict(TTFont(str(font))['name']))
+        return getPropDict(TTFont(str(font))['name'])
 
     def get_style(self):
         """
