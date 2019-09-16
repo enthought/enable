@@ -70,7 +70,3 @@ class TestTTFFontProperty(unittest.TestCase):
         self.assertEqual(entry.weight, exp_weight)
         self.assertEqual(entry.stretch, exp_stretch)
         self.assertEqual(entry.size, exp_size)
-
-
-if __name__ == "__main__":
-    unittest.main()

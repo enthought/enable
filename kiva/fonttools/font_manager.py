@@ -225,6 +225,23 @@ def is_string_like(obj):
         return True
 
 
+def decode_prop(prop):
+    """ Decode a prop string
+
+    Parameters
+    ----------
+    prop : bytestring
+
+    Returns
+    -------
+    string
+    """
+    # Adpated from: https://gist.github.com/pklaus/dce37521579513c574d0
+    encoding = "utf-16-be" if b"\x00" in prop else "utf-8"
+
+    return prop.decode(encoding)
+
+
 def getPropDict(font):
     n = font['name']
     propdict = {}
@@ -232,7 +249,13 @@ def getPropDict(font):
         if 'name' in propdict and 'sfnt4' in propdict:
             break
         elif prop.nameID == 1 and 'name' not in propdict:
-            propdict['name'] = prop.string
+            name = prop.string
+            try:
+                # Ensure that the name can be decoded
+                decode_prop(name)
+                propdict['name'] = name
+            except UnicodeDecodeError:
+                continue
         elif prop.nameID == 4 and 'sfnt4' not in propdict:
             propdict['sfnt4'] = prop.string
 
@@ -527,10 +550,16 @@ def ttfFontProperty(fpath, font):
     *font* is a :class:`FT2Font` instance.
     """
     props = getPropDict(font)
-    name = props.get('name', b'').decode()
+    name = props.get('name')
+    if name is None:
+        raise KeyError("No name could be found for: {}".format(fpath))
+    name = decode_prop(props['name'])
 
     #  Styles are: italic, oblique, and normal (default)
-    sfnt4 = props.get('sfnt4', b'').decode()
+    try:
+        sfnt4 = decode_prop(props.get('sfnt4', b''))
+    except UnicodeDecodeError:
+        sfnt4 = ""
 
     if sfnt4.find('oblique') >= 0:
         style = 'oblique'
@@ -853,7 +882,7 @@ class FontProperties(object):
             return afm.AFM(open(filename)).get_familyname()
 
         font = fontManager.findfont(self)
-        return getPropDict(TTFont(str(font)))['name'].decode()
+        return decode_prop(getPropDict(TTFont(str(font))['name']))
 
     def get_style(self):
         """
