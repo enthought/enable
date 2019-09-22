@@ -52,7 +52,7 @@ class TestTTFFontProperty(unittest.TestCase):
 
     def test_font(self):
         # Given
-        reg_font = os.path.join(data_dir, "TestTTF.ttf")
+        test_font = os.path.join(data_dir, "TestTTF.ttf")
         exp_name = "Test TTF"
         exp_style = "normal"
         exp_variant = "normal"
@@ -61,7 +61,7 @@ class TestTTFFontProperty(unittest.TestCase):
         exp_size = "scalable"
 
         # When
-        entry = ttfFontProperty(reg_font, TTFont(reg_font))
+        entry = ttfFontProperty(test_font, TTFont(test_font))
 
         # Then
         self.assertEqual(entry.name, exp_name)
