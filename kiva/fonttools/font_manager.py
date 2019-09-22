@@ -552,7 +552,7 @@ def ttfFontProperty(fpath, font):
         raise KeyError("No name could be found for: {}".format(fpath))
 
     #  Styles are: italic, oblique, and normal (default)
-    sfnt4 = decode_prop(props.get('sfnt4', ''))
+    sfnt4 = props.get('sfnt4', '')
 
     if sfnt4.find('oblique') >= 0:
         style = 'oblique'
