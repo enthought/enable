@@ -226,7 +226,7 @@ def is_string_like(obj):
 
 
 def decode_prop(prop):
-    """ Decode a prop string
+    """ Decode a prop string.
 
     Parameters
     ----------
@@ -236,7 +236,7 @@ def decode_prop(prop):
     -------
     string
     """
-    # Adpated from: https://gist.github.com/pklaus/dce37521579513c574d0
+    # Adapted from: https://gist.github.com/pklaus/dce37521579513c574d0
     encoding = "utf-16-be" if b"\x00" in prop else "utf-8"
 
     return prop.decode(encoding)
