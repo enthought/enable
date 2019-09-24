@@ -875,7 +875,8 @@ class FontProperties(object):
             return afm.AFM(open(filename)).get_familyname()
 
         font = fontManager.findfont(self)
-        return getPropDict(TTFont(six.text_type(font)))['name']
+        prop_dict = getPropDict(TTFont(six.text_type(font)))
+        return prop_dict['name']
 
     def get_style(self):
         """
