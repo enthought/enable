@@ -721,7 +721,7 @@ def createFontList(fontfiles, fontext='ttf'):
             _, ext = os.path.splitext(fpath)
             try:
                 if ext.lower() == ".ttc":
-                    collection = TTCollection(str(fpath))
+                    collection = TTCollection(six.text_type(fpath))
                     try:
                         props = []
                         for font in collection.fonts:
@@ -735,7 +735,7 @@ def createFontList(fontfiles, fontext='ttf'):
                         )
                         continue
                 else:
-                    font = TTFont(str(fpath))
+                    font = TTFont(six.text_type(fpath))
             except (RuntimeError, TTLibError):
                 logger.error(
                     "Could not open font file %s", fpath, exc_info=True)
@@ -870,12 +870,12 @@ class FontProperties(object):
         Return the name of the font that best matches the font
         properties.
         """
-        filename = str(fontManager.findfont(self))
+        filename = six.text_type(fontManager.findfont(self))
         if filename.endswith('.afm'):
             return afm.AFM(open(filename)).get_familyname()
 
         font = fontManager.findfont(self)
-        return getPropDict(TTFont(str(font))['name'])
+        return getPropDict(TTFont(six.text_type(font))['name'])
 
     def get_style(self):
         """
@@ -1099,7 +1099,7 @@ class FontManager:
                 else:
                     paths.append(ttfpath)
 
-        logger.debug("font search path %s", str(paths))
+        logger.debug("font search path %s", six.text_type(paths))
         #  Load TrueType fonts and create font dictionary.
 
         self.ttffiles = findSystemFonts(paths) + findSystemFonts()
