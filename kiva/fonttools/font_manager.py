@@ -220,17 +220,42 @@ def is_string_like(obj):
             return False
         try:
             obj + ''
-        except:
+        except Exception:
             return False
         return True
+
+
+def decode_prop(prop):
+    """ Decode a prop string.
+
+    Parameters
+    ----------
+    prop : bytestring
+
+    Returns
+    -------
+    string
+    """
+    # Adapted from: https://gist.github.com/pklaus/dce37521579513c574d0
+    encoding = "utf-16-be" if b"\x00" in prop else "utf-8"
+
+    return prop.decode(encoding)
 
 
 def getPropDict(font):
     n = font['name']
     propdict = {}
     for prop in n.names:
-        prop_key = (prop.platformID, prop.platEncID, prop.langID, prop.nameID)
-        propdict[prop_key] = prop.string
+        try:
+            if 'name' in propdict and 'sfnt4' in propdict:
+                break
+            elif prop.nameID == 1 and 'name' not in propdict:
+                propdict['name'] = decode_prop(prop.string)
+            elif prop.nameID == 4 and 'sfnt4' not in propdict:
+                propdict['sfnt4'] = decode_prop(prop.string)
+        except UnicodeDecodeError:
+            continue
+
     return propdict
 
 
@@ -522,32 +547,17 @@ def ttfFontProperty(fpath, font):
     *font* is a :class:`FT2Font` instance.
     """
     props = getPropDict(font)
-    name = props[(1, 0, 0, 1)].decode()
+    name = props.get('name')
+    if name is None:
+        raise KeyError("No name could be found for: {}".format(fpath))
 
     #  Styles are: italic, oblique, and normal (default)
+    sfnt4 = props.get('sfnt4', '')
 
-    try:
-        sfnt2 = props[(1, 0, 0, 2)]
-    except:
-        sfnt2 = None
-    try:
-        sfnt4 = props[(1, 0, 0, 4)]
-    except:
-        sfnt4 = None
-    if sfnt2:
-        sfnt2 = sfnt2.lower().decode()
-    else:
-        sfnt2 = ''
-    if sfnt4:
-        sfnt4 = sfnt4.lower().decode()
-    else:
-        sfnt4 = ''
     if sfnt4.find('oblique') >= 0:
         style = 'oblique'
     elif sfnt4.find('italic') >= 0:
         style = 'italic'
-    elif sfnt2.find('regular') >= 0:
-        style = 'normal'
     else:
         style = 'normal'
 
@@ -665,6 +675,7 @@ def afmFontProperty(fontpath, font):
 
     return FontEntry(fontpath, name, style, variant, weight, stretch, size)
 
+
 def createFontList(fontfiles, fontext='ttf'):
     """
     A function to create a font lookup list.  The default is to create
@@ -685,7 +696,7 @@ def createFontList(fontfiles, fontext='ttf'):
         if fontext == 'afm':
             try:
                 fh = open(fpath, 'r')
-            except:
+            except Exception:
                 logger.error(
                     "Could not open font file %s", fpath, exc_info=True)
                 continue
@@ -710,7 +721,7 @@ def createFontList(fontfiles, fontext='ttf'):
             _, ext = os.path.splitext(fpath)
             try:
                 if ext.lower() == ".ttc":
-                    collection = TTCollection(str(fpath))
+                    collection = TTCollection(six.text_type(fpath))
                     try:
                         props = []
                         for font in collection.fonts:
@@ -724,7 +735,7 @@ def createFontList(fontfiles, fontext='ttf'):
                         )
                         continue
                 else:
-                    font = TTFont(str(fpath))
+                    font = TTFont(six.text_type(fpath))
             except (RuntimeError, TTLibError):
                 logger.error(
                     "Could not open font file %s", fpath, exc_info=True)
@@ -841,8 +852,8 @@ class FontProperties(object):
         self.set_size(size)
 
     def __hash__(self):
-        l = [(k, getattr(self, "get" + k)()) for k in sorted(self.__dict__)]
-        return hash(repr(l))
+        lst = [(k, getattr(self, "get" + k)()) for k in sorted(self.__dict__)]
+        return hash(repr(lst))
 
     def __str__(self):
         return str((self._family, self._slant, self._variant,
@@ -859,12 +870,13 @@ class FontProperties(object):
         Return the name of the font that best matches the font
         properties.
         """
-        filename = str(fontManager.findfont(self))
+        filename = six.text_type(fontManager.findfont(self))
         if filename.endswith('.afm'):
             return afm.AFM(open(filename)).get_familyname()
 
         font = fontManager.findfont(self)
-        return getPropDict(TTFont(str(font)))[(1, 0, 0, 1)]
+        prop_dict = getPropDict(TTFont(six.text_type(font)))
+        return prop_dict['name']
 
     def get_style(self):
         """
@@ -1088,7 +1100,7 @@ class FontManager:
                 else:
                     paths.append(ttfpath)
 
-        logger.debug("font search path %s", str(paths))
+        logger.debug("font search path %s", six.text_type(paths))
         #  Load TrueType fonts and create font dictionary.
 
         self.ttffiles = findSystemFonts(paths) + findSystemFonts()
@@ -1444,7 +1456,7 @@ else:
         else:
             fontManager.default_size = None
             logger.debug("Using fontManager instance from %s", _fmcache)
-    except:
+    except Exception:
         _rebuild()
 
     def findfont(prop, **kw):
