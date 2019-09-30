@@ -6,3 +6,4 @@ Files and orginal authors:
 ----------------------------------------------------------------------------
 kiva/fonttools/tests/data:
                     TestTTC.ttc | fonttools
+                    TestTTF.ttf | fonttools

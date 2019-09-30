@@ -37,9 +37,9 @@ from numpy.distutils.misc_util import is_string
 
 MAJOR = 4
 MINOR = 8
-MICRO = 0
+MICRO = 2
 
-IS_RELEASED = True
+IS_RELEASED = False
 
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
@@ -288,6 +288,7 @@ if __name__ == "__main__":
               'enable.savage.trait_defs.ui.wx': ['data/*.svg'],
               'kiva': ['tests/agg/doubleprom_soho_full.jpg',
                        'fonttools/tests/data/*.ttc',
+                       'fonttools/tests/data/*.ttf',
                        'fonttools/tests/data/*.txt'],
           },
           platforms=["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
