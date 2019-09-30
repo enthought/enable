@@ -1,7 +1,7 @@
 Enable CHANGELOG
 ================
 
-Changes since Enable 4.8.0
+Changes since Enable 4.8.1
 ==========================
 
 Enhancements
@@ -12,6 +12,21 @@ Fixes
 
 Maintenance
 -----------
+
+Enable 4.8.1
+============
+
+Fixes
+-----
+
+* PR #368: Deferral of kiva font_manager imports
+* PR #365: Fix a KeyError while parsing ttfFontProperty
+
+Maintenance
+-----------
+
+* PR #366: Fix CI config to avoid skipping tests in matrix
+* PR #367: Fix CI config to avoid losing logs to nose
 
 Enable 4.8.0
 ============
