@@ -48,30 +48,6 @@ from . import agg
 # This backend does not have compiled paths, yet.
 CompiledPath = None
 
-try:
-    import logging
-    import tempfile
-    _logfile = os.path.join(tempfile.gettempdir(), "kivaps.log")
-    hdlr = logging.FileHandler(_logfile)
-    BASIC_FORMAT = "%(levelname)s: %(name)s: %(message)s"
-    fmt = logging.Formatter(BASIC_FORMAT)
-    hdlr.setFormatter(fmt)
-    logging.root.addHandler(hdlr)
-    log = logging.getLogger('')
-    log.setLevel(logging.INFO)
-except ImportError:
-    class FakeLogger:
-        def debug(self, message):
-            print("DEBUG:", message, file=sys.stderr)
-        def info(self, message):
-            print("INFO:", message, file=sys.stderr)
-        def warn(self, message):
-            print("WARN:", message, file=sys.stderr)
-        def error(self, message):
-            print("ERROR:", message, file=sys.stderr)
-        def critical(self, message):
-            print("CRITICAL:", message, file=sys.stderr)
-    log = FakeLogger()
 
 def _strpoints(points):
     c = six.StringIO()
