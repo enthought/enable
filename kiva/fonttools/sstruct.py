@@ -123,22 +123,22 @@ def calcsize(format):
 
 # matches "name:formatchar" (whitespace is allowed)
 _elementRE = re.compile(
-    "\s*"                           # whitespace
-    "([A-Za-z_][A-Za-z_0-9]*)"      # name (python identifier)
-    "\s*:\s*"                       # whitespace : whitespace
-    "([cbBhHiIlLfd]|[0-9]+[ps]|"    # formatchar...
-        "([0-9]+)\.([0-9]+)(F))"    # ...formatchar                 # noqa
-    "\s*"                           # whitespace
-    "(#.*)?$"                       # [comment] + end of string
+    r"\s*"                           # whitespace
+    r"([A-Za-z_][A-Za-z_0-9]*)"      # name (python identifier)
+    r"\s*:\s*"                       # whitespace : whitespace
+    r"([cbBhHiIlLfd]|[0-9]+[ps]|"    # formatchar...
+        r"([0-9]+)\.([0-9]+)(F))"    # ...formatchar                 # noqa
+    r"\s*"                           # whitespace
+    r"(#.*)?$"                       # [comment] + end of string
 )
 
 
 # matches the special struct format chars and 'x' (pad byte)
-_extraRE = re.compile("\s*([x@=<>!])\s*(#.*)?$")
+_extraRE = re.compile(r"\s*([x@=<>!])\s*(#.*)?$")
 
 
 # matches an "empty" string, possibly containing whitespace and/or a comment
-_emptyRE = re.compile("\s*(#.*)?$")
+_emptyRE = re.compile(r"\s*(#.*)?$")
 
 
 _fixedpointmappings = {

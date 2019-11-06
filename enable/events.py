@@ -67,7 +67,7 @@ class BasicEvent(HasTraits):
         return
 
     def offset_xy(self, origin_x, origin_y, caller=None):
-        """
+        r"""
         Shifts this event to be in the coordinate frame whose origin, specified
         in the event's coordinate frame, is (origin_x, origin_y).
 
