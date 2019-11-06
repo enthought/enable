@@ -49,8 +49,8 @@ for i in range( 1, len( sys.argv ) ):
 # Scan C source and header files using trace macros.
 #
 
-c_pathname_pat = re.compile( '^.*\.[ch]$', re.IGNORECASE )
-trace_use_pat  = re.compile( '^[ \t]*#define[ \t]+FT_COMPONENT[ \t]+trace_' )
+c_pathname_pat = re.compile( r'^.*\.[ch]$', re.IGNORECASE )
+trace_use_pat  = re.compile( r'^[ \t]*#define[ \t]+FT_COMPONENT[ \t]+trace_' )
 
 for d in SRC_FILE_DIRS:
   for ( p, dlst, flst ) in os.walk( d ):
@@ -74,8 +74,8 @@ for d in SRC_FILE_DIRS:
 # Scan header file(s) defining trace macros.
 #
 
-trace_def_pat_opn = re.compile( '^.*FT_TRACE_DEF[ \t]*\([ \t]*' )
-trace_def_pat_cls = re.compile( '[ \t\)].*$' )
+trace_def_pat_opn = re.compile( r'^.*FT_TRACE_DEF[ \t]*\([ \t]*' )
+trace_def_pat_cls = re.compile( r'[ \t\)].*$' )
 
 for f in TRACE_DEF_FILES:
   line_num = 0

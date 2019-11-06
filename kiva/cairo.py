@@ -105,7 +105,7 @@ class PixelMap(object):
         return numpy.vstack((alpha, red, green, blue)).T.flatten()
 
 class GraphicsState(object):
-    """ Holds information used by a graphics context when drawing.
+    r""" Holds information used by a graphics context when drawing.
 
         The Cairo state stores the following:
 

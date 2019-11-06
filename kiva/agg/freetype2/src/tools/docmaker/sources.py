@@ -153,7 +153,7 @@ re_source_crossref = re.compile( r'(\W*)(\w*)' )
 #
 # a list of reserved source keywords
 #
-re_source_keywords = re.compile( '''\\b ( typedef   |
+re_source_keywords = re.compile(r'''\\b ( typedef   |
                                           struct    |
                                           enum      |
                                           union     |
