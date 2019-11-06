@@ -253,7 +253,7 @@ def get_fontext_synonyms(fontext):
 
 
 def win32FontDirectory():
-    """
+    r"""
     Return the user-specified font directory for Win32.  This is
     looked up from the registry key::
 
