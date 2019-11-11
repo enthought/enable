@@ -91,7 +91,7 @@ import click
 supported_combinations = {
     '2.7': {'pyqt', 'wx', 'null'},
     '3.5': {'pyqt', 'pyqt5', 'null'},
-    '3.6': {'pyqt', 'pyqt5', 'null'},
+    '3.6': {'pyqt', 'pyqt5', 'pyside2', 'null'},
 }
 
 dependencies = {
@@ -111,6 +111,7 @@ dependencies = {
 extra_dependencies = {
     'pyqt': {'pyqt'},
     'pyqt5': set(),
+    'pyside2': {'libpng'},
     'wx': {'wxpython'},
     'null': set()
 }
@@ -118,6 +119,7 @@ extra_dependencies = {
 environment_vars = {
     'pyqt': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyqt'},
     'pyqt5': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyqt5'},
+    'pyqt5': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyside2'},
     'wx': {'ETS_TOOLKIT': 'wx'},
     'null': {'ETS_TOOLKIT': 'null.image'},
 }
@@ -161,6 +163,10 @@ def install(runtime, toolkit, pillow, environment):
     # pip install pyqt5, because we don't have it in EDM yet
     if toolkit == 'pyqt5':
         commands.append("edm run -e {environment} -- pip install pyqt5==5.9.2")
+
+    # pip install pyside2, because we don't have it in EDM yet
+    if toolkit == 'pyside2':
+        commands.append("edm run -e {environment} -- pip install pyside2 shiboken2")
 
     commands.append("edm run -e {environment} -- python setup.py install")
 
