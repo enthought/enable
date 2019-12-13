@@ -721,19 +721,19 @@ def createFontList(fontfiles, fontext='ttf'):
             _, ext = os.path.splitext(fpath)
             try:
                 if ext.lower() == ".ttc":
-                    collection = TTCollection(six.text_type(fpath))
-                    try:
-                        props = []
-                        for font in collection.fonts:
-                            props.append(ttfFontProperty(fpath, font))
-                        fontlist.extend(props)
-                        continue
-                    except Exception:
-                        logger.error(
-                            "Could not covert font to FontEntry for file %s",
-                            fpath, exc_info=True
-                        )
-                        continue
+                    with TTCollection(six.text_type(fpath)) as collection:
+                        try:
+                            props = []
+                            for font in collection.fonts:
+                                props.append(ttfFontProperty(fpath, font))
+                            fontlist.extend(props)
+                            continue
+                        except Exception:
+                            logger.error(
+                                "Could not covert font to FontEntry for file %s",
+                                fpath, exc_info=True
+                            )
+                            continue
                 else:
                     font = TTFont(six.text_type(fpath))
             except (RuntimeError, TTLibError):
