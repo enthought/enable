@@ -721,7 +721,8 @@ def createFontList(fontfiles, fontext='ttf'):
             _, ext = os.path.splitext(fpath)
             try:
                 if ext.lower() == ".ttc":
-                    with TTCollection(six.text_type(fpath)) as collection:
+                    with open(fpath, "rb") as f:
+                        collection = TTCollection(f)
                         try:
                             props = []
                             for font in collection.fonts:
