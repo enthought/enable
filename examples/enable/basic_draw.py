@@ -2,8 +2,10 @@
 This demonstrates the most basic drawing capabilities using Enable.  A new
 component is created and added to a container.
 """
-from enable.example_support import DemoFrame, demo_main
-from enable.api import Component, Container, Window
+from traits.api import HasTraits, Instance
+from traitsui.api import Item, View
+
+from enable.api import Component, ComponentEditor
 
 
 class Box(Component):
@@ -19,16 +21,18 @@ class Box(Component):
             gc.fill_path()
 
 
-class MyFrame(DemoFrame):
+class Demo(HasTraits):
+    canvas = Instance(Component)
 
-    def _create_window(self):
+    traits_view = View(Item('canvas', editor=ComponentEditor(),
+                            show_label=False, width=200, height=200),
+                       resizable=True)
+
+    def _canvas_default(self):
         box = Box(bounds=[100.0, 100.0], position=[50.0, 50.0])
-        container = Container(bounds=[500, 500])
-        container.add(box)
-        return Window(self, -1, component=container)
+        return box
 
 
 if __name__ == "__main__":
-    # Save demo so that it doesn't get garbage collected when run within
-    # existing event loop (i.e. from ipython).
-    demo = demo_main(MyFrame)
+    Demo().configure_traits()
+

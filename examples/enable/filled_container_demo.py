@@ -10,14 +10,15 @@ the container stretches to the minimum bounding box of its components
 as the user drags the circles around.
 """
 from numpy import array
+from traits.api import Any, Enum, Float, Tuple
+from traits.api import HasTraits, Instance
+from traitsui.api import Item, View
 
-from traits.api import Any, Enum, Float, Instance, Tuple
-from enable.example_support import DemoFrame, demo_main
-from enable.api import Container, Component, Pointer, str_to_font, Window
+from enable.api import Container, Component, Pointer, str_to_font, \
+    ComponentEditor
 
 
 class MyFilledContainer(Container):
-
     fit_window = False
     border_width = 2
     resizable = ""
@@ -118,7 +119,6 @@ class Circle(Component):
 
 
 class LightCircle(Component):
-
     color = Tuple
     bgcolor = "none"
     radius = Float(1.0)
@@ -136,7 +136,6 @@ class LightCircle(Component):
 
 
 class DashedCircle(Component):
-
     color = Tuple
     bgcolor = "none"
     radius = Float(1.0)
@@ -156,9 +155,14 @@ class DashedCircle(Component):
         return
 
 
-class MyFrame(DemoFrame):
+class Demo(HasTraits):
+    canvas = Instance(Component)
 
-    def _create_window(self):
+    traits_view = View(Item('canvas', editor=ComponentEditor(),
+                            show_label=False, width=200, height=200),
+                       resizable=True, title="Click & drag to move circles")
+
+    def _canvas_default(self):
         circle1 = Circle(bounds=[75, 75], position=[50, 50],
                          shadow_type="dashed")
         circle2 = Circle(bounds=[75, 75], position=[200, 50],
@@ -168,10 +172,8 @@ class MyFrame(DemoFrame):
         container.auto_size = True
         container.add(circle1)
         container.add(circle2)
-        return Window(self, -1, component=container)
+        return container
 
 
 if __name__ == "__main__":
-    # Save demo so that it doesn't get garbage collected when run within
-    # existing event loop (i.e. from ipython).
-    demo = demo_main(MyFrame, title="Click and drag to move the circles")
+    Demo().configure_traits()

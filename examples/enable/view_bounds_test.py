@@ -5,8 +5,10 @@ from __future__ import print_function
 
 from enable.example_support import DemoFrame, demo_main
 
-from enable.api import Container, Component, Scrolled, Window
+from enable.api import Container, Component, Scrolled, Window, ComponentEditor
 from enable.base import empty_rectangle, intersect_bounds
+from traits.api import HasTraits, Instance
+from traitsui.api import Item, View
 
 
 class Box(Component):
@@ -38,7 +40,7 @@ class VerboseContainer(Container):
 
         if view_bounds:
             v = view_bounds
-            new_bounds = (v[0]-self.x, v[1]-self.y, v[2], v[3])
+            new_bounds = (v[0] - self.x, v[1] - self.y, v[2], v[3])
         else:
             new_bounds = None
 
@@ -50,7 +52,8 @@ class VerboseContainer(Container):
                 tmp = intersect_bounds(component.position + component.bounds,
                                        new_bounds)
                 if tmp == empty_rectangle:
-                    print("skipping component:", component.__class__.__name__, end=' ')
+                    print("skipping component:", component.__class__.__name__,
+                          end=' ')
                     print("\tbounds:", component.position, component.bounds)
                     continue
 
@@ -58,25 +61,29 @@ class VerboseContainer(Container):
                     component.draw(gc, new_bounds, mode)
 
 
-class MyFrame(DemoFrame):
-    def _create_window(self):
+class Demo(HasTraits):
+    canvas = Instance(Component)
 
-        container = VerboseContainer(auto_size=False, bounds = [800,800])
-        a = Box(bounds=[50.0,50.0], position=[50.0,50.0])
-        b = Box(bounds=[50.0,50.0], position=[200.0,50.0])
-        c = Box(bounds=[50.0,50.0], position=[50.0,200.0])
-        d = Box(bounds=[50.0,50.0], position=[200.0,200.0])
+    traits_view = View(Item('canvas', editor=ComponentEditor(),
+                            show_label=False, width=200, height=200),
+                       resizable=True,
+                       title='Use the scroll bars to show and hide components')
+
+    def _canvas_default(self):
+
+        container = VerboseContainer(auto_size=False, bounds=[800, 800])
+        a = Box(bounds=[50.0, 50.0], position=[50.0, 50.0])
+        b = Box(bounds=[50.0, 50.0], position=[200.0, 50.0])
+        c = Box(bounds=[50.0, 50.0], position=[50.0, 200.0])
+        d = Box(bounds=[50.0, 50.0], position=[200.0, 200.0])
         container.add(a)
         container.add(b)
         container.add(c)
         container.add(d)
-        scr = Scrolled(container, bounds=[300,300], position=[50,50],
+        scr = Scrolled(container, bounds=[300, 300], position=[50, 50],
                        fit_window=False)
-        return Window(self, -1, component=scr)
+        return scr
 
 
 if __name__ == "__main__":
-    title = "Use the scroll bars to show and hide components"
-    # Save demo so that it doesn't get garbage collected when run within
-    # existing event loop (i.e. from ipython).
-    demo = demo_main(MyFrame, title=title)
+    Demo().configure_traits()

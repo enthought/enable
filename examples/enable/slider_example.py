@@ -1,12 +1,20 @@
 from __future__ import print_function
 
-from enable.api import OverlayContainer, Slider, Window
-from enable.example_support import demo_main, DemoFrame
+from traits.api import HasTraits, Instance
+from traitsui.api import Item, View
+
+from enable.api import OverlayContainer, Slider, Component, \
+    ComponentEditor
 
 
-class MyFrame(DemoFrame):
+class Demo(HasTraits):
+    canvas = Instance(Component)
 
-    def _create_window(self):
+    traits_view = View(Item('canvas', editor=ComponentEditor(),
+                            show_label=False, width=200, height=200),
+                       resizable=True)
+
+    def _canvas_default(self):
         slider = Slider()
         slider.set_slider_pixels(10)
         slider.slider_thickness = 5
@@ -25,13 +33,11 @@ class MyFrame(DemoFrame):
 
         slider.on_trait_change(self.val_changed, "value")
         self.slider = slider
-        return Window(self, component=container)
+        return container
 
     def val_changed(self):
         print(self.slider.value)
 
 
 if __name__ == "__main__":
-    # Save demo so that it doesn't get garbage collected when run within
-    # existing event loop (i.e. from ipython).
-    demo = demo_main(MyFrame, title="Slider example")
+    Demo().configure_traits()

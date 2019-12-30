@@ -1,9 +1,13 @@
 from traits.api import Enum, Float, Int, Str, Tuple
 
 from kiva.trait_defs.kiva_font_trait import KivaFont
-from enable.api import ColorTrait, Window
+from enable.api import ColorTrait, Window, Component, ComponentEditor
 from enable.tools.api import DragTool
 from enable.example_support import DemoFrame, demo_main
+
+
+from traits.api import HasTraits, Instance
+from traitsui.api import Item, View
 
 from chaco.api import PlotComponent, AbstractOverlay, OverlayPlotContainer
 
@@ -68,9 +72,15 @@ class Overlay(AbstractOverlay):
             gc.show_text(self.text)
 
 
-class PlotFrame(DemoFrame):
 
-    def _create_window(self):
+class Demo(HasTraits):
+    canvas = Instance(Component)
+
+    traits_view = View(Item('canvas', editor=ComponentEditor(),
+                            show_label=False, width=200, height=200),
+                       resizable=True)
+
+    def _canvas_default(self):
         rect1 = Region("orchid", position=[50, 50])
         rect2 = Region("cornflowerblue", position=[200, 50])
         rect1.overlays.append(Overlay("One", component=rect1))
@@ -90,11 +100,8 @@ class PlotFrame(DemoFrame):
 
         top_container = OverlayPlotContainer()
         top_container.add(container1, container2)
-
-        return Window(self, -1, component=top_container)
+        return top_container
 
 
 if __name__ == "__main__":
-    # Save demo so that it doesn't get garbage collected when run within
-    # existing event loop (i.e. from ipython).
-    demo = demo_main(PlotFrame, size=(600, 600))
+    Demo().configure_traits()

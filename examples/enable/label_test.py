@@ -1,20 +1,24 @@
 """ Small demo of the Label component.  """
 
-from enable.example_support import DemoFrame, demo_main
+from traits.api import HasTraits, Instance
+from traitsui.api import Item, View
+
+from enable.api import Component, ComponentEditor
 from enable.label import Label
 
-from enable.api import Window
 
+class Demo(HasTraits):
+    canvas = Instance(Component)
 
-class MyFrame(DemoFrame):
+    traits_view = View(Item('canvas', editor=ComponentEditor(),
+                            show_label=False, width=200, height=200),
+                       resizable=True)
 
-    def _create_window(self):
-        label = Label(bounds=[100, 50], position=[50,50], text="HELLO")
+    def _canvas_default(self):
+        label = Label(bounds=[100, 50], position=[50, 50], text="HELLO")
         label.bgcolor = "lightpink"
-        return Window(self, -1, component=label)
+        return label
 
 
 if __name__ == "__main__":
-    # Save demo so that it doesn't get garbage collected when run within
-    # existing event loop (i.e. from ipython).
-    demo = demo_main(MyFrame)
+    Demo().configure_traits()

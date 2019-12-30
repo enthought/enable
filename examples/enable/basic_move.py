@@ -6,7 +6,9 @@ from __future__ import print_function
 from enable.example_support import DemoFrame, demo_main
 
 from traits.api import Float
-from enable.api import Component, Pointer, Window
+from enable.api import Component, Pointer, Window, ComponentEditor
+from traits.api import HasTraits, Instance
+from traitsui.api import Item, View
 
 
 class Box(Component):
@@ -75,14 +77,20 @@ class Box(Component):
         return
 
 
-class MyFrame(DemoFrame):
+class Demo(HasTraits):
+    canvas = Instance(Component)
 
-    def _create_window(self):
-        box = Box(bounds=[100,100], position=[50,50], padding=15)
-        return Window(self, -1, component=box)
+    traits_view = View(Item('canvas', editor=ComponentEditor(),
+                            show_label=False, width=200, height=200),
+                       resizable=True, title="Click & drag to move")
+
+    def _canvas_default(self):
+        box = Box(bounds=[100.0, 100.0], position=[50.0, 50.0])
+        return box
 
 
 if __name__ == "__main__":
     # Save demo so that it doesn't get garbage collected when run within
     # existing event loop (i.e. from ipython).
-    demo = demo_main(MyFrame, title="Click and drag to move the box")
+    demo = Demo()
+    demo.configure_traits()

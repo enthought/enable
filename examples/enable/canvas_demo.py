@@ -1,27 +1,27 @@
-from enable.api import Canvas, Viewport, Window
+from enable.api import Canvas, Viewport, Window, ComponentEditor, Component
 from enable.tools.api import ViewportPanTool
-from enable.example_support import demo_main, DemoFrame
+from traits.api import HasTraits, Instance
+from traitsui.api import Item, View
 
 
-class MyFrame(DemoFrame):
+class Demo(HasTraits):
+    canvas = Instance(Component)
 
-    def _create_window(self):
+    traits_view = View(Item('canvas', editor=ComponentEditor(),
+                            show_label=False, width=200, height=200),
+                       resizable=True, title="Canvas Example")
 
+    def _canvas_default(self):
         canvas = Canvas(bgcolor="lightsteelblue", draw_axes=True)
-        from basic_move import Box
+        from .basic_move import Box
         box = Box(color="red", bounds=[50, 50], resizable="")
-        box.position= [75, 75]
+        box.position = [75, 75]
         canvas.add(box)
-
-
         viewport = Viewport(component=canvas)
         viewport.view_position = [0, 0]
         viewport.tools.append(ViewportPanTool(viewport))
-
-        return Window(self, -1, component=viewport)
+        return viewport
 
 
 if __name__ == "__main__":
-    # Save demo so that it doesn't get garbage collected when run within
-    # existing event loop (i.e. from ipython).
-    demo = demo_main(MyFrame, title="Canvas example")
+    Demo().configure_traits()

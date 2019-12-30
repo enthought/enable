@@ -1,13 +1,14 @@
 """
 This demonstrates the resize tool.
 """
-from enable.example_support import DemoFrame, demo_main
-from enable.api import Component, Container, Window
+from traits.api import HasTraits, Instance
+from traitsui.api import Item, View
+
+from enable.api import Component, Container, ComponentEditor
 from enable.tools.resize_tool import ResizeTool
 
 
 class Box(Component):
-
     resizable = ""
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
@@ -19,9 +20,14 @@ class Box(Component):
             gc.fill_path()
 
 
-class MyFrame(DemoFrame):
+class Demo(HasTraits):
+    canvas = Instance(Component)
 
-    def _create_window(self):
+    traits_view = View(Item('canvas', editor=ComponentEditor(),
+                            show_label=False, width=200, height=200),
+                       resizable=True)
+
+    def _canvas_default(self):
         box = Box(bounds=[100.0, 100.0], position=[50.0, 50.0])
         box.tools.append(ResizeTool(component=box,
                                     hotspots=set(["top", "left", "right",
@@ -30,10 +36,8 @@ class MyFrame(DemoFrame):
                                                   "bottom right"])))
         container = Container(bounds=[500, 500])
         container.add(box)
-        return Window(self, -1, component=container)
+        return container
 
 
 if __name__ == "__main__":
-    # Save demo so that it doesn't get garbage collected when run within
-    # existing event loop (i.e. from ipython).
-    demo = demo_main(MyFrame)
+    Demo().configure_traits()
