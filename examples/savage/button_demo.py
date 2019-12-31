@@ -7,8 +7,8 @@ from traitsui.api import Item, View, HGroup
 
 button_size = (64, 64)
 
-class ButtonDemo(HasTraits):
 
+class Demo(HasTraits):
     copy_button = SVGButton(label='Copy',
                             filename=os.path.join(os.path.dirname(__file__),
                                                   'edit-copy.svg'),
@@ -36,5 +36,4 @@ class ButtonDemo(HasTraits):
 
 
 if __name__ == "__main__":
-    example = ButtonDemo()
-    example.configure_traits()
+    Demo().configure_traits()

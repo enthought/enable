@@ -104,7 +104,7 @@ class ButtonSelectionTool(BaseTool):
                 component.request_redraw()
 
 
-class ButtonCanvasView(HasTraits):
+class Demo(HasTraits):
     canvas = Instance(Container)
 
     traits_view = View(Item('canvas', editor=ComponentEditor(),
@@ -114,7 +114,7 @@ class ButtonCanvasView(HasTraits):
                         resizable=True)
 
     def __init__(self, *args, **kw):
-        super(ButtonCanvasView, self).__init__(*args, **kw)
+        super(Demo, self).__init__(*args, **kw)
         self.add_buttons()
 
     def _canvas_default(self):
@@ -141,4 +141,4 @@ class ButtonCanvasView(HasTraits):
 
 
 if __name__ == "__main__":
-    ButtonCanvasView().configure_traits()
+    Demo().configure_traits()
