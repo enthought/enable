@@ -1,7 +1,7 @@
 from traits.api import HasTraits, Instance
 from traitsui.api import Item, View
 
-from enable.api import Container, TextField, Window, Component, ComponentEditor
+from enable.api import Container, TextField, Component, ComponentEditor
 
 size = (500, 400)
 

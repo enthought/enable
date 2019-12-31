@@ -1,5 +1,6 @@
 
 from numpy import array
+
 from kiva.image import GraphicsContext
 
 line_color = (0.0,0.0,0.0)

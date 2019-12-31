@@ -1,15 +1,11 @@
+from chaco.api import PlotComponent, AbstractOverlay, OverlayPlotContainer
 from traits.api import Enum, Float, Int, Str, Tuple
-
-from kiva.trait_defs.kiva_font_trait import KivaFont
-from enable.api import ColorTrait, Window, Component, ComponentEditor
-from enable.tools.api import DragTool
-from enable.example_support import DemoFrame, demo_main
-
-
 from traits.api import HasTraits, Instance
 from traitsui.api import Item, View
 
-from chaco.api import PlotComponent, AbstractOverlay, OverlayPlotContainer
+from enable.api import ColorTrait, Component, ComponentEditor
+from enable.tools.api import DragTool
+from kiva.trait_defs.kiva_font_trait import KivaFont
 
 
 class Region(PlotComponent, DragTool):

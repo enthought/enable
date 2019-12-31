@@ -1,8 +1,10 @@
 
 
-from enable.api import Component, ComponentEditor
 from traits.api import HasTraits, Instance
 from traitsui.api import Item, View
+
+from enable.api import Component, ComponentEditor
+
 
 def glyph_a(gc):
         gc.move_to(28.47, 6.45)

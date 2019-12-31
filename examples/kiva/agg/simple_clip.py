@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import time
+
 from kiva import agg
 
 samples = 1

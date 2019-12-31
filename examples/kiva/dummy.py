@@ -1,7 +1,7 @@
 
 
 from enable.kiva_graphics_context import GraphicsContext
-from kiva import affine, agg, constants
+from kiva import agg
 from kiva.fonttools import Font
 
 # Do some basic drawing tests and write the results out to PNG files.

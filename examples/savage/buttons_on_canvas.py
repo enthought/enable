@@ -3,13 +3,14 @@ from __future__ import print_function
 import os.path
 import xml.etree.cElementTree as etree
 
-from enable.api import Container, Component, ComponentEditor, BaseTool
-from kiva.constants import MODERN
-from kiva.fonttools import Font
 from traits.api import Instance, Callable, List, Str, HasTraits, Enum
 from traitsui.api import View, Item
-from enable.savage.svg.document import SVGDocument
+
+from enable.api import Container, Component, ComponentEditor, BaseTool
 from enable.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
+from enable.savage.svg.document import SVGDocument
+from kiva.constants import MODERN
+from kiva.fonttools import Font
 
 
 class CanvasButton(Component):

@@ -6,7 +6,7 @@ from __future__ import print_function
 from traits.api import Float, HasTraits, Instance
 from traitsui.api import Item, View
 
-from enable.api import (AbstractOverlay, Canvas, Viewport, Window, ColorTrait,
+from enable.api import (AbstractOverlay, Canvas, Viewport, ColorTrait,
                         Scrolled, ComponentEditor, Component)
 from enable.primitives.api import Box
 from enable.tools.api import ViewportPanTool

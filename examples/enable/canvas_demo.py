@@ -1,7 +1,8 @@
-from enable.api import Canvas, Viewport, Window, ComponentEditor, Component
-from enable.tools.api import ViewportPanTool
 from traits.api import HasTraits, Instance
 from traitsui.api import Item, View
+
+from enable.api import Canvas, Viewport, ComponentEditor, Component
+from enable.tools.api import ViewportPanTool
 
 
 class Demo(HasTraits):

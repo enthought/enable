@@ -1,5 +1,6 @@
 """ A moveable circle shape. """
 from traits.api import Float
+
 from enable.primitives.shape import Shape
 
 

@@ -1,8 +1,10 @@
 
 
-from numpy import cos, sin, arange, pi, array
-from kiva.image import GraphicsContext
+from numpy import cos, sin, arange, pi
+
 from kiva.constants import *
+from kiva.image import GraphicsContext
+
 
 def draw_circle(gc,radius=2):
     gc.begin_path()

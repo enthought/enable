@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import time
+
 from kiva.image import GraphicsContext
 
 samples = 1

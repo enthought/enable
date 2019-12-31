@@ -7,9 +7,6 @@ from kiva import agg
 
 import tempfile
 
-from kiva.image import GraphicsContext, CompiledPath
-from kiva.constants import STROKE
-
 from enable.api import ConstraintsContainer, Component, ComponentEditor
 from enable.primitives.image import Image
 

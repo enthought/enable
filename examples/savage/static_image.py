@@ -1,9 +1,11 @@
 import os.path
 import sys
-from enable.savage.svg.document import SVGDocument
-from enable.savage.trait_defs.ui.svg_editor import SVGEditor
+
 from traits.api import HasTraits, Instance
 from traitsui.api import Item, View
+
+from enable.savage.svg.document import SVGDocument
+from enable.savage.trait_defs.ui.svg_editor import SVGEditor
 
 
 class Demo(HasTraits):

@@ -1,8 +1,9 @@
 from __future__ import print_function
 
-from enable.api import OverlayContainer, Compass, Window, Component, ComponentEditor
 from traits.api import HasTraits, Instance
 from traitsui.api import Item, View
+
+from enable.api import OverlayContainer, Compass, Component, ComponentEditor
 
 
 class Demo(HasTraits):

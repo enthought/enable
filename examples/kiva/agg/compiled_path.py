@@ -5,15 +5,14 @@
 
 import tempfile
 
-from kiva.image import GraphicsContext, CompiledPath
-from kiva.constants import STROKE
+from numpy import array
+from traits.api import HasTraits, Instance
+from traitsui.api import Item, View
 
 from enable.api import ConstraintsContainer, Component, ComponentEditor
 from enable.primitives.image import Image
-
-from traits.api import HasTraits, Instance
-from traitsui.api import Item, View
-from numpy import array
+from kiva.constants import STROKE
+from kiva.image import GraphicsContext, CompiledPath
 
 
 def compiled_path():

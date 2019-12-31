@@ -1,13 +1,12 @@
-from scipy import pi
 import tempfile
 
+from scipy import pi
 from traits.api import HasTraits, Instance
 from traitsui.api import Item, View
 
 from enable.api import ConstraintsContainer, Component, ComponentEditor
 from enable.kiva_graphics_context import GraphicsContext
 from enable.primitives.image import Image
-from kiva import constants
 from kiva.image import GraphicsContext
 
 

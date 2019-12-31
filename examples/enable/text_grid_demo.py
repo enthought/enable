@@ -2,7 +2,7 @@ from numpy import array
 from traits.api import HasTraits, Instance
 from traitsui.api import Item, View
 
-from enable.api import Container, Window, Component, ComponentEditor
+from enable.api import Container, Component, ComponentEditor
 from enable.text_grid import TextGrid
 
 size = (400, 100)

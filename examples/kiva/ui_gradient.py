@@ -1,10 +1,11 @@
 
 
 import numpy as np
-
-from enable.api import Component, ComponentEditor
 from traits.api import HasTraits, Instance
 from traitsui.api import Item, View
+
+from enable.api import Component, ComponentEditor
+
 
 class MyCanvas(Component):
     def draw(self, gc, **kwargs):

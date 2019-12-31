@@ -1,9 +1,10 @@
 from __future__ import print_function
 
 import time
-from kiva.fonttools import Font
-from kiva.constants import MODERN
+
 from kiva.agg import AffineMatrix, GraphicsContextArray
+from kiva.constants import MODERN
+from kiva.fonttools import Font
 
 gc = GraphicsContextArray((200,200))
 

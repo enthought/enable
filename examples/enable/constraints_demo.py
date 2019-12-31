@@ -1,9 +1,8 @@
 
-from enable.api import Component, ComponentEditor, ConstraintsContainer
-from enable.layout.api import (align, grid, horizontal, hbox, vbox, spacer,
-    vertical)
 from traits.api import HasTraits, Bool, Instance, Str
 from traitsui.api import Item, View, HGroup, VGroup, CodeEditor
+
+from enable.api import Component, ComponentEditor, ConstraintsContainer
 
 
 class Demo(HasTraits):

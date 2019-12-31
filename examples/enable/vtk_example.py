@@ -1,6 +1,8 @@
-from tvtk.api import tvtk
 from mayavi import mlab
+from tvtk.api import tvtk
+
 from enable.vtk_backend.vtk_window import EnableVTKWindow
+
 
 def main():
     from basic_move import Box

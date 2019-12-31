@@ -3,12 +3,11 @@ This allows a simple component to be moved around the screen.
 """
 from __future__ import print_function
 
-from enable.example_support import DemoFrame, demo_main
-
 from traits.api import Float
-from enable.api import Component, Pointer, Window, ComponentEditor
 from traits.api import HasTraits, Instance
 from traitsui.api import Item, View
+
+from enable.api import Component, Pointer, ComponentEditor
 
 
 class Box(Component):

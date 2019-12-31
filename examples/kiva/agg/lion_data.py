@@ -5,7 +5,7 @@ This module relies on Agg solely for CompiledPath support.
 (Lion path data is copied from from Agg.)
 """
 
-from numpy import amax, amin, array, dtype
+from numpy import amax, amin, array
 
 from enable.compiled_path import CompiledPath
 

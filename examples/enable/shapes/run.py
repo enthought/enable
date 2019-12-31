@@ -1,11 +1,11 @@
 """ An example showing moveable shapes. """
-# Enthought library imports.
-from enable.api import Container, Window
-from enable.example_support import DemoFrame, demo_main
-
 # Local imports
 from box import Box
 from circle import Circle
+
+# Enthought library imports.
+from enable.api import Container, Window
+from enable.example_support import DemoFrame, demo_main
 
 
 class MyFrame(DemoFrame):
