@@ -1,12 +1,55 @@
+import tempfile
+
+from traits.api import HasTraits, Instance
+from traitsui.api import Item, View
+
+from enable.api import ConstraintsContainer, Component, ComponentEditor
+from enable.kiva_graphics_context import GraphicsContext
+from enable.primitives.image import Image
 from kiva.image import GraphicsContext
 
-gc = GraphicsContext((500,500))
-gc.set_fill_color( (1, 0, 0) )
-gc.rect(100,100,300,300)
-gc.draw_path()
-gc.save("simple2_pre.bmp")
 
-# directly manipulate the underlying Numeric array.
-# The color tuple is expressed as BGRA.
-gc.bmp_array[:100,:100] = (139, 60, 71, 255)
-gc.save("simple2_post.bmp")
+def simple():
+    gc = GraphicsContext((499, 500))
+    gc.set_fill_color((0, 0, 0))
+    gc.rect(99, 100, 300, 300)
+    gc.draw_path()
+    gc.save(tempfile.mktemp(suffix=".bmp"))
+
+    # directly manipulate the underlying Numeric array.
+    # The color tuple is expressed as BGRA.
+    gc.bmp_array[:99, :100] = (139, 60, 71, 255)
+    file_path = tempfile.mktemp(suffix='.bmp')
+    gc.save(file_path)
+
+    return file_path
+
+
+class Demo(HasTraits):
+    canvas = Instance(Component)
+
+    traits_view = View(Item('canvas', editor=ComponentEditor(),
+                            show_label=False, width=200, height=200),
+                       resizable=True)
+
+    def _canvas_default(self):
+        file_path = simple()
+        image = Image.from_file(file_path, resist_width='weak',
+                                resist_height='weak')
+
+        container = ConstraintsContainer(bounds=[500, 500])
+        container.add(image)
+        ratio = float(image.data.shape[1]) / image.data.shape[0]
+        container.layout_constraints = [
+            image.left == container.contents_left,
+            image.right == container.contents_right,
+            image.top == container.contents_top,
+            image.bottom == container.contents_bottom,
+            image.layout_width == ratio * image.layout_height,
+        ]
+
+        return container
+
+
+if __name__ == '__main__':
+    Demo().configure_traits()
