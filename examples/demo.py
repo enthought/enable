@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 #
 #  Copyright (c) 2005, Enthought, Inc.
 #  All rights reserved.
@@ -13,13 +13,13 @@
 #  Author: David C. Morrill
 #  Date:   09/15/2005
 #
-#-------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 
 """ Run the Traits UI demo.
 """
 
 from __future__ import absolute_import
 
-from enable.extras.demo import demo
+from traitsui.extras.demo import demo
 
 demo()
