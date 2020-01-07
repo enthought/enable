@@ -89,7 +89,6 @@ from contextlib import contextmanager
 import click
 
 supported_combinations = {
-    '2.7': {'pyqt', 'wx', 'null'},
     '3.5': {'pyqt', 'pyqt5', 'null'},
     '3.6': {'pyqt', 'pyqt5', 'null'},
 }
