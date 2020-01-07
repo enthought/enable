@@ -1,9 +1,11 @@
 from numpy import array, pi
-from os.path import splitext
 
+from enable.api import ConstraintsContainer, Window
+from enable.example_support import DemoFrame, demo_main
 from enable.kiva_graphics_context import GraphicsContext
-from kiva.fonttools import Font
+from enable.primitives.image import Image
 from kiva import constants
+from kiva.image import GraphicsContext
 
 
 def draw(gc):
@@ -78,14 +80,39 @@ def draw(gc):
     return
 
 
-def main():
+def gradient():
     gc = GraphicsContext((500, 500))
-
     gc.scale_ctm(1.25, 1.25)
     draw(gc)
+    file_path = tempfile.mktemp(suffix='.png')
+    gc.save(file_path, file_format='png')
+    return file_path
 
-    gc.save(splitext(__file__)[0]+'.png', file_format='png')
+
+class Demo(DemoFrame):
+    def _create_component(self):
+        file_path = gradient()
+        image = Image.from_file(file_path, resist_width='weak',
+                                resist_height='weak')
+
+        container = ConstraintsContainer(bounds=[500, 500])
+        container.add(image)
+        ratio = float(image.data.shape[1]) / image.data.shape[0]
+        container.layout_constraints = [
+            image.left == container.contents_left,
+            image.right == container.contents_right,
+            image.top == container.contents_top,
+            image.bottom == container.contents_bottom,
+            image.layout_width == ratio * image.layout_height,
+            ]
+        return container
+
+    def _create_window(self):
+        return Window(self, -1, component=self._create_component())
 
 
-if __name__ == '__main__':
-    main()
+
+if __name__ == "__main__":
+    # Save demo so that it doesn't get garbage collected when run within
+    # existing event loop (i.e. from ipython).
+    demo = demo_main(Demo)

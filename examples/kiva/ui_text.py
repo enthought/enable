@@ -1,8 +1,7 @@
 
 
-from enable.api import Component, ComponentEditor
-from traits.api import HasTraits, Instance
-from traitsui.api import Item, View
+from enable.api import Component, Window
+from enable.example_support import DemoFrame
 
 def glyph_a(gc):
         gc.move_to(28.47, 6.45)
@@ -86,16 +85,16 @@ class MyCanvas(Component):
         gc.fill_path()
 
 
-class Demo(HasTraits):
-    canvas = Instance(Component)
+class Demo(DemoFrame):
 
-    traits_view = View(Item('canvas', editor=ComponentEditor(bgcolor="lightgray"),
-                            show_label=False, width=500, height=500),
-                       resizable=True, title="Gradient Example")
-
-    def _canvas_default(self):
+    def _create_component(self):
         return MyCanvas()
+
+    def _create_window(self):
+        return Window(self, -1, component=self._create_component())
 
 
 if __name__ == "__main__":
-    Demo().configure_traits()
+    # Save demo so that it doesn't get garbage collected when run within
+    # existing event loop (i.e. from ipython).
+    demo = demo_main(Demo)

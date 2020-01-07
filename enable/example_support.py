@@ -41,6 +41,8 @@ if ETSConfig.toolkit == 'wx' or ETSConfig.toolkit == 'qt4':
             return self._create_component()
 
         def _create_component(self):
+            """ Create and return a component which is typically a
+            container with nested components """
             raise NotImplementedError
 
 

@@ -2,9 +2,9 @@
 
 import numpy as np
 
-from enable.api import Component, ComponentEditor
-from traits.api import HasTraits, Instance
-from traitsui.api import Item, View
+from enable.api import Component, Window
+from enable.example_support import demo_main, DemoFrame
+
 
 class MyCanvas(Component):
     def draw(self, gc, **kwargs):
@@ -76,16 +76,17 @@ class MyCanvas(Component):
 
         return
 
-class Demo(HasTraits):
-    canvas = Instance(Component)
 
-    traits_view = View(Item('canvas', editor=ComponentEditor(bgcolor="lightgray"),
-                            show_label=False, width=500, height=500),
-                       resizable=True, title="Gradient Example")
+class Demo(DemoFrame):
 
-    def _canvas_default(self):
+    def _create_component(self):
         return MyCanvas()
+
+    def _create_window(self):
+        return Window(self, -1, component=self._create_component())
 
 
 if __name__ == "__main__":
-    Demo().configure_traits()
+    # Save demo so that it doesn't get garbage collected when run within
+    # existing event loop (i.e. from ipython).
+    demo = demo_main(Demo)
