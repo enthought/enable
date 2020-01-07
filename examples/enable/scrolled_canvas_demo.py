@@ -6,10 +6,8 @@ from enable.primitives.api import Box
 from enable.example_support import demo_main, DemoFrame
 
 
-class MyFrame(DemoFrame):
-
-    def _create_window(self):
-
+class Demo(DemoFrame):
+    def _create_component(self):
         canvas = Canvas(bgcolor="lightsteelblue", draw_axes=True)
 
         boxgridsize = 8
@@ -49,7 +47,11 @@ class MyFrame(DemoFrame):
                             always_show_sb = True,
                             continuous_drag_update = True)
 
-        return Window(self, -1, component=scrolled)
+        return scrolled
+
+    def _create_window(self):
+        return Window(self, -1, component=self._create_component())
+
 
 if __name__ == "__main__":
-    demo = demo_main(MyFrame, title="Canvas example")
+    demo = demo_main(Demo, title="Canvas example")

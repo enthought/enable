@@ -58,28 +58,29 @@ class EventTracer(AbstractOverlay):
             gc.stroke_path()
 
 
-class MyFrame(DemoFrame):
-
-    def _create_window(self):
-
+class Demo(DemoFrame):
+    def _create_component(self):
         canvas = DropCanvas(bgcolor="lightsteelblue", draw_axes=True)
         canvas.overlays.append(EventTracer(canvas, color="green", size=8,
                                            angle=45.0))
-        
+
         viewport = Viewport(component=canvas, enable_zoom=True)
-        viewport.view_position = [0,0]
+        viewport.view_position = [0, 0]
         viewport.tools.append(ViewportPanTool(viewport, drag_button="right"))
         viewport.overlays.append(EventTracer(viewport))
 
-        scrolled = Scrolled(canvas, inside_padding_width = 0,
-                        mousewheel_scroll = False,
-                        viewport_component = viewport,
-                        always_show_sb = True,
-                        continuous_drag_update = True)
-        return Window(self, -1, component=scrolled)
+        scrolled = Scrolled(canvas, inside_padding_width=0,
+                            mousewheel_scroll=False,
+                            viewport_component=viewport,
+                            always_show_sb=True,
+                            continuous_drag_update=True)
+        return scrolled
+
+    def _create_window(self):
+        return Window(self, -1, component=self._create_component())
 
 
 if __name__ == "__main__":
     # Save demo so that it doesn't get garbage collected when run within
     # existing event loop (i.e. from ipython).
-    demo = demo_main(MyFrame, title="Canvas example")
+    demo = demo_main(Demo, title="Canvas example")

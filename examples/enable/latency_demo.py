@@ -73,26 +73,29 @@ class MyContainer(Container):
             gc.show_text(s)
 
 
-class PlotFrame(DemoFrame):
+class Demo(DemoFrame):
+    def _create_component(self):
+        times_and_bounds = {0.5: (60, 200, 100, 100),
+                            0.33: (240, 200, 100, 100),
+                            0.25: (60, 50, 100, 100),
+                            0.10: (240, 50, 100, 100)}
+
+        container = MyContainer(auto_size=False)
+        for delay, bounds in list(times_and_bounds.items()):
+            box = Box()
+            container.add(box)
+            box.position = list(bounds[:2])
+            box.bounds = list(bounds[2:])
+            box.delay = delay
+        return container
+
     def _create_window(self):
-        return Window(self, -1, component=container)
+        return Window(self, -1, component=self._create_component())
 
 
 if __name__ == "__main__":
-    times_and_bounds = {0.5 : (60,200,100,100),
-                        0.33 : (240,200,100,100),
-                        0.25: (60,50,100,100),
-                        0.10: (240,50,100,100)}
-
-    container = MyContainer(auto_size = False)
-    for delay, bounds in list(times_and_bounds.items()):
-        box = Box()
-        container.add(box)
-        box.position = list(bounds[:2])
-        box.bounds = list(bounds[2:])
-        box.delay = delay
 
     # Save demo so that it doesn't get garbage collected when run within
     # existing event loop (i.e. from ipython).
-    demo = demo_main(PlotFrame, size=(400, 400),
+    demo = demo_main(Demo, size=(400, 400),
                      title="Latency Test - Click a box")

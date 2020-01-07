@@ -5,8 +5,8 @@ from enable.example_support import DemoFrame, demo_main
 size = (500, 400)
 
 
-class MyFrame(DemoFrame):
-    def _create_window(self):
+class Demo(DemoFrame):
+    def _create_component(self):
         text_field = TextField(position=[25,100], width=200)
 
         text = "This a test with a text field\nthat has more text than\n"
@@ -21,10 +21,14 @@ class MyFrame(DemoFrame):
 
         container = Container(bounds=size, bgcolor='grey')
         container.add(text_field, text_field2, text_field3)
-        return Window(self, -1, component=container)
+        return container
+
+    def _create_window(self):
+        return Window(self, -1, component=self._create_component())
+
 
 
 if __name__ == '__main__':
     # Save demo so that it doesn't get garbage collected when run within
     # existing event loop (i.e. from ipython).
-    demo = demo_main(MyFrame, size=size)
+    demo = demo_main(Demo, size=size)

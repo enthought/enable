@@ -19,9 +19,9 @@ class Box(Component):
             gc.fill_path()
 
 
-class MyFrame(DemoFrame):
+class Demo(DemoFrame):
 
-    def _create_window(self):
+    def _create_component(self):
         box = Box(bounds=[100.0, 100.0], position=[50.0, 50.0])
         box.tools.append(ResizeTool(component=box,
                                     hotspots=set(["top", "left", "right",
@@ -30,10 +30,14 @@ class MyFrame(DemoFrame):
                                                   "bottom right"])))
         container = Container(bounds=[500, 500])
         container.add(box)
-        return Window(self, -1, component=container)
+        return container
+
+    def _create_window(self):
+        return Window(self, -1, component=self._create_component())
+
 
 
 if __name__ == "__main__":
     # Save demo so that it doesn't get garbage collected when run within
     # existing event loop (i.e. from ipython).
-    demo = demo_main(MyFrame)
+    demo = demo_main(Demo)

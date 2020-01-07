@@ -113,10 +113,9 @@ class DashedCircle(Component):
         return
 
 
-class MyFrame(DemoFrame):
+class Demo(DemoFrame):
 
-    def _create_window(self):
-
+    def _create_component(self):
         container = Container(bounds=[800, 600], bgcolor=(0.9, 0.7, 0.7, 1.0),
                               auto_size=False, fit_window=False)
         circle1 = Circle(bounds=[75,75], position=[100,100],
@@ -126,11 +125,14 @@ class MyFrame(DemoFrame):
         scr = Scrolled(container, bounds=[200,200], position=[50,50],
                        stay_inside=True, vertical_anchor='top',
                        horizontal_anchor='left', fit_window=False)
+        return scr
 
-        return Window(self, -1, component=scr)
+    def _create_window(self):
+        return Window(self, -1, component=self._create_component())
+
 
 
 if __name__ == "__main__":
     # Save demo so that it doesn't get garbage collected when run within
     # existing event loop (i.e. from ipython).
-    demo = demo_main(MyFrame, title="Click and drag to move the circles")
+    demo = demo_main(Demo, title="Click and drag to move the circles")

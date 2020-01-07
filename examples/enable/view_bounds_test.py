@@ -58,9 +58,9 @@ class VerboseContainer(Container):
                     component.draw(gc, new_bounds, mode)
 
 
-class MyFrame(DemoFrame):
-    def _create_window(self):
+class Demo(DemoFrame):
 
+    def _create_component(self):
         container = VerboseContainer(auto_size=False, bounds = [800,800])
         a = Box(bounds=[50.0,50.0], position=[50.0,50.0])
         b = Box(bounds=[50.0,50.0], position=[200.0,50.0])
@@ -72,11 +72,14 @@ class MyFrame(DemoFrame):
         container.add(d)
         scr = Scrolled(container, bounds=[300,300], position=[50,50],
                        fit_window=False)
-        return Window(self, -1, component=scr)
+        return scr
+
+    def _create_window(self):
+        return Window(self, -1, component=self._create_component())
 
 
 if __name__ == "__main__":
     title = "Use the scroll bars to show and hide components"
     # Save demo so that it doesn't get garbage collected when run within
     # existing event loop (i.e. from ipython).
-    demo = demo_main(MyFrame, title=title)
+    demo = demo_main(Demo, title=title)

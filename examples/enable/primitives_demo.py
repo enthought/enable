@@ -37,9 +37,9 @@ class ActivateButton(ToolbarButton):
         return
 
 
-class MyFrame(DemoFrame):
-    def _create_window(self):
+class Demo(DemoFrame):
 
+    def _create_component(self):
         canvas = DrawingCanvas(bounds=[500,500])
         toolbar = DrawingCanvasToolbar(width=500, height=32, fit_window=False,
                                        bgcolor="lightgrey")
@@ -50,7 +50,7 @@ class MyFrame(DemoFrame):
         button2 = ActivateButton(tool=DragLine(container=canvas), label="Path",
                                  toolbar=toolbar, bounds=[50,24])
         button3 = ActivateButton(tool=DragPolygon(background_color=(0,0,0.8,1),
-                                 container=canvas),
+                                                  container=canvas),
                                  label="Poly", toolbar=toolbar, bounds=[50,24])
         button4 = ActivateButton(tool=PointLine(container=canvas),
                                  label="Polyline",
@@ -66,11 +66,13 @@ class MyFrame(DemoFrame):
         toolbar.add_button(button4)
         toolbar.add_button(button5)
         toolbar.add_button(button6)
+        return canvas
 
-        return Window(self, -1, component=canvas)
+    def _create_window(self):
+        return Window(self, -1, component=self._create_component())
 
 
 if __name__ == "__main__":
     # Save demo so that it doesn't get garbage collected when run within
     # existing event loop (i.e. from ipython).
-    demo = demo_main(MyFrame, size=[700,600])
+    demo = demo_main(Demo, size=[700,600])

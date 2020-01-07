@@ -68,9 +68,9 @@ class Overlay(AbstractOverlay):
             gc.show_text(self.text)
 
 
-class PlotFrame(DemoFrame):
+class Demo(DemoFrame):
 
-    def _create_window(self):
+    def _create_component(self):
         rect1 = Region("orchid", position=[50, 50])
         rect2 = Region("cornflowerblue", position=[200, 50])
         rect1.overlays.append(Overlay("One", component=rect1))
@@ -90,11 +90,14 @@ class PlotFrame(DemoFrame):
 
         top_container = OverlayPlotContainer()
         top_container.add(container1, container2)
+        return top_container
 
-        return Window(self, -1, component=top_container)
+    def _create_window(self):
+        return Window(self, -1, component=self._create_component())
+
 
 
 if __name__ == "__main__":
     # Save demo so that it doesn't get garbage collected when run within
     # existing event loop (i.e. from ipython).
-    demo = demo_main(PlotFrame, size=(600, 600))
+    demo = demo_main(Demo, size=(600, 600))
