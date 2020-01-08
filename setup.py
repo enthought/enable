@@ -276,6 +276,9 @@ if __name__ == "__main__":
               'build_py': MyBuildPy,
           },
           description='low-level drawing and interaction',
+          extras_require={
+              'demo': ['chaco', 'mayavi', 'scipy', 'traitsui[demo]'],
+          },
           long_description=open('README.rst').read(),
           # Note that this URL is only valid for tagged releases.
           download_url=('https://github.com/enthought/enable/archive/'
