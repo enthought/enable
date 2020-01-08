@@ -6,12 +6,11 @@ from __future__ import print_function
 import time
 
 from traits.api import Float
-from enable.api import (Component, Container, ColorTrait, black_color_trait,
-                        Window)
+
+from enable.api import (Component, Container, ColorTrait, black_color_trait)
 from enable.example_support import DemoFrame, demo_main
 from kiva.constants import SWISS
 from kiva.fonttools import Font
-
 
 font = Font(family=SWISS)
 
@@ -73,26 +72,26 @@ class MyContainer(Container):
             gc.show_text(s)
 
 
-class PlotFrame(DemoFrame):
-    def _create_window(self):
-        return Window(self, -1, component=container)
+class Demo(DemoFrame):
+    def _create_component(self):
+        times_and_bounds = {0.5: (60, 200, 100, 100),
+                            0.33: (240, 200, 100, 100),
+                            0.25: (60, 50, 100, 100),
+                            0.10: (240, 50, 100, 100)}
+
+        container = MyContainer(auto_size=False)
+        for delay, bounds in list(times_and_bounds.items()):
+            box = Box()
+            container.add(box)
+            box.position = list(bounds[:2])
+            box.bounds = list(bounds[2:])
+            box.delay = delay
+        return container
 
 
 if __name__ == "__main__":
-    times_and_bounds = {0.5 : (60,200,100,100),
-                        0.33 : (240,200,100,100),
-                        0.25: (60,50,100,100),
-                        0.10: (240,50,100,100)}
-
-    container = MyContainer(auto_size = False)
-    for delay, bounds in list(times_and_bounds.items()):
-        box = Box()
-        container.add(box)
-        box.position = list(bounds[:2])
-        box.bounds = list(bounds[2:])
-        box.delay = delay
 
     # Save demo so that it doesn't get garbage collected when run within
     # existing event loop (i.e. from ipython).
-    demo = demo_main(PlotFrame, size=(400, 400),
+    demo = demo_main(Demo, size=(400, 400),
                      title="Latency Test - Click a box")

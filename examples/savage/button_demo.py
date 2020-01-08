@@ -1,14 +1,15 @@
-from copy import copy
 import os.path
+from copy import copy
 
-from enable.savage.trait_defs.ui.svg_button import SVGButton
 from traits.api import HasTraits, Str
 from traitsui.api import Item, View, HGroup
 
+from enable.savage.trait_defs.ui.svg_button import SVGButton
+
 button_size = (64, 64)
 
-class ButtonDemo(HasTraits):
 
+class Demo(HasTraits):
     copy_button = SVGButton(label='Copy',
                             filename=os.path.join(os.path.dirname(__file__),
                                                   'edit-copy.svg'),
@@ -36,5 +37,4 @@ class ButtonDemo(HasTraits):
 
 
 if __name__ == "__main__":
-    example = ButtonDemo()
-    example.configure_traits()
+    Demo().configure_traits()

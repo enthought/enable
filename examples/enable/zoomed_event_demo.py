@@ -5,11 +5,12 @@ from __future__ import print_function
 
 from traits.api import Float
 
-from enable.api import (AbstractOverlay, Canvas, Viewport, Window, ColorTrait,
+from enable.api import (AbstractOverlay, Canvas, Viewport, ColorTrait,
                         Scrolled)
-from enable.tools.api import ViewportPanTool
-from enable.primitives.api import Box
 from enable.example_support import demo_main, DemoFrame
+from enable.primitives.api import Box
+from enable.tools.api import ViewportPanTool
+
 
 class DropCanvas(Canvas):
     """ Adds a Box at a drop location """
@@ -58,28 +59,26 @@ class EventTracer(AbstractOverlay):
             gc.stroke_path()
 
 
-class MyFrame(DemoFrame):
-
-    def _create_window(self):
-
+class Demo(DemoFrame):
+    def _create_component(self):
         canvas = DropCanvas(bgcolor="lightsteelblue", draw_axes=True)
         canvas.overlays.append(EventTracer(canvas, color="green", size=8,
                                            angle=45.0))
-        
+
         viewport = Viewport(component=canvas, enable_zoom=True)
-        viewport.view_position = [0,0]
+        viewport.view_position = [0, 0]
         viewport.tools.append(ViewportPanTool(viewport, drag_button="right"))
         viewport.overlays.append(EventTracer(viewport))
 
-        scrolled = Scrolled(canvas, inside_padding_width = 0,
-                        mousewheel_scroll = False,
-                        viewport_component = viewport,
-                        always_show_sb = True,
-                        continuous_drag_update = True)
-        return Window(self, -1, component=scrolled)
+        scrolled = Scrolled(canvas, inside_padding_width=0,
+                            mousewheel_scroll=False,
+                            viewport_component=viewport,
+                            always_show_sb=True,
+                            continuous_drag_update=True)
+        return scrolled
 
 
 if __name__ == "__main__":
     # Save demo so that it doesn't get garbage collected when run within
     # existing event loop (i.e. from ipython).
-    demo = demo_main(MyFrame, title="Canvas example")
+    demo = demo_main(Demo, title="Canvas example")

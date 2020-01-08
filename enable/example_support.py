@@ -3,8 +3,12 @@ Support class that wraps up the boilerplate toolkit calls that virtually all
 demo programs have to use.
 """
 from __future__ import absolute_import
-from traits.etsconfig.api import ETSConfig
 
+from traits.api import HasTraits, Instance
+from traits.etsconfig.api import ETSConfig
+from traitsui.api import Item, View
+
+from enable.api import Component, ComponentEditor, Window
 
 # FIXME - it should be enough to do the following import, but because of the
 # PyQt/traits problem (see below) we can't because it would drag in traits too
@@ -23,80 +27,27 @@ if not ETSConfig.toolkit:
         raise RuntimeError("Can't load wx or qt4 backend for Chaco.")
 
 
-if ETSConfig.toolkit == 'wx':
-    import wx
-    from pyface.util.guisupport import start_event_loop_wx, get_app_wx
+if ETSConfig.toolkit == 'wx' or ETSConfig.toolkit == 'qt4':
 
-    class DemoFrame(wx.Frame):
-        def __init__ ( self, *args, **kw ):
-            wx.Frame.__init__( *(self,) + args, **kw )
-            #self.SetTitle("Enable Demo")
-            self.SetAutoLayout( True )
+    class DemoFrame(HasTraits):
 
-            # Create the subclass's window
-            self.enable_win = self._create_window()
+        component = Instance(Component)
 
-            # Listen for the Activate event so we can restore keyboard focus.
-            wx.EVT_ACTIVATE( self, self._on_activate )
+        traits_view = View(Item('component', editor=ComponentEditor(),
+                                show_label=False),
+                           resizable=True)
 
-            sizer = wx.BoxSizer(wx.HORIZONTAL)
-            sizer.Add(self.enable_win.control, 1, wx.EXPAND)
-            self.SetSizer(sizer)
-            self.Show( True )
-            return
+        def _component_default(self):
+            return self._create_component()
 
-        def _on_activate(self, event):
-            if self.enable_win is not None and self.enable_win.control is not None:
-                self.enable_win.control.SetFocus()
-
-        def _create_window(self):
-            "Subclasses should override this method and return an enable.Window"
+        def _create_component(self):
+            """ Create and return a component which is typically a
+            container with nested components """
             raise NotImplementedError
 
 
-    def demo_main(demo_class, size=(400,400), title="Enable Demo"):
-        "Takes the class of the demo to run as an argument."
-        app = get_app_wx()
-        frame = demo_class(None, size=size, title=title)
-        app.SetTopWindow(frame)
-        start_event_loop_wx(app)
-        return frame
-
-elif ETSConfig.toolkit == 'qt4':
-    from pyface.qt import QtGui
-    from pyface.util.guisupport import start_event_loop_qt4, get_app_qt4
-
-    class DemoFrame(QtGui.QWidget):
-        def __init__ (self, parent, **kw):
-            QtGui.QWidget.__init__(self)
-
-            # Create the subclass's window
-            self.enable_win = self._create_window()
-
-            layout = QtGui.QVBoxLayout()
-            layout.setContentsMargins(0, 0, 0, 0)
-            layout.addWidget(self.enable_win.control)
-
-            self.setLayout(layout)
-
-            if 'size' in kw:
-                self.resize(*kw['size'])
-
-            if 'title' in kw:
-                self.setWindowTitle(kw['title'])
-
-            self.show()
-
-        def _create_window(self):
-            "Subclasses should override this method and return an enable.Window"
-            raise NotImplementedError
-
-    def demo_main(demo_class, size=(400,400), title="Enable Demo"):
-        "Takes the class of the demo to run as an argument."
-        app = get_app_qt4()
-        frame = demo_class(None, size=size, title=title)
-        start_event_loop_qt4(app)
-        return frame
+    def demo_main(demo_class, size=(640,480), title="Enable Example"):
+        demo_class().configure_traits()
 
 
 elif ETSConfig.toolkit == 'pyglet':
@@ -114,8 +65,14 @@ elif ETSConfig.toolkit == 'pyglet':
                     self.enable_win = None
             return
 
-        def _create_window(self):
+        def _create_component(self):
+            """ Create and return a component which is typically a
+            container with nested components """
             raise NotImplementedError
+
+        def _create_window(self):
+            return Window(self, -1, component=self._create_component())
+
 
     def demo_main(demo_class, size=(640,480), title="Enable Example"):
         """ Runs a simple application in Pyglet using an instance of

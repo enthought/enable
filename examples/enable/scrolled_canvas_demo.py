@@ -1,15 +1,13 @@
 from numpy import array
 
-from enable.api import Canvas, Viewport, Window, Scrolled
-from enable.tools.api import ViewportPanTool
-from enable.primitives.api import Box
+from enable.api import Canvas, Viewport, Scrolled
 from enable.example_support import demo_main, DemoFrame
+from enable.primitives.api import Box
+from enable.tools.api import ViewportPanTool
 
 
-class MyFrame(DemoFrame):
-
-    def _create_window(self):
-
+class Demo(DemoFrame):
+    def _create_component(self):
         canvas = Canvas(bgcolor="lightsteelblue", draw_axes=True)
 
         boxgridsize = 8
@@ -49,7 +47,8 @@ class MyFrame(DemoFrame):
                             always_show_sb = True,
                             continuous_drag_update = True)
 
-        return Window(self, -1, component=scrolled)
+        return scrolled
+
 
 if __name__ == "__main__":
-    demo = demo_main(MyFrame, title="Canvas example")
+    demo = demo_main(Demo, title="Canvas example")

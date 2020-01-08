@@ -1,12 +1,12 @@
 from __future__ import print_function
 
-from enable.api import OverlayContainer, Slider, Window
+from enable.api import OverlayContainer, Slider
 from enable.example_support import demo_main, DemoFrame
 
 
-class MyFrame(DemoFrame):
+class Demo(DemoFrame):
 
-    def _create_window(self):
+    def _create_component(self):
         slider = Slider()
         slider.set_slider_pixels(10)
         slider.slider_thickness = 5
@@ -25,7 +25,7 @@ class MyFrame(DemoFrame):
 
         slider.on_trait_change(self.val_changed, "value")
         self.slider = slider
-        return Window(self, component=container)
+        return container
 
     def val_changed(self):
         print(self.slider.value)
@@ -34,4 +34,4 @@ class MyFrame(DemoFrame):
 if __name__ == "__main__":
     # Save demo so that it doesn't get garbage collected when run within
     # existing event loop (i.e. from ipython).
-    demo = demo_main(MyFrame, title="Slider example")
+    demo = demo_main(Demo, title="Slider example")
