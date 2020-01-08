@@ -1,4 +1,4 @@
-from enable.api import Container, TextField, Window
+from enable.api import Container, TextField
 from enable.example_support import DemoFrame, demo_main
 
 
@@ -22,10 +22,6 @@ class Demo(DemoFrame):
         container = Container(bounds=size, bgcolor='grey')
         container.add(text_field, text_field2, text_field3)
         return container
-
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
-
 
 
 if __name__ == '__main__':

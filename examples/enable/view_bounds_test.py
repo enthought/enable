@@ -3,10 +3,9 @@ Demonstrates how clipping of objects occurs with the view_bounds parameter to dr
 """
 from __future__ import print_function
 
-from enable.example_support import DemoFrame, demo_main
-
-from enable.api import Container, Component, Scrolled, Window
+from enable.api import Container, Component, Scrolled
 from enable.base import empty_rectangle, intersect_bounds
+from enable.example_support import DemoFrame, demo_main
 
 
 class Box(Component):
@@ -73,10 +72,6 @@ class Demo(DemoFrame):
         scr = Scrolled(container, bounds=[300,300], position=[50,50],
                        fit_window=False)
         return scr
-
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
-
 
 if __name__ == "__main__":
     title = "Use the scroll bars to show and hide components"

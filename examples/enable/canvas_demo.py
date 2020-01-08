@@ -1,6 +1,6 @@
-from enable.api import Canvas, Viewport, Window
-from enable.tools.api import ViewportPanTool
+from enable.api import Canvas, Viewport
 from enable.example_support import demo_main, DemoFrame
+from enable.tools.api import ViewportPanTool
 
 
 class Demo(DemoFrame):
@@ -16,8 +16,6 @@ class Demo(DemoFrame):
         viewport.tools.append(ViewportPanTool(viewport))
         return viewport
 
-    def _create_window(self):
-        return Window(self, -1, component=self.create_component())
 
 
 if __name__ == "__main__":

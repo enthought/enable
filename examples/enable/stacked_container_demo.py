@@ -1,8 +1,6 @@
-from enable.example_support import DemoFrame, demo_main
-
 from enable.api import Container, Window, TextField
+from enable.example_support import DemoFrame, demo_main
 from enable.stacked_container import VStackedContainer, HStackedContainer
-
 
 size = (240, 240)
 
@@ -41,9 +39,6 @@ class Demo(DemoFrame):
         container2 = Container(bounds=size)
         container2.add(container)
         return container2
-
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
 
 
 if __name__ == "__main__":

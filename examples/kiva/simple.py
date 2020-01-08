@@ -1,8 +1,6 @@
 import tempfile
 
-from traits.api import HasTraits
-
-from enable.api import ConstraintsContainer, Window
+from enable.api import ConstraintsContainer
 from enable.example_support import DemoFrame, demo_main
 from enable.kiva_graphics_context import GraphicsContext
 from enable.primitives.image import Image
@@ -42,9 +40,6 @@ class Demo(DemoFrame):
             image.layout_width == ratio * image.layout_height,
             ]
         return container
-
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
 
 
 if __name__ == "__main__":

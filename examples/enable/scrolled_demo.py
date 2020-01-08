@@ -2,10 +2,10 @@
 Similar to simple_drag_demo, put one circle inside a scrolled container
 """
 from numpy import array
-
 from traits.api import Enum, Float, Instance, Tuple
+
+from enable.api import Component, Scrolled, Container, Pointer
 from enable.example_support import DemoFrame, demo_main
-from enable.api import Component, Scrolled, Container, Pointer, Window
 
 
 class Circle(Component):
@@ -126,10 +126,6 @@ class Demo(DemoFrame):
                        stay_inside=True, vertical_anchor='top',
                        horizontal_anchor='left', fit_window=False)
         return scr
-
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
-
 
 
 if __name__ == "__main__":

@@ -6,12 +6,11 @@ from __future__ import print_function
 import time
 
 from traits.api import Float
-from enable.api import (Component, Container, ColorTrait, black_color_trait,
-                        Window)
+
+from enable.api import (Component, Container, ColorTrait, black_color_trait)
 from enable.example_support import DemoFrame, demo_main
 from kiva.constants import SWISS
 from kiva.fonttools import Font
-
 
 font = Font(family=SWISS)
 
@@ -88,9 +87,6 @@ class Demo(DemoFrame):
             box.bounds = list(bounds[2:])
             box.delay = delay
         return container
-
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
 
 
 if __name__ == "__main__":

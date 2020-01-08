@@ -2,7 +2,7 @@ import tempfile
 
 from scipy import pi
 
-from enable.api import ConstraintsContainer, Window
+from enable.api import ConstraintsContainer
 from enable.example_support import demo_main, DemoFrame
 from enable.kiva_graphics_context import GraphicsContext
 from enable.primitives.image import Image
@@ -62,10 +62,6 @@ class Demo(DemoFrame):
             ]
 
         return container
-
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
-
 
 
 if __name__ == "__main__":

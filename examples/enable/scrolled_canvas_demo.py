@@ -1,9 +1,9 @@
 from numpy import array
 
-from enable.api import Canvas, Viewport, Window, Scrolled
-from enable.tools.api import ViewportPanTool
-from enable.primitives.api import Box
+from enable.api import Canvas, Viewport, Scrolled
 from enable.example_support import demo_main, DemoFrame
+from enable.primitives.api import Box
+from enable.tools.api import ViewportPanTool
 
 
 class Demo(DemoFrame):
@@ -48,9 +48,6 @@ class Demo(DemoFrame):
                             continuous_drag_update = True)
 
         return scrolled
-
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
 
 
 if __name__ == "__main__":

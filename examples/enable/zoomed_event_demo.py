@@ -5,11 +5,12 @@ from __future__ import print_function
 
 from traits.api import Float
 
-from enable.api import (AbstractOverlay, Canvas, Viewport, Window, ColorTrait,
+from enable.api import (AbstractOverlay, Canvas, Viewport, ColorTrait,
                         Scrolled)
-from enable.tools.api import ViewportPanTool
-from enable.primitives.api import Box
 from enable.example_support import demo_main, DemoFrame
+from enable.primitives.api import Box
+from enable.tools.api import ViewportPanTool
+
 
 class DropCanvas(Canvas):
     """ Adds a Box at a drop location """
@@ -75,9 +76,6 @@ class Demo(DemoFrame):
                             always_show_sb=True,
                             continuous_drag_update=True)
         return scrolled
-
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
 
 
 if __name__ == "__main__":

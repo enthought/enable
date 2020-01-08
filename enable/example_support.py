@@ -8,7 +8,7 @@ from traits.api import HasTraits, Instance
 from traits.etsconfig.api import ETSConfig
 from traitsui.api import Item, View
 
-from enable.api import Component, ComponentEditor
+from enable.api import Component, ComponentEditor, Window
 
 # FIXME - it should be enough to do the following import, but because of the
 # PyQt/traits problem (see below) we can't because it would drag in traits too
@@ -65,8 +65,14 @@ elif ETSConfig.toolkit == 'pyglet':
                     self.enable_win = None
             return
 
-        def _create_window(self):
+        def _create_component(self):
+            """ Create and return a component which is typically a
+            container with nested components """
             raise NotImplementedError
+
+        def _create_window(self):
+            return Window(self, -1, component=self._create_component())
+
 
     def demo_main(demo_class, size=(640,480), title="Enable Example"):
         """ Runs a simple application in Pyglet using an instance of

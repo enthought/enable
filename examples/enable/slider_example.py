@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-from enable.api import OverlayContainer, Slider, Window
+from enable.api import OverlayContainer, Slider
 from enable.example_support import demo_main, DemoFrame
 
 
@@ -26,9 +26,6 @@ class Demo(DemoFrame):
         slider.on_trait_change(self.val_changed, "value")
         self.slider = slider
         return container
-
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
 
     def val_changed(self):
         print(self.slider.value)

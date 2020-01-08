@@ -1,7 +1,7 @@
 
 
-from enable.api import Component, Window
-from enable.example_support import DemoFrame
+from enable.api import Component
+from enable.example_support import DemoFrame, demo_main
 
 def glyph_a(gc):
         gc.move_to(28.47, 6.45)
@@ -89,9 +89,6 @@ class Demo(DemoFrame):
 
     def _create_component(self):
         return MyCanvas()
-
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
 
 
 if __name__ == "__main__":

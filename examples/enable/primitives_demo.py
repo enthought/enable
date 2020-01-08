@@ -1,13 +1,12 @@
 """
 This demo is a canvas that showcases some of the drawing primitives in Enable.
 """
-from enable.example_support import DemoFrame, demo_main
-from enable.api import Window
+from traits.api import Instance
+
 from enable.drawing.api import DragLine, DragPolygon, DragSegment, \
     DrawingTool, PointLine, PointPolygon, DrawingCanvas, ToolbarButton, \
     DrawingCanvasToolbar
-
-from traits.api import Instance
+from enable.example_support import DemoFrame, demo_main
 
 
 class ResetButton(ToolbarButton):
@@ -67,9 +66,6 @@ class Demo(DemoFrame):
         toolbar.add_button(button5)
         toolbar.add_button(button6)
         return canvas
-
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
 
 
 if __name__ == "__main__":

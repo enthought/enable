@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-from enable.api import OverlayContainer, Compass, Window
+from enable.api import OverlayContainer, Compass
 from enable.example_support import demo_main, DemoFrame
 
 
@@ -15,9 +15,6 @@ class Demo(DemoFrame):
         compass.on_trait_change(self._arrow_printer, "clicked")
         self.compass = compass
         return container
-
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
 
     def _arrow_printer(self):
         print("Clicked:", self.compass.clicked)

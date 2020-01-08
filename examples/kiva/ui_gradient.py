@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from enable.api import Component, Window
+from enable.api import Component
 from enable.example_support import demo_main, DemoFrame
 
 
@@ -81,9 +81,6 @@ class Demo(DemoFrame):
 
     def _create_component(self):
         return MyCanvas()
-
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
 
 
 if __name__ == "__main__":

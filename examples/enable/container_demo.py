@@ -1,11 +1,10 @@
+from chaco.api import PlotComponent, AbstractOverlay, OverlayPlotContainer
 from traits.api import Enum, Float, Int, Str, Tuple
 
-from kiva.trait_defs.kiva_font_trait import KivaFont
-from enable.api import ColorTrait, Window
-from enable.tools.api import DragTool
+from enable.api import ColorTrait
 from enable.example_support import DemoFrame, demo_main
-
-from chaco.api import PlotComponent, AbstractOverlay, OverlayPlotContainer
+from enable.tools.api import DragTool
+from kiva.trait_defs.kiva_font_trait import KivaFont
 
 
 class Region(PlotComponent, DragTool):
@@ -91,10 +90,6 @@ class Demo(DemoFrame):
         top_container = OverlayPlotContainer()
         top_container.add(container1, container2)
         return top_container
-
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
-
 
 
 if __name__ == "__main__":

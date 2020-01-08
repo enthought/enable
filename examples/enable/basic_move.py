@@ -3,10 +3,10 @@ This allows a simple component to be moved around the screen.
 """
 from __future__ import print_function
 
-from enable.example_support import DemoFrame, demo_main
+from traits.api import Float
 
-from traits.api import Float, HasTraits
-from enable.api import Component, Pointer, Window, Container
+from enable.api import Component, Pointer, Container
+from enable.example_support import DemoFrame, demo_main
 
 
 class Box(Component):
@@ -83,8 +83,6 @@ class Demo(DemoFrame):
         container.add(box)
         return container
 
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
 
 
 

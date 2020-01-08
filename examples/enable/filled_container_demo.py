@@ -10,10 +10,10 @@ the container stretches to the minimum bounding box of its components
 as the user drags the circles around.
 """
 from numpy import array
-
 from traits.api import Any, Enum, Float, Instance, Tuple
+
+from enable.api import Container, Component, Pointer, str_to_font
 from enable.example_support import DemoFrame, demo_main
-from enable.api import Container, Component, Pointer, str_to_font, Window
 
 
 class MyFilledContainer(Container):
@@ -169,9 +169,6 @@ class Demo(DemoFrame):
         container.add(circle1)
         container.add(circle2)
         return container
-
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
 
 
 if __name__ == "__main__":

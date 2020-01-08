@@ -1,4 +1,4 @@
-from enable.api import Container, Label, NativeScrollBar, Window
+from enable.api import Container, Label, NativeScrollBar
 from enable.example_support import DemoFrame, demo_main
 
 
@@ -37,9 +37,6 @@ class Demo(DemoFrame):
         self.hscroll = hscroll
         self.vscroll = vscroll
         return container
-
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
 
     def _update_hscroll(self):
         text = self.label.text.split("\n")

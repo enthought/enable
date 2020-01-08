@@ -27,10 +27,6 @@ class Demo(DemoFrame):
         container.add(box)
         return container
 
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
-
-
 
 if __name__ == "__main__":
     # Save demo so that it doesn't get garbage collected when run within

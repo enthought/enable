@@ -1,8 +1,8 @@
 """
 This demonstrates the resize tool.
 """
+from enable.api import Component, Container
 from enable.example_support import DemoFrame, demo_main
-from enable.api import Component, Container, Window
 from enable.tools.resize_tool import ResizeTool
 
 
@@ -31,10 +31,6 @@ class Demo(DemoFrame):
         container = Container(bounds=[500, 500])
         container.add(box)
         return container
-
-    def _create_window(self):
-        return Window(self, -1, component=self._create_component())
-
 
 
 if __name__ == "__main__":
