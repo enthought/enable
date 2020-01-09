@@ -105,6 +105,8 @@ dependencies = {
     "unittest2",
     "pypdf2",
     "swig",
+    # required by some demos
+    "scipy"
 }
 
 extra_dependencies = {
