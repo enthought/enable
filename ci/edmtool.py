@@ -105,6 +105,10 @@ dependencies = {
     "unittest2",
     "pypdf2",
     "swig",
+    # required by some demos
+    "chaco",
+    "mayavi",
+    "scipy",
 }
 
 extra_dependencies = {
@@ -154,7 +158,7 @@ def install(runtime, toolkit, pillow, environment):
         "edm install -y -e {environment} {packages}",
         "edm run -e {environment} -- pip install {pillow}",
         ("edm run -e {environment} -- pip install -r ci/requirements.txt"
-         " --no-dependencies"),
+         " --no-dependencies --ignore-installed"),
     ]
 
     # pip install pyqt5, because we don't have it in EDM yet

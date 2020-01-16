@@ -235,7 +235,7 @@ class MyClean(distutils.command.clean.clean):
 if __name__ == "__main__":
     write_version_py(filename='enable/_version.py')
     write_version_py(filename='kiva/_version.py')
-    from enable import __version__, __requires__
+    from enable import __version__, __extras_require__, __requires__
 
     # Build the full set of packages by appending any found by setuptools'
     # find_packages to those discovered by numpy.distutils.
@@ -276,6 +276,7 @@ if __name__ == "__main__":
               'build_py': MyBuildPy,
           },
           description='low-level drawing and interaction',
+          extras_require=__extras_require__,
           long_description=open('README.rst').read(),
           # Note that this URL is only valid for tagged releases.
           download_url=('https://github.com/enthought/enable/archive/'
