@@ -393,6 +393,9 @@ class Container(Component):
     def _get_components(self):
         return self._components
 
+    def _set_components(self, new):
+        self._components = new
+
     def _get_layout_needed(self):
         # Override the parent implementation to take into account whether any
         # of our contained components need layout.
