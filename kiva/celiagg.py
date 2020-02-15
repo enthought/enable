@@ -11,6 +11,7 @@
 from __future__ import absolute_import, print_function, division
 
 from collections import namedtuple
+from io import BytesIO
 from math import fabs
 import os
 import warnings
@@ -760,23 +761,10 @@ class GraphicsContext(object):
     def save(self, filename, file_format=None):
         """ Save the contents of the context to a file
         """
-        try:
-            from kiva.compat import pilfromstring
-        except ImportError:
-            raise ImportError("need PIL (or Pillow) to save images")
-
         if file_format is None:
             file_format = ''
 
-        # Data is BGRA; Convert to RGBA
-        pixels = self.gc.array
-        data = np.empty(pixels.shape, dtype=np.uint8)
-        data[..., 0] = pixels[..., 2]
-        data[..., 1] = pixels[..., 1]
-        data[..., 2] = pixels[..., 0]
-        data[..., 3] = pixels[..., 3]
-        size = (int(self._width), int(self._height))
-        img = pilfromstring('RGBA', size, data)
+        img = self.to_image()
 
         # Check the output format to see if it can handle an alpha channel.
         no_alpha_formats = ('jpg', 'bmp', 'eps', 'jpeg')
@@ -786,6 +774,55 @@ class GraphicsContext(object):
             img = img.convert('RGB')
 
         img.save(filename, format=file_format)
+
+    def to_image(self):
+        """ Return the contents of the context as a PIL Image.
+
+        If the graphics context is in BGRA format, it will convert it to
+        RGBA for the image.
+
+        Returns
+        -------
+        img : Image
+            A PIL/Pillow Image object with the data in RGBA or RGB format.
+        """
+        try:
+            from kiva.compat import pilfromstring
+        except ImportError:
+            raise ImportError("need PIL (or Pillow) to save images")
+
+        pixels = self.gc.array
+        if self.pix_format == 'bgra32':
+            data = np.empty(pixels.shape, dtype=np.uint8)
+            data[..., 0] = pixels[..., 2]
+            data[..., 1] = pixels[..., 1]
+            data[..., 2] = pixels[..., 0]
+            data[..., 3] = pixels[..., 3]
+        else:
+            data = pixels
+        size = (int(self._width), int(self._height))
+
+        if data.shape[-1] == 3:
+            return pilfromstring('RGB', size, data)
+        else:
+            return pilfromstring('RGBA', size, data)
+
+    def _repr_png_(self):
+        """ Return a the current contents of the context as PNG image.
+
+        This provides Jupyter and IPython compatibility, so that the graphics
+        context can be displayed in the Jupyter Notebook or the IPython Qt
+        console.
+
+        Returns
+        -------
+        data : bytes
+            The contents of the context as PNG-format bytes.
+        """
+        img = self.to_image()
+        data = BytesIO()
+        img.save(data, format='png')
+        return data.getvalue()
 
 
 class CompiledPath(object):
