@@ -22,7 +22,7 @@
 #  Imports:
 #-------------------------------------------------------------------------------
 
-from six import StringIO
+from six import BytesIO
 from xml.etree.cElementTree import ElementTree
 
 from enable.savage.svg.document import SVGDocument
@@ -63,8 +63,8 @@ class SVGEditor(Editor):
         value = self.value
 
         if isinstance(value, SVGDocument):
-            string_io = StringIO()
-            ElementTree(value.tree).write(string_io)
-            value = string_io.getvalue()
+            bytes_io = BytesIO()
+            ElementTree(value.tree).write(bytes_io)
+            value = bytes_io.getvalue()
 
         self.control.load(QtCore.QByteArray(value))
