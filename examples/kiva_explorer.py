@@ -9,6 +9,7 @@ import time
 
 from traits.api import Any, Code, Float, Instance, Property, Str
 from traitsui.api import HSplit, ModelView, UItem, VGroup, View
+
 from enable.api import Component, ComponentEditor
 
 
@@ -82,7 +83,7 @@ class ScriptedComponent(Component):
         code = self._compile_script()
         if code is not None:
             self._draw_code = code
-        self.request_redraw()
+            self.request_redraw()
 
     def __draw_code_default(self):
         code = self._compile_script()
@@ -113,14 +114,16 @@ class ScriptedComponentView(ModelView):
                     'model.error',
                     visible_when="model.error != ''",
                     style='readonly',
-                    height=100)
+                    height=100,
+                )
             ),
             VGroup(
-                UItem('model', editor=ComponentEditor()),
-                UItem('model.fps_display', height=20)
+                UItem('model', editor=ComponentEditor(), springy=True),
+                UItem('model.fps_display', style='readonly'),
             ),
         ),
-        resizable=True
+        resizable=True,
+        title='Kiva Explorer',
     )
 
 if __name__ == '__main__':
