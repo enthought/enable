@@ -686,6 +686,9 @@ def createFontList(fontfiles, fontext='ttf'):
     fontlist = []
     #  Add fonts from list of known font files.
     seen = {}
+
+    font_entry_err_msg = "Could not covert font to FontEntry for file %s"
+
     for fpath in fontfiles:
         logger.debug("createFontDict %s", fpath)
         fname = os.path.split(fpath)[1]
@@ -712,28 +715,24 @@ def createFontList(fontfiles, fontext='ttf'):
             try:
                 prop = afmFontProperty(fpath, font)
             except Exception:
-                logger.error(
-                    "Could not covert font to FontEntry for file %s", fpath,
-                    exc_info=True
-                )
+                logger.error(font_entry_err_msg, fpath, exc_info=True)
                 continue
         else:
             _, ext = os.path.splitext(fpath)
             try:
                 if ext.lower() == ".ttc":
-                    collection = TTCollection(six.text_type(fpath))
-                    try:
-                        props = []
-                        for font in collection.fonts:
-                            props.append(ttfFontProperty(fpath, font))
-                        fontlist.extend(props)
-                        continue
-                    except Exception:
-                        logger.error(
-                            "Could not covert font to FontEntry for file %s",
-                            fpath, exc_info=True
-                        )
-                        continue
+                    with open(fpath, "rb") as f:
+                        collection = TTCollection(f)
+                        try:
+                            props = []
+                            for font in collection.fonts:
+                                props.append(ttfFontProperty(fpath, font))
+                            fontlist.extend(props)
+                            continue
+                        except Exception:
+                            logger.error(
+                                font_entry_err_msg, fpath, exc_info=True)
+                            continue
                 else:
                     font = TTFont(six.text_type(fpath))
             except (RuntimeError, TTLibError):
@@ -748,10 +747,7 @@ def createFontList(fontfiles, fontext='ttf'):
             try:
                 prop = ttfFontProperty(fpath, font)
             except Exception:
-                logger.error(
-                    "Could not covert font to FontEntry for file %s", fpath,
-                    exc_info=True
-                )
+                logger.error(font_entry_err_msg, fpath, exc_info=True)
                 continue
 
         fontlist.append(prop)
