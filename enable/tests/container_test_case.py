@@ -25,7 +25,7 @@ class ContainerTestCase(EnableUnitTest):
         container = Container(bounds=[100.0, 100.0])
         container.add(self.c1)
         self.c1.position = [20, 10]
-        container.add(c2)
+        container.add(self.c2)
         self.c2.position = [40, 10]
         container.add(self.c3)
         self.c3.position = [60, 10]
