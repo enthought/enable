@@ -1,52 +1,52 @@
 
-
 from enable.kiva_graphics_context import GraphicsContext
-from kiva import affine, agg, constants
+from kiva import agg
 from kiva.fonttools import Font
 
 # Do some basic drawing tests and write the results out to PNG files.
 # This is mostly a python translation of the tests in kiva/agg/src/dummy.cpp
 
 
-black =      (0.0, 0.0, 0.0, 1.0)
-white =      (1.0, 1.0, 1.0, 1.0)
-lightgray =  (0.2, 0.2, 0.2, 1.0)
-red =        (1.0, 0.0, 0.0, 1.0)
-green =      (0.0, 1.0, 0.0, 1.0)
-blue =       (0.0, 0.0, 1.0, 1.0)
-niceblue =   (0.411, 0.584, 0.843, 1.0)
+BLACK = (0.0, 0.0, 0.0, 1.0)
+WHITE = (1.0, 1.0, 1.0, 1.0)
+LIGHTGRAY = (0.2, 0.2, 0.2, 1.0)
+RED = (1.0, 0.0, 0.0, 1.0)
+GREEN = (0.0, 1.0, 0.0, 1.0)
+BLUE = (0.0, 0.0, 1.0, 1.0)
+NICEBLUE = (0.411, 0.584, 0.843, 1.0)
 
 PI = 3.141592654
 
+
 def draw_sub_image(gc, width, height):
-    gc.clear(white)
-    fill_color = green[:3] + (0.4,) #We want green, but with an alpha of 0.4
+    gc.clear(WHITE)
+    fill_color = GREEN[:3] + (0.4,)  # We want GREEN, but with an alpha of 0.4
     gc.set_fill_color(fill_color)
-    gc.rect(0,0,width,height)
+    gc.rect(0, 0, width, height)
     gc.fill_path()
 
-    gc.set_stroke_color(red)
+    gc.set_stroke_color(RED)
     gc.move_to(0.0, 0.0)
     gc.line_to(width, height)
     gc.stroke_path()
-    gc.set_stroke_color(blue)
+    gc.set_stroke_color(BLUE)
     gc.move_to(0.0, height)
     gc.line_to(width, 0.0)
     gc.stroke_path()
 
 
 def test_arc_to2(gc, x2, y2, radiusstep=25.0):
-    gc.set_stroke_color(lightgray)
-    gc.move_to(0,0)
-    gc.line_to(100,0)
+    gc.set_stroke_color(LIGHTGRAY)
+    gc.move_to(0, 0)
+    gc.line_to(100, 0)
     gc.line_to(x2, y2)
     gc.stroke_path()
-    gc.set_stroke_color(black)
+    gc.set_stroke_color(BLACK)
 
     numradii = 7
     for i in range(numradii):
-        gc.move_to(0,0)
-        gc.arc_to(100, 0, x2, y2, i*radiusstep+20.0)
+        gc.move_to(0, 0)
+        gc.arc_to(100, 0, x2, y2, i * radiusstep + 20.0)
     gc.stroke_path()
 
 
@@ -54,10 +54,10 @@ def test_arc_curve(gc):
     with gc:
         gc.translate_ctm(50.0, 50.0)
         gc.rotate_ctm(PI/8)
-        gc.set_stroke_color(blue)
+        gc.set_stroke_color(BLUE)
         gc.rect(0.5, 0.5, 210, 210)
         gc.stroke_path()
-        gc.set_stroke_color(black)
+        gc.set_stroke_color(BLACK)
         gc.set_line_width(1)
         gc.move_to(50.5, 25.5)
         gc.arc(50.5, 50.5, 50.0, 0.0, PI/2, False)
@@ -67,16 +67,17 @@ def test_arc_curve(gc):
 
     with gc:
         gc.translate_ctm(250.5, 50.5)
-        gc.set_stroke_color(blue)
+        gc.set_stroke_color(BLUE)
         gc.rect(0.5, 0.5, 250.0, 250.0)
         gc.stroke_path()
-        gc.set_stroke_color(red)
+        gc.set_stroke_color(RED)
         gc.move_to(100.0, 100.0)
         gc.line_to(100.0, 150.0)
         gc.arc_to(100.0, 200.0, 150.0, 200.0, 50.0)
         gc.line_to(200.0, 200.0)
         gc.close_path()
         gc.stroke_path()
+
 
 def test_arc_to(gc):
     # We don't have compiled paths yet, so we simulate them by python functions
@@ -85,17 +86,19 @@ def test_arc_to(gc):
         gc.line_to(100.5, 50.5)
         gc.move_to(50.5, 0.5)
         gc.line_to(50.5, 100.5)
+
     def box(gc):
         gc.move_to(0.5, 0.5)
         gc.line_to(100.5, 0.5)
         gc.line_to(100.5, 100.5)
         gc.line_to(0.5, 100.5)
         gc.close_path()
+
     def arc(gc):
-        gc.move_to(10,10)
-        gc.line_to(20,10)
+        gc.move_to(10, 10)
+        gc.line_to(20, 10)
         gc.arc_to(40, 10, 40, 30, 20)
-        gc.line_to(40,40)
+        gc.line_to(40, 40)
 
     def whole_shebang(gc):
         with gc:
@@ -118,7 +121,7 @@ def test_arc_to(gc):
             gc.rotate_ctm(-3*PI/2)
             arc(gc)
 
-    gc.set_stroke_color(red)
+    gc.set_stroke_color(RED)
     gc.set_line_width(1.0)
     with gc:
         gc.translate_ctm(50.5, 300.5)
@@ -129,7 +132,7 @@ def test_arc_to(gc):
         with gc:
             gc.rotate_ctm(PI/6)
             whole_shebang(gc)
-            gc.set_stroke_color(blue)
+            gc.set_stroke_color(BLUE)
             gc.stroke_path()
 
         gc.translate_ctm(130.5, 0.0)
@@ -150,12 +153,14 @@ def test_arc_to(gc):
     gc.scale_ctm(0.75, -1.0)
     test_arc_to2(gc, 160.5, 76.5, 50.0)
 
+
 def test_simple_clip_stack(gc):
-    gc.clear(white)
+    gc.clear(WHITE)
     gc.clip_to_rect(100.0, 100.0, 1.0, 1.0)
     gc.rect(0.0, 0.0, gc.width(), gc.height())
-    gc.set_fill_color(red)
+    gc.set_fill_color(RED)
     gc.fill_path()
+
 
 def test_clip_stack(gc):
     sub_windows = ((10.5, 250, 200, 200),
@@ -165,7 +170,7 @@ def test_clip_stack(gc):
                    (220.5, 10, 200, 200),
                    (430.5, 10, 200, 200))
     gc.set_line_width(2)
-    gc.set_stroke_color(black)
+    gc.set_stroke_color(BLACK)
     gc.rects(sub_windows)
     gc.stroke_path()
 
@@ -184,7 +189,7 @@ def test_clip_stack(gc):
 
     # First clip
     img.clip_to_rects(main_rects)
-    draw_sub_image(img, 200, 200);
+    draw_sub_image(img, 200, 200)
     gc.draw_image(img, sub_windows[1])
 
     # Second Clip
@@ -213,15 +218,16 @@ def test_clip_stack(gc):
     draw_sub_image(img, 200, 200)
     gc.draw_image(img, sub_windows[5])
 
+
 def test_handling_text(gc):
-    font = Font(face_name="Arial", size = 32)
+    font = Font(face_name="Arial", size=32)
     gc.set_font(font)
     gc.translate_ctm(100.0, 100.0)
-    gc.move_to(-5,0)
-    gc.line_to(5,0)
-    gc.move_to(0,5)
-    gc.line_to(0,-5)
-    gc.move_to(0,0)
+    gc.move_to(-5, 0)
+    gc.line_to(5, 0)
+    gc.move_to(0, 5)
+    gc.line_to(0, -5)
+    gc.move_to(0, 0)
     gc.stroke_path()
     txtRot = agg.rotation_matrix(PI/6)
     gc.set_text_matrix(txtRot)
@@ -232,7 +238,6 @@ def test_handling_text(gc):
     gc.show_text("inverted")
 
 
-
 if __name__ == "__main__":
     tests = ((test_clip_stack, "clip_stack.png"),
              (test_arc_to, "arc_to.png"),
@@ -240,6 +245,6 @@ if __name__ == "__main__":
 
     for test_func, filename in tests:
         img = GraphicsContext((800, 600))
-        img.clear(white)
+        img.clear(WHITE)
         test_func(img)
         img.save(filename)

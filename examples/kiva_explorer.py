@@ -126,6 +126,7 @@ class ScriptedComponentView(ModelView):
         title='Kiva Explorer',
     )
 
+
 if __name__ == '__main__':
     view = ScriptedComponentView()
     view.configure_traits()

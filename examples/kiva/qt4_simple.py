@@ -1,16 +1,16 @@
+import sys
+
+from numpy import array
+
 # This is PyQt specific so force the toolkit selection.
 from traits.etsconfig.api import ETSConfig
 ETSConfig.toolkit = 'qt4.qpainter'
 
-from numpy import array
-import sys
-
+from enable.example_canvas import Canvas
 try:
     from pyface.qt import QtGui
 except ImportError:
     raise Exception('PyQt4 needs to be installed to run this example')
-
-from enable.example_canvas import Canvas
 
 
 class MyCanvas(Canvas):
@@ -31,7 +31,7 @@ class MyCanvas(Canvas):
         gc.draw_path()
 
         # draw a black rect with rounded corners
-        r = max(1, min(w,h)/10)
+        r = max(1, min(w, h)/10)
         gc.set_line_width(2.0)
         gc.set_stroke_color((0.0, 0.0, 0.0, 1.0))
         gc.move_to(w/3, h/2)

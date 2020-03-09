@@ -1,7 +1,12 @@
+import os
+import sys
+
 from enable.savage.svg.document import SVGDocument
 from enable.savage.trait_defs.ui.svg_editor import SVGEditor
 from traits.api import HasTraits, Instance
 from traitsui.api import Item, View
+
+FILENAME = os.path.join(os.path.dirname(__file__), 'lion.svg')
 
 
 class StaticImageExample(HasTraits):
@@ -18,10 +23,8 @@ class StaticImageExample(HasTraits):
 
         self.svg = SVGDocument.createFromFile(filename, renderer=renderer)
 
-if __name__ == "__main__":
-    import os.path
-    import sys
 
+def main():
     if '--wx' in sys.argv:
         from enable.savage.svg.backends.wx.renderer import Renderer
         sys.argv.remove('--wx')
@@ -31,8 +34,11 @@ if __name__ == "__main__":
     else:
         from enable.savage.svg.backends.kiva.renderer import Renderer
 
-    if len(sys.argv) > 1:
-        StaticImageExample(sys.argv[1], Renderer).configure_traits()
-    else:
-        filename = os.path.join(os.path.dirname(__file__), 'lion.svg')
-        StaticImageExample(filename, Renderer).configure_traits()
+    filename = sys.argv[1] if len(sys.argv) > 1 else FILENAME
+    return StaticImageExample(filename, Renderer)
+
+
+demo = main()
+
+if __name__ == "__main__":
+    demo.configure_traits()
