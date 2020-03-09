@@ -16,7 +16,7 @@ the wxPython user interface toolkit.
 import wx
 
 from enable.colors import color_table
-
+from enable.api import Label, Window
 from traits.api import Bool
 from traits.trait_base import SequenceTypes
 
@@ -31,14 +31,11 @@ from traitsui.wx.helper import position_window
 #-------------------------------------------------------------------------------
 
 # Standard color samples:
-color_choices = ( 0, 51, 102, 153, 204, 255 )
-color_samples = [ None ] * 216
-i             = 0
-for r in color_choices:
-    for g in color_choices:
-        for b in color_choices:
-            color_samples[i] = wx.Colour( r, g, b )
-            i += 1
+COLOR_CHOICES = ( 0, 51, 102, 153, 204, 255 )
+COLOR_SAMPLES = tuple([wx.Colour(r, g, b)
+                       for r in COLOR_CHOICES
+                       for g in COLOR_CHOICES
+                       for b in COLOR_CHOICES])
 
 #-------------------------------------------------------------------------------
 #  'ToolkitEditorFactory' class:
@@ -164,8 +161,6 @@ class SimpleColorEditor ( Editor ):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
-        from enable.api import Label
-        from enable.wx_backend import Window
         window = Window( parent,
                     component = Label( '', border_size = 1, font = 'modern 9' ) )
         self._swatch = window.component
@@ -314,8 +309,6 @@ class ReadonlyColorEditor ( ReadonlyEditor ):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
-        from enable.api import Label
-        from enable.wx_backend import Window
         window = Window( parent,
                     component = Label( '', border_size = 1, font = 'modern 9' ) )
         self._swatch = window.component
@@ -381,12 +374,13 @@ def color_editor_for ( editor, parent, update_handler = None ):
     # Add all of the color choice buttons:
     sizer2 = wx.GridSizer( 0, 12, 0, 0 )
 
-    for i in range( len( color_samples ) ):
+    for color_sample in COLOR_SAMPLES:
         control = wx.Button( panel, -1, '', size = wx.Size( 18, 18 ) )
-        control.SetBackgroundColour( color_samples[i] )
+        control.SetBackgroundColour( color_sample )
         control.update_handler = update_handler
-        wx.EVT_BUTTON( panel, control.GetId(),
-                       swatch_editor.update_object_from_swatch )
+        panel.Bind(wx.EVT_BUTTON,
+                   swatch_editor.update_object_from_swatch,
+                   id=control.GetId())
         sizer2.Add( control )
         editor.set_tooltip( control )
 
@@ -397,10 +391,10 @@ def color_editor_for ( editor, parent, update_handler = None ):
                                100 - int( alpha * 100.0 ), 0, 100,
                                size  = wx.Size( 20, 40 ),
                                style = wx.SL_VERTICAL | wx.SL_AUTOTICKS )
-    slider.SetTickFreq( 10, 1 )
+    slider.SetTickFreq( 10 )
     slider.SetPageSize( 10 )
     slider.SetLineSize( 1 )
-    wx.EVT_SCROLL( slider, swatch_editor.update_object_from_scroll )
+    slider.Bind(wx.EVT_SCROLL, swatch_editor.update_object_from_scroll )
     sizer.Add( slider, 0, wx.EXPAND | wx.LEFT, 6 )
 
     # Set-up the layout:

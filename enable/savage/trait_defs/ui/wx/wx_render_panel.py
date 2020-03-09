@@ -4,9 +4,10 @@ import wx
 from enable.savage.svg.backends.wx import renderer
 from traitsui.wx.constants import WindowColor
 
-class RenderPanel(wx.PyPanel):
+
+class RenderPanel(wx.Panel):
     def __init__(self, parent, document=None):
-        wx.PyPanel.__init__(self, parent)
+        super(RenderPanel, self).__init__(parent)
         self.lastRender = None
         self.document = document
         self.zoom_x = 100

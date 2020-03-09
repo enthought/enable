@@ -140,12 +140,12 @@ class LessSuckyDropTarget(PythonDropTarget):
 class BaseWindow(AbstractWindow):
 
     # Screen scroll increment amount:
-    scroll_incr = ( wx.SystemSettings_GetMetric( wx.SYS_SCREEN_Y )
+    scroll_incr = ( wx.SystemSettings.GetMetric( wx.SYS_SCREEN_Y )
                     or 768 ) / 20
 
     # Width/Height of standard scrollbars:
-    scrollbar_dx = wx.SystemSettings_GetMetric( wx.SYS_VSCROLL_X )
-    scrollbar_dy = wx.SystemSettings_GetMetric( wx.SYS_HSCROLL_Y )
+    scrollbar_dx = wx.SystemSettings.GetMetric( wx.SYS_VSCROLL_X )
+    scrollbar_dy = wx.SystemSettings.GetMetric( wx.SYS_HSCROLL_Y )
 
     _cursor_color = Any  # PZW: figure out the correct type for this...
 
@@ -172,37 +172,37 @@ class BaseWindow(AbstractWindow):
         self.control = control = self._create_control(parent, wid, pos, size)
 
         # Set up the 'erase background' event handler:
-        wx.EVT_ERASE_BACKGROUND( control, self._on_erase_background )
+        control.Bind(wx.EVT_ERASE_BACKGROUND, self._on_erase_background )
 
         # Set up the 'paint' event handler:
-        wx.EVT_PAINT( control, self._paint )
-        wx.EVT_SIZE(  control, self._on_size )
+        control.Bind(wx.EVT_PAINT, self._paint)
+        control.Bind(wx.EVT_SIZE, self._on_size)
 
         # Set up mouse event handlers:
-        wx.EVT_LEFT_DOWN(     control, self._on_left_down )
-        wx.EVT_LEFT_UP(       control, self._on_left_up )
-        wx.EVT_LEFT_DCLICK(   control, self._on_left_dclick )
-        wx.EVT_MIDDLE_DOWN(   control, self._on_middle_down )
-        wx.EVT_MIDDLE_UP(     control, self._on_middle_up )
-        wx.EVT_MIDDLE_DCLICK( control, self._on_middle_dclick )
-        wx.EVT_RIGHT_DOWN(    control, self._on_right_down )
-        wx.EVT_RIGHT_UP(      control, self._on_right_up )
-        wx.EVT_RIGHT_DCLICK(  control, self._on_right_dclick )
-        wx.EVT_MOTION(        control, self._on_mouse_move )
-        wx.EVT_ENTER_WINDOW(  control, self._on_window_enter )
-        wx.EVT_LEAVE_WINDOW(  control, self._on_window_leave )
-        wx.EVT_MOUSEWHEEL(    control, self._on_mouse_wheel )
+        control.Bind(wx.EVT_LEFT_DOWN, self._on_left_down)
+        control.Bind(wx.EVT_LEFT_UP, self._on_left_up)
+        control.Bind(wx.EVT_LEFT_DCLICK, self._on_left_dclick)
+        control.Bind(wx.EVT_MIDDLE_DOWN, self._on_middle_down)
+        control.Bind(wx.EVT_MIDDLE_UP, self._on_middle_up)
+        control.Bind(wx.EVT_MIDDLE_DCLICK, self._on_middle_dclick)
+        control.Bind(wx.EVT_RIGHT_DOWN, self._on_right_down)
+        control.Bind(wx.EVT_RIGHT_UP, self._on_right_up)
+        control.Bind(wx.EVT_RIGHT_DCLICK, self._on_right_dclick)
+        control.Bind(wx.EVT_MOTION, self._on_mouse_move)
+        control.Bind(wx.EVT_ENTER_WINDOW, self._on_window_enter)
+        control.Bind(wx.EVT_LEAVE_WINDOW, self._on_window_leave)
+        control.Bind(wx.EVT_MOUSEWHEEL, self._on_mouse_wheel)
 
         # Handle key up/down events:
-        wx.EVT_KEY_DOWN( control, self._on_key_pressed )
-        wx.EVT_KEY_UP(   control, self._on_key_released )
-        wx.EVT_CHAR(     control, self._on_character )
+        control.Bind(wx.EVT_KEY_DOWN, self._on_key_pressed )
+        control.Bind(wx.EVT_KEY_UP, self._on_key_released )
+        control.Bind(wx.EVT_CHAR, self._on_character )
 
         # Attempt to allow wxPython drag and drop events to be mapped to
         # Enable drag events:
 
         # Handle window close and cleanup
-        wx.EVT_WINDOW_DESTROY(control, self._on_close)
+        control.Bind(wx.EVT_WINDOW_DESTROY, self._on_close)
 
         if PythonDropTarget is not None:
             control.SetDropTarget( LessSuckyDropTarget( self ) )
@@ -215,37 +215,37 @@ class BaseWindow(AbstractWindow):
 
         return
 
-    def _create_control(self, parent, wid, pos = wx.DefaultPosition,
-                        size = wx.DefaultSize):
-        return wx.Window(parent, wid, pos, size, style = wx.CLIP_CHILDREN |
-                           wx.WANTS_CHARS)
-
+    def _create_control(self, parent, wid, pos=wx.DefaultPosition, size=wx.DefaultSize):
+        if parent is None:
+            # pab hack in order to avoid that the wx.Window crash!
+            parent = wx.Frame(None)
+        return wx.Window(parent, wid, pos, size, style=wx.CLIP_CHILDREN | wx.WANTS_CHARS)
 
     def _on_close(self, event):
         # Might be scrollbars or other native components under
         # us that are generating this event
         if event.GetWindow() == self.control:
             self._gc = None
-            wx.EVT_ERASE_BACKGROUND(self.control, None)
-            wx.EVT_PAINT(self.control, None)
-            wx.EVT_SIZE(self.control, None)
-            wx.EVT_LEFT_DOWN(self.control, None)
-            wx.EVT_LEFT_UP(self.control, None)
-            wx.EVT_LEFT_DCLICK(self.control, None)
-            wx.EVT_MIDDLE_DOWN(self.control, None)
-            wx.EVT_MIDDLE_UP(self.control, None)
-            wx.EVT_MIDDLE_DCLICK(self.control, None)
-            wx.EVT_RIGHT_DOWN(self.control, None)
-            wx.EVT_RIGHT_UP(self.control, None)
-            wx.EVT_RIGHT_DCLICK(self.control, None)
-            wx.EVT_MOTION(self.control, None)
-            wx.EVT_ENTER_WINDOW(self.control, None)
-            wx.EVT_LEAVE_WINDOW(self.control, None)
-            wx.EVT_MOUSEWHEEL(self.control, None)
-            wx.EVT_KEY_DOWN(self.control, None)
-            wx.EVT_KEY_UP(self.control, None)
-            wx.EVT_CHAR(self.control, None)
-            wx.EVT_WINDOW_DESTROY(self.control, None)
+            self.control.Bind(wx.EVT_ERASE_BACKGROUND, None)
+            self.control.Bind(wx.EVT_PAINT, None)
+            self.control.Bind(wx.EVT_SIZE, None)
+            self.control.Bind(wx.EVT_LEFT_DOWN, None)
+            self.control.Bind(wx.EVT_LEFT_UP, None)
+            self.control.Bind(wx.EVT_LEFT_DCLICK, None)
+            self.control.Bind(wx.EVT_MIDDLE_DOWN, None)
+            self.control.Bind(wx.EVT_MIDDLE_UP, None)
+            self.control.Bind(wx.EVT_MIDDLE_DCLICK, None)
+            self.control.Bind(wx.EVT_RIGHT_DOWN, None)
+            self.control.Bind(wx.EVT_RIGHT_UP, None)
+            self.control.Bind(wx.EVT_RIGHT_DCLICK, None)
+            self.control.Bind(wx.EVT_MOTION, None)
+            self.control.Bind(wx.EVT_ENTER_WINDOW, None)
+            self.control.Bind(wx.EVT_LEAVE_WINDOW, None)
+            self.control.Bind(wx.EVT_MOUSEWHEEL, None)
+            self.control.Bind(wx.EVT_KEY_DOWN, None)
+            self.control.Bind(wx.EVT_KEY_UP, None)
+            self.control.Bind(wx.EVT_CHAR, None)
+            self.control.Bind(wx.EVT_WINDOW_DESTROY, None)
             self.control.SetDropTarget(None)
             self.control = None
             self.component.cleanup(self)
@@ -262,7 +262,7 @@ class BaseWindow(AbstractWindow):
         pass
 
     def _on_size ( self, event ):
-        dx, dy = self.control.GetSizeTuple()
+        dx, dy = self.control.GetSize()
 
         # do nothing if the new and old sizes are the same
         if (self.component.outer_width, self.component.outer_height) == (dx, dy):
@@ -370,7 +370,7 @@ class BaseWindow(AbstractWindow):
             # Note: The following code fixes a bug in wxPython that returns
             # 'mouse_wheel' events in screen coordinates, rather than window
             # coordinates:
-            if float(wx.VERSION_STRING[:3]) < 2.8:
+            if wx.VERSION[:2] < (2, 8):
                 if mouse_wheel != 0 and sys.platform == "win32":
                     x, y = self.control.ScreenToClientXY( x, y )
             return MouseEvent(
@@ -426,7 +426,7 @@ class BaseWindow(AbstractWindow):
         "Get the size of the underlying toolkit control"
         result = None
         if self.control:
-            result = self.control.GetSizeTuple()
+            result = self.control.GetSize()
         return result
 
     def _window_paint ( self, event):
