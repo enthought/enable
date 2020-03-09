@@ -1,10 +1,10 @@
 
-
 from numpy import pi
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.pagesizes import letter
 
 from kiva.pdf import GraphicsContext
+
 
 def draw_ellipse(gc, x, y, major, minor, angle):
     """ Draws an ellipse given major and minor axis lengths.  **angle** is
@@ -22,6 +22,7 @@ def draw_ellipse(gc, x, y, major, minor, angle):
         gc.move_to(0, -minor)
         gc.line_to(0, minor)
         gc.stroke_path()
+
 
 def draw_round_rect(gc):
     """ Draws a black rect with round corners.

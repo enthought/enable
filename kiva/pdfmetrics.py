@@ -22,7 +22,7 @@ from __future__ import print_function
 __version__=''' $Id: pdfmetrics.py,v 1.1 2002/12/03 08:06:29 da Exp $ '''
 __doc__="""
 This provides a database of font metric information and
-efines Font, Encoding and TypeFace classes aimed at end users.
+defines Font, Encoding and TypeFace classes aimed at end users.
 
 There are counterparts to some of these in pdfbase/pdfdoc.py, but
 the latter focus on constructing the right PDF objects.  These
@@ -36,7 +36,8 @@ a registry of Font, TypeFace and Encoding objects.  Ideally these
 would be pre-loaded, but due to a nasty circularity problem we
 trap attempts to access them and do it on first access.
 """
-import string, os
+import os
+import string
 import warnings
 
 import six
@@ -53,7 +54,7 @@ standardEncodings = _fontdata.standardEncodings
 _dummyEncoding=' _not an encoding_ '
 
 # XXX Kiva-specific changes
-_stringWidth = None
+_stringWidth = _rl_accel = None
 
 _typefaces = {}
 _encodings = {}
@@ -477,13 +478,12 @@ def registerFont(font):
     #assert isinstance(font, Font), 'Not a Font: %s' % font
     fontName = font.fontName
     _fonts[fontName] = font
-    if not font._multiByte:
-        if _stringWidth:
-            _rl_accel.setFontInfo(fontName.lower(),
-                                  _dummyEncoding,
-                                  font.face.ascent,
-                                  font.face.descent,
-                                  font.widths)
+    if not font._multiByte and _stringWidth and _rl_accel:
+        _rl_accel.setFontInfo(fontName.lower(),
+                              _dummyEncoding,
+                              font.face.ascent,
+                              font.face.descent,
+                              font.widths)
 
 
 def getTypeFace(faceName):
@@ -543,7 +543,6 @@ def getFont(fontName):
             font = Font(fontName, fontName, defaultEncoding)
         registerFont(font)
         return font
-
 
 
 def _slowStringWidth(text, fontName, fontSize):
@@ -609,8 +608,11 @@ def test3widths(texts):
         print('class lookup and stringWidth took %0.4f' % (t1 - t0))
         print()
 
+
 def testStringWidthAlgorithms():
-    rawdata = open('../../rlextra/rml2pdf/doc/rml_user_guide.prep').read()
+    filename = __file__  # '../../rlextra/rml2pdf/doc/rml_user_guide.prep'
+    with open(filename, 'r') as fid:
+        rawdata = fid.read()
     print('rawdata length %d' % len(rawdata))
     print('test one huge string...')
     test3widths([rawdata])
@@ -635,3 +637,4 @@ def test():
 if __name__=='__main__':
     test()
     testStringWidthAlgorithms()
+    dumpFontData()

@@ -1,3 +1,4 @@
+import tempfile
 from numpy import array, pi
 
 from enable.api import ConstraintsContainer

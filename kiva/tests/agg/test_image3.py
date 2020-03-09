@@ -1,13 +1,17 @@
 from __future__ import print_function
 
 import os
-import time
 from math import pi
 
 from kiva import agg
 from kiva.fonttools import Font
+try:
+    from time import perf_counter
+except ImportError:
+    from time import clock as perf_counter
 
 ArialFont = Font('arial')
+
 
 def save_path(filename):
     return filename
@@ -24,67 +28,67 @@ def main():
     text_color = [0.0,0.0,1.0,.5]
     text = "hello"
 
-    tot1 = time.clock()
+    tot1 = perf_counter()
 
-    t1 = time.clock()
+    t1 = perf_counter()
     gc=agg.GraphicsContextArray((800,800))
     gc.set_font(ArialFont)
     gc.set_alpha(1.0)
     bbox = gc.get_text_extent(text)
     draw_text(gc,text,bbox,text_color,bbox_color)
-    t2 = time.clock()
+    t2 = perf_counter()
     print('1st:', t2-t1)
 
-    t1 = time.clock()
+    t1 = perf_counter()
     with gc:
         gc.translate_ctm(50,50)
         gc.rotate_ctm(pi/4)
         draw_text(gc,text,bbox,text_color,bbox_color)
-    t2 = time.clock()
+    t2 = perf_counter()
     print('2nd:', t2-t1)
 
-    t1 = time.clock()
+    t1 = perf_counter()
     with gc:
         gc.translate_ctm(100,100)
         gc.scale_ctm(4.0,2.0)
         draw_text(gc,text,bbox,text_color,bbox_color)
-    t2 = time.clock()
+    t2 = perf_counter()
     print('3rd:', t2-t1)
 
-    t1 = time.clock()
+    t1 = perf_counter()
     with gc:
         gc.translate_ctm(200,200)
         gc.scale_ctm(4.0,2.0)
         gc.rotate_ctm(pi/4)
         draw_text(gc,text,bbox,text_color,bbox_color)
-    t2 = time.clock()
+    t2 = perf_counter()
     print('4th:', t2-t1)
-    print('tot:', time.clock() - tot1)
+    print('tot:', perf_counter() - tot1)
     gc.save(save_path('text2.bmp'))
 
     import random
     import string
     alpha = list(string.ascii_letters) + list('012345679')
 
-    N =100
+    N = 100
     strs = []
     for i in range(N):
         random.shuffle(alpha)
         strs.append(''.join(alpha))
     print('starting:')
-    t1 = time.clock()
+    t1 = perf_counter()
     for s in strs:
         gc.show_text(s)
-    t2 = time.clock()
+    t2 = perf_counter()
     print()
     print('1. %d different 62 letter strings(total,per string):' % N)
     print('    %f %f' % (t2-t1,((t2-t1)/N)))
 
-    t1 = time.clock()
-    for i in range(N/10):
+    t1 = perf_counter()
+    for i in range(N//10):
         for s in strs[:10]:
             gc.show_text(s)
-    t2 = time.clock()
+    t2 = perf_counter()
     print('2. 10 strings with 62 letter rendered %d times (total,per str):' % N)
     print('    %f %f' % (t2-t1,((t2-t1)/N)))
 
@@ -124,7 +128,7 @@ def main3():
     gc=agg.GraphicsContextArray((760,760))
     N = 100
     gc.show_text("SUN")
-    t1 = time.clock()
+    t1 = perf_counter()
     for i in range(N):
         with gc:
             #gc.rotate_ctm(.2)
@@ -135,7 +139,7 @@ def main3():
             gc.scale_ctm(10,10)
             gc.set_fill_color((0.0,0,1.0,.25))
             #gc.show_text("SUN")
-    t2 = time.clock()
+    t2 = perf_counter()
     print("images per second: %g" % (N/(t2-t1)))
     gc.save('sun3.bmp')
 
@@ -150,7 +154,7 @@ def main4():
     agg_img = agg.Image(img,"rgb24", interpolation_scheme="simple")
     gc=agg.GraphicsContextArray((1000,1000))
     N = 1
-    t1 = time.clock()
+    t1 = perf_counter()
     for i in range(N):
         with gc:
             #gc.rotate_ctm(.2)
@@ -161,7 +165,7 @@ def main4():
             gc.scale_ctm(10,10)
             gc.set_fill_color((0.0,0,1.0,.5))
             #gc.show_text("SUN")
-    t2 = time.clock()
+    t2 = perf_counter()
     print("images per second: %g" % (N/(t2-t1)))
     gc.save('sun2.bmp')
 
@@ -170,13 +174,13 @@ def main5(gc):
     text_color = [0.0,0.0,1.0,1.0]
     text = "hello"
 
-    tot1 = time.clock()
+    tot1 = perf_counter()
 
-    t1 = time.clock()
+    t1 = perf_counter()
     gc.set_alpha(1.0)
     bbox = gc.get_text_extent(text)
     draw_text(gc,text,bbox,text_color,bbox_color)
-    t2 = time.clock()
+    t2 = perf_counter()
     print('1st:', t2-t1)
 
 
@@ -194,12 +198,12 @@ def main5(gc):
             '<,>.?/~`"']
 
     N =100
-    t1 = time.clock()
+    t1 = perf_counter()
     for i in range(N):
         for s in strs:
             #gc.translate_ctm(0,14)
             gc.show_text(s)
-    t2 = time.clock()
+    t2 = perf_counter()
     print()
     print(' %d  strings(total,per string):' % (N*10))
     print('    %f %f' % (t2-t1,((t2-t1)/(N*10))))

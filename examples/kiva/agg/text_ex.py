@@ -1,9 +1,12 @@
 from __future__ import print_function
 
-import time
 from kiva.fonttools import Font
 from kiva.constants import MODERN
 from kiva.agg import AffineMatrix, GraphicsContextArray
+try:
+    from time import perf_counter
+except ImportError:
+    from time import clock as perf_counter
 
 gc = GraphicsContextArray((200,200))
 
@@ -13,7 +16,7 @@ font.size=8
 gc.set_font(font)
 
 
-t1 = time.clock()
+t1 = perf_counter()
 
 # consecutive printing of text.
 with gc:
@@ -27,7 +30,7 @@ with gc:
     gc.set_fill_color((0,1,1))
     gc.show_text("hello")
 
-t2 = time.clock()
+t2 = perf_counter()
 print('aliased:', t2 - t1)
 gc.save("text_aliased.bmp")
 
@@ -38,7 +41,7 @@ font = Font(family=MODERN)
 font.size=8
 gc.set_font(font)
 
-t1 = time.clock()
+t1 = perf_counter()
 
 with gc:
     gc.set_antialias(True)
@@ -51,7 +54,7 @@ with gc:
     gc.set_fill_color((0,1,1))
     gc.show_text("hello")
 
-t2 = time.clock()
+t2 = perf_counter()
 print('antialiased:', t2 - t1)
 gc.save("text_antialiased.bmp")
 

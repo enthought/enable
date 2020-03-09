@@ -50,7 +50,7 @@ def test_mouse_move_real_window_mocked_position():
     component = Component(bounds=[100, 200])
 
     with mock.patch.object(Window, 'get_pointer_position',
-                            return_value=None):
+                           return_value=None):
         window = Window(None, component=component)
         event = test_assistant.mouse_move(component, 10, 20, window)
 

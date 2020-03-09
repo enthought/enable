@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-from math import sqrt, pi
+from math import pi
 import sys
 import warnings
 
@@ -9,11 +9,10 @@ import six
 import numpy as np
 
 from enable.compiled_path import CompiledPath as KivaCompiledPath
-from kiva import affine, constants, fonttools
-from kiva.fonttools import Font
-
 from enable.savage.svg import svg_extras
 from enable.savage.svg.backends.null.null_renderer import NullRenderer, AbstractGradientBrush
+from kiva import constants, fonttools
+from kiva.fonttools import Font
 
 # Get the Canvas class for drawing on...
 
@@ -22,6 +21,7 @@ def _GetCurrentPoint(gc):
     if total_vertices == 0:
         return (0.0, 0.0)
     return gc.vertex(total_vertices-1)[0]
+
 
 class CompiledPath(KivaCompiledPath):
 
@@ -37,14 +37,14 @@ class CompiledPath(KivaCompiledPath):
     AddQuadCurveToPoint = KivaCompiledPath.quad_curve_to
 
     def AddCurveToPoint(self, ctrl1, ctrl2, endpoint):
-         self.curve_to(ctrl1[0], ctrl1[1],
-                       ctrl2[0], ctrl2[1],
-                       endpoint[0], endpoint[1])
+        self.curve_to(ctrl1[0], ctrl1[1],
+                      ctrl2[0], ctrl2[1],
+                      endpoint[0], endpoint[1])
 
     def AddEllipticalArcTo(self, x, y, w, h, theta0, dtheta, phi=0):
-        for i, (x1,y1, x2,y2, x3,y3, x4,y4) in enumerate(svg_extras.bezier_arc(
-            x, y, x+w, y+h, theta0, dtheta)):
-            self.curve_to(x2,y2, x3,y3, x4,y4)
+        for _x1, _y1, x2, y2, x3, y3, x4, y4 in svg_extras.bezier_arc(
+                x, y, x + w, y + h, theta0, dtheta):
+            self.curve_to(x2, y2, x3, y3, x4, y4)
 
     def elliptical_arc_to(self, rx, ry, phi, large_arc_flag, sweep_flag, x2, y2):
         x1, y1 = self.GetCurrentPoint()
@@ -59,8 +59,8 @@ class CompiledPath(KivaCompiledPath):
         self.arc(x, y, r, 0.0, 2*pi)
 
     def AddEllipse(self, cx,cy, rx,ry):
-        for i, (x1,y1, x2,y2, x3,y3, x4,y4) in enumerate(svg_extras.bezier_arc(
-            cx-rx, cy-ry, cx+rx, cy+ry, 0, 360)):
+        for i, (x1, y1, x2, y2, x3, y3, x4, y4) in enumerate(svg_extras.bezier_arc(
+                cx - rx, cy - ry, cx + rx, cy + ry, 0, 360)):
             if i == 0:
                 self.move_to(x1,y1)
             self.curve_to(x2,y2, x3,y3, x4,y4)
@@ -101,7 +101,6 @@ class CompiledPath(KivaCompiledPath):
             90,
         )
         self.close_path()
-
 
 
 class Pen(object):
@@ -163,14 +162,18 @@ class ColorBrush(object):
         try:
             color = tuple([x/255.0 for x in list(self.color)])
         except:
-            color = (0,0,0,1)
+            color = (0, 0, 0, 1)
         gc.set_fill_color(color)
+
 
 class LinearGradientBrush(AbstractGradientBrush):
     """ A Brush representing a linear gradient.
     """
-    def __init__(self, x1,y1, x2,y2, stops, spreadMethod='pad',
-        transforms=[], units='userSpaceOnUse'):
+
+    def __init__(self, x1, y1, x2, y2, stops, spreadMethod='pad',
+                 transforms=None, units='userSpaceOnUse'):
+        if transforms is None:
+            transforms = []
         self.x1 = x1
         self.y1 = y1
         self.x2 = x2
@@ -182,8 +185,8 @@ class LinearGradientBrush(AbstractGradientBrush):
 
     def __repr__(self):
         return ('LinearGradientBrush(%r,%r, %r,%r, %r, spreadMethod=%r, '
-            'transforms=%r, units=%r)' % (self.x1,self.y1, self.x2,self.y2, self.stops,
-                self.spreadMethod, self.transforms, self.units))
+                'transforms=%r, units=%r)' % (self.x1, self.y1, self.x2, self.y2, self.stops,
+                                              self.spreadMethod, self.transforms, self.units))
 
     def set_on_gc(self, gc, bbox=None):
 
@@ -223,8 +226,8 @@ class LinearGradientBrush(AbstractGradientBrush):
 class RadialGradientBrush(AbstractGradientBrush):
     """ A Brush representing a radial gradient.
     """
-    def __init__(self, cx,cy, r, stops, fx=None,fy=None, spreadMethod='pad',
-        transforms=[], units='userSpaceOnUse'):
+    def __init__(self, cx, cy, r, stops, fx=None, fy=None, spreadMethod='pad',
+                 transforms=None, units='userSpaceOnUse'):
         self.cx = cx
         self.cy = cy
         self.r = r
@@ -240,10 +243,10 @@ class RadialGradientBrush(AbstractGradientBrush):
         self.units = units
 
     def __repr__(self):
-        return ('RadialGradientBrush(%r,%r, %r, %r, fx=%r,fy=%r, '
-            'spreadMethod=%r, transforms=%r, units=%r)' % (self.cx,self.cy,
-                self.r, self.stops, self.fx,self.fy, self.spreadMethod,
-                self.transforms, self.units))
+        return ('RadialGradientBrush(%r,%r, %r, %r, fx=%r,fy=%r, spreadMethod=%r, '
+                'transforms=%r, units=%r)' % (self.cx, self.cy, self.r, self.stops,
+                                              self.fx, self.fy, self.spreadMethod,
+                                              self.transforms, self.units))
 
     def set_on_gc(self, gc, bbox=None):
 
@@ -353,17 +356,17 @@ class Renderer(NullRenderer):
         return Pen(color_tuple)
 
     @classmethod
-    def createLinearGradientBrush(cls, x1,y1,x2,y2, stops, spreadMethod='pad',
-                                  transforms=[], units='userSpaceOnUse'):
-        return LinearGradientBrush(x1,y1,x2,y2,stops, spreadMethod, transforms,
-            units)
+    def createLinearGradientBrush(cls, x1, y1, x2, y2, stops, spreadMethod='pad',
+                                  transforms=None, units='userSpaceOnUse'):
+        return LinearGradientBrush(x1, y1, x2, y2, stops, spreadMethod, transforms,
+                                   units)
 
     @classmethod
-    def createRadialGradientBrush(cls, cx,cy, r, stops, fx=None,fy=None,
-                                  spreadMethod='pad', transforms=[],
+    def createRadialGradientBrush(cls, cx, cy, r, stops, fx=None, fy=None,
+                                  spreadMethod='pad', transforms=None,
                                   units='userSpaceOnUse'):
-        return RadialGradientBrush(cx,cy, r, stops, fx,fy, spreadMethod,
-            transforms, units)
+        return RadialGradientBrush(cx, cy, r, stops, fx, fy, spreadMethod,
+                                   transforms, units)
 
     @classmethod
     def getCurrentPoint(cls, path):
@@ -396,7 +399,6 @@ class Renderer(NullRenderer):
     @classmethod
     def pushState(cls, gc):
         return gc.save_state()
-
 
     @classmethod
     def setFontSize(cls, font, size):
@@ -439,7 +441,6 @@ class Renderer(NullRenderer):
                 gc.select_font(font.face_name, font.size, style=style)
             else:
                 gc.set_font(font)
-
 
         except ValueError:
             warnings.warn("failed to find set '%s'.  Using Arial" % font.face_name)

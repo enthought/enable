@@ -1,0 +1,8 @@
+
+
+player_pause.svg and player_play.svg:
+    https://commons.wikimedia.org/wiki/File:Crystal128-player-pause.svg
+    https://commons.wikimedia.org/wiki/File:Crystal128-player-play.svg
+    These images were posted by the author, Everaldo Coelho,  with a
+    GNU Lesser General Public License (LGPL) as published by the
+    Free Software Foundation; either version 2.1 of the License, or any later version.

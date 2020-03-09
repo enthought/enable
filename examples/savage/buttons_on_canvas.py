@@ -64,7 +64,7 @@ class CanvasButton(Component):
             font = Font(family=MODERN)
             gc.set_font(font)
 
-            x, y, width, height = gc.get_text_extent(self.label)
+            _x, _y, width, height = gc.get_text_extent(self.label)
             text_x = self.x + (self.width - width)/2.0
             text_y = self.y - height
 
@@ -82,6 +82,7 @@ class ButtonCanvas(Container):
     def add_button(self, button):
         button.container = self
         self.components.append(button)
+
 
 class ButtonSelectionTool(BaseTool):
     """ Listens for double-clicks and tries to open a traits editor on the
@@ -109,9 +110,9 @@ class ButtonCanvasView(HasTraits):
 
     traits_view = View(Item('canvas', editor=ComponentEditor(),
                             show_label=False),
-                        width=400,
-                        height=400,
-                        resizable=True)
+                       width=400,
+                       height=400,
+                       resizable=True)
 
     def __init__(self, *args, **kw):
         super(ButtonCanvasView, self).__init__(*args, **kw)
@@ -140,5 +141,8 @@ class ButtonCanvasView(HasTraits):
         print("pasting something")
 
 
+demo = ButtonCanvasView()
+
+
 if __name__ == "__main__":
-    ButtonCanvasView().configure_traits()
+    demo.configure_traits()

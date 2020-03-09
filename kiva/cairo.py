@@ -181,10 +181,11 @@ class GraphicsState(object):
     def copy(self):
         return copy.deepcopy(self)
 
+
 class GraphicsContext(basecore2d.GraphicsContextBase):
     def __init__(self, size, *args, **kw):
         super(GraphicsContext, self).__init__(size, *args, **kw)
-        w,h = size
+        w, h = size
 
         self.surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
         self.surface.set_device_offset(0,h)
@@ -194,7 +195,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         else:
             ctx = cairo.Context(self.surface)
             ctx.set_source_rgb(1,1,1)
-            ctx.scale(1,-1)
+            ctx.scale(1, -1)
 
         self._ctx = ctx
         self.state = GraphicsState()
@@ -1004,7 +1005,6 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         self.state.character_spacing = spacing
 
-
     def set_text_drawing_mode(self, mode):
         """ Specifies whether text is drawn filled or outlined or both.
 
@@ -1284,9 +1284,11 @@ class CompiledPath(object):
 
 
 def font_metrics_provider():
-    return GraphicsContext((1,1))
+    return GraphicsContext((1, 1))
 
-if __name__=="__main__":
+
+def main_example(folder=None):
+    import os
     from numpy import fabs, linspace, pi, sin
     from scipy.special import jn
 
@@ -1299,17 +1301,19 @@ if __name__=="__main__":
     DPI = 72.0
     dpi_scale = DPI / 72.0
 
-    def create_plot():
-        numpoints = 100
-        low = -5
-        high = 15.0
+    if folder is None:
+        folder = r"c:/temp"
+
+    print("Saving files to ", folder)
+
+    def create_plot(low = -5, high = 15.0, numpoints = 100):
         x = linspace(low, high, numpoints)
         pd = ArrayPlotData(index=x)
         p = Plot(pd, bgcolor="lightgray", padding=50, border_visible=True)
-        for t,i in sm.zip(cycle(['line','scatter']),sm.range(10)):
-            pd.set_data("y" + str(i), jn(i,x))
+        for t, i in sm.zip(cycle(['line','scatter']), sm.range(10)):
+            pd.set_data("y" + str(i), jn(i, x))
             p.plot(("index", "y" + str(i)), color=tuple(COLOR_PALETTE[i]),
-                   width = 2.0 * dpi_scale, type=t)
+                    width = 2.0 * dpi_scale, type=t)
         p.x_grid.visible = True
         p.x_grid.line_width *= dpi_scale
         p.y_grid.visible = True
@@ -1318,14 +1322,14 @@ if __name__=="__main__":
         return p
 
     container = create_plot()
-    container.outer_bounds = [800,600]
+    container.outer_bounds = [800, 600]
     container.do_layout(force=True)
 
-    def render_cairo_png():
-        w,h = 800,600
+    def render_cairo_png(folder):
+        w, h = 800, 600
         scale = 1.0
         s = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(w*scale),int(h*scale))
-        s.set_device_offset(0,h*scale)
+        s.set_device_offset(0, h*scale)
         ctx = cairo.Context(s)
         ctx.set_source_rgb(1,1,1)
         ctx.paint()
@@ -1334,12 +1338,12 @@ if __name__=="__main__":
         gc = GraphicsContext((w,h), context=ctx)
         gc.render_component(container)
         s.flush()
-        s.write_to_png("/tmp/kiva_cairo.png")
+        s.write_to_png(os.path.join(folder, "kiva_cairo.png"))
 
-    def render_cairo_svg():
-        w,h = 800,600
+    def render_cairo_svg(folder):
+        w, h = 800, 600
         scale = 1.0
-        s = cairo.SVGSurface("/tmp/kiva_cairo.svg", w*scale,h*scale)
+        s = cairo.SVGSurface(os.path.join(folder, "kiva_cairo.svg"), w*scale,h*scale)
         s.set_device_offset(0,h*scale)
         ctx = cairo.Context(s)
         ctx.set_source_rgb(1,1,1)
@@ -1350,10 +1354,10 @@ if __name__=="__main__":
         gc.render_component(container)
         s.finish()
 
-    def render_cairo_pdf():
-        w,h = 800,600
+    def render_cairo_pdf(folder):
+        w,h = 800, 600
         scale = 1.0
-        s = cairo.PDFSurface("/tmp/kiva_cairo.pdf", w*scale,h*scale)
+        s = cairo.PDFSurface(os.path.join(folder, "kiva_cairo.pdf"), w*scale,h*scale)
         s.set_device_offset(0,h*scale)
         ctx = cairo.Context(s)
         ctx.set_source_rgb(1,1,1)
@@ -1364,14 +1368,17 @@ if __name__=="__main__":
         gc.render_component(container)
         s.finish()
 
-    def render_agg():
-        gc2 = PlotGraphicsContext((800,600), dpi=DPI)
+    def render_agg(folder):
+        gc2 = PlotGraphicsContext((800, 600), dpi=DPI)
         gc2.render_component(container)
-        gc2.save("/tmp/kiva_agg.png")
+        gc2.save(os.path.join(folder, "kiva_agg.png"))
 
-    #render_agg()
-    render_cairo_png()
-    render_cairo_svg()
-    render_cairo_pdf()
-    render_agg()
 
+    render_cairo_png(folder)
+    render_cairo_svg(folder)
+    render_cairo_pdf(folder)
+    render_agg(folder)
+
+
+if __name__=="__main__":
+    main_example()

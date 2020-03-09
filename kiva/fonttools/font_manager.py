@@ -1023,21 +1023,6 @@ class FontProperties(object):
         return FontProperties(_init=self)
 
 
-def ttfdict_to_fnames(d):
-    """
-    flatten a ttfdict to all the filenames it contains
-    """
-    fnames = []
-    for named in d.values():
-        for styled in named.values():
-            for variantd in styled.values():
-                for weightd in variantd.values():
-                    for stretchd in weightd.values():
-                        for fname in stretchd.values():
-                            fnames.append(fname)
-    return fnames
-
-
 def pickle_dump(data, filename):
     """
     Equivalent to pickle.dump(data, open(filename, 'wb'))
@@ -1397,13 +1382,13 @@ def is_opentype_cff_font(filename):
 
 fontManager = None
 
-_fmcache = os.path.join(get_configdir(), 'fontList.cache')
+_FM_CACHE_PATH = os.path.join(get_configdir(), 'fontList.cache')
 
 
 def _rebuild():
     global fontManager
     fontManager = FontManager()
-    pickle_dump(fontManager, _fmcache)
+    pickle_dump(fontManager, _FM_CACHE_PATH)
     logger.debug("generated new fontManager")
 
 
@@ -1445,13 +1430,13 @@ if USE_FONTCONFIG and sys.platform != 'win32':
 
 else:
     try:
-        fontManager = pickle_load(_fmcache)
+        fontManager = pickle_load(_FM_CACHE_PATH)
         if (not hasattr(fontManager, '_version') or
                 fontManager._version != FontManager.__version__):
             _rebuild()
         else:
             fontManager.default_size = None
-            logger.debug("Using fontManager instance from %s", _fmcache)
+            logger.debug("Using fontManager instance from %s", _FM_CACHE_PATH)
     except Exception:
         _rebuild()
 

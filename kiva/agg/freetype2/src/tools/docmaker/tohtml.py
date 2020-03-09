@@ -509,12 +509,12 @@ class  HtmlFormatter( Formatter ):
             print(section_synopsis_header)
             print("<table align=center cellspacing=5 cellpadding=0 border=0>")
 
-            columns = width / maxwidth
+            columns = width // maxwidth
             if columns < 1:
                 columns = 1
 
             count = len( section.block_names )
-            rows  = ( count + columns - 1 ) / columns
+            rows  = ( count + columns - 1 ) // columns
 
             for r in range( rows ):
                 line = "<tr>"

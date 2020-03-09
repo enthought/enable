@@ -61,7 +61,7 @@ def test_initial_component_with_item_size():
     nose.tools.assert_less(size[0], ITEM_WIDTH+30)
 
     nose.tools.assert_greater(size[1], ITEM_HEIGHT-1)
-    nose.tools.assert_less(size[1], ITEM_HEIGHT+30)
+    nose.tools.assert_less(size[1], ITEM_HEIGHT+50)
 
 
 if __name__ == '__main__':

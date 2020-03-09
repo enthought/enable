@@ -108,8 +108,8 @@ def RGBAColorFunc(*args, **metadata):
     -------------
     For wxPython, (1.0, 1.0, 1.0, 1.0) (that is, opaque white)
     """
-    tmp_trait = Trait( 'white', convert_to_color, rgba_standard_colors,
-           editor = RGBAColorEditor )
+    tmp_trait = Trait('white', convert_to_color, rgba_standard_colors,
+                      editor=RGBAColorEditor )
     return tmp_trait(*args, **metadata)
 
 

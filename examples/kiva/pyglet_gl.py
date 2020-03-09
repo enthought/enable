@@ -9,6 +9,7 @@ except ImportError as e:
     raise Exception(e)
 from kiva.constants import FILL, STROKE, FILL_STROKE
 
+
 class TestWindow(Window):
     """ Press Q or Escape to exit
     """

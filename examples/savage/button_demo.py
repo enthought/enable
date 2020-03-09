@@ -36,5 +36,8 @@ class Demo(HasTraits):
         self.text += self.clipboard
 
 
+demo = Demo()
+
+
 if __name__ == "__main__":
-    Demo().configure_traits()
+    demo.configure_traits()
