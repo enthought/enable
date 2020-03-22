@@ -3,6 +3,8 @@
 // #endif
 
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "kiva_gl_affine_helpers.h"
 #include "kiva_gl_exceptions.h"
