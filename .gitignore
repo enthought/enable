@@ -21,8 +21,8 @@ dist/
 kiva/agg/agg.py
 kiva/agg/agg_wrap.cpp
 kiva/agg/plat_support.py
-kiva/agg/src/gl/plat_support_wrap.cpp
 kiva/agg/src/gtk1/plat_support_wrap.cpp
+kiva/agg/src/osx/plat_support_wrap.cpp
 kiva/agg/src/win32/plat_support_wrap.cpp
 kiva/agg/src/x11/plat_support_wrap.cpp
 kiva/gl/gl.py

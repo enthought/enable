@@ -79,7 +79,7 @@ def configuration(parent_package='', top_path=None):
     if sys.platform=='win32':
         plat = 'win32'
     elif sys.platform == 'darwin':
-        plat = 'gl'
+        plat = 'osx'
     else:
         #plat = 'gtk1'  # use with gtk1, it's fast
         plat = 'x11'  # use with gtk2, it's slow but reliable
@@ -144,8 +144,7 @@ def configuration(parent_package='', top_path=None):
         macros = []
 
     kiva_include_dirs = ['src'] + agg_include_dirs
-    config.add_library('kiva_src',
-                       ['src/kiva_*.cpp', 'src/gl_graphics_context.cpp'],
+    config.add_library('kiva_src', ['src/kiva_*.cpp'],
                        include_dirs = kiva_include_dirs,
                        # Use "macros" instead of "define_macros" because the
                        # latter is only used for extensions, and not clibs
@@ -177,11 +176,11 @@ def configuration(parent_package='', top_path=None):
     if use_32bit_workaround:
         define_macros.append(("ALWAYS_32BIT_WORKAROUND", 1))
 
-    # Options to make OS X link OpenGL
+    # Options to make OS X link
     if '64bit' not in platform.architecture():
-        darwin_frameworks = ['Carbon', 'ApplicationServices', 'OpenGL']
+        darwin_frameworks = ['Carbon', 'ApplicationServices']
     else:
-        darwin_frameworks = ['ApplicationServices', 'OpenGL']    
+        darwin_frameworks = ['ApplicationServices']    
 
     darwin_extra_link_args = []
     for framework in darwin_frameworks:
@@ -198,13 +197,8 @@ def configuration(parent_package='', top_path=None):
     build_info = {}
     kiva_lib = 'kiva_src'
     build_libraries = [kiva_lib, agg_lib, freetype_lib]
-    if sys.platform == "win32":
-        build_libraries += ["opengl32", "glu32"]
-    elif sys.platform == "darwin":
+    if sys.platform == "darwin":
         dict_append(build_info, **darwin_opengl_opts)
-    else:
-        # This should work for most linuxes (linuces?)
-        build_libraries += ["GL", "GLU"]
     dict_append(build_info,
                 sources = ['agg.i'],
                 include_dirs = kiva_include_dirs,
@@ -220,7 +214,7 @@ def configuration(parent_package='', top_path=None):
     sources = [os.path.join('src',plat,'plat_support.i'),
                os.path.join('src',plat,'agg_bmp.cpp'),
                ]
-    if plat != 'gl':
+    if plat != 'osx':
         sources.append(os.path.join('src',plat,'agg_platform_specific.cpp'))
 
     plat_info = {}
@@ -249,12 +243,9 @@ def configuration(parent_package='', top_path=None):
         #x11_info = get_info('x11',notfound_action=1)
         #dict_append(plat_info,**x11_info)
 
-    elif plat == 'gl':
+    elif plat == 'osx':
         if sys.platform == 'darwin':
             dict_append(plat_info, **darwin_opengl_opts)
-        else:
-            msg = "OpenGL build support only on MacOSX right now."
-            raise NotImplementedError(msg)
 
 
     config.add_extension('_plat_support',
