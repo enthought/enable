@@ -270,6 +270,7 @@ class _QtGLWindow(QtOpenGL.QGLWidget):
     def paintEvent(self, event):
         super(_QtGLWindow, self).paintEvent(event)
         self.handler.paintEvent(event)
+        self.swapBuffers()
 
     def resizeEvent(self, event):
         super(_QtGLWindow, self).resizeEvent(event)

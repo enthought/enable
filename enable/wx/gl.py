@@ -5,7 +5,7 @@ pyglet.options['shadow_window'] = False
 from wx.glcanvas import GLCanvas
 
 from traits.api import Instance
-from kiva.gl import CompiledPath, GraphicsContext
+from kiva.gl import CompiledPath, FakePygletContext, GraphicsContext
 
 from .base_window import BaseWindow
 from .scrollbar import NativeScrollBar
@@ -33,8 +33,7 @@ class Window(BaseWindow):
         """
         gc = GraphicsContext((size[0]+1,size[1]+1))
         if self._pyglet_gl_context is None:
-            from pyglet.gl import Context
-            self._pyglet_gl_context = Context()
+            self._pyglet_gl_context = FakePygletContext()
         gc.gl_init()
         gc.translate_ctm(0.5, 0.5)
         return gc
