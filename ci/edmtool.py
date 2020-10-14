@@ -135,6 +135,10 @@ if sys.platform == 'darwin':
     dependencies.add('Cython')
 
 
+#: Path to the top-level source directory
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+
 @click.group()
 def cli():
     pass
@@ -165,7 +169,9 @@ def install(runtime, toolkit, pillow, environment):
     if toolkit == 'pyqt5':
         commands.append("edm run -e {environment} -- pip install pyqt5==5.9.2")
 
-    commands.append("edm run -e {environment} -- python setup.py install")
+    commands.append(
+        "edm run -e {environment} -- pip install --force-reinstall " + ROOT
+    )
 
     click.echo("Creating environment '{environment}'".format(**parameters))
     execute(commands, parameters)
