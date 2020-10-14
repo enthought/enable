@@ -109,6 +109,8 @@ dependencies = {
     "chaco",
     "mayavi",
     "scipy",
+    # FIXME: We need to workaround libtiff 4.0.10-6 from EDM?
+    "libtiff==4.0.10-5",
 }
 
 extra_dependencies = {
