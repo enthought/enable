@@ -162,7 +162,7 @@ def install(runtime, toolkit, pillow, environment):
         "edm install -y -e {environment} {packages}",
         "edm run -e {environment} -- pip install {pillow}",
         ("edm run -e {environment} -- pip install -r ci/requirements.txt"
-         " --no-dependencies --ignore-installed"),
+         " --no-dependencies --force-reinstall"),
     ]
 
     # pip install pyqt5, because we don't have it in EDM yet
@@ -170,7 +170,8 @@ def install(runtime, toolkit, pillow, environment):
         commands.append("edm run -e {environment} -- pip install pyqt5==5.9.2")
 
     commands.append(
-        "edm run -e {environment} -- pip install --force-reinstall " + ROOT
+        "edm run -e {environment} -- "
+        "pip install --force-reinstall --no-dependencies " + ROOT
     )
 
     click.echo("Creating environment '{environment}'".format(**parameters))
