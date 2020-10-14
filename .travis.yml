@@ -16,6 +16,7 @@ addons:
     - libpng-dev
     - libfreetype6-dev
     - libcairo2-dev
+    - liblzma-dev
     - libglu1-mesa-dev
 
 env:
