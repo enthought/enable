@@ -89,11 +89,11 @@ from contextlib import contextmanager
 import click
 
 supported_combinations = {
-    '3.5': {'pyqt', 'pyqt5', 'null'},
     '3.6': {'pyqt', 'pyqt5', 'null'},
 }
 
 dependencies = {
+    "apptools",
     "six",
     "nose",
     "mock",
@@ -102,13 +102,14 @@ dependencies = {
     "pygments",
     "pyparsing",
     "swig",
-    "unittest2",
+    "traits",
+    # Avoiding traitsui 7.1.0 for now due to private imports
+    # in test suite (see enthought/enable#425)
+    "traitsui==7.0.1-1",
+    "pyface==7.0.1-1",
     "pypdf2",
     "swig",
-    # required by some demos
-    "chaco",
-    "mayavi",
-    "scipy",
+    "unittest2",
 }
 
 extra_dependencies = {
@@ -162,13 +163,15 @@ def install(runtime, toolkit, pillow, environment):
         "edm install -y -e {environment} {packages}",
         "edm run -e {environment} -- pip install {pillow}",
         ("edm run -e {environment} -- pip install -r ci/requirements.txt"
-         " --no-dependencies --force-reinstall"),
+         " --no-dependencies"),
     ]
 
     # pip install pyqt5, because we don't have it in EDM yet
     if toolkit == 'pyqt5':
         commands.append("edm run -e {environment} -- pip install pyqt5==5.9.2")
 
+    # No matter happens before, always install local source again or
+    # we risk testing against an released enable.
     commands.append(
         "edm run -e {environment} -- "
         "pip install --force-reinstall --no-dependencies " + ROOT

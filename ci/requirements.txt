@@ -4,7 +4,3 @@ fonttools==3.28.0
 reportlab<=3.1
 kiwisolver ; python_version <= "2.7"
 https://bitbucket.org/pyglet/pyglet/get/pyglet-1.1.4.zip ; python_version <= "2.7"
-traits==6.1.1
-traitsui==7.0.1
-pyface==7.0.1
-apptools==4.5.0
