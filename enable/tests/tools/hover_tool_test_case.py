@@ -23,7 +23,7 @@ if GuiTestAssistant.__name__ == "Unimplemented":
 
     # ensure null toolkit has an inheritable GuiTestAssistant
     # Note that without this definition, the test case fails as soon as it
-    # is instantiated, before it can be s
+    # is instantiated, before it can be skipped.
     class GuiTestAssistant(object):
         pass
 
