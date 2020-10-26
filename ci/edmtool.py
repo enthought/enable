@@ -54,8 +54,8 @@ using::
 
     python edmtool.py test_all
 
-Currently supported runtime values are ``2.7`` and ``3.5``, and currently
-supported toolkits are ``null``, ``pyqt``, and ``wx``.  Not all
+Currently supported runtime value is `3.6``, and currently
+supported toolkits are ``null``, ``pyqt``, and ``pyqt5``.  Not all
 combinations of toolkits and runtimes will work, but the tasks will fail with
 a clear error if that is the case.
 
@@ -146,7 +146,7 @@ def cli():
 
 
 @cli.command()
-@click.option('--runtime', default='3.5')
+@click.option('--runtime', default='3.6')
 @click.option('--toolkit', default='null')
 @click.option('--pillow', default='pillow')
 @click.option('--environment', default=None)
@@ -183,7 +183,7 @@ def install(runtime, toolkit, pillow, environment):
 
 
 @cli.command()
-@click.option('--runtime', default='3.5')
+@click.option('--runtime', default='3.6')
 @click.option('--toolkit', default='null')
 @click.option('--pillow', default='pillow')
 @click.option('--environment', default=None)
@@ -211,7 +211,7 @@ def test(runtime, toolkit, pillow, environment):
 
 
 @cli.command()
-@click.option('--runtime', default='3.5')
+@click.option('--runtime', default='3.6')
 @click.option('--toolkit', default='null')
 @click.option('--pillow', default='pillow')
 @click.option('--environment', default=None)
@@ -230,7 +230,7 @@ def cleanup(runtime, toolkit, pillow, environment):
 
 
 @cli.command()
-@click.option('--runtime', default='3.5')
+@click.option('--runtime', default='3.6')
 @click.option('--toolkit', default='null')
 @click.option('--pillow', default='pillow')
 def test_clean(runtime, toolkit, pillow):
@@ -248,7 +248,7 @@ def test_clean(runtime, toolkit, pillow):
 
 
 @cli.command()
-@click.option('--runtime', default='3.5')
+@click.option('--runtime', default='3.6')
 @click.option('--toolkit', default='null')
 @click.option('--pillow', default='pillow')
 @click.option('--environment', default=None)
