@@ -54,8 +54,8 @@ using::
 
     python edmtool.py test_all
 
-Currently supported runtime values are ``2.7`` and ``3.5``, and currently
-supported toolkits are ``null``, ``pyqt``, and ``wx``.  Not all
+Currently supported runtime value is `3.6``, and currently
+supported toolkits are ``null``, ``pyqt``, and ``pyqt5``.  Not all
 combinations of toolkits and runtimes will work, but the tasks will fail with
 a clear error if that is the case.
 
