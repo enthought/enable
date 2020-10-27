@@ -48,7 +48,13 @@ before_install:
   - export PATH="${HOME}/edm/bin:/usr/lib/ccache:${PATH}"
   - edm install -y wheel click coverage
 install:
-  - for toolkit in ${TOOLKITS}; do edm run -- python ci/edmtool.py install --runtime=${RUNTIME} --toolkit=${toolkit} --pillow=${PILLOW} || exit; done
+  - for toolkit in ${TOOLKITS}; do
+        if [[ ${TRAVIS_EVENT_TYPE} == "cron" ]] ; then
+          edm run -- python ci/edmtool.py install --runtime=${RUNTIME} --toolkit=${toolkit} --pillow=${PILLOW} --source || exit;
+        else
+          edm run -- python ci/edmtool.py install --runtime=${RUNTIME} --toolkit=${toolkit} --pillow=${PILLOW} || exit;
+        fi;
+    done
 script:
   - for toolkit in ${TOOLKITS}; do edm run -- python ci/edmtool.py test --runtime=${RUNTIME} --toolkit=${toolkit} --pillow=${PILLOW} || exit; done
 
