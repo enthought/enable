@@ -122,7 +122,7 @@ source_dependencies = {
 
 extra_dependencies = {
     'pyqt': {'pyqt'},
-    'pyqt5': set(),
+    'pyqt5': {'pyqt5'},
     # XXX once wxPython 4 is available in EDM, we will want it here
     "wx": set(),
     'null': set()
@@ -183,10 +183,7 @@ def install(runtime, toolkit, pillow, environment, source):
          " --no-dependencies"),
     ]
 
-    # pip install pyqt5, because we don't have it in EDM yet
-    if toolkit == 'pyqt5':
-        commands.append("edm run -e {environment} -- pip install pyqt5==5.9.2")
-    elif toolkit == "wx":
+    if toolkit == "wx":
         if sys.platform == "darwin":
             commands.append(
                 "edm run -e {environment} -- python -m pip install wxPython<4.1"  # noqa: E501
