@@ -5,7 +5,7 @@ except ImportError:
 import nose
 from unittest import skipIf
 
-from traitsui.tests._tools import is_null
+from traits.etsconfig.api import ETSConfig
 
 from enable.component import Component
 from enable.testing import EnableTestAssistant, _MockWindow
@@ -41,7 +41,7 @@ def test_mouse_dclick():
     component.normal_left_dclick.assert_called_once()
 
 
-@skipIf(is_null(), "Test not working on the 'null' backend")
+@skipIf(ETSConfig.toolkit == "null", "Skipping null tookit")
 def test_mouse_move_real_window():
     from enable.api import Window
 
@@ -61,7 +61,7 @@ def test_mouse_move_real_window():
     # try to set the pointer position
 
 
-@skipIf(is_null(), "Test not working on the 'null' backend")
+@skipIf(ETSConfig.toolkit == "null", "Skipping null tookit")
 def test_mouse_move_real_window_mocked_position():
     from enable.api import Window
 
