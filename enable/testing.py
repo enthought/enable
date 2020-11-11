@@ -169,7 +169,8 @@ class EnableTestAssistant(KivaTestAssistant):
         return event
 
     def mouse_down(self, interactor, x, y, button='left', window=None,
-                   alt_down=False, control_down=False, shift_down=False):
+                   alt_down=False, control_down=False, shift_down=False,
+                   dclick=False):
         """ Send a mouse button down event to the interactor.
 
         Parameters
@@ -202,6 +203,9 @@ class EnableTestAssistant(KivaTestAssistant):
             The button is pressed while `shift` is down. Default value is
             False.
 
+        dclick : boolean, optional
+            If True, 'dclick' event is dispatched instead of single mouse down
+
         Returns
         -------
         event : MouseEvent
@@ -216,8 +220,9 @@ class EnableTestAssistant(KivaTestAssistant):
                             '{0}_down'.format(button): True,
                             'window': window}
         event = self.create_mouse_event(**event_attributes)
+        kind = 'dclick' if dclick else 'down'
         self._mouse_event_dispatch(interactor, event,
-                                   '{0}_down'.format(button))
+                                   '{0}_{1}'.format(button, kind))
         return event
 
     def mouse_move(self, interactor, x, y, window=None,
