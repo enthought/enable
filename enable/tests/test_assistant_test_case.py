@@ -37,7 +37,7 @@ def test_mouse_dclick():
     test_assistant = EnableTestAssistant()
     component = Component(bounds=[100, 200])
     component.normal_left_dclick = mock.Mock()
-    test_assistant.mouse_down(component, x=0, y=0, dclick=True)
+    test_assistant.mouse_dclick(component, x=0, y=0)
     component.normal_left_dclick.assert_called_once()
 
 
