@@ -3,8 +3,9 @@ try:
 except ImportError:
     import mock
 import nose
+from unittest import skipIf
 
-from traitsui.tests._tools import skip_if_null
+from traits.etsconfig.api import ETSConfig
 
 from enable.component import Component
 from enable.testing import EnableTestAssistant, _MockWindow
@@ -23,7 +24,24 @@ def test_mouse_move():
     assert not event.shift_down
     nose.tools.assert_equal(event.window.get_pointer_position(), (10, 20))
 
-@skip_if_null
+
+def test_mouse_down():
+    test_assistant = EnableTestAssistant()
+    component = Component(bounds=[100, 200])
+    component.normal_left_down = mock.Mock()
+    test_assistant.mouse_down(component, x=0, y=0)
+    component.normal_left_down.assert_called_once()
+
+
+def test_mouse_dclick():
+    test_assistant = EnableTestAssistant()
+    component = Component(bounds=[100, 200])
+    component.normal_left_dclick = mock.Mock()
+    test_assistant.mouse_dclick(component, x=0, y=0)
+    component.normal_left_dclick.assert_called_once()
+
+
+@skipIf(ETSConfig.toolkit == "null", "Skipping null tookit")
 def test_mouse_move_real_window():
     from enable.api import Window
 
@@ -42,7 +60,8 @@ def test_mouse_move_real_window():
     # can't test pointer position, not set, but if we get here it didn't
     # try to set the pointer position
 
-@skip_if_null
+
+@skipIf(ETSConfig.toolkit == "null", "Skipping null tookit")
 def test_mouse_move_real_window_mocked_position():
     from enable.api import Window
 
@@ -50,7 +69,7 @@ def test_mouse_move_real_window_mocked_position():
     component = Component(bounds=[100, 200])
 
     with mock.patch.object(Window, 'get_pointer_position',
-                            return_value=None):
+                           return_value=None):
         window = Window(None, component=component)
         event = test_assistant.mouse_move(component, 10, 20, window)
 
