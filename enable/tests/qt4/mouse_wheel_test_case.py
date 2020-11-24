@@ -2,7 +2,7 @@
 from unittest import TestCase
 
 from traits.api import Any
-from traitsui.tests._tools import skip_if_not_qt4
+from enable.tests._testing import skip_if_not_qt4
 
 from enable.container import Container
 from enable.base_tool import BaseTool

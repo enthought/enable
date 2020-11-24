@@ -8,7 +8,7 @@ from traits.trait_types import Any
 from traitsui.item import Item
 from traitsui.view import View
 
-from traitsui.tests._tools import get_dialog_size, skip_if_null
+from enable.tests._testing import get_dialog_size, skip_if_null
 
 ITEM_WIDTH, ITEM_HEIGHT = 700, 200
 

@@ -15,7 +15,7 @@ from enable.component import Component
 from enable.testing import EnableTestAssistant
 from enable.tools.hover_tool import HoverTool
 
-from traitsui.tests._tools import skip_if_null
+from enable.tests._testing import skip_if_null
 
 
 GuiTestAssistant = toolkit_object('util.gui_test_assistant:GuiTestAssistant')
