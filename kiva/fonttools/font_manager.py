@@ -687,7 +687,7 @@ def createFontList(fontfiles, fontext='ttf'):
     #  Add fonts from list of known font files.
     seen = {}
 
-    font_entry_err_msg = "Could not covert font to FontEntry for file %s"
+    font_entry_err_msg = "Could not convert font to FontEntry for file %s"
 
     for fpath in fontfiles:
         logger.debug("createFontDict %s", fpath)
