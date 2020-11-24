@@ -3,12 +3,10 @@ try:
 except ImportError:
     import mock
 import nose
-from unittest import skipIf
-
-from traits.etsconfig.api import ETSConfig
 
 from enable.component import Component
 from enable.testing import EnableTestAssistant, _MockWindow
+from enable.tests._testing import skip_if_null
 
 
 def test_mouse_move():
@@ -41,7 +39,7 @@ def test_mouse_dclick():
     component.normal_left_dclick.assert_called_once()
 
 
-@skipIf(ETSConfig.toolkit == "null", "Skipping null tookit")
+@skip_if_null
 def test_mouse_move_real_window():
     from enable.api import Window
 
@@ -61,7 +59,7 @@ def test_mouse_move_real_window():
     # try to set the pointer position
 
 
-@skipIf(ETSConfig.toolkit == "null", "Skipping null tookit")
+@skip_if_null
 def test_mouse_move_real_window_mocked_position():
     from enable.api import Window
 
