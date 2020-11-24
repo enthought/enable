@@ -103,10 +103,8 @@ dependencies = {
     "pyparsing",
     "swig",
     "traits",
-    # Avoiding traitsui 7.1.0 for now due to private imports
-    # in test suite (see enthought/enable#425)
-    "traitsui==7.0.1-1",
-    "pyface==7.0.1-1",
+    "traitsui",
+    "pyface",
     "pypdf2",
     "swig",
     "unittest2",

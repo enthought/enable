@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import sys
 
-from traitsui.tests._tools import skip_if_not_wx
+from kiva.tests._testing import skip_if_not_wx
 
 
 def test_quartz_importable():
