@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 import unittest
 
-from enable.tests._testing import skip_if_not_qt4
+from enable.tests._testing import skip_if_not_qt
 from pyface.gui import GUI
 
 from enable.container import Container
@@ -13,7 +13,7 @@ except Exception:
     NativeScrollBar = None
 
 
-@skip_if_not_qt4
+@skip_if_not_qt
 class ScrollBarTest(unittest.TestCase):
 
     def setUp(self):
