@@ -111,12 +111,14 @@ dependencies = {
 }
 
 # Dependencies we install from source for cron tests
-source_dependencies = {
+# Order from packages with the most dependencies to one with the least
+# dependencies. Packages are forced re-installed in this order.
+source_dependencies = [
     "apptools",
+    "traitsui",
     "pyface",
     "traits",
-    "traitsui",
-}
+]
 
 extra_dependencies = {
     'pyqt': {'pyqt'},
@@ -196,13 +198,6 @@ def install(runtime, toolkit, pillow, environment, source):
                 "edm run -e {environment} -- python -m pip install wxPython"
             )
 
-    # No matter happens before, always install local source again or
-    # we risk testing against an released enable.
-    commands.append(
-        "edm run -e {environment} -- "
-        "pip install --force-reinstall --no-dependencies " + ROOT
-    )
-
     click.echo("Creating environment '{environment}'".format(**parameters))
     execute(commands, parameters)
 
@@ -217,14 +212,25 @@ def install(runtime, toolkit, pillow, environment, source):
         source_pkgs = [
             github_url_fmt.format(pkg) for pkg in source_dependencies
         ]
+        # Without the --no-dependencies flag such that new dependencies on
+        # master are brought in.
         commands = [
-            "python -m pip install {pkg} --no-deps".format(pkg=pkg)
+            "python -m pip install --force-reinstall {pkg}".format(pkg=pkg)
             for pkg in source_pkgs
         ]
         commands = [
             "edm run -e {environment} -- " + command for command in commands
         ]
         execute(commands, parameters)
+
+    # No matter what happens before, always install local source again with no
+    # dependencies or we risk testing against an released enable.
+    install_local = (
+        "edm run -e {environment} -- "
+        "pip install --force-reinstall --no-dependencies " + ROOT
+    )
+    execute([install_local], parameters)
+
     click.echo('Done install')
 
 
