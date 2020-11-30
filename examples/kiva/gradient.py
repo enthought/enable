@@ -1,8 +1,9 @@
+import tempfile
+
 from numpy import array, pi
 
 from enable.api import ConstraintsContainer
 from enable.example_support import DemoFrame, demo_main
-from enable.kiva_graphics_context import GraphicsContext
 from enable.primitives.image import Image
 from kiva import constants
 from kiva.image import GraphicsContext
@@ -17,38 +18,38 @@ def draw(gc):
 
     # diagonal
     with gc:
-        gc.rect(50,25,150,100)
-        gc.linear_gradient(50,25,150,125,
+        gc.rect(50, 25, 150, 100)
+        gc.linear_gradient(50, 25, 150, 125,
                            array([starting_color, ending_color]),
                            "pad")
         gc.draw_path(constants.FILL)
 
     # vertical top to bottom
     with gc:
-        gc.rect(50,150,150,50)
-        gc.linear_gradient(0,200, 0,150,
+        gc.rect(50, 150, 150, 50)
+        gc.linear_gradient(0, 200, 0, 150,
                            array([starting_color, ending_color]),
                            "pad")
         gc.draw_path(constants.FILL)
     # horizontal left to right
     with gc:
-        gc.rect(50,200,150,50)
-        gc.linear_gradient(50,0, 150,0,
+        gc.rect(50, 200, 150, 50)
+        gc.linear_gradient(50, 0, 150, 0,
                            array([starting_color, ending_color]),
                            "pad")
         gc.draw_path(constants.FILL)
 
     # vertical bottom to top
     with gc:
-        gc.rect(50,275,150,50)
-        gc.linear_gradient(0,275, 0,325,
+        gc.rect(50, 275, 150, 50)
+        gc.linear_gradient(0, 275, 0, 325,
                            array([starting_color, ending_color]),
                            "pad")
         gc.draw_path(constants.FILL)
     # horizontal right to left
     with gc:
-        gc.rect(50,325,150,50)
-        gc.linear_gradient(200,0, 100,0,
+        gc.rect(50, 325, 150, 50)
+        gc.linear_gradient(200, 0, 100, 0,
                            array([starting_color, ending_color]),
                            "pad")
         gc.draw_path(constants.FILL)
@@ -104,7 +105,7 @@ class Demo(DemoFrame):
             image.top == container.contents_top,
             image.bottom == container.contents_bottom,
             image.layout_width == ratio * image.layout_height,
-            ]
+        ]
         return container
 
 
