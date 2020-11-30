@@ -13,6 +13,7 @@ def _fixup_path_methods(path):
 
     path.__class__.AddRoundedRectangleEx = _new_add_rounded_rectangle
 
+
 class AbstractGradientBrush(object):
     """ Abstract base class for gradient brushes so they can be detected easily.
     """
@@ -56,7 +57,7 @@ class Renderer(NullRenderer):
 
     @staticmethod
     def createAffineMatrix(a,b,c,d,x,y):
-        return wx.GraphicsRenderer_GetDefaultRenderer().CreateMatrix(a,b,c,d,x,y)
+        return wx.GraphicsRenderer.GetDefaultRenderer().CreateMatrix(a,b,c,d,x,y)
 
     @staticmethod
     def createBrush(color_tuple):
@@ -64,7 +65,7 @@ class Renderer(NullRenderer):
 
     @staticmethod
     def createNativePen(pen):
-        return wx.GraphicsRenderer_GetDefaultRenderer().CreatePen(pen)
+        return wx.GraphicsRenderer.GetDefaultRenderer().CreatePen(pen)
 
     @staticmethod
     def createPen(color_tuple):
@@ -81,23 +82,23 @@ class Renderer(NullRenderer):
             color = wx.Colour(red*255, green*255, blue*255, opacity*255)
             return offset, color
 
-        if wx.VERSION > (2,9):        
+        if wx.VERSION[:2] > (2,9):
             # wxPython 2.9+ supports a collection of stops
             wx_stops = wx.GraphicsGradientStops()
             for stop in stops:
                 offset, color = convert_stop(stop)
                 wx_stops.Add(color, offset)
-        
+
             wx_renderer = wx.GraphicsRenderer.GetDefaultRenderer()
             return wx_renderer.CreateLinearGradientBrush(x1, y1, x2, y2, wx_stops)
-        
-        else:        
+
+        else:
             if len(stops) > 2:
                 warnings.warn("wxPython 2.8 only supports 2 gradient stops, but %d were specified" % len(stops))
-    
+
             start_offset, start_color = convert_stop(stops[0])
             end_offset, end_color = convert_stop(stops[1])
-    
+
             wx_renderer = wx.GraphicsRenderer.GetDefaultRenderer()
             return wx_renderer.CreateLinearGradientBrush(x1, y1, x2, y2,
                                                          start_color, end_color)
@@ -115,13 +116,13 @@ class Renderer(NullRenderer):
             color = wx.Colour(red*255, green*255, blue*255, opacity*255)
             return offset, color
 
-        if wx.VERSION > (2,9):        
+        if wx.VERSION[:2] > (2,9):
             # wxPython 2.9+ supports a collection of stops
             wx_stops = wx.GraphicsGradientStops()
             for stop in stops:
                 offset, color = convert_stop(stop)
                 wx_stops.Add(color, offset)
-    
+
             wx_renderer = wx.GraphicsRenderer.GetDefaultRenderer()
             return wx_renderer.CreateRadialGradientBrush(fx, fy, cx, cy, r, wx_stops)
 
@@ -129,15 +130,15 @@ class Renderer(NullRenderer):
 
             if len(stops) > 2:
                 warnings.warn("wxPython 2.8 only supports 2 gradient stops, but %d were specified" % len(stops))
-    
+
             start_offset, start_color = convert_stop(stops[0])
             end_offset, end_color = convert_stop(stops[-1])
-    
+
             if fx is None:
                 fx = cx
             if fy is None:
                 fy = cy
-    
+
             wx_renderer = wx.GraphicsRenderer.GetDefaultRenderer()
             return wx_renderer.CreateRadialGradientBrush(fx, fy, cx, cy, r,
                                                          start_color, end_color)
@@ -156,11 +157,11 @@ class Renderer(NullRenderer):
 
     @staticmethod
     def makeMatrix(*args):
-        return wx.GraphicsRenderer_GetDefaultRenderer().CreateMatrix(*args)
+        return wx.GraphicsRenderer.GetDefaultRenderer().CreateMatrix(*args)
 
     @staticmethod
     def makePath():
-        path = wx.GraphicsRenderer_GetDefaultRenderer().CreatePath()
+        path = wx.GraphicsRenderer.GetDefaultRenderer().CreatePath()
         _fixup_path_methods(path)
         return path
 

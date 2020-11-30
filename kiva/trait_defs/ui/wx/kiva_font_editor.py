@@ -41,11 +41,11 @@ class ToolkitEditorFactory ( EditorFactory ):
     #   Returns a Font's 'face name':
     #---------------------------------------------------------------------------
 
-    def face_name ( self, font ):
+    def face_name(self, font):
         """ Returns a Font's typeface name.
         """
         face_name = font.face_name
-        if type( face_name ) in SequenceTypes:
+        if isinstance(face_name, SequenceTypes):
             face_name = face_name[0]
 
         return face_name
@@ -107,7 +107,7 @@ class ToolkitEditorFactory ( EditorFactory ):
 
         weight    = { kc.BOLD:   ' Bold'   }.get( font.weight, '' )
         style     = { kc.ITALIC: ' Italic' }.get( font.style,  '' )
-        underline = [ '', ' Underline' ][ font.underline != 0 ]
+        underline = ' Underline' if font.underline != 0 else ''
 
         return '%s point %s%s%s%s' % (
                font.size, self.face_name( font ), style, weight, underline )
@@ -116,11 +116,11 @@ class ToolkitEditorFactory ( EditorFactory ):
     #  Returns a list of all available font facenames:
     #---------------------------------------------------------------------------
 
-    def all_facenames ( self ):
+    def all_facenames(self):
         """ Returns a list of all available font typeface names.
         """
-        facenames = list(fontManager.ttfdict.keys())
-        return facenames
+        return sorted({f.name for f in fontManager.ttflist})
 
-def KivaFontEditor (*args, **traits):
+
+def KivaFontEditor(*args, **traits):
     return ToolkitEditorFactory (*args, **traits)
