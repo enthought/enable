@@ -30,7 +30,6 @@ class EnableGCMixin(object):
         if "window" in kwargs:
             self.window = kwargs.pop("window")
         super(EnableGCMixin, self).__init__(*args, **kwargs)
-        return
 
     def clip_to_rect(self, x, y, width, height):
         if getattr(self, "corner_pixel_origin", True):
@@ -44,7 +43,6 @@ class EnableGCMixin(object):
         self.clip_to_rect(*bounds)
         self.set_fill_color(color)
         self.draw_rect(bounds, FILL)
-        return
 
     def clear_clip_region(self, color, update_region):
         "Clip and clear a Kiva graphics context to a specified region and color"
@@ -56,7 +54,6 @@ class EnableGCMixin(object):
             self.begin_path()
             self.rect(*bounds)
         self.fill_path()
-        return
 
     def alpha(self, alpha):
         raise NotImplementedError(
@@ -79,7 +76,7 @@ class EnableGCMixin(object):
                     self.draw_image(image,(x0, y, idx, idy))
                     x0 += idx
                 y += idy
-        return
+
 
 # Define a GraphicsContextEnable that subclasses whatever the Kiva backend's
 # GraphicsContext is.

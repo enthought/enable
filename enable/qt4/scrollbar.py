@@ -119,7 +119,6 @@ class NativeScrollBar(Component):
             self._control.hide()
             self._control.deleteLater()
             self._control = None
-        return
 
     def __del__(self):
         # Pray that we do not participate in a cycle.
@@ -246,22 +245,18 @@ class NativeScrollBar(Component):
         self.scroll_position = max(min(self.scroll_position, high-page_size), low)
         self._scroll_updated = True
         self.request_redraw()
-        return
 
     def _range_items_changed(self):
         self._range_changed()
-        return
 
     def _mouse_wheel_changed(self, event):
         # FIXME: convert to Qt.
         event.handled  = True
         self.scroll_position += (event.mouse_wheel * self.range[3] * self.mouse_wheel_speed)
-        return
 
     def _scroll_position_changed(self):
         self._scroll_updated = True
         self.request_redraw()
-        return
 
     def _bounds_changed(self, old, new):
         super(NativeScrollBar, self)._bounds_changed(old, new)

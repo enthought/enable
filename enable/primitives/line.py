@@ -53,7 +53,6 @@ class Line(Component):
         self.points = []
         self.event_state = 'normal'
         self.updated = self
-        return
 
     #--------------------------------------------------------------------------
     # 'Component' interface
@@ -82,8 +81,6 @@ class Line(Component):
                 # Draw the vertices.
                 self._draw_points(gc)
 
-        return
-
     #--------------------------------------------------------------------------
     # Private interface
     #--------------------------------------------------------------------------
@@ -109,4 +106,3 @@ class Line(Component):
                     for x, y in offset_points:
                         gc.draw_rect((x-offset, y-offset,
                                      self.vertex_size, self.vertex_size), FILL)
-        return

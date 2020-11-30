@@ -62,7 +62,6 @@ class Window(BaseWindow):
             wdc.DrawBitmap(bmp, 0, 0)
 
         control._dc = None
-        return
 
 
 def font_metrics_provider():

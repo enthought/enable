@@ -107,7 +107,6 @@ class Container(Component):
         if 'intercept_events' in traits:
             warnings.warn("'intercept_events' is a deprecated trait",
                     warnings.DeprecationWarning)
-        return
 
     def add(self, *components):
         """ Adds components to this container """
@@ -170,7 +169,6 @@ class Container(Component):
         ndx = c.index(component)
         if len(c) > 1 and ndx != len(c) - 1:
             self._components = c[:ndx] + c[ndx+1:] + [component]
-        return
 
     def lower_component(self, component):
         """ Puts the indicated component to the very bottom of the Z-order """
@@ -183,7 +181,6 @@ class Container(Component):
         if self._components:
             for component in self._components:
                 component.cleanup(window)
-        return
 
     def compact(self):
         """
@@ -208,7 +205,6 @@ class Container(Component):
             self.position = [self.x + ll_x, self.y + ll_y]
 
         self.bounds = [ur_x - ll_x, ur_y - ll_y]
-        return
 
     #------------------------------------------------------------------------
     # Protected methods
@@ -281,8 +277,6 @@ class Container(Component):
             my_handler = getattr(self, "_draw_container_" + layer, None)
             if my_handler:
                 my_handler(gc, view_bounds, mode)
-
-        return
 
     def _draw_container(self, gc, mode="default"):
         "Draw the container background in a specified graphics context"
@@ -384,7 +378,6 @@ class Container(Component):
         warnings.warn("Containter._draw_overlays is deprecated.")
         for component in self.overlays:
             component.overlay(component, gc, view_bounds, mode)
-        return
 
     #------------------------------------------------------------------------
     # Property setters & getters
@@ -526,10 +519,6 @@ class Container(Component):
             if not event.handled:
                 self._container_handle_mouse_event(event, suffix)
 
-        return
-
-
-
     #------------------------------------------------------------------------
     # Event handlers
     #------------------------------------------------------------------------
@@ -540,7 +529,6 @@ class Container(Component):
             self.compact()
         else:
             pass
-        return
 
     def _window_resized(self, newsize):
         if newsize is not None:
@@ -556,7 +544,6 @@ class Container(Component):
                                              "resized", remove=True)
             else:
                 self._window.on_trait_change(self._window_resized, "resized")
-        return
 
     def _bounds_changed(self, old, new):
         # crappy... calling our parent's handler seems like a common traits
@@ -599,7 +586,6 @@ class Container(Component):
             self._draw_underlay(gc, view_bounds, mode)
             self._draw_children(gc, view_bounds, mode) #This was children_draw_mode
             self._draw_overlays(gc, view_bounds, mode)
-        return
 
     def _draw_children(self, gc, view_bounds=None, mode="normal"):
 
@@ -618,4 +604,3 @@ class Container(Component):
                         continue
                 with gc:
                     component.draw(gc, new_bounds, mode)
-        return

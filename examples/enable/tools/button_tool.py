@@ -66,7 +66,7 @@ class SelectableBox(Box):
                     gc.set_stroke_color(border_color)
                     gc.set_line_width(bs)
                     gc.draw_rect((x + bsh, y + bsh, dx - bs, dy - bs), STROKE)
-        return
+
 
 class MyFrame(DemoFrame):
     """ Example of using a ButtonTool

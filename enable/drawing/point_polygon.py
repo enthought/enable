@@ -24,7 +24,6 @@ class PointPolygon(DrawingTool):
     def reset(self):
         self.polygon.model.reset()
         self.event_state = "normal"
-        return
 
     #------------------------------------------------------------------------
     # "complete" state
@@ -34,7 +33,6 @@ class PointPolygon(DrawingTool):
         """ Draw a closed polygon. """
         self.polygon.border_dash = None
         self.polygon._draw_closed(gc)
-        return
 
     def complete_left_down(self, event):
         """ Handle the left mouse button coming up in the 'complete' state. """
@@ -57,7 +55,6 @@ class PointPolygon(DrawingTool):
                     self.event_state = 'drag_point'
 
                 self.request_redraw()
-        return
 
     def complete_mouse_move(self, event):
         """ Handle the mouse moving in the 'complete' state. """
@@ -73,7 +70,6 @@ class PointPolygon(DrawingTool):
             event.handled = False
             event.window.set_pointer('arrow')
         self.request_redraw()
-        return
 
     #------------------------------------------------------------------------
     # "drag_point" state
@@ -82,13 +78,11 @@ class PointPolygon(DrawingTool):
     def drag_point_draw(self, gc):
         """ Draw the polygon in the 'drag_point' state. """
         self.complete_draw(gc)
-        return
 
     def drag_point_left_up(self, event):
         """ Handle the left mouse coming up in the 'drag_point' state. """
         self.event_state = 'complete'
         self.request_redraw()
-        return
 
     def drag_point_mouse_move(self, event):
         """ Handle the mouse moving in the 'drag_point' state. """
@@ -101,7 +95,6 @@ class PointPolygon(DrawingTool):
             polygon.model.points[self._dragged] = \
                 (event.x + self.x, event.y - self.y)
             self.request_redraw()
-        return
 
     #------------------------------------------------------------------------
     # "incomplete" state
@@ -111,7 +104,6 @@ class PointPolygon(DrawingTool):
         """ Draw the polygon in the 'incomplete' state. """
         self.polygon.border_dash = (4.0, 2.0)
         self.polygon._draw_open(gc)
-        return
 
     def incomplete_left_dclick(self, event):
         """ Handle a left double-click in the incomplete state. """
@@ -124,7 +116,6 @@ class PointPolygon(DrawingTool):
         self.complete = True
 
         self.request_redraw()
-        return
 
     def incomplete_left_up(self, event):
         """ Handle the left mouse button coming up in incomplete state. """
@@ -141,7 +132,6 @@ class PointPolygon(DrawingTool):
             self.polygon.model.points.append((event.x + self.x, event.y - self.y))
 
         self.request_redraw()
-        return
 
     def incomplete_mouse_move(self, event):
         """ Handle the mouse moving in incomplete state. """
@@ -156,7 +146,6 @@ class PointPolygon(DrawingTool):
             self.polygon.model.points[-1] = (event.x + self.x, event.y - self.y)
 
         self.request_redraw()
-        return
 
     #------------------------------------------------------------------------
     # "normal" state
@@ -172,12 +161,10 @@ class PointPolygon(DrawingTool):
         self.polygon.model.points.append(pt)
         self.polygon.model.points.append(pt)
         self.event_state = 'incomplete'
-        return
 
     def normal_mouse_move(self, event):
         """ Handle the mouse moving in the 'normal' state. """
         event.window.set_pointer('pencil')
-        return
 
     #------------------------------------------------------------------------
     # private methods

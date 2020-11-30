@@ -55,19 +55,16 @@ class Button(Component):
             self.draw_up(gc, view_bounds)
         else:
             self.draw_down(gc, view_bounds)
-        return
 
     def draw_up(self, gc, view_bounds):
         with gc:
             gc.set_fill_color(self.color_)
             self._draw_actual_button(gc)
-        return
 
     def draw_down(self, gc, view_bounds):
         with gc:
             gc.set_fill_color(self.down_color_)
             self._draw_actual_button(gc)
-        return
 
     def _draw_actual_button(self, gc):
         gc.set_stroke_color(self.border_color_)
@@ -114,20 +111,16 @@ class Button(Component):
             y_pos = self.y + (self.height-h-y)/2 + text_offset
             gc.show_text_at_point(self.label, x_pos, y_pos)
 
-        return
-
     def normal_left_down(self, event):
         self.button_state = "down"
         self.request_redraw()
         event.handled = True
-        return
 
     def normal_left_up(self, event):
         self.button_state = "up"
         self.request_redraw()
         self.perform(event)
         event.handled = True
-        return
 
     def _recompute_font_metrics(self):
         if self.label != "":
@@ -148,4 +141,3 @@ class SampleButtonButton(Button):
 
     def perform(self, event):
         print("this button is a sample")
-        return

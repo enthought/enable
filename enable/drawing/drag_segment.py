@@ -43,7 +43,6 @@ class DragSegment(DrawingTool):
         self.line.vertex_color = self.vertex_color
         self.line.points = []
         self.event_state = "normal"
-        return
 
     #------------------------------------------------------------------------
     # "complete" state
@@ -54,7 +53,6 @@ class DragSegment(DrawingTool):
         self.line.line_dash = None
         self.line._draw_mainlayer(gc)
         self.request_redraw()
-        return
 
     #------------------------------------------------------------------------
     # "drawing" state
@@ -63,7 +61,6 @@ class DragSegment(DrawingTool):
     def drawing_draw(self, gc):
         self.line.line_dash = (4.0, 2.0)
         self.line._draw_mainlayer(gc)
-        return
 
     def drawing_mouse_move(self, event):
         """ Handle the mouse moving in drawing state. """
@@ -71,7 +68,6 @@ class DragSegment(DrawingTool):
         self.line.points[-1] = (event.x, event.y)
         self.updated = self
         self.request_redraw()
-        return
 
     def drawing_left_up(self, event):
         """ Handle the left mouse button coming up in the 'drawing' state. """
@@ -79,7 +75,6 @@ class DragSegment(DrawingTool):
         event.window.set_pointer(self.complete_pointer)
         self.request_redraw()
         self.complete = True
-        return
 
     #------------------------------------------------------------------------
     # "normal" state
@@ -98,8 +93,6 @@ class DragSegment(DrawingTool):
         event.window.set_pointer(self.drawing_pointer)
 
         self.request_redraw()
-        return
 
     def normal_mouse_move(self, event):
         event.window.set_pointer(self.normal_pointer)
-        return

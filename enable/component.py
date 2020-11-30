@@ -395,7 +395,6 @@ class Component(CoordinateBox, Interactor):
         else:
             super(Component, self).__init__(**traits)
             self._set_padding_traits(padding, padding_traits)
-        return
 
     def draw(self, gc, view_bounds=None, mode="default"):
         """ Draws the plot component.
@@ -425,7 +424,6 @@ class Component(CoordinateBox, Interactor):
             self.do_layout()
 
         self._draw(gc, view_bounds, mode)
-        return
 
     def draw_select_box(self, gc, position, bounds, width, dash,
                         inset, color, bgcolor, marker_size):
@@ -494,8 +492,6 @@ class Component(CoordinateBox, Interactor):
                             marker_size, marker_size)
                 gc.draw_path()
 
-        return
-
     def get_absolute_coords(self, *coords):
         """ Given coordinates relative to this component's origin, returns
         the "absolute" coordinates in the frame of the top-level parent
@@ -541,7 +537,6 @@ class Component(CoordinateBox, Interactor):
             view.request_redraw()
 
         self._request_redraw()
-        return
 
     def invalidate_draw(self, damaged_regions=None, self_relative=False):
         """ Invalidates any backbuffer that may exist, and notifies our parents
@@ -566,7 +561,6 @@ class Component(CoordinateBox, Interactor):
 
         if self._window is not None:
             self._window.invalidate_draw(damaged_regions=damaged_regions, self_relative=True)
-        return
 
     def invalidate_and_redraw(self):
         """Convenience method to invalidate our contents and request redraw"""
@@ -591,7 +585,6 @@ class Component(CoordinateBox, Interactor):
         """When a window viewing or containing a component is destroyed,
         cleanup is called on the component to give it the opportunity to
         delete any transient state it may have (such as backbuffers)."""
-        return
 
     def set_outer_position(self, ndx, val):
         """
@@ -604,7 +597,6 @@ class Component(CoordinateBox, Interactor):
             self.outer_x = val
         else:
             self.outer_y = val
-        return
 
     def set_outer_bounds(self, ndx, val):
         """
@@ -617,7 +609,6 @@ class Component(CoordinateBox, Interactor):
             self.outer_width = val
         else:
             self.outer_height = val
-        return
 
     #------------------------------------------------------------------------
     # Layout-related concrete methods
@@ -650,7 +641,6 @@ class Component(CoordinateBox, Interactor):
         for overlay in self.overlays:
             if overlay.visible or overlay.invisible_layout:
                 overlay.do_layout()
-        return
 
     def get_preferred_size(self):
         """ Returns the size (width,height) that is preferred for this component
@@ -696,7 +686,6 @@ class Component(CoordinateBox, Interactor):
             self.container.request_redraw()
         elif self._window:
             self._window.redraw()
-        return
 
     def _default_damaged_regions(self):
         """Returns the default damaged regions for this Component.  This consists
@@ -778,8 +767,6 @@ class Component(CoordinateBox, Interactor):
             for layer in self.draw_order:
                 self._dispatch_draw(layer, gc, view_bounds, mode)
 
-        return
-
     def _dispatch_draw(self, layer, gc, view_bounds, mode):
         """ Renders the named *layer* of this component.
 
@@ -797,7 +784,6 @@ class Component(CoordinateBox, Interactor):
         handler = getattr(self, "_draw_" + layer, None)
         if handler:
             handler(gc, view_bounds, mode)
-        return
 
     def _draw_border(self, gc, view_bounds=None, mode="default",
                      force_draw=False):
@@ -867,15 +853,12 @@ class Component(CoordinateBox, Interactor):
             # Tell _draw_border to ignore the self.overlay_border
             self._draw_border(gc, view_bounds, mode, force_draw=True)
 
-        return
-
     def _draw_overlay(self, gc, view_bounds=None, mode="normal"):
         """ Draws the overlay layer of a component.
         """
         for overlay in self.overlays:
             if overlay.visible:
                 overlay.overlay(self, gc, view_bounds, mode)
-        return
 
     def _draw_underlay(self, gc, view_bounds=None, mode="normal"):
         """ Draws the underlay layer of a component.
@@ -885,7 +868,6 @@ class Component(CoordinateBox, Interactor):
             # just overlays drawn at a different time in the rendering loop.
             if underlay.visible:
                 underlay.overlay(self, gc, view_bounds, mode)
-        return
 
     def _get_visible_border(self):
         """ Helper function to return the amount of border, if visible """
@@ -919,8 +901,6 @@ class Component(CoordinateBox, Interactor):
             self._old_dispatch(event, suffix)
         else:
             self._new_dispatch(event, suffix)
-        return
-
 
     def _new_dispatch(self, event, suffix):
         """ Dispatches a mouse event
@@ -972,8 +952,6 @@ class Component(CoordinateBox, Interactor):
         if not event.handled:
             for tool in self.tools:
                 tool.dispatch(event, suffix)
-
-        return
 
     def _old_dispatch(self, event, suffix):
         """ Dispatches a mouse event.
@@ -1028,7 +1006,6 @@ class Component(CoordinateBox, Interactor):
             tool._activate()
 
         self.invalidate_and_redraw()
-        return
 
     def _get_layout_needed(self):
         return self._layout_needed
@@ -1094,19 +1071,16 @@ class Component(CoordinateBox, Interactor):
         self.trait_set(bounds=[new_w, new_h], trait_change_notify=notify)
         if new_pos:
             self.trait_set(position=new_pos, trait_change_notify=notify)
-        return
 
     def _bounds_changed(self, old, new):
         self._enforce_aspect_ratio(notify=True)
         if self.container is not None:
             self.container._component_bounds_changed(self)
-        return
 
     def _bounds_items_changed(self, event):
         self._enforce_aspect_ratio(notify=True)
         if self.container is not None:
             self.container._component_bounds_changed(self)
-        return
 
     def _container_changed(self, old, new):
         # We don't notify our container of this change b/c the
@@ -1174,7 +1148,6 @@ class Component(CoordinateBox, Interactor):
             self.padding_top = val[2]
             self.padding_bottom = val[3]
             self.trait_property_changed("padding", old_padding, val)
-        return
 
     def _get_hpadding(self):
         return 2*self._get_visible_border() + self.padding_right + \

@@ -41,8 +41,6 @@ class Box(Component):
                     self.outer_height)
             gc.stroke_path()
 
-        return
-
     def normal_key_pressed(self, event):
         print("Key:", event.character)
 
@@ -53,13 +51,11 @@ class Box(Component):
         self.offset_x = event.x - self.x
         self.offset_y = event.y - self.y
         event.handled = True
-        return
 
     def moving_mouse_move(self, event):
         self.position = [event.x - self.offset_x, event.y - self.offset_y]
         event.handled = True
         self.request_redraw()
-        return
 
     def moving_left_up(self, event):
         self.event_state = "normal"
@@ -67,12 +63,10 @@ class Box(Component):
         event.window.set_mouse_owner(None)
         event.handled = True
         self.request_redraw()
-        return
 
     def moving_mouse_leave(self, event):
         self.moving_left_up(event)
         event.handled = True
-        return
 
 
 class Demo(DemoFrame):

@@ -40,8 +40,6 @@ class Circle(Shape):
             # Draw the shape's text.
             self._draw_text(gc)
 
-        return
-
     # 'Circle' interface.
     #--------------------
 

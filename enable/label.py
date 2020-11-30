@@ -72,7 +72,6 @@ class Label(Component):
             kwtraits['text'] = text
         HasTraits.__init__(self, **kwtraits)
         self._bounding_box = [0,0]
-        return
 
     def _calc_line_positions(self, gc):
         if not self._position_cache_valid:
@@ -132,7 +131,6 @@ class Label(Component):
             self._line_ypos = y_pos
 
             self._position_cache_valid = True
-        return
 
     def get_width_height(self, gc):
         """ Returns the width and height of the label, in the rotated frame of
@@ -219,8 +217,6 @@ class Label(Component):
 
                 gc.show_text(line)
                 gc.translate_ctm(-x_offset, -y_offset)
-
-        return
 
     def _font_changed(self):
         self._position_cache_valid = False

@@ -59,8 +59,6 @@ class Shape(Component):
 
         print('normal_key_pressed', event.character)
 
-        return
-
     def normal_left_down(self, event):
         """ Event handler. """
 
@@ -79,8 +77,6 @@ class Shape(Component):
             if len(siblings) > 1:
                 siblings.remove(self)
                 siblings.append(self)
-
-        return
 
     def moving_mouse_move(self, event):
         """ Event handler. """
@@ -105,8 +101,6 @@ class Shape(Component):
         self.position = [left, bottom]
         self.request_redraw()
 
-        return
-
     def moving_left_up(self, event):
         """ Event handler. """
 
@@ -117,14 +111,10 @@ class Shape(Component):
 
         self.request_redraw()
 
-        return
-
     def moving_mouse_leave(self, event):
         """ Event handler. """
 
         self.moving_left_up(event)
-
-        return
 
     ###########################################################################
     # 'Shape' interface
@@ -170,8 +160,6 @@ class Shape(Component):
             gc.set_text_position(x+(dx-tw)/2, y+(dy-th)/2)
 
             gc.show_text(self.text)
-
-        return
 
     def _get_fill_color(self, event_state):
         """ Return the fill color based on the event state. """

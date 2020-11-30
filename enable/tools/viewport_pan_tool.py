@@ -62,7 +62,6 @@ class ViewportPanTool(DragTool):
         event.window.set_pointer(self.drag_pointer)
         event.window.set_mouse_owner(self, event.net_transform())
         event.handled = True
-        return
 
     def dragging(self, event):
         """ Handles the mouse being moved when the tool is in the 'panning'
@@ -96,7 +95,6 @@ class ViewportPanTool(DragTool):
 
         self._original_xy = (event.x, event.y)
         self.component.request_redraw()
-        return
 
     def drag_end(self, event):
         if self._auto_constrain:
@@ -106,4 +104,3 @@ class ViewportPanTool(DragTool):
         if event.window.mouse_owner == self:
             event.window.set_mouse_owner(None)
         event.handled = True
-        return

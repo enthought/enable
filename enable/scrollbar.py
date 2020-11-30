@@ -115,7 +115,6 @@ class ScrollBar ( Component ):
     def __low_set(self, low):
         ignore, high, page_size, line_size = self.range
         self.range =(low, high, page_size, line_size)
-        return
 
     def __high_get(self):
         return self.range[1]
@@ -151,7 +150,6 @@ class ScrollBar ( Component ):
         self._scrolling = self._zone = NO_SCROLL
         self._line_up_suffix = self._line_down_suffix = self._slider_suffix = ''
         self._style_changed(self.style)
-        return
 
     def _init_images(self):
         "One time initialization of the scrollbar images"
@@ -176,18 +174,15 @@ class ScrollBar ( Component ):
         h_width   = sm.reduce(lambda a, b: a + sb_image[b].width(),
                             [ 'aleft', 'aright' ], hs_width)
         h_height  = sb_image[ 'htrack' ].height()
-        return
 
     def _range_changed(self):
         "Handle any of the range elements values being changed"
         low, high, page_size, line_size = self.range
         self.position = max(min(self.position, high - page_size), low)
         self.redraw()
-        return
 
     def _position_changed(self):
         self.redraw()
-        return
 
     def _style_changed(self, style):
         "Handle the orientation style being changed"
@@ -203,7 +198,6 @@ class ScrollBar ( Component ):
             self.min_height     = self.max_height = h_height
             self.stretch_width  = 1.0
             self.stretch_height = 0.0
-        return
 
     def _draw(self, gc):
         "Draw the contents of the control"
@@ -212,7 +206,6 @@ class ScrollBar ( Component ):
                 self._draw_vertical(gc)
             else:
                 self._draw_horizontal(gc)
-        return
 
     def _draw_vertical(self, gc):
         "Draw a vertical scrollbar"
@@ -252,7 +245,6 @@ class ScrollBar ( Component ):
                                  (s_dy - vbottom_dy - vtop_dy - vmid_dy) / 2.0),
                                  dx, vmid_dy))
             self._info =(t_y, s_y, s_y + s_dy, u_y)
-        return
 
     def _draw_horizontal(self, gc):
         "Draw a horizontal scroll bar"
@@ -292,7 +284,6 @@ class ScrollBar ( Component ):
                                  (s_dx - hleft_dx - hright_dx - hmid_dx) / 2.0),
                                  y, hmid_dx, dy))
             self._info =(t_x, s_x, s_x + s_dx, r_x)
-        return
 
     def _get_zone(self, event):
         "Determine which scrollbar zone the mouse pointer is over"
@@ -320,7 +311,6 @@ class ScrollBar ( Component ):
                 return
             self.position = position
         setattr(self, self._event_name, True)
-        return
 
     def _set_zone_suffix(self, zone, suffix):
         "Set a particular zone's image suffix"
@@ -329,8 +319,6 @@ class ScrollBar ( Component ):
             if suffix_name != '':
                 setattr(self, suffix_name, suffix)
                 self.redraw()
-        return
-
 
     #---------------------------------------------------------------------------
     #  Handle mouse events:
@@ -360,11 +348,9 @@ class ScrollBar ( Component ):
                 self._scroll()
                 self._in_zone       = True
                 self.timer_interval = 0.5
-        return
 
     def _left_dclick_changed(self, event):
         self._left_down_changed(event)
-        return
 
     def _left_up_changed(self, event):
         event.handled = True
@@ -380,7 +366,6 @@ class ScrollBar ( Component ):
             if zone == NO_SCROLL:
                 self.window.mouse_owner = None
             self.scroll_done = True
-        return
 
     def _mouse_move_changed(self, event):
         event.handled = True
@@ -403,13 +388,11 @@ class ScrollBar ( Component ):
             self._set_zone_suffix(zone, '_over')
             self._zone = zone
             self.window.mouse_owner = [ self, None ][ zone == NO_SCROLL ]
-        return
 
     def _mouse_wheel_changed(self, event):
         "Scrolls when the mouse scroll wheel is spun"
         event.handled  = True
         self.position += (event.mouse_wheel * self.page_size) / 20
-        return
 
     def _timer_changed(self):
         "Handle timer events"
@@ -417,4 +400,3 @@ class ScrollBar ( Component ):
             self.timer_interval = 0.1
             if self._in_zone:
                 self._scroll()
-        return

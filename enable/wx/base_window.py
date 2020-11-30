@@ -55,7 +55,6 @@ class EnableTimer ( wx.Timer ):
     def __init__ ( self ):
         wx.Timer.__init__( self )
         self._work_list = []
-        return
 
     def schedule ( self, component, interval ):
         "Schedule a timer event for a specified component"
@@ -67,7 +66,6 @@ class EnableTimer ( wx.Timer ):
                 del work_list[i]
                 break
         self.reschedule( component, interval )
-        return
 
     def reschedule ( self, component, interval ):
         "Reshedule a recurring timer event for a component"
@@ -80,7 +78,6 @@ class EnableTimer ( wx.Timer ):
                 break
         else:
             work_list.append( new_item )
-        return
 
     def cancel ( self, component ):
         "Cancel any pending timer events for a component"
@@ -107,7 +104,6 @@ class EnableTimer ( wx.Timer ):
             for component, interval, ignore in reschedule:
                 self.reschedule( component, interval )
                 component.timer = True
-        return
 
 
 class LessSuckyDropTarget(PythonDropTarget):
@@ -213,8 +209,6 @@ class BaseWindow(AbstractWindow):
         # here to initialize our bounds.
         self._on_size(None)
 
-        return
-
     def _create_control(self, parent, wid, pos=wx.DefaultPosition, size=wx.DefaultSize):
         if parent is None:
             # pab hack in order to avoid that the wx.Window crash!
@@ -252,7 +246,6 @@ class BaseWindow(AbstractWindow):
             self.component.parent = None
             self.component.window = None
             self.component = None
-        return
 
     def _flip_y ( self, y ):
         "Convert from a Kiva to a wxPython y coordinate"
@@ -282,21 +275,18 @@ class BaseWindow(AbstractWindow):
                 self.component.outer_height = dy
 
         self.control.Refresh()
-        return
 
     def _capture_mouse ( self ):
         "Capture all future mouse events"
         if not self._mouse_captured:
             self._mouse_captured = True
             self.control.CaptureMouse()
-        return
 
     def _release_mouse ( self ):
         "Release the mouse capture"
         if self._mouse_captured:
             self._mouse_captured = False
             self.control.ReleaseMouse()
-        return
 
     def _on_key_pressed(self, event):
         handled = self._handle_key_event('key_pressed', event)
@@ -420,7 +410,6 @@ class BaseWindow(AbstractWindow):
             rect.SetHeight( int( yt - yb ) )
             if self.control:
                 self.control.Refresh(False, rect)
-        return
 
     def _get_control_size ( self ):
         "Get the size of the underlying toolkit control"
@@ -439,14 +428,12 @@ class BaseWindow(AbstractWindow):
         if type( ptr ) is int:
             POINTER_MAP[ pointer ] = ptr = wx.StockCursor( ptr )
         self.control.SetCursor( ptr )
-        return
 
     def set_tooltip ( self, tooltip ):
         "Set the current tooltip for the window"
         wx.ToolTip_Enable( False )
         self.control.SetToolTip( wx.ToolTip( tooltip ) )
         wx.ToolTip_Enable( True )
-        return
 
     def set_timer_interval ( self, component, interval ):
         """ Set up or cancel a timer for a specified component.  To cancel the
@@ -460,12 +447,10 @@ class BaseWindow(AbstractWindow):
             if system_timer is None:
                 system_timer = EnableTimer()
             system_timer.schedule( component, interval )
-        return
 
     def _set_focus ( self ):
         "Sets the keyboard focus to this window"
         self.control.SetFocus()
-        return
 
     def screen_to_window(self, x, y):
         pt = wx.Point(x,y)
@@ -482,7 +467,6 @@ class BaseWindow(AbstractWindow):
         if result not in DRAG_RESULTS_MAP:
             raise RuntimeError("Unknown drag result '%s'" % result)
         self._drag_result = DRAG_RESULTS_MAP[result]
-        return
 
     def wx_dropped_on ( self, x, y, drag_object, drop_result ):
         "Handle wxPython drag and drop events"
@@ -525,7 +509,6 @@ class BaseWindow(AbstractWindow):
                                      start_event = default_start_event,
                                      window = self )
         self.component.dispatch(drag_leave_event, "drag_leave")
-        return
 
     def create_menu ( self, menu_definition, owner ):
         "Create a wxMenu from a string description"
@@ -534,4 +517,3 @@ class BaseWindow(AbstractWindow):
     def popup_menu ( self, menu, x, y ):
         "Pop-up a wxMenu at a specified location"
         self.control.PopupMenuXY( menu.menu, int(x), int( self._flip_y(y) ) )
-        return

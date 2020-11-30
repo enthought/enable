@@ -23,7 +23,6 @@ class PolygonModel(HasTraits):
 
     def reset(self):
         self.points = []
-        return
 
 
 class Polygon(Component):
@@ -89,7 +88,6 @@ class Polygon(Component):
         "Reset the polygon to the initial state"
         self.model.reset()
         self.event_state = 'normal'
-        return
 
     #--------------------------------------------------------------------------
     # 'Component' interface
@@ -98,7 +96,6 @@ class Polygon(Component):
     def _draw_mainlayer(self, gc, view_bounds=None, mode="normal"):
         "Draw the component in the specified graphics context"
         self._draw_closed(gc)
-        return
 
     #--------------------------------------------------------------------------
     # Protected interface
@@ -148,8 +145,6 @@ class Polygon(Component):
             # Draw the vertices.
             self._draw_vertices(gc)
 
-        return
-
     def _draw_open ( self, gc ):
         "Draw this polygon as an open polygon"
 
@@ -170,7 +165,6 @@ class Polygon(Component):
 
             # Draw the vertices.
             self._draw_vertices(gc)
-        return
 
     def _draw_vertices(self, gc):
         "Draw the vertices of the polygon."
@@ -191,4 +185,3 @@ class Polygon(Component):
             for x, y in offset_points:
                 gc.draw_rect((x - offset, y - offset,
                              self.vertex_size, self.vertex_size), FILL)
-        return

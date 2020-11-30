@@ -28,7 +28,6 @@ class Circle(Component):
     def __init__(self, **traits):
         Component.__init__(self, **traits)
         self.pointer = self.normal_pointer
-        return
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         with gc:
@@ -38,7 +37,6 @@ class Circle(Component):
             radius = min(dx/2.0, dy/2.0)
             gc.arc(x+dx/2.0, y+dy/2.0, radius, 0.0, 2*3.14159)
             gc.fill_path()
-        return
 
     def normal_left_down(self, event):
         self.event_state = "moving"
@@ -56,12 +54,10 @@ class Circle(Component):
         x, y = self.position
         self.offset_x = event.x - x
         self.offset_y = event.y - y
-        return
 
     def moving_mouse_move(self, event):
         self.position = [event.x-self.offset_x, event.y-self.offset_y]
         self.request_redraw()
-        return
 
     def moving_left_up(self, event):
         self.event_state = "normal"
@@ -69,11 +65,9 @@ class Circle(Component):
         self.request_redraw()
         # Remove our shadow
         self.container.remove(self.shadow)
-        return
 
     def moving_mouse_leave(self, event):
         self.moving_left_up(event)
-        return
 
 
 class LightCircle(Component):
@@ -90,7 +84,6 @@ class LightCircle(Component):
             radius = min(dx/2.0, dy/2.0)
             gc.arc(x+dx/2.0, y+dy/2.0, radius, 0.0, 2*3.14159)
             gc.fill_path()
-        return
 
 
 class DashedCircle(Component):
@@ -110,7 +103,6 @@ class DashedCircle(Component):
             gc.set_stroke_color(self.color[0:3] + (self.color[3]*0.8,))
             gc.set_line_dash(self.line_dash)
             gc.stroke_path()
-        return
 
 
 class Demo(DemoFrame):

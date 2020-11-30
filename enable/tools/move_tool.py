@@ -35,7 +35,6 @@ class MoveTool(DragTool):
                 self.component.container.raise_component(self.component)
             event.window.set_mouse_owner(self, event.net_transform())
             event.handled = True
-        return
 
     def dragging(self, event):
         if self.component:
@@ -47,6 +46,3 @@ class MoveTool(DragTool):
             self.component.request_redraw()
             self._prev_pos = (event.x, event.y)
             event.handled = True
-        return
-
-

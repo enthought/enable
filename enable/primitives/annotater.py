@@ -33,7 +33,6 @@ class Annotater(Component):
         self.window.mouse_owner = self
         self._cur_x, self._cur_y = event.x, event.y
         self._start_x, self._start_y = event.x, event.y
-        return
 
     def _left_up_changed(self, event):
         event.handled = True
@@ -45,7 +44,6 @@ class Annotater(Component):
                                abs(self._start_y - event.y))
         self._start_x = self._start_y = self._cur_x = self._cur_y = None
         self.redraw()
-        return
 
     def _mouse_move_changed(self, event):
         event.handled = True
@@ -55,7 +53,6 @@ class Annotater(Component):
             if (x != self._cur_x) or (y != self._cur_y):
                 self._cur_x, self._cur_y = x, y
                 self.redraw()
-        return
 
     #---------------------------------------------------------------------------
     # "Component" interface

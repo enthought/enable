@@ -50,7 +50,6 @@ class MyCanvas(Canvas):
                   r)
         gc.line_to(w/3, h/2)
         gc.stroke_path()
-        return
 
 
 if __name__ == "__main__":

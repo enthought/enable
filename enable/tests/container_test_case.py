@@ -12,7 +12,6 @@ class EnableUnitTest(unittest.TestCase):
         """
         for dim, val in dims.items():
             self.assertTrue( getattr(obj, dim) == val )
-        return
 
 
 class ContainerTestCase(EnableUnitTest):
@@ -49,7 +48,6 @@ class ContainerTestCase(EnableUnitTest):
         container.remove(components[0])
         container.remove(components[0])
         self.assertTrue(len(container.components) == 0)
-        return
 
     def test_position(self):
         container = self.create_simple_components()
@@ -57,12 +55,10 @@ class ContainerTestCase(EnableUnitTest):
         self.assertTrue(components[0].position == [20,10])
         self.assertTrue(components[1].position == [40,10])
         self.assertTrue(components[2].position == [60,10])
-        return
 
     def test_position_bounds(self):
         container = Container(bounds=[100.0, 100.0])
         self.assert_dims(container, x=0.0, y=0.0, width=100.0, height=100.0)
-        return
 
     def test_auto_size(self):
         container = Container(bounds=[100.0, 100.0])
@@ -91,7 +87,6 @@ class ContainerTestCase(EnableUnitTest):
         # Delete the second component
         container.remove(c2)
         self.assert_dims(container, x=10.0, y=10.0, width=49.0, height=59.0)
-        return
 
 
 if __name__ == "__main__":

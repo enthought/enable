@@ -219,7 +219,6 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
             meth()
         else:
             warnings.warn("Unable to pass through mouse event '%s' to vtkInteractionStyle" % eventname)
-        return
 
     def _vtk_mouse_button_event(self, vtk_obj, eventname):
         """ Dispatces to self._handle_mouse_event """
@@ -530,7 +529,6 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
             self.padding_top = val[2]
             self.padding_bottom = val[3]
             self.trait_property_changed("padding", old_padding, val)
-        return
 
     def _get_hpadding(self):
         return 2*self._get_visible_border() + self.padding_right + \

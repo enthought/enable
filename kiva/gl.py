@@ -249,7 +249,6 @@ class MRU(dict):
                     self.__order__ = self.__order__[1:] + [key]
                 else:
                     self.__order__.append(key)
-        return
 
 
 # Use a singleton for the font cache

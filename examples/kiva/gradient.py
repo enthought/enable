@@ -78,8 +78,6 @@ def draw(gc):
                            "pad")
         gc.draw_path(constants.FILL)
 
-    return
-
 
 def gradient():
     gc = GraphicsContext((500, 500))

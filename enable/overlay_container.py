@@ -20,4 +20,3 @@ class OverlayContainer(Container):
         """ Actually performs a layout (called by do_layout()).
         """
         simple_container_do_layout(self)
-        return

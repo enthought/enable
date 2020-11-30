@@ -150,7 +150,6 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
         else:
             self._orig_position = self.component.view_position
             self._orig_bounds = self.component.view_bounds
-        return
 
     def enable(self, event=None):
         """ Provides a programmatic way to enable this tool, if
@@ -164,7 +163,6 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
         self._enabled = True
         if event and event.window:
             event.window.set_pointer(self.pointer)
-        return
 
     def disable(self, event=None):
         """ Provides a programmatic way to enable this tool, if **always_on**
@@ -179,7 +177,6 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
             self.component.active_tool = None
         if event and event.window:
             event.window.set_pointer("arrow")
-        return
 
     def reset(self, event=None):
         """ Resets the tool to normal state, with no start or end position.
@@ -206,7 +203,6 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
             # interfere with.
             if self.drag_button == "left":
                 self._start_select(event)
-        return
 
     def normal_right_down(self, event):
         """ Handles the right mouse button being pressed while the tool is
@@ -217,7 +213,6 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
         if self.always_on or self._enabled:
             if self.drag_button == "right":
                 self._start_select(event)
-        return
 
     def normal_mouse_wheel(self, event):
         """ Handles the mouse wheel being used when the tool is in the 'normal'
@@ -260,11 +255,9 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
 
             event.handled = True
             self.component.request_redraw()
-        return
 
     def _component_changed(self):
         self._reset_state_to_current()
-        return
 
     #------------------------------------------------------------------------
     # Implementation of PlotComponent interface

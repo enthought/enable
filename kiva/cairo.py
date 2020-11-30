@@ -81,7 +81,6 @@ class PixelMap(object):
         window_dc.BeginDrawing()
         window_dc.DrawBitmap(bmp,x,y)
         window_dc.EndDrawing()
-        return
 
     def convert_to_rgbarray(self):
         pixels = numpy.frombuffer(self.surface.get_data(), numpy.uint8)
@@ -1237,7 +1236,6 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             y = -y
         self.translate_ctm(x, y)
         component.draw(self, view_bounds=(0, 0, w, h))
-        return
 
     def save(self, filename, file_format=None):
         """ Save the GraphicsContext to a (PNG) file.

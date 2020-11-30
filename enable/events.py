@@ -49,7 +49,6 @@ class BasicEvent(HasTraits):
         self.y = y
         if caller is not None:
             self.dispatch_history.append(caller)
-        return
 
     def pop(self, count=1, caller=None):
         """
@@ -64,7 +63,6 @@ class BasicEvent(HasTraits):
         if caller is not None:
             if caller == self.dispatch_history[-1]:
                 self.dispatch_history.pop()
-        return
 
     def offset_xy(self, origin_x, origin_y, caller=None):
         r"""
@@ -77,7 +75,6 @@ class BasicEvent(HasTraits):
         self.push_transform(affine.affine_from_translation(-origin_x, -origin_y))
         if caller is not None:
             self.dispatch_history.append(caller)
-        return
 
     def scale_xy(self, scale_x, scale_y, caller=None):
         """
@@ -93,7 +90,6 @@ class BasicEvent(HasTraits):
         self.push_transform(affine.affine_from_scale(1/scale_x, 1/scale_y))
         if caller is not None:
             self.dispatch_history.append(caller)
-        return
 
     def net_transform(self):
         """

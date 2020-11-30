@@ -124,7 +124,6 @@ class Viewport(Component):
                                 region[2], region[3]] for region in damaged_regions]
         super(Viewport, self).invalidate_draw(damaged_regions=damaged_regions,
                                               self_relative=self_relative)
-        return
 
     def cleanup(self, window):
         """When a window viewing or containing a component is destroyed,
@@ -238,8 +237,6 @@ class Viewport(Component):
                                       clipped_view[2] / self.zoom, clipped_view[3] / self.zoom)
                         self.component.draw(gc, new_bounds, mode=mode)
 
-        return
-
     def _do_layout(self):
         if self.initiate_layout:
             self.component.bounds = list(self.component.get_preferred_size())
@@ -247,7 +244,6 @@ class Viewport(Component):
 
         else:
             super(Viewport, self)._do_layout()
-        return
 
     def _dispatch_stateful_event(self, event, suffix):
         if isinstance(self.component, Component):
@@ -257,9 +253,6 @@ class Viewport(Component):
                 self.component.dispatch(event, suffix)
             finally:
                 event.pop(caller=self)
-
-        return
-
 
     #------------------------------------------------------------------------
     # Event handlers
@@ -290,7 +283,6 @@ class Viewport(Component):
             self.component.view_bounds = (llx, lly,
                                           llx + self.view_bounds[0]-1,
                                           lly + self.view_bounds[1]-1)
-        return
 
     def _component_changed(self, old, new):
         if (old is not None) and (self in old.viewports):

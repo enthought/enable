@@ -120,7 +120,6 @@ class Scrolled(Container):
         self.component = component
         Container.__init__( self, **traits )
         self._viewport_component_changed()
-        return
 
     def update_bounds(self):
         self._layout_needed = True
@@ -128,7 +127,6 @@ class Scrolled(Container):
             self._hsb._widget_moved = True
         if self._vsb is not None:
             self._vsb._widget_moved = True
-        return
 
     def sb_height(self):
         """ Returns the standard scroll bar height
@@ -166,7 +164,6 @@ class Scrolled(Container):
         self.update_from_viewport()
         self.request_redraw()
 
-
     #---------------------------------------------------------------------------
     # Trait event handlers
     #---------------------------------------------------------------------------
@@ -191,7 +188,6 @@ class Scrolled(Container):
                             viewport.view_bounds[ndx], ticksize) )
 
         return ranges
-
 
     def update_from_viewport(self):
         """ Repositions the scrollbars based on the current position/bounds of
@@ -224,49 +220,38 @@ class Scrolled(Container):
         if not self._hsb_generates_events:
             self._hsb_generates_events = True
 
-        return
-
     def _layout_and_draw(self):
         self._layout_needed = True
         self.request_redraw()
 
     def _component_position_changed(self, component):
         self._layout_needed = True
-        return
 
     def _bounds_changed_for_component(self):
         self._layout_needed = True
         self.update_from_viewport()
         self.request_redraw()
-        return
 
     def _bounds_items_changed_for_component(self):
         self.update_from_viewport()
-        return
 
     def _position_changed_for_component(self):
         self.update_from_viewport()
-        return
 
     def _position_items_changed_for_component(self):
         self.update_from_viewport()
-        return
 
     def _view_bounds_changed_for_viewport_component(self):
         self.update_from_viewport()
-        return
 
     def _view_bounds_items_changed_for_viewport_component(self):
         self.update_from_viewport()
-        return
 
     def _view_position_changed_for_viewport_component(self):
         self.update_from_viewport()
-        return
 
     def _view_position_items_changed_for_viewport_component(self):
         self.update_from_viewport()
-        return
 
     def _component_bounds_items_handler(self, object, event):
         if event.added != event.removed:
@@ -275,7 +260,6 @@ class Scrolled(Container):
     def _component_bounds_handler(self, object, name, old, new):
         if old == None or new == None or old[0] != new[0] or old[1] != new[1]:
             self.update_bounds()
-        return
 
     def _component_changed ( self, old, new ):
         if old is not None:
@@ -291,7 +275,6 @@ class Scrolled(Container):
         new.on_trait_change(self._component_bounds_handler, 'bounds')
         new.on_trait_change(self._component_bounds_items_handler, 'bounds_items')
         self._layout_needed = True
-        return
 
     def _bgcolor_changed ( self ):
         self._layout_and_draw()
@@ -320,11 +303,9 @@ class Scrolled(Container):
 
     def _alternate_vsb_changed(self, old, new):
         self._component_update(old, new)
-        return
 
     def _leftcomponent_changed(self, old, new):
         self._component_update(old, new)
-        return
 
     def _component_update(self, old, new):
         """ Generic function to manage adding and removing components """
@@ -332,7 +313,6 @@ class Scrolled(Container):
             self.remove(old)
         if new is not None:
             self.add(new)
-        return
 
     def _bounds_changed ( self, old, new ):
         Component._bounds_changed( self, old, new )
@@ -341,7 +321,6 @@ class Scrolled(Container):
     def _bounds_items_changed(self, event):
         Component._bounds_items_changed(self, event)
         self.update_bounds()
-
 
     #---------------------------------------------------------------------------
     # Protected methods
@@ -463,7 +442,6 @@ class Scrolled(Container):
             pass
 
         self._layout_needed = False
-        return
 
     def _release_sb ( self, sb ):
         if sb is not None:
@@ -495,7 +473,6 @@ class Scrolled(Container):
                 viewport.trait_setq(
                     view_position=[position, viewport.view_position[1]]
                 )
-        return
 
     def _handle_vertical_scroll(self, position):
         if self._sb_bounds_frozen:
@@ -512,7 +489,6 @@ class Scrolled(Container):
                 viewport.trait_setq(
                     view_position=[viewport.view_position[0], position]
                 )
-        return
 
     def _mouse_thumb_changed(self, object, attrname, event):
         if event == "down" and not self.continuous_drag_update:
@@ -561,7 +537,6 @@ class Scrolled(Container):
                     right_edge-left_edge, top_edge-bottom_edge)
             gc.stroke_path()
 
-
     #---------------------------------------------------------------------------
     # Mouse event handlers
     #---------------------------------------------------------------------------
@@ -578,7 +553,6 @@ class Scrolled(Container):
             elif self._vsb:
                 self._vsb._mouse_wheel_changed(event)
             event.handled = True
-        return
 
     #---------------------------------------------------------------------------
     # Persistence

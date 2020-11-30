@@ -46,4 +46,3 @@ class Window(BaseWindow):
             pixel_map.draw_to_wxwindow(control, 0, 0)
 
         control._dc = None
-        return

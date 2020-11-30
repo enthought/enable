@@ -15,7 +15,6 @@ class ResetButton(ToolbarButton):
         if self.canvas and self.canvas.active_tool:
             self.canvas.active_tool.reset()
             self.canvas.request_redraw()
-        return
 
 
 class ActivateButton(ToolbarButton):
@@ -28,12 +27,10 @@ class ActivateButton(ToolbarButton):
         else:
             self.canvas.activate(self.tool)
             self.canvas.request_redraw()
-        return
 
     def _tool_changed(self, old, new):
         if new:
             new.reset()
-        return
 
 
 class Demo(DemoFrame):
