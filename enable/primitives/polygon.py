@@ -192,6 +192,3 @@ class Polygon(Component):
                 gc.draw_rect((x - offset, y - offset,
                              self.vertex_size, self.vertex_size), FILL)
         return
-
-
-# EOF

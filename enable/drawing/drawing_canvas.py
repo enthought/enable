@@ -239,7 +239,3 @@ class DrawingCanvas(Container):
     def _tools_items_changed(self):
         self.request_redraw()
         return
-
-
-
-# EOF

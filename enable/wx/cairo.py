@@ -47,6 +47,3 @@ class Window(BaseWindow):
 
         control._dc = None
         return
-
-
-# EOF

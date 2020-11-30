@@ -2789,6 +2789,3 @@ cdef CTLineRef _create_ct_line(object the_string, CTFontRef font, object stroke_
     CFRelease(cf_attr_string)
 
     return ct_line
-
-
-#### EOF #######################################################################

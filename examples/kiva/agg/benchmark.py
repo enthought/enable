@@ -228,4 +228,3 @@ def run_all_benchmarks(n_pts=1000, sz=(500, 500)):
 
 if __name__ == '__main__':
     run_all_benchmarks(n_pts=100, sz=(500, 500))
-# EOF

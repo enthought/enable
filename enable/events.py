@@ -256,6 +256,3 @@ class BlobFrameEvent(BasicEvent):
         return s
 
 blob_frame_event_trait = Event(BlobFrameEvent)
-
-
-# EOF

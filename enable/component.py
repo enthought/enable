@@ -1247,6 +1247,3 @@ class Component(CoordinateBox, Interactor):
 
     def _set_outer_height(self, height):
         self.bounds[1] = height - self.vpadding
-
-
-# EOF

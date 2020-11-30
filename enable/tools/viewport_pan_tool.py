@@ -107,5 +107,3 @@ class ViewportPanTool(DragTool):
             event.window.set_mouse_owner(None)
         event.handled = True
         return
-
-# EOF

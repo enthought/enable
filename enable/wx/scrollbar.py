@@ -320,6 +320,3 @@ class NativeScrollBar(Component):
         low, high, page_size, ignore = self.range
         self._scroll_updated = True
         self.range = (low, high, page_size, line_size)
-
-
-# EOF

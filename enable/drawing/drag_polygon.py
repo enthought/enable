@@ -133,5 +133,3 @@ class DragPolygon(DrawingTool):
         self.pointer = self.normal_pointer
 
         return
-
-#### EOF ######################################################################

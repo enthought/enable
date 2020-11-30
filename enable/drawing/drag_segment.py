@@ -103,5 +103,3 @@ class DragSegment(DrawingTool):
     def normal_mouse_move(self, event):
         event.window.set_pointer(self.normal_pointer)
         return
-
-# EOF

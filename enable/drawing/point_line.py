@@ -232,5 +232,3 @@ class PointLine(DrawingTool):
         else:
             result = None
         return result
-
-# EOF

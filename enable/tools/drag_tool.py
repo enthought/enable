@@ -206,6 +206,3 @@ class DragTool(BaseTool):
     @cached_property
     def _get__cancel_keys(self):
         return [KeySpec(key) for key in self.cancel_keys]
-
-
-# EOF

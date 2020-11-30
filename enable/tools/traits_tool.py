@@ -103,7 +103,3 @@ class TraitsTool(BaseTool):
             self.component.active_tool = None
             item.request_redraw()
         return
-
-
-
-# EOF

@@ -308,5 +308,3 @@ else:
 black_color_trait = ColorTrait("black")
 white_color_trait = ColorTrait("white")
 transparent_color_trait = ColorTrait("transparent")
-
-# EOF

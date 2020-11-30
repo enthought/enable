@@ -73,5 +73,3 @@ class Annotater(Component):
                          abs(self._start_y - self._cur_y))
                 gc.fill_path()
         return
-
-# EOF
