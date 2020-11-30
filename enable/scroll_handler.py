@@ -35,5 +35,3 @@ class ScrollHandler:
         """
 
         raise NotImplementedError
-
-#### EOF ######################################################################

@@ -111,6 +111,3 @@ class Interactor(HasTraits):
             if self.auto_handle_event:
                 event.handled = True
         return
-
-
-# EOF

@@ -54,6 +54,3 @@ class DrawingTool(Component):
         else:
             pass
         return
-
-
-# EOF

@@ -418,5 +418,3 @@ class ScrollBar ( Component ):
             if self._in_zone:
                 self._scroll()
         return
-
-# EOF

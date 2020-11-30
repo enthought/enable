@@ -535,6 +535,3 @@ class BaseWindow(AbstractWindow):
         "Pop-up a wxMenu at a specified location"
         self.control.PopupMenuXY( menu.menu, int(x), int( self._flip_y(y) ) )
         return
-
-
-# EOF

@@ -196,5 +196,3 @@ class Shape(Component):
             text_color = (r, g, b, 0.5)
 
         return text_color
-
-#### EOF ######################################################################
