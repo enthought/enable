@@ -16,7 +16,8 @@ the wxPython user interface toolkit.
 import wx
 
 from enable.colors import color_table
-from enable.api import Label, Window
+from enable.label import Label
+from enable.window import Window
 from traits.api import Bool
 from traits.trait_base import SequenceTypes
 
@@ -31,7 +32,7 @@ from traitsui.wx.helper import position_window
 #-------------------------------------------------------------------------------
 
 # Standard color samples:
-COLOR_CHOICES = ( 0, 51, 102, 153, 204, 255 )
+COLOR_CHOICES = (0, 51, 102, 153, 204, 255)
 COLOR_SAMPLES = tuple([wx.Colour(r, g, b)
                        for r in COLOR_CHOICES
                        for g in COLOR_CHOICES

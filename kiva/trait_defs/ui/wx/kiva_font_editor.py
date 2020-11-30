@@ -41,8 +41,7 @@ class ToolkitEditorFactory ( EditorFactory ):
     #   Returns a Font's 'face name':
     #---------------------------------------------------------------------------
 
-    @staticmethod
-    def face_name(font):
+    def face_name(self, font):
         """ Returns a Font's typeface name.
         """
         face_name = font.face_name
@@ -116,12 +115,11 @@ class ToolkitEditorFactory ( EditorFactory ):
     #---------------------------------------------------------------------------
     #  Returns a list of all available font facenames:
     #---------------------------------------------------------------------------
-    @staticmethod
-    def all_facenames():
+
+    def all_facenames(self):
         """ Returns a list of all available font typeface names.
         """
-        facenames = sorted({f.name for f in fontManager.ttflist})
-        return facenames
+        return sorted({f.name for f in fontManager.ttflist})
 
 
 def KivaFontEditor(*args, **traits):
