@@ -7,7 +7,7 @@ except ImportError:
     from mock import MagicMock
 
 from traits.api import Any
-from traitsui.tests._tools import skip_if_not_wx
+from enable.tests._testing import skip_if_not_wx
 
 from enable.container import Container
 from enable.base_tool import BaseTool

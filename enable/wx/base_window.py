@@ -217,7 +217,8 @@ class BaseWindow(AbstractWindow):
 
     def _create_control(self, parent, wid, pos=wx.DefaultPosition, size=wx.DefaultSize):
         if parent is None:
-            parent = wx.Frame(None)  # pab hack in order to avoid that the wx.Window crash!
+            # pab hack in order to avoid that the wx.Window crash!
+            parent = wx.Frame(None)
         return wx.Window(parent, wid, pos, size, style=wx.CLIP_CHILDREN | wx.WANTS_CHARS)
 
     def _on_close(self, event):

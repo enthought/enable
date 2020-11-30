@@ -1,12 +1,11 @@
 from __future__ import print_function
 
-from kiva import agg
-
 try:
     from time import perf_counter
 except ImportError:
     from time import clock as perf_counter
 
+from kiva import agg
 
 samples = 1
 pt = (250, 250)

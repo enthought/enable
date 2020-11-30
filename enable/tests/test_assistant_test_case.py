@@ -4,10 +4,9 @@ except ImportError:
     import mock
 import nose
 
-from traitsui.tests._tools import skip_if_null
-
 from enable.component import Component
 from enable.testing import EnableTestAssistant, _MockWindow
+from enable.tests._testing import skip_if_null
 
 
 def test_mouse_move():
@@ -22,6 +21,23 @@ def test_mouse_move():
     assert not event.control_down
     assert not event.shift_down
     nose.tools.assert_equal(event.window.get_pointer_position(), (10, 20))
+
+
+def test_mouse_down():
+    test_assistant = EnableTestAssistant()
+    component = Component(bounds=[100, 200])
+    component.normal_left_down = mock.Mock()
+    test_assistant.mouse_down(component, x=0, y=0)
+    component.normal_left_down.assert_called_once()
+
+
+def test_mouse_dclick():
+    test_assistant = EnableTestAssistant()
+    component = Component(bounds=[100, 200])
+    component.normal_left_dclick = mock.Mock()
+    test_assistant.mouse_dclick(component, x=0, y=0)
+    component.normal_left_dclick.assert_called_once()
+
 
 @skip_if_null
 def test_mouse_move_real_window():
@@ -41,6 +57,7 @@ def test_mouse_move_real_window():
     assert not event.shift_down
     # can't test pointer position, not set, but if we get here it didn't
     # try to set the pointer position
+
 
 @skip_if_null
 def test_mouse_move_real_window_mocked_position():

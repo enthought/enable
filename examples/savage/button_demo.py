@@ -2,7 +2,7 @@ import os.path
 from copy import copy
 
 from traits.api import HasTraits, Str
-from traitsui.api import Item, View, HGroup
+from traitsui.api import HGroup, Item, View
 
 from enable.savage.trait_defs.ui.svg_button import SVGButton
 
@@ -40,4 +40,5 @@ demo = Demo()
 
 
 if __name__ == "__main__":
+    demo = Demo()
     demo.configure_traits()

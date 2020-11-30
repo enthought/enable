@@ -1,4 +1,5 @@
 import sys
+
 from kiva import agg
 
 gc = agg.GraphicsContextArray((100, 100))

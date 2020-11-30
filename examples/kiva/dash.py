@@ -1,6 +1,11 @@
 from __future__ import print_function
 
 import tempfile
+try:
+    from time import perf_counter
+except ImportError:
+    from time import clock as perf_counter
+
 import numpy
 
 from enable.api import ConstraintsContainer

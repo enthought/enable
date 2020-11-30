@@ -3,13 +3,13 @@ from __future__ import print_function
 import os.path
 import xml.etree.cElementTree as etree
 
-from enable.api import Container, Component, ComponentEditor, BaseTool
+from enable.api import BaseTool, Component, ComponentEditor, Container
+from enable.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
+from enable.savage.svg.document import SVGDocument
 from kiva.constants import MODERN
 from kiva.fonttools import Font
-from traits.api import Instance, Callable, List, Str, HasTraits, Enum
-from traitsui.api import View, Item
-from enable.savage.svg.document import SVGDocument
-from enable.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
+from traits.api import Callable, Enum, HasTraits, Instance, List, Str
+from traitsui.api import Item, View
 
 
 class CanvasButton(Component):
@@ -56,7 +56,8 @@ class CanvasButton(Component):
         with gc:
             gc.translate_ctm(self.x, self.y+self.height)
             doc_size = document.getSize()
-            gc.scale_ctm(self.width/float(doc_size[0]), -self.height/float(doc_size[1]))
+            gc.scale_ctm(self.width/float(doc_size[0]),
+                         -self.height/float(doc_size[1]))
             document.render(gc)
 
     def _draw_label(self, gc):
@@ -127,12 +128,22 @@ class ButtonCanvasView(HasTraits):
 
     def add_buttons(self):
         data_dir = os.path.dirname(__file__)
-        self.canvas.add_button(CanvasButton(os.path.join(data_dir, 'edit-copy.svg'),
-                                            self.do_copy, [],
-                                            label="Copy", x=150, y=150,))
-        self.canvas.add_button(CanvasButton(os.path.join(data_dir, 'edit-paste.svg'),
-                                            self.do_paste, [],
-                                            label="Paste", x=250, y=150))
+        self.canvas.add_button(
+            CanvasButton(
+                os.path.join(data_dir, 'edit-copy.svg'), self.do_copy, [],
+                label="Copy",
+                x=150,
+                y=150,
+            )
+        )
+        self.canvas.add_button(
+            CanvasButton(
+                os.path.join(data_dir, 'edit-paste.svg'), self.do_paste, [],
+                label="Paste",
+                x=250,
+                y=150,
+            )
+        )
 
     def do_copy(self):
         print("copying something")
@@ -142,7 +153,6 @@ class ButtonCanvasView(HasTraits):
 
 
 demo = ButtonCanvasView()
-
 
 if __name__ == "__main__":
     demo.configure_traits()

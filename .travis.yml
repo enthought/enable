@@ -16,19 +16,29 @@ addons:
     - libpng-dev
     - libfreetype6-dev
     - libcairo2-dev
+    # Qt dependencies
     - libglu1-mesa-dev
+    - libxkbcommon-x11-0
+    - libxcb-icccm4
+    - libxcb-image0
+    - libxcb-keysyms1
+    - libxcb-randr0
+    - libxcb-render-util0
+    - libxcb-xinerama0
+    - pulseaudio
+    - libpulse-mainloop-glib0
+    # Wx dependencies
+    - libsdl2-2.0-0
 
 env:
   global:
-    - INSTALL_EDM_VERSION=2.0.0
+    - INSTALL_EDM_VERSION=3.0.1
       PYTHONUNBUFFERED="1"
 
 matrix:
   include:
-  - env: RUNTIME=3.5 TOOLKITS="null pyqt pyqt5" PILLOW='pillow'
   - env: RUNTIME=3.6 TOOLKITS="null pyqt pyqt5" PILLOW='pillow'
   - env: RUNTIME=3.6 TOOLKITS="wx" PILLOW='pillow'
-  - env: RUNTIME=3.5 TOOLKITS=null PILLOW='pillow<3.0.0'
   - env: RUNTIME=3.6 TOOLKITS=null PILLOW='pillow<3.0.0'
   allow_failures:
   - env: RUNTIME=3.6 TOOLKITS="wx" PILLOW='pillow'
@@ -50,7 +60,13 @@ before_install:
   - export PATH="${HOME}/edm/bin:/usr/lib/ccache:${PATH}"
   - edm install -y wheel click coverage
 install:
-  - for toolkit in ${TOOLKITS}; do edm run -- python ci/edmtool.py install --runtime=${RUNTIME} --toolkit=${toolkit} --pillow=${PILLOW} || exit; done
+  - for toolkit in ${TOOLKITS}; do
+        if [[ ${TRAVIS_EVENT_TYPE} == "cron" ]] ; then
+          edm run -- python ci/edmtool.py install --runtime=${RUNTIME} --toolkit=${toolkit} --pillow=${PILLOW} --source || exit;
+        else
+          edm run -- python ci/edmtool.py install --runtime=${RUNTIME} --toolkit=${toolkit} --pillow=${PILLOW} || exit;
+        fi;
+    done
 script:
   - for toolkit in ${TOOLKITS}; do edm run -- python ci/edmtool.py test --runtime=${RUNTIME} --toolkit=${toolkit} --pillow=${PILLOW} || exit; done
 

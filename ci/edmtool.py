@@ -54,8 +54,8 @@ using::
 
     python edmtool.py test_all
 
-Currently supported runtime values are ``2.7`` and ``3.5``, and currently
-supported toolkits are ``null``, ``pyqt``, and ``wx``.  Not all
+Currently supported runtime value is `3.6``, and currently
+supported toolkits are ``null``, ``pyqt``, and ``pyqt5``.  Not all
 combinations of toolkits and runtimes will work, but the tasks will fail with
 a clear error if that is the case.
 
@@ -89,11 +89,11 @@ from contextlib import contextmanager
 import click
 
 supported_combinations = {
-    '3.5': {'pyqt', 'pyqt5', 'null'},
-    '3.6': {'pyqt', 'pyqt5', 'null'},
+    '3.6': {'pyqt', 'pyqt5', 'wx', 'null'},
 }
 
 dependencies = {
+    "apptools",
     "six",
     "nose",
     "mock",
@@ -102,19 +102,29 @@ dependencies = {
     "pygments",
     "pyparsing",
     "swig",
-    "unittest2",
+    "traits",
+    "traitsui",
+    "pyface",
     "pypdf2",
     "swig",
-    # required by some demos
-    "chaco",
-    "mayavi",
-    "scipy",
+    "unittest2",
 }
+
+# Dependencies we install from source for cron tests
+# Order from packages with the most dependencies to one with the least
+# dependencies. Packages are forced re-installed in this order.
+source_dependencies = [
+    "apptools",
+    "traitsui",
+    "pyface",
+    "traits",
+]
 
 extra_dependencies = {
     'pyqt': {'pyqt'},
-    'pyqt5': set(),
-    'wx': {'wxpython'},
+    'pyqt5': {'pyqt5'},
+    # XXX once wxPython 4 is available in EDM, we will want it here
+    "wx": set(),
     'null': set()
 }
 
@@ -135,17 +145,29 @@ if sys.platform == 'darwin':
     dependencies.add('Cython')
 
 
+#: Path to the top-level source directory
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+
+github_url_fmt = "git+http://github.com/enthought/{0}.git#egg={0}"
+
+
 @click.group()
 def cli():
     pass
 
 
 @cli.command()
-@click.option('--runtime', default='3.5')
+@click.option('--runtime', default='3.6')
 @click.option('--toolkit', default='null')
 @click.option('--pillow', default='pillow')
 @click.option('--environment', default=None)
-def install(runtime, toolkit, pillow, environment):
+@click.option(
+    "--source/--no-source",
+    default=False,
+    help="Install ETS packages from source",
+)
+def install(runtime, toolkit, pillow, environment, source):
     """ Install project and dependencies into a clean EDM environment.
 
     """
@@ -158,22 +180,62 @@ def install(runtime, toolkit, pillow, environment):
         "edm install -y -e {environment} {packages}",
         "edm run -e {environment} -- pip install {pillow}",
         ("edm run -e {environment} -- pip install -r ci/requirements.txt"
-         " --no-dependencies --ignore-installed"),
+         " --no-dependencies"),
     ]
 
-    # pip install pyqt5, because we don't have it in EDM yet
-    if toolkit == 'pyqt5':
-        commands.append("edm run -e {environment} -- pip install pyqt5==5.9.2")
-
-    commands.append("edm run -e {environment} -- python setup.py install")
+    if toolkit == "wx":
+        if sys.platform == "darwin":
+            commands.append(
+                "edm run -e {environment} -- python -m pip install wxPython<4.1"  # noqa: E501
+            )
+        elif sys.platform == "linux":
+            # XXX this is mainly for TravisCI workers; need a generic solution
+            commands.append(
+                "edm run -e {environment} -- pip install -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04/ wxPython<4.1"  # noqa: E501
+            )
+        else:
+            commands.append(
+                "edm run -e {environment} -- python -m pip install wxPython"
+            )
 
     click.echo("Creating environment '{environment}'".format(**parameters))
     execute(commands, parameters)
+
+    if source:
+        # Remove EDM ETS packages and install them from source
+        cmd_fmt = (
+            "edm plumbing remove-package "
+            "--environment {environment} --force "
+        )
+        commands = [cmd_fmt + source_pkg for source_pkg in source_dependencies]
+        execute(commands, parameters)
+        source_pkgs = [
+            github_url_fmt.format(pkg) for pkg in source_dependencies
+        ]
+        # Without the --no-dependencies flag such that new dependencies on
+        # master are brought in.
+        commands = [
+            "python -m pip install --force-reinstall {pkg}".format(pkg=pkg)
+            for pkg in source_pkgs
+        ]
+        commands = [
+            "edm run -e {environment} -- " + command for command in commands
+        ]
+        execute(commands, parameters)
+
+    # No matter what happens before, always install local source again with no
+    # dependencies or we risk testing against an released enable.
+    install_local = (
+        "edm run -e {environment} -- "
+        "pip install --force-reinstall --no-dependencies " + ROOT
+    )
+    execute([install_local], parameters)
+
     click.echo('Done install')
 
 
 @cli.command()
-@click.option('--runtime', default='3.5')
+@click.option('--runtime', default='3.6')
 @click.option('--toolkit', default='null')
 @click.option('--pillow', default='pillow')
 @click.option('--environment', default=None)
@@ -201,7 +263,7 @@ def test(runtime, toolkit, pillow, environment):
 
 
 @cli.command()
-@click.option('--runtime', default='3.5')
+@click.option('--runtime', default='3.6')
 @click.option('--toolkit', default='null')
 @click.option('--pillow', default='pillow')
 @click.option('--environment', default=None)
@@ -220,7 +282,7 @@ def cleanup(runtime, toolkit, pillow, environment):
 
 
 @cli.command()
-@click.option('--runtime', default='3.5')
+@click.option('--runtime', default='3.6')
 @click.option('--toolkit', default='null')
 @click.option('--pillow', default='pillow')
 def test_clean(runtime, toolkit, pillow):
@@ -238,7 +300,7 @@ def test_clean(runtime, toolkit, pillow):
 
 
 @cli.command()
-@click.option('--runtime', default='3.5')
+@click.option('--runtime', default='3.6')
 @click.option('--toolkit', default='null')
 @click.option('--pillow', default='pillow')
 @click.option('--environment', default=None)

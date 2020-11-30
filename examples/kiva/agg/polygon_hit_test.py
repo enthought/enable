@@ -1,12 +1,13 @@
 from __future__ import print_function
-import numpy
-
-from kiva.api import points_in_polygon
 
 try:
     from time import perf_counter
 except ImportError:
     from time import clock as perf_counter
+
+import numpy
+
+from kiva.api import points_in_polygon
 
 poly = numpy.array(((0.0, 0.0),
                     (10.0, 0.0),

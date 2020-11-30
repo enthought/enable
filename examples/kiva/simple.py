@@ -2,7 +2,6 @@ import tempfile
 
 from enable.api import ConstraintsContainer
 from enable.example_support import DemoFrame, demo_main
-from enable.kiva_graphics_context import GraphicsContext
 from enable.primitives.image import Image
 from kiva import constants
 from kiva.image import GraphicsContext

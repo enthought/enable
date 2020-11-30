@@ -4,7 +4,6 @@ from scipy import pi
 
 from enable.api import ConstraintsContainer
 from enable.example_support import demo_main, DemoFrame
-from enable.kiva_graphics_context import GraphicsContext
 from enable.primitives.image import Image
 from kiva.image import GraphicsContext
 
@@ -68,4 +67,3 @@ if __name__ == "__main__":
     # Save demo so that it doesn't get garbage collected when run within
     # existing event loop (i.e. from ipython).
     demo = demo_main(Demo)
-

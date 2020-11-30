@@ -56,7 +56,7 @@ class Demo(DemoFrame):
             image.top == container.contents_top,
             image.bottom == container.contents_bottom,
             image.layout_width == ratio * image.layout_height,
-            ]
+        ]
         return container
 
 

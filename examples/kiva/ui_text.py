@@ -86,7 +86,6 @@ class MyCanvas(Component):
 
 
 class Demo(DemoFrame):
-
     def _create_component(self):
         return MyCanvas()
 

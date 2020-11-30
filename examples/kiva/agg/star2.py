@@ -1,6 +1,5 @@
-
-
 from math import pi
+
 from kiva import agg
 
 

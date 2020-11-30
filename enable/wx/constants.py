@@ -124,8 +124,8 @@ key_symbols = [
     wx.WXK_NUMPAD7,
     wx.WXK_NUMPAD8,
     wx.WXK_NUMPAD9,
-    wx.WXK_PAGEDOWN,  # wx.WXK_NEXT, # Old
-    wx.WXK_PAGEUP,  # wx.WXK_PRIOR, # Old
+    wx.WXK_PAGEDOWN,  # Formerly: wx.WXK_NEXT
+    wx.WXK_PAGEUP,  # Formerly: wx.WXK_PRIOR
     wx.WXK_PAUSE,
     wx.WXK_PRINT,
     wx.WXK_RIGHT,

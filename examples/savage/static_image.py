@@ -1,5 +1,6 @@
 import os
 import sys
+
 from enable.savage.svg.document import SVGDocument
 from enable.savage.trait_defs.ui.svg_editor import SVGEditor
 from traits.api import HasTraits, Instance
@@ -24,7 +25,6 @@ class StaticImageExample(HasTraits):
 
 
 def main():
-
     if '--wx' in sys.argv:
         from enable.savage.svg.backends.wx.renderer import Renderer
         sys.argv.remove('--wx')
@@ -39,7 +39,6 @@ def main():
 
 
 demo = main()
-
 
 if __name__ == "__main__":
     demo.configure_traits()

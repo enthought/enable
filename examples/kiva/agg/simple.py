@@ -4,7 +4,7 @@ from kiva import agg
 from kiva import constants
 
 gc = agg.GraphicsContextArray((100, 100))
-#gc.bmp_array[:5,:5] = (128,128,128,128)
+# gc.bmp_array[:5,:5] = (128,128,128,128)
 gc.set_stroke_color((1, 0, 0))
 # gc.move_to(0,0)
 # gc.line_to(100,100)

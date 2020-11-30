@@ -19,17 +19,27 @@ class ContainerTestCase(EnableUnitTest):
 
     def create_simple_components(self):
         "Returns a container with 3 items in it; used by several tests."
-        c1 = Component(bounds=[5.0, 10.0])
-        c2 = Component(bounds=[6.0, 10.0])
-        c3 = Component(bounds=[7.0, 10.0])
+        self.c1 = Component(bounds=[5.0, 10.0])
+        self.c2 = Component(bounds=[6.0, 10.0])
+        self.c3 = Component(bounds=[7.0, 10.0])
         container = Container(bounds=[100.0, 100.0])
-        container.add(c1)
-        c1.position = [20, 10]
-        container.add(c2)
-        c2.position = [40, 10]
-        container.add(c3)
-        c3.position = [60, 10]
+        container.add(self.c1)
+        self.c1.position = [20, 10]
+        container.add(self.c2)
+        self.c2.position = [40, 10]
+        container.add(self.c3)
+        self.c3.position = [60, 10]
         return container
+
+    def test_get_set_components(self):
+        container = self.create_simple_components()
+        # Exercise get_components:
+        self.assertEqual(container.components, [self.c1, self.c2, self.c3])
+
+        # Exercise set_components:
+        new_list = [self.c1, self.c3]
+        container.components = new_list
+        self.assertEqual(container.components, new_list)
 
     def test_add_remove(self):
         container = self.create_simple_components()

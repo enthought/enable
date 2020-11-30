@@ -4,7 +4,6 @@ from math import sin, cos, pi
 
 from numpy import array, arange
 
-import kiva
 from kiva import agg
 
 
@@ -27,7 +26,7 @@ star_points = [(-20, -30),
 ring_point = (0, 35)
 ring_radius = 5
 
-#fill_color = array((1.0,0,0))
+# fill_color = array((1.0,0,0))
 fill_color = array((200., 184., 106.)) / 255.
 point_color = array((.3, .3, .3))
 line_color = point_color
@@ -102,7 +101,8 @@ line_color = (0.0, 0.0, 0.0)
 gc.scale_ctm(4.0, 4.0)
 
 offsets = array(((0, 0), (80, 0), (160, 0), (240, 0), (320, 0)))
-modes = [agg.FILL, agg.EOF_FILL, agg.STROKE, agg.FILL_STROKE, agg.EOF_FILL_STROKE]
+modes = [agg.FILL, agg.EOF_FILL, agg.STROKE, agg.FILL_STROKE,
+         agg.EOF_FILL_STROKE]
 pairs = list(zip(modes, offsets))
 center = array((50, 50))
 for mode, offset in pairs:

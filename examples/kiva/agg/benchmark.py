@@ -5,12 +5,16 @@ from __future__ import print_function
 from numpy import array, shape, arange, transpose, sin, cos, zeros, pi
 from scipy import stats
 
-import kiva
-from kiva import agg
 try:
     from time import perf_counter
 except ImportError:
     from time import clock as perf_counter
+
+from numpy import array, shape, arange, transpose, sin, cos, zeros, pi
+from scipy import stats
+
+import kiva
+from kiva import agg
 
 
 def benchmark_real_time(cycles=10, n_pts=1000, sz=(1000, 1000)):
@@ -28,7 +32,10 @@ def benchmark_real_time(cycles=10, n_pts=1000, sz=(1000, 1000)):
     # TODO: module 'kiva.agg' has no attribute 'GraphicsContextBitmap'
     gc = agg.GraphicsContextBitmap(sz)
     for i in range(cycles):
-        y[:] = height / 2. + height / 2. * sin(x * 2 * pi / width + i * interval)
+        y[:] = (
+            height / 2.
+            + height / 2. * sin(x * 2 * pi / width + i * interval)
+        )
         # gc.clear()
         gc.lines(pts)
         gc.stroke_path()
@@ -85,7 +92,10 @@ def benchmark_draw_path_flags(cycles=10, n_pts=1000, sz=(1000, 1000)):
         for i in range(cycles):
             # TODO: module 'kiva.agg' has no attribute 'GraphicsContextBitmap'
             gc = agg.GraphicsContextBitmap(sz)
-            y[:] = height / 2. + height / 2. * sin(x * 2 * pi / width + i * interval)
+            y[:] = (
+                height / 2.
+                + height / 2. * sin(x * 2 * pi / width + i * interval)
+            )
             gc.lines(pts)
             gc.draw_path(flag)
 
@@ -207,12 +217,15 @@ def benchmark_symbols_all_at_once(n_pts=1000, sz=(1000, 1000)):
 
 
 def run_all_benchmarks(n_pts=1000, sz=(500, 500)):
-    # benchmark_real_time(n_pts=n_pts, sz=sz)  # TODO: does not work: Fix or remove?
-    # benchmark_compiled_path(n_pts=n_pts, sz=sz)  # TODO: does not work: Fix or remove?
+    # TODO: does not work: Fix or remove?
+    # benchmark_real_time(n_pts=n_pts, sz=sz)
+    # TODO: does not work: Fix or remove?
+    # benchmark_compiled_path(n_pts=n_pts, sz=sz)
     benchmark_individual_symbols(n_pts=n_pts, sz=sz)
     benchmark_rect(n_pts=n_pts, sz=sz)
     benchmark_symbols_all_at_once(n_pts=n_pts, sz=sz)
-    # benchmark_draw_path_flags(n_pts=n_pts, sz=sz)  # TODO: does not work: Fix or remove?
+    # TODO: does not work: Fix or remove?
+    # benchmark_draw_path_flags(n_pts=n_pts, sz=sz)
 
 
 if __name__ == '__main__':

@@ -2,7 +2,7 @@
 from unittest import TestCase
 
 from traits.api import Any
-from traitsui.tests._tools import skip_if_not_qt4
+from enable.tests._testing import skip_if_not_qt
 
 from enable.container import Container
 from enable.base_tool import BaseTool
@@ -19,7 +19,7 @@ class MouseEventTool(BaseTool):
         self.event = event
 
 
-@skip_if_not_qt4
+@skip_if_not_qt
 class MouseWheelTestCase(TestCase):
 
     def setUp(self):

@@ -17,7 +17,9 @@ class DragTool(BaseTool):
     drag_button = Enum("left", "right")
 
     # End the drag operation if the mouse leaves the associated component?
-    end_drag_on_leave = Bool(True)
+    # NOTE: This behavior depends on "mouse_leave" events, which in general
+    # are not fired when `capture_mouse` is True (default).
+    end_drag_on_leave = Bool(False)
 
     # These keys, if pressed during drag, cause the drag operation to reset.
     cancel_keys = List(Str, ["Esc"])
@@ -30,8 +32,10 @@ class DragTool(BaseTool):
     # The modifier key that must be used to activate the tool.
     modifier_key = Enum("none", "shift", "alt", "control")
 
-    # Whether or not to capture the mouse during the drag operation.  In
-    # general this is a good idea.
+    # Whether or not to capture the mouse during the drag operation. In effect,
+    # this routes mouse events back to this tool for dispatching, rather than
+    # allowing the event to be handled by the window. This may have effects
+    # surrounding "mouse_leave" events: see note on `end_drag_on_leave` flag.
     capture_mouse = Bool(True)
 
     #------------------------------------------------------------------------

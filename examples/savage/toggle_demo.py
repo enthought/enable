@@ -1,9 +1,8 @@
 import os
 
-from traits.api import HasTraits
-from traitsui.api import View, Item
 from enable.savage.trait_defs.ui.svg_button import SVGButton
-
+from traits.api import HasTraits
+from traitsui.api import Item, View
 
 ROOT = os.path.dirname(__file__)
 PAUSE_ICON = os.path.join(ROOT, 'player_pause.svg')
@@ -11,7 +10,6 @@ RESUME_ICON = os.path.join(ROOT, 'player_play.svg')
 
 
 class SVGDemo(HasTraits):
-
     pause = SVGButton('Pause', filename=PAUSE_ICON,
                       toggle_filename=RESUME_ICON,
                       toggle_state=True,
@@ -24,7 +22,6 @@ class SVGDemo(HasTraits):
 
 
 demo = SVGDemo()
-
 
 if __name__ == "__main__":
     demo.configure_traits()

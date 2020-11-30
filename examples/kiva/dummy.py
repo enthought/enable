@@ -7,13 +7,13 @@ from kiva.fonttools import Font
 # This is mostly a python translation of the tests in kiva/agg/src/dummy.cpp
 
 
-BLACK =      (0.0, 0.0, 0.0, 1.0)
-WHITE =      (1.0, 1.0, 1.0, 1.0)
-LIGHTGRAY =  (0.2, 0.2, 0.2, 1.0)
-RED =        (1.0, 0.0, 0.0, 1.0)
-GREEN =      (0.0, 1.0, 0.0, 1.0)
-BLUE =       (0.0, 0.0, 1.0, 1.0)
-NICEBLUE =   (0.411, 0.584, 0.843, 1.0)
+BLACK = (0.0, 0.0, 0.0, 1.0)
+WHITE = (1.0, 1.0, 1.0, 1.0)
+LIGHTGRAY = (0.2, 0.2, 0.2, 1.0)
+RED = (1.0, 0.0, 0.0, 1.0)
+GREEN = (0.0, 1.0, 0.0, 1.0)
+BLUE = (0.0, 0.0, 1.0, 1.0)
+NICEBLUE = (0.411, 0.584, 0.843, 1.0)
 
 PI = 3.141592654
 

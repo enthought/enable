@@ -1,14 +1,14 @@
 from __future__ import print_function
 
-from numpy import array
-
-from kiva import agg
-import kiva
-
 try:
     from time import perf_counter
 except ImportError:
     from time import clock as perf_counter
+
+from numpy import array
+
+import kiva
+from kiva import agg
 
 
 def dash(sz=(1000, 1000)):

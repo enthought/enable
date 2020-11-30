@@ -16,7 +16,8 @@ the wxPython user interface toolkit.
 import wx
 
 from enable.colors import color_table
-from enable.api import Label, Window
+from enable.label import Label
+from enable.window import Window
 from traits.api import Bool
 from traits.trait_base import SequenceTypes
 
@@ -31,7 +32,7 @@ from traitsui.wx.helper import position_window
 #-------------------------------------------------------------------------------
 
 # Standard color samples:
-COLOR_CHOICES = ( 0, 51, 102, 153, 204, 255 )
+COLOR_CHOICES = (0, 51, 102, 153, 204, 255)
 COLOR_SAMPLES = tuple([wx.Colour(r, g, b)
                        for r in COLOR_CHOICES
                        for g in COLOR_CHOICES
@@ -378,8 +379,8 @@ def color_editor_for ( editor, parent, update_handler = None ):
         control = wx.Button( panel, -1, '', size = wx.Size( 18, 18 ) )
         control.SetBackgroundColour( color_sample )
         control.update_handler = update_handler
-        panel.Bind(wx.EVT_BUTTON, 
-                   swatch_editor.update_object_from_swatch, 
+        panel.Bind(wx.EVT_BUTTON,
+                   swatch_editor.update_object_from_swatch,
                    id=control.GetId())
         sizer2.Add( control )
         editor.set_tooltip( control )

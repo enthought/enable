@@ -220,6 +220,58 @@ class EnableTestAssistant(KivaTestAssistant):
                                    '{0}_down'.format(button))
         return event
 
+    def mouse_dclick(self, interactor, x, y, button='left', window=None,
+                     alt_down=False, control_down=False, shift_down=False):
+        """ Send a mouse double-click event to the interactor.
+
+        Parameters
+        ----------
+        interactor : Interactor
+            The interactor (or subclass) where to dispatch the event.
+
+        x : float
+            The x coordinates of the mouse position
+
+        y : float
+            The y coordinates of the mouse position
+
+        button : {'left', 'right'}, optional
+            The mouse button for which to simulate a press (down) action.
+
+        window : AbstractWindow, optional
+            The enable AbstractWindow to associate with the event. Default
+            is to create a mock class instance. If the window has a mouse
+            owner then that interactor is used.
+
+        alt_down : boolean, optional
+            The button is pressed while `alt` is down. Default value is False.
+
+        control_down : boolean, optional
+            The button is pressed while `control` is down. Default value is
+            False.
+
+        shift_down : boolean, optional
+            The button is pressed while `shift` is down. Default value is
+            False.
+
+        Returns
+        -------
+        event : MouseEvent
+            The event instance after it has be processed by the `interactor`.
+
+        """
+        window = self.create_mock_window() if window is None else window
+        event_attributes = {'x': x, 'y': y,
+                            'alt_down': alt_down,
+                            'control_down': control_down,
+                            'shift_down': shift_down,
+                            '{0}_down'.format(button): True,
+                            'window': window}
+        event = self.create_mouse_event(**event_attributes)
+        self._mouse_event_dispatch(interactor, event,
+                                   '{0}_dclick'.format(button))
+        return event
+
     def mouse_move(self, interactor, x, y, window=None,
                    alt_down=False, control_down=False, shift_down=False):
         """ Send a mouse move event to the interactor.
