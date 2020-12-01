@@ -257,7 +257,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
                                 (converted_img.width(),
                                  converted_img.height()),
                                 piltostring(converted_img.bmp_array))
-        if rect == None:
+        if rect is None:
             rect = (0, 0, img.width(), img.height())
 
         left, top, width, height = rect
