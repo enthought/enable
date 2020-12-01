@@ -152,7 +152,13 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 github_url_fmt = "git+http://github.com/enthought/{0}.git#egg={0}"
 
 
-@click.group()
+# Ensure that "-h" is supported for getting help.
+CONTEXT_SETTINGS = {
+    "help_option_names": ["-h", "--help"],
+}
+
+
+@click.group(context_settings=CONTEXT_SETTINGS)
 def cli():
     pass
 
@@ -232,6 +238,23 @@ def install(runtime, toolkit, pillow, environment, source):
     execute([install_local], parameters)
 
     click.echo('Done install')
+
+
+@cli.command()
+@click.option('--runtime', default='3.6')
+@click.option('--toolkit', default='null')
+@click.option('--pillow', default='pillow')
+@click.option('--environment', default=None)
+def shell(runtime, toolkit, pillow, environment):
+    """ Create a shell into the EDM development environment
+    (aka 'activate' it).
+
+    """
+    parameters = get_parameters(runtime, toolkit, pillow, environment)
+    commands = [
+        "edm shell -e {environment}",
+    ]
+    execute(commands, parameters)
 
 
 @cli.command()
