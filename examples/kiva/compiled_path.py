@@ -33,7 +33,8 @@ def compiled_path():
     gc.set_stroke_color((0, 0, 1, 1))
     gc.draw_path_at_points(locs, path, STROKE)
 
-    file_path = tempfile.mktemp(suffix='.jpg')
+    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as fid:
+        file_path = fid.name
 
     gc.save(file_path)
 

@@ -11,7 +11,8 @@ def rect():
     gc.clear()
     gc.rect(100, 100, 300, 300)
     gc.draw_path()
-    file_path = tempfile.mktemp(suffix='.bmp')
+    with tempfile.NamedTemporaryFile(suffix='.bmp', delete=False) as fid:
+        file_path = fid.name
     gc.save(file_path)
     return file_path
 

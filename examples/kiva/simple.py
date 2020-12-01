@@ -17,7 +17,8 @@ def simple():
     gc.set_fill_color((0, 0, 1))
     gc.rect(0, 0, 30, 30)
     gc.draw_path()
-    file_path = tempfile.mktemp(suffix='.bmp')
+    with tempfile.NamedTemporaryFile(suffix='.bmp', delete=False) as fid:
+        file_path = fid.name
     gc.save(file_path)
     return file_path
 

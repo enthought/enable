@@ -85,7 +85,8 @@ def gradient():
     gc = GraphicsContext((500, 500))
     gc.scale_ctm(1.25, 1.25)
     draw(gc)
-    file_path = tempfile.mktemp(suffix='.png')
+    with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as fid:
+        file_path = fid.name
     gc.save(file_path, file_format='png')
     return file_path
 

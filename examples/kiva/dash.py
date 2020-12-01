@@ -34,7 +34,8 @@ def dash(sz=(1000, 1000)):
     gc.close_path()
     gc.draw_path()
     t2 = perf_counter()
-    file_path = tempfile.mktemp(suffix='.bmp')
+    with tempfile.NamedTemporaryFile(suffix='.bmp', delete=False) as fid:
+        file_path = fid.name
     gc.save(file_path)
     tot_time = t2 - t1
     print('time:', tot_time)

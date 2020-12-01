@@ -16,7 +16,8 @@ def simple():
     # directly manipulate the underlying Numeric array.
     # The color tuple is expressed as BGRA.
     gc.bmp_array[:99, :100] = (139, 60, 71, 255)
-    file_path = tempfile.mktemp(suffix='.bmp')
+    with tempfile.NamedTemporaryFile(suffix='.bmp', delete=False) as fid:
+        file_path = fid.name
     gc.save(file_path)
 
     return file_path

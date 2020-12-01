@@ -34,7 +34,8 @@ def ellipse():
     gc.rect(95, 95, 10, 10)
     gc.fill_path()
     draw_ellipse(gc, 100, 100, 35.0, 25.0, pi / 6)
-    file_path = tempfile.mktemp(suffix='.bmp')
+    with tempfile.NamedTemporaryFile(suffix='.bmp', delete=False) as fid:
+        file_path = fid.name
     gc.save(file_path)
     return file_path
 
