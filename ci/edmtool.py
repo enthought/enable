@@ -153,9 +153,9 @@ github_url_fmt = "git+http://github.com/enthought/{0}.git#egg={0}"
 
 
 # Ensure that "-h" is supported for getting help.
-CONTEXT_SETTINGS = dict(
-    help_option_names=["-h", "--help"],
-)
+CONTEXT_SETTINGS = {
+    "help_option_names": ["-h", "--help"],
+}
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
