@@ -288,5 +288,3 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
         else:
             self._reset_state((self.component.view_position,
                                 self.component.view_bounds))
-
-# EOF

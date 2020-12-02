@@ -124,8 +124,8 @@ key_symbols = [
     wx.WXK_NUMPAD7,
     wx.WXK_NUMPAD8,
     wx.WXK_NUMPAD9,
-    wx.WXK_NEXT,
-    wx.WXK_PRIOR,
+    wx.WXK_PAGEDOWN,  # Formerly: wx.WXK_NEXT
+    wx.WXK_PAGEUP,  # Formerly: wx.WXK_PRIOR
     wx.WXK_PAUSE,
     wx.WXK_PRINT,
     wx.WXK_RIGHT,
@@ -139,13 +139,12 @@ key_symbols = [
 ]
 
 
-
 if len(key_symbols) != len(key_names):
     warnings.warn("The WX toolkit backend keymap is out of sync!")
 
 KEY_MAP = dict(zip(key_symbols, key_names))
 
-if tuple(float(v) for v in wx.__version__.split('.')) < (2, 9, 4):
+if wx.VERSION[:3] < (2, 9, 4):
     mouse_wheel_axes = [0, 1]
 else:
     mouse_wheel_axes = [wx.MOUSE_WHEEL_VERTICAL, wx.MOUSE_WHEEL_HORIZONTAL]

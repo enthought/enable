@@ -590,5 +590,3 @@ class Scrolled(Container):
             if key in state:
                 del state[key]
         return state
-
-### EOF

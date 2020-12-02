@@ -39,7 +39,7 @@ class ContainerTestCase(EnableUnitTest):
         # Exercise set_components:
         new_list = [self.c1, self.c3]
         container.components = new_list
-        self.assertIs(container.components, new_list)
+        self.assertEqual(container.components, new_list)
 
     def test_add_remove(self):
         container = self.create_simple_components()
@@ -97,5 +97,3 @@ class ContainerTestCase(EnableUnitTest):
 if __name__ == "__main__":
     import nose
     nose.main()
-
-# EOF

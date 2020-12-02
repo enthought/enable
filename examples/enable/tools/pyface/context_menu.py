@@ -39,5 +39,3 @@ class MyFrame(DemoFrame):
 
 if __name__ == "__main__":
     demo_main(MyFrame)
-
-# EOF

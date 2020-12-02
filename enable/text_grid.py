@@ -286,6 +286,3 @@ class TextGrid(Component):
 
     def _get_cell_size(self):
         return self._cell_size
-
-
-# EOF

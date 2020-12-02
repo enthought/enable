@@ -206,6 +206,3 @@ class PointPolygon(DrawingTool):
         else:
             result = None
         return result
-
-
-# EOF

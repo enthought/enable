@@ -63,7 +63,7 @@ class ButtonRenderPanel(RenderPanel):
     def GetBackgroundColour(self):
         bgcolor = copy.copy(WindowColor)
         if self.state == 'down':
-            red, green, blue = bgcolor.Get()
+            red, green, blue = bgcolor.Get()[:3]
             red -= 15
             green -= 15
             blue -= 15
@@ -76,7 +76,7 @@ class ButtonRenderPanel(RenderPanel):
         dc.Clear()
         dc.SetFont(wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT))
 
-        gc = wx.GraphicsContext_Create(dc)
+        gc = wx.GraphicsContext.Create(dc)
 
         if self.toggle_state and self.button.factory.toggle and \
                 not self.button.factory.toggle_filename:

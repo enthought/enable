@@ -70,5 +70,3 @@ def font_metrics_provider():
     gc = GraphicsContext((1, 1))
     gc.set_font(Font())
     return gc
-
-# EOF

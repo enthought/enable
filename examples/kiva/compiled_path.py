@@ -6,7 +6,7 @@
 import tempfile
 
 from enable.api import ConstraintsContainer
-from enable.example_support import DemoFrame
+from enable.example_support import DemoFrame, demo_main
 from enable.primitives.image import Image
 from kiva.constants import STROKE
 from kiva.image import GraphicsContext, CompiledPath
@@ -56,5 +56,11 @@ class Demo(DemoFrame):
             image.top == container.contents_top,
             image.bottom == container.contents_bottom,
             image.layout_width == ratio * image.layout_height,
-            ]
+        ]
         return container
+
+
+if __name__ == "__main__":
+    # Save demo so that it doesn't get garbage collected when run within
+    # existing event loop (i.e. from ipython).
+    demo = demo_main(Demo)

@@ -130,6 +130,3 @@ class DragBox(Box):
             y = min(self.start_y, event.y)
             dy = abs(event.y-self.start_y)
         self.bounds = (x, y, dx, dy)
-
-
-#### EOF ######################################################################
