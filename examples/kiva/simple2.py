@@ -11,23 +11,23 @@ def simple():
     gc.set_fill_color((0, 0, 0))
     gc.rect(99, 100, 300, 300)
     gc.draw_path()
-    gc.save(tempfile.mktemp(suffix=".bmp"))
+
+    with tempfile.NamedTemporaryFile(suffix='.bmp') as fid:
+        gc.save(fid.name)
 
     # directly manipulate the underlying Numeric array.
     # The color tuple is expressed as BGRA.
     gc.bmp_array[:99, :100] = (139, 60, 71, 255)
-    with tempfile.NamedTemporaryFile(suffix='.bmp', delete=False) as fid:
-        file_path = fid.name
-    gc.save(file_path)
-
-    return file_path
+    with tempfile.NamedTemporaryFile(suffix='.bmp') as fid:
+        gc.save(fid.name)
+        image = Image.from_file(fid.name, resist_width='weak',
+                                resist_height='weak')
+    return image
 
 
 class Demo(DemoFrame):
     def _create_component(self):
-        file_path = simple()
-        image = Image.from_file(file_path, resist_width='weak',
-                                resist_height='weak')
+        image = simple()
 
         container = ConstraintsContainer(bounds=[500, 500])
         container.add(image)

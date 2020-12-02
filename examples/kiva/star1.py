@@ -36,10 +36,11 @@ def stars():
     add_star(gc)
     gc.set_fill_color((0.0, 0.0, 1.0))
     gc.draw_path(constants.EOF_FILL_STROKE)
-    with tempfile.NamedTemporaryFile(suffix='.bmp', delete=False) as fid:
-        file_path = fid.name
-    gc.save(file_path)
-    return file_path
+    with tempfile.NamedTemporaryFile(suffix='.bmp') as fid:
+        gc.save(fid.name)
+        image = Image.from_file(fid.name, resist_width='weak',
+                                resist_height='weak')
+    return image
 
 
 class Demo(DemoFrame):
@@ -50,9 +51,7 @@ class Demo(DemoFrame):
                        resizable=True)
 
     def _canvas_default(self):
-        file_path = stars()
-        image = Image.from_file(file_path, resist_width='weak',
-                                resist_height='weak')
+        image = stars()
 
         container = ConstraintsContainer(bounds=[500, 500])
         container.add(image)
