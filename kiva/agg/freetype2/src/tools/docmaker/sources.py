@@ -208,7 +208,7 @@ class  SourceBlock:
         self.format    = processor.format
         self.content   = []
 
-        if self.format is None:
+        if self.format == None:
             return
 
         words = []
@@ -297,7 +297,7 @@ class  SourceProcessor:
             if line[-1] == '\012':
                 line = line[0:-1]
 
-            if self.format is None:
+            if self.format == None:
                 self.process_normal_line( line )
             else:
                 if self.format.end.match( line ):

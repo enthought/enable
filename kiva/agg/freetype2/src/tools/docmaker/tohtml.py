@@ -437,7 +437,7 @@ class  HtmlFormatter( Formatter ):
         self.index_items = {}
 
     def  index_dump( self, index_filename = None ):
-        if index_filename is None:
+        if index_filename == None:
             index_filename = self.file_prefix + "index.html"
 
         Formatter.index_dump( self, index_filename )
@@ -480,10 +480,10 @@ class  HtmlFormatter( Formatter ):
         print(self.html_footer)
 
     def  toc_dump( self, toc_filename = None, index_filename = None ):
-        if toc_filename is None:
+        if toc_filename == None:
             toc_filename = self.file_prefix + "toc.html"
 
-        if index_filename is None:
+        if index_filename == None:
             index_filename = self.file_prefix + "index.html"
 
         Formatter.toc_dump( self, toc_filename, index_filename )
