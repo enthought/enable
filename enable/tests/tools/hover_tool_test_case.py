@@ -3,7 +3,7 @@
 
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
-from unittest import TestCase
+import unittest
 try:
     from unittest import mock
 except ImportError:
@@ -19,7 +19,8 @@ from enable.tests._testing import skip_if_null
 
 
 GuiTestAssistant = toolkit_object('util.gui_test_assistant:GuiTestAssistant')
-if GuiTestAssistant.__name__ == "Unimplemented":
+no_gui_test_assistant = GuiTestAssistant.__name__ == "Unimplemented"
+if no_gui_test_assistant:
 
     # ensure null toolkit has an inheritable GuiTestAssistant
     # Note that without this definition, the test case fails as soon as it
@@ -47,7 +48,10 @@ LOCATIONS = [
 
 
 @skip_if_null
-class HoverToolTestCase(EnableTestAssistant, GuiTestAssistant, TestCase):
+@unittest.skipIf(no_gui_test_assistant, "GuiTestAssistant not available.")
+class HoverToolTestCase(
+        EnableTestAssistant, GuiTestAssistant, unittest.TestCase
+    ):
 
     def setUp(self):
         super(HoverToolTestCase, self).setUp()

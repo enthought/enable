@@ -384,6 +384,7 @@ class BaseWindow(AbstractWindow):
                 right_down=event.RightIsDown(),
                 mouse_wheel=mouse_wheel,
                 mouse_wheel_axis=wheel_axis,
+                mouse_wheel_delta=mouse_wheel_delta,
                 window=self,
             )
 
