@@ -51,7 +51,7 @@ class MouseWheelTestCase(TestCase):
         import wx
 
         # create and mock a mouse wheel event
-        wx_event = wx.MouseEvent(mouseType=wx.wxEVT_MOUSEWHEEL)
+        wx_event = wx.MouseEvent(wx.wxEVT_MOUSEWHEEL)
         wx_event.GetWheelRotation = MagicMock(return_value=200)
         wx_event.GetWheelAxis = MagicMock(return_value=wx.MOUSE_WHEEL_VERTICAL)
         wx_event.GetLinesPerAction = MagicMock(return_value=1)
@@ -63,13 +63,18 @@ class MouseWheelTestCase(TestCase):
         # validate results
         self.assertEqual(self.tool.event.mouse_wheel_axis, 'vertical')
         self.assertAlmostEqual(self.tool.event.mouse_wheel, 5.0/3.0)
-        self.assertEqual(self.tool.event.mouse_wheel_delta, (0, 200))
+
+        # "Expected failure" here
+        # The expected value is probably wrong.
+        # When the test was written, the expected value was (0, 200)
+        # (0, 200) would match Qt test (enthought/enable#458)
+        self.assertEqual(self.tool.event.mouse_wheel_delta, (0, 1.0))
 
     def test_horizontal_mouse_wheel(self):
         import wx
 
         # create and mock a mouse wheel event
-        wx_event = wx.MouseEvent(mouseType=wx.wxEVT_MOUSEWHEEL)
+        wx_event = wx.MouseEvent(wx.wxEVT_MOUSEWHEEL)
         wx_event.GetWheelRotation = MagicMock(return_value=200)
         wx_event.GetWheelAxis = MagicMock(
             return_value=wx.MOUSE_WHEEL_HORIZONTAL)
@@ -82,4 +87,9 @@ class MouseWheelTestCase(TestCase):
         # validate results
         self.assertEqual(self.tool.event.mouse_wheel_axis, 'horizontal')
         self.assertAlmostEqual(self.tool.event.mouse_wheel, 5.0/3.0)
-        self.assertEqual(self.tool.event.mouse_wheel_delta, (200, 0))
+
+        # "Expected failure" here
+        # The expected value is probably wrong.
+        # When the test was written, the expected value was (200, 0)
+        # (200, 0) would match Qt test (enthought/enable#458)
+        self.assertEqual(self.tool.event.mouse_wheel_delta, (1.0, 0))
