@@ -222,7 +222,7 @@ class Encoding:
             assert base is None, "Can't have a base encoding for a standard encoding"
             self.baseEncodingName = name
             self.vector = _fontdata.encodings[name]
-        elif base == None:
+        elif base is None:
             # assume based on the usual one
             self.baseEncodingName = defaultEncoding
             self.vector = _fontdata.encodings[defaultEncoding]

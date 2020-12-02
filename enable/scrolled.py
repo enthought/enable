@@ -273,7 +273,7 @@ class Scrolled(Container):
             self.update_bounds()
 
     def _component_bounds_handler(self, object, name, old, new):
-        if old == None or new == None or old[0] != new[0] or old[1] != new[1]:
+        if old is None or new is None or old[0] != new[0] or old[1] != new[1]:
             self.update_bounds()
         return
 
