@@ -54,9 +54,7 @@ class HoverToolTestCase(
     ):
 
     def setUp(self):
-        EnableTestAssistant.setUp(self)
-        GuiTestAssistant.setUp(self)
-
+        super(HoverToolTestCase, self).setUp()
         self.component = Component(
             position=[LOWER_BOUND, LOWER_BOUND],
             bounds=[SIZE, SIZE],
@@ -64,10 +62,6 @@ class HoverToolTestCase(
         # add hover tool with hover zone in lower-left corner of component
         self.tool = HoverTool(component=self.component, area_type='LL')
         self.component.tools.append(self.tool)
-
-    def tearDown(self):
-        GuiTestAssistant.tearDown(self)
-        EnableTestAssistant.tearDown(self)
 
     @mock.patch('enable.tools.hover_tool.GetGlobalMousePosition')
     def test_basic_hover(self, mock_mouse_pos):
