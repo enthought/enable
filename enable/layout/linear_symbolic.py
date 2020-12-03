@@ -4,13 +4,10 @@
 # ------------------------------------------------------------------------------
 from abc import ABCMeta
 
-import six
-
 import kiwisolver as kiwi
 
 
-@six.add_metaclass(ABCMeta)
-class LinearSymbolic(object):
+class LinearSymbolic(object, metaclass=ABCMeta):
     """ An abstract base class for testing linear symbolic interfaces.
 
     """

@@ -18,11 +18,10 @@
 from __future__ import print_function
 
 # Major library imports
+from io import StringIO
 import os
 import sys
 import warnings
-
-import six
 
 from numpy import arange, ravel, array
 
@@ -50,7 +49,7 @@ CompiledPath = None
 
 
 def _strpoints(points):
-    c = six.StringIO()
+    c = StringIO()
     for x,y in points:
         c.write('%3.2f,%3.2f ' % (x,y))
     return c.getvalue()
@@ -111,12 +110,12 @@ class PSGC(basecore2d.GraphicsContextBase):
         super(PSGC, self).__init__(size, *args, **kwargs)
         self.size = size
         self._height = size[1]
-        self.contents = six.StringIO()
+        self.contents = StringIO()
         self._clipmap = {}
         self.clip_id = None
 
     def clear(self):
-        self.contents = six.StringIO()
+        self.contents = StringIO()
 
     def width(self):
         return self.size[0]

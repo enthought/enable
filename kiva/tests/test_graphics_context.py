@@ -7,8 +7,6 @@ from PIL import Image as PILImage
 from hypothesis import given
 from hypothesis.strategies import sampled_from
 
-import six
-
 from kiva.image import GraphicsContext
 from kiva.compat import piltostring
 

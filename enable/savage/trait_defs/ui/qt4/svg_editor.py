@@ -22,7 +22,7 @@
 #  Imports:
 #-------------------------------------------------------------------------------
 
-from six import BytesIO
+from io import BytesIO
 from xml.etree.cElementTree import ElementTree
 
 from enable.savage.svg.document import SVGDocument

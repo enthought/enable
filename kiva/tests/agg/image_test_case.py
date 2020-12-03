@@ -4,8 +4,6 @@ from timeit import Timer
 import os, sys
 import unittest
 
-import six
-
 from PIL import Image
 from numpy import alltrue, array, concatenate, dtype, frombuffer, newaxis, \
                   pi, ravel, ones, zeros

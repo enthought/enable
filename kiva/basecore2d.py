@@ -32,8 +32,6 @@ transform
 
 from __future__ import absolute_import, print_function
 
-import six.moves as sm
-
 import numpy as np
 from numpy import alltrue, array, asarray, float64, shape, pi, concatenate
 
@@ -449,7 +447,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         if self.path_transform_indices:
             tf = array(self.active_subpath,
                        object)[self.path_transform_indices, :]
-            self.path_transform_indices = list(sm.range(len(tf)))
+            self.path_transform_indices = list(range(len(tf)))
             self.active_subpath = list(tf)
         else:
             self.active_subpath = []
@@ -514,7 +512,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
             The current point is moved to the last point in 'ends'.
         """
         self._new_subpath()
-        for i in sm.range(min(len(starts), len(ends))):
+        for i in range(min(len(starts), len(ends))):
             self.active_subpath.append((POINT, starts[i]))
             self.active_subpath.append((LINE, ends[i]))
         self.state.current_point = ends[i]

@@ -4,8 +4,6 @@ from math import sqrt, pi
 import sys
 import warnings
 
-import six
-
 import numpy as np
 
 from enable.compiled_path import CompiledPath as KivaCompiledPath
@@ -406,7 +404,7 @@ class Renderer(NullRenderer):
 
     @classmethod
     def setFontStyle(cls, font, style):
-        if isinstance(style, six.string_types):
+        if isinstance(style, str):
             if style not in fonttools.font.font_styles:
                 warnings.warn('font style "%s" not supported' % style)
             else:
@@ -416,7 +414,7 @@ class Renderer(NullRenderer):
 
     @classmethod
     def setFontWeight(cls, font, weight):
-        if isinstance(weight, six.string_types):
+        if isinstance(weight, str):
             if weight not in fonttools.font.font_weights:
                 warnings.warn('font weight "%s" not supported' % weight)
             else:

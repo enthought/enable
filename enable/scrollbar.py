@@ -7,7 +7,7 @@ them appropriately in the draw phase.
 
 from __future__ import with_statement
 
-import six.moves as sm
+from functools import reduce
 # PZW: Define a scrollbar that uses the system/wx-native scrollbar instead
 # of drawing our own.
 
@@ -167,13 +167,13 @@ class ScrollBar ( Component ):
         sb_image[ 'vtrack' ] = self.image_for('=sb_vtrack')
         sb_image[ 'htrack' ] = self.image_for('=sb_htrack')
         v_width   = sb_image[ 'vtrack' ].width()
-        vs_height = sm.reduce(lambda a, b: a + sb_image[b].height(),
+        vs_height = reduce(lambda a, b: a + sb_image[b].height(),
                             [ 'vtop', 'vbottom', 'vmid' ], 0)
-        v_height  = sm.reduce(lambda a, b: a + sb_image[b].height(),
+        v_height  = reduce(lambda a, b: a + sb_image[b].height(),
                             [ 'aup', 'adown' ], vs_height)
-        hs_width  = sm.reduce(lambda a, b: a + sb_image[b].width(),
+        hs_width  = reduce(lambda a, b: a + sb_image[b].width(),
                             [ 'hleft', 'hright', 'hmid' ], 0)
-        h_width   = sm.reduce(lambda a, b: a + sb_image[b].width(),
+        h_width   = reduce(lambda a, b: a + sb_image[b].width(),
                             [ 'aleft', 'aright' ], hs_width)
         h_height  = sb_image[ 'htrack' ].height()
         return

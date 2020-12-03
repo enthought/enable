@@ -35,12 +35,11 @@ Miscellaneous notes:
 """
 
 # Major library imports
+from io import StringIO
 import os
 import sys
 from numpy import arange, ravel, array
 import warnings
-
-import six
 
 # Local, relative Kiva imports
 from . import affine
@@ -57,7 +56,7 @@ from . import agg
 from base64 import b64encode
 
 def _strpoints(points):
-    c = six.StringIO()
+    c = StringIO()
     for x,y in points:
         c.write('%3.2f,%3.2f ' % (x,y))
     return c.getvalue()
@@ -146,7 +145,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         super(GraphicsContext, self).__init__(self, size, *args, **kwargs)
         self.size = size
         self._height = size[1]
-        self.contents = six.StringIO()
+        self.contents = StringIO()
         self._clipmap = {}
 
     def render(self, format):
@@ -156,7 +155,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         return xmltemplate % locals()
 
     def clear(self):
-        self.contents = six.StringIO()
+        self.contents = StringIO()
 
     def width(self):
         return self.size[0]
@@ -265,7 +264,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             # This is not strictly required.
             pil_img = pil_img.resize((int(width), int(height)), PilImage.NEAREST)
 
-        png_buffer = six.StringIO()
+        png_buffer = StringIO()
         pil_img.save(png_buffer, 'png')
         b64_img_data = b64encode(png_buffer.getvalue())
         png_buffer.close()

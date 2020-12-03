@@ -2,10 +2,8 @@ from __future__ import print_function
 
 import os
 import time
-from six import StringIO
+from io import StringIO
 import xml.etree.cElementTree as etree
-
-import six.moves as sm
 
 import wx
 import wx.aui
@@ -175,7 +173,7 @@ class ViewFrame(wx.Frame):
     def getFileList(self):
         #look for the test files in the w3c dir
         files = os.listdir(self.getSVGDir())
-        splitted = sm.map(os.path.splitext, files)
+        splitted = map(os.path.splitext, files)
 
         return sorted(fname for fname, ext in splitted)
 

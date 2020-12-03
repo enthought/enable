@@ -4,11 +4,8 @@
 #------------------------------------------------------------------------------
 from abc import ABCMeta
 
-import six
 
-
-@six.add_metaclass(ABCMeta)
-class ABConstrainable(object):
+class ABConstrainable(object, metaclass=ABCMeta):
     """ An abstract base class for objects that can be laid out using
     layout helpers.
 

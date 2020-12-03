@@ -20,7 +20,6 @@
 from __future__ import absolute_import, print_function
 
 # standard library imports
-import six.moves as sm
 import warnings
 import copy
 from numpy import array, pi
@@ -343,7 +342,7 @@ class GraphicsContext(GraphicsContextBase):
         if self.current_pdf_path is None:
             self.begin_path()
 
-        for start, end in sm.zip(starts, ends):
+        for start, end in zip(starts, ends):
             self.current_pdf_path.moveTo(start[0], start[1])
             self.current_pdf_path.lineTo(end[0], end[1])
             self.current_point = (end[0], end[1])
