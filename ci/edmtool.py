@@ -96,7 +96,6 @@ dependencies = {
     "apptools",
     "six",
     "nose",
-    "mock",
     "coverage",
     "numpy",
     "pygments",
