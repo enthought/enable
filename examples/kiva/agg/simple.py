@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from kiva import agg
 from kiva import constants
 

@@ -1,5 +1,3 @@
-from __future__ import with_statement
-
 import six
 
 from enable.kiva_graphics_context import GraphicsContext

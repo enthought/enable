@@ -7,7 +7,6 @@
     This is currently under development and is not yet fully functional.
 
 """
-from __future__ import absolute_import
 import cairo
 import copy
 import six.moves as sm

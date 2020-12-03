@@ -1,7 +1,5 @@
 """ Defines the basic Container class """
 
-from __future__ import with_statement
-
 # Major library imports
 import warnings
 

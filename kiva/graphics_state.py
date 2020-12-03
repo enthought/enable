@@ -6,9 +6,6 @@ tracked by Python, rather than by an internal graphics state (eg. Wx, SVG and
 PDF backends, but not Agg or QPainter).
 
 """
-
-from __future__ import absolute_import, print_function
-
 import copy
 
 from numpy import array, float64

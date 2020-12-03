@@ -1,7 +1,5 @@
 """ A drag drawn line. """
 
-from __future__ import with_statement
-
 from enable.api import Line
 from traits.api import Instance
 

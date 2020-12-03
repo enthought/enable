@@ -2,7 +2,6 @@
 This demonstrates the most basic drawing capabilities using Enable.  A new
 component is created and added to a container.
 """
-from __future__ import print_function
 
 from enable.example_support import DemoFrame, demo_main
 from enable.api import Component, Container, Window

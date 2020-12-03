@@ -14,9 +14,6 @@ in places where a DemoFrame is insufficient.
 
 """
 
-from __future__ import (division, absolute_import, print_function,
-                        unicode_literals)
-
 from pyface.api import ApplicationWindow, GUI
 
 class DemoApplication(ApplicationWindow):

@@ -1,6 +1,3 @@
-
-from __future__ import with_statement
-
 from numpy import linspace, zeros
 
 # Enthought library imports

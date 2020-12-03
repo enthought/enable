@@ -1,8 +1,6 @@
 """
 Use mouse wheel to zoom and right-click to pan the viewport.
 """
-from __future__ import print_function
-
 from traits.api import Float
 
 from enable.api import (AbstractOverlay, Canvas, Viewport, ColorTrait,

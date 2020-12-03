@@ -3,8 +3,6 @@ Defines the Kiva Font class and a utility method to parse free-form font
 specification strings into Font instances.
 """
 
-from __future__ import absolute_import, print_function
-
 import six
 
 import copy
