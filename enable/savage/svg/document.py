@@ -130,10 +130,6 @@ def pathHandler(func):
     """
     @wraps(func)
     def inner(self, node):
-        #brush = self.getBrushFromState()
-        #pen = self.getPenFromState()
-        #if not (brush or pen):
-        #    return None, []
         path = self.renderer.makePath()
         results = func(self, node, path)
 
@@ -594,9 +590,7 @@ class SVGDocument(object):
     def getFontFromState(self):
         font = self.renderer.getFont()
         family = self.state.get("font-family")
-        #print 'family', family
         if family:
-            #print "setting font", family
             font.face_name = family
 
         style = self.state.get("font-style")
@@ -627,7 +621,6 @@ class SVGDocument(object):
         if not (brush and hasattr(brush, 'IsOk') and brush.IsOk()):
             black_tuple = (255,255,255,255)
             brush = self.renderer.createBrush(black_tuple)
-            #print "using black brush"
         # TODO: handle <tspan>, <a> and <tref>.
         # TODO: handle xml:space="preserve"? The following more or less
         # corresponds to xml:space="default".
@@ -959,7 +952,6 @@ class SVGDocument(object):
         if type == 'RGB':
             r,g,b = details
         elif type == "NONE":
-            #print 'returning null brush'
             return self.renderer.NullBrush
         opacity = self.state.get('fill-opacity', self.state.get('opacity', '1'))
         opacity = float(opacity)
@@ -987,7 +979,6 @@ class SVGDocument(object):
         relative = False
         if type == type.lower():
             relative = True
-            #ox, oy = path.GetCurrentPoint().Get()
             ox, oy = path.GetCurrentPoint()
         else:
             ox = oy = 0
@@ -1007,7 +998,6 @@ class SVGDocument(object):
             pt = normalizePoint(arg)
             path.AddLineToPoint(*pt)
         elif type == 'C':
-            #control1, control2, endpoint = arg
             control1, control2, endpoint = sm.map(
                 normalizePoint, arg
             )
@@ -1017,15 +1007,8 @@ class SVGDocument(object):
                 control2,
                 endpoint
             )
-            #~ cp = path.GetCurrentPoint()
-            #~ path.AddCircle(c1x, c1y, 5)
-            #~ path.AddCircle(c2x, c2y, 3)
-            #~ path.AddCircle(x,y, 7)
-            #~ path.MoveToPoint(cp)
-            #~ print "C", control1, control2, endpoint
 
         elif type == 'S':
-            #control2, endpoint = arg
             control2, endpoint = sm.map(
                 normalizePoint, arg
             )
@@ -1033,7 +1016,6 @@ class SVGDocument(object):
                 control1 = reflectPoint(self.lastControl, path.GetCurrentPoint())
             else:
                 control1 = path.GetCurrentPoint()
-            #~ print "S", self.lastControl,":",control1, control2, endpoint
             self.lastControl = control2
             path.AddCurveToPoint(
                 control1,
@@ -1087,15 +1069,12 @@ class SVGDocument(object):
             #~ Manually closing the path *and* calling CloseSubpath() appears
             #~ to give correct results on win32
 
-            #pt = self.firstPoints.pop()
-            #path.AddLineToPoint(*pt)
             path.CloseSubpath()
 
     def render(self, context):
         if not hasattr(self, "ops"):
             return
         for op, args in self.ops:
-            #print op, context, args
             op(context, *args)
 
 if __name__ == '__main__':
