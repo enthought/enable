@@ -86,11 +86,6 @@ class Font(object):
             (type(underline) != int) or (not isinstance(face_name, six.string_types)) or \
             (type(encoding) != type(DEFAULT)):
                 raise RuntimeError("Bad value in Font() constructor.")
-        ### HACK:  C++ stuff expects a string (not unicode) for the face_name, so fix
-        ###        if needed.
-        ### Only for python < 3
-        if six.PY2 and isinstance(face_name, six.text_type):
-            face_name = face_name.encode("latin1")
         self.size = size
         self.family = family
         self.weight = weight
