@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: UTF-8 -*-
 """ Traits UI tools for viewing the XML tree of SVG files.
 """
 
