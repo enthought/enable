@@ -94,7 +94,6 @@ supported_combinations = {
 
 dependencies = {
     "apptools",
-    "six",
     "nose",
     "mock",
     "coverage",
