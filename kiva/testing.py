@@ -1,9 +1,6 @@
 # Copyright (c) 2008-2013 by Enthought, Inc.
 # All rights reserved.
-try:
-    from unittest.mock import Mock
-except ImportError:
-    from mock import Mock
+from unittest.mock import Mock
 
 from kiva.image import GraphicsContext
 

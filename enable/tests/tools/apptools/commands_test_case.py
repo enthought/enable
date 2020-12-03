@@ -10,12 +10,8 @@
 from __future__ import (division, absolute_import, print_function,
                         unicode_literals)
 import unittest
+from unittest.mock import MagicMock
 
-# Third party library imports
-try:
-    from unittest.mock import MagicMock
-except ImportError:
-    from mock import MagicMock
 
 # Enthought library imports
 from traits.testing.unittest_tools import UnittestTools
