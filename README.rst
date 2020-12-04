@@ -82,20 +82,19 @@ Enable/Kiva also have the following requirements:
 .. rubric:: Runtime:
 
 - `Numpy <https://pypi.org/project/numpy/>`_
-- `PIL <https://www.pythonware.com/products/pil/>`_ or preferably `pillow <https://pypi.org/project/Pillow/2.8.1>`_
-- `traits 4.5.0 <https://pypi.org/project/traits>`_
-- `traitsui 4.4.0 <https://pypi.org/project/traitsui>`_
-- `pyface 4.5.0 <https://pypi.org/project/pyface>`_
-- `six 1.9.0 <https://pypi.org/project/six>`_
+- `PIL <https://www.pythonware.com/products/pil/>`_ or preferably `pillow <https://pypi.org/project/Pillow/>`_
+- `traits <https://pypi.org/project/traits>`_
+- `traitsui <https://pypi.org/project/traitsui>`_
+- `pyface <https://pypi.org/project/pyface>`_
 
 .. rubric:: Optional:
 
-- `apptools 4.3.0 <https://pypi.org/project/apptools/>`_
+- `apptools <https://pypi.org/project/apptools/>`_
 - (Qt backend) `PySide <https://pypi.org/project/PySide>`_ or `PyQt4 <https://pypi.org/project/PyQt4>`_
-- (WX backend) `WxPython version 2.8.11.0 <https://pypi.org/project/wxPython/2.8.11.0>`_
-- (GL backend) `pyglet version 1.1.4 <https://pypi.org/project/pyglet/1.1.4/>`_
+- (WX backend) `WxPython <https://pypi.org/project/wxPython/>`_
+- (GL backend) `pyglet <https://pypi.org/project/pyglet/>`_
 - (GL backend) `pygarrayimage <https://pypi.org/project/pygarrayimage>`_
 - (SVG backend) `PyParsing <https://pypi.org/project/pyparsing>`_
-- (PDF backend) `ReportLab Toolkit version 3.1 <https://www.reportlab.com/dev/install/version_3_and_up/>`_
-- (Cairo backend) `PyCairo 1.10.0 <https://cairographics.org/releases/py2cairo-1.10.0.tar.bz2>`_
+- (PDF backend) `ReportLab Toolkit <https://www.reportlab.com/dev/install/version_3_and_up/>`_
+- (Cairo backend) `PyCairo <https://cairographics.org/releases/>`_
 - (Constrained layout) `kiwisolver <https://pypi.org/project/kiwisolver>`_
