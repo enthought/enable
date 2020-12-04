@@ -208,11 +208,6 @@ def bruteForceSearchForAFM(faceName):
     return None
 
 
-
-#for faceName in standardFonts:
-#    registerTypeFace(TypeFace(faceName))
-
-
 class Encoding:
     """Object to help you create and refer to encodings."""
     def __init__(self, name, base=None):
@@ -298,8 +293,6 @@ class Encoding:
         # XXX Kiva specific change
         raise NotImplementedError
 
-#for encName in standardEncodings:
-#    registerEncoding(Encoding(encName))
 
 class Font:
     """Represents a font (i.e., combination of face and encoding).
@@ -495,7 +488,6 @@ def getTypeFace(faceName):
         if faceName in standardFonts:
             face = TypeFace(faceName)
             registerTypeFace(face)
-            #print 'auto-constructing type face %s' % face.name
             return face
         else:
             #try a brute force search
@@ -519,7 +511,6 @@ def getEncoding(encName):
         if encName in standardEncodings:
             enc = Encoding(encName)
             registerEncoding(enc)
-            #print 'auto-constructing encoding %s' % encName
             return enc
         else:
             raise
@@ -550,12 +541,6 @@ def _slowStringWidth(text, fontName, fontSize):
     """Define this anyway so it can be tested, but whether it is used or not depends on _rl_accel"""
     font = getFont(fontName)
     return font.stringWidth(text, fontSize)
-    #this is faster, but will need more special-casing for multi-byte fonts.
-    #wid = getFont(fontName).widths
-    #w = 0
-    #for ch in text:
-    #    w = w + wid[ord(ch)]
-    #return 0.001 * w * fontSize
 
 
 # XXX Kiva specific changes

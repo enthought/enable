@@ -48,7 +48,6 @@ class AffineConstructorsTestCase(unittest.TestCase):
         transform = affine.affine_from_rotation(pi/4.)
         pt1 = array([1.,0.,1.])
         actual = dot(pt1,transform)
-        #cos_pi_4 = 0.70710678118654757
         cos_pi_4 = cos(pi/4.0)
         desired = array((cos_pi_4, cos_pi_4, 1.0))
         assert(alltrue( (actual - desired) < 1e-6 ))

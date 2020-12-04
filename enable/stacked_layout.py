@@ -12,10 +12,6 @@ def stacked_preferred_size(container, components=None):
         container._cached_preferred_size = container.fixed_preferred_size
         return container.fixed_preferred_size
 
-    #if container.resizable == "":
-    #    container._cached_preferred_size = container.outer_bounds[:]
-    #    return container.outer_bounds
-
     if components is None:
         components = container.components
 
@@ -33,7 +29,6 @@ def stacked_preferred_size(container, components=None):
 
         pref_size = component.get_preferred_size()
         total_size += pref_size[ndx] + container.spacing
-        #print container, component, total_size
         if pref_size[other_ndx] > max_other_size:
             max_other_size = pref_size[other_ndx]
 
@@ -133,13 +128,9 @@ def stack_layout(container, components, align):
             # If the component is resizable in the other dimension or it exceeds the
             # container bounds, set it to the maximum size of the container
 
-            #component.set_outer_position(other_ndx, 0)
-            #component.set_outer_bounds(other_ndx, size[other_ndx])
             position[other_ndx] = 0
             bounds[other_ndx] = size[other_ndx]
         else:
-            #component.set_outer_position(other_ndx, 0)
-            #old_coord = component.outer_position[other_ndx]
             position[other_ndx] = 0
             if align == "min":
                 pass
