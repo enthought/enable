@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from timeit import Timer
 import os, sys
 import unittest

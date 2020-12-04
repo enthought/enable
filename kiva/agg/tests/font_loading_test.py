@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from string import ascii_lowercase, ascii_uppercase
 import os
 import time

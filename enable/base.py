@@ -21,8 +21,6 @@ Enable package.
 #                     subclasses_of
 #-------------------------------------------------------------------------------
 
-from __future__ import generators
-
 # Major library imports
 import six.moves as sm
 

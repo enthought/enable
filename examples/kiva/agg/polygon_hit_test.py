@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 try:
     from time import perf_counter
 except ImportError:

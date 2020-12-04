@@ -6,9 +6,6 @@
 # LICENSE.txt
 #
 """ Test case for ResizeCommandTool """
-
-from __future__ import (division, absolute_import, print_function,
-                        unicode_literals)
 import unittest
 
 # Third party library imports

@@ -1,8 +1,5 @@
 # (C) Copyright 2008-2019 Enthought, Inc., Austin, TX
 # All rights reserved.
-
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
 import unittest
 try:
     from unittest import mock

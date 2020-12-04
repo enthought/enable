@@ -16,9 +16,6 @@ setting attribute values.
 
 """
 
-from __future__ import (division, absolute_import, print_function,
-                        unicode_literals)
-
 from apptools.undo.api import AbstractCommand
 from traits.api import Bool, Instance, Tuple, Unicode
 from traits.util.camel_case import camel_case_to_words

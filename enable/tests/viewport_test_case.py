@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import unittest
 
 from enable.api import Component, Container, Viewport

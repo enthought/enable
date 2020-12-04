@@ -29,9 +29,6 @@ transform
     to access its values. Currently, I do the latter.
 
 """
-
-from __future__ import absolute_import, print_function
-
 import six.moves as sm
 
 import numpy as np

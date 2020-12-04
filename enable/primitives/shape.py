@@ -2,8 +2,6 @@
 
 
 # Standard library imports.
-from __future__ import print_function
-
 import math
 
 # Enthought library imports.

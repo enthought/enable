@@ -34,8 +34,6 @@ AUTHOR:
   John D. Hunter <jdhunter@ace.bsd.uchicago.edu>
 """
 
-from __future__ import absolute_import, print_function
-
 import os
 import logging
 

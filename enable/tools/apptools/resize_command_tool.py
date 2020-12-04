@@ -14,9 +14,6 @@ resize commands.
 
 """
 
-from __future__ import (division, absolute_import, print_function,
-                        unicode_literals)
-
 from traits.api import Bool, Tuple
 
 from enable.tools.resize_tool import ResizeTool

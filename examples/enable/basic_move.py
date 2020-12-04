@@ -1,7 +1,6 @@
 """
 This allows a simple component to be moved around the screen.
 """
-from __future__ import print_function
 
 from traits.api import Float
 
