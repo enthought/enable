@@ -48,15 +48,13 @@ License   : matplotlib license (PSF compatible)
 
 import logging
 import os
+import pickle
 import sys
 import glob
 import subprocess
 import warnings
 import tempfile
 import errno
-
-import six
-import six.moves as sm
 
 from fontTools.ttLib import TTCollection, TTFont, TTLibError
 from traits.etsconfig.api import ETSConfig
@@ -174,7 +172,7 @@ def _is_writable_dir(p):
     p is a string pointing to a putative writable dir -- return True p
     is such a string, else False
     """
-    if not isinstance(p, six.string_types):
+    if not isinstance(p, str):
         return False
 
     try:
@@ -208,7 +206,7 @@ def is_string_like(obj):
     'Return True if *obj* looks like a string'
     from numpy import ma
 
-    if isinstance(obj, six.string_types):
+    if isinstance(obj, str):
         return True
     # numpy strings are subclass of str, ma strings are not
     if ma.isMaskedArray(obj):
@@ -285,7 +283,7 @@ def win32FontDirectory():
     If the key is not found, $WINDIR/Fonts will be returned.
     """
     try:
-        from six.moves import winreg
+        import winreg
     except ImportError:
         pass  # Fall through to default
     else:
@@ -311,7 +309,7 @@ def win32InstalledFonts(directory=None, fontext='ttf'):
     'afm'.
     """
 
-    from six.moves import winreg
+    import winreg
     if directory is None:
         directory = win32FontDirectory()
 
@@ -330,7 +328,7 @@ def win32InstalledFonts(directory=None, fontext='ttf'):
                 files.extend(glob.glob(os.path.join(directory, '*.'+ext)))
             return files
         try:
-            for j in sm.range(winreg.QueryInfoKey(local)[1]):
+            for j in range(winreg.QueryInfoKey(local)[1]):
                 try:
                     key, direc, any = winreg.EnumValue(local, j)
                     if not os.path.dirname(direc):
@@ -475,7 +473,7 @@ def findSystemFonts(fontpaths=None, fontext='ttf'):
             for f in get_fontconfig_fonts(fontext):
                 fontfiles[f] = 1
 
-    elif isinstance(fontpaths, six.string_types):
+    elif isinstance(fontpaths, str):
         fontpaths = [fontpaths]
 
     for path in fontpaths:
@@ -732,7 +730,7 @@ def createFontList(fontfiles, fontext='ttf'):
                                 font_entry_err_msg, fpath, exc_info=True)
                             continue
                 else:
-                    font = TTFont(six.text_type(fpath))
+                    font = TTFont(str(fpath))
             except (RuntimeError, TTLibError):
                 logger.error(
                     "Could not open font file %s", fpath, exc_info=True)
@@ -864,12 +862,12 @@ class FontProperties(object):
         Return the name of the font that best matches the font
         properties.
         """
-        filename = six.text_type(fontManager.findfont(self))
+        filename = str(fontManager.findfont(self))
         if filename.endswith('.afm'):
             return afm.AFM(open(filename)).get_familyname()
 
         font = fontManager.findfont(self)
-        prop_dict = getPropDict(TTFont(six.text_type(font)))
+        prop_dict = getPropDict(TTFont(str(font)))
         return prop_dict['name']
 
     def get_style(self):
@@ -1043,7 +1041,7 @@ def pickle_dump(data, filename):
     """
     fh = open(filename, 'wb')
     try:
-        sm.cPickle.dump(data, fh)
+        pickle.dump(data, fh)
     finally:
         fh.close()
 
@@ -1055,7 +1053,7 @@ def pickle_load(filename):
     """
     fh = open(filename, 'rb')
     try:
-        data = sm.cPickle.load(fh)
+        data = pickle.load(fh)
     finally:
         fh.close()
     return data
@@ -1094,7 +1092,7 @@ class FontManager:
                 else:
                     paths.append(ttfpath)
 
-        logger.debug("font search path %s", six.text_type(paths))
+        logger.debug("font search path %s", str(paths))
         #  Load TrueType fonts and create font dictionary.
 
         self.ttffiles = findSystemFonts(paths) + findSystemFonts()

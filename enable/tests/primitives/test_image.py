@@ -4,8 +4,6 @@ import os
 import sys
 import unittest
 
-import six
-
 import numpy as np
 from numpy.testing import assert_array_equal
 from pkg_resources import resource_filename

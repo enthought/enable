@@ -4,8 +4,6 @@ from collections import defaultdict
 import os
 import pstats
 
-import six
-
 from traits.api import (Any, Bool, Constant, Dict, Event, Float,
     HasTraits, Instance, Int, List, Property, Str, on_trait_change)
 from traitsui import api as tui
@@ -205,7 +203,7 @@ class SillyStatsWrapper(object):
             self.stats = {}
         elif isinstance(obj, dict):
             self.stats = obj
-        elif isinstance(obj, six.string_types):
+        elif isinstance(obj, str):
             # Load from a file.
             self.stats = pstats.Stats(obj)
         elif hasattr(obj, 'stats'):

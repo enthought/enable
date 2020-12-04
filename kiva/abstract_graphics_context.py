@@ -1,11 +1,9 @@
 from abc import ABCMeta, abstractmethod
 
-import six
-
 from .constants import FILL_STROKE, SQUARE_MARKER
 
-@six.add_metaclass(ABCMeta)
-class AbstractGraphicsContext(object):
+
+class AbstractGraphicsContext(object, metaclass=ABCMeta):
     """ Abstract Base Class for Kiva Graphics Contexts """
 
     # ----------------------------------------------------------------

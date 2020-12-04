@@ -2,8 +2,6 @@
 from math import floor, sqrt
 from bisect import insort_left
 
-import six.moves as sm
-
 # Enthought library imports
 from traits.api import (Bool, Int, Event, Instance, Any, Property,
                                   List, DelegatesTo)
@@ -389,7 +387,7 @@ class TextField(Component):
         """ Realign all the text being drawn such that the first character being
             drawn in each line is the one at index '_draw_text_xstart.'
         """
-        for i in sm.range(len(self.__draw_text)):
+        for i in range(len(self.__draw_text)):
             line = self._text[self._draw_text_ystart + i]
             self.__draw_text[i] = self._clip_line(line, self._draw_text_xstart)
 
@@ -474,7 +472,7 @@ class TextField(Component):
                 self.__draw_text = []
                 self._draw_text_xstart, self._draw_text_ystart = 0, 0
                 end = min(len(self._text), self._text_height)
-                for i in sm.range(self._draw_text_ystart, end):
+                for i in range(self._draw_text_ystart, end):
                     line = self._clip_line(self._text[i], 0)
                     self.__draw_text.append(line)
             else:

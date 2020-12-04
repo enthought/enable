@@ -1,7 +1,5 @@
 import warnings
 
-import six
-
 from tvtk.api import tvtk
 from tvtk import messenger
 from traits.api import HasTraits, Any, Callable, Property, Instance, \
@@ -287,7 +285,7 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
         key = KEY_MAP.get(self.control.key_sym, None)
 
         if key is None:
-            key = six.text_type(self.control.key_sym)
+            key = str(self.control.key_sym)
 
             if not key:
                 return

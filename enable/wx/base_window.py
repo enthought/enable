@@ -6,8 +6,6 @@ toolkit, based on the kiva agg driver.
 import sys
 import time
 
-import six
-
 import wx
 
 from traits.api import Any, Instance, Trait
@@ -316,7 +314,7 @@ class BaseWindow(AbstractWindow):
 
         if focus_owner is not None:
             if event_type == 'character':
-                key = six.unichr(event.GetUniChar())
+                key = chr(event.GetUniChar())
                 if not key:
                     return None
             else:
@@ -324,7 +322,7 @@ class BaseWindow(AbstractWindow):
                 if key_code in KEY_MAP:
                     key = KEY_MAP.get(key_code)
                 else:
-                    key = six.unichr(event.GetUniChar()).lower()
+                    key = chr(event.GetUniChar()).lower()
 
             # Use the last-seen mouse coordinates instead of GetX/GetY due
             # to wx bug.

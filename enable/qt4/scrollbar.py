@@ -3,8 +3,6 @@ Define a standard horizontal and vertical Enable scrollbar component that wraps
 the standard Qt one.
 """
 
-import six.moves as sm
-
 from pyface.qt import QtCore, QtGui
 from traits.api import Any, Bool, Enum, Float, Int, Property, Trait, TraitError
 
@@ -130,7 +128,7 @@ class NativeScrollBar(Component):
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         x_pos, y_pos = self.position
-        x_size, y_size = sm.map(int, self.bounds)
+        x_size, y_size = map(int, self.bounds)
 
         qt_xpos, qt_ypos = self._get_abs_coords(x_pos, y_pos+y_size-1)
 

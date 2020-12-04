@@ -7,10 +7,8 @@ import math
 from functools import wraps
 import os
 
-import six
-import six.moves as sm
-
-import six.moves.urllib.parse as urlparse
+import urllib
+import urllib.parse as urlparse
 from xml.etree import cElementTree as ET
 try:
     from xml.etree.cElementTree import ParseError
@@ -182,7 +180,7 @@ class ResourceGetter(object):
             # Plain URI. Pass it back.
             # Read the data and stuff it in a StringIO in order to satisfy
             # functions that need a functioning seek() and stuff.
-            return path, lambda uri: BytesIO(sm.urllib.request.urlopen(uri).read())
+            return path, lambda uri: BytesIO(urllib.request.urlopen(uri).read())
         path = os.path.abspath(os.path.join(self.dirname, path_part))
         return path, lambda fn: open(fn, 'rb')
 
@@ -752,10 +750,10 @@ class SVGDocument(object):
                 else:
                     arguments = iter(arguments)
                     if command ==  'm':
-                        yield (command, six.next(arguments))
+                        yield (command, next(arguments))
                         command = "l"
                     elif command == "M":
-                        yield (command, six.next(arguments))
+                        yield (command, next(arguments))
                         command = "L"
                     for arg in arguments:
                         yield (command, arg)
@@ -817,7 +815,7 @@ class SVGDocument(object):
             pen.SetWidth(width)
         stroke_dasharray = self.state.get('stroke-dasharray', 'none')
         if stroke_dasharray != 'none':
-            stroke_dasharray = list(sm.map(valueToPixels,
+            stroke_dasharray = list(map(valueToPixels,
                 stroke_dasharray.replace(',', ' ').split()))
             if len(stroke_dasharray) % 2:
                 # Repeat to get an even array.
@@ -996,7 +994,7 @@ class SVGDocument(object):
             pt = normalizePoint(arg)
             path.AddLineToPoint(*pt)
         elif type == 'C':
-            control1, control2, endpoint = sm.map(
+            control1, control2, endpoint = map(
                 normalizePoint, arg
             )
             self.lastControl = control2
@@ -1007,7 +1005,7 @@ class SVGDocument(object):
             )
 
         elif type == 'S':
-            control2, endpoint = sm.map(
+            control2, endpoint = map(
                 normalizePoint, arg
             )
             if self.lastControl:
@@ -1021,7 +1019,7 @@ class SVGDocument(object):
                 endpoint
             )
         elif type == "Q":
-            (cx, cy), (x,y) = sm.map(normalizePoint, arg)
+            (cx, cy), (x,y) = map(normalizePoint, arg)
             self.lastControlQ = (cx, cy)
             path.AddQuadCurveToPoint(cx, cy, x, y)
         elif type == "T":

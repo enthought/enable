@@ -38,9 +38,6 @@ trap attempts to access them and do it on first access.
 import string, os
 import warnings
 
-import six
-import six.moves as sm
-
 # XXX Kiva specific changes
 defaultEncoding = 'WinAnsiEncoding'       # 'WinAnsi' or 'MacRoman'
 
@@ -220,7 +217,7 @@ class Encoding:
             # assume based on the usual one
             self.baseEncodingName = defaultEncoding
             self.vector = _fontdata.encodings[defaultEncoding]
-        elif isinstance(base, six.string_types):
+        elif isinstance(base, str):
             baseEnc = getEncoding(base)
             self.baseEncodingName = baseEnc.name
             self.vector = baseEnc.vector[:]
@@ -273,7 +270,7 @@ class Encoding:
 
         ranges = []
         curRange = None
-        for i in sm.range(len(self.vector)):
+        for i in range(len(self.vector)):
             glyph = self.vector[i]
             if glyph==otherEnc.vector[i]:
                 if curRange:

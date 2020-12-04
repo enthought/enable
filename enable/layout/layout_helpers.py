@@ -6,9 +6,6 @@ from abc import ABCMeta, abstractmethod
 from collections import defaultdict
 from uuid import uuid4
 
-import six
-import six.moves as sm
-
 from kiwisolver import Variable, Constraint
 
 from traits.api import HasTraits, Instance, Range
@@ -87,8 +84,7 @@ def is_spacer(item):
 #------------------------------------------------------------------------------
 # Deferred Constraints
 #------------------------------------------------------------------------------
-@six.add_metaclass(ABCMeta)
-class DeferredConstraints(object):
+class DeferredConstraints(object, metaclass=ABCMeta):
     """ Abstract base class for objects that will yield lists of
     constraints upon request.
 
@@ -107,9 +103,9 @@ class DeferredConstraints(object):
         strength.
 
         """
-        if isinstance(other, (float, six.integer_types)):
+        if isinstance(other, (float, int)):
             self.default_string = float(other)
-        elif isinstance(other, six.string_types):
+        elif isinstance(other, str):
             if other not in STRENGTHS:
                 raise ValueError('Invalid strength %r' % other)
             self.default_strength = other
@@ -656,12 +652,12 @@ class GridHelper(BoxHelper):
         row_vars = []
         col_vars = []
         cn_id = self.constraints_id
-        for idx in sm.range(num_rows + 1):
+        for idx in range(num_rows + 1):
             name = 'row' + str(idx)
             var = Variable('{0}|{1}'.format(cn_id, name))
             row_vars.append(var)
             constraints.append(var >= 0)
-        for idx in sm.range(num_cols + 1):
+        for idx in range(num_cols + 1):
             name = 'col' + str(idx)
             var = Variable('{0}|{1}'.format(cn_id, name))
             col_vars.append(var)
@@ -722,7 +718,7 @@ class GridHelper(BoxHelper):
             for cell in cells:
                 if cell.start_row == cell.end_row:
                     row_map[cell.start_row].append(cell.item)
-            for items in six.itervalues(row_map):
+            for items in row_map.values():
                 if len(items) > 1:
                     helpers.append(AlignmentHelper(self.row_align, *items))
 
@@ -734,7 +730,7 @@ class GridHelper(BoxHelper):
             for cell in cells:
                 if cell.start_col == cell.end_col:
                     col_map[cell.start_col].append(cell.item)
-            for items in six.itervalues(row_map):
+            for items in row_map.values():
                 if len(items) > 1:
                     helpers.append(AlignmentHelper(self.col_align, *items))
 
@@ -748,8 +744,7 @@ class GridHelper(BoxHelper):
 #------------------------------------------------------------------------------
 # Abstract Constraint Factory
 #------------------------------------------------------------------------------
-@six.add_metaclass(ABCMeta)
-class AbstractConstraintFactory(object):
+class AbstractConstraintFactory(object, metaclass=ABCMeta):
     """ An abstract constraint factory class. Subclasses must implement
     the 'constraints' method implement which returns a LinearConstraint
     instance.
@@ -1074,8 +1069,7 @@ class AlignmentConstraintFactory(SequenceConstraintFactory):
 #------------------------------------------------------------------------------
 # Spacers
 #------------------------------------------------------------------------------
-@six.add_metaclass(ABCMeta)
-class Spacer(object):
+class Spacer(object, metaclass=ABCMeta):
     """ An abstract base class for spacers. Subclasses must implement
     the 'constrain' method.
 

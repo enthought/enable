@@ -1,5 +1,3 @@
-import six
-
 from enable.kiva_graphics_context import GraphicsContext
 from kiva import affine
 from kiva.fonttools import Font
@@ -241,7 +239,7 @@ if __name__ == "__main__":
     )
     gcs = { 'eps': ps.PSGC, 'svg': svg.GraphicsContext }
 
-    for fmt, gc in six.iteritems(gcs):
+    for fmt, gc in gcs.items():
         for test_func in tests:
             context = gc((800, 600))
             test_func(context)

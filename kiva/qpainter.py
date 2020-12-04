@@ -11,7 +11,6 @@
 """ This is the QPainter backend for kiva. """
 
 from functools import partial
-import six.moves as sm
 import numpy as np
 import warnings
 
@@ -340,7 +339,7 @@ class GraphicsContext(object):
     def line_set(self, starts, ends):
         """ Draw multiple disjoint line segments.
         """
-        for start, end in sm.zip(starts, ends):
+        for start, end in zip(starts, ends):
             self.path.path.moveTo(start[0], start[1])
             self.path.path.lineTo(end[0], end[1])
 

@@ -1,6 +1,4 @@
 """ Parse CSS identifiers. More complicated than it sounds"""
-import six
-
 from pyparsing import Word, Literal, Regex, Combine, Optional, White, oneOf, ZeroOrMore
 import string
 import re
@@ -17,7 +15,7 @@ escaped = (
 )
 
 def convertToUnicode(t):
-    return six.unichr(int(t[0], 16))
+    return chr(int(t[0], 16))
 hex_unicode = (
     Literal("\\").suppress() +
     Regex("[0-9a-f]{1,6}", re.IGNORECASE) +
