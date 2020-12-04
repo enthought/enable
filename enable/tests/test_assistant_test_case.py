@@ -1,4 +1,5 @@
 from unittest import mock
+
 import nose
 
 from enable.component import Component

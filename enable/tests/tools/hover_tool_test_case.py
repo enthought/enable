@@ -6,7 +6,6 @@ from __future__ import (absolute_import, division, print_function,
 import unittest
 from unittest import mock
 
-
 from pyface.toolkit import toolkit_object
 
 from enable.component import Component

@@ -2,7 +2,6 @@
 # All rights reserved.
 from unittest.mock import Mock
 
-
 from enable.abstract_window import AbstractWindow
 from enable.events import MouseEvent, KeyEvent, DragEvent
 from kiva.testing import KivaTestAssistant

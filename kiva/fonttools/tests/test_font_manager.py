@@ -2,7 +2,6 @@ import os
 import unittest
 from unittest import mock
 
-
 from pkg_resources import resource_filename
 from fontTools.ttLib import TTFont
 
