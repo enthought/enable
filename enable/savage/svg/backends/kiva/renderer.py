@@ -336,7 +336,6 @@ class Renderer(NullRenderer):
     def createAffineMatrix(cls, a,b,c,d,x,y):
         # FIXME: should we create a 6x1 or 3x3 matrix???
         return (a,b,c,d,x,y)
-#        return affine.affine_from_values(a,b,c,d,x,y)
 
     @classmethod
     def createBrush(cls, color_tuple):
@@ -345,7 +344,6 @@ class Renderer(NullRenderer):
     @classmethod
     def createNativePen(cls, pen):
         # fixme: Not really sure what to do here...
-        #return wx.GraphicsRenderer_GetDefaultRenderer().CreatePen(pen)
         return pen
 
     @classmethod
@@ -544,12 +542,6 @@ class Renderer(NullRenderer):
             # text which will render up side down.  To fix this, we set the
             # text transform matrix to have y going up so the text is rendered
             # upright.  But since, +y is now *up*, we need to draw at -y.
-
-            # fixme: There is something wrong with the text matrix.  The following
-            #        commands don't work and I would expect them to.
-            #text_matrix = affine.affine_from_values(1,0,0,-1,x,-y)
-            #gc.set_text_matrix(text_matrix)
-            #gc.show_text_at_point(text, 0, 0)
 
             if anchor != 'start':
                 tx, ty, tw, th = gc.get_text_extent(text)
