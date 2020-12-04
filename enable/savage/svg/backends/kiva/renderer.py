@@ -166,13 +166,15 @@ class LinearGradientBrush(AbstractGradientBrush):
     """ A Brush representing a linear gradient.
     """
     def __init__(self, x1,y1, x2,y2, stops, spreadMethod='pad',
-        transforms=[], units='userSpaceOnUse'):
+        transforms=None, units='userSpaceOnUse'):
         self.x1 = x1
         self.y1 = y1
         self.x2 = x2
         self.y2 = y2
         self.stops = stops
         self.spreadMethod = spreadMethod
+        if transforms is None:
+            transforms = []
         self.transforms = transforms
         self.units = units
 
@@ -220,7 +222,7 @@ class RadialGradientBrush(AbstractGradientBrush):
     """ A Brush representing a radial gradient.
     """
     def __init__(self, cx,cy, r, stops, fx=None,fy=None, spreadMethod='pad',
-        transforms=[], units='userSpaceOnUse'):
+        transforms=None, units='userSpaceOnUse'):
         self.cx = cx
         self.cy = cy
         self.r = r
@@ -232,6 +234,8 @@ class RadialGradientBrush(AbstractGradientBrush):
             fy = self.cy
         self.fy = fy
         self.spreadMethod = spreadMethod
+        if transforms is None:
+            transforms = []
         self.transforms = transforms
         self.units = units
 
@@ -350,13 +354,13 @@ class Renderer(NullRenderer):
 
     @classmethod
     def createLinearGradientBrush(cls, x1,y1,x2,y2, stops, spreadMethod='pad',
-                                  transforms=[], units='userSpaceOnUse'):
+                                  transforms=None, units='userSpaceOnUse'):
         return LinearGradientBrush(x1,y1,x2,y2,stops, spreadMethod, transforms,
             units)
 
     @classmethod
     def createRadialGradientBrush(cls, cx,cy, r, stops, fx=None,fy=None,
-                                  spreadMethod='pad', transforms=[],
+                                  spreadMethod='pad', transforms=None,
                                   units='userSpaceOnUse'):
         return RadialGradientBrush(cx,cy, r, stops, fx,fy, spreadMethod,
             transforms, units)
