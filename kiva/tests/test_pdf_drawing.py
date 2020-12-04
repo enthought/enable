@@ -46,10 +46,10 @@ class TestPDFDrawing(DrawingTester, unittest.TestCase):
         # been drawn.
         line = content.getData().splitlines()[-2]
         if not any((
-                line.endswith('f'),
-                line.endswith('S'),
-                line.endswith('f*'),
-                line.endswith('ET') and 'hello kiva' in line)):
+                line.endswith(b'f'),
+                line.endswith(b'S'),
+                line.endswith(b'f*'),
+                line.endswith(b'ET') and b'hello kiva' in line)):
             self.fail('Path was not closed')
 
 
