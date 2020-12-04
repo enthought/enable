@@ -12,9 +12,6 @@ def simple():
     gc.rect(99, 100, 300, 300)
     gc.draw_path()
 
-    with tempfile.NamedTemporaryFile(suffix='.bmp') as fid:
-        gc.save(fid.name)
-
     # directly manipulate the underlying Numeric array.
     # The color tuple is expressed as BGRA.
     gc.bmp_array[:99, :100] = (139, 60, 71, 255)
