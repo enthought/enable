@@ -1,9 +1,6 @@
 import os
 import unittest
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+from unittest import mock
 
 from pkg_resources import resource_filename
 from fontTools.ttLib import TTFont

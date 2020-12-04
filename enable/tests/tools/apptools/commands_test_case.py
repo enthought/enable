@@ -7,12 +7,7 @@
 #
 """ Tests for Commands that work with Components """
 import unittest
-
-# Third party library imports
-try:
-    from unittest.mock import MagicMock
-except ImportError:
-    from mock import MagicMock
+from unittest.mock import MagicMock
 
 # Enthought library imports
 from traits.testing.unittest_tools import UnittestTools
