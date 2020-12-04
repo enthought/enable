@@ -1,6 +1,3 @@
-
-from __future__ import with_statement
-
 # Standard library imports
 from math import floor, sqrt
 from bisect import insort_left

@@ -17,8 +17,6 @@
     The PDF implementation relies heavily on the ReportLab project.
 """
 
-from __future__ import absolute_import, print_function
-
 # standard library imports
 import warnings
 import copy

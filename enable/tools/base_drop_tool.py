@@ -10,8 +10,6 @@
 #------------------------------------------------------------------------------
 """ Abstract base class for tools that handle drag and drop """
 
-from __future__ import absolute_import, print_function, division
-
 from traits.api import Enum
 
 from enable.base_tool import BaseTool

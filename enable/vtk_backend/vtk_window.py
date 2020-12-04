@@ -145,16 +145,11 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
         self._mapper.color_level = 255/2.0
         self._actor2d.mapper = self._mapper
 
-        #self._size = tuple(self._get_control_size())
         self._size = [0,0]
         self._redraw_needed = True
         self._layout_needed = True
-        #self._gc = self._create_gc(self._size)
 
         rwi.initialize()
-
-        #if self.component is not None:
-        #    self._paint()
 
     def _add_observer(self, obj, event, cb):
         """ Adds a vtk observer using messenger to avoid generating uncollectable objects. """
@@ -174,7 +169,6 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
                 self._rendering = False
 
     def _vtk_expose_event(self, vtk_obj, eventname):
-        #print "Good gods!  A VTK ExposeEvent!"
         pass
 
     def _pass_event_to_vtk(self, vtk_obj, eventname):
@@ -483,15 +477,12 @@ class EnableVTKWindow(AbstractWindow, CoordinateBox):
 
 
     def _set_focus(self):
-        #print "set_focus unimplemented"
         pass
 
     def _capture_mouse(self):
-        #print "Capture mouse unimplemented"
         pass
 
     def _release_mouse(self):
-        #print "Release mouse unimplemented"
         pass
 
     def screen_to_window(self, x, y):

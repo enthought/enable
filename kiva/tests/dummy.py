@@ -1,5 +1,3 @@
-from __future__ import with_statement
-
 from enable.kiva_graphics_context import GraphicsContext
 from kiva import affine
 from kiva.fonttools import Font

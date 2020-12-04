@@ -8,8 +8,6 @@
     nothing is obviously wrong.
 """
 
-from __future__ import with_statement
-
 import unittest
 
 from numpy import alltrue, array, ravel

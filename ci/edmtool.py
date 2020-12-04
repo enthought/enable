@@ -76,8 +76,6 @@ how to run commands within an EDM enviornment.
 
 """
 
-from __future__ import print_function
-
 import glob
 import os
 import subprocess
@@ -95,7 +93,6 @@ supported_combinations = {
 dependencies = {
     "apptools",
     "nose",
-    "mock",
     "coverage",
     "numpy",
     "pygments",

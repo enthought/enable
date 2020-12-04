@@ -3,8 +3,6 @@ Defines the concrete top-level Enable 'Window' class for the wxPython GUI
 toolkit, based on the kiva agg driver.
 """
 
-from __future__ import absolute_import
-
 import sys
 import time
 

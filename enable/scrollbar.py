@@ -5,8 +5,6 @@ The scrollbar uses images for the pieces of the scrollbar itself and stretches
 them appropriately in the draw phase.
 """
 
-from __future__ import with_statement
-
 from functools import reduce
 # PZW: Define a scrollbar that uses the system/wx-native scrollbar instead
 # of drawing our own.

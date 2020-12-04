@@ -8,7 +8,6 @@
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 # Thanks for using Enthought open source!
 # -----------------------------------------------------------------------------
-from __future__ import absolute_import, print_function, division
 
 from collections import namedtuple
 from math import fabs

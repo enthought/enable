@@ -71,9 +71,6 @@ class PygletWindow(window.Window):
         # draw.  If this flag is False, then the draw() method just passes.
         self._dirty = True
 
-        #for key in kwargs:
-        #    if key not in PygletWindow.VALID_CTOR_KWARGS:
-        #        kwargs.pop(key)
         super(PygletWindow, self).__init__(**kwargs)
 
         # use a KeyStateHandler to remember the keyboard state.  This

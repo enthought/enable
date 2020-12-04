@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import os
 import time
 from io import StringIO
@@ -209,7 +207,6 @@ class ViewFrame(wx.Frame):
 
             self.render.document = self.document
         except:
-            #pdb.set_trace()
             import traceback
             self.render.document = None
             traceback.print_exc()

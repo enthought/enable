@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import os
 import time
 from math import pi
@@ -127,14 +125,11 @@ def main3():
     t1 = time.clock()
     for i in range(N):
         with gc:
-            #gc.rotate_ctm(.2)
             gc.set_alpha(1.0)
             gc.draw_image(agg_img)
-            #print pil_img.getpixel((300,300)), img[300,300], gc.bmp_array[300,300]
             gc.translate_ctm(150,300)
             gc.scale_ctm(10,10)
             gc.set_fill_color((0.0,0,1.0,.25))
-            #gc.show_text("SUN")
     t2 = time.clock()
     print("images per second: %g" % (N/(t2-t1)))
     gc.save('sun3.bmp')
@@ -153,14 +148,10 @@ def main4():
     t1 = time.clock()
     for i in range(N):
         with gc:
-            #gc.rotate_ctm(.2)
-            #gc.set_alpha(0.5)
             gc.draw_image(agg_img)
-            #print pil_img.getpixel((300,300)), img[300,300], gc.bmp_array[300,300]
             gc.translate_ctm(150,300)
             gc.scale_ctm(10,10)
             gc.set_fill_color((0.0,0,1.0,.5))
-            #gc.show_text("SUN")
     t2 = time.clock()
     print("images per second: %g" % (N/(t2-t1)))
     gc.save('sun2.bmp')
@@ -210,17 +201,5 @@ if __name__ == '__main__':
 
     import profile
     gc=agg.GraphicsContextArray((800,800))
-    #profile.run('main()')
-    #main5(gc)
-    #main5(gc)
-    #main5(gc)
-    #profile.run('main5(gc)')
-    #main()
-    #main2()
-    #main3()
-    #main4()
 
     main()
-    #main2(gc)
-    #main4(gc)
-    #main5(gc)

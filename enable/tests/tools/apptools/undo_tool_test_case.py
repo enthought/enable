@@ -6,16 +6,8 @@
 # LICENSE.txt
 #
 """ Tests for Commands that work with Components """
-
-from __future__ import (division, absolute_import, print_function,
-                        unicode_literals)
 import unittest
-
-# Third party library imports
-try:
-    from unittest.mock import MagicMock
-except ImportError:
-    from mock import MagicMock
+from unittest.mock import MagicMock
 
 # Enthought library imports
 from apptools.undo.api import UndoManager

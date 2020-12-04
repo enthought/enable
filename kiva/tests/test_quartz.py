@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import sys
 
 from kiva.tests._testing import skip_if_not_wx

@@ -10,8 +10,6 @@
 # ------------------------------------------------------------------------------
 """ This is the QPainter backend for kiva. """
 
-from __future__ import absolute_import, print_function
-
 from functools import partial
 import numpy as np
 import warnings

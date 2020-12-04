@@ -7,7 +7,6 @@
     This is currently under development and is not yet fully functional.
 
 """
-from __future__ import absolute_import
 import cairo
 import copy
 
@@ -1083,7 +1082,6 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         """
         ctx = self._ctx
-        #print text, list(ctx.get_matrix())
         cur_path = ctx.copy_path()
         ctx.save()
         ctx.transform(self.text_matrix)

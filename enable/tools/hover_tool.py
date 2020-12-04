@@ -6,8 +6,6 @@ Tool to detect when the user hovers over a specific part of an underlying
 components.
 """
 
-from __future__ import absolute_import
-
 # Enthought library imports
 from enable.base_tool import BaseTool
 from traits.api import Any, Callable, Enum, Float, Int

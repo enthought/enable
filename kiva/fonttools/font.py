@@ -2,9 +2,6 @@
 Defines the Kiva Font class and a utility method to parse free-form font
 specification strings into Font instances.
 """
-
-from __future__ import absolute_import, print_function
-
 import copy
 from kiva.constants import (DEFAULT, DECORATIVE, ROMAN, SCRIPT, SWISS, MODERN,
                             TELETYPE, NORMAL, ITALIC, BOLD, BOLD_ITALIC)

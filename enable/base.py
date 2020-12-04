@@ -21,9 +21,6 @@ Enable package.
 #                     subclasses_of
 #-------------------------------------------------------------------------------
 
-from __future__ import generators
-
-
 # Enthought library imports
 from traits.api import TraitError
 

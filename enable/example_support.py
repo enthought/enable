@@ -2,7 +2,6 @@
 Support class that wraps up the boilerplate toolkit calls that virtually all
 demo programs have to use.
 """
-from __future__ import absolute_import
 
 from traits.api import HasTraits, Instance
 from traits.etsconfig.api import ETSConfig
