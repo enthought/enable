@@ -131,11 +131,7 @@ environment_vars = {
     'null': {'ETS_TOOLKIT': 'null.image'},
 }
 
-if sys.version_info < (3, 0):
-    import string
-    pillow_trans = string.maketrans('<=>', '___')
-else:
-    pillow_trans = ''.maketrans({'<': '_', '=': '_', '>': '_'})
+pillow_trans = ''.maketrans({'<': '_', '=': '_', '>': '_'})
 
 if sys.platform == 'darwin':
     dependencies.add('Cython')

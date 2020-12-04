@@ -2,11 +2,7 @@
 
 import os
 import sys
-
-if sys.version_info[:2] == (2, 6):
-    import unittest2 as unittest
-else:
-    import unittest
+import unittest
 
 import numpy as np
 from numpy.testing import assert_array_equal
