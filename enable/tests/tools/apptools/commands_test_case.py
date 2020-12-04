@@ -12,7 +12,6 @@ from __future__ import (division, absolute_import, print_function,
 import unittest
 from unittest.mock import MagicMock
 
-
 # Enthought library imports
 from traits.testing.unittest_tools import UnittestTools
 
