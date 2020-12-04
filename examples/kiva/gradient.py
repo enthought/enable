@@ -85,16 +85,16 @@ def gradient():
     gc = GraphicsContext((500, 500))
     gc.scale_ctm(1.25, 1.25)
     draw(gc)
-    file_path = tempfile.mktemp(suffix='.png')
-    gc.save(file_path, file_format='png')
-    return file_path
+    with tempfile.NamedTemporaryFile(suffix='.png') as fid:
+        gc.save(fid.name, file_format='png')
+        image = Image.from_file(fid.name, resist_width='weak',
+                                resist_height='weak')
+    return image
 
 
 class Demo(DemoFrame):
     def _create_component(self):
-        file_path = gradient()
-        image = Image.from_file(file_path, resist_width='weak',
-                                resist_height='weak')
+        image = gradient()
 
         container = ConstraintsContainer(bounds=[500, 500])
         container.add(image)
