@@ -262,10 +262,10 @@ def test(runtime, toolkit, pillow, environment):
     environ = environment_vars.get(toolkit, {}).copy()
     environ['PYTHONUNBUFFERED'] = "1"
     commands = [
-        "edm run -e {environment} -- python -W default -m"
-        "coverage run -m nose.core enable -v --nologcapture",
-        "edm run -e {environment} -- python -W default -m"
-        "coverage run -a -m nose.core kiva -v --nologcapture",
+        ("edm run -e {environment} -- python -W default -m"
+        "coverage run -m nose.core enable -v --nologcapture"),
+        ("edm run -e {environment} -- python -W default -m"
+        "coverage run -a -m nose.core kiva -v --nologcapture"),
     ]
 
     # We run in a tempdir to avoid accidentally picking up wrong traitsui
