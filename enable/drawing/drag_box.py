@@ -81,14 +81,10 @@ class DragBox(Box):
         self.start_y = event.y
         self._set_bounds(event)
 
-        return
-
     def normal_mouse_move (self, event):
         """ Handle the mouse moving in the 'normal' state. """
 
         self.pointer = self.normal_pointer
-
-        return
 
     #### 'drawing' state #####################################################
 
@@ -106,9 +102,6 @@ class DragBox(Box):
 
         self.complete = True
         self._set_bounds(event)
-
-        return
-
 
     ##########################################################################
     # Private interface

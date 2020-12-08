@@ -33,7 +33,6 @@ class PointLine(DrawingTool):
     def add_point(self, point):
         """ Add the point. """
         self.line.points.append(point)
-        return
 
     def get_point(self, index):
         """ Get the point at the specified index. """
@@ -42,12 +41,10 @@ class PointLine(DrawingTool):
     def set_point(self, index, point):
         """ Set the point at the specified index to point. """
         self.line.points[index] = point
-        return
 
     def remove_point(self, index):
         """ Remove the point with the specified index. """
         del self.line.points[index]
-        return
 
     #------------------------------------------------------------------------
     # DrawingTool interface
@@ -56,7 +53,6 @@ class PointLine(DrawingTool):
     def reset(self):
         self.line.points = []
         self.event_state = "normal"
-        return
 
     #------------------------------------------------------------------------
     # "complete" state
@@ -67,7 +63,6 @@ class PointLine(DrawingTool):
         self.line.line_dash = None
         with gc:
             self.line._draw_mainlayer(gc)
-        return
 
     def complete_left_down(self, event):
         """ Handle the left mouse button going down in the 'complete' state. """
@@ -91,7 +86,6 @@ class PointLine(DrawingTool):
                     event.window.set_pointer(self.move_cursor)
                     self.event_state = 'drag_point'
                     self.request_redraw()
-        return
 
     def complete_mouse_move(self, event):
         """ Handle the mouse moving in the 'complete' state. """
@@ -106,7 +100,6 @@ class PointLine(DrawingTool):
             event.handled = False
             event.window.set_pointer(self.normal_cursor)
         self.request_redraw()
-        return
 
     #------------------------------------------------------------------------
     # "drag" state
@@ -115,13 +108,11 @@ class PointLine(DrawingTool):
     def drag_point_draw(self, gc):
         """ Draw the polygon in the 'drag_point' state. """
         self.line._draw_mainlayer(gc)
-        return
 
     def drag_point_left_up(self, event):
         """ Handle the left mouse coming up in the 'drag_point' state. """
         self.event_state = 'complete'
         self.updated = self
-        return
 
     def drag_point_mouse_move(self, event):
         """ Handle the mouse moving in the 'drag_point' state. """
@@ -131,7 +122,6 @@ class PointLine(DrawingTool):
         if dragged_point != (event.x, event.y):
             self.set_point(self._dragged, (event.x, event.y))
             self.request_redraw()
-        return
 
     #------------------------------------------------------------------------
     # "incomplete" state
@@ -143,7 +133,6 @@ class PointLine(DrawingTool):
             gc.set_fill_color((0, 0, 0, 0))
             gc.rect(50, 50, 100, 100)
         self.line._draw_mainlayer(gc)
-        return
 
     def incomplete_left_dclick(self, event):
         """ Handle a left double-click in the incomplete state. """
@@ -154,14 +143,12 @@ class PointLine(DrawingTool):
         self.event_state = 'complete'
         self.complete = True
         self.request_redraw()
-        return
 
     def incomplete_left_down(self, event):
         """ Handle the left mouse button coming up in incomplete state. """
         # Add the point.
         self.add_point((event.x, event.y))
         self.updated = self
-        return
 
     def incomplete_mouse_move(self, event):
         """ Handle the mouse moving in incomplete state. """
@@ -172,7 +159,6 @@ class PointLine(DrawingTool):
         if self.get_point(-1) != (event.x, event.y):
             self.set_point(-1, (event.x, event.y))
         self.request_redraw()
-        return
 
     #------------------------------------------------------------------------
     # "normal" state
@@ -189,12 +175,10 @@ class PointLine(DrawingTool):
         self.event_state = 'incomplete'
         self.updated = self
         self.line_dash = (4.0, 2.0)
-        return
 
     def normal_mouse_move(self, event):
         """ Handle the mouse moving in the 'normal' state. """
         event.window.set_pointer(self.drawing_cursor)
-        return
 
     #------------------------------------------------------------------------
     # Private interface

@@ -10,7 +10,6 @@ class ComponentTestCase(unittest.TestCase):
         self.assertTrue(c.position[1] == c.y)
         self.assertTrue(c.x == 0.0)
         self.assertTrue(c.y == 0.0)
-        return
 
     def test_bounds(self):
         c = Component(bounds=[50.0, 60.0])
@@ -20,7 +19,6 @@ class ComponentTestCase(unittest.TestCase):
         self.assertTrue(c.bounds[1] == 60.0)
         self.assertTrue(c.x2 == c.x + 50.0 - 1)
         self.assertTrue(c.y2 == c.y + 60.0 - 1)
-        return
 
     def test_get_outer_position(self):
         c = Component(bounds=[50.0, 60.0], padding=10, border_visible=False)
@@ -34,7 +32,6 @@ class ComponentTestCase(unittest.TestCase):
         self.assertTrue(c.outer_height == 80)
         self.assertTrue(c.outer_bounds[0] == 70)
         self.assertTrue(c.outer_bounds[1] == 80)
-        return
 
     def test_set_outer_position(self):
         c = Component(bounds=[50.0, 60.0], padding=10, border_visible=False)
@@ -60,8 +57,6 @@ class ComponentTestCase(unittest.TestCase):
         self.assertTrue(c.y2 == 89)
         self.assertTrue(c.y == 30)
 
-        return
-
     def test_border(self):
         c = Component(bounds=[50.0, 60.0],
                       position=[20, 20],
@@ -70,12 +65,11 @@ class ComponentTestCase(unittest.TestCase):
         self.assertTrue(c.outer_y == 10)
         self.assertTrue(c.outer_bounds[0] == 70)
         self.assertTrue(c.outer_bounds[1] == 80)
-        return
 
     def check_container(self):
         c = Component()
         self.assertTrue(c.container is None)
-        return
+
 
 if __name__ == "__main__":
     import nose

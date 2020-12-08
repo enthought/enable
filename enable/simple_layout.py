@@ -90,4 +90,3 @@ def simple_container_do_layout(container, components=None):
     # Tell all of our components to do a layout
     for component in components:
         component.do_layout()
-    return

@@ -45,7 +45,6 @@ class Button(Component):
             self.draw_up(gc, view_bounds)
         else:
             self.draw_down(gc, view_bounds)
-        return
 
     def draw_up(self, gc, view_bounds):
         with gc:
@@ -53,7 +52,6 @@ class Button(Component):
             gc.set_stroke_color(self.border_color_)
             gc.draw_rect((int(self.x), int(self.y), int(self.width)-1, int(self.height)-1), FILL_STROKE)
             self._draw_label(gc)
-        return
 
     def draw_down(self, gc, view_bounds):
         with gc:
@@ -61,7 +59,6 @@ class Button(Component):
             gc.set_stroke_color(self.border_color_)
             gc.draw_rect((int(self.x), int(self.y), int(self.width)-1, int(self.height)-1), FILL_STROKE)
             self._draw_label(gc, color=self.down_label_color_)
-        return
 
     def _draw_label(self, gc, color=None):
         if self.label != "":
@@ -73,14 +70,12 @@ class Button(Component):
             gc.set_stroke_color(color)
             gc.show_text(self.label, (self.x+(self.width-w-x)/2,
                                   self.y+(self.height-h-y)/2))
-        return
 
     def normal_left_down(self, event):
         self.button_state = "down"
         self._got_mousedown = True
         self.request_redraw()
         event.handled = True
-        return
 
     def normal_left_up(self, event):
         self.button_state = "up"
@@ -88,7 +83,6 @@ class Button(Component):
         self.request_redraw()
         self.perform(event)
         event.handled = True
-        return
 
 
 class ToolbarButton(Button):
@@ -103,7 +97,6 @@ class ToolbarButton(Button):
         if toolbar:
             self.toolbar = toolbar
             toolbar.add(self)
-        return
 
 
 class DrawingCanvasToolbar(Container):
@@ -131,7 +124,6 @@ class DrawingCanvasToolbar(Container):
             button.x = self.button_spacing + self._last_button_position
             self._last_button_position += button.width + self.button_spacing * 2
             button.y = int((self.height - button.height) / 2)
-        return
 
     def _canvas_changed(self, old, new):
         if old:
@@ -141,18 +133,14 @@ class DrawingCanvasToolbar(Container):
         if new:
             new.on_trait_change(self._canvas_bounds_changed, "bounds")
             new.on_trait_change(self._canvas_bounds_changed, "bounds_items")
-        return
 
     def _canvas_bounds_changed(self):
         self.width = self.canvas.width
         self.y = self.canvas.height - self.height
-        return
 
     def _dispatch_stateful_event(self, event, suffix):
         super(DrawingCanvasToolbar, self)._dispatch_stateful_event(event, suffix)
         event.handled = True
-        return
-
 
 
 class DrawingCanvas(Container):
@@ -197,7 +185,6 @@ class DrawingCanvas(Container):
             tool.dispatch(event, suffix)
 
         super(DrawingCanvas, self).dispatch(event, suffix)
-        return
 
     def activate(self, tool):
         """
@@ -205,7 +192,6 @@ class DrawingCanvas(Container):
         current active tool back into the list of tools.
         """
         self.active_tool = tool
-        return
 
     def _draw_container_mainlayer(self, gc, view_bounds=None, mode="default"):
         active_tool = self.active_tool
@@ -219,7 +205,6 @@ class DrawingCanvas(Container):
                 active_tool.draw(gc, view_bounds, mode)
 
             self.toolbar.draw(gc, view_bounds, mode)
-        return
 
     def _draw_container_background(self, gc, view_bounds=None, mode="default"):
         if self.bgcolor not in ("clear", "transparent", "none"):
@@ -227,7 +212,6 @@ class DrawingCanvas(Container):
                 gc.set_antialias(False)
                 gc.set_fill_color(self.bgcolor_)
                 gc.draw_rect((int(self.x), int(self.y), int(self.width)-1, int(self.height)-1), FILL)
-        return
 
     #------------------------------------------------------------------------
     # Event listeners
@@ -235,4 +219,3 @@ class DrawingCanvas(Container):
 
     def _tools_items_changed(self):
         self.request_redraw()
-        return

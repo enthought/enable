@@ -21,7 +21,6 @@ class EnableUnitTest(unittest.TestCase):
         """
         for dim, val in dims.items():
             self.assertTrue( getattr(obj, dim) == val )
-        return
 
 class TestComponent(Component):
     """ A component used for testing event handling.  Most notably, it
@@ -100,7 +99,6 @@ class EventTransformTestCase(EnableUnitTest):
         self.assertTrue(comp.last_event.y == 55)
         self.assertTrue(inner_container.last_event.x == 105)
         self.assertTrue(inner_container.last_event.y == 105)
-        return
 
     def test_viewport_container(self):
         """ Tests event handling of viewports (scaling and translation) """
@@ -148,7 +146,6 @@ class EventTransformTestCase(EnableUnitTest):
         self.assertTrue(container.last_event.y == 75)
         self.assertTrue(comp.last_event.x == 25)
         self.assertTrue(comp.last_event.y == 25)
-        return
 
     def test_mouse_capture(self):
         """ Tests saving the event's net_transform as well as the dispatch
@@ -186,8 +183,6 @@ class EventTransformTestCase(EnableUnitTest):
         new_pos = comp.captured_event_pos
         self.assertTrue(new_pos[0] == old_pos[0] + 2)
         self.assertTrue(new_pos[1] == old_pos[1] + 2)
-
-        return
 
 
 if __name__ == "__main__":

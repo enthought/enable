@@ -110,4 +110,3 @@ class Interactor(HasTraits):
             handler(event)
             if self.auto_handle_event:
                 event.handled = True
-        return

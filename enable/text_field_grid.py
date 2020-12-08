@@ -98,7 +98,6 @@ class TextFieldGrid(Container):
             gc.line_to(x, self.y + self.height)
             gc.stroke_path()
             x = x + self.cell_padding + self.cell_width
-        return
 
     def _position_cells(self):
         y = 0

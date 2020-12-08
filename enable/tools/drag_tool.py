@@ -125,7 +125,6 @@ class DragTool(BaseTool):
             BaseTool._dispatch_stateful_event(self, event, suffix)
         else:
             event.handled = True
-        return
 
     def _cancel_drag(self, event):
         self._drag_state = "nondrag"
