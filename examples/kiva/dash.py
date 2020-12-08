@@ -1,8 +1,5 @@
 import tempfile
-try:
-    from time import perf_counter
-except ImportError:
-    from time import clock as perf_counter
+from time import perf_counter
 
 import numpy
 

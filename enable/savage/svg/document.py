@@ -10,11 +10,8 @@ import os
 import urllib
 import urllib.parse as urlparse
 from xml.etree import cElementTree as ET
-try:
-    from xml.etree.cElementTree import ParseError
-except ImportError:
-    # ParseError doesn't exist in Python 2.6 and SyntaxError is raised instead
-    ParseError = SyntaxError
+from xml.etree.cElementTree import ParseError
+
 
 
 import numpy
