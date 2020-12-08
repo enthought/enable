@@ -7,7 +7,7 @@ import math
 from functools import wraps
 import os
 
-import urllib
+import urllib.request
 import urllib.parse as urlparse
 from xml.etree import cElementTree as ET
 try:
