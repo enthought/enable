@@ -15,9 +15,6 @@ Command stack.
 
 """
 
-from __future__ import (division, absolute_import, print_function,
-                        unicode_literals)
-
 from apptools.undo.api import ICommandStack, IUndoManager
 from traits.api import Callable, Instance
 

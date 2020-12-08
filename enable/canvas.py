@@ -1,7 +1,5 @@
 """ Defines the enable Canvas class """
 
-from __future__ import with_statement
-
 # Enthought library imports
 from traits.api import Bool, Trait, Tuple, List
 from kiva.constants import FILL

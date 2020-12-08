@@ -1,8 +1,6 @@
 # compute arctangent table for CORDIC computations in fttrigon.c
 import sys, math
 
-import six.moves as sm
-
 #units  = 64*65536.0   # don't change !!
 units  = 256
 scale  = units/math.pi
@@ -38,7 +36,7 @@ print()
 print("table of arctan( 1/2^n ) for PI = " + repr(units/65536.0) + " units")
 
 # compute range of "i"
-r = list(sm.range(-1, 32))
+r = list(range(-1, 32))
 
 for n in r:
 

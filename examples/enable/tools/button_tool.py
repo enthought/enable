@@ -14,8 +14,6 @@ This example shows how to integrate a simple component move tool with apptools
 undo/redo infrastructure.
 
 """
-from __future__ import (division, absolute_import, print_function,
-                        unicode_literals)
 
 from traits.api import Bool
 from kiva.constants import FILL, STROKE

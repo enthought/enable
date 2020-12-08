@@ -204,8 +204,6 @@ class TestCompiledPath(unittest.TestCase, Utils):
                          (3.0,3.0,agg.path_cmd_move_to, agg.path_flags_none),
                          (4.0,4.0,agg.path_cmd_line_to, agg.path_flags_none),
                          (0.0,0.0,agg.path_cmd_stop, agg.path_flags_none),))
-        #print 'desired:', desired
-        #print 'actual:', actual
 
         self.assertRavelEqual(actual, desired)
 

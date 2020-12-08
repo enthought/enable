@@ -1,13 +1,9 @@
-from __future__ import absolute_import
-
 from abc import ABCMeta, abstractmethod
-
-import six
 
 from .constants import FILL_STROKE, SQUARE_MARKER
 
-@six.add_metaclass(ABCMeta)
-class AbstractGraphicsContext(object):
+
+class AbstractGraphicsContext(object, metaclass=ABCMeta):
     """ Abstract Base Class for Kiva Graphics Contexts """
 
     # ----------------------------------------------------------------
@@ -333,7 +329,7 @@ class AbstractGraphicsContext(object):
         """
 
     @abstractmethod
-    def draw_image(image, rect=None):
+    def draw_image(self, image, rect=None):
         """ Render an image into a rectangle
 
         The rectangle is specified as an (x, y, w, h) tuple.  If it is not

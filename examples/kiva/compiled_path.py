@@ -33,19 +33,17 @@ def compiled_path():
     gc.set_stroke_color((0, 0, 1, 1))
     gc.draw_path_at_points(locs, path, STROKE)
 
-    file_path = tempfile.mktemp(suffix='.jpg')
-
-    gc.save(file_path)
-
-    return file_path
+    with tempfile.NamedTemporaryFile(suffix='.jpg') as fid:
+        gc.save(fid.name)
+        image = Image.from_file(fid.name, resist_width='weak',
+                                resist_height='weak')
+    return image
 
 
 class Demo(DemoFrame):
 
     def _create_component(self):
-        file_path = compiled_path()
-        image = Image.from_file(file_path, resist_width='weak',
-                                resist_height='weak')
+        image = compiled_path()
 
         container = ConstraintsContainer(bounds=[500, 500])
         container.add(image)

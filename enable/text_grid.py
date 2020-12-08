@@ -2,8 +2,6 @@
 TextGrid is a text grid widget that is meant to be used with Numpy.
 """
 
-from __future__ import with_statement
-
 # Major library imports
 from numpy import arange, array, dstack, repeat, newaxis
 

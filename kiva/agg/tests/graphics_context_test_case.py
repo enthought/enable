@@ -1,5 +1,3 @@
-from __future__ import with_statement
-
 import unittest
 
 from numpy import all, allclose, array, dtype, pi, ones
@@ -245,8 +243,6 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
                          (3.0,3.0,agg.path_cmd_move_to, agg.path_flags_none),
                          (4.0,4.0,agg.path_cmd_line_to, agg.path_flags_none),
                          (0.0,0.0,agg.path_cmd_stop, agg.path_flags_none),))
-        #print 'desired:', desired
-        #print 'actual:', actual
 
         self.assertTrue(allclose(actual,desired))
 
@@ -307,8 +303,6 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         gc.line_to(10,10)
         gc.clip_to_rect(5,5,5,5)
         gc.stroke_path()
-        #print 'clipping on'
-        #print gc.bmp_array[:,:,0]
         # make sure nothing was drawn in the corner
         self.assertEqual(gc.bmp_array[-1,0,0], 255)
 
@@ -317,16 +311,12 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         gc.move_to(0,0)
         gc.line_to(5,5)
         gc.stroke_path()
-        #print
-        #print "stroke lower-left to upper-right:"
-        #print gc.bmp_array[:,:,0]
         # assert the lower left and upper corner are the same,
         # and have something drawn in them.
         self.assertEqual(gc.bmp_array[-1,0,0], gc.bmp_array[0,-1,0])
         self.assertNotEqual(gc.bmp_array[-1,0,0], 255)
 
     def test_set_get_text_position(self):
-        #print 'testing text position'
         gc = agg.GraphicsContextArray((5,5))
         gc.set_text_position(1,1)
         actual = gc.get_text_position()

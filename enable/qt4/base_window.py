@@ -14,8 +14,6 @@
 # been on my list of things to do.
 #------------------------------------------------------------------------------
 
-import six
-
 # Qt imports.
 from pyface.qt import QtCore, QtGui, QtOpenGL
 
@@ -370,14 +368,14 @@ class _Window(AbstractWindow):
                 return None
 
         if event_type == 'character':
-            key = six.text_type(event.text())
+            key = str(event.text())
         else:
             # Convert the keypress to a standard enable key if possible, otherwise
             # to text.
             key_code = event.key()
             key = KEY_MAP.get(key_code)
             if key is None:
-                key = six.unichr(key_code).lower()
+                key = chr(key_code).lower()
 
         if not key:
             return None

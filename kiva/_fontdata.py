@@ -34,7 +34,7 @@ __doc__="""
 import os
 import sys
 
-from six.moves import UserDict
+from collections import UserDict
 
 # mapping of name to width vector, starts empty until fonts are added
 # e.g. widths['Courier'] = [...600,600,600,...]

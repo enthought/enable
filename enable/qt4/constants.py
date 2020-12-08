@@ -9,11 +9,7 @@
 # Thanks for using Enthought open source!
 #------------------------------------------------------------------------------
 
-from __future__ import absolute_import
-
 import warnings
-
-import six.moves as sm
 
 from pyface.qt import QtCore
 
@@ -84,7 +80,7 @@ pointer_shapes = [
 if len(pointer_names) != len(pointer_shapes):
     warnings.warn("The Qt4 toolkit backend pointer map is out of sync!")
 
-POINTER_MAP = dict(sm.zip(pointer_names, pointer_shapes))
+POINTER_MAP = dict(zip(pointer_names, pointer_shapes))
 
 KEY_MAP = {
     QtCore.Qt.Key_Backspace: 'Backspace',

@@ -34,17 +34,17 @@ def ellipse():
     gc.rect(95, 95, 10, 10)
     gc.fill_path()
     draw_ellipse(gc, 100, 100, 35.0, 25.0, pi / 6)
-    file_path = tempfile.mktemp(suffix='.bmp')
-    gc.save(file_path)
-    return file_path
+    with tempfile.NamedTemporaryFile(suffix='.bmp') as fid:
+        gc.save(fid.name)
+        image = Image.from_file(fid.name, resist_width='weak',
+                                resist_height='weak')
+    return image
 
 
 class Demo(DemoFrame):
 
     def _create_component(self):
-        file_path = ellipse()
-        image = Image.from_file(file_path, resist_width='weak',
-                                resist_height='weak')
+        image = ellipse()
 
         container = ConstraintsContainer(bounds=[500, 500])
         container.add(image)

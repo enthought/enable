@@ -1,6 +1,3 @@
-
-from __future__ import with_statement, print_function
-
 # Enthought library imports
 from enable.api import ColorTrait, Component
 from enable.font_metrics_provider import font_metrics_provider

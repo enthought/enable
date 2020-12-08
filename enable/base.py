@@ -21,11 +21,6 @@ Enable package.
 #                     subclasses_of
 #-------------------------------------------------------------------------------
 
-from __future__ import generators
-
-# Major library imports
-import six.moves as sm
-
 # Enthought library imports
 from traits.api import TraitError
 
@@ -240,7 +235,7 @@ def send_event_to ( components, event_name, event ):
         setattr( component, pre_event_name, event )
         if event.handled:
             return len( components )
-    for i in sm.range( len( components ) - 1, -1, -1 ):
+    for i in range( len( components ) - 1, -1, -1 ):
         setattr( components[i], event_name, event )
         if event.handled:
             return i

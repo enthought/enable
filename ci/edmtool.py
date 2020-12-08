@@ -76,8 +76,6 @@ how to run commands within an EDM enviornment.
 
 """
 
-from __future__ import print_function
-
 import glob
 import os
 import subprocess
@@ -94,9 +92,7 @@ supported_combinations = {
 
 dependencies = {
     "apptools",
-    "six",
     "nose",
-    "mock",
     "coverage",
     "numpy",
     "pygments",
@@ -135,11 +131,7 @@ environment_vars = {
     'null': {'ETS_TOOLKIT': 'null.image'},
 }
 
-if sys.version_info < (3, 0):
-    import string
-    pillow_trans = string.maketrans('<=>', '___')
-else:
-    pillow_trans = ''.maketrans({'<': '_', '=': '_', '>': '_'})
+pillow_trans = ''.maketrans({'<': '_', '=': '_', '>': '_'})
 
 if sys.platform == 'darwin':
     dependencies.add('Cython')
@@ -152,7 +144,13 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 github_url_fmt = "git+http://github.com/enthought/{0}.git#egg={0}"
 
 
-@click.group()
+# Ensure that "-h" is supported for getting help.
+CONTEXT_SETTINGS = {
+    "help_option_names": ["-h", "--help"],
+}
+
+
+@click.group(context_settings=CONTEXT_SETTINGS)
 def cli():
     pass
 
@@ -239,6 +237,23 @@ def install(runtime, toolkit, pillow, environment, source):
 @click.option('--toolkit', default='null')
 @click.option('--pillow', default='pillow')
 @click.option('--environment', default=None)
+def shell(runtime, toolkit, pillow, environment):
+    """ Create a shell into the EDM development environment
+    (aka 'activate' it).
+
+    """
+    parameters = get_parameters(runtime, toolkit, pillow, environment)
+    commands = [
+        "edm shell -e {environment}",
+    ]
+    execute(commands, parameters)
+
+
+@cli.command()
+@click.option('--runtime', default='3.6')
+@click.option('--toolkit', default='null')
+@click.option('--pillow', default='pillow')
+@click.option('--environment', default=None)
 def test(runtime, toolkit, pillow, environment):
     """ Run the test suite in a given environment with the specified toolkit.
 
@@ -247,8 +262,10 @@ def test(runtime, toolkit, pillow, environment):
     environ = environment_vars.get(toolkit, {}).copy()
     environ['PYTHONUNBUFFERED'] = "1"
     commands = [
-        "edm run -e {environment} -- coverage run -m nose.core enable -v --nologcapture",
-        "edm run -e {environment} -- coverage run -a -m nose.core kiva -v --nologcapture",
+        ("edm run -e {environment} -- python -W default -m"
+        "coverage run -m nose.core enable -v --nologcapture"),
+        ("edm run -e {environment} -- python -W default -m"
+        "coverage run -a -m nose.core kiva -v --nologcapture"),
     ]
 
     # We run in a tempdir to avoid accidentally picking up wrong traitsui

@@ -1,7 +1,5 @@
 """ Defines the Component class """
 
-from __future__ import with_statement
-
 from uuid import uuid4
 
 # Enthought library imports

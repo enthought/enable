@@ -11,16 +11,16 @@ def rect():
     gc.clear()
     gc.rect(100, 100, 300, 300)
     gc.draw_path()
-    file_path = tempfile.mktemp(suffix='.bmp')
-    gc.save(file_path)
-    return file_path
+    with tempfile.NamedTemporaryFile(suffix='.bmp') as fid:
+        gc.save(fid.name)
+        image = Image.from_file(fid.name, resist_width='weak',
+                                resist_height='weak')
+    return image
 
 
 class Demo(DemoFrame):
     def _create_component(self):
-        file_path = rect()
-        image = Image.from_file(file_path, resist_width='weak',
-                                resist_height='weak')
+        image = rect()
 
         container = ConstraintsContainer(bounds=[500, 500])
         container.add(image)

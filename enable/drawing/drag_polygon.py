@@ -1,7 +1,5 @@
 """ A drag drawn polygon. """
 
-from __future__ import with_statement
-
 from enable.primitives.api import Polygon
 from enable.api import Pointer
 from pyface.action.api import MenuManager

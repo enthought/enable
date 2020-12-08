@@ -5,9 +5,6 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
 import unittest
 
 from traits.testing.unittest_tools import UnittestTools

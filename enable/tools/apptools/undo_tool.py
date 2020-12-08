@@ -13,9 +13,6 @@ Tool that triggers undo or redo when keys are pressed.
 
 """
 
-from __future__ import (division, absolute_import, print_function,
-                        unicode_literals)
-
 # Enthought library imports
 from traits.api import Instance, List
 

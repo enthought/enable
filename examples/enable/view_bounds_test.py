@@ -1,7 +1,6 @@
 """
 Demonstrates how clipping of objects occurs with the view_bounds parameter to draw().
 """
-from __future__ import print_function
 
 from enable.api import Container, Component, Scrolled
 from enable.base import empty_rectangle, intersect_bounds

@@ -1,7 +1,5 @@
 """ Defines a Viewport which renders sub-areas of components """
 
-from __future__ import with_statement
-
 # Standard library imports
 from numpy import array, dot
 

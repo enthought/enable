@@ -1,10 +1,6 @@
-from __future__ import print_function
-
 from math import sqrt, pi
 import sys
 import warnings
-
-import six
 
 import numpy as np
 
@@ -170,13 +166,15 @@ class LinearGradientBrush(AbstractGradientBrush):
     """ A Brush representing a linear gradient.
     """
     def __init__(self, x1,y1, x2,y2, stops, spreadMethod='pad',
-        transforms=[], units='userSpaceOnUse'):
+        transforms=None, units='userSpaceOnUse'):
         self.x1 = x1
         self.y1 = y1
         self.x2 = x2
         self.y2 = y2
         self.stops = stops
         self.spreadMethod = spreadMethod
+        if transforms is None:
+            transforms = []
         self.transforms = transforms
         self.units = units
 
@@ -224,7 +222,7 @@ class RadialGradientBrush(AbstractGradientBrush):
     """ A Brush representing a radial gradient.
     """
     def __init__(self, cx,cy, r, stops, fx=None,fy=None, spreadMethod='pad',
-        transforms=[], units='userSpaceOnUse'):
+        transforms=None, units='userSpaceOnUse'):
         self.cx = cx
         self.cy = cy
         self.r = r
@@ -236,6 +234,8 @@ class RadialGradientBrush(AbstractGradientBrush):
             fy = self.cy
         self.fy = fy
         self.spreadMethod = spreadMethod
+        if transforms is None:
+            transforms = []
         self.transforms = transforms
         self.units = units
 
@@ -336,7 +336,6 @@ class Renderer(NullRenderer):
     def createAffineMatrix(cls, a,b,c,d,x,y):
         # FIXME: should we create a 6x1 or 3x3 matrix???
         return (a,b,c,d,x,y)
-#        return affine.affine_from_values(a,b,c,d,x,y)
 
     @classmethod
     def createBrush(cls, color_tuple):
@@ -345,7 +344,6 @@ class Renderer(NullRenderer):
     @classmethod
     def createNativePen(cls, pen):
         # fixme: Not really sure what to do here...
-        #return wx.GraphicsRenderer_GetDefaultRenderer().CreatePen(pen)
         return pen
 
     @classmethod
@@ -354,13 +352,13 @@ class Renderer(NullRenderer):
 
     @classmethod
     def createLinearGradientBrush(cls, x1,y1,x2,y2, stops, spreadMethod='pad',
-                                  transforms=[], units='userSpaceOnUse'):
+                                  transforms=None, units='userSpaceOnUse'):
         return LinearGradientBrush(x1,y1,x2,y2,stops, spreadMethod, transforms,
             units)
 
     @classmethod
     def createRadialGradientBrush(cls, cx,cy, r, stops, fx=None,fy=None,
-                                  spreadMethod='pad', transforms=[],
+                                  spreadMethod='pad', transforms=None,
                                   units='userSpaceOnUse'):
         return RadialGradientBrush(cx,cy, r, stops, fx,fy, spreadMethod,
             transforms, units)
@@ -406,7 +404,7 @@ class Renderer(NullRenderer):
 
     @classmethod
     def setFontStyle(cls, font, style):
-        if isinstance(style, six.string_types):
+        if isinstance(style, str):
             if style not in fonttools.font.font_styles:
                 warnings.warn('font style "%s" not supported' % style)
             else:
@@ -416,7 +414,7 @@ class Renderer(NullRenderer):
 
     @classmethod
     def setFontWeight(cls, font, weight):
-        if isinstance(weight, six.string_types):
+        if isinstance(weight, str):
             if weight not in fonttools.font.font_weights:
                 warnings.warn('font weight "%s" not supported' % weight)
             else:
@@ -544,12 +542,6 @@ class Renderer(NullRenderer):
             # text which will render up side down.  To fix this, we set the
             # text transform matrix to have y going up so the text is rendered
             # upright.  But since, +y is now *up*, we need to draw at -y.
-
-            # fixme: There is something wrong with the text matrix.  The following
-            #        commands don't work and I would expect them to.
-            #text_matrix = affine.affine_from_values(1,0,0,-1,x,-y)
-            #gc.set_text_matrix(text_matrix)
-            #gc.show_text_at_point(text, 0, 0)
 
             if anchor != 'start':
                 tx, ty, tw, th = gc.get_text_extent(text)

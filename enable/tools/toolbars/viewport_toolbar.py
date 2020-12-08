@@ -1,6 +1,3 @@
-
-from __future__ import with_statement
-
 # Library imports
 
 # Enthought Library imports

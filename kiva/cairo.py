@@ -7,10 +7,8 @@
     This is currently under development and is not yet fully functional.
 
 """
-from __future__ import absolute_import
 import cairo
 import copy
-import six.moves as sm
 
 import numpy
 import warnings
@@ -588,7 +586,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             N.B. Cairo cannot make disjointed lines as a single subpath,
             thus each line forms it's own subpath
         """
-        for start, end in sm.zip(starts, ends):
+        for start, end in zip(starts, ends):
             self._ctx.move_to(*start)
             self._ctx.line_to(*end)
 
@@ -1083,7 +1081,6 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         """
         ctx = self._ctx
-        #print text, list(ctx.get_matrix())
         cur_path = ctx.copy_path()
         ctx.save()
         ctx.transform(self.text_matrix)
@@ -1304,7 +1301,7 @@ if __name__=="__main__":
         x = linspace(low, high, numpoints)
         pd = ArrayPlotData(index=x)
         p = Plot(pd, bgcolor="lightgray", padding=50, border_visible=True)
-        for t,i in sm.zip(cycle(['line','scatter']),sm.range(10)):
+        for t,i in zip(cycle(['line','scatter']),range(10)):
             pd.set_data("y" + str(i), jn(i,x))
             p.plot(("index", "y" + str(i)), color=tuple(COLOR_PALETTE[i]),
                    width = 2.0 * dpi_scale, type=t)

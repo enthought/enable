@@ -1,6 +1,3 @@
-
-from __future__ import with_statement
-
 from kiva.constants import FILL
 
 # Relative imports

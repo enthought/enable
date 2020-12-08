@@ -1,7 +1,6 @@
 """
 Basic demo of drawing within an Enable component.
 """
-from __future__ import print_function
 
 from enable.api import Component, ComponentEditor
 from traits.api import HasTraits, Instance

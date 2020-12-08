@@ -1,6 +1,6 @@
+from functools import reduce
 
 # Major library imports
-import six.moves as sm
 from numpy import dot
 
 # Enthought library imports
@@ -137,7 +137,7 @@ class AbstractWindow(HasTraits):
             gc.clear(self.bgcolor_)
         else:
             # Fixme: should use clip_to_rects
-            update_union = sm.reduce(union_bounds, self._update_region)
+            update_union = reduce(union_bounds, self._update_region)
             gc.clip_to_rect(*update_union)
 
     def _window_paint(self, event):
@@ -264,7 +264,7 @@ class AbstractWindow(HasTraits):
             if history is not None and len(history) > 0:
                 # Assemble all the transforms
                 transforms = [c.get_event_transform() for c in history]
-                total_transform = sm.reduce(dot, transforms[::-1])
+                total_transform = reduce(dot, transforms[::-1])
                 key_event.push_transform(total_transform)
             elif self.mouse_owner_transform is not None:
                 key_event.push_transform(self.mouse_owner_transform)
@@ -313,7 +313,7 @@ class AbstractWindow(HasTraits):
             if history is not None and len(history) > 0:
                 # Assemble all the transforms
                 transforms = [c.get_event_transform() for c in history]
-                total_transform = sm.reduce(dot, transforms[::-1])
+                total_transform = reduce(dot, transforms[::-1])
                 mouse_event.push_transform(total_transform)
             elif self.mouse_owner_transform is not None:
                 mouse_event.push_transform(self.mouse_owner_transform)

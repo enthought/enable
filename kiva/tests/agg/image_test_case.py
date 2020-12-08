@@ -1,10 +1,6 @@
-from __future__ import print_function
-
 from timeit import Timer
 import os, sys
 import unittest
-
-import six
 
 from PIL import Image
 from numpy import alltrue, array, concatenate, dtype, frombuffer, newaxis, \

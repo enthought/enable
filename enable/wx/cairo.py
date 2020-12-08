@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 #------------------------------------------------------------------------------
 
-import six.moves as sm
+from functools import reduce
 
 import wx
 
@@ -39,7 +39,7 @@ class Window(BaseWindow):
         wdc = control._dc = wx.PaintDC(control)
         self._update_region = None
         if self._update_region is not None:
-            update_bounds = sm.reduce(union_bounds, self._update_region)
+            update_bounds = reduce(union_bounds, self._update_region)
             pixel_map.draw_to_wxwindow(control, int(update_bounds[0]), int(update_bounds[1]),
                                        width=int(update_bounds[2]), height=int(update_bounds[3]))
         else:

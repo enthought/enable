@@ -1,18 +1,14 @@
 """
     SVGDocument
 """
-from __future__ import print_function
-
 from io import BytesIO
 import warnings
 import math
 from functools import wraps
 import os
 
-import six
-import six.moves as sm
-
-import six.moves.urllib.parse as urlparse
+import urllib
+import urllib.parse as urlparse
 from xml.etree import cElementTree as ET
 try:
     from xml.etree.cElementTree import ParseError
@@ -130,10 +126,6 @@ def pathHandler(func):
     """
     @wraps(func)
     def inner(self, node):
-        #brush = self.getBrushFromState()
-        #pen = self.getPenFromState()
-        #if not (brush or pen):
-        #    return None, []
         path = self.renderer.makePath()
         results = func(self, node, path)
 
@@ -188,7 +180,7 @@ class ResourceGetter(object):
             # Plain URI. Pass it back.
             # Read the data and stuff it in a StringIO in order to satisfy
             # functions that need a functioning seek() and stuff.
-            return path, lambda uri: BytesIO(sm.urllib.request.urlopen(uri).read())
+            return path, lambda uri: BytesIO(urllib.request.urlopen(uri).read())
         path = os.path.abspath(os.path.join(self.dirname, path_part))
         return path, lambda fn: open(fn, 'rb')
 
@@ -594,9 +586,7 @@ class SVGDocument(object):
     def getFontFromState(self):
         font = self.renderer.getFont()
         family = self.state.get("font-family")
-        #print 'family', family
         if family:
-            #print "setting font", family
             font.face_name = family
 
         style = self.state.get("font-style")
@@ -627,7 +617,6 @@ class SVGDocument(object):
         if not (brush and hasattr(brush, 'IsOk') and brush.IsOk()):
             black_tuple = (255,255,255,255)
             brush = self.renderer.createBrush(black_tuple)
-            #print "using black brush"
         # TODO: handle <tspan>, <a> and <tref>.
         # TODO: handle xml:space="preserve"? The following more or less
         # corresponds to xml:space="default".
@@ -761,10 +750,10 @@ class SVGDocument(object):
                 else:
                     arguments = iter(arguments)
                     if command ==  'm':
-                        yield (command, six.next(arguments))
+                        yield (command, next(arguments))
                         command = "l"
                     elif command == "M":
-                        yield (command, six.next(arguments))
+                        yield (command, next(arguments))
                         command = "L"
                     for arg in arguments:
                         yield (command, arg)
@@ -826,7 +815,7 @@ class SVGDocument(object):
             pen.SetWidth(width)
         stroke_dasharray = self.state.get('stroke-dasharray', 'none')
         if stroke_dasharray != 'none':
-            stroke_dasharray = list(sm.map(valueToPixels,
+            stroke_dasharray = list(map(valueToPixels,
                 stroke_dasharray.replace(',', ' ').split()))
             if len(stroke_dasharray) % 2:
                 # Repeat to get an even array.
@@ -959,7 +948,6 @@ class SVGDocument(object):
         if type == 'RGB':
             r,g,b = details
         elif type == "NONE":
-            #print 'returning null brush'
             return self.renderer.NullBrush
         opacity = self.state.get('fill-opacity', self.state.get('opacity', '1'))
         opacity = float(opacity)
@@ -987,7 +975,6 @@ class SVGDocument(object):
         relative = False
         if type == type.lower():
             relative = True
-            #ox, oy = path.GetCurrentPoint().Get()
             ox, oy = path.GetCurrentPoint()
         else:
             ox = oy = 0
@@ -1007,8 +994,7 @@ class SVGDocument(object):
             pt = normalizePoint(arg)
             path.AddLineToPoint(*pt)
         elif type == 'C':
-            #control1, control2, endpoint = arg
-            control1, control2, endpoint = sm.map(
+            control1, control2, endpoint = map(
                 normalizePoint, arg
             )
             self.lastControl = control2
@@ -1017,23 +1003,15 @@ class SVGDocument(object):
                 control2,
                 endpoint
             )
-            #~ cp = path.GetCurrentPoint()
-            #~ path.AddCircle(c1x, c1y, 5)
-            #~ path.AddCircle(c2x, c2y, 3)
-            #~ path.AddCircle(x,y, 7)
-            #~ path.MoveToPoint(cp)
-            #~ print "C", control1, control2, endpoint
 
         elif type == 'S':
-            #control2, endpoint = arg
-            control2, endpoint = sm.map(
+            control2, endpoint = map(
                 normalizePoint, arg
             )
             if self.lastControl:
                 control1 = reflectPoint(self.lastControl, path.GetCurrentPoint())
             else:
                 control1 = path.GetCurrentPoint()
-            #~ print "S", self.lastControl,":",control1, control2, endpoint
             self.lastControl = control2
             path.AddCurveToPoint(
                 control1,
@@ -1041,7 +1019,7 @@ class SVGDocument(object):
                 endpoint
             )
         elif type == "Q":
-            (cx, cy), (x,y) = sm.map(normalizePoint, arg)
+            (cx, cy), (x,y) = map(normalizePoint, arg)
             self.lastControlQ = (cx, cy)
             path.AddQuadCurveToPoint(cx, cy, x, y)
         elif type == "T":
@@ -1087,15 +1065,12 @@ class SVGDocument(object):
             #~ Manually closing the path *and* calling CloseSubpath() appears
             #~ to give correct results on win32
 
-            #pt = self.firstPoints.pop()
-            #path.AddLineToPoint(*pt)
             path.CloseSubpath()
 
     def render(self, context):
         if not hasattr(self, "ops"):
             return
         for op, args in self.ops:
-            #print op, context, args
             op(context, *args)
 
 if __name__ == '__main__':

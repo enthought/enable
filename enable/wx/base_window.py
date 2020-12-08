@@ -3,12 +3,8 @@ Defines the concrete top-level Enable 'Window' class for the wxPython GUI
 toolkit, based on the kiva agg driver.
 """
 
-from __future__ import absolute_import
-
 import sys
 import time
-
-import six
 
 import wx
 
@@ -308,7 +304,7 @@ class BaseWindow(AbstractWindow):
 
         if focus_owner is not None:
             if event_type == 'character':
-                key = six.unichr(event.GetUniChar())
+                key = chr(event.GetUniChar())
                 if not key:
                     return None
             else:
@@ -316,7 +312,7 @@ class BaseWindow(AbstractWindow):
                 if key_code in KEY_MAP:
                     key = KEY_MAP.get(key_code)
                 else:
-                    key = six.unichr(event.GetUniChar()).lower()
+                    key = chr(event.GetUniChar()).lower()
 
             # Use the last-seen mouse coordinates instead of GetX/GetY due
             # to wx bug.
@@ -374,6 +370,7 @@ class BaseWindow(AbstractWindow):
                 right_down=event.RightIsDown(),
                 mouse_wheel=mouse_wheel,
                 mouse_wheel_axis=wheel_axis,
+                mouse_wheel_delta=mouse_wheel_delta,
                 window=self,
             )
 

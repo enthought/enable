@@ -10,7 +10,6 @@ __requires__ = [
     'traits',
     'traitsui',
     'pyface',
-    'six',
     'fonttools'
 ]
 
