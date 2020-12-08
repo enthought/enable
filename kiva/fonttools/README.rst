@@ -1,8 +1,8 @@
 fonttools
 =========
 
-This is a package provides a platform independent API for describing fonts
-as well as locating and loading font information from the local system.
+The ``fonttools`` package provides a platform independent API for describing
+fonts as well as locating and loading font information from the local system.
 
 Only components exposed from ``kiva.font`` are public API. Other modules should
 be considered as private implementation details.
