@@ -31,6 +31,9 @@ commands into a raster image which can then be saved as a standard image format
 available on any platform, and should work even if there is no GUI or windowing
 system available.
 
+Portions of the Kiva Agg backend are copyright (C) 1996-2000 The FreeType
+Project (www.freetype.org).  All rights reserved except as specified.
+
 Kiva Concepts
 -------------
 
