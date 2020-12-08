@@ -8,7 +8,8 @@ from kiva import agg
 
 # FIXME:
 #   These tests are broken, and Peter promised to fix it at some point.
-@unittest.skip("tests are broken")
+#   see enthought/enable#480
+@unittest.skip("tests are broken, see enthought/enable#480")
 class Test_Save(unittest.TestCase):
     format_output_map = {
         "rgb24": [255,255,255,255,255,255,255,0,0,255,0,0],
