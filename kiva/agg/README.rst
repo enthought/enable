@@ -11,7 +11,7 @@ Third-party libraries
 agg-24
 ~~~~~~
 
-The folder ``agg24`` contains a copy of the Agg-2.4 library.
+The folder ``agg-24`` contains a copy of the Agg-2.4 library.
 
 This code has been adapted from the Matplotlib version of Agg. The original
 code is subject to the Anti-Grain Geometry Public License. Modifications by the
