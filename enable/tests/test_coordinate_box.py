@@ -28,8 +28,3 @@ class CoordinateBoxTestCase(unittest.TestCase):
         self.assertTrue(c.is_in(15, 50))
         self.assertTrue(not c.is_in(0, 0))
         self.assertTrue(not c.is_in(10, 10))
-
-
-if __name__ == "__main__":
-    import nose
-    nose.main()
