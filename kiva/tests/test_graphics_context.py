@@ -4,8 +4,18 @@ from numpy import (
     alltrue, array, concatenate, dtype,
     frombuffer, newaxis, ravel, ones, zeros)
 from PIL import Image as PILImage
-from hypothesis import given
-from hypothesis.strategies import sampled_from
+try:
+    from hypothesis import given
+    from hypothesis.strategies import sampled_from
+    hypothesis_available = True
+except ModuleNotFoundError:
+    def given(_):
+        def func(_):
+            pass
+        return func
+    def sampled_from(_):
+        pass
+    hypothesis_available = False
 
 from kiva.image import GraphicsContext
 from kiva.compat import piltostring
@@ -24,6 +34,7 @@ class TestAlphaBlackImage(unittest.TestCase):
         self.size = (1, 1)
         self.color = 0.0
 
+    @unittest.skipIf(not hypothesis_available, "test requires hypothesis")
     @given(sampled_from([1.0, 0.0, 0.5]))
     def test_simple(self, color):
         gc = GraphicsContext(self.size, pix_format="bgra32")
@@ -34,6 +45,7 @@ class TestAlphaBlackImage(unittest.TestCase):
         # for alpha == 1, image should be exactly equal.
         self.assert_images_equal(desired, actual)
 
+    @unittest.skipIf(not hypothesis_available, "test requires hypothesis")
     @given(sampled_from([1.0, 0.0, 0.5]))
     def test_image_alpha(self, color):
         alpha = 0.5
@@ -51,6 +63,7 @@ class TestAlphaBlackImage(unittest.TestCase):
         self.assert_images_close(
             desired[:, :, :-1], actual[:, :, :-1], diff_allowed=slop_allowed)
 
+    @unittest.skipIf(not hypothesis_available, "test requires hypothesis")
     @given(sampled_from([1.0, 0.0, 0.5]))
     def test_ambient_alpha(self, color):
         orig = self.solid_bgra32(self.size, color)
@@ -69,6 +82,7 @@ class TestAlphaBlackImage(unittest.TestCase):
         self.assert_images_close(
             desired, actual, diff_allowed=slop_allowed)
 
+    @unittest.skipIf(not hypothesis_available, "test requires hypothesis")
     @given(sampled_from([1.0, 0.0, 0.5]))
     def test_ambient_plus_image_alpha(self, color):
         amb_alpha = 0.5
@@ -181,7 +195,3 @@ class TestAlphaBlackImage(unittest.TestCase):
             else:
                 msg = "size: %d.  To large to display" % size
             raise AssertionError(msg)
-
-
-if __name__ == "__main__":
-    unittest.main()

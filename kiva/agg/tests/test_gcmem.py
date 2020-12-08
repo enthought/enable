@@ -6,8 +6,14 @@ import unittest, sys
 import gc as garbagecollector
 
 from kiva.image import GraphicsContext, GraphicsContextSystem
-from etsdevtools.debug.memusage import get_mem_usage
+try:
+    from etsdevtools.debug.memusage import get_mem_usage
+    etsdevtools_available = True
+except ModuleNotFoundError:
+    etsdevtools_available = False
 
+
+@unittest.skipIf(not etsdevtools_available, "test requires etsdevtools")
 class test_agg(unittest.TestCase):
     def check_agg_mem_leak(self):
         pre = get_mem_usage()
