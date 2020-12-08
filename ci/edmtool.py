@@ -87,7 +87,7 @@ from contextlib import contextmanager
 import click
 
 supported_combinations = {
-    '3.6': {'pyqt', 'pyqt5', 'wx', 'null'},
+    '3.6': {'pyside2', 'pyqt', 'pyqt5', 'wx', 'null'},
 }
 
 dependencies = {
@@ -119,12 +119,14 @@ source_dependencies = [
 extra_dependencies = {
     'pyqt': {'pyqt'},
     'pyqt5': {'pyqt5'},
+    'pyside2': {'pyside2'},
     # XXX once wxPython 4 is available in EDM, we will want it here
     "wx": set(),
     'null': set()
 }
 
 environment_vars = {
+    'pyside2': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyside2'},
     'pyqt': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyqt'},
     'pyqt5': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyqt5'},
     'wx': {'ETS_TOOLKIT': 'wx'},
