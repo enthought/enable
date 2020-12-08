@@ -9,6 +9,7 @@
 # All configuration values have a default value; values that are commented out
 # serve to show the default value.
 
+import runpy
 import sys, os
 
 # If your extensions are in another directory, add it here. If the directory
@@ -38,9 +39,9 @@ copyright = '2008-2019, Enthought'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
-d = {}
-execfile(os.path.join('..', '..', 'enable', '_version.py'), d)
-version = release = d['full_version']
+base_path = os.path.dirname(__file__)
+version_file = os.path.join(base_path, '..', '..', 'enable', '_version.py')
+version = release = runpy.run_path(version_file)['full_version']
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
