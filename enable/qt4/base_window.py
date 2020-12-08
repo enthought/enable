@@ -13,6 +13,7 @@
 # use the BSD - and I hereby give my permission for that to be done. It's
 # been on my list of things to do.
 #------------------------------------------------------------------------------
+import warnings
 
 # Qt imports.
 from pyface.qt import QtCore, QtGui, QtOpenGL
@@ -485,7 +486,9 @@ class _Window(AbstractWindow):
         try:
             from traitsui.qt4.clipboard import PyMimeData
         except ImportError:
-            # traitsui isn't available, just make mimedata available on event
+            # traitsui isn't available, warn and just make mimedata available on
+            # event
+            warnings.warn("traitsui.qt4 is unavailable", ImportWarning)
             obj = None
         else:
             mimedata = PyMimeData.coerce(mimedata)
@@ -499,7 +502,7 @@ class _Window(AbstractWindow):
                         from apptools.io.api import File
                         obj = [File(path=path) for path in files]
                     except ImportError:
-                        pass
+                        warnings.warn("apptools is unavailable", ImportWarning)
 
         return DragEvent(x=x, y=self._flip_y(y), obj=obj, copy=copy,
                         window=self, mimedata=mimedata)
