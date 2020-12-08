@@ -114,7 +114,6 @@ class NativeScrollBar(Component):
         """
         if self._control:
             self._control.Destroy()
-        return
 
     #------------------------------------------------------------------------
     # Protected methods
@@ -122,7 +121,6 @@ class NativeScrollBar(Component):
 
     def __del__(self):
         self.destroy()
-        return
 
     def _get_abs_coords(self, x, y):
         return self.container.get_absolute_coords(x, y)
@@ -164,7 +162,6 @@ class NativeScrollBar(Component):
         self._last_widget_height = int(y_size)
         self._scroll_updated = False
         self._widget_moved = False
-        return
 
     def _create_control(self, window, wxpos, wxthumbsize, wxrange):
         if self.orientation == 'horizontal':
@@ -202,14 +199,12 @@ class NativeScrollBar(Component):
         window = event.GetWindow()
         if window:
             window.SetFocus()
-        return
 
     def _wx_scroll_handler(self, event):
         """Handle wx scroll events"""
         # If the user moved the scrollbar, set the scroll position, but don't
         # tell wx to move the scrollbar.  Doing so causes jerkiness
         self.scroll_position = self._wx_to_enable_pos(self._control.GetThumbPosition())
-        return
 
     def _enable_to_wx_spec(self, enable_spec):
         """
@@ -249,21 +244,17 @@ class NativeScrollBar(Component):
         self.scroll_position = max(min(self.scroll_position, high-page_size), low)
         self._scroll_updated = True
         self.request_redraw()
-        return
 
     def _range_items_changed(self):
         self._range_changed()
-        return
 
     def _mouse_wheel_changed(self, event):
         event.handled  = True
         self.scroll_position += (event.mouse_wheel * self.range[3] * self.mouse_wheel_speed)
-        return
 
     def _scroll_position_changed(self):
         self._scroll_updated = True
         self.request_redraw()
-        return
 
     def _bounds_changed(self, old, new):
         super(NativeScrollBar, self)._bounds_changed(old, new)

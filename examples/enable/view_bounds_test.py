@@ -15,7 +15,6 @@ class Box(Component):
             x, y = self.position
             gc.rect(x, y, dx, dy)
             gc.fill_path()
-        return
 
 
 class VerboseContainer(Container):

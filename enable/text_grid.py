@@ -87,7 +87,6 @@ class TextGrid(Component):
     def __init__(self, **kwtraits):
         super(Component, self).__init__(**kwtraits)
         self.selected_cells = []
-        return
 
     #------------------------------------------------------------------------
     # AbstractComponent interface
@@ -141,8 +140,6 @@ class TextGrid(Component):
                         gc.set_text_position(x, y)
                         gc.show_text(text)
 
-        return
-
     #------------------------------------------------------------------------
     # Private methods
     #------------------------------------------------------------------------
@@ -167,7 +164,6 @@ class TextGrid(Component):
             gc.move_to(self.x, y)
             gc.line_to(self.x+self.width, y)
             gc.stroke_path()
-        return
 
     def _compute_cell_sizes(self):
         if not self._cache_valid:
@@ -191,7 +187,6 @@ class TextGrid(Component):
             self._cached_cell_size = (max_w, max_h)
             self._text_offset = array([-min_l, -min_d])
             self._cache_valid = True
-        return
 
     def _compute_positions(self):
 
@@ -213,7 +208,6 @@ class TextGrid(Component):
         # We have to reverse the y-axis (e.g. the 0th row needs to be at the
         # highest y-position).
         self._cached_cell_coords = tmp[:,::-1]
-        return
 
     def _update_bounds(self):
         if self.string_array is not None and len(self.string_array.shape) == 2:

@@ -33,7 +33,6 @@ class MyComponent(Component):
                   r)
         gc.line_to(b, h/2)
         gc.stroke_path()
-        return
 
     def normal_key_pressed(self, event):
         print("key pressed: ", event.character)

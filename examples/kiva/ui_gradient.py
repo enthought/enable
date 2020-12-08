@@ -72,8 +72,6 @@ class MyCanvas(Component):
                                "pad", 'userSpaceOnUse')
             gc.fill_path()
 
-        return
-
 
 class Demo(DemoFrame):
     def _create_component(self):

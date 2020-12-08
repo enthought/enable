@@ -139,7 +139,6 @@ class AbstractWindow(HasTraits):
             # Fixme: should use clip_to_rects
             update_union = reduce(union_bounds, self._update_region)
             gc.clip_to_rect(*update_union)
-        return
 
     def _window_paint(self, event):
         "Do a GUI toolkit specific screen update"
@@ -179,7 +178,6 @@ class AbstractWindow(HasTraits):
         # Create a default component (if necessary):
         if self.component is None:
             self.component = Container()
-        return
 
     def _component_changed(self, old, new):
         if old is not None:
@@ -209,7 +207,6 @@ class AbstractWindow(HasTraits):
                     self.component.outer_height = size[1]
         self._update_region = None
         self.redraw()
-        return
 
     def component_bounds_changed(self, bounds):
         """
@@ -231,7 +228,6 @@ class AbstractWindow(HasTraits):
             self.mouse_owner = mouse_owner
             self.mouse_owner_transform = transform
             self.mouse_owner_dispatch_history = history
-        return
 
     def invalidate_draw(self, damaged_regions=None, self_relative=False):
         if damaged_regions is not None and self._update_region is not None \
@@ -424,7 +420,6 @@ class AbstractWindow(HasTraits):
     def redraw(self):
         """ Requests that the window be redrawn. """
         self._redraw()
-        return
 
     def cleanup(self):
         """ Clean up after ourselves.
@@ -480,7 +475,6 @@ class AbstractWindow(HasTraits):
         self._window_paint(event)
 
         self._update_region = []
-        return
 
     def __getstate__(self):
         attribs = ("component", "bgcolor", "overlay", "_scroll_origin")
@@ -548,8 +542,6 @@ class AbstractWindow(HasTraits):
             mouse_event = self._create_mouse_event(event)
             self._prev_event_handler.dispatch(mouse_event, "mouse_leave")
             self._prev_event_handler = None
-        return
-
 
     #---------------------------------------------------------------------------
     # Wire up the keyboard event handlers

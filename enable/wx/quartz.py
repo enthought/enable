@@ -99,7 +99,6 @@ class Window(BaseWindow):
         self.component.draw(gc, view_bounds=(0, 0, size[0], size[1]))
         self._window_paint(event)
         gc.end()
-        return
 
 
 def font_metrics_provider():

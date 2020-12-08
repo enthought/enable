@@ -24,4 +24,3 @@ class Viewable(HasTraits):
                 view.draw(gc, view_bounds, mode)
         else:
             super(Viewable, self).draw(gc, view_bounds, mode)
-        return

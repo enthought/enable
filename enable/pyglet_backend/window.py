@@ -46,7 +46,6 @@ class PygletMouseEvent(object):
             self.alt_pressed = bool(modifiers & key.MOD_ALT)
         else:
             self.shift_pressed = self.ctrl_pressed = self.alt_pressed = False
-        return
 
 
 class PygletWindow(window.Window):
@@ -306,8 +305,6 @@ class Window(AbstractWindow):
         if pos is not None:
             self.control.set_location(*pos)
 
-        return
-
     def _flip_y(self, y):
         """ Convert from a Kiva to a Pyglet y-coordinate.
         Since pyglet uses the same convention as Kiva, this is a no-op.
@@ -331,7 +328,6 @@ class Window(AbstractWindow):
             if "v" in component.resizable:
                 component.outer_y = 0
                 component.outer_height = height
-        return
 
     def _capture_mouse(self):
         "Capture all future mouse events"
@@ -436,7 +432,6 @@ class Window(AbstractWindow):
                           "Enable's Pyglet backend." % pointer)
             cursor = self.control.get_system_mouse_cursor(POINTER_MAP["arrow"])
             self.control.set_mouse_cursor(cursor)
-        return
 
     def set_timer_interval(self, component, interval):
         """ Set up or cancel a timer for a specified component.  To cancel the
@@ -471,7 +466,6 @@ class Window(AbstractWindow):
         self.component.draw(gc, view_bounds=(0, 0, size[0], size[1]))
         self._update_region = []
         #self.control.flip()
-        return
 
     def _window_paint(self, event):
         "Do a backend-specific screen update"

@@ -142,4 +142,3 @@ def stack_layout(container, components, align):
         component.outer_position = position
         component.outer_bounds = bounds
         component.do_layout()
-    return
