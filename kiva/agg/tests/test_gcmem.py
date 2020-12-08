@@ -21,7 +21,7 @@ class test_agg(unittest.TestCase):
         del gc
         garbagecollector.collect()
         post = get_mem_usage()
-        assert (pre == post)
+        self.assertEqual(pre, post)
 
     def test_wx_mem_leak(self):
         pre = get_mem_usage()
@@ -29,4 +29,4 @@ class test_agg(unittest.TestCase):
         del gc
         garbagecollector.collect()
         post = get_mem_usage()
-        assert (pre == post)
+        self.assertEqual(pre, post)
