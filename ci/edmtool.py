@@ -92,7 +92,6 @@ supported_combinations = {
 
 dependencies = {
     "apptools",
-    "nose",
     "coverage",
     "numpy",
     "pygments",
