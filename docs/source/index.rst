@@ -12,6 +12,6 @@ Enable Documentation
   enable_apptools_integration.rst
 
   kiva.rst
-
+  credits.rst
 
 * :ref:`search`
