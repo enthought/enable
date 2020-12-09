@@ -177,7 +177,7 @@ def install(runtime, toolkit, pillow, environment, source):
     # edm commands to setup the development environment
     commands = [
         "edm environments create {environment} --force --version={runtime}",
-        "edm install -y -e {environment} {packages}",
+        "edm install -y -e {environment} {packages} --add-repository enthought/lgpl",
         "edm run -e {environment} -- pip install {pillow}",
         ("edm run -e {environment} -- pip install -r ci/requirements.txt"
          " --no-dependencies"),
