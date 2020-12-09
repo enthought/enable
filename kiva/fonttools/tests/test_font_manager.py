@@ -85,8 +85,6 @@ class TestTTFFontProperty(unittest.TestCase):
         exp_size = "scalable"
 
         # When
-        font = TTFont(test_font)
-        print(getPropDict(font))
         entry = ttfFontProperty(test_font, TTFont(test_font))
 
         # Then
