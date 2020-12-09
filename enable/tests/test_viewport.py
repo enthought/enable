@@ -386,7 +386,3 @@ class ViewportTestCase(unittest.TestCase):
         container.bounds[0] = 40
         container.bounds[1] = 40
         self.assertEqual(view.view_position, [-10, 0])
-
-if __name__ == "__main__":
-    import nose
-    nose.main()

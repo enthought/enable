@@ -7,6 +7,7 @@ from PIL import Image as PILImage
 from hypothesis import given
 from hypothesis.strategies import sampled_from
 
+
 from kiva.image import GraphicsContext
 from kiva.compat import piltostring
 
@@ -181,7 +182,3 @@ class TestAlphaBlackImage(unittest.TestCase):
             else:
                 msg = "size: %d.  To large to display" % size
             raise AssertionError(msg)
-
-
-if __name__ == "__main__":
-    unittest.main()

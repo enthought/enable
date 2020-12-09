@@ -92,7 +92,6 @@ supported_combinations = {
 
 dependencies = {
     "apptools",
-    "nose",
     "coverage",
     "numpy",
     "pygments",
@@ -263,9 +262,9 @@ def test(runtime, toolkit, pillow, environment):
     environ['PYTHONUNBUFFERED'] = "1"
     commands = [
         ("edm run -e {environment} -- python -W default -m"
-        "coverage run -m nose.core enable -v --nologcapture"),
+        "coverage run -m unittest discover enable -v"),
         ("edm run -e {environment} -- python -W default -m"
-        "coverage run -a -m nose.core kiva -v --nologcapture"),
+        "coverage run -a -m unittest discover kiva -v"),
     ]
 
     # We run in a tempdir to avoid accidentally picking up wrong traitsui

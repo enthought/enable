@@ -69,8 +69,3 @@ class ComponentTestCase(unittest.TestCase):
     def check_container(self):
         c = Component()
         self.assertTrue(c.container is None)
-
-
-if __name__ == "__main__":
-    import nose
-    nose.main()

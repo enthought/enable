@@ -87,8 +87,3 @@ class ContainerTestCase(EnableUnitTest):
         # Delete the second component
         container.remove(c2)
         self.assert_dims(container, x=10.0, y=10.0, width=49.0, height=59.0)
-
-
-if __name__ == "__main__":
-    import nose
-    nose.main()

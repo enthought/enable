@@ -3,14 +3,13 @@ import unittest
 
 from numpy import allclose, ravel
 
-import nose
-
 from kiva import agg
 
 
 # FIXME:
 #   These tests are broken, and Peter promised to fix it at some point.
-
+#   see enthought/enable#480
+@unittest.skip("tests are broken, see enthought/enable#480")
 class Test_Save(unittest.TestCase):
     format_output_map = {
         "rgb24": [255,255,255,255,255,255,255,0,0,255,0,0],
@@ -33,7 +32,6 @@ class Test_Save(unittest.TestCase):
 
     def do_check_format(self,fmt):
         # FIXME:
-        raise nose.SkipTest
 
         gc = agg.GraphicsContextArray((2,2), fmt)
         gc.set_stroke_color((1.0,0.0,0.0))
@@ -45,6 +43,3 @@ class Test_Save(unittest.TestCase):
         os.unlink(fmt + ".png")
         self.assertEqual(list(ravel(img.bmp_array)),
                          self.format_output_map[fmt])
-
-if __name__ == "__main__":
-    unittest.main()

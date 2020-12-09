@@ -183,8 +183,3 @@ class EventTransformTestCase(EnableUnitTest):
         new_pos = comp.captured_event_pos
         self.assertTrue(new_pos[0] == old_pos[0] + 2)
         self.assertTrue(new_pos[1] == old_pos[1] + 2)
-
-
-if __name__ == "__main__":
-    import nose
-    nose.main()
