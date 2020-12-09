@@ -5,6 +5,7 @@ toolkit, based on the kiva agg driver.
 
 import sys
 import time
+import warnings
 
 import wx
 
@@ -22,6 +23,7 @@ from .constants import (
 try:
     from pyface.wx.drag_and_drop import clipboard, PythonDropTarget
 except ImportError:
+    warnings.warn("pyface.wx is unavailable", ImportWarning)
     clipboard = None
     PythonDropTarget = None
 
