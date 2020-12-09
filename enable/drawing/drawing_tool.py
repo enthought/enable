@@ -38,13 +38,11 @@ class DrawingTool(Component):
         self.reset()
         self.request_redraw()
         self.normal_left_down(event)
-        return
 
     def _draw_mainlayer(self, gc, view_bounds, mode="default"):
         draw_func = getattr(self, self.event_state + "_draw", None)
         if draw_func:
             draw_func(gc)
-        return
 
     def request_redraw(self):
         if self.container is not None:
@@ -53,4 +51,3 @@ class DrawingTool(Component):
             self.canvas.request_redraw()
         else:
             pass
-        return

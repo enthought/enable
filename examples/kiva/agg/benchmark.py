@@ -1,10 +1,7 @@
 """
 Benchmarks Agg rendering times.
 """
-try:
-    from time import perf_counter
-except ImportError:
-    from time import clock as perf_counter
+from time import perf_counter
 
 from numpy import array, shape, arange, transpose, sin, cos, zeros, pi
 from scipy import stats

@@ -106,7 +106,6 @@ class Compass(Component):
                 self.request_redraw()
                 break
         event.handled = True
-        return
 
     def normal_left_dclick(self, event):
         return self.normal_left_down(event)

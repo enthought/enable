@@ -20,5 +20,3 @@ class Box(Shape):
 
             # Draw the shape's text.
             self._draw_text(gc)
-
-        return

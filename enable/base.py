@@ -247,7 +247,6 @@ def subclasses_of ( klass ):
     for subclass in klass.__bases__:
         for result in subclasses_of( subclass ):
             yield result
-    return
 
 class IDroppedOnHandler:
     "Interface for draggable objects that handle the 'dropped_on' event"

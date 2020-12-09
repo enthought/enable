@@ -114,7 +114,6 @@ class BaseTool(Interactor):
             component = kwtraits["component"]
         super(BaseTool, self).__init__(**kwtraits)
         self.component = component
-        return
 
     def dispatch(self, event, suffix):
         """ Dispatches a mouse event based on the current event state.
@@ -122,7 +121,6 @@ class BaseTool(Interactor):
         Overrides enable.Interactor.
         """
         self._dispatch_stateful_event(event, suffix)
-        return
 
     def _dispatch_stateful_event(self, event, suffix):
         # Override the default enable.Interactor behavior of automatically
@@ -131,7 +129,6 @@ class BaseTool(Interactor):
         handler = getattr(self, self.event_state + "_" + suffix, None)
         if handler is not None:
             handler(event)
-        return
 
     #------------------------------------------------------------------------
     # Abstract methods that subclasses should implement
@@ -161,4 +158,3 @@ class BaseTool(Interactor):
         """
         # Compatibility with new AbstractController interface
         self._deactivate()
-        return

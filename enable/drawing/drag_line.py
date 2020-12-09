@@ -26,7 +26,6 @@ class DragLine(DrawingTool):
         self.line.vertex_color = self.vertex_color
         self.line.points = []
         self.event_state = "normal"
-        return
 
     #------------------------------------------------------------------------
     # "complete" state
@@ -36,7 +35,6 @@ class DragLine(DrawingTool):
         """ Draw the completed line. """
         self.line.line_dash = None
         self.line._draw_mainlayer(gc)
-        return
 
     #------------------------------------------------------------------------
     # "drawing" state
@@ -45,7 +43,6 @@ class DragLine(DrawingTool):
     def drawing_draw(self, gc):
         self.line.line_dash = (4.0, 2.0)
         self.line._draw_mainlayer(gc)
-        return
 
     def drawing_left_up(self, event):
         """ Handle the left mouse button coming up in the 'drawing' state. """
@@ -54,7 +51,6 @@ class DragLine(DrawingTool):
         self.request_redraw()
         self.complete = True
         event.handled = True
-        return
 
     def drawing_mouse_move(self, event):
         """ Handle the mouse moving in 'drawing' state. """
@@ -63,7 +59,6 @@ class DragLine(DrawingTool):
         if last_point != (event.x + self.x, event.y - self.y):
             self.line.points.append((event.x + self.x, event.y - self.y))
             self.request_redraw()
-        return
 
     #------------------------------------------------------------------------
     # "normal" state
@@ -77,4 +72,3 @@ class DragLine(DrawingTool):
         event.window.set_pointer('pencil')
         event.handled = True
         self.request_redraw()
-        return

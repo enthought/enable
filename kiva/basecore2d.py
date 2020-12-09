@@ -1031,8 +1031,6 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """
 
         # This is not currently implemented in a device-independent way.
-        return
-
 
     def show_glyphs(self):
         """

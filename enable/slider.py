@@ -465,7 +465,6 @@ class Slider(Component):
 
         event.handled = True
         self.event_state = "dragging"
-        return
 
     def _mouse_released(self, event):
         self.event_state = "normal"
@@ -502,5 +501,3 @@ class Slider(Component):
                 self._cached_endcap_size = int(self.height * self._endcap_percent)
             else:
                 self._cached_endcap_size = int(self.width * self._endcap_percent)
-
-        return

@@ -21,7 +21,6 @@ class RenderController(AbstractRenderController):
                 func = getattr(component, "_draw_" + layer, None)
                 if func:
                     func(gc, view_bounds, mode)
-        return
 
 
 class OldEnableRenderController(AbstractRenderController):
@@ -38,7 +37,6 @@ class OldEnableRenderController(AbstractRenderController):
         component._draw_background(gc, view_bounds, mode)
         component._draw(gc, view_bounds, mode)
         component._draw_border(gc, view_bounds, mode)
-        return
 
 
 class OldChacoRenderController(AbstractRenderController):
@@ -78,7 +76,6 @@ class OldChacoRenderController(AbstractRenderController):
 
                 else:
                     self._do_draw(component, gc, view_bounds, mode)
-        return
 
     def _do_draw(self, component, gc, view_bounds=None, mode="normal"):
         pass

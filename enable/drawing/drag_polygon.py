@@ -47,7 +47,6 @@ class DragPolygon(DrawingTool):
         self.vertex_size = 0
         self.poly.model.points = []
         self.event_state = "normal"
-        return
 
     ###########################################################################
     # 'Component' interface.
@@ -60,13 +59,11 @@ class DragPolygon(DrawingTool):
         with gc:
             self.poly.border_dash = None
             self.poly._draw_closed(gc)
-        return
 
     def complete_left_down ( self, event ):
         """ Draw a new polygon. """
         self.reset()
         self.normal_left_down( event )
-        return
 
     def complete_right_down ( self, event ):
         """ Do the context menu if available. """
@@ -75,7 +72,6 @@ class DragPolygon(DrawingTool):
                 menu = self.menu.create_menu(event.window.control)
                 ### FIXME : The call to _flip_y is necessary but inappropriate.
                 menu.show(event.x, event.window._flip_y(event.y))
-        return
 
     #### 'drawing' state ######################################################
 
@@ -85,7 +81,6 @@ class DragPolygon(DrawingTool):
         with gc:
             self.poly.border_dash = (4.0, 2.0)
             self.poly._draw_open(gc)
-        return
 
     def drawing_left_up ( self, event ):
         """ Handle the left mouse button coming up in 'drawing' state. """
@@ -97,8 +92,6 @@ class DragPolygon(DrawingTool):
 
         self.complete = True
 
-        return
-
     def drawing_mouse_move ( self, event ):
         """ Handle the mouse moving in 'drawing' state. """
 
@@ -108,8 +101,6 @@ class DragPolygon(DrawingTool):
         if last_point != (event.x + self.x, event.y - self.y):
             self.poly.model.points.append((event.x + self.x, event.y - self.y))
             self.request_redraw()
-
-        return
 
     #### 'normal' state #######################################################
 
@@ -123,11 +114,7 @@ class DragPolygon(DrawingTool):
 
         self.request_redraw()
 
-        return
-
     def normal_mouse_move ( self, event ):
         """ Handle the mouse moving in the 'normal' state. """
 
         self.pointer = self.normal_pointer
-
-        return

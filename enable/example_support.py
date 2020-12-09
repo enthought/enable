@@ -62,7 +62,6 @@ elif ETSConfig.toolkit == 'pyglet':
                     self.enable_win = window
                 else:
                     self.enable_win = None
-            return
 
         def _create_component(self):
             """ Create and return a component which is typically a
