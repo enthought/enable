@@ -1479,7 +1479,6 @@ if USE_FONTCONFIG and sys.platform != 'win32':
         return result
 
 else:
-    fontManager = rebuild_or_load_from_cache(get_font_cache_path())
 
     def findfont(prop, **kw):
         font = default_font_manager().findfont(prop, **kw)
@@ -1490,4 +1489,6 @@ def default_font_manager():
     """ Return the default font manager.
     """
     global fontManager
+    if fontManager is None:
+        fontManager = rebuild_or_load_from_cache(get_font_cache_path())
     return fontManager

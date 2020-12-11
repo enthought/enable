@@ -156,7 +156,7 @@ class TestFontCache(unittest.TestCase):
             ETSConfig.application_data = original_data_dir
             modules[module_name] = original_module
 
-    def test_rebuild_if_cache_not_found(self):
+    def test_no_import_side_effect(self):
         module_name = "kiva.fonttools.font_manager"
         modules = sys.modules
         original_data_dir = ETSConfig.application_data
@@ -168,10 +168,9 @@ class TestFontCache(unittest.TestCase):
         except Exception:
             raise
         else:
-            # A cache is created
-            self.assertTrue(
-                os.path.join(self.temp_dir, "kiva", "fontList.cache")
-            )
+            # A cache is not created
+            cache_path = os.path.join(self.temp_dir, "kiva", "fontList.cache")
+            self.assertFalse(os.path.exists(cache_path))
         finally:
             ETSConfig.application_data = original_data_dir
             modules[module_name] = original_module
