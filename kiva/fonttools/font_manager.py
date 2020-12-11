@@ -1393,14 +1393,53 @@ def is_opentype_cff_font(filename):
 
 fontManager = None
 
-_fmcache = os.path.join(get_configdir(), 'fontList.cache')
+def get_font_cache_path():
+    return os.path.join(get_configdir(), 'fontList.cache')
 
 
 def _rebuild():
     global fontManager
+    fontManager = new_with_cache(get_font_cache_path())
+
+
+def new_with_cache(cache_file):
+    """ Create a new FontManager and immediately cache its content with the
+    given file path.
+
+    Parameters
+    ----------
+    cache_file : str
+        Path to the cache to be created.
+    """
     fontManager = FontManager()
-    pickle_dump(fontManager, _fmcache)
+    pickle_dump(fontManager, cache_file)
     logger.debug("generated new fontManager")
+    return fontManager
+
+
+def rebuild_or_load_from_cache(cache_file):
+    """ Load the font manager from the cache and verify it is compatible.
+    If the cache is not compatible, rebuild the cache and return the new
+    font manager.
+
+    Parameters
+    ----------
+    cache_file : str
+        Path to the cache to be created.
+    """
+
+    try:
+        fontManager = pickle_load(cache_file)
+        if (not hasattr(fontManager, '_version') or
+                fontManager._version != FontManager.__version__):
+            fontManager = new_with_cache(cache_file)
+        else:
+            fontManager.default_size = None
+            logger.debug("Using fontManager instance from %s", cache_file)
+    except Exception:
+        fontManager = new_with_cache(cache_file)
+
+    return fontManager
 
 
 # The experimental fontconfig-based backend.
@@ -1440,20 +1479,10 @@ if USE_FONTCONFIG and sys.platform != 'win32':
         return result
 
 else:
-    try:
-        fontManager = pickle_load(_fmcache)
-        if (not hasattr(fontManager, '_version') or
-                fontManager._version != FontManager.__version__):
-            _rebuild()
-        else:
-            fontManager.default_size = None
-            logger.debug("Using fontManager instance from %s", _fmcache)
-    except Exception:
-        _rebuild()
+    fontManager = rebuild_or_load_from_cache(get_font_cache_path())
 
     def findfont(prop, **kw):
-        global fontManager
-        font = fontManager.findfont(prop, **kw)
+        font = default_font_manager().findfont(prop, **kw)
         return font
 
 
