@@ -93,10 +93,10 @@ class Font(object):
         """ Returns the file name containing the font that most closely matches
         our font properties.
         """
-        from .font_manager import fontManager
+        from .font_manager import default_font_manager
 
         fp = self._make_font_props()
-        return str(fontManager.findfont(fp))
+        return str(default_font_manager().findfont(fp))
 
     def findfontname(self):
         """ Returns the name of the font that most closely matches our font

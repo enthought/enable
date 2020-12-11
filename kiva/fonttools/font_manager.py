@@ -1455,3 +1455,10 @@ else:
         global fontManager
         font = fontManager.findfont(prop, **kw)
         return font
+
+
+def default_font_manager():
+    """ Return the default font manager.
+    """
+    global fontManager
+    return fontManager

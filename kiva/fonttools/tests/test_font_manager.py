@@ -5,7 +5,13 @@ from unittest import mock
 from pkg_resources import resource_filename
 from fontTools.ttLib import TTFont
 
-from ..font_manager import FontEntry, createFontList, ttfFontProperty, getPropDict
+from ..font_manager import (
+    createFontList,
+    default_font_manager,
+    FontEntry,
+    FontManager,
+    ttfFontProperty,
+)
 
 data_dir = resource_filename('kiva.fonttools.tests', 'data')
 
@@ -91,3 +97,11 @@ class TestTTFFontProperty(unittest.TestCase):
         self.assertEqual(entry.weight, exp_weight)
         self.assertEqual(entry.stretch, exp_stretch)
         self.assertEqual(entry.size, exp_size)
+
+
+class TestFontManager(unittest.TestCase):
+    """ Test API of the font manager module."""
+
+    def test_default_font_manager(self):
+        font_manager = default_font_manager()
+        self.assertIsInstance(font_manager, FontManager)
