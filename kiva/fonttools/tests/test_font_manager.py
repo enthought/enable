@@ -12,6 +12,7 @@ from fontTools.ttLib import TTFont
 
 from traits.etsconfig.api import ETSConfig
 
+from .. import font_manager as font_manager_module
 from ..font_manager import (
     createFontList,
     default_font_manager,
@@ -127,34 +128,23 @@ class TestFontCache(unittest.TestCase):
             pickle_dump(FontManager(), self.cache_file)
 
     def test_load_font_cached_to_file(self):
-        # patch import... fight import side-effect
-        module_name = "kiva.fonttools.font_manager"
-        modules = sys.modules
-        original_data_dir = ETSConfig.application_data
+        original_singleton = font_manager_module.fontManager
+        self.addCleanup(
+            setattr,
+            font_manager_module, "fontManager", original_singleton
+        )
 
-        ETSConfig.application_data = self.temp_dir
-        original_module = modules.pop(module_name)
-        try:
-            cache_dir = os.path.join(self.temp_dir, "kiva")
-            os.makedirs(cache_dir)
-            shutil.copyfile(
-                self.cache_file,
-                os.path.join(cache_dir, "fontList.cache")
-            )
-            new_module = importlib.import_module(module_name)
-        except Exception:
-            raise
-        else:
-            expected_manager = pickle_load(
-                os.path.join(cache_dir, "fontList.cache")
-            )
-            self.assertEqual(
-                new_module.default_font_manager().ttffiles,
-                expected_manager.ttffiles,
-            )
-        finally:
-            ETSConfig.application_data = original_data_dir
-            modules[module_name] = original_module
+        font_manager_module.fontManager = None
+        with mock.patch.object(
+                font_manager_module, "get_font_cache_path",
+                return_value=self.cache_file
+        ):
+            default_manager = font_manager_module.default_font_manager()
+
+        expected_manager = pickle_load(self.cache_file)
+        self.assertEqual(default_manager.ttffiles, expected_manager.ttffiles)
+        # The global singleton is now set.
+        self.assertIsInstance(font_manager_module.fontManager, FontManager)
 
     def test_no_import_side_effect(self):
         module_name = "kiva.fonttools.font_manager"

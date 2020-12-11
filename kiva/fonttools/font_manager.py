@@ -1399,17 +1399,21 @@ def get_font_cache_path():
 
 def _rebuild():
     global fontManager
-    fontManager = new_with_cache(get_font_cache_path())
+    fontManager = new_font_manager(get_font_cache_path())
 
 
-def new_with_cache(cache_file):
-    """ Create a new FontManager and immediately cache its content with the
-    given file path.
+def new_font_manager(cache_file):
+    """ Create a new FontManager (which will reload font files) and immediately
+    cache its content with the given file path.
 
     Parameters
     ----------
     cache_file : str
         Path to the cache to be created.
+
+    Returns
+    -------
+    font_manager : FontManager
     """
     fontManager = FontManager()
     pickle_dump(fontManager, cache_file)
@@ -1426,18 +1430,22 @@ def rebuild_or_load_from_cache(cache_file):
     ----------
     cache_file : str
         Path to the cache to be created.
+
+    Returns
+    -------
+    font_manager : FontManager
     """
 
     try:
         fontManager = pickle_load(cache_file)
         if (not hasattr(fontManager, '_version') or
                 fontManager._version != FontManager.__version__):
-            fontManager = new_with_cache(cache_file)
+            fontManager = new_font_manager(cache_file)
         else:
             fontManager.default_size = None
             logger.debug("Using fontManager instance from %s", cache_file)
     except Exception:
-        fontManager = new_with_cache(cache_file)
+        fontManager = new_font_manager(cache_file)
 
     return fontManager
 
@@ -1486,7 +1494,12 @@ else:
 
 
 def default_font_manager():
-    """ Return the default font manager.
+    """ Return the default font manager, which is a singleton FontManager
+    cached in the module.
+
+    Returns
+    -------
+    font_manager : FontManager
     """
     global fontManager
     if fontManager is None:
