@@ -44,7 +44,8 @@ class TestCreateFontList(unittest.TestCase):
         "kiva.fonttools.font_manager.ttfFontProperty", side_effect=ValueError)
     def test_ttc_exception_on_ttfFontProperty(self, m_ttfFontProperty):
         # When
-        fontlist = createFontList([self.ttc_fontpath])
+        with self.assertLogs("kiva"):
+            fontlist = createFontList([self.ttc_fontpath])
 
         # Then
         self.assertEqual(len(fontlist), 0)
@@ -54,7 +55,8 @@ class TestCreateFontList(unittest.TestCase):
         "kiva.fonttools.font_manager.TTCollection", side_effect=RuntimeError)
     def test_ttc_exception_on_TTCollection(self, m_TTCollection):
         # When
-        fontlist = createFontList([self.ttc_fontpath])
+        with self.assertLogs("kiva"):
+            fontlist = createFontList([self.ttc_fontpath])
 
         # Then
         self.assertEqual(len(fontlist), 0)
