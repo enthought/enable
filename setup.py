@@ -281,16 +281,29 @@ if __name__ == "__main__":
           # Note that this URL is only valid for tagged releases.
           download_url=('https://github.com/enthought/enable/archive/'
                         '{0}.tar.gz'.format(__version__)),
+          entry_points={
+              "etsdemo_data": [
+                  "enable_examples = enable.examples._etsdemo_info:info",
+                  "kiva_examples = kiva.examples._etsdemo_info:info",
+              ]
+          },
           install_requires=__requires__,
           license='BSD',
           package_data={
               '': ['*.zip', '*.svg', 'images/*'],
               'enable': ['tests/primitives/data/PngSuite/*.png'],
+              'enable.examples': ['enable/*',
+                                  'enable/*/*',
+                                  'enable/*/*/*',
+                                  'enable/*/*/*/*',
+                                  'savage/*'],
               'enable.savage.trait_defs.ui.wx': ['data/*.svg'],
               'kiva': ['tests/agg/doubleprom_soho_full.jpg',
                        'fonttools/tests/data/*.ttc',
                        'fonttools/tests/data/*.ttf',
                        'fonttools/tests/data/*.txt'],
+              'kiva.examples': ['kiva/*',
+                                'kiva/*/*'],
           },
           platforms=["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
           zip_safe=False,
