@@ -189,6 +189,12 @@ class TestFontManager(unittest.TestCase):
 def change_ets_app_dir(dirpath):
     """ Temporarily change the application data directory in ETSConfig.
 
+    Parameters
+    ----------
+    dirpath : str
+        Path to be temporarily set to the ETSConfig.application_data
+        so that it gets used for computing the font cache file path.
+
     Returns
     -------
     font_cache_file_path : str
@@ -221,6 +227,9 @@ def patch_font_cache(dirpath, ttf_files):
 
     Parameters
     ----------
+    dirpath : str
+        Path to be temporarily set to the ETSConfig.application_data
+        so that it gets used for computing the font cache file path.
     ttf_files : list of str
         List of file paths to TTF files.
 
