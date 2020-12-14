@@ -1390,19 +1390,29 @@ def is_opentype_cff_font(filename):
         return result
     return False
 
-
+# Global singleton of FontManager, cached at the module level.
 fontManager = None
 
-def get_font_cache_path():
+
+def _get_font_cache_path():
+    """ Return the file path for the font cache to be saved / loaded.
+
+    Returns
+    -------
+    path : str
+        Path to the font cache file.
+    """
     return os.path.join(get_configdir(), 'fontList.cache')
 
 
 def _rebuild():
+    """ Rebuild the default font manager and cache its content.
+    """
     global fontManager
-    fontManager = new_font_manager(get_font_cache_path())
+    fontManager = _new_font_manager(_get_font_cache_path())
 
 
-def new_font_manager(cache_file):
+def _new_font_manager(cache_file):
     """ Create a new FontManager (which will reload font files) and immediately
     cache its content with the given file path.
 
@@ -1421,7 +1431,7 @@ def new_font_manager(cache_file):
     return fontManager
 
 
-def rebuild_or_load_from_cache(cache_file):
+def _load_from_cache_or_rebuild(cache_file):
     """ Load the font manager from the cache and verify it is compatible.
     If the cache is not compatible, rebuild the cache and return the new
     font manager.
@@ -1440,12 +1450,12 @@ def rebuild_or_load_from_cache(cache_file):
         fontManager = pickle_load(cache_file)
         if (not hasattr(fontManager, '_version') or
                 fontManager._version != FontManager.__version__):
-            fontManager = new_font_manager(cache_file)
+            fontManager = _new_font_manager(cache_file)
         else:
             fontManager.default_size = None
             logger.debug("Using fontManager instance from %s", cache_file)
     except Exception:
-        fontManager = new_font_manager(cache_file)
+        fontManager = _new_font_manager(cache_file)
 
     return fontManager
 
@@ -1503,5 +1513,5 @@ def default_font_manager():
     """
     global fontManager
     if fontManager is None:
-        fontManager = rebuild_or_load_from_cache(get_font_cache_path())
+        fontManager = _load_from_cache_or_rebuild(_get_font_cache_path())
     return fontManager

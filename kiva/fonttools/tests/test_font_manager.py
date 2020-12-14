@@ -136,7 +136,7 @@ class TestFontCache(unittest.TestCase):
 
         font_manager_module.fontManager = None
         with mock.patch.object(
-                font_manager_module, "get_font_cache_path",
+                font_manager_module, "_get_font_cache_path",
                 return_value=self.cache_file
         ):
             default_manager = font_manager_module.default_font_manager()
