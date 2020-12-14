@@ -653,7 +653,7 @@ class SVGDocument(object):
             clip_path = self.renderer.makePath()
             ops.extend(self.createTransformOpsFromNode(element))
             ops.extend(self.generatePathOps(clip_path))
-            for child in element.getchildren():
+            for child in element:
                 cpath, cops = self.processElement(child)
                 if cpath:
                     clip_path.AddPath(cpath)
