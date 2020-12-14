@@ -148,6 +148,9 @@ CONTEXT_SETTINGS = {
     "help_option_names": ["-h", "--help"],
 }
 
+# Config file for EDM
+EDM_CONFIG = os.path.join(ROOT, "ci", ".edm.yaml")
+
 
 @click.group(context_settings=CONTEXT_SETTINGS)
 def cli():
@@ -173,8 +176,9 @@ def install(runtime, toolkit, pillow, environment, source):
         dependencies | extra_dependencies.get(toolkit, set()))
     # edm commands to setup the development environment
     commands = [
-        "edm environments create {environment} --force --version={runtime}",
-        "edm install -y -e {environment} {packages}",
+        ("edm --config {edm_config} environments create {environment} "
+         "--force --version={runtime}"),
+        "edm --config {edm_config} install -y -e {environment} {packages}",
         "edm run -e {environment} -- pip install {pillow}",
         ("edm run -e {environment} -- pip install -r ci/requirements.txt"
          " --no-dependencies"),
@@ -362,6 +366,8 @@ def get_parameters(runtime, toolkit, pillow, environment):
         environment = tmpl.format(**parameters)
         environment += '-{}'.format(str(pillow).translate(pillow_trans))
         parameters['environment'] = environment
+
+    parameters["edm_config"] = EDM_CONFIG
     return parameters
 
 

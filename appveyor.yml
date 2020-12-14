@@ -32,7 +32,7 @@ init:
 
 install:
   - install-edm-windows.cmd
-  - edm install -y wheel click coverage
+  - edm --config ci\.edm.yaml install -y wheel click coverage
   - appveyor-run.cmd install %runtime% %toolkits%
 test_script:
   - appveyor-run.cmd test %runtime% %toolkits%
