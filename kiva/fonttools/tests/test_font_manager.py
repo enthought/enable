@@ -1,5 +1,4 @@
 import contextlib
-import glob
 import importlib
 import os
 import shutil
@@ -21,8 +20,6 @@ from ..font_manager import (
     FontEntry,
     FontProperties,
     FontManager,
-    pickle_dump,
-    pickle_load,
     ttfFontProperty,
 )
 
@@ -143,7 +140,7 @@ class TestFontCache(unittest.TestCase):
 
             with patch_global_font_manager(None), \
                     patch_system_fonts(self.ttf_files):  # patch for speed
-                default_manager = font_manager_module.default_font_manager()
+                font_manager_module.default_font_manager()
 
             # The cache file is created
             self.assertTrue(os.path.exists(cache_file))
@@ -156,7 +153,7 @@ class TestFontCache(unittest.TestCase):
         original_module = modules.pop(module_name)
         with change_ets_app_dir(self.temp_dir) as cache_path:
             try:
-                new_module = importlib.import_module(module_name)
+                importlib.import_module(module_name)
             except Exception:
                 raise
             else:
