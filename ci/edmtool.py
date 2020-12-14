@@ -176,7 +176,8 @@ def install(runtime, toolkit, pillow, environment, source):
         dependencies | extra_dependencies.get(toolkit, set()))
     # edm commands to setup the development environment
     commands = [
-        "edm environments create {environment} --force --version={runtime}",
+        ("edm --config {edm_config} environments create {environment}"
+         "--force --version={runtime}"),
         "edm --config {edm_config} install -y -e {environment} {packages}",
         "edm run -e {environment} -- pip install {pillow}",
         ("edm run -e {environment} -- pip install -r ci/requirements.txt"
