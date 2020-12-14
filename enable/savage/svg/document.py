@@ -302,7 +302,7 @@ class SVGDocument(object):
         attribute it may be given.
         """
         idmap = {}
-        for e in element.getiterator():
+        for e in element.iter():
             id = e.get('id', None)
             if id is not None:
                 idmap[(uri, id)] = e
@@ -468,7 +468,7 @@ class SVGDocument(object):
         path = self.renderer.makePath()
         ops.extend(self.createTransformOpsFromNode(node))
         ops.extend(self.createTransformOpsFromXY(node))
-        for child in node.getchildren():
+        for child in node:
             cpath, cops = self.processElement(child)
             if cpath:
                 path.AddPath(cpath)
