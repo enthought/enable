@@ -14,4 +14,12 @@ Enable Documentation
   kiva.rst
   credits.rst
 
+API Documentation
+-----------------
+
+.. toctree::
+  :maxdepth: 1
+
+  api/enable
+
 * :ref:`search`
