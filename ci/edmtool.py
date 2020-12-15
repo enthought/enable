@@ -228,7 +228,7 @@ def install(runtime, toolkit, pillow, environment, source):
     # dependencies or we risk testing against an released enable.
     install_local = (
         "edm run -e {environment} -- "
-        "pip install --force-reinstall --no-dependencies -e ."
+        "pip install --force-reinstall --no-dependencies " + ROOT
     )
     execute([install_local], parameters)
 
