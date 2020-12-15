@@ -21,5 +21,6 @@ API Documentation
   :maxdepth: 1
 
   api/enable
+  api/kiva
 
 * :ref:`search`

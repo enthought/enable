@@ -277,7 +277,16 @@ def docs(runtime, toolkit, pillow, environment):
         + ignore
     ]
     execute(commands, parameters)
-    click.echo("Done regenerating API docs")
+    click.echo("Done regenerating enable API docs")
+
+    commands = [
+        "edm run -e {environment} -- sphinx-apidoc -e -M -o "
+        + api_path
+        + " kiva "
+        + " */tests"
+    ]
+    execute(commands, parameters)
+    click.echo("Done regenerating kiva API docs")
 
     os.chdir("docs")
     command = (
