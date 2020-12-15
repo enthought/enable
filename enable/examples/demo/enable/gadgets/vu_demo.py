@@ -32,9 +32,10 @@ class Demo(HasTraits):
     )
 
 
-if __name__ == "__main__":
-    color = (0.9, 0.85, 0.7)
-    vu = VUMeter(border_visible=True, border_width=2, bgcolor=color)
+color = (0.9, 0.85, 0.7)
+vu = VUMeter(border_visible=True, border_width=2, bgcolor=color)
+demo = Demo(vu=vu)
 
-    demo = Demo(vu=vu)
+
+if __name__ == "__main__":
     demo.configure_traits()
