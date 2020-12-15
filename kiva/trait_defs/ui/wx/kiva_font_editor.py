@@ -119,13 +119,8 @@ class ToolkitEditorFactory ( EditorFactory ):
     def all_facenames(self):
         """ Returns a list of all available font typeface names.
         """
-        return _all_facenames()
-
-
-def _all_facenames():
-    """ Return a list of all available (TTF) font typeface names."""
-    font_manager = default_font_manager()
-    return sorted({f.name for f in font_manager.ttflist})
+        font_manager = default_font_manager()
+        return sorted({f.name for f in font_manager.ttflist})
 
 
 def KivaFontEditor(*args, **traits):

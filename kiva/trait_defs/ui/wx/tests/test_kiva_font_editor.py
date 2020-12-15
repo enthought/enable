@@ -15,4 +15,5 @@ class TestFacename(unittest.TestCase):
     def test_all_facenames(self):
         # Test loading of available face names does not fail.
         # The available face names depend on the system
-        self.assertGreaterEqual(len(kiva_font_editor._all_facenames()), 0)
+        editor_factory = kiva_font_editor.KivaFontEditor()
+        self.assertGreaterEqual(len(editor_factory.all_facenames()), 0)
