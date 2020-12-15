@@ -119,8 +119,9 @@ class TestFontCache(unittest.TestCase):
             os.path.abspath(os.path.join(data_dir, "TestTTF.ttf"))
         ]
 
-        self.temp_dir = tempfile.mkdtemp()
-        self.addCleanup(shutil.rmtree, self.temp_dir)
+        temp_dir_obj = tempfile.TemporaryDirectory()
+        self.temp_dir = temp_dir_obj.name
+        self.addCleanup(temp_dir_obj.cleanup)
 
     def test_load_font_from_cache(self):
         # Test loading fonts from cache file.
