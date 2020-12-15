@@ -5,6 +5,7 @@ specification strings into Font instances.
 import copy
 from kiva.constants import (DEFAULT, DECORATIVE, ROMAN, SCRIPT, SWISS, MODERN,
                             TELETYPE, NORMAL, ITALIC, BOLD, BOLD_ITALIC)
+from .font_manager import default_font_manager, FontProperties
 
 # Various maps used by str_to_font
 font_families = {
@@ -93,10 +94,8 @@ class Font(object):
         """ Returns the file name containing the font that most closely matches
         our font properties.
         """
-        from .font_manager import fontManager
-
         fp = self._make_font_props()
-        return str(fontManager.findfont(fp))
+        return str(default_font_manager().findfont(fp))
 
     def findfontname(self):
         """ Returns the name of the font that most closely matches our font
@@ -109,8 +108,6 @@ class Font(object):
         """ Returns a font_manager.FontProperties object that encapsulates our
         font properties
         """
-        from .font_manager import FontProperties
-
         # XXX: change the weight to a numerical value
         if self.style == BOLD or self.style == BOLD_ITALIC:
             weight = "bold"

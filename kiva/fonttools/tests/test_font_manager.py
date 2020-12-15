@@ -1,11 +1,27 @@
+import contextlib
+import importlib
 import os
+import shutil
+import sys
+import tempfile
 import unittest
 from unittest import mock
 
 from pkg_resources import resource_filename
 from fontTools.ttLib import TTFont
 
-from ..font_manager import FontEntry, createFontList, ttfFontProperty, getPropDict
+from traits.etsconfig.api import ETSConfig
+
+from .. import font_manager as font_manager_module
+from ..font_manager import (
+    createFontList,
+    default_font_manager,
+    findfont,
+    FontEntry,
+    FontProperties,
+    FontManager,
+    ttfFontProperty,
+)
 
 data_dir = resource_filename('kiva.fonttools.tests', 'data')
 
@@ -93,3 +109,163 @@ class TestTTFFontProperty(unittest.TestCase):
         self.assertEqual(entry.weight, exp_weight)
         self.assertEqual(entry.stretch, exp_stretch)
         self.assertEqual(entry.size, exp_size)
+
+
+class TestFontCache(unittest.TestCase):
+    """ Test internal font cache building mechanism."""
+
+    def setUp(self):
+        self.ttf_files = [
+            os.path.abspath(os.path.join(data_dir, "TestTTF.ttf"))
+        ]
+
+        temp_dir_obj = tempfile.TemporaryDirectory()
+        self.temp_dir = temp_dir_obj.name
+        self.addCleanup(temp_dir_obj.cleanup)
+
+    def test_load_font_from_cache(self):
+        # Test loading fonts from cache file.
+        with patch_global_font_manager(None):
+            with patch_font_cache(self.temp_dir, self.ttf_files):
+                default_manager = font_manager_module.default_font_manager()
+
+            # For some reasons, there are duplications in the list of files
+            self.assertEqual(
+                set(default_manager.ttffiles), set(self.ttf_files)
+            )
+            # The global singleton is now set.
+            self.assertIsInstance(font_manager_module.fontManager, FontManager)
+
+    def test_build_font_if_no_cache(self):
+        # Calling default_font_manager will build the font cache
+        # The temporary directory does not have a font cache file.
+        with change_ets_app_dir(self.temp_dir) as cache_file:
+
+            with patch_global_font_manager(None), \
+                    patch_system_fonts(self.ttf_files):  # patch for speed
+                font_manager_module.default_font_manager()
+
+            # The cache file is created
+            self.assertTrue(os.path.exists(cache_file))
+
+    def test_no_import_side_effect(self):
+        # Importing font_manager should have no side effect of creating
+        # the font cache. Regression test for enthought/enable#362
+        module_name = "kiva.fonttools.font_manager"
+        modules = sys.modules
+        original_module = modules.pop(module_name)
+        with change_ets_app_dir(self.temp_dir) as cache_path:
+            try:
+                importlib.import_module(module_name)
+            except Exception:
+                raise
+            else:
+                # A cache is not created
+                self.assertFalse(os.path.exists(cache_path))
+            finally:
+                modules[module_name] = original_module
+
+
+class TestFontManager(unittest.TestCase):
+    """ Test API of the font manager module."""
+
+    def test_default_font_manager(self):
+        font_manager = default_font_manager()
+        self.assertIsInstance(font_manager, FontManager)
+
+    def test_findFont(self):
+        # Warning because there are no families defined.
+        with self.assertWarns(UserWarning):
+            font = findfont(
+                FontProperties(
+                    family=[],
+                    weight=500,
+                )
+            )
+        # The returned value is a file path
+        # This assumes there exists fonts on the system that can be loaded
+        # by the font manager while the test is run.
+        self.assertTrue(os.path.exists(font))
+
+
+@contextlib.contextmanager
+def change_ets_app_dir(dirpath):
+    """ Temporarily change the application data directory in ETSConfig.
+
+    Parameters
+    ----------
+    dirpath : str
+        Path to be temporarily set to the ETSConfig.application_data
+        so that it gets used for computing the font cache file path.
+
+    Returns
+    -------
+    font_cache_file_path : str
+        Path to the font cache in the given data directory.
+        Returned for convenience.
+    """
+    original_data_dir = ETSConfig.application_data
+    ETSConfig.application_data = dirpath
+    try:
+        yield font_manager_module._get_font_cache_path()
+    finally:
+        ETSConfig.application_data = original_data_dir
+
+
+def patch_global_font_manager(new_value):
+    """ Patch the global FontManager instance at the module level.
+
+    Parameters
+    ----------
+    new_value : FontManager or None
+        Temporary value to be used as the global font manager.
+    """
+    return mock.patch.object(font_manager_module, "fontManager", new_value)
+
+
+@contextlib.contextmanager
+def patch_font_cache(dirpath, ttf_files):
+    """ Patch the font cache content with the given list of FFT fonts
+    and application data directory.
+
+    Parameters
+    ----------
+    dirpath : str
+        Path to be temporarily set to the ETSConfig.application_data
+        so that it gets used for computing the font cache file path.
+    ttf_files : list of str
+        List of file paths to TTF files.
+
+    Returns
+    -------
+    font_cache_file_path : str
+        Path to the font cache in the given data directory.
+        Returned for convenience.
+    """
+    with change_ets_app_dir(dirpath) as cache_file:
+        with patch_system_fonts(ttf_files):
+            font_manager_module._new_font_manager(cache_file)
+        yield cache_file
+
+
+def patch_system_fonts(ttf_files):
+    """ Patch findSystemFonts with the given list of font file paths.
+
+    This speeds up tests by avoiding having to parse a lot of font files
+    on a system.
+
+    Parameters
+    ----------
+    ttf_files : list of str
+        List of file paths for TTF fonts
+    """
+
+    def fake_find_system_fonts(fontpaths=None, fontext='ttf'):
+        if fontext == "ttf":
+            return ttf_files
+        return []
+
+    return mock.patch(
+        "kiva.fonttools.font_manager.findSystemFonts",
+        fake_find_system_fonts,
+    )
