@@ -8,7 +8,7 @@ include kiva/agg/agg.i
 include docs/Makefile
 include docs/kiva/agg/notes
 recursive-include docs *.py *.rst *.txt *.css *.png *.ico *.doc
-recursive-include enable/examples *.py *.txt *.gif *.jpg *.enaml
-recursive-include kiva/examples *.py *.txt *.gif *.jpg *.enaml
+recursive-include enable/examples *.py *.svg *.jpg *.enaml
+recursive-include kiva/examples *.py *.txt *.gif *.jpg
 recursive-include kiva/quartz *.pyx *.pxi *.pxd mac_context*.*
 recursive-include kiva/fonttools/tests/data *.txt *.ttc *.ttf

@@ -27,10 +27,10 @@ def info(request):
     -------
     response : dict
     """
-    return dict(
-        version=1,
-        name="Kiva Examples",
-        root=(
+    return {
+        "version": 1,
+        "name": "Kiva Examples",
+        "root": (
             pkg_resources.resource_filename("kiva.examples", "kiva")
         ),
-    )
+    }

@@ -27,10 +27,10 @@ def info(request):
     -------
     response : dict
     """
-    return dict(
-        version=1,
-        name="Enable Examples",
-        root=(
+    return {
+        "version": 1,
+        "name": "Enable Examples",
+        "root": (
             pkg_resources.resource_filename("enable.examples", "demo")
-        ),
-    )
+        )
+    }
