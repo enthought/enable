@@ -548,7 +548,7 @@ def ttfFontProperty(fpath, font):
         raise KeyError("No name could be found for: {}".format(fpath))
 
     #  Styles are: italic, oblique, and normal (default)
-    sfnt4 = props.get('sfnt4', '')
+    sfnt4 = props.get('sfnt4', '').lower()
 
     if sfnt4.find('oblique') >= 0:
         style = 'oblique'
@@ -1390,17 +1390,74 @@ def is_opentype_cff_font(filename):
         return result
     return False
 
-
+# Global singleton of FontManager, cached at the module level.
 fontManager = None
 
-_fmcache = os.path.join(get_configdir(), 'fontList.cache')
+
+def _get_font_cache_path():
+    """ Return the file path for the font cache to be saved / loaded.
+
+    Returns
+    -------
+    path : str
+        Path to the font cache file.
+    """
+    return os.path.join(get_configdir(), 'fontList.cache')
 
 
 def _rebuild():
+    """ Rebuild the default font manager and cache its content.
+    """
     global fontManager
+    fontManager = _new_font_manager(_get_font_cache_path())
+
+
+def _new_font_manager(cache_file):
+    """ Create a new FontManager (which will reload font files) and immediately
+    cache its content with the given file path.
+
+    Parameters
+    ----------
+    cache_file : str
+        Path to the cache to be created.
+
+    Returns
+    -------
+    font_manager : FontManager
+    """
     fontManager = FontManager()
-    pickle_dump(fontManager, _fmcache)
+    pickle_dump(fontManager, cache_file)
     logger.debug("generated new fontManager")
+    return fontManager
+
+
+def _load_from_cache_or_rebuild(cache_file):
+    """ Load the font manager from the cache and verify it is compatible.
+    If the cache is not compatible, rebuild the cache and return the new
+    font manager.
+
+    Parameters
+    ----------
+    cache_file : str
+        Path to the cache to be created.
+
+    Returns
+    -------
+    font_manager : FontManager
+    """
+
+    try:
+        fontManager = pickle_load(cache_file)
+        if (not hasattr(fontManager, '_version') or
+                fontManager._version != FontManager.__version__):
+            fontManager = _new_font_manager(cache_file)
+        else:
+            fontManager.default_size = None
+            logger.debug("Using fontManager instance from %s", cache_file)
+    except Exception:
+        fontManager = _new_font_manager(cache_file)
+
+    return fontManager
 
 
 # The experimental fontconfig-based backend.
@@ -1440,18 +1497,21 @@ if USE_FONTCONFIG and sys.platform != 'win32':
         return result
 
 else:
-    try:
-        fontManager = pickle_load(_fmcache)
-        if (not hasattr(fontManager, '_version') or
-                fontManager._version != FontManager.__version__):
-            _rebuild()
-        else:
-            fontManager.default_size = None
-            logger.debug("Using fontManager instance from %s", _fmcache)
-    except Exception:
-        _rebuild()
 
     def findfont(prop, **kw):
-        global fontManager
-        font = fontManager.findfont(prop, **kw)
+        font = default_font_manager().findfont(prop, **kw)
         return font
+
+
+def default_font_manager():
+    """ Return the default font manager, which is a singleton FontManager
+    cached in the module.
+
+    Returns
+    -------
+    font_manager : FontManager
+    """
+    global fontManager
+    if fontManager is None:
+        fontManager = _load_from_cache_or_rebuild(_get_font_cache_path())
+    return fontManager

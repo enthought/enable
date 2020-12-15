@@ -56,7 +56,7 @@ before_install:
   - mkdir -p "${HOME}/.cache/download"
   - ci/install-edm.sh
   - export PATH="${HOME}/edm/bin:/usr/lib/ccache:${PATH}"
-  - edm install -y wheel click coverage
+  - edm --config ci/.edm.yaml install -y wheel click coverage
 install:
   - for toolkit in ${TOOLKITS}; do
         if [[ ${TRAVIS_EVENT_TYPE} == "cron" ]] ; then

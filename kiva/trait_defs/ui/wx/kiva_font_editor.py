@@ -27,7 +27,7 @@ from traits.trait_base \
 from traitsui.wx.font_editor \
     import ToolkitEditorFactory as EditorFactory
 
-from kiva.fonttools.font_manager import fontManager
+from kiva.fonttools.font_manager import default_font_manager
 
 
 #-------------------------------------------------------------------------------
@@ -119,7 +119,8 @@ class ToolkitEditorFactory ( EditorFactory ):
     def all_facenames(self):
         """ Returns a list of all available font typeface names.
         """
-        return sorted({f.name for f in fontManager.ttflist})
+        font_manager = default_font_manager()
+        return sorted({f.name for f in font_manager.ttflist})
 
 
 def KivaFontEditor(*args, **traits):
