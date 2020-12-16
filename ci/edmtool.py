@@ -288,17 +288,17 @@ def docs(runtime, toolkit, pillow, environment):
     execute(commands, parameters)
     click.echo("Done regenerating kiva API docs")
 
-    os.chdir("docs")
-    command = (
-        "edm run -e {environment} -- sphinx-build -b html "
-        "-d build/doctrees "
-        "source "
-        "build/html"
-    )
-    click.echo(
-        "Building documentation in  '{environment}'".format(**parameters)
-    )
     try:
+        os.chdir("docs")
+        command = (
+            "edm run -e {environment} -- sphinx-build -b html "
+            "-d build/doctrees "
+            "source "
+            "build/html"
+        )
+        click.echo(
+            "Building documentation in  '{environment}'".format(**parameters)
+        )
         execute([command], parameters)
     finally:
         os.chdir("..")
