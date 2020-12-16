@@ -24,7 +24,6 @@ __extras_require__ = {
         'chaco',
         'mayavi',
         'scipy',
-        'traitsui[demo]',
         'kiwisolver',
         'pyglet'
     ],
