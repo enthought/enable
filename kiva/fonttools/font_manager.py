@@ -1450,11 +1450,6 @@ def _load_from_cache_or_rebuild(cache_file):
     return fontManager
 
 
-def findfont(prop, **kw):
-    font = default_font_manager().findfont(prop, **kw)
-    return font
-
-
 def default_font_manager():
     """ Return the default font manager, which is a singleton FontManager
     cached in the module.
