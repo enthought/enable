@@ -10,14 +10,14 @@ import unittest
 from unittest.mock import MagicMock
 
 # Enthought library imports
-from apptools.undo.api import UndoManager
+from pyface.undo.api import UndoManager
 from traits.testing.unittest_tools import UnittestTools
 
 # Local library imports
 from enable.base_tool import KeySpec
 from enable.component import Component
 from enable.testing import EnableTestAssistant
-from enable.tools.apptools.undo_tool import UndoTool
+from enable.tools.pyface.undo_tool import UndoTool
 
 
 class UndoToolTestCase(unittest.TestCase, EnableTestAssistant, UnittestTools):

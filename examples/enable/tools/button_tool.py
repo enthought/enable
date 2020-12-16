@@ -10,7 +10,7 @@
 Undoable Move Tool
 ==================
 
-This example shows how to integrate a simple component move tool with apptools
+This example shows how to integrate a simple component move tool with pyface
 undo/redo infrastructure.
 
 """
