@@ -20,7 +20,7 @@ except ImportError:
     __requires__.append('pillow')
 
 __extras_require__ = {
-    'demo': [
+    'examples': [
         'chaco',
         'mayavi',
         'scipy',
