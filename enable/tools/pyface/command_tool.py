@@ -10,12 +10,12 @@
 Command Tools
 =============
 
-This module provides classes for tools that work with Apptools' Undo/Redo
+This module provides classes for tools that work with Pyface's Undo/Redo
 Command stack.
 
 """
 
-from apptools.undo.api import ICommandStack, IUndoManager
+from pyface.undo.api import ICommandStack, IUndoManager
 from traits.api import Callable, Instance
 
 from enable.base_tool import BaseTool

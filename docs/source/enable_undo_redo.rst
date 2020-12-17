@@ -1,24 +1,13 @@
-Enable Apptools Integration
-===========================
-
-Apptools (https://github.com/enthought/apptools) is a library of useful code
-for building GUI applications.  It includes code for features like preferences,
-undo/redo support, and selection management.
-
-Enable doesn't require Apptools, but developers working within the apptools
-ecosystem may want to integrate Enable interactions with undo/redo and
-selections.
-
 Undo/Redo Support
------------------
+=================
 
-The `enable.tools.apptools` package has a number of modules that provide
-classes for working with Apptool's Undo/Redo stack.  This permits Enable
+The `enable.tools.pyface` package has a number of modules that provide
+classes for working with Pyface's Undo/Redo stack.  This permits Enable
 tools to add Commands to the Undo/Redo stack, and provides variants of the
 MoveTool and ResizeTool that are undoable.
 
 In addition, a tool is provided which binds keystrokes to send undo and
-redo requests to the apptools UndoManager.
+redo requests to the Pyface UndoManager.
 
 High-Level Tools
 ~~~~~~~~~~~~~~~~

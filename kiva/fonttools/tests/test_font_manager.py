@@ -16,7 +16,6 @@ from .. import font_manager as font_manager_module
 from ..font_manager import (
     createFontList,
     default_font_manager,
-    findfont,
     FontEntry,
     FontProperties,
     FontManager,
@@ -172,20 +171,6 @@ class TestFontManager(unittest.TestCase):
     def test_default_font_manager(self):
         font_manager = default_font_manager()
         self.assertIsInstance(font_manager, FontManager)
-
-    def test_findFont(self):
-        # Warning because there are no families defined.
-        with self.assertWarns(UserWarning):
-            font = findfont(
-                FontProperties(
-                    family=[],
-                    weight=500,
-                )
-            )
-        # The returned value is a file path
-        # This assumes there exists fonts on the system that can be loaded
-        # by the font manager while the test is run.
-        self.assertTrue(os.path.exists(font))
 
 
 @contextlib.contextmanager

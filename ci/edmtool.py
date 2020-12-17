@@ -243,6 +243,76 @@ def install(runtime, toolkit, pillow, environment, source):
 @click.option('--toolkit', default='null')
 @click.option('--pillow', default='pillow')
 @click.option('--environment', default=None)
+def docs(runtime, toolkit, pillow, environment):
+    """ Build documentation. """
+    parameters = get_parameters(runtime, toolkit, pillow, environment)
+    packages = " ".join([
+        "sphinx",
+        "enthought_sphinx_theme",
+    ])
+    ignore = " ".join([
+        "enable/qt4",
+        "enable/wx",
+        "*/tests",
+    ])
+    commands = [
+        "edm install -y -e {environment} " + packages,
+    ]
+    click.echo(
+        "Installing documentation tools in  '{environment}'".format(
+            **parameters
+        )
+    )
+    execute(commands, parameters)
+    click.echo("Done installing documentation tools")
+
+    click.echo(
+        "Regenerating API docs in  '{environment}'".format(**parameters)
+    )
+    api_path = os.path.join("docs", "source", "api")
+    if os.path.exists(api_path):
+        rmtree(api_path)
+    os.makedirs(api_path)
+    commands = [
+        "edm run -e {environment} -- sphinx-apidoc -e -M -o "
+        + api_path
+        + " enable "
+        + ignore
+    ]
+    execute(commands, parameters)
+    click.echo("Done regenerating enable API docs")
+
+    commands = [
+        "edm run -e {environment} -- sphinx-apidoc -e -M -o "
+        + api_path
+        + " kiva "
+        + " */tests"
+    ]
+    execute(commands, parameters)
+    click.echo("Done regenerating kiva API docs")
+
+    try:
+        os.chdir("docs")
+        command = (
+            "edm run -e {environment} -- sphinx-build -b html "
+            "-d build/doctrees "
+            "source "
+            "build/html"
+        )
+        click.echo(
+            "Building documentation in  '{environment}'".format(**parameters)
+        )
+        execute([command], parameters)
+    finally:
+        os.chdir("..")
+    click.echo("Done building documentation")
+
+
+@cli.command()
+@click.option('--runtime', default='3.6')
+@click.option('--toolkit', default='null')
+@click.option('--pillow', default='pillow')
+@click.option('--environment', default=None)
 def shell(runtime, toolkit, pillow, environment):
     """ Create a shell into the EDM development environment
     (aka 'activate' it).

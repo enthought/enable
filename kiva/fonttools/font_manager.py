@@ -18,13 +18,6 @@ The design is based on the `W3C Cascading Style Sheet, Level 1 (CSS1)
 font specification <http://www.w3.org/TR/1998/REC-CSS2-19980512/>`_.
 Future versions may implement the Level 2 or 2.1 specifications.
 
-Experimental support is included for using `fontconfig` on Unix
-variant platforms (Linux, OS X, Solaris).  To enable it, set the
-constant ``USE_FONTCONFIG`` in this file to ``True``.  Fontconfig has
-the advantage that it is the standard way to look up fonts on X11
-platforms, so if a font is installed, it is much more likely to be
-found.
-
 KNOWN ISSUES
 
   - documentation
@@ -62,8 +55,6 @@ from traits.etsconfig.api import ETSConfig
 from . import afm
 
 logger = logging.getLogger(__name__)
-
-USE_FONTCONFIG = False
 
 font_scalings = {
     'xx-small': 0.579,
@@ -136,14 +127,13 @@ OSXFontDirectories = [
     "/System/Library/Fonts/"
 ]
 
-if not USE_FONTCONFIG:
-    home = os.environ.get('HOME')
-    if home is not None:
-        # user fonts on OSX
-        path = os.path.join(home, 'Library', 'Fonts')
-        OSXFontDirectories.append(path)
-        path = os.path.join(home, '.fonts')
-        X11FontDirectories.append(path)
+home = os.environ.get('HOME')
+if home is not None:
+    # user fonts on OSX
+    path = os.path.join(home, 'Library', 'Fonts')
+    OSXFontDirectories.append(path)
+    path = os.path.join(home, '.fonts')
+    X11FontDirectories.append(path)
 
 ###############################################################################
 #  functions to replace those that matplotlib ship in different modules
@@ -1458,49 +1448,6 @@ def _load_from_cache_or_rebuild(cache_file):
         fontManager = _new_font_manager(cache_file)
 
     return fontManager
-
-
-# The experimental fontconfig-based backend.
-if USE_FONTCONFIG and sys.platform != 'win32':
-    import re
-
-    def fc_match(pattern, fontext):
-        fontexts = get_fontext_synonyms(fontext)
-        try:
-            pipe = subprocess.Popen(['fc-match', '-sv', pattern],
-                                    stdout=subprocess.PIPE)
-            output = pipe.communicate()[0]
-        except OSError:
-            return None
-        if pipe.returncode == 0:
-            for match in _fc_match_regex.finditer(output):
-                file = match.group(1)
-                if os.path.splitext(file)[1][1:] in fontexts:
-                    return file
-        return None
-
-    _fc_match_regex = re.compile(r'\sfile:\s+"([^"]*)"')
-    _fc_match_cache = {}
-
-    def findfont(prop, fontext='ttf'):
-        if not is_string_like(prop):
-            prop = prop.get_fontconfig_pattern()
-        cached = _fc_match_cache.get(prop)
-        if cached is not None:
-            return cached
-
-        result = fc_match(prop, fontext)
-        if result is None:
-            result = fc_match(':', fontext)
-
-        _fc_match_cache[prop] = result
-        return result
-
-else:
-
-    def findfont(prop, **kw):
-        font = default_font_manager().findfont(prop, **kw)
-        return font
 
 
 def default_font_manager():
