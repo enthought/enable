@@ -5,9 +5,9 @@ from enable.tools.api import ViewportPanTool
 
 class Demo(DemoFrame):
 
-    def create_component(self):
+    def _create_component(self):
         canvas = Canvas(bgcolor="lightsteelblue", draw_axes=True)
-        from basic_move import Box
+        from enable.examples.demo.enable.basic_move import Box
         box = Box(color="red", bounds=[50, 50], resizable="")
         box.position = [75, 75]
         canvas.add(box)
