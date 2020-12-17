@@ -1,3 +1,12 @@
+"""
+**WARNING**
+
+  This demo might not work as expected and some documented features might be
+  missing.
+
+"""
+# Issue related to the demo warning: enthought/enable#502
+
 import os.path
 import xml.etree.cElementTree as etree
 

@@ -1,4 +1,15 @@
-""" An example showing moveable shapes. """
+"""
+**WARNING**
+
+  This demo might not work as expected and some documented features might be
+  missing.
+
+-------------------------------------------------------------------------------
+
+An example showing moveable shapes.
+"""
+# Issue related to the demo warning: enthought/enable#500
+
 # Enthought library imports.
 from enable.api import Container, Window
 from enable.example_support import DemoFrame, demo_main

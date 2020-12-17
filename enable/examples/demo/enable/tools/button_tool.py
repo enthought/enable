@@ -5,11 +5,18 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-
 """
+**WARNING**
+
+  This demo might not work as expected and some documented features might be
+  missing.
+
+-------------------------------------------------------------------------------
+
 Button Tool
 ===========
 """
+# Issue related to the demo warning: enthought/enable#500
 
 from traits.api import Bool
 from kiva.constants import FILL, STROKE
