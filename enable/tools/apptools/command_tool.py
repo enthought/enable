@@ -10,7 +10,7 @@
 Command Tools
 =============
 
-This module provides classes for tools that work with Apptool's Undo/Redo
+This module provides classes for tools that work with Apptools' Undo/Redo
 Command stack.
 
 """

@@ -9,7 +9,7 @@
 ResizeCommandTool
 =================
 
-A CommandTool that uses Apptools' undo/redo infrastructure to create undoable
+A CommandTool that uses AppTools' undo/redo infrastructure to create undoable
 resize commands.
 
 """
