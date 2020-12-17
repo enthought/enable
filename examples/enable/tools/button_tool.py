@@ -7,12 +7,8 @@
 #
 
 """
-Undoable Move Tool
-==================
-
-This example shows how to integrate a simple component move tool with pyface
-undo/redo infrastructure.
-
+Button Tool
+===========
 """
 
 from traits.api import Bool
