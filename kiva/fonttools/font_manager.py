@@ -18,13 +18,6 @@ The design is based on the `W3C Cascading Style Sheet, Level 1 (CSS1)
 font specification <http://www.w3.org/TR/1998/REC-CSS2-19980512/>`_.
 Future versions may implement the Level 2 or 2.1 specifications.
 
-Experimental support is included for using `fontconfig` on Unix
-variant platforms (Linux, OS X, Solaris).  To enable it, set the
-constant ``USE_FONTCONFIG`` in this file to ``True``.  Fontconfig has
-the advantage that it is the standard way to look up fonts on X11
-platforms, so if a font is installed, it is much more likely to be
-found.
-
 KNOWN ISSUES
 
   - documentation
@@ -62,8 +55,6 @@ from traits.etsconfig.api import ETSConfig
 from . import afm
 
 logger = logging.getLogger(__name__)
-
-USE_FONTCONFIG = False
 
 font_scalings = {
     'xx-small': 0.579,
@@ -136,14 +127,13 @@ OSXFontDirectories = [
     "/System/Library/Fonts/"
 ]
 
-if not USE_FONTCONFIG:
-    home = os.environ.get('HOME')
-    if home is not None:
-        # user fonts on OSX
-        path = os.path.join(home, 'Library', 'Fonts')
-        OSXFontDirectories.append(path)
-        path = os.path.join(home, '.fonts')
-        X11FontDirectories.append(path)
+home = os.environ.get('HOME')
+if home is not None:
+    # user fonts on OSX
+    path = os.path.join(home, 'Library', 'Fonts')
+    OSXFontDirectories.append(path)
+    path = os.path.join(home, '.fonts')
+    X11FontDirectories.append(path)
 
 ###############################################################################
 #  functions to replace those that matplotlib ship in different modules
@@ -1390,68 +1380,85 @@ def is_opentype_cff_font(filename):
         return result
     return False
 
-
+# Global singleton of FontManager, cached at the module level.
 fontManager = None
 
-_fmcache = os.path.join(get_configdir(), 'fontList.cache')
+
+def _get_font_cache_path():
+    """ Return the file path for the font cache to be saved / loaded.
+
+    Returns
+    -------
+    path : str
+        Path to the font cache file.
+    """
+    return os.path.join(get_configdir(), 'fontList.cache')
 
 
 def _rebuild():
+    """ Rebuild the default font manager and cache its content.
+    """
     global fontManager
+    fontManager = _new_font_manager(_get_font_cache_path())
+
+
+def _new_font_manager(cache_file):
+    """ Create a new FontManager (which will reload font files) and immediately
+    cache its content with the given file path.
+
+    Parameters
+    ----------
+    cache_file : str
+        Path to the cache to be created.
+
+    Returns
+    -------
+    font_manager : FontManager
+    """
     fontManager = FontManager()
-    pickle_dump(fontManager, _fmcache)
+    pickle_dump(fontManager, cache_file)
     logger.debug("generated new fontManager")
+    return fontManager
 
 
-# The experimental fontconfig-based backend.
-if USE_FONTCONFIG and sys.platform != 'win32':
-    import re
+def _load_from_cache_or_rebuild(cache_file):
+    """ Load the font manager from the cache and verify it is compatible.
+    If the cache is not compatible, rebuild the cache and return the new
+    font manager.
 
-    def fc_match(pattern, fontext):
-        fontexts = get_fontext_synonyms(fontext)
-        try:
-            pipe = subprocess.Popen(['fc-match', '-sv', pattern],
-                                    stdout=subprocess.PIPE)
-            output = pipe.communicate()[0]
-        except OSError:
-            return None
-        if pipe.returncode == 0:
-            for match in _fc_match_regex.finditer(output):
-                file = match.group(1)
-                if os.path.splitext(file)[1][1:] in fontexts:
-                    return file
-        return None
+    Parameters
+    ----------
+    cache_file : str
+        Path to the cache to be created.
 
-    _fc_match_regex = re.compile(r'\sfile:\s+"([^"]*)"')
-    _fc_match_cache = {}
+    Returns
+    -------
+    font_manager : FontManager
+    """
 
-    def findfont(prop, fontext='ttf'):
-        if not is_string_like(prop):
-            prop = prop.get_fontconfig_pattern()
-        cached = _fc_match_cache.get(prop)
-        if cached is not None:
-            return cached
-
-        result = fc_match(prop, fontext)
-        if result is None:
-            result = fc_match(':', fontext)
-
-        _fc_match_cache[prop] = result
-        return result
-
-else:
     try:
-        fontManager = pickle_load(_fmcache)
+        fontManager = pickle_load(cache_file)
         if (not hasattr(fontManager, '_version') or
                 fontManager._version != FontManager.__version__):
-            _rebuild()
+            fontManager = _new_font_manager(cache_file)
         else:
             fontManager.default_size = None
-            logger.debug("Using fontManager instance from %s", _fmcache)
+            logger.debug("Using fontManager instance from %s", cache_file)
     except Exception:
-        _rebuild()
+        fontManager = _new_font_manager(cache_file)
 
-    def findfont(prop, **kw):
-        global fontManager
-        font = fontManager.findfont(prop, **kw)
-        return font
+    return fontManager
+
+
+def default_font_manager():
+    """ Return the default font manager, which is a singleton FontManager
+    cached in the module.
+
+    Returns
+    -------
+    font_manager : FontManager
+    """
+    global fontManager
+    if fontManager is None:
+        fontManager = _load_from_cache_or_rebuild(_get_font_cache_path())
+    return fontManager

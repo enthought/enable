@@ -10,15 +10,15 @@ import unittest
 from unittest.mock import MagicMock
 
 # Enthought library imports
-from apptools.undo.api import CommandStack
+from pyface.undo.api import CommandStack
 from traits.testing.unittest_tools import UnittestTools
 
 # Local library imports
 from enable.component import Component
 from enable.container import Container
 from enable.testing import EnableTestAssistant
-from enable.tools.apptools.commands import MoveCommand, ResizeCommand
-from enable.tools.apptools.move_command_tool import MoveCommandTool
+from enable.tools.pyface.commands import MoveCommand, ResizeCommand
+from enable.tools.pyface.move_command_tool import MoveCommandTool
 
 
 class MoveCommandToolTestCase(unittest.TestCase, EnableTestAssistant,

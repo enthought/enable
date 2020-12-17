@@ -68,7 +68,7 @@ class XMLTree(wx.TreeCtrl):
             node = self.AppendItem(node, txt)
             self.SetPyData(node, element)
         #children
-        for child in element.getchildren():
+        for child in element:
             self.addElementToTree(child, node)
         #attributes
         for key, value in element.items():

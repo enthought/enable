@@ -10,13 +10,13 @@
 Enable Commands
 ===============
 
-This module provides :py:class:`apptools.undo.abstract_command.AbstractCommand`
+This module provides :py:class:`pyface.undo.abstract_command.AbstractCommand`
 subclasses for common component manipulations, such as moving, resizing and
 setting attribute values.
 
 """
 
-from apptools.undo.api import AbstractCommand
+from pyface.undo.api import AbstractCommand
 from traits.api import Bool, Instance, Tuple, Unicode
 from traits.util.camel_case import camel_case_to_words
 

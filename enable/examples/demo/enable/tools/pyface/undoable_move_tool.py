@@ -10,21 +10,21 @@
 Undoable Move Tool
 ==================
 
-This example shows how to integrate a simple component move tool with apptools
+This example shows how to integrate a simple component move tool with pyface
 undo/redo infrastructure.
 
 """
 
-from apptools.undo.api import (CommandStack, ICommandStack, IUndoManager,
+from pyface.undo.api import (CommandStack, ICommandStack, IUndoManager,
                                UndoManager)
-from apptools.undo.action.api import UndoAction, RedoAction
+from pyface.undo.action.api import UndoAction, RedoAction
 from pyface.action.api import Action, Group, MenuBarManager, MenuManager
 from traits.api import Instance
 
 from enable.api import Container, Window, KeySpec
 from enable.example_application import DemoApplication, demo_main
 from enable.primitives.api import Box
-from enable.tools.apptools.api import MoveCommandTool, UndoTool
+from enable.tools.pyface.api import MoveCommandTool, UndoTool
 
 
 class UndoableMoveApplication(DemoApplication):
@@ -35,7 +35,7 @@ class UndoableMoveApplication(DemoApplication):
 
     """
 
-    #: The apptools undo manager the application uses.
+    #: The pyface undo manager the application uses.
     undo_manager = Instance(IUndoManager)
 
     #: The command stack that the MoveCommandTool will use.

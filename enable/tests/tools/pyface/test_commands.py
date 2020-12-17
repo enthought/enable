@@ -15,7 +15,7 @@ from traits.testing.unittest_tools import UnittestTools
 # Local library imports
 from enable.component import Component
 from enable.testing import EnableTestAssistant
-from enable.tools.apptools.commands import (
+from enable.tools.pyface.commands import (
     ComponentCommand, MoveCommand, ResizeCommand)
 
 

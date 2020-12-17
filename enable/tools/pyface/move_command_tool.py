@@ -9,7 +9,7 @@
 MoveCommandTool
 ===============
 
-A MoveTool that uses AppTools' undo/redo infrastructure to create undoable move
+A MoveTool that uses Pyface's undo/redo infrastructure to create undoable move
 commands.
 
 """
