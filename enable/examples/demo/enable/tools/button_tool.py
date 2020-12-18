@@ -6,17 +6,9 @@
 # LICENSE.txt
 #
 """
-**WARNING**
-
-  This demo might not work as expected and some documented features might be
-  missing.
-
--------------------------------------------------------------------------------
-
 Button Tool
 ===========
 """
-# Issue related to the demo warning: enthought/enable#500
 
 from traits.api import Bool
 from kiva.constants import FILL, STROKE
@@ -81,7 +73,7 @@ class MyFrame(DemoFrame):
     # DemoApplication interface
     #-------------------------------------------------------------------------
 
-    def _create_window(self):
+    def _create_component(self):
         # create a box that changes color when clicked
         push_button_box = SelectableBox(bounds=[100,50], position=[50, 50], color='red')
 
@@ -108,8 +100,7 @@ class MyFrame(DemoFrame):
         container.add(push_button_box)
         container.add(toggle_box)
 
-        window = Window(self, -1, component=container)
-        return window
+        return container
 
 
 if __name__ == "__main__":

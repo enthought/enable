@@ -1,14 +1,6 @@
 """
-**WARNING**
-
-  This demo might not work as expected and some documented features might be
-  missing.
-
--------------------------------------------------------------------------------
-
 This demonstrates the use of the drop tool.
 """
-# Issue related to the demo warning: enthought/enable#500
 
 from enable.example_support import DemoFrame, demo_main
 from enable.api import Component, Container, Label, Window
@@ -45,13 +37,15 @@ class TextDropTool(BaseDropTool):
 
 class MyFrame(DemoFrame):
 
-    def _create_window(self):
+    def _create_component(self):
         box = Box(bounds=[100.0, 100.0], position=[50.0, 50.0])
         container = Container(bounds=[500,500])
         container.add(box)
         drop_tool = TextDropTool(component=container)
         container.tools.append(drop_tool)
-        return Window(self, -1, component=container)
+
+        return container
+
 
 if __name__ == "__main__":
     demo_main(MyFrame)

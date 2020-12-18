@@ -1,14 +1,6 @@
 """
-**WARNING**
-
-  This demo might not work as expected and some documented features might be
-  missing.
-
--------------------------------------------------------------------------------
-
 An example showing moveable shapes.
 """
-# Issue related to the demo warning: enthought/enable#500
 
 # Enthought library imports.
 from enable.api import Container, Window
@@ -25,14 +17,13 @@ class MyFrame(DemoFrame):
     # 'DemoFrame' interface.
     #--------------------------------------------------------------------------
 
-    def _create_window(self):
-        """ Create an enable window. """
+    def _create_component(self):
 
         container = Container(
             auto_size=False, bgcolor='black', *self._create_shapes()
         )
 
-        return Window(self, component=container)
+        return container
 
     # Private interface.
     #--------------------------------------------------------------------------
