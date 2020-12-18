@@ -13,7 +13,7 @@ Button Tool
 from traits.api import Bool
 from kiva.constants import FILL, STROKE
 
-from enable.api import Container, Window, transparent_color
+from enable.api import Container, transparent_color
 from enable.colors import ColorTrait
 from enable.example_support import DemoFrame, demo_main
 from enable.primitives.api import Box

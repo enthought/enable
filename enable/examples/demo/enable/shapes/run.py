@@ -3,7 +3,7 @@ An example showing moveable shapes.
 """
 
 # Enthought library imports.
-from enable.api import Container, Window
+from enable.api import Container
 from enable.example_support import DemoFrame, demo_main
 
 # Local imports
