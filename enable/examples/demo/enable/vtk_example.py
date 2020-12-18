@@ -3,7 +3,7 @@ from mayavi import mlab
 from enable.vtk_backend.vtk_window import EnableVTKWindow
 
 def main():
-    from basic_move import Box
+    from enable.examples.demo.enable.basic_move import Box
     from enable.api import Container
     container = Container()
     box = Box(bounds=[30,30], position=[20,20], padding=5)
@@ -29,8 +29,6 @@ def main():
             padding_left = 20,
             )
 
-    #rwi.render()
-    #rwi.start()
     mlab.show()
     return window, render_window
 

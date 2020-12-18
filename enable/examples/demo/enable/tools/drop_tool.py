@@ -1,6 +1,15 @@
 """
+**WARNING**
+
+  This demo might not work as expected and some documented features might be
+  missing.
+
+-------------------------------------------------------------------------------
+
 This demonstrates the use of the drop tool.
 """
+# Issue related to the demo warning: enthought/enable#500
+
 from enable.example_support import DemoFrame, demo_main
 from enable.api import Component, Container, Label, Window
 from enable.tools.base_drop_tool import BaseDropTool

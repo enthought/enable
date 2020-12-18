@@ -20,6 +20,12 @@ except ImportError:
     __requires__.append('pillow')
 
 __extras_require__ = {
-    'demo': ['chaco', 'mayavi', 'scipy', 'traitsui[demo]'],
+    'examples': [
+        'chaco',
+        'mayavi',
+        'scipy',
+        'kiwisolver',
+        'pyglet'
+    ],
     'test': ['hypothesis']
 }

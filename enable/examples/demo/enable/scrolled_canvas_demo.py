@@ -1,3 +1,12 @@
+"""
+**WARNING**
+
+  This demo might not work as expected and some documented features might be
+  missing.
+
+"""
+# Issue related to the demo warning: enthought/enable#501
+
 from numpy import array
 
 from enable.api import Canvas, Viewport, Scrolled

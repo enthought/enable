@@ -49,13 +49,13 @@ enable/image/images:
 enable/savage/traits/ui/wx/data:
                   button_toggle.svg | Enthought
 
-examples/enable:
+enable/examples/demo/enable:
                       deepfield.jpg | NASA
-examples/savage:
+enable/examples/demo/savage:
                       edit-copy.svg | Oxygen, CC 3.0 and GPL
                      edit-paste.svg | Oxygen, CC 3.0 and GPL
 
-examples/kiva/agg/examples:
+kiva/examples/kiva/agg:
                       serengeti.jpg | Rick Marin
                         finger1.gif | US Government
                         finger2.gif | US Government
