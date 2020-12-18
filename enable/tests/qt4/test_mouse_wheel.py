@@ -53,7 +53,7 @@ class MouseWheelTestCase(TestCase):
             )
         else:
             qt_event = QtGui.QWheelEvent(
-                QtCore.QPointF(0, 0),
+                QtCore.QPoint(0, 0),
                 self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),
                 QtCore.QPoint(0, 200), QtCore.QPoint(0, 200), 200,
                 QtCore.Qt.Vertical, QtCore.Qt.NoButton, QtCore.Qt.NoModifier,
@@ -104,7 +104,7 @@ class MouseWheelTestCase(TestCase):
 
         # create and mock a mouse wheel event
         qt_event = QtGui.QWheelEvent(
-            QtCore.QPointF(0, 0),
+            QtCore.QPoint(0, 0),
             self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),
             QtCore.QPoint(0, 0), QtCore.QPoint(0, 200), 200,
             QtCore.Qt.Vertical, QtCore.Qt.NoButton, QtCore.Qt.NoModifier,
