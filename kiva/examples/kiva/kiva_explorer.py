@@ -126,7 +126,10 @@ class ScriptedComponentView(ModelView):
         title='Kiva Explorer',
     )
 
-demo = ScriptedComponentView()
+# "popup" is a magically named variable for the etsdemo application which will
+# cause this demo to be run as a popup rather than trying to compress it into
+# a tab on the application
+popup = ScriptedComponentView()
 
 if __name__ == '__main__':
-    demo.configure_traits()
+    popup.configure_traits()
