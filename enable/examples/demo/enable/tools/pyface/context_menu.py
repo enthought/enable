@@ -4,7 +4,7 @@ component is created and added to a container.
 """
 
 from enable.example_support import DemoFrame, demo_main
-from enable.api import Component, Container, Window
+from enable.api import Component, Container
 from enable.tools.pyface.context_menu_tool import ContextMenuTool
 
 from pyface.action.api import MenuManager, Action
