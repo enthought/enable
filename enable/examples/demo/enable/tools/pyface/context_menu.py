@@ -21,11 +21,11 @@ class Box(Component):
             gc.rect(x, y, dx, dy)
             gc.fill_path()
 
-class MyFrame(DemoFrame):
+class Demo(DemoFrame):
     def hello(self):
         print("Hello World")
 
-    def _create_window(self):
+    def _create_component(self):
         box = Box(bounds=[100.0, 100.0], position=[50.0, 50.0])
         menu=MenuManager()
         menu.append(Action(name="Hello World", on_perform=self.hello))
@@ -34,7 +34,9 @@ class MyFrame(DemoFrame):
         box.tools.append(context_menu)
         container = Container(bounds=[500,500])
         container.add(box)
-        return Window(self, -1, component=container)
+
+        return container
+
 
 if __name__ == "__main__":
-    demo_main(MyFrame)
+    demo_main(Demo)
