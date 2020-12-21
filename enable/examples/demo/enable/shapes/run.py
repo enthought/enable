@@ -7,11 +7,10 @@ from enable.api import Container
 from enable.example_support import DemoFrame, demo_main
 
 # Local imports
-from box import Box
-from circle import Circle
+from enable.examples.demo.enable.shapes.api import Box, Circle
 
 
-class MyFrame(DemoFrame):
+class Demo(DemoFrame):
     """ The top-level frame. """
 
     # 'DemoFrame' interface.
@@ -65,5 +64,5 @@ class MyFrame(DemoFrame):
 if __name__ == "__main__":
     # Save demo so that it doesn't get garbage collected when run within
     # existing event loop (i.e. from ipython).
-    demo = demo_main(MyFrame, size=(500, 500),
+    demo = demo_main(Demo, size=(500, 500),
                      title="Click and drag the shapes")
