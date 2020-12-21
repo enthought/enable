@@ -126,7 +126,7 @@ class ScriptedComponentView(ModelView):
         title='Kiva Explorer',
     )
 
-demo = ScriptedComponentView()
+popup = ScriptedComponentView()
 
 if __name__ == '__main__':
-    demo.configure_traits()
+    popup.configure_traits()
