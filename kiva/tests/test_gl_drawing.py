@@ -8,7 +8,10 @@ except ImportError:
     PYGLET_NOT_AVAILABLE = True
 else:
     PYGLET_NOT_AVAILABLE = False
-
+try:
+    from pyface.qt import is_qt5
+except ImportError:
+    is_qt5 = False
 
 from kiva.tests.drawing_tester import DrawingImageTester
 
@@ -16,6 +19,7 @@ is_windows = (sys.platform in ('win32', 'cygwin'))
 
 @unittest.skipIf(is_windows, "Pyglet/GL backend issues on Windows")
 @unittest.skipIf(PYGLET_NOT_AVAILABLE, "Cannot import pyglet")
+@unittest.skipIf(is_qt5, "Qt5 segfaults")
 class TestGLDrawing(DrawingImageTester, unittest.TestCase):
 
     def tearDown(self):
