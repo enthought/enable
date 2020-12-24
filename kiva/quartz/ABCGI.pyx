@@ -172,7 +172,6 @@ cdef class CGImage
 cdef class CGPDFDocument
 cdef class Rect
 cdef class CGLayerContext(CGContextInABox)
-cdef class CGGLContext(CGContextInABox)
 cdef class CGBitmapContext(CGContext)
 cdef class CGPDFContext(CGContext)
 cdef class CGImageMask(CGImage)
@@ -1341,37 +1340,6 @@ cdef class CGContextFromSWIG(CGContext):
         self.can_release = False
         ptr = int(swig_obj.this.split('_')[1], 16)
         CGContext.__init__(self, ptr)
-
-
-cdef class CGGLContext(CGContextInABox):
-    cdef readonly size_t glcontext
-
-    def __init__(self, size_t glcontext, int width, int height):
-        if glcontext == 0:
-            raise ValueError("Need a valid pointer")
-
-        self.glcontext = glcontext
-
-        self.context = CGGLContextCreate(<void*>glcontext,
-            CGSizeMake(width, height), NULL)
-        if self.context == NULL:
-            raise RuntimeError("could not create CGGLContext")
-        self.can_release = 1
-
-        self._width = width
-        self._height = height
-        self.size = (self._width, self._height)
-
-        self._setup_color_space()
-        self._setup_fonts()
-
-
-    def resize(self, int width, int height):
-        CGGLContextUpdateViewportSize(self.context, CGSizeMake(width, height))
-        self._width = width
-        self._height = height
-        self.size = (width, height)
-
 
 
 cdef class CGPDFContext(CGContext):
