@@ -387,6 +387,7 @@ class GraphicsContext(GraphicsContextGL):
 
         self._font_stack = []
         self._current_font = None
+        self._text_pos = (0, 0)
 
     def save_state(self):
         super(GraphicsContext, self).save_state()
@@ -407,9 +408,12 @@ class GraphicsContext(GraphicsContextGL):
         label = GetLabel(text, pyglet_font)
         return (0, 0, label.content_width, label.content_height)
 
+    def set_text_position(self, x, y):
+        self._text_pos = (x, y)
+
     def show_text(self, text, point=None):
         if point is None:
-            point = (0, 0)
+            point = self._text_pos
         return self.show_text_at_point(text, *point)
 
     def show_text_at_point(self, text, x, y):
