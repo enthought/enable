@@ -37,9 +37,8 @@ env:
 
 matrix:
   include:
-  - env: RUNTIME=3.6 TOOLKITS="null pyqt pyqt5 pyside2" PILLOW='pillow'
-  - env: RUNTIME=3.6 TOOLKITS="wx" PILLOW='pillow'
-  - env: RUNTIME=3.6 TOOLKITS=null PILLOW='pillow<3.0.0'
+  - env: RUNTIME=3.6 TOOLKITS="null pyqt pyqt5 pyside2"
+  - env: RUNTIME=3.6 TOOLKITS="wx"
   fast_finish: true
 
 branches:
@@ -60,13 +59,13 @@ before_install:
 install:
   - for toolkit in ${TOOLKITS}; do
         if [[ ${TRAVIS_EVENT_TYPE} == "cron" ]] ; then
-          edm run -- python ci/edmtool.py install --runtime=${RUNTIME} --toolkit=${toolkit} --pillow=${PILLOW} --source || exit;
+          edm run -- python ci/edmtool.py install --runtime=${RUNTIME} --toolkit=${toolkit} --source || exit;
         else
-          edm run -- python ci/edmtool.py install --runtime=${RUNTIME} --toolkit=${toolkit} --pillow=${PILLOW} || exit;
+          edm run -- python ci/edmtool.py install --runtime=${RUNTIME} --toolkit=${toolkit} || exit;
         fi;
     done
 script:
-  - for toolkit in ${TOOLKITS}; do edm run -- python ci/edmtool.py test --runtime=${RUNTIME} --toolkit=${toolkit} --pillow=${PILLOW} || exit; done
+  - for toolkit in ${TOOLKITS}; do edm run -- python ci/edmtool.py test --runtime=${RUNTIME} --toolkit=${toolkit} || exit; done
 
 after_success:
   - edm run -- coverage combine
