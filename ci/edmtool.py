@@ -93,9 +93,13 @@ supported_combinations = {
 dependencies = {
     "apptools",
     "coverage",
+    "fonttools",
+    "hypothesis",
+    "kiwisolver",
     "numpy",
     "pygments",
     "pyparsing",
+    "reportlab",
     "swig",
     "traits",
     "traitsui",
