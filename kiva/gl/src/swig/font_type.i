@@ -67,7 +67,7 @@ def unicode_safe_init(self, _name="Arial", _size=12, _family=0, _style=0,
     else:
         if isinstance(_name, bytes):
             _name = _name.decode()
-    obj = _agg.new_KivaGLFontType(_name, _size, _family, _style,
+    obj = _gl.new_KivaGLFontType(_name, _size, _family, _style,
                                _encoding, validate)
     _swig_setattr(self, KivaGLFontType, "this", obj)
     _swig_setattr(self, KivaGLFontType, "thisown", 1)

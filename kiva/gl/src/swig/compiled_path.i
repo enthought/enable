@@ -102,7 +102,7 @@ def _vertices(self):
         cmd_flag = 1
         while cmd_flag != 0:
             pt, cmd_flag = self._vertex()
-            cmd,flag = _agg.path_cmd(cmd_flag),_agg.path_flags(cmd_flag)
+            cmd, flag = _gl.path_cmd(cmd_flag), _gl.path_flags(cmd_flag)
             vertices.append((pt[0],pt[1], cmd, flag))
         return array(vertices)
 
