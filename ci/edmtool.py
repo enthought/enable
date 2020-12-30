@@ -252,7 +252,9 @@ def docs(runtime, toolkit, environment):
     ])
     ignore = " ".join([
         "enable/null",
+        "enable/pyglet_backend",
         "enable/qt4",
+        "enable/vtk_backend",
         "enable/wx",
         "*/tests",
     ])
