@@ -1,13 +1,3 @@
-#------------------------------------------------------------------------------
-# Copyright (c) 2011, Enthought, Inc.
-# All rights reserved.
-#
-# This software is provided without warranty under the terms of the BSD
-# license included in enthought/LICENSE.txt and may be redistributed only
-# under the conditions described in the aforementioned license.  The license
-# is also available online at http://www.enthought.com/licenses/BSD.txt
-# Thanks for using Enthought open source!
-#------------------------------------------------------------------------------
 """ Pointer and Key names for enable. Note that when these lists change,
     corresponding lists in each of the toolkit backends need to be changed as
     well. A warning will be printed when the enable.window module is imported

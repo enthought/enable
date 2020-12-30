@@ -1,12 +1,3 @@
-#-----------------------------------------------------------------------------
-#
-#  Copyright (c) 2005, Enthought, Inc.
-#  All rights reserved.
-#
-#  Author: Scott Swarts <swarts@enthought.com>
-#
-#-----------------------------------------------------------------------------
-
 # Enthought library imports
 from enable.api import Line, Pointer
 from traits.api import Event, Instance

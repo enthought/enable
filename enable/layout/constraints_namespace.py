@@ -1,7 +1,3 @@
-#------------------------------------------------------------------------------
-#  Copyright (c) 2013, Enthought, Inc.
-#  All rights reserved.
-#------------------------------------------------------------------------------
 from kiwisolver import Variable
 
 from .linear_symbolic import LinearSymbolic

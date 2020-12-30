@@ -1,6 +1,3 @@
-# (C) Copyright 2008-2019 Enthought, Inc., Austin, TX
-# All rights reserved.
-
 """
 Tool to detect when the user hovers over a specific part of an underlying
 components.

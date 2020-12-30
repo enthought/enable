@@ -1,20 +1,7 @@
-#-------------------------------------------------------------------------------
-#
-#  Define standard Enable 'control' components, like text/image labels,
-#  push buttons, radio buttons, check boxes, and so on.
-#
-#  Written by: David C. Morrill
-#
-#  Date: 10/10/2003
-#
-#  (c) Copyright 2003 by Enthought, Inc.
-#
-#  Classes defined: Label
-#                   RadioButton
-#                   CheckBox
-#
-#-------------------------------------------------------------------------------
-
+"""
+Define standard Enable 'control' components, like text/image labels,
+push buttons, radio buttons, check boxes, and so on.
+"""
 # Major library imports
 import os.path
 

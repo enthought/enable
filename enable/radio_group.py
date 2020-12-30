@@ -1,15 +1,6 @@
-#-------------------------------------------------------------------------------
-#
-#  Define support classes for implementing 'radio button' style components.
-#
-#  Written by: David C. Morrill
-#
-#  Date: 10/01/2003
-#
-#  (c) Copyright 2003 by Enthought, Inc.
-#
-#-------------------------------------------------------------------------------
-
+"""
+Define support classes for implementing 'radio button' style components.
+"""
 #-------------------------------------------------------------------------------
 #  Imports:
 #-------------------------------------------------------------------------------

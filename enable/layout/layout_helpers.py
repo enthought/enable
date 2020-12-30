@@ -1,7 +1,3 @@
-#------------------------------------------------------------------------------
-#  Copyright (c) 2013, Enthought, Inc.
-#  All rights reserved.
-#------------------------------------------------------------------------------
 from abc import ABCMeta, abstractmethod
 from collections import defaultdict
 from uuid import uuid4

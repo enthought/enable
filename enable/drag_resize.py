@@ -1,18 +1,7 @@
-#-------------------------------------------------------------------------------
-#
-#  Define the classes used to support the Enable package 'drag_resize'
-#  functionality.
-#
-#  Written by: David C. Morrill
-#
-#  Date: 02/04/2004
-#
-#  (c) Copyright 2004 by Enthought, Inc.
-#
-#  Classes defined: DragResizeHandler
-#
-#-------------------------------------------------------------------------------
-
+"""
+Define the classes used to support the Enable package 'drag_resize'
+functionality.
+"""
 from .base import bounds_to_coordinates, TOP, BOTTOM, LEFT, RIGHT
 from .interactor import Interactor
 

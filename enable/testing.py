@@ -1,5 +1,3 @@
-# Copyright (c) 2008-2013 by Enthought, Inc.
-# All rights reserved.
 from unittest.mock import Mock
 
 from enable.abstract_window import AbstractWindow

@@ -1,11 +1,3 @@
-#
-# (C) Copyright 2015 Enthought, Inc., Austin, TX
-# All right reserved.
-#
-# This file is open source software distributed according to the terms in
-# LICENSE.txt
-#
-
 # Support for Undo/Redo with Enable
 from .commands import ComponentCommand, MoveCommand, ResizeCommand
 from .command_tool import BaseCommandTool, BaseUndoTool

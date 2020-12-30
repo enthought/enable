@@ -1,17 +1,6 @@
-#-------------------------------------------------------------------------------
-#
-#  Define the classes used to support the Enable package 'drag' functionality.
-#
-#  Written by: David C. Morrill
-#
-#  Date: 09/22/2003
-#
-#  (c) Copyright 2003 by Enthought, Inc.
-#
-#  Classes defined: DragHandler
-#
-#-------------------------------------------------------------------------------
-
+"""
+Define the classes used to support the Enable package 'drag' functionality.
+"""
 from .base import add_rectangles, intersect_coordinates, send_event_to, \
     bounds_to_coordinates
 from .events import DragEvent

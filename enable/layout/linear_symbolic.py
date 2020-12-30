@@ -1,7 +1,3 @@
-# ------------------------------------------------------------------------------
-#  Copyright (c) 2014, Enthought, Inc.
-#  All rights reserved.
-# ------------------------------------------------------------------------------
 from abc import ABCMeta
 
 import kiwisolver as kiwi

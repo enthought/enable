@@ -1,10 +1,5 @@
 """ Defines a Traits editor for displaying an Enable component.
 """
-#-------------------------------------------------------------------------------
-#  Written by: David C. Morrill
-#  Date: 01/26/2007
-#  (c) Copyright 2007 by Enthought, Inc.
-#----------------------------------------------------------------------------
 
 from enable.colors import ColorTrait
 from enable.window import Window

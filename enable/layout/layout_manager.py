@@ -1,7 +1,3 @@
-#------------------------------------------------------------------------------
-#  Copyright (c) 2013, Enthought, Inc.
-#  All rights reserved.
-#------------------------------------------------------------------------------
 from contextlib import contextmanager
 import kiwisolver as kiwi
 
