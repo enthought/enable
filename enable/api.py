@@ -138,13 +138,6 @@ Enable Widgets
 ==============
 
 - :class:`~.AbstractWindow`
-- :class:`~.NativeScrollBar`
-- :class:`~.Compass`
-- :class:`~.Scrolled`
-- :class:`~.Slider`
-- :class:`~.TextFieldStyle`
-- :class:`~.TextField`
-- :class:`~.TextFieldGrid`
 - :class:`~.Viewport`
 - :class:`~.Window`
 

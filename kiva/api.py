@@ -25,7 +25,7 @@ Constants
 
 - :attr:`~.IDENTITY` - represents the :func:`~.affine_identity` matrix.
 
-Drawing Utilities
+Drawing Constants
 =================
 
 Line Dash Constants
@@ -68,28 +68,6 @@ Text Drawing Mode Constants
 - :attr:`~.TEXT_FILL_STROKE_CLIP`
 - :attr:`~.TEXT_CLIP`
 - :attr:`~.TEXT_OUTLINE`
-
-Subpath Drawing Primitive Constants
------------------------------------
-
-- :attr:`~.POINT`
-- :attr:`~.LINE`
-- :attr:`~.LINES`
-- :attr:`~.RECT`
-- :attr:`~.CLOSE`
-- :attr:`~.CURVE_TO`
-- :attr:`~.QUAD_CURVE_TO`
-- :attr:`~.ARC`
-- :attr:`~.ARC_TO`
-
-Subpath Context Manager Constants
----------------------------------
-
-- :attr:`~.SCALE_CTM`
-- :attr:`~.TRANSLATE_CTM`
-- :attr:`~.ROTATE_CTM`
-- :attr:`~.CONCAT_CTM`
-- :attr:`~.LOAD_CTM`
 
 Marker Types
 ------------
