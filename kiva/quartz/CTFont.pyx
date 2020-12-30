@@ -1,6 +1,3 @@
-# :Author:    John Wiggins
-# :Copyright: 2011, Enthought, Inc.
-# :License:   BSD Style
 from __future__ import print_function
 
 include "CoreFoundation.pxi"

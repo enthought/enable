@@ -1,6 +1,3 @@
-# :Author:    Robert Kern
-# :Copyright: 2004, Enthought, Inc.
-# :License:   BSD Style
 import sys
 
 if sys.platform == "darwin":

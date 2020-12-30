@@ -1,14 +1,3 @@
-#------------------------------------------------------------------------------
-# Copyright (c) 2005, Enthought, Inc.
-# some parts copyright 2002 by Space Telescope Science Institute
-# All rights reserved.
-#
-# This software is provided without warranty under the terms of the BSD
-# license included in enthought/LICENSE.txt and may be redistributed only
-# under the conditions described in the aforementioned license.  The license
-# is also available online at http://www.enthought.com/licenses/BSD.txt
-# Thanks for using Enthought open source!
-#------------------------------------------------------------------------------
 """ This backend supports Kiva drawing into memory buffers.
 
     Though this can be used to perform drawing in non-GUI applications,

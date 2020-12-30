@@ -1,5 +1,3 @@
-# :Author:    Travis Oliphant
-
 cdef extern from "numpy/arrayobject.h":
 
     cdef enum NPY_TYPES:

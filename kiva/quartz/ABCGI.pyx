@@ -1,6 +1,3 @@
-# :Author:    Robert Kern
-# :Copyright: 2004, 2007, Enthought, Inc.
-# :License:   BSD Style
 from __future__ import print_function
 
 include "Python.pxi"

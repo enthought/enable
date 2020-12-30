@@ -1,8 +1,3 @@
-# :Author:    Robert Kern
-# :Copyright: 2004, Enthought, Inc.
-# :License:   BSD Style
-
-
 cdef extern from "CoreFoundation/CoreFoundation.h":
     ctypedef int OSStatus
 

@@ -1,7 +1,3 @@
-# :Author:    Robert Kern
-# :Copyright: 2004, Enthought, Inc.
-# :License:   BSD Style
-
 ctypedef void (*cobject_destr)(void *)
 
 cdef extern from "Python.h":
