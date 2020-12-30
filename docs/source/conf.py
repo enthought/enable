@@ -46,9 +46,8 @@ copyright = '2008-2019, Enthought'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
-base_path = os.path.dirname(__file__)
-version_file = os.path.join(base_path, '..', '..', 'enable', '_version.py')
-version = release = runpy.run_path(version_file)['full_version']
+from enable import __version__
+version = release = __version__
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
