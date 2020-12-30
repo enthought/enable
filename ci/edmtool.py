@@ -251,6 +251,7 @@ def docs(runtime, toolkit, environment):
         "enthought_sphinx_theme",
     ])
     ignore = " ".join([
+        "enable/null",
         "enable/qt4",
         "enable/wx",
         "*/tests",
