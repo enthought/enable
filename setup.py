@@ -307,5 +307,4 @@ if __name__ == "__main__":
           },
           platforms=["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
           zip_safe=False,
-          use_2to3=False,
           **config)
