@@ -164,19 +164,19 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         return self.size[1]
 
     def save(self, filename):
-        f = open(filename, 'w')
-        ext = os.path.splitext(filename)[1]
-        if ext == '.svg':
-            template = xmltemplate
-            width, height = self.size
-            contents = self.contents.getvalue().replace("<svg:", "<").replace("</svg:", "</")
-        elif ext == '.html':
-            width, height = self.size[0]*3, self.size[1]*3
-            contents = self.contents.getvalue()
-            template = htmltemplate
-        else:
-            raise ValueError("don't know how to write a %s file" % ext)
-        f.write(template % locals())
+        with open(filename, 'w') as f:
+            ext = os.path.splitext(filename)[1]
+            if ext == '.svg':
+                template = xmltemplate
+                width, height = self.size
+                contents = self.contents.getvalue().replace("<svg:", "<").replace("</svg:", "</")
+            elif ext == '.html':
+                width, height = self.size[0]*3, self.size[1]*3
+                contents = self.contents.getvalue()
+                template = htmltemplate
+            else:
+                raise ValueError("don't know how to write a %s file" % ext)
+            f.write(template % locals())
 
 
     # Text handling code
