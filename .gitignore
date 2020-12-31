@@ -6,11 +6,16 @@
 *~
 .DS_Store
 
+# Docs files to ignore
+/docs/source/api/*.rst
+!docs/source/api/enable.api.rst
+!docs/source/api/kiva.api.rst
+docs/build/
+
 # Ignore the build directories
 *.egg-info/
 build/
 dist/
-docs/build/
 
 # SWIG & Cython intermediate files
 kiva/agg/agg.py
