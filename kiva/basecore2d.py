@@ -43,7 +43,7 @@ from .constants import (POINT, LINE, LINES, RECT, NO_DASH, CLOSE,
                         SCALE_CTM, TRANSLATE_CTM, ROTATE_CTM, CONCAT_CTM,
                         LOAD_CTM)
 from .abstract_graphics_context import AbstractGraphicsContext
-from .line_state import LineState, line_state_equal
+from .line_state import LineState
 from .graphics_state import GraphicsState
 from .fonttools import Font
 import kiva.affine as affine

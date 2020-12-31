@@ -5,7 +5,7 @@ import unittest
 
 from PIL import Image as PILImage
 
-from kiva.image import Image, GraphicsContext
+from kiva.image import Image
 
 
 class TestImage(unittest.TestCase):

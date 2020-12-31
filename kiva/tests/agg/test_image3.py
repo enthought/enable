@@ -1,4 +1,3 @@
-import os
 import time
 from math import pi
 
@@ -170,9 +169,6 @@ def main5(gc):
     t2 = time.clock()
     print('1st:', t2-t1)
 
-
-    import random
-    import string
     strs = ['012345679',
             'abcdefghi',
             'jklmnopqr',
@@ -199,7 +195,6 @@ def main5(gc):
 
 if __name__ == '__main__':
 
-    import profile
     gc=agg.GraphicsContextArray((800,800))
 
     main()

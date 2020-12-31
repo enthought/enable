@@ -49,7 +49,7 @@
 
 import unittest
 
-from numpy import array, alltrue, ravel
+from numpy import array
 
 from kiva.agg import GraphicsContextArray
 import kiva

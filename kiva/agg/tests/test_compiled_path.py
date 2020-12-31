@@ -1,6 +1,6 @@
 import unittest
 
-from numpy import array, alltrue, ravel, pi
+from numpy import array, pi
 
 from kiva import agg
 

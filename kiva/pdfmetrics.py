@@ -35,7 +35,7 @@ a registry of Font, TypeFace and Encoding objects.  Ideally these
 would be pre-loaded, but due to a nasty circularity problem we
 trap attempts to access them and do it on first access.
 """
-import string, os
+import os
 import warnings
 
 # XXX Kiva specific changes

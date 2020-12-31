@@ -2,7 +2,7 @@
 Test for memory leak in the wx image backend.
 """
 
-import unittest, sys
+import unittest
 import gc as garbagecollector
 
 from kiva.image import GraphicsContext, GraphicsContextSystem

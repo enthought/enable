@@ -11,8 +11,7 @@
 
 
 import unittest
-import sys
-from numpy import arctan2, alltrue, array, identity, dot, ravel, allclose, pi,cos
+from numpy import alltrue, array, identity, dot, ravel, allclose, pi,cos
 
 from kiva import affine
 

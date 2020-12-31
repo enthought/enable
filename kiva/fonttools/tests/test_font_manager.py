@@ -1,7 +1,6 @@
 import contextlib
 import importlib
 import os
-import shutil
 import sys
 import tempfile
 import unittest
@@ -17,7 +16,6 @@ from ..font_manager import (
     createFontList,
     default_font_manager,
     FontEntry,
-    FontProperties,
     FontManager,
     ttfFontProperty,
 )

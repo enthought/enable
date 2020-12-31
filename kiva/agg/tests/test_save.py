@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from numpy import allclose, ravel
+from numpy import ravel
 
 from kiva import agg
 

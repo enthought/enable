@@ -21,7 +21,6 @@ import unittest
 from numpy import array, transpose
 
 from kiva.agg import GraphicsContextArray
-import kiva
 
 from .test_utils import Utils
 

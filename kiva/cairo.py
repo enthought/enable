@@ -1282,10 +1282,9 @@ def font_metrics_provider():
     return GraphicsContext((1,1))
 
 if __name__=="__main__":
-    from numpy import fabs, linspace, pi, sin
+    from numpy import linspace
     from scipy.special import jn
 
-    from traits.api import false
     from chaco.api import ArrayPlotData, Plot, PlotGraphicsContext
     from chaco.example_support import COLOR_PALETTE
 

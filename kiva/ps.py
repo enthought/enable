@@ -19,7 +19,6 @@
 # Major library imports
 from io import StringIO
 import os
-import sys
 import warnings
 
 from numpy import arange, ravel, array

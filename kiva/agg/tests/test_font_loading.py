@@ -1,5 +1,3 @@
-from string import ascii_lowercase, ascii_uppercase
-import os
 import time
 
 from kiva.image import font_metrics_provider as FMP

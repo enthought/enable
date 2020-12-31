@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os
-import platform
 import sys
 
 def configuration(parent_package='', top_path=None):

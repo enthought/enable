@@ -21,7 +21,6 @@ from pygarrayimage.arrayimage import ArrayInterfaceImage
 from .affine import affine_from_values, transform_points
 from .agg import GraphicsContextGL as _GCL
 from .agg import AggFontType
-from .agg import CompiledPath
 from .constants import BOLD, BOLD_ITALIC, ITALIC
 from .fonttools import Font
 

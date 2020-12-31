@@ -37,7 +37,6 @@ Miscellaneous notes:
 # Major library imports
 from io import StringIO
 import os
-import sys
 from numpy import arange, ravel, array
 import warnings
 
