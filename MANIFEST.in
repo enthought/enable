@@ -1,6 +1,8 @@
 include CHANGES.txt
 include CONTRIBUTING.rst
 include LICENSE.txt
+include font_LICENSE.txt
+include fonttools_LICENSE.txt
 include image_LICENSE.txt
 include image_LICENSE_*.txt
 include kiva/agg/agg.i
@@ -10,4 +12,4 @@ recursive-include docs *.py *.rst *.txt *.css *.png *.ico *.doc
 recursive-include enable/examples *.py *.svg *.jpg *.enaml
 recursive-include kiva/examples *.py *.txt *.gif *.jpg
 recursive-include kiva/quartz *.pyx *.pxi *.pxd mac_context*.*
-recursive-include kiva/fonttools/tests/data *.txt *.ttc *.ttf
+recursive-include kiva/fonttools/tests/data *.ttc *.ttf
