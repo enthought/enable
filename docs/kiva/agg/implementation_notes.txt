@@ -1,5 +1,5 @@
-Stroke path pipeline
---------------------
+Kiva Agg Stroke path pipeline
+------------------------------
 
 The stroke_path pipeline is made up of 8 functions. (geeze...)  This strange
 stringing-together-of-functions is due to aggs template based render pipeline.
