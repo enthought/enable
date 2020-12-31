@@ -1,7 +1,9 @@
 import unittest
 from pyparsing import ParseException
 
-from enable.savage.svg.css.transform import *
+from enable.savage.svg.css.transform import (
+    rotate, scale, skewX, skewY, transform, transformList,
+)
 
 #list of tuples: parser, string, result
 transformTestsGood = [

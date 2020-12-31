@@ -1,7 +1,11 @@
 import unittest
 from pyparsing import ParseException
 
-from enable.savage.svg.pathdata import *
+from enable.savage.svg.pathdata import (
+    coordinatePair, closePath, curve, ellipticalArc, horizontalLine, lineTo,
+    moveTo, number, quadraticBezierCurveto, Sequence,
+    smoothQuadraticBezierCurveto, svg, verticalLine,
+)
 
 
 class TestNumber(unittest.TestCase):
