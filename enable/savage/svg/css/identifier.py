@@ -1,6 +1,5 @@
 """ Parse CSS identifiers. More complicated than it sounds"""
-from pyparsing import Word, Literal, Regex, Combine, Optional, White, oneOf, ZeroOrMore
-import string
+from pyparsing import Literal, Regex, Combine, Optional, White, ZeroOrMore
 import re
 
 class White(White):

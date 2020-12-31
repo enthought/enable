@@ -2,10 +2,10 @@ import warnings
 
 from tvtk.api import tvtk
 from tvtk import messenger
-from traits.api import HasTraits, Any, Callable, Property, Instance, \
+from traits.api import Any, Callable, Property, Instance, \
         Bool, Enum, Int, on_trait_change
 
-from numpy import arange, zeros, ascontiguousarray, reshape, uint8, any
+from numpy import ascontiguousarray, reshape, any
 from enable.api import AbstractWindow, MouseEvent, KeyEvent, \
         CoordinateBox
 from enable.graphics_context import ImageGraphicsContextEnable

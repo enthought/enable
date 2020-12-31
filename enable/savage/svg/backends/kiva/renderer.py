@@ -1,11 +1,11 @@
-from math import sqrt, pi
+from math import pi
 import sys
 import warnings
 
 import numpy as np
 
 from enable.compiled_path import CompiledPath as KivaCompiledPath
-from kiva import affine, constants, fonttools
+from kiva import constants, fonttools
 from kiva.fonttools import Font
 
 from enable.savage.svg import svg_extras

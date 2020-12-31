@@ -1,7 +1,7 @@
 """
 Parser for various kinds of CSS values as per CSS2 spec section 4.3
 """
-from pyparsing import Word, Combine, Optional, Literal, oneOf, CaselessLiteral, StringEnd, OneOrMore
+from pyparsing import Word, Combine, Optional, Literal, oneOf, StringEnd
 
 def asInt(s,l,t):
     return int(t[0])

@@ -1,8 +1,5 @@
 import unittest
 
-from traits.api import Int
-
-from enable.testing import EnableTestAssistant
 from enable.component import Component
 from enable.tools.resize_tool import ResizeTool
 

@@ -1,7 +1,6 @@
 """ Tests for the Image component """
 
 import os
-import sys
 import unittest
 
 import numpy as np

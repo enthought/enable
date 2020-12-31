@@ -2,12 +2,8 @@
     Parsers for specific attributes
 """
 import urllib.parse as urlparse
-from pyparsing import (Literal,
-    Optional, oneOf, Group, StringEnd, Combine, Word, alphas, hexnums,
-    CaselessLiteral, SkipTo
-)
+from pyparsing import Literal, Optional, Group, StringEnd, CaselessLiteral, SkipTo
 from .css.colour import colourValue
-import string
 
 ##Paint values
 none = CaselessLiteral("none").setParseAction(lambda t: ["NONE", ()])

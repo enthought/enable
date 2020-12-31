@@ -1,7 +1,4 @@
 import unittest
-import string
-import sys
-from pyparsing import ParseException
 import enable.savage.svg.css.atrule as atrule
 
 class TestAtKeyword(unittest.TestCase):

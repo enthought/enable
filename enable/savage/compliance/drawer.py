@@ -1,5 +1,3 @@
-import svg
-
 import wx
 import wx.py.shell
 import wx.aui

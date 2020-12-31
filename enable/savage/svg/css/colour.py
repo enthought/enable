@@ -8,9 +8,7 @@
     * rgb percent: rgb(100%,100%,0%)
     * named color: black
 """
-import string
-import urllib.parse as urlparse
-from pyparsing import nums, Literal, Optional, oneOf, Group, StringEnd, Combine, Word, alphas, hexnums
+from pyparsing import nums, Literal, Optional, Group, StringEnd, Word, alphas, hexnums
 from enable.savage.svg.pathdata import number, sign
 
 number = number.copy()

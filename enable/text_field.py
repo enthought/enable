@@ -1,6 +1,5 @@
 # Standard library imports
 from math import floor, sqrt
-from bisect import insort_left
 
 # Enthought library imports
 from traits.api import (Bool, Int, Event, Instance, Any, Property,

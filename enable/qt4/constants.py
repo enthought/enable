@@ -13,7 +13,7 @@ import warnings
 
 from pyface.qt import QtCore
 
-from ..toolkit_constants import key_names, mouse_wheel_axes_names, pointer_names
+from ..toolkit_constants import mouse_wheel_axes_names, pointer_names
 
 DRAG_RESULTS_MAP = { "error":   QtCore.Qt.IgnoreAction,
                      "none":    QtCore.Qt.IgnoreAction,

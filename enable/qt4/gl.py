@@ -12,7 +12,6 @@
 import pyglet
 pyglet.options['shadow_window'] = False
 
-from traits.api import Bool, Instance
 from kiva.gl import CompiledPath, GraphicsContext
 
 from .base_window import BaseGLWindow

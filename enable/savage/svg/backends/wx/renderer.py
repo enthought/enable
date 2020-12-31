@@ -1,4 +1,3 @@
-import copy
 import numpy
 import warnings
 import wx

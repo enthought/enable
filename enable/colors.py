@@ -1,7 +1,5 @@
 # This is a redirection file that determines what constitutes a color trait
 # in Chaco, and what constitutes the standard colors.
-import sys
-
 from traits.etsconfig.api import ETSConfig
 from traits.api import List, Str, Trait, Tuple, TraitError
 

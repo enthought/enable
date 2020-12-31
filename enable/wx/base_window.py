@@ -9,7 +9,7 @@ import warnings
 
 import wx
 
-from traits.api import Any, Instance, Trait
+from traits.api import Any, Instance
 from traitsui.wx.menu import MakeMenu
 
 # Relative imports

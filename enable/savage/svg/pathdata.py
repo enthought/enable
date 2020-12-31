@@ -10,8 +10,8 @@
 
 """
 
-from pyparsing import (ParserElement, Literal, Word, CaselessLiteral,
-    Optional, Combine, Forward, ZeroOrMore, nums, oneOf, Group, ParseException, OneOrMore)
+from pyparsing import (Literal, Word, CaselessLiteral,
+    Optional, Combine, ZeroOrMore, nums, oneOf, Group, ParseException, OneOrMore)
 
 #ParserElement.enablePackrat()
 

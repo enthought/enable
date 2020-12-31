@@ -5,8 +5,7 @@ import warnings
 
 # Enthought library imports
 from kiva import affine
-from traits.api import Any, Bool, Enum, HasTraits, Instance, List, \
-        Property, Tuple
+from traits.api import Bool, Enum, Instance, List, Property, Tuple
 
 # Local, relative imports
 from .base import empty_rectangle, intersect_bounds

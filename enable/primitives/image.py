@@ -2,7 +2,7 @@
 """
 
 # Enthought library imports
-from traits.api import Array, Bool, Enum, Instance, Property, cached_property
+from traits.api import Array, Enum, Instance, Property, cached_property
 
 # Local imports
 from enable.component import Component

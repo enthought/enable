@@ -1069,7 +1069,3 @@ class SVGDocument(object):
             return
         for op, args in self.ops:
             op(context, *args)
-
-if __name__ == '__main__':
-    from tests.test_document import TestBrushFromColourValue, TestValueToPixels, unittest
-    unittest.main()

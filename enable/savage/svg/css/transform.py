@@ -2,8 +2,7 @@
     Parsing for CSS and CSS-style values, such as transform and filter attributes.
 """
 
-from pyparsing import (Literal, Word, CaselessLiteral,
-    Optional, Combine, Forward, ZeroOrMore, nums, oneOf, Group, delimitedList)
+from pyparsing import Literal, Optional, Group, delimitedList
 
 #some shared definitions from pathdata
 

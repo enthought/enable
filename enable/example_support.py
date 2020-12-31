@@ -52,7 +52,6 @@ if ETSConfig.toolkit == 'wx' or ETSConfig.toolkit == 'qt4':
 elif ETSConfig.toolkit == 'pyglet':
 
     from pyglet import app
-    from pyglet import clock
 
     class DemoFrame(object):
         def __init__(self):

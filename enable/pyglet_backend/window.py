@@ -19,8 +19,7 @@ from enable.graphics_context import GraphicsContextEnable
 from enable.abstract_window import AbstractWindow
 
 # local, relative imports
-from .constants import ASCII_CONTROL_KEYS, KEY_MAP, \
-        POINTER_MAP, TEXT_KEYS
+from .constants import KEY_MAP, POINTER_MAP
 
 
 class PygletMouseEvent(object):

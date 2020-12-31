@@ -2,7 +2,7 @@
 from enable.api import ColorTrait, Component
 from enable.font_metrics_provider import font_metrics_provider
 from kiva.trait_defs.kiva_font_trait import KivaFont
-from traits.api import Bool, Enum, Instance, Int, Property, Str, Tuple
+from traits.api import Bool, Enum, Int, Str, Tuple
 
 class Button(Component):
 
