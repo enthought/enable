@@ -275,8 +275,9 @@ def docs(runtime, toolkit, environment):
     api_path = os.path.join("docs", "source", "api")
     templates_path = os.path.join(api_path, "templates")
     commands = [
-        "edm run -e {environment} -- sphinx-apidoc -e -M -o "
+        "edm run -e {environment} -- sphinx-apidoc --separate --no-toc -o "
         + api_path
+        + " -t " + templates_path
         + " enable "
         + ignore
     ]
