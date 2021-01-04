@@ -5,7 +5,7 @@
 
 cdef extern from "ApplicationServices/ApplicationServices.h":
     ctypedef void*  CGContextRef
-    
+
     ctypedef double CGFloat
 
     ctypedef struct CGPoint:
@@ -457,11 +457,6 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     ctypedef void (*CGPathApplierFunction)(void *info, CGPathElement *element)
 
     void CGPathApply(CGPathRef path, void *info, CGPathApplierFunction function)
-
-    CGContextRef CGGLContextCreate(void *glContext, CGSize size,
-        CGColorSpaceRef colorspace)
-    void CGGLContextUpdateViewportSize(CGContextRef context, CGSize size)
-
 
     ctypedef void* CGFunctionRef
 
