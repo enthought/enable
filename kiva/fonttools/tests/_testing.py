@@ -1,4 +1,7 @@
+""" Internal utilities for testing kiva.fonttools
 
+These functions should be used by kiva.fonttools only.
+"""
 from unittest import mock
 
 
