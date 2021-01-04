@@ -39,7 +39,7 @@ class TestFont(unittest.TestCase):
 
         # There will be warnings as there will be no match for the requested
         # face name.
-        with self.assertWarns(UserWarning), patch_global_font_manager(None):
+        with self.assertWarns(UserWarning):
             name = font.findfontname()
 
         # Name should be nonempty.
