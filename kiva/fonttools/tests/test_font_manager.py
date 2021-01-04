@@ -21,6 +21,7 @@ from ..font_manager import (
     FontManager,
     ttfFontProperty,
 )
+from ._testing import patch_global_font_manager
 
 data_dir = resource_filename('kiva.fonttools.tests', 'data')
 
@@ -195,17 +196,6 @@ def change_ets_app_dir(dirpath):
         yield font_manager_module._get_font_cache_path()
     finally:
         ETSConfig.application_data = original_data_dir
-
-
-def patch_global_font_manager(new_value):
-    """ Patch the global FontManager instance at the module level.
-
-    Parameters
-    ----------
-    new_value : FontManager or None
-        Temporary value to be used as the global font manager.
-    """
-    return mock.patch.object(font_manager_module, "fontManager", new_value)
 
 
 @contextlib.contextmanager
