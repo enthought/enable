@@ -852,11 +852,11 @@ class FontProperties(object):
         Return the name of the font that best matches the font
         properties.
         """
-        filename = str(fontManager.findfont(self))
+        filename = str(default_font_manager().findfont(self))
         if filename.endswith('.afm'):
             return afm.AFM(open(filename)).get_familyname()
 
-        font = fontManager.findfont(self)
+        font = default_font_manager().findfont(self)
         prop_dict = getPropDict(TTFont(str(font)))
         return prop_dict['name']
 
@@ -904,7 +904,7 @@ class FontProperties(object):
                 return float(self._size)
             except ValueError:
                 pass
-        default_size = fontManager.get_default_size()
+        default_size = default_font_manager().get_default_size()
         return default_size * font_scalings.get(self._size)
 
     def get_file(self):
@@ -1350,7 +1350,7 @@ class FontManager:
                 logger.debug(
                     "findfont: Found a missing font file.  Rebuilding cache.")
                 _rebuild()
-                return fontManager.findfont(
+                return default_font_manager().findfont(
                     prop, fontext, directory, True, False)
             else:
                 raise ValueError("No valid font could be found")
