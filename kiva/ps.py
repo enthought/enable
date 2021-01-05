@@ -123,17 +123,17 @@ class PSGC(basecore2d.GraphicsContextBase):
         return self.size[1]
 
     def save(self, filename):
-        f = open(filename, 'w')
-        ext = os.path.splitext(filename)[1]
-        if ext in ('.eps', '.epsf'):
-            f.write("%!PS-Adobe-3.0 EPSF-3.0\n")
-            f.write('%%%%BoundingBox: 0 0 %d %d\n' % self.size)
-            f.write(self.contents.getvalue())
-        elif ext == '.ps':
-            f.write("%!PS-Adobe-2.0\n")
-            f.write(self.contents.getvalue())
-        else:
-            raise ValueError("don't know how to write a %s file" % ext)
+        with open(filename, 'w') as f:
+            ext = os.path.splitext(filename)[1]
+            if ext in ('.eps', '.epsf'):
+                f.write("%!PS-Adobe-3.0 EPSF-3.0\n")
+                f.write('%%%%BoundingBox: 0 0 %d %d\n' % self.size)
+                f.write(self.contents.getvalue())
+            elif ext == '.ps':
+                f.write("%!PS-Adobe-2.0\n")
+                f.write(self.contents.getvalue())
+            else:
+                raise ValueError("don't know how to write a %s file" % ext)
 
     # Text handling code
 
