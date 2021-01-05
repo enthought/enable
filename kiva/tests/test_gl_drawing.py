@@ -52,7 +52,10 @@ class TestGLDrawing(DrawingImageTester, unittest.TestCase):
         self.window.dispatch_events()
         filename = "{0}.png".format(self.filename)
         buffer = pyglet.image.get_buffer_manager()
-        buffer.get_color_buffer().save(filename, encoder=PNGImageEncoder())
+        with open(filename, mode="wb") as file_handle:
+            buffer.get_color_buffer().save(
+                filename, file=file_handle, encoder=PNGImageEncoder()
+            )
         self.assertImageSavedWithContent(filename)
 
 
