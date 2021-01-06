@@ -38,8 +38,6 @@ static PyMethodDef mac_context_methods[] = {
     {NULL, NULL}
 };
 
-#if PY_MAJOR_VERSION >= 3
-
 static struct PyModuleDef mac_context_module = {
     PyModuleDef_HEAD_INIT,
     "mac_context",        /* m_name */
@@ -57,12 +55,3 @@ PyInit_mac_context(void)
 {
     return PyModule_Create(&mac_context_module);
 }
-
-#else
-
-void initmac_context(void)
-{
-    Py_InitModule("mac_context", mac_context_methods);
-}
-
-#endif
