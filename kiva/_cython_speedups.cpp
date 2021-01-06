@@ -20308,7 +20308,6 @@ bad:
 
 static CYTHON_SMALL_CODE int __pyx_pymod_exec__cython_speedups(PyObject *__pyx_pyinit_module)
 #endif
-#endif
 {
   PyObject *__pyx_t_1 = NULL;
   static PyThread_type_lock __pyx_t_2[8];
