@@ -277,12 +277,11 @@ def docs(runtime, toolkit, environment):
         "Regenerating API docs in  '{environment}'".format(**parameters)
     )
     api_path = os.path.join("docs", "source", "api")
-    if os.path.exists(api_path):
-        rmtree(api_path)
-    os.makedirs(api_path)
+    templates_path = os.path.join(api_path, "templates")
     commands = [
-        "edm run -e {environment} -- sphinx-apidoc -e -M -o "
+        "edm run -e {environment} -- sphinx-apidoc --separate --no-toc -o "
         + api_path
+        + " -t " + templates_path
         + " enable "
         + ignore
     ]
@@ -290,8 +289,9 @@ def docs(runtime, toolkit, environment):
     click.echo("Done regenerating enable API docs")
 
     commands = [
-        "edm run -e {environment} -- sphinx-apidoc -e -M -o "
+        "edm run -e {environment} -- sphinx-apidoc --separate --no-toc -o "
         + api_path
+        + " -t " + templates_path
         + " kiva "
         + " */tests"
     ]
