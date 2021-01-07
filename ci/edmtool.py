@@ -93,6 +93,7 @@ supported_combinations = {
 dependencies = {
     "apptools",
     "coverage",
+    "Cython",
     "fonttools",
     "hypothesis",
     "kiwisolver",
@@ -136,10 +137,6 @@ environment_vars = {
     'wx': {'ETS_TOOLKIT': 'wx'},
     'null': {'ETS_TOOLKIT': 'null.image'},
 }
-
-if sys.platform == 'darwin':
-    dependencies.add('Cython')
-
 
 #: Path to the top-level source directory
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
