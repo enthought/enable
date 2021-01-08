@@ -8,10 +8,6 @@ https://docs.enthought.com/enable
    :target: https://travis-ci.org/enthought/enable
    :alt: Build status
 
-.. image:: https://coveralls.io/repos/github/enthought/enable/badge.svg?branch=master
-   :target: https://coveralls.io/github/enthought/enable?branch=master
-   :alt: Coverage status
-
 The Enable *project* provides two related multi-platform *packages* for drawing
 GUI objects.
 
