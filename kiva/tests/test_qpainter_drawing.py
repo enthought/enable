@@ -18,7 +18,6 @@ is_linux = sys.platform.startswith('linux')
 
 
 @unittest.skipIf(QT_NOT_AVAILABLE, "Cannot import qt")
-@unittest.skipIf(is_qt5 and is_linux, "Qt5 tests experience a segfault")
 class TestQPainterDrawing(DrawingImageTester, unittest.TestCase):
 
     def setUp(self):
@@ -33,6 +32,14 @@ class TestQPainterDrawing(DrawingImageTester, unittest.TestCase):
     def create_graphics_context(self, width, height):
         from kiva.qpainter import GraphicsContext
         return GraphicsContext((width, height))
+
+    @unittest.skipIf(is_qt5 and is_linux, "Currently segfaulting")
+    def test_text(self):
+        super().test_text()
+
+    @unittest.skipIf(is_qt5 and is_linux, "Currently segfaulting")
+    def test_text_clip(self):
+        super().test_text_clip()
 
 
 if __name__ == "__main__":
