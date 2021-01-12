@@ -57,9 +57,5 @@ class TestComponentEditor(unittest.TestCase):
 
         size = get_dialog_size(ui.control)
 
-        # leave a few pixel of margin for wx
         self.assertGreater(size[0], ITEM_WIDTH-1)
-        self.assertLess(size[0], ITEM_WIDTH+30)
-
         self.assertGreater(size[1], ITEM_HEIGHT-1)
-        self.assertLess(size[1], ITEM_HEIGHT+30)
