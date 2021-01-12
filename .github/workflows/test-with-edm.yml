@@ -19,9 +19,10 @@ jobs:
         toolkit: ['pyqt', 'pyqt5', 'pyside2', 'wx']
     runs-on: ${{ matrix.os }}
     env:
-      # Set root directory, mainly for Windows, otherwise 'pip install'
-      # complains because the Python environment is in C: drive whereas
-      # the source is checked out in D: drive.
+      # Set root directory, mainly for Windows, so that the EDM Python
+      # environment lives in the same drive as the cloned source. Otherwise
+      # 'pip install' raises an error while trying to compute
+      # relative path between the site-packages and the source directory.
       EDM_ROOT_DIRECTORY: ${{ github.workspace }}/.edm
     steps:
       - uses: actions/checkout@v2
