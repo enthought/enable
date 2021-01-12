@@ -10,6 +10,8 @@ env:
 jobs:
 
   # Test against EDM packages
+  # Note that some packages may not actually be installed from EDM but from
+  # PyPI, see ci/edmtool.py implementations.
   test-with-edm:
     strategy:
       matrix:
