@@ -1,0 +1,37 @@
+# This workflow targets stable released dependencies from EDM.
+
+name: Test with EDM
+
+on: pull_request
+
+env:
+  INSTALL_EDM_VERSION: 3.2.1
+
+jobs:
+
+  # Test against EDM packages
+  # Note that some packages may not actually be installed from EDM but from
+  # PyPI, see ci/edmtool.py implementations.
+  test-with-edm:
+    strategy:
+      matrix:
+        os: [macos-latest]
+        toolkit: ['pyqt', 'pyqt5', 'pyside2', 'wx']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache EDM packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache
+          key: ${{ runner.os }}-${{ matrix.toolkit }}-${{ hashFiles('ci/edmtool.py') }}
+      - name: Setup EDM
+        uses: enthought/setup-edm-action@v1
+        with:
+          edm-version: ${{ env.INSTALL_EDM_VERSION }}
+      - name: Install click to the default EDM environment
+        run: edm --config ci/.edm.yaml install -y wheel click coverage
+      - name: Install test environment
+        run: edm run -- python ci/edmtool.py install --toolkit=${{ matrix.toolkit }}
+      - name: Run tests
+        run: edm run -- python ci/edmtool.py test --toolkit=${{ matrix.toolkit }}
