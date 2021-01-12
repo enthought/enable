@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.cache
-          key: ${{ runner.os }}--${{ hashFiles('ci/edmtool.py') }}
+          key: ${{ runner.os }}-${{ runner.toolkit }}-${{ hashFiles('ci/edmtool.py') }}
       - name: Setup EDM
         uses: enthought/setup-edm-action@v1
         with:
