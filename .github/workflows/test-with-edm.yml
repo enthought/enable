@@ -9,18 +9,13 @@ env:
 
 jobs:
 
-  # Test against EDM packages on Windows and OSX
+  # Test against EDM packages
   test-with-edm:
     strategy:
       matrix:
-        os: [macos-latest, windows-latest]
+        os: [macos-latest]
         toolkit: ['pyqt', 'pyqt5', 'pyside2', 'wx']
     runs-on: ${{ matrix.os }}
-    env:
-      # Set root directory for Windows, otherwise 'pip install <source-root>'
-      # complains because the Python environment is in C: drive whereas
-      # the source is checked out in D: drive.
-      EDM_ROOT_DIRECTORY: ${{ github.workspace }}/.edm
     steps:
       - uses: actions/checkout@v2
       - name: Cache EDM packages
