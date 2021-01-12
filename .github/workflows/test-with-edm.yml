@@ -1,0 +1,40 @@
+# This workflow targets stable released dependencies from EDM.
+
+name: Test with EDM
+
+on: push
+
+env:
+  INSTALL_EDM_VERSION: 3.2.1
+
+jobs:
+
+  # Test against EDM packages on Windows and OSX
+  test-with-edm:
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+        toolkit: ['pyqt', 'pyqt5', 'pyside2', 'wx']
+    runs-on: ${{ matrix.os }}
+    env:
+      # Set root directory for Windows, otherwise 'pip install <source-root>'
+      # complains because the Python environment is in C: drive whereas
+      # the source is checked out in D: drive.
+      EDM_ROOT_DIRECTORY: ${{ github.workspace }}/.edm
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache EDM packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache
+          key: ${{ runner.os }}--${{ hashFiles('ci/edmtool.py') }}
+      - name: Setup EDM
+        uses: enthought/setup-edm-action@v1
+        with:
+          edm-version: ${{ env.INSTALL_EDM_VERSION }}
+      - name: Install click to the default EDM environment
+        run: edm --config ci/.edm.yaml install -y wheel click coverage
+      - name: Install test environment
+        run: edm run -- python ci/edmtool.py install --toolkit=${{ matrix.toolkit }}
+      - name: Run tests
+        run: edm run -- python ci/edmtool.py test --toolkit=${{ matrix.toolkit }}
