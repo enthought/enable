@@ -27,5 +27,18 @@ __extras_require__ = {
         'kiwisolver',
         'pyglet'
     ],
+    'gl': [
+        'pygarrayimage',
+        'pyglet',
+    ],
+    'layout': [
+        'kiwisolver',
+    ],
+    'pdf': [
+        'reportlab',
+    ]
+    'svg': [
+        'pyparsing',
+    ],
     'test': ['hypothesis']
 }
