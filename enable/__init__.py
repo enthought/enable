@@ -40,5 +40,8 @@ __extras_require__ = {
     'svg': [
         'pyparsing',
     ],
-    'test': ['hypothesis']
+    'test': [
+        'hypothesis',
+        'PyPDF2',    # for pdf drawing tests in kiva.
+    ]
 }
