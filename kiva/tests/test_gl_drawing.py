@@ -36,6 +36,12 @@ class TestGLDrawing(DrawingImageTester, unittest.TestCase):
         # FIXME: overriding test since it segfaults
         DrawingImageTester.test_star_clip(self)
 
+    @unittest.skipIf(
+        sys.platform == "darwin",
+        "Error getting sfnt font name on OSX (enthought/enable#541)")
+    def test_text(self):
+        DrawingImageTester.test_text(self)
+
     @unittest.skip("gl graphics context does not clip text properly (#165)")
     def test_text_clip(self):
         # gl graphics context does not clip text properly (#165).
