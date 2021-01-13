@@ -12,8 +12,9 @@ else:
 
 from kiva.tests.drawing_tester import DrawingImageTester
 
+is_windows = (sys.platform in ('win32', 'cygwin'))
 
-@unittest.skipIf("win" in sys.platform, "Pyglet/GL backend issues on Windows")
+@unittest.skipIf(is_windows, "Pyglet/GL backend issues on Windows")
 @unittest.skipIf(PYGLET_NOT_AVAILABLE, "Cannot import pyglet")
 class TestGLDrawing(DrawingImageTester, unittest.TestCase):
 
@@ -34,6 +35,12 @@ class TestGLDrawing(DrawingImageTester, unittest.TestCase):
     def test_star_clip(self):
         # FIXME: overriding test since it segfaults
         DrawingImageTester.test_star_clip(self)
+
+    @unittest.skipIf(
+        sys.platform == "darwin",
+        "Error getting sfnt font name on OSX (enthought/enable#541)")
+    def test_text(self):
+        DrawingImageTester.test_text(self)
 
     @unittest.skip("gl graphics context does not clip text properly (#165)")
     def test_text_clip(self):
