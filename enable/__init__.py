@@ -36,7 +36,7 @@ __extras_require__ = {
     ],
     'pdf': [
         'reportlab',
-    ]
+    ],
     'svg': [
         'pyparsing',
     ],
