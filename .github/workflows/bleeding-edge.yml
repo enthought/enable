@@ -2,8 +2,9 @@
 
 name: ETS from source
 
-# TODO: Switch to schedule!
-on: push
+on:
+  schedule:
+    - cron:  '0 0 * * 5'
 
 jobs:
   test-ets:
