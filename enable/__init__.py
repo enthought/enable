@@ -20,6 +20,7 @@ except ImportError:
     __requires__.append('pillow')
 
 __extras_require__ = {
+    # Dependencies for running enable/kiva's examples
     'examples': [
         'chaco',
         'mayavi',
@@ -27,5 +28,26 @@ __extras_require__ = {
         'kiwisolver',
         'pyglet'
     ],
-    'test': ['hypothesis']
+    # Dependencies for GL backend support
+    'gl': [
+        'pygarrayimage',
+        'pyglet',
+    ],
+    # Dependencies for constrained layout
+    'layout': [
+        'kiwisolver',
+    ],
+    # Dependencies for PDF backend
+    'pdf': [
+        'reportlab',
+    ],
+    # Dependencies for SVG backend
+    'svg': [
+        'pyparsing',
+    ],
+    # Dependencies purely for running tests.
+    'test': [
+        'hypothesis',
+        'PyPDF2',    # for pdf drawing tests in kiva.
+    ]
 }
