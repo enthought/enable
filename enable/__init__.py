@@ -49,5 +49,6 @@ __extras_require__ = {
     'test': [
         'hypothesis',
         'PyPDF2',    # for pdf drawing tests in kiva.
+        "setuptools",
     ]
 }
