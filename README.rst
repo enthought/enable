@@ -71,6 +71,7 @@ the Enable/Kiva project:
 - `SWIG <http://www.swig.org/>`_
 - `fonttools <https://pypi.org/project/FontTools>`_
 - (on Linux) X11-devel (development tools for X11)
+- (on Linux) libglu1-mesa-dev (OpenGL utility library for development)
 - (on Mac OS X) `Cython <https://cython.org/>`_
 
 Enable/Kiva also have the following requirements:
