@@ -31,7 +31,7 @@ namespace kiva_gl
             bool is_loaded();
     };
 }
-%extend kiva::font_type
+%extend kiva_gl::font_type
 {
     char *__repr__()
     {
@@ -44,7 +44,7 @@ namespace kiva_gl
                                                  self->encoding);
         return tmp;
     }
-    int __eq__(kiva::font_type& other)
+    int __eq__(kiva_gl::font_type& other)
     {
         return (self->name == other.name &&
                 self->family == other.family &&
