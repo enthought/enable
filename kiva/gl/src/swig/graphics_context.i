@@ -368,7 +368,7 @@ namespace kiva_gl {
             as a source of pixel data. The buffer is never used with OpenGL,
             so it is always blank.
             """
-            pass
+            raise RuntimeError("Saving is not supported by OpenGL.")
 
         #----------------------------------------------------------------
         # context manager interface
