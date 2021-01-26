@@ -87,14 +87,23 @@ class _QtWindowHandler(object):
     #------------------------------------------------------------------------
 
     def keyPressEvent(self, event):
+        handled = False
         if self._enable_window:
-            if not self._enable_window._on_key_pressed(event):
+            handled = self._enable_window._on_key_pressed(event)
+            if not handled:
                 # for consistency with wx, we only generate character events if key_pressed not handled
-                self._enable_window._on_character(event)
+                handled = self._enable_window._on_character(event)
+        if not handled:
+            # Allow the parent Qt widget handle the event.
+            event.ignore()
 
     def keyReleaseEvent(self, event):
+        handled = False
         if self._enable_window:
-            self._enable_window._on_key_released(event)
+            handled = self._enable_window._on_key_released(event)
+        if not handled:
+            # Allow the parent Qt widget handle the event.
+            event.ignore()
 
     #------------------------------------------------------------------------
     # Qt Mouse event handlers
