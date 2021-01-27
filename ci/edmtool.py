@@ -95,6 +95,7 @@ dependencies = {
     "coverage",
     "Cython",
     "fonttools",
+    "freetype",
     "hypothesis",
     "kiwisolver",
     "numpy",
@@ -180,7 +181,7 @@ def install(runtime, toolkit, environment, source):
         ("edm --config {edm_config} environments create {environment} "
          "--force --version={runtime}"),
         ("edm --config {edm_config} install -y -e {environment} {packages} "
-        "--add-repository enthought/lgpl"),
+         "--add-repository enthought/lgpl"),
         ("edm run -e {environment} -- pip install -r ci/requirements.txt"
          " --no-dependencies"),
     ]
@@ -341,9 +342,9 @@ def test(runtime, toolkit, environment):
     environ['PYTHONUNBUFFERED'] = "1"
     commands = [
         ("edm run -e {environment} -- python -W default -m"
-        "coverage run -m unittest discover enable -v"),
+         "coverage run -m unittest discover enable -v"),
         ("edm run -e {environment} -- python -W default -m"
-        "coverage run -a -m unittest discover kiva -v"),
+         "coverage run -a -m unittest discover kiva -v"),
     ]
 
     # We run in a tempdir to avoid accidentally picking up wrong traitsui

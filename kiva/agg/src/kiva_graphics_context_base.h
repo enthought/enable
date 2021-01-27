@@ -1,7 +1,6 @@
 #ifndef KIVA_GRAPHICS_CONTEXT_BASE_H
 #define KIVA_GRAPHICS_CONTEXT_BASE_H
 
-#define KIVA_USE_FREETYPE
 #ifdef KIVA_USE_FREETYPE
 #include "agg_font_freetype.h"
 #endif

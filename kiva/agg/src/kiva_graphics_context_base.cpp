@@ -23,7 +23,7 @@ using namespace kiva;
 static font_engine_type gFontEngine;
 #endif
 #ifdef KIVA_USE_WIN32
-static font_engine_type gFontEngine(hdc);
+static font_engine_type gFontEngine(::GetDC(0));
 #endif
 static font_manager_type gFontManager(gFontEngine);
 
@@ -673,7 +673,7 @@ void graphics_context_base::_grab_font_manager()
 #endif
 
 #ifdef KIVA_USE_WIN32
-    font_engine->create_font(font->name,
+    font_engine->create_font(font->name.c_str(),
                              agg24::glyph_ren_native_gray8,
                              font->size);
 #endif

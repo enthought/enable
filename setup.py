@@ -137,26 +137,47 @@ if not is_released:
                                  is_released=IS_RELEASED))
 
 
+def get_freetype_info():
+    """ Use pkg-config to locate the freetype2 library installed on the system.
+
+    If it's not installed at the system level, attempt to find it in the
+    pkgconfig directory for the currently running Python interpreter.
+    """
+    def run_cmd(cmd, env=None):
+        output = subprocess.check_output(cmd, universal_newlines=True,
+                                         env=env, stderr=subprocess.DEVNULL)
+        return output.split()
+
+    def collect_data(env=None):
+        cmd_prefix = ['pkg-config', 'freetype2']
+        commands = {'cflags': ['--cflags'], 'ldflags': ['--libs']}
+
+        data = {}
+        try:
+            for key, args in commands.items():
+                data[key] = run_cmd(cmd_prefix + args, env=env)
+        except (subprocess.CalledProcessError, OSError):
+            pass
+        return data
+
+    data = collect_data()
+    if len(data) < 2:
+        # Try again with the Python env's pkgconfig directory added
+        env = os.environ.copy()
+        env['PKG_CONFIG_PATH'] = os.path.join(
+            sys.exec_prefix, 'lib', 'pkgconfig'
+        )
+        data = collect_data(env=env)
+
+    if len(data) < 2:
+        return [], []
+
+    return data['cflags'], data['ldflags']
+
+
 def agg_extensions():
     kiva_agg_dir = os.path.join('kiva', 'agg')
     agg_dir = os.path.join(kiva_agg_dir, 'agg-24')
-    freetype_dir = os.path.join(kiva_agg_dir, 'freetype2')
-    freetype2_sources = [
-        'autofit/autofit.c', 'base/ftbase.c', 'base/ftbbox.c', 'base/ftbdf.c',
-        'base/ftbitmap.c', 'base/ftdebug.c', 'base/ftglyph.c', 'base/ftinit.c',
-        'base/ftmm.c', 'base/ftsystem.c', 'base/fttype1.c', 'base/ftxf86.c',
-        'bdf/bdf.c', 'cff/cff.c', 'cid/type1cid.c', 'gzip/ftgzip.c',
-        'lzw/ftlzw.c', 'pcf/pcf.c', 'pfr/pfr.c', 'psaux/psaux.c',
-        'pshinter/pshinter.c', 'psnames/psnames.c', 'raster/raster.c',
-        'sfnt/sfnt.c', 'smooth/smooth.c', 'truetype/truetype.c',
-        'type1/type1.c', 'type42/type42.c', 'winfonts/winfnt.c',
-    ]
-    freetype2_dirs = [
-        'autofit', 'base', 'bdf', 'cache', 'cff', 'cid', 'gxvalid', 'gzip',
-        'lzw', 'otvalid', 'pcf', 'pfr', 'psaux', 'pshinter', 'psnames',
-        'raster', 'sfnt', 'smooth', 'tools', 'truetype', 'type1', 'type42',
-        'winfonts',
-    ]
 
     define_macros = [
         # Numpy defines
@@ -164,14 +185,15 @@ def agg_extensions():
         ('PY_ARRAY_TYPES_PREFIX', 'NUMPY_CXX'),
         ('OWN_DIMENSIONS', '0'),
         ('OWN_STRIDES', '0'),
-        # Freetype defines
-        ('FT2_BUILD_LIBRARY', None)
     ]
+    extra_compile_args = []
     extra_link_args = []
     include_dirs = []
+    kiva_agg_libraries = []
 
     if sys.platform == 'win32':
         plat = 'win32'
+        kiva_agg_libraries += ['Gdi32', 'User32']
     elif sys.platform == 'darwin':
         plat = 'osx'
         darwin_frameworks = ['ApplicationServices']
@@ -187,24 +209,13 @@ def agg_extensions():
         # This should work for most linux distributions
         plat = 'x11'
 
-    freetype2_sources = [os.path.join(freetype_dir, 'src', src)
-                         for src in freetype2_sources]
-    freetype2_dirs = [
-        os.path.join(freetype_dir, 'src'),
-        os.path.join(freetype_dir, 'include'),
-    ] + [os.path.join(freetype_dir, 'src', d) for d in freetype2_dirs]
-
     agg_sources = [
         *glob.glob(os.path.join(agg_dir, 'src', '*.cpp')),
-        *glob.glob(os.path.join(agg_dir, 'font_freetype', '*.cpp')),
     ]
     kiva_agg_sources = [
         *glob.glob(os.path.join(kiva_agg_dir, 'src', 'kiva_*.cpp')),
-    ] + agg_sources + freetype2_sources
-    agg_include_dirs = [
-        os.path.join(agg_dir, 'include'),
-        os.path.join(agg_dir, 'font_freetype'),
-    ] + freetype2_dirs
+    ] + agg_sources
+    agg_include_dirs = [os.path.join(agg_dir, 'include')]
     include_dirs += [
         numpy.get_include(),
         os.path.join(kiva_agg_dir, 'src'),
@@ -214,6 +225,25 @@ def agg_extensions():
         '-I' + os.path.join(agg_dir, 'include'),
         '-c++',
     ]
+
+    # Figure out the freetype linkage
+    if sys.platform == 'win32':
+        # XXX: Note that Windows has used FreeType for many years. This would
+        # be a change in behavior.
+        define_macros += [('KIVA_USE_WIN32', None)]
+        include_dirs += [os.path.join(agg_dir, 'font_win32_tt')]
+        kiva_agg_sources += [
+            os.path.join(agg_dir, 'font_win32_tt', 'agg_font_win32_tt.cpp'),
+        ]
+    else:
+        cflags, ldflags = get_freetype_info()
+        extra_compile_args += cflags
+        extra_link_args += ldflags
+        define_macros += [('KIVA_USE_FREETYPE', None)]
+        include_dirs += [os.path.join(agg_dir, 'font_freetype')]
+        kiva_agg_sources += [
+            os.path.join(agg_dir, 'font_freetype', 'agg_font_freetype.cpp'),
+        ]
 
     # Platform support extension
     plat_support_sources = [
@@ -244,8 +274,10 @@ def agg_extensions():
             ] + kiva_agg_sources,
             swig_opts=swig_opts,
             include_dirs=include_dirs,
+            extra_compile_args=extra_compile_args,
             extra_link_args=extra_link_args,
             define_macros=define_macros,
+            libraries=kiva_agg_libraries,
             language='c++',
         ),
         Extension(
