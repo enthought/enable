@@ -141,8 +141,13 @@ class _QtWindowHandler(object):
             self._enable_window._handle_mouse_event(name + "_up", event)
 
     def wheelEvent(self, event):
+        handled = False
         if self._enable_window:
-            self._enable_window._handle_mouse_event("mouse_wheel", event)
+            handled = self._enable_window._handle_mouse_event(
+                "mouse_wheel", event)
+        if not handled:
+            # Allow the parent Qt widget handle the event.
+            event.ignore()
 
     def sizeHint(self, qt_size_hint):
         """ Combine the Qt and enable size hints.
