@@ -158,7 +158,6 @@ def agg_extensions():
         'winfonts',
     ]
 
-    kiva_agg_libraries = []
     define_macros = [
         # Numpy defines
         ('NUMPY', None),
@@ -173,25 +172,20 @@ def agg_extensions():
 
     if sys.platform == 'win32':
         plat = 'win32'
-        kiva_agg_libraries += ['opengl32', 'glu32']
     elif sys.platform == 'darwin':
-        plat = 'gl'
-        # Options to make OS X link OpenGL
-        darwin_frameworks = ['ApplicationServices', 'OpenGL']
-        darwin_extra_link_args = []
+        plat = 'osx'
+        darwin_frameworks = ['ApplicationServices']
         for framework in darwin_frameworks:
-            darwin_extra_link_args.extend(['-framework', framework])
+            extra_link_args.extend(['-framework', framework])
 
         include_dirs += [
             '/System/Library/Frameworks/%s.framework/Versions/A/Headers' % x
             for x in darwin_frameworks
         ]
         define_macros += [('__DARWIN__', None)]
-        extra_link_args += darwin_extra_link_args
     else:
         # This should work for most linux distributions
         plat = 'x11'
-        kiva_agg_libraries += ['GL', 'GLU']
 
     freetype2_sources = [os.path.join(freetype_dir, 'src', src)
                          for src in freetype2_sources]
@@ -205,7 +199,6 @@ def agg_extensions():
         *glob.glob(os.path.join(agg_dir, 'font_freetype', '*.cpp')),
     ]
     kiva_agg_sources = [
-        *glob.glob(os.path.join(kiva_agg_dir, 'src', 'gl_*.cpp')),
         *glob.glob(os.path.join(kiva_agg_dir, 'src', 'kiva_*.cpp')),
     ] + agg_sources + freetype2_sources
     agg_include_dirs = [
@@ -233,7 +226,7 @@ def agg_extensions():
         '-I' + os.path.join(kiva_agg_dir, 'src'),
     ]
     plat_support_libraries = []
-    if plat != 'gl':
+    if plat != 'osx':
         plat_support_sources.append(
             os.path.join(kiva_agg_dir, 'src', plat,
                          'agg_platform_specific.cpp')
@@ -253,7 +246,6 @@ def agg_extensions():
             include_dirs=include_dirs,
             extra_link_args=extra_link_args,
             define_macros=define_macros,
-            libraries=kiva_agg_libraries,
             language='c++',
         ),
         Extension(
@@ -282,6 +274,79 @@ def base_extensions():
                 'kiva/_hit_test.pxd',
             ],
             include_dirs=['kiva', numpy.get_include()],
+            language='c++',
+        ),
+    ]
+
+
+def gl_extensions():
+    kiva_gl_dir = os.path.join('kiva', 'gl')
+    agg_dir = os.path.join(kiva_gl_dir, 'src', 'agg')
+
+    kiva_gl_libraries = []
+    define_macros = []
+    extra_compile_args = []
+    extra_link_args = []
+    include_dirs = []
+
+    if sys.platform == 'win32':
+        kiva_gl_libraries += ['opengl32', 'glu32']
+    elif sys.platform == 'darwin':
+        # Options to make macOS link OpenGL
+        darwin_frameworks = ['ApplicationServices', 'OpenGL']
+        for framework in darwin_frameworks:
+            extra_link_args.extend(['-framework', framework])
+
+        include_dirs += [
+            '/System/Library/Frameworks/%s.framework/Versions/A/Headers' % x
+            for x in darwin_frameworks
+        ]
+        define_macros += [
+            ('__DARWIN__', None),
+            # OpenGL is deprecated starting with macOS 10.14 and gone in 10.15
+            # But that doesn't mean we want to hear about it. We know, Apple.
+            ('GL_SILENCE_DEPRECATION', None),
+        ]
+        extra_compile_args = [
+           '-Wfatal-errors',
+           '-Wno-unused-function',
+        ]
+    else:
+        # This should work for most linux distributions
+        kiva_gl_libraries += ['GL', 'GLU']
+        extra_compile_args = [
+           '-Wfatal-errors',
+           '-Wno-unused-function',
+        ]
+
+    kiva_gl_sources = [
+        *glob.glob(os.path.join(kiva_gl_dir, 'src', 'kiva_gl_*.cpp')),
+        *glob.glob(os.path.join(agg_dir, '*.cpp')),
+    ]
+    include_dirs += [
+        os.path.join(kiva_gl_dir, 'src'),
+        agg_dir,
+        numpy.get_include(),
+    ]
+    swig_opts = [
+        '-I' + os.path.join(kiva_gl_dir, 'src', 'swig'),
+        '-I' + os.path.join(kiva_gl_dir, 'src'),
+        '-I' + agg_dir,
+        '-c++',
+    ]
+
+    return [
+        Extension(
+            'kiva.gl._gl',
+            sources=[
+                os.path.join(kiva_gl_dir, 'gl.i'),
+            ] + kiva_gl_sources,
+            swig_opts=swig_opts,
+            include_dirs=include_dirs,
+            extra_compile_args=extra_compile_args,
+            extra_link_args=extra_link_args,
+            define_macros=define_macros,
+            libraries=kiva_gl_libraries,
             language='c++',
         ),
     ]
@@ -348,7 +413,7 @@ if __name__ == "__main__":
         long_description = fp.read()
 
     # Collect extensions
-    ext_modules = base_extensions() + agg_extensions()
+    ext_modules = base_extensions() + agg_extensions() + gl_extensions()
     if sys.platform == 'darwin':
         ext_modules += macos_extensions()
 
