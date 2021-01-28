@@ -11,5 +11,6 @@ include docs/kiva/agg/notes
 recursive-include docs *.py *.rst *.txt *.css *.png *.ico *.doc
 recursive-include enable/examples *.py *.svg *.jpg *.enaml
 recursive-include kiva/examples *.py *.txt *.gif *.jpg
+recursive-include kiva/gl *.h *.cpp *.i LICENSE_*
 recursive-include kiva/quartz *.pyx *.pxi *.pxd mac_context*.*
 recursive-include kiva/fonttools/tests/data *.ttc *.ttf

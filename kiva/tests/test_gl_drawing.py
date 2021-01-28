@@ -9,10 +9,10 @@ except ImportError:
 else:
     PYGLET_NOT_AVAILABLE = False
 
-
 from kiva.tests.drawing_tester import DrawingImageTester
 
 is_windows = (sys.platform in ('win32', 'cygwin'))
+
 
 @unittest.skipIf(is_windows, "Pyglet/GL backend issues on Windows")
 @unittest.skipIf(PYGLET_NOT_AVAILABLE, "Cannot import pyglet")

@@ -1,15 +1,8 @@
 // -*- c++ -*-
-// OpenGL support for AGG
+// MacOS support for AGG
 // Author: Robert Kern
 // I've consolidated agg_platform_specific and agg_bmp in the process of
 // understanding the code.
-
-// plat_support defines a function resize_gl(width, height) which should be called
-// every time the window gets resized. All OpenGL initialization and glViewport
-// calls need to be done by the widget toolkit.
-
-// Currently, OpenGL support is only tested with wxWidgets 2.5.1.5 on MacOS X
-// version 10.3
 
 %module plat_support
 
@@ -17,7 +10,7 @@
 
 %{
 
-#include "gl/agg_bmp.h"
+#include "osx/agg_bmp.h"
 namespace agg24
 {
     PyObject* pixel_map_as_unowned_array(agg24::pixel_map& pix_map)
@@ -33,21 +26,6 @@ namespace agg24
 
         return PyArray_SimpleNewFromData(3,dims,NPY_UINT8,(void*)pix_map.buf());
     }
-
-    void resize_gl(unsigned width, unsigned height)
-    {
-        GLint viewport[4];
-
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        gluOrtho2D(0.0, (GLfloat)width, 0.0, (GLfloat)height);
-        glPixelZoom(1.0, -1.0);
-        glGetIntegerv(GL_VIEWPORT, viewport);
-        glRasterPos2d(0.0, ((double)height*height)/viewport[3]);
-    }
-    
 }
 
 %}
@@ -87,34 +65,18 @@ namespace agg24
         pixel_map(unsigned width, unsigned height, pix_format_e format,
                   unsigned clear_val, bool bottom_up);
     public:
-       %feature("shadow") draw(int x, int y, double scale)
-       %{
-       def draw(self, x=0, y=0, scale=1.0):
-           # fix me: brittle becuase we are hard coding 
-           # module and class name.  Done cause SWIG 1.3.24 does
-           # some funky overloading stuff in it that breaks keyword
-           # arguments.
-           result = _plat_support.PixelMap_draw(self, x, y, scale)
-           return result
-       %}
-      void draw(int x, int y, double scale);
       PyObject* convert_to_argb32string() const;
 
       %pythoncode
       %{
-
-    def set_bmp_array(self):
-         self.bmp_array = pixel_map_as_unowned_array(self)
-         return self
-
-    def draw_to_glcanvas(self, x, y):
-        self.draw(x, y)
+        def set_bmp_array(self):
+            self.bmp_array = pixel_map_as_unowned_array(self)
+            return self
 
       %}
     };
 
 PyObject* pixel_map_as_unowned_array(pixel_map& pix_map);
-void resize_gl(unsigned width, unsigned height);
 }
 
 // clear the "permissive" unsigned typemap we are using.

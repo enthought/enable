@@ -203,6 +203,10 @@ class MyClean(distutils.command.clean.clean):
             join("agg", "plat_support.py"),
             join("agg", "agg_wrap.cpp"),
 
+            # Common GL
+            join("gl", "gl.py"),
+            join("gl", "gl_wrap.cpp"),
+
             # Mac
             join("quartz", "ABCGI.so"),
             join("quartz", "ABCGI.c"),
@@ -217,10 +221,16 @@ class MyClean(distutils.command.clean.clean):
             join("agg", "src", "win32", "plat_support.pyd"),
             join("agg", "src", "win32", "plat_support_wrap.cpp"),
 
+            # Win32 GL
+            join("gl", "_gl.pyd"),
+
             # *nix Agg
             join("agg", "_agg.so"),
             join("agg", "_plat_support.so"),
             join("agg", "src", "x11", "plat_support_wrap.cpp"),
+
+            # *nix GL
+            join("gl", "_gl.so"),
 
             # Misc
             join("agg", "src", "gl", "plat_support_wrap.cpp"),
