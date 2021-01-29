@@ -14,34 +14,42 @@ from kiva.image import GraphicsContext, CompiledPath
 
 def compiled_path():
     # Creating the compiled path
-    star_points = [(-20, -30),
-                   (0, 30),
-                   (20, -30),
-                   (-30, 10),
-                   (30, 10),
-                   (-20, -30)]
+    star_points = [
+        (-20, -30),
+        (0, 30),
+        (20, -30),
+        (-30, 10),
+        (30, 10),
+        (-20, -30),
+    ]
 
     path = CompiledPath()
     path.move_to(*star_points[0])
     for pt in star_points[1:]:
         path.line_to(*pt)
 
-    locs = [(100, 100), (100, 300), (100, 500), (200, 100), (200, 300),
-            (200, 500)]
+    locs = [
+        (100, 100),
+        (100, 300),
+        (100, 500),
+        (200, 100),
+        (200, 300),
+        (200, 500),
+    ]
 
     gc = GraphicsContext((300, 600))
     gc.set_stroke_color((0, 0, 1, 1))
     gc.draw_path_at_points(locs, path, STROKE)
 
-    with tempfile.NamedTemporaryFile(suffix='.jpg') as fid:
+    with tempfile.NamedTemporaryFile(suffix=".jpg") as fid:
         gc.save(fid.name)
-        image = Image.from_file(fid.name, resist_width='weak',
-                                resist_height='weak')
+        image = Image.from_file(
+            fid.name, resist_width="weak", resist_height="weak"
+        )
     return image
 
 
 class Demo(DemoFrame):
-
     def _create_component(self):
         image = compiled_path()
 

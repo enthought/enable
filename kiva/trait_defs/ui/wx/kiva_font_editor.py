@@ -1,4 +1,4 @@
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Copyright (c) 2005-2007 by Enthought, Inc.
 # All rights reserved.
 #
@@ -8,38 +8,31 @@
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 # Thanks for using Enthought open source!
 #
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 """ Defines the font editor factory for Kiva fonts, for the wxPython user
 interface toolkit.
 """
 
-
-#-------------------------------------------------------------------------------
-#  Imports:
-#-------------------------------------------------------------------------------
-
 import wx
 
-from traits.trait_base \
-    import SequenceTypes
-
-from traitsui.wx.font_editor \
-    import ToolkitEditorFactory as EditorFactory
+from traits.trait_base import SequenceTypes
+from traitsui.wx.font_editor import ToolkitEditorFactory as EditorFactory
 
 from kiva.fonttools.font_manager import default_font_manager
 
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #  'ToolkitEditorFactory' class:
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
-class ToolkitEditorFactory ( EditorFactory ):
+class ToolkitEditorFactory(EditorFactory):
     """ wxPython editor factory for Kiva fonts.
     """
-    #---------------------------------------------------------------------------
+
+    # -------------------------------------------------------------------------
     #   Returns a Font's 'face name':
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def face_name(self, font):
         """ Returns a Font's typeface name.
@@ -50,71 +43,87 @@ class ToolkitEditorFactory ( EditorFactory ):
 
         return face_name
 
-    #---------------------------------------------------------------------------
-    #  Returns a wxFont object corresponding to a specified object's font trait:
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
+    #  Returns a wxFont object corresponding to a specified object's font trait
+    # -------------------------------------------------------------------------
 
-    def to_wx_font ( self, editor ):
+    def to_wx_font(self, editor):
         """ Returns a wxFont object corresponding to a specified object's font
             trait.
         """
         import kiva.constants as kc
 
-        font   = editor.value
-        weight = ( wx.NORMAL, wx.BOLD   )[ font.weight == kc.BOLD ]
-        style  = ( wx.NORMAL, wx.ITALIC )[ font.style  == kc.ITALIC ]
-        family = { kc.DEFAULT:    wx.DEFAULT,
-                   kc.DECORATIVE: wx.DECORATIVE,
-                   kc.ROMAN:      wx.ROMAN,
-                   kc.SCRIPT:     wx.SCRIPT,
-                   kc.SWISS:      wx.SWISS,
-                   kc.MODERN:     wx.MODERN }.get( font.family, wx.SWISS )
+        font = editor.value
+        weight = (wx.NORMAL, wx.BOLD)[font.weight == kc.BOLD]
+        style = (wx.NORMAL, wx.ITALIC)[font.style == kc.ITALIC]
+        family = {
+            kc.DEFAULT: wx.DEFAULT,
+            kc.DECORATIVE: wx.DECORATIVE,
+            kc.ROMAN: wx.ROMAN,
+            kc.SCRIPT: wx.SCRIPT,
+            kc.SWISS: wx.SWISS,
+            kc.MODERN: wx.MODERN,
+        }.get(font.family, wx.SWISS)
 
-        return wx.Font( font.size, family, style, weight,
-                        (font.underline != 0), self.face_name( font ) )
+        return wx.Font(
+            font.size,
+            family,
+            style,
+            weight,
+            (font.underline != 0),
+            self.face_name(font),
+        )
 
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     #  Gets the application equivalent of a wxPython value:
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
-    def from_wx_font ( self, font ):
+    def from_wx_font(self, font):
         """ Gets the application equivalent of a wxPython value.
         """
         import kiva.constants as kc
         from kiva.fonttools import Font
 
-        return Font( size = font.GetPointSize(),
-                     family = { wx.DEFAULT:    kc.DEFAULT,
-                                wx.DECORATIVE: kc.DECORATIVE,
-                                wx.ROMAN:      kc.ROMAN,
-                                wx.SCRIPT:     kc.SCRIPT,
-                                wx.SWISS:      kc.SWISS,
-                                wx.MODERN:     kc.MODERN }.get( font.GetFamily(),
-                                                                kc.SWISS ),
-                     weight = ( kc.NORMAL, kc.BOLD   )[ font.GetWeight() == wx.BOLD ],
-                     style = ( kc.NORMAL, kc.ITALIC )[ font.GetStyle()  == wx.ITALIC ],
-                     underline = font.GetUnderlined() - 0, #convert Bool to an int type
-                     face_name = font.GetFaceName() )
+        return Font(
+            size=font.GetPointSize(),
+            family={
+                wx.DEFAULT: kc.DEFAULT,
+                wx.DECORATIVE: kc.DECORATIVE,
+                wx.ROMAN: kc.ROMAN,
+                wx.SCRIPT: kc.SCRIPT,
+                wx.SWISS: kc.SWISS,
+                wx.MODERN: kc.MODERN,
+            }.get(font.GetFamily(), kc.SWISS),
+            weight=(kc.NORMAL, kc.BOLD)[font.GetWeight() == wx.BOLD],
+            style=(kc.NORMAL, kc.ITALIC)[font.GetStyle() == wx.ITALIC],
+            underline=font.GetUnderlined() - 0,  # convert Bool to an int type
+            face_name=font.GetFaceName(),
+        )
 
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     #  Returns the text representation of the specified object trait value:
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
-    def str_font ( self, font ):
-        """ Returns the text representation of the specified object trait value.
+    def str_font(self, font):
+        """ Returns the text representation of the specified object trait value
         """
         import kiva.constants as kc
 
-        weight    = { kc.BOLD:   ' Bold'   }.get( font.weight, '' )
-        style     = { kc.ITALIC: ' Italic' }.get( font.style,  '' )
-        underline = ' Underline' if font.underline != 0 else ''
+        weight = {kc.BOLD: " Bold"}.get(font.weight, "")
+        style = {kc.ITALIC: " Italic"}.get(font.style, "")
+        underline = " Underline" if font.underline != 0 else ""
 
-        return '%s point %s%s%s%s' % (
-               font.size, self.face_name( font ), style, weight, underline )
+        return "%s point %s%s%s%s" % (
+            font.size,
+            self.face_name(font),
+            style,
+            weight,
+            underline,
+        )
 
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     #  Returns a list of all available font facenames:
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def all_facenames(self):
         """ Returns a list of all available font typeface names.
@@ -124,4 +133,4 @@ class ToolkitEditorFactory ( EditorFactory ):
 
 
 def KivaFontEditor(*args, **traits):
-    return ToolkitEditorFactory (*args, **traits)
+    return ToolkitEditorFactory(*args, **traits)

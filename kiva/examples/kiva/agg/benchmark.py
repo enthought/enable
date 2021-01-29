@@ -14,7 +14,7 @@ def benchmark_real_time(cycles=10, n_pts=1000, sz=(1000, 1000)):
     """ Render a sin wave to the screen repeatedly.  Clears
         the screen between each rendering.
     """
-    print('realtime:', end=' ')
+    print("realtime:", end=" ")
     width, height = sz
     pts = zeros((n_pts, 2), float)
     x = pts[:, 0]
@@ -25,9 +25,8 @@ def benchmark_real_time(cycles=10, n_pts=1000, sz=(1000, 1000)):
     # TODO: module 'kiva.agg' has no attribute 'GraphicsContextBitmap'
     gc = agg.GraphicsContextBitmap(sz)
     for i in range(cycles):
-        y[:] = (
-            height / 2.
-            + height / 2. * sin(x * 2 * pi / width + i * interval)
+        y[:] = height / 2.0 + height / 2.0 * sin(
+            x * 2 * pi / width + i * interval
         )
         # gc.clear()
         gc.lines(pts)
@@ -35,7 +34,7 @@ def benchmark_real_time(cycles=10, n_pts=1000, sz=(1000, 1000)):
         # agg.write_bmp_rgb24("sin%d.bmp" % i,gc.bitmap)
     t2 = perf_counter()
     tot_time = t2 - t1
-    print('tot,per cycle:', tot_time, tot_time / cycles)
+    print("tot,per cycle:", tot_time, tot_time / cycles)
 
 
 def benchmark_compiled_path(cycles=10, n_pts=1000, sz=(1000, 1000)):
@@ -47,7 +46,7 @@ def benchmark_compiled_path(cycles=10, n_pts=1000, sz=(1000, 1000)):
     y = pts[:, 1]
     interval = width / float(n_pts)
     x[:] = arange(0, width, interval)
-    y[:] = height / 2. + height / 2. * sin(x * 2 * pi / n_pts)
+    y[:] = height / 2.0 + height / 2.0 * sin(x * 2 * pi / n_pts)
     path = agg.CompiledPath()
     path.lines(pts)
     # path.move_to(pts[0,0],pts[0,1])
@@ -64,12 +63,12 @@ def benchmark_compiled_path(cycles=10, n_pts=1000, sz=(1000, 1000)):
     t2 = perf_counter()
 
     tot_time = t2 - t1
-    print('tot,per cycle:', tot_time, tot_time / cycles)
+    print("tot,per cycle:", tot_time, tot_time / cycles)
     return
 
 
 def benchmark_draw_path_flags(cycles=10, n_pts=1000, sz=(1000, 1000)):
-    print('realtime:', end=' ')
+    print("realtime:", end=" ")
     width, height = sz
     pts = zeros((n_pts, 2), float)
     x = pts[:, 0]
@@ -77,17 +76,21 @@ def benchmark_draw_path_flags(cycles=10, n_pts=1000, sz=(1000, 1000)):
     interval = width / float(n_pts)
     x[:] = arange(0, width, interval)
 
-    flags = [kiva.FILL, kiva.EOF_FILL, kiva.STROKE,
-             kiva.FILL_STROKE, kiva.EOF_FILL_STROKE]
+    flags = [
+        kiva.FILL,
+        kiva.EOF_FILL,
+        kiva.STROKE,
+        kiva.FILL_STROKE,
+        kiva.EOF_FILL_STROKE,
+    ]
 
     for flag in flags:
         t1 = perf_counter()
         for i in range(cycles):
             # TODO: module 'kiva.agg' has no attribute 'GraphicsContextBitmap'
             gc = agg.GraphicsContextBitmap(sz)
-            y[:] = (
-                height / 2.
-                + height / 2. * sin(x * 2 * pi / width + i * interval)
+            y[:] = height / 2.0 + height / 2.0 * sin(
+                x * 2 * pi / width + i * interval
             )
             gc.lines(pts)
             gc.draw_path(flag)
@@ -95,26 +98,27 @@ def benchmark_draw_path_flags(cycles=10, n_pts=1000, sz=(1000, 1000)):
         t2 = perf_counter()
         agg.write_bmp_rgb24("draw_path%d.bmp" % flag, gc.bitmap)
         tot_time = t2 - t1
-        print('tot,per cycle:', tot_time, tot_time / cycles)
+        print("tot,per cycle:", tot_time, tot_time / cycles)
     return
 
 
 def star_array(size=40):
-    half_size = size * .5
-    tenth_size = size * .1
-    star_pts = [array((tenth_size, 0)),
-                array((half_size, size - tenth_size)),
-                array((size - tenth_size, 0)),
-                array((0, half_size)),
-                array((size, half_size)),
-                array((tenth_size, 0)),
-                ]
+    half_size = size * 0.5
+    tenth_size = size * 0.1
+    star_pts = [
+        array((tenth_size, 0)),
+        array((half_size, size - tenth_size)),
+        array((size - tenth_size, 0)),
+        array((0, half_size)),
+        array((size, half_size)),
+        array((tenth_size, 0)),
+    ]
     return array(star_pts)
 
 
 def circle_array(size=5):
-    x = arange(0, 6.3, .1)
-    pts = transpose(array((cos(x), sin(x)))).copy() * size / 2.
+    x = arange(0, 6.3, 0.1)
+    pts = transpose(array((cos(x), sin(x)))).copy() * size / 2.0
     return pts
 
 
@@ -150,14 +154,14 @@ def benchmark_individual_symbols(n_pts=1000, sz=(1000, 1000)):
     t2 = perf_counter()
     gc.save("benchmark_symbols1.bmp")
     tot_time = t2 - t1
-    print('star count, tot,per shape:', n_pts, tot_time, tot_time / n_pts)
+    print("star count, tot,per shape:", n_pts, tot_time, tot_time / n_pts)
     return
 
 
 def benchmark_rect(n_pts=1000, sz=(1000, 1000)):
     "Draws a number of randomly-placed renctangles."
     # width, height = sz
-    pts = stats.norm.rvs(size=(n_pts, 2)) * array(sz) / 8. + array(sz) / 2.
+    pts = stats.norm.rvs(size=(n_pts, 2)) * array(sz) / 8.0 + array(sz) / 2.0
     print(pts[5, :])
     print(shape(pts))
 
@@ -173,7 +177,7 @@ def benchmark_rect(n_pts=1000, sz=(1000, 1000)):
     t2 = perf_counter()
     gc.save("benchmark_rect.bmp")
     tot_time = t2 - t1
-    print('rect count, tot,per shape:', n_pts, tot_time, tot_time / n_pts)
+    print("rect count, tot,per shape:", n_pts, tot_time, tot_time / n_pts)
     return
 
 
@@ -182,7 +186,7 @@ def benchmark_symbols_all_at_once(n_pts=1000, sz=(1000, 1000)):
     Renders all the symbols.
     """
     # width, height = sz
-    pts = stats.norm.rvs(size=(n_pts, 2)) * array(sz) / 8. + array(sz) / 2.
+    pts = stats.norm.rvs(size=(n_pts, 2)) * array(sz) / 8.0 + array(sz) / 2.0
     star_path = agg.CompiledPath()
     star_path.lines(circle_array())
 
@@ -204,8 +208,13 @@ def benchmark_symbols_all_at_once(n_pts=1000, sz=(1000, 1000)):
     build_path_time = t2 - t1
     render_path_time = t3 - t2
     tot_time = t3 - t1
-    print('star count, tot,building path, rendering path:', n_pts,
-          tot_time, build_path_time, render_path_time)
+    print(
+        "star count, tot,building path, rendering path:",
+        n_pts,
+        tot_time,
+        build_path_time,
+        render_path_time,
+    )
     return
 
 
@@ -221,5 +230,5 @@ def run_all_benchmarks(n_pts=1000, sz=(500, 500)):
     # benchmark_draw_path_flags(n_pts=n_pts, sz=sz)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run_all_benchmarks(n_pts=100, sz=(500, 500))

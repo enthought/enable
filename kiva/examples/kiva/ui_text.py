@@ -62,7 +62,7 @@ class MyCanvas(Component):
         gc.set_stroke_color((0, 1, 0))
         gc.stroke_path()
         gc.rect(0, 0, w, h)
-        gc.set_stroke_color((0, 0, 0, .5))
+        gc.set_stroke_color((0, 0, 0, 0.5))
         gc.set_line_width(20)
         gc.stroke_path()
 

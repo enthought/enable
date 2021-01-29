@@ -1,4 +1,4 @@
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Copyright (c) 2005, Enthought, Inc.
 # some parts copyright Space Telescope Science Institute
 # All rights reserved.
@@ -8,7 +8,7 @@
 # under the conditions described in the aforementioned license.  The license
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 # Thanks for using Enthought open source!
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 """ Constants used by core2d drawing engine. """
 
 from numpy import array
@@ -60,11 +60,11 @@ BOLD_ITALIC = 3
 
 # Font families, as defined by the Windows API, and their CSS equivalents
 DEFAULT = 0
-SWISS = 1     # Sans-serif
-ROMAN = 2     # Serif
-MODERN = 3     # Monospace
-DECORATIVE = 4     # Fantasy
-SCRIPT = 5     # Cursive
+SWISS = 1  # Sans-serif
+ROMAN = 2  # Serif
+MODERN = 3  # Monospace
+DECORATIVE = 4  # Fantasy
+SCRIPT = 5  # Cursive
 TELETYPE = 6
 
 # -----------------------------------------------------------------------------

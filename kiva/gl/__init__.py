@@ -19,7 +19,7 @@ def image_as_array(img):
     Typically, this is used to adapt an agg GraphicsContextArray which has been
     used for image storage in Kiva applications.
     """
-    if hasattr(img, 'bmp_array'):
+    if hasattr(img, "bmp_array"):
         # Yup, a GraphicsContextArray.
         return img.bmp_array
     elif isinstance(img, ndarray):
@@ -60,14 +60,14 @@ class MRU(dict):
         """ Puts **key** as the most recently used item """
         if len(self.__order__) == 0:
             self.__order__.append(key)
-        if (len(self.__order__) == self.__maxlength__) and \
-                key not in self.__order__:
+        if (len(self.__order__) == self.__maxlength__ and
+                key not in self.__order__):
             # The MRU is full, so pop the oldest element
             del self[self.__order__[0]]
         if key != self.__order__[-1]:
             try:
                 ndx = self.__order__.index(key)
-                self.__order__[ndx:-1] = self.__order__[ndx+1:]
+                self.__order__[ndx:-1] = self.__order__[ndx + 1:]
                 self.__order__[-1] = key
             except ValueError:
                 # new key that's not already in the cache
@@ -84,7 +84,8 @@ class MRU(dict):
 # This is necessary as of pyglet 1.1.
 try:
     import pyglet
-    pyglet.options['shadow_window'] = False
+
+    pyglet.options["shadow_window"] = False
 
     from pyglet.text import Label
     from pyglet.font import load as load_font
@@ -97,6 +98,7 @@ try:
 
         Source: https://github.com/ColinDuquesnoy/QPygletWidget
         """
+
         def __init__(self):
             # Textures and buffers scheduled for deletion the next time this
             # object space is active.
@@ -114,20 +116,29 @@ try:
 
         Source: https://github.com/ColinDuquesnoy/QPygletWidget
         """
+
         # define the same class attribute as pyglet.gl.Context
         CONTEXT_SHARE_NONE = None
         CONTEXT_SHARE_EXISTING = 1
         _gl_begin = False
         _info = None
         _workaround_checks = [
-            ('_workaround_unpack_row_length',
-             lambda info: info.get_renderer() == 'GDI Generic'),
-            ('_workaround_vbo',
-             lambda info: info.get_renderer().startswith('ATI Radeon X')),
-            ('_workaround_vbo_finish',
-             lambda info: ('ATI' in info.get_renderer() and
-                           info.have_version(1, 5) and
-                           sys.platform == 'darwin'))
+            (
+                "_workaround_unpack_row_length",
+                lambda info: info.get_renderer() == "GDI Generic",
+            ),
+            (
+                "_workaround_vbo",
+                lambda info: info.get_renderer().startswith("ATI Radeon X"),
+            ),
+            (
+                "_workaround_vbo_finish",
+                lambda info: (
+                    "ATI" in info.get_renderer()
+                    and info.have_version(1, 5)
+                    and sys.platform == "darwin"
+                ),
+            ),
         ]
 
         def __init__(self, context_share=None):
@@ -139,7 +150,7 @@ try:
                 setattr(self, attr, None)
 
         def __repr__(self):
-            return '%s()' % self.__class__.__name__
+            return "%s()" % self.__class__.__name__
 
         def set_current(self):
             gl.current_context = self
@@ -161,7 +172,7 @@ try:
         """
 
         def create_texture(self, cls, rectangle=False, force_rectangle=False):
-            '''Create a texture containing this image.
+            """ Create a texture containing this image.
 
             If the image's dimensions are not powers of 2, a TextureRegion of
             a larger Texture will be returned that matches the dimensions of
@@ -175,16 +186,16 @@ try:
                     `AbstractImage.get_texture`.
 
             :rtype: cls or cls.region_class
-            '''
+            """
 
-            _is_pow2 = lambda v: (v & (v - 1)) == 0
+            _is_pow2 = (lambda v: (v & (v - 1)) == 0)
 
             target = gl.GL_TEXTURE_2D
             if (rectangle
                     and not (_is_pow2(self.width) and _is_pow2(self.height))):
-                if gl.gl_info.have_extension('GL_ARB_texture_rectangle'):
+                if gl.gl_info.have_extension("GL_ARB_texture_rectangle"):
                     target = gl.GL_TEXTURE_RECTANGLE_ARB
-                elif gl.gl_info.have_extension('GL_NV_texture_rectangle'):
+                elif gl.gl_info.have_extension("GL_NV_texture_rectangle"):
                     target = gl.GL_TEXTURE_RECTANGLE_NV
 
             texture = cls.create_for_size(target, self.width, self.height)
@@ -196,38 +207,48 @@ try:
             internalformat = self._get_internalformat(self.format)
 
             gl.glBindTexture(texture.target, texture.id)
-            gl.glTexParameteri(texture.target, gl.GL_TEXTURE_WRAP_S,
-                               gl.GL_CLAMP_TO_EDGE)
-            gl.glTexParameteri(texture.target, gl.GL_TEXTURE_WRAP_T,
-                               gl.GL_CLAMP_TO_EDGE)
-            gl.glTexParameteri(texture.target, gl.GL_TEXTURE_MAG_FILTER,
-                               gl.GL_LINEAR)
-            gl.glTexParameteri(texture.target, gl.GL_TEXTURE_MIN_FILTER,
-                               gl.GL_LINEAR)
+            gl.glTexParameteri(
+                texture.target, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE
+            )
+            gl.glTexParameteri(
+                texture.target, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE
+            )
+            gl.glTexParameteri(
+                texture.target, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR
+            )
+            gl.glTexParameteri(
+                texture.target, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR
+            )
 
             if subimage:
                 width = texture.owner.width
                 height = texture.owner.height
                 blank = (ctypes.c_ubyte * (width * height * 4))()
-                gl.glTexImage2D(texture.target, texture.level,
-                                internalformat,
-                                width, height,
-                                1,
-                                gl.GL_RGBA, gl.GL_UNSIGNED_BYTE,
-                                blank)
+                gl.glTexImage2D(
+                    texture.target,
+                    texture.level,
+                    internalformat,
+                    width,
+                    height,
+                    1,
+                    gl.GL_RGBA,
+                    gl.GL_UNSIGNED_BYTE,
+                    blank,
+                )
                 internalformat = None
 
-            self.blit_to_texture(texture.target, texture.level,
-                                 0, 0, 0, internalformat)
+            self.blit_to_texture(
+                texture.target, texture.level, 0, 0, 0, internalformat
+            )
 
             return texture
 
         def blit_to_texture(self, target, level, x, y, z, internalformat=None):
-            '''Draw this image to to the currently bound texture at `target`.
+            """Draw this image to to the currently bound texture at `target`.
 
             If `internalformat` is specified, glTexImage is used to initialise
             the texture; otherwise, glTexSubImage is used to update a region.
-            '''
+            """
 
             data_format = self.format
             data_pitch = abs(self._current_pitch)
@@ -236,26 +257,28 @@ try:
             matrix = None
             format, type = self._get_gl_format_and_type(data_format)
             if format is None:
-                if (len(data_format) in (3, 4) and
-                        gl.gl_info.have_extension('GL_ARB_imaging')):
+                if (len(data_format) in (3, 4)
+                        and gl.gl_info.have_extension("GL_ARB_imaging")):
 
                     # Construct a color matrix to convert to GL_RGBA
                     def component_column(component):
                         try:
-                            pos = 'RGBA'.index(component)
+                            pos = "RGBA".index(component)
                             return [0] * pos + [1] + [0] * (3 - pos)
                         except ValueError:
                             return [0, 0, 0, 0]
 
                     # pad to avoid index exceptions
-                    lookup_format = data_format + 'XXX'
-                    matrix = (component_column(lookup_format[0]) +
-                              component_column(lookup_format[1]) +
-                              component_column(lookup_format[2]) +
-                              component_column(lookup_format[3]))
-                    format = {
-                        3: gl.GL_RGB,
-                        4: gl.GL_RGBA}.get(len(data_format))
+                    lookup_format = data_format + "XXX"
+                    matrix = (
+                        component_column(lookup_format[0])
+                        + component_column(lookup_format[1])
+                        + component_column(lookup_format[2])
+                        + component_column(lookup_format[3])
+                    )
+                    format = {3: gl.GL_RGB, 4: gl.GL_RGBA}.get(
+                        len(data_format)
+                    )
                     type = gl.GL_UNSIGNED_BYTE
 
                     gl.glMatrixMode(gl.GL_COLOR)
@@ -263,11 +286,9 @@ try:
                     gl.glLoadMatrixf((gl.GLfloat * 16)(*matrix))
                 else:
                     # Need to convert data to a standard form
-                    data_format = {
-                        1: 'L',
-                        2: 'LA',
-                        3: 'RGB',
-                        4: 'RGBA'}.get(len(data_format))
+                    data_format = {1: "L", 2: "LA", 3: "RGB", 4: "RGBA"}.get(
+                        len(data_format)
+                    )
                     format, type = self._get_gl_format_and_type(data_format)
 
             # Workaround: don't use GL_UNPACK_ROW_LENGTH
@@ -290,25 +311,54 @@ try:
             gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, alignment)
             gl.glPixelStorei(gl.GL_UNPACK_ROW_LENGTH, row_length)
             self._apply_region_unpack()
-            gl.glTexParameteri(target, gl.GL_TEXTURE_WRAP_S,
-                               gl.GL_CLAMP_TO_EDGE)
-            gl.glTexParameteri(target, gl.GL_TEXTURE_WRAP_T,
-                               gl.GL_CLAMP_TO_EDGE)
+            gl.glTexParameteri(
+                target, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE
+            )
+            gl.glTexParameteri(
+                target, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE
+            )
             gl.glTexParameteri(target, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
             gl.glTexParameteri(target, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
 
             if target == gl.GL_TEXTURE_3D:
                 assert not internalformat
-                gl.glTexSubImage3D(target, level, x, y, z,
-                                   self.width, self.height,
-                                   1, format, type, data)
+                gl.glTexSubImage3D(
+                    target,
+                    level,
+                    x,
+                    y,
+                    z,
+                    self.width,
+                    self.height,
+                    1,
+                    format,
+                    type,
+                    data,
+                )
             elif internalformat:
-                gl.glTexImage2D(target, level, internalformat, self.width,
-                                self.height, 0, format, type, data)
+                gl.glTexImage2D(
+                    target,
+                    level,
+                    internalformat,
+                    self.width,
+                    self.height,
+                    0,
+                    format,
+                    type,
+                    data,
+                )
             else:
-                gl.glTexSubImage2D(target, level, x, y,
-                                   self.width, self.height,
-                                   format, type, data)
+                gl.glTexSubImage2D(
+                    target,
+                    level,
+                    x,
+                    y,
+                    self.width,
+                    self.height,
+                    format,
+                    type,
+                    data,
+                )
             gl.glPopClientAttrib()
 
             if matrix:
@@ -340,8 +390,9 @@ try:
                     bold = True
                 if font.style in [ITALIC, BOLD_ITALIC]:
                     italic = True
-                pyglet_font = load_font(font.findfontname(), font.size, bold,
-                                        italic)
+                pyglet_font = load_font(
+                    font.findfontname(), font.size, bold, italic
+                )
                 GlobalFontCache[key] = pyglet_font
             else:
                 pyglet_font = GlobalFontCache[key]
@@ -363,12 +414,17 @@ try:
             # expose a per-Text descent (only a per-Font descent), so it's
             # impossible to know how to offset the y value properly for a
             # given string.
-            label = Label(text, font_name=pyglet_font.name,
-                          font_size=pyglet_font.size, anchor_y="bottom")
+            label = Label(
+                text,
+                font_name=pyglet_font.name,
+                font_size=pyglet_font.size,
+                anchor_y="bottom",
+            )
             GlobalTextCache[key] = label
         else:
             label = GlobalTextCache[key]
         return label
+
 
 except ImportError:
     # Pyglet is not available, so we forgo some features
@@ -381,7 +437,7 @@ except ImportError:
 class GraphicsContext(GraphicsContextGL):
     def __init__(self, size, *args, **kw):
         # Ignore the pix_format argument for now
-        kw.pop('pix_format', None)
+        kw.pop("pix_format", None)
         GraphicsContextGL.__init__(self, size[0], size[1], *args, **kw)
         self.corner_pixel_origin = True
 
@@ -438,19 +494,23 @@ class GraphicsContext(GraphicsContextGL):
         label.x = x
         label.y = y
         c = self.get_fill_color()
-        label.color = (int(c[0]*255), int(c[1]*255), int(c[2]*255),
-                       int(c[3]*255))
+        label.color = (
+            int(c[0] * 255),
+            int(c[1] * 255),
+            int(c[2] * 255),
+            int(c[3] * 255),
+        )
         label.draw()
         return True
 
     def linear_gradient(self, x1, y1, x2, y2, stops, spread_method,
-                        units='userSpaceOnUse'):
+                        units="userSpaceOnUse"):
         """ Not implemented.
         """
         pass
 
     def radial_gradient(self, cx, cy, r, fx, fy, stops, spread_method,
-                        units='userSpaceOnUse'):
+                        units="userSpaceOnUse"):
         """ Not implemented.
         """
         pass
@@ -475,12 +535,7 @@ class GraphicsContext(GraphicsContextGL):
         texture.width = w
         texture.height = h
         t = texture.tex_coords
-        points = array([
-            [x,   y+h],
-            [x+w, y+h],
-            [x+w, y],
-            [x,   y],
-        ])
+        points = array([[x, y + h], [x + w, y + h], [x + w, y], [x, y]])
         p = transform_points(affine_from_values(*xform), points)
         a = (gl.GLfloat*32)(
             t[0],    t[1],    t[2],  1.,

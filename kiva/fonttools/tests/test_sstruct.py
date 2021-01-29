@@ -1,11 +1,9 @@
-
 from unittest import TestCase
 
 from ..sstruct import SStructError, calcsize, getformat, pack, unpack
 
 
 class TestSStruct(TestCase):
-
     def test_roundtrip(self):
         format = """
             # comments are allowed
@@ -27,9 +25,9 @@ class TestSStruct(TestCase):
 
         i = foo()
 
-        i.ashort = 0x7fff
-        i.along = 0x7fffffff
-        i.abyte = 0x7f
+        i.ashort = 0x7FFF
+        i.along = 0x7FFFFFFF
+        i.abyte = 0x7F
         i.achar = b"a"
         i.astr = b"12345"
         i.afloat = 0.5
@@ -39,28 +37,28 @@ class TestSStruct(TestCase):
         data = pack(format, i)
         self.assertEqual(
             data,
-            b'\x7f\xff' +
-            b'\x7f\xff\xff\xff' +
-            b'\x7f' +
-            b'a' +
-            b'12345' +
-            b'\x3f\x00\x00\x00' +
-            b'\x3f\xe0\x00\x00\x00\x00\x00\x00' +
-            b'\x00\x01\x80\x00'
+            b"\x7f\xff"
+            + b"\x7f\xff\xff\xff"
+            + b"\x7f"
+            + b"a"
+            + b"12345"
+            + b"\x3f\x00\x00\x00"
+            + b"\x3f\xe0\x00\x00\x00\x00\x00\x00"
+            + b"\x00\x01\x80\x00",
         )
 
         self.assertEqual(
             unpack(format, data),
             {
-                'ashort': i.ashort,
-                'abyte': i.abyte,
-                'achar': i.achar,
-                'along': i.along,
-                'astr': i.astr,
-                'afloat': i.afloat,
-                'adouble': i.adouble,
-                'afixed': i.afixed,
-            }
+                "ashort": i.ashort,
+                "abyte": i.abyte,
+                "achar": i.achar,
+                "along": i.along,
+                "astr": i.astr,
+                "afloat": i.afloat,
+                "adouble": i.adouble,
+                "afixed": i.afixed,
+            },
         )
 
         i2 = foo()

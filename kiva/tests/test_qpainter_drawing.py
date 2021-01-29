@@ -14,12 +14,11 @@ except ImportError:
 
 from kiva.tests.drawing_tester import DrawingImageTester
 
-is_linux = sys.platform.startswith('linux')
+is_linux = sys.platform.startswith("linux")
 
 
 @unittest.skipIf(QT_NOT_AVAILABLE, "Cannot import qt")
 class TestQPainterDrawing(DrawingImageTester, unittest.TestCase):
-
     def setUp(self):
         application = QtGui.QApplication.instance()
         if application is None:
@@ -31,6 +30,7 @@ class TestQPainterDrawing(DrawingImageTester, unittest.TestCase):
 
     def create_graphics_context(self, width, height):
         from kiva.qpainter import GraphicsContext
+
         return GraphicsContext((width, height))
 
     @unittest.skipIf(is_qt5 and is_linux, "Currently segfaulting")

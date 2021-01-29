@@ -7,60 +7,72 @@
     This is currently under development and is not yet fully functional.
 
 """
-import cairo
 import copy
-
-import numpy
 import warnings
+
+import cairo
+import numpy
 
 from .arc_conversion import arc_to_tangent_points
 from . import basecore2d, constants
 
 
-line_join = {constants.JOIN_BEVEL: cairo.LINE_JOIN_BEVEL,
-             constants.JOIN_MITER: cairo.LINE_JOIN_MITER,
-             constants.JOIN_ROUND: cairo.LINE_JOIN_ROUND
-            }
+line_join = {
+    constants.JOIN_BEVEL: cairo.LINE_JOIN_BEVEL,
+    constants.JOIN_MITER: cairo.LINE_JOIN_MITER,
+    constants.JOIN_ROUND: cairo.LINE_JOIN_ROUND,
+}
 
-line_cap = {constants.CAP_BUTT: cairo.LINE_CAP_BUTT,
-            constants.CAP_ROUND: cairo.LINE_CAP_ROUND,
-            constants.CAP_SQUARE: cairo.LINE_CAP_SQUARE
-           }
+line_cap = {
+    constants.CAP_BUTT: cairo.LINE_CAP_BUTT,
+    constants.CAP_ROUND: cairo.LINE_CAP_ROUND,
+    constants.CAP_SQUARE: cairo.LINE_CAP_SQUARE,
+}
 
-font_slant = {"regular":cairo.FONT_SLANT_NORMAL,
-              "bold":cairo.FONT_SLANT_NORMAL,
-              "italic":cairo.FONT_SLANT_ITALIC,
-              "bold italic":cairo.FONT_SLANT_ITALIC
-             }
+font_slant = {
+    "regular": cairo.FONT_SLANT_NORMAL,
+    "bold": cairo.FONT_SLANT_NORMAL,
+    "italic": cairo.FONT_SLANT_ITALIC,
+    "bold italic": cairo.FONT_SLANT_ITALIC,
+}
 
-font_weight = {"regular":cairo.FONT_WEIGHT_NORMAL,
-               "bold":cairo.FONT_WEIGHT_BOLD,
-               "italic":cairo.FONT_WEIGHT_NORMAL,
-               "bold italic":cairo.FONT_WEIGHT_BOLD
-              }
+font_weight = {
+    "regular": cairo.FONT_WEIGHT_NORMAL,
+    "bold": cairo.FONT_WEIGHT_BOLD,
+    "italic": cairo.FONT_WEIGHT_NORMAL,
+    "bold italic": cairo.FONT_WEIGHT_BOLD,
+}
 
-spread_methods = {"pad":cairo.EXTEND_PAD,
-                  "reflect":cairo.EXTEND_REFLECT,
-                  "repeat":cairo.EXTEND_REPEAT
-                 }
+spread_methods = {
+    "pad": cairo.EXTEND_PAD,
+    "reflect": cairo.EXTEND_REFLECT,
+    "repeat": cairo.EXTEND_REPEAT,
+}
 
-text_draw_modes = {'FILL': (constants.TEXT_FILL,
-                            constants.TEXT_FILL_CLIP,
-                            constants.TEXT_FILL_STROKE,
-                            constants.TEXT_FILL_STROKE_CLIP),
-                   'STROKE':(constants.TEXT_FILL_STROKE,
-                            constants.TEXT_FILL_STROKE_CLIP,
-                            constants.TEXT_STROKE,
-                            constants.TEXT_STROKE_CLIP),
-                   'CLIP':(constants.TEXT_CLIP,
-                            constants.TEXT_FILL_CLIP,
-                            constants.TEXT_FILL_STROKE_CLIP,
-                            constants.TEXT_STROKE_CLIP),
-                   'INVISIBLE': constants.TEXT_INVISIBLE
-                  }
+text_draw_modes = {
+    "FILL": (
+        constants.TEXT_FILL,
+        constants.TEXT_FILL_CLIP,
+        constants.TEXT_FILL_STROKE,
+        constants.TEXT_FILL_STROKE_CLIP,
+    ),
+    "STROKE": (
+        constants.TEXT_FILL_STROKE,
+        constants.TEXT_FILL_STROKE_CLIP,
+        constants.TEXT_STROKE,
+        constants.TEXT_STROKE_CLIP,
+    ),
+    "CLIP": (
+        constants.TEXT_CLIP,
+        constants.TEXT_FILL_CLIP,
+        constants.TEXT_FILL_STROKE_CLIP,
+        constants.TEXT_STROKE_CLIP,
+    ),
+    "INVISIBLE": constants.TEXT_INVISIBLE,
+}
+
 
 class PixelMap(object):
-
     def __init__(self, surface, width, height):
         self.surface = surface
         self.width = width
@@ -68,7 +80,8 @@ class PixelMap(object):
 
     def draw_to_wxwindow(self, window, x, y):
         import wx
-        window_dc = getattr(window,'_dc',None)
+
+        window_dc = getattr(window, "_dc", None)
         if window_dc is None:
             window_dc = wx.PaintDC(window)
         arr = self.convert_to_rgbarray()
@@ -77,7 +90,7 @@ class PixelMap(object):
         bmp = wx.BitmapFromImage(image, depth=-1)
 
         window_dc.BeginDrawing()
-        window_dc.DrawBitmap(bmp,x,y)
+        window_dc.DrawBitmap(bmp, x, y)
         window_dc.EndDrawing()
 
     def convert_to_rgbarray(self):
@@ -96,13 +109,17 @@ class PixelMap(object):
         green = pixels[2::4]
         blue = pixels[3::4]
         if flip:
-            return numpy.vstack((alpha, red, green, blue)).T\
-                        .reshape((self.height, self.width, 4))[::-1,...].flatten()
+            return (
+                numpy.vstack((alpha, red, green, blue)).T
+                .reshape((self.height, self.width, 4))[::-1, ...]
+                .flatten()
+            )
         # no flip
         return numpy.vstack((alpha, red, green, blue)).T.flatten()
 
+
 class GraphicsState(object):
-    r""" Holds information used by a graphics context when drawing.
+    """ Holds information used by a graphics context when drawing.
 
         The Cairo state stores the following:
 
@@ -126,17 +143,18 @@ class GraphicsState(object):
         * clip region
         * tolerance (accuracy)
         * anti-alias
-        * \*fill- and stroke- colors
-        * \*fill- and stroke- Color Space (RGB, HSV, CMYK etc.)
-        * \*Rendering intent (something to do with Color Spaces)
-        * \*alpha value
+        * fill- and stroke- colors
+        * fill- and stroke- Color Space (RGB, HSV, CMYK etc.)
+        * Rendering intent (something to do with Color Spaces)
+        * alpha value
         * blend mode
         * text font
         * text font size
-        * \*text drawing mode (stroked, filled, clipped and combinations of these)
-        * \*text character spacing (extra space between glyphs)
+        * text drawing mode (stroked, filled, clipped and combinations of
+          these)
+        * text character spacing (extra space between glyphs)
 
-        \*: items in the Quartz2D state that Cairo doesn't support directly.
+        *: items in the Quartz2D state that Cairo doesn't support directly.
 
         basecore2d GraphicsState includes:
 
@@ -149,9 +167,9 @@ class GraphicsState(object):
         * fill_color
         * alpha
         * font
-        * \*text_matrix
+        * text_matrix
         * clipping_path
-        * \*current_point
+        * current_point
         * should_antialias
         * miter_limit
         * flatness
@@ -159,17 +177,17 @@ class GraphicsState(object):
         * text_drawing_mode
         * rendering_intent (not yet implemented)
 
-        \*: discrepancies compared to Quartz2D
-
+        *: discrepancies compared to Quartz2D
     """
+
     def __init__(self):
-        self.fill_color = [1,1,1]
-        self.stroke_color = [1,1,1]
+        self.fill_color = [1, 1, 1]
+        self.stroke_color = [1, 1, 1]
         self.alpha = 1.0
         self.text_drawing_mode = constants.TEXT_FILL
         self.has_gradient = False
 
-        #not implemented yet...
+        # not implemented yet...
         self.text_character_spacing = None
         self.fill_colorspace = None
         self.stroke_colorspace = None
@@ -178,31 +196,34 @@ class GraphicsState(object):
     def copy(self):
         return copy.deepcopy(self)
 
+
 class GraphicsContext(basecore2d.GraphicsContextBase):
     def __init__(self, size, *args, **kw):
         super(GraphicsContext, self).__init__(size, *args, **kw)
-        w,h = size
+        w, h = size
 
         self.surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
-        self.surface.set_device_offset(0,h)
+        self.surface.set_device_offset(0, h)
 
-        if 'context' in kw:
-            ctx = kw.pop('context')
+        if "context" in kw:
+            ctx = kw.pop("context")
         else:
             ctx = cairo.Context(self.surface)
-            ctx.set_source_rgb(1,1,1)
-            ctx.scale(1,-1)
+            ctx.set_source_rgb(1, 1, 1)
+            ctx.scale(1, -1)
 
         self._ctx = ctx
         self.state = GraphicsState()
         self.state_stack = []
 
-        #the text-matrix includes the text position
-        self.text_matrix = cairo.Matrix(1,0,0,-1,0,0) #not part of the graphics state
+        # the text-matrix includes the text position
+        self.text_matrix = cairo.Matrix(
+            1, 0, 0, -1, 0, 0
+        )  # not part of the graphics state
 
         self.pixel_map = PixelMap(self.surface, w, h)
 
-    def clear(self, color=(1,1,1)):
+    def clear(self, color=(1, 1, 1)):
         self.save_state()
         if len(color) == 4:
             self._ctx.set_source_rgba(*color)
@@ -262,12 +283,11 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
                 the current coordinate matrix.
         """
         try:
-            #assume transform is a cairo.Matrix object
+            # assume transform is a cairo.Matrix object
             self._ctx.transform(transform)
         except TypeError:
-            #now assume transform is a list of matrix elements (floats)
+            # now assume transform is a list of matrix elements (floats)
             self._ctx.transform(cairo.Matrix(*transform))
-
 
     def get_ctm(self):
         """ Returns the current coordinate transform matrix
@@ -275,9 +295,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         return list(self._ctx.get_matrix())
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Save/Restore graphics state.
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def save_state(self):
         """ Saves the current graphic's context state.
@@ -294,11 +314,11 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self._ctx.restore()
         self.state = self.state_stack.pop()
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Manipulate graphics state attributes.
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
-    def set_antialias(self,value):
+    def set_antialias(self, value):
         """ Sets/Unsets anti-aliasing for bitmap graphics context.
 
             Ignored on most platforms.
@@ -309,7 +329,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             val = cairo.ANTIALIAS_NONE
         self._ctx.set_antialias(val)
 
-    def set_line_width(self,width):
+    def set_line_width(self, width):
         """ Sets the line width for drawing
 
             Parameters
@@ -319,7 +339,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         self._ctx.set_line_width(width)
 
-    def set_line_join(self,style):
+    def set_line_join(self, style):
         """ Sets the style for joining lines in a drawing.
 
             Parameters
@@ -333,7 +353,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         except KeyError:
             raise ValueError("Invalid line-join style")
 
-    def set_miter_limit(self,limit):
+    def set_miter_limit(self, limit):
         """ Specifies limits on line lengths for mitering line joins.
 
             If line_join is set to miter joins, the limit specifies which
@@ -352,7 +372,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         self._ctx.set_miter_limit(limit)
 
-    def set_line_cap(self,style):
+    def set_line_cap(self, style):
         """ Specifies the style of endings to put on line ends.
 
             Parameters
@@ -366,7 +386,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         except KeyError:
             raise ValueError("Invalid line cap style")
 
-    def set_line_dash(self,pattern,phase=0):
+    def set_line_dash(self, pattern, phase=0):
         """ Sets the line dash pattern and phase for line painting.
 
             Parameters
@@ -383,7 +403,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             pattern = list(pattern)
             self._ctx.set_dash(pattern, phase)
 
-    def set_flatness(self,flatness):
+    def set_flatness(self, flatness):
         """ Not implemented
 
             It is device dependent and therefore not recommended by
@@ -395,9 +415,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         self._ctx.set_tolerance(flatness)
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Sending drawing data to a device
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def flush(self):
         """ Sends all drawing data to the destination device.
@@ -414,9 +434,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         pass
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Page Definitions
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def begin_page(self):
         """ Creates a new page within the graphics context.
@@ -438,18 +458,17 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         pass
 
-
-    def radial_gradient(self, cx, cy, r, fx, fy, stops, spreadMethod='pad',
-                        units='userSpaceOnUse', transforms=None):
+    def radial_gradient(self, cx, cy, r, fx, fy, stops, spreadMethod="pad",
+                        units="userSpaceOnUse", transforms=None):
         """ Set a radial gradient as the fill color.
         """
         # TODO: handle transforms
 
-        if units == 'objectBoundingBox':
+        if units == "objectBoundingBox":
             # transform from relative coordinates
             path_rect = self._ctx.path_extents()
-            width = path_rect[2]-path_rect[0]
-            height = path_rect[3]-path_rect[1]
+            width = path_rect[2] - path_rect[0]
+            height = path_rect[3] - path_rect[1]
             r = r * width
             cx = path_rect[0] + cx * width
             fx = path_rect[0] + fx * width
@@ -458,10 +477,13 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
         gradient = cairo.RadialGradient(fx, fy, 0.0, cx, cy, r)
 
-        gradient.set_extend(spread_methods.get(spreadMethod, cairo.EXTEND_NONE))
+        gradient.set_extend(
+            spread_methods.get(spreadMethod, cairo.EXTEND_NONE)
+        )
 
         for stop in stops:
-            #FIXME: the stops are possibly being generated wrong if the offset is specified
+            # FIXME: the stops are possibly being generated wrong if the offset
+            # is specified
             if stop.size == 10:
                 start = tuple(stop[0:5])
                 end = tuple(stop[5:10])
@@ -474,17 +496,17 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.state.has_gradient = True
         self._ctx.set_source(gradient)
 
-    def linear_gradient(self, x1, y1, x2, y2, stops, spreadMethod='pad',
-                        units='userSpaceOnUse', transforms=None):
+    def linear_gradient(self, x1, y1, x2, y2, stops, spreadMethod="pad",
+                        units="userSpaceOnUse", transforms=None):
         """ Set a linear gradient as the fill color.
         """
         # TODO: handle transforms
 
-        if units == 'objectBoundingBox':
+        if units == "objectBoundingBox":
             # transform from relative coordinates
             path_rect = self._ctx.path_extents()
-            width = path_rect[2]-path_rect[0]
-            height = path_rect[3]-path_rect[1]
+            width = path_rect[2] - path_rect[0]
+            height = path_rect[3] - path_rect[1]
             x1 = path_rect[0] + x1 * width
             x2 = path_rect[0] + x2 * width
             y1 = path_rect[1] + y1 * height
@@ -492,10 +514,13 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
         gradient = cairo.LinearGradient(x1, y1, x2, y2)
 
-        gradient.set_extend(spread_methods.get(spreadMethod, cairo.EXTEND_NONE))
+        gradient.set_extend(
+            spread_methods.get(spreadMethod, cairo.EXTEND_NONE)
+        )
 
         for stop in stops:
-            # FIXME: the stops are possibly being generated wrong if the offset is specified
+            # FIXME: the stops are possibly being generated wrong if the offset
+            # is specified
             if stop.size == 10:
                 start = tuple(stop[0:5])
                 end = tuple(stop[5:10])
@@ -508,8 +533,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.state.has_gradient = True
         self._ctx.set_source(gradient)
 
-
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Building paths (contours that are drawn)
     #
     # + Currently, nothing is drawn as the path is built.  Instead, the
@@ -522,7 +546,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     #
     # + I think we should keep the current_path_point hanging around.
     #
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def begin_path(self):
         """ Clears the current drawing path and begin a new one.
@@ -532,7 +556,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         # in the new subpath.
         self._ctx.new_path()
 
-    def move_to(self,x,y):
+    def move_to(self, x, y):
         """ Starts a new drawing subpath and place the current point at (x,y).
 
             Notes:
@@ -540,9 +564,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
                 value of the point before or after the matrix transformation?
                 It looks like before in the PDF specs.
         """
-        self._ctx.move_to(x,y)
+        self._ctx.move_to(x, y)
 
-    def line_to(self,x,y):
+    def line_to(self, x, y):
         """ Adds a line from the current point to the given point (x,y).
 
             The current point is moved to (x,y).
@@ -553,9 +577,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             Notes:
                 See note in move_to about the current_point.
         """
-        self._ctx.line_to(x,y)
+        self._ctx.line_to(x, y)
 
-    def lines(self,points):
+    def lines(self, points):
         """ Adds a series of lines as a new subpath.
 
             Parameters
@@ -590,24 +614,12 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             self._ctx.move_to(*start)
             self._ctx.line_to(*end)
 
-    def rect(self,x,y,sx,sy):
+    def rect(self, x, y, sx, sy):
         """ Adds a rectangle as a new subpath.
         """
-        self._ctx.rectangle(x,y,sx,sy)
+        self._ctx.rectangle(x, y, sx, sy)
 
-#    def draw_rect(self, rect, mode):
-#        self.rect(*rect)
-#        self.draw_path(mode=mode)
-#
-#    def rects(self,rects):
-#        """ Adds multiple rectangles as separate subpaths to the path.
-#
-#            Not very efficient -- calls rect multiple times.
-#        """
-#        for x,y,sx,sy in rects:
-#            self.rect(x,y,sx,sy)
-
-    def close_path(self,tag=None):
+    def close_path(self, tag=None):
         """ Closes the path of the current subpath.
 
             Currently starts a new subpath -- is this what we want?
@@ -635,36 +647,12 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         self._ctx.curve_to(x_ctrl1, y_ctrl1, x_ctrl2, y_ctrl2, x_to, y_to)
 
-#    def quad_curve_to(self, x_ctrl, y_ctrl, x_to, y_to):
-#        """ Draw a quadratic bezier curve from the current point.
-#
-#        Parameters
-#        ----------
-#        x_ctrl : float
-#            X-value of the control point
-#        y_ctrl : float
-#            Y-value of the control point.
-#        x_to : float
-#            X-value of the ending point of the curve
-#        y_to : float
-#            Y-value of the ending point of the curve.
-#        """
-#        # A quadratic Bezier curve is just a special case of the cubic. Reuse
-#        # its implementation in case it has been implemented for the specific
-#        # backend.
-#        x0, y0 = self.state.current_point
-#        xc1 = (x0 + x_ctrl + x_ctrl) / 3.0
-#        yc1 = (y0 + y_ctrl + y_ctrl) / 3.0
-#        xc2 = (x_to + x_ctrl + x_ctrl) / 3.0
-#        yc2 = (y_to + y_ctrl + y_ctrl) / 3.0
-#        self.curve_to(xc1, yc1, xc2, yc2, x_to, y_to)
-
     def arc(self, x, y, radius, start_angle, end_angle, cw=False):
         """ Draw a circular arc.
 
         If there is a current path and the current point is not the initial
-        point of the arc, a line will be drawn to the start of the arc. If there
-        is no current path, then no line will be drawn.
+        point of the arc, a line will be drawn to the start of the arc. If
+        there is no current path, then no line will be drawn.
 
         Parameters
         ----------
@@ -683,10 +671,10 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         cw : bool, optional
             Whether the arc should be drawn clockwise or not.
         """
-        if cw: #not sure if I've got this the right way round
-            self._ctx.arc_negative( x, y, radius, start_angle, end_angle)
+        if cw:  # not sure if I've got this the right way round
+            self._ctx.arc_negative(x, y, radius, start_angle, end_angle)
         else:
-            self._ctx.arc( x, y, radius, start_angle, end_angle)
+            self._ctx.arc(x, y, radius, start_angle, end_angle)
 
     def arc_to(self, x1, y1, x2, y2, radius):
         """ Draw an arc between the line segments from the current point
@@ -697,16 +685,18 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         current_point = self.get_path_current_point()
 
         # Get the endpoints on the curve where it touches the line segments
-        t1, t2 = arc_to_tangent_points(current_point, (x1,y1), (x2,y2), radius)
+        t1, t2 = arc_to_tangent_points(
+            current_point, (x1, y1), (x2, y2), radius
+        )
 
         # draw!
         self._ctx.line_to(*t1)
-        self._ctx.curve_to(x1,y1, x1,y1, *t2)
-        self._ctx.line_to(x2,y2)
+        self._ctx.curve_to(x1, y1, x1, y1, *t2)
+        self._ctx.line_to(x2, y2)
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Getting infomration on paths
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def is_path_empty(self):
         """ Tests to see whether the current drawing path is empty
@@ -735,11 +725,10 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         What should this method return?
         """
         if self.is_path_empty():
-            return [[0,0],[0,0]]
+            return [[0, 0], [0, 0]]
         p = [a[1] for a in self._ctx.copy_path()]
         p = numpy.array(p)
         return [p.min(axis=1), p.max(axis=1)]
-
 
     def add_path(self, path):
         """Draw a compiled path into this gc.
@@ -751,11 +740,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
                 op(*op_args)
             self.close_path()
 
-
-
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Clipping path manipulation
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def clip(self):
         """
@@ -774,54 +761,48 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self._ctx.clip()
         self._ctx.set_fill_rule(fr)
 
-
-    def clip_to_rect(self,x,y,width,height):
+    def clip_to_rect(self, x, y, width, height):
         """
             Sets the clipping path to the intersection of the current clipping
             path with the area defined by the specified rectangle
         """
         ctx = self._ctx
-        #get the current path
+        # get the current path
         p = ctx.copy_path()
         ctx.new_path()
-        ctx.rectangle(x,y,width,height)
+        ctx.rectangle(x, y, width, height)
         ctx.clip()
         ctx.append_path(p)
-
-#    def clip_to_rects(self):
-#        """
-#        """
-#        pass
 
     def clear_clip_path(self):
         self._ctx.reset_clip()
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Color space manipulation
     #
     # I'm not sure we'll mess with these at all.  They seem to
     # be for setting the color system.  Hard coding to RGB or
     # RGBA for now sounds like a reasonable solution.
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
-    #def set_fill_color_space(self):
+    # def set_fill_color_space(self):
     #    """
     #    """
     #    pass
 
-    #def set_stroke_color_space(self):
+    # def set_stroke_color_space(self):
     #    """
     #    """
     #    pass
 
-    #def set_rendering_intent(self):
+    # def set_rendering_intent(self):
     #    """
     #    """
     #    pass
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Color manipulation
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def _set_source_color(self, color):
         if len(color) == 3:
@@ -831,30 +812,28 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         # gradients or other source patterns are blown away by set_source_rgb*
         self.state.has_gradient = False
 
-    def set_fill_color(self,color):
-        """
-            set_fill_color takes a sequences of rgb or rgba values
-            between 0.0 and 1.0
+    def set_fill_color(self, color):
+        """ set_fill_color takes a sequences of rgb or rgba values
+        between 0.0 and 1.0
         """
         self.state.fill_color = color
 
-    def set_stroke_color(self,color):
-        """
-            set_stroke_color takes a sequences of rgb or rgba values
-            between 0.0 and 1.0
+    def set_stroke_color(self, color):
+        """ set_stroke_color takes a sequences of rgb or rgba values
+        between 0.0 and 1.0
         """
         self.state.stroke_color = color
 
-    def set_alpha(self,alpha):
+    def set_alpha(self, alpha):
         """
         """
         self.state.alpha = alpha
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Drawing Images
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
-    def draw_image(self,img,rect=None):
+    def draw_image(self, img, rect=None):
         """
         img is either a N*M*3 or N*M*4 numpy array, or a Kiva image
 
@@ -864,60 +843,69 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         from kiva import agg
 
-        if type(img) == type(numpy.array([])):
+        if isinstance(img, numpy.ndarray):
             # Numeric array
-            if img.shape[2]==3:
+            if img.shape[2] == 3:
                 format = cairo.FORMAT_RGB24
-            elif img.shape[2]==4:
+            elif img.shape[2] == 4:
                 format = cairo.FORMAT_ARGB32
             img_width, img_height = img.shape[:2]
-            img_surface = cairo.ImageSurface.create_for_data(img.astype(numpy.uint8),
-                                                             format, img_width, img_height)
+            img_surface = cairo.ImageSurface.create_for_data(
+                img.astype(numpy.uint8), format, img_width, img_height
+            )
         elif isinstance(img, agg.GraphicsContextArray):
-            converted_img = img.convert_pixel_format('rgba32', inplace=0)
+            converted_img = img.convert_pixel_format("rgba32", inplace=0)
             flipped_array = numpy.flipud(converted_img.bmp_array)
-            img_width, img_height = converted_img.width(), converted_img.height()
-            img_surface = cairo.ImageSurface.create_for_data(flipped_array.flatten(),
-                                                             cairo.FORMAT_RGB24,
-                                                             img_width, img_height)
+            img_width, img_height = (
+                converted_img.width(),
+                converted_img.height(),
+            )
+            img_surface = cairo.ImageSurface.create_for_data(
+                flipped_array.flatten(),
+                cairo.FORMAT_RGB24,
+                img_width,
+                img_height,
+            )
         elif isinstance(img, GraphicsContext):
             # Another cairo kiva context
             img_width, img_height = img.pixel_map.width, img.pixel_map.height
-            img_surface = cairo.ImageSurface.create_for_data(img.pixel_map.convert_to_argbarray(flip=True),
-                                                             cairo.FORMAT_ARGB32,
-                                                             img_width, img_height)
+            img_surface = cairo.ImageSurface.create_for_data(
+                img.pixel_map.convert_to_argbarray(flip=True),
+                cairo.FORMAT_ARGB32,
+                img_width,
+                img_height,
+            )
         else:
-            warnings.warn("Cannot render image of type '%r' into cairo context." % \
-                    type(img))
+            msg = "Cannot render image of type '%r' into cairo context."
+            warnings.warn(msg % type(img))
             return
 
         ctx = self._ctx
         img_pattern = cairo.SurfacePattern(img_surface)
         if rect:
-            x,y,sx,sy = rect
+            x, y, sx, sy = rect
             if sx != img_width or sy != img_height:
                 scaler = cairo.Matrix()
-                scaler.scale(img_width/float(sx), img_height/float(sy))
+                scaler.scale(img_width / float(sx), img_height / float(sy))
                 img_pattern.set_matrix(scaler)
                 img_pattern.set_filter(cairo.FILTER_BEST)
             ctx.set_source(img_pattern)
-            #p = ctx.copy_path() #need to save the path
+            # p = ctx.copy_path() #need to save the path
             ctx.new_path()
-            ctx.rectangle(x,y,sx,sy)
+            ctx.rectangle(x, y, sx, sy)
             ctx.fill()
         else:
             ctx.set_source(img_pattern)
             ctx.paint()
 
-
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Drawing Text
     #
     # Font handling needs more attention.
     #
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
-    def select_font(self,face_name,size=12,style="regular",encoding=None):
+    def select_font(self, face_name, size=12, style="regular", encoding=None):
         """ Selects a new font for drawing text.
 
             Parameters
@@ -946,15 +934,16 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         # !! should check if name and encoding are valid.
         # self.state.font = freetype.FontInfo(face_name,size,style,encoding)
-        self._ctx.select_font_face(face_name, font_slant[style], font_weight[style])
+        self._ctx.select_font_face(
+            face_name, font_slant[style], font_weight[style]
+        )
         self._ctx.set_font_size(size)
 
-
-    def set_font(self,font):
+    def set_font(self, font):
         """ Set the font for the current graphics context.
 
-            A device-specific font object. In this case, a cairo FontFace object.
-            It's not clear how this can be used right now.
+            A device-specific font object. In this case, a cairo FontFace
+            object. It's not clear how this can be used right now.
         """
         if font.weight in (constants.BOLD, constants.BOLD_ITALIC):
             weight = cairo.FONT_WEIGHT_BOLD
@@ -971,19 +960,19 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         ctx = self._ctx
         ctx.select_font_face(face_name, style, weight)
         ctx.set_font_size(font.size)
-        #facename = font.face_name
-        #slant = font.style
+        # facename = font.face_name
+        # slant = font.style
 
-        #self._ctx.set_font_face(font)
+        # self._ctx.set_font_face(font)
 
-    def set_font_size(self,size):
+    def set_font_size(self, size):
         """ Sets the size of the font.
 
             The size is specified in user space coordinates.
         """
         self._ctx.set_font_size(size)
 
-    def set_character_spacing(self,spacing):
+    def set_character_spacing(self, spacing):
         """ Sets the amount of additional spacing between text characters.
 
             Parameters
@@ -1000,7 +989,6 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             2.  Not implemented in wxPython, or cairo (for the time being)
         """
         self.state.character_spacing = spacing
-
 
     def set_text_drawing_mode(self, mode):
         """ Specifies whether text is drawn filled or outlined or both.
@@ -1033,18 +1021,25 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             Note:
                 wxPython currently ignores all but the INVISIBLE flag.
         """
-        if mode not in (TEXT_FILL, TEXT_STROKE, TEXT_FILL_STROKE,
-                        TEXT_INVISIBLE, TEXT_FILL_CLIP, TEXT_STROKE_CLIP,
-                        TEXT_FILL_STROKE_CLIP, TEXT_CLIP, TEXT_OUTLINE):
-            msg = "Invalid text drawing mode.  See documentation for valid modes"
+        text_modes = (
+            constants.TEXT_FILL, constants.TEXT_STROKE,
+            constants.TEXT_FILL_STROKE, constants.TEXT_INVISIBLE,
+            constants.TEXT_FILL_CLIP, constants.TEXT_STROKE_CLIP,
+            constants.TEXT_FILL_STROKE_CLIP, constants.TEXT_CLIP,
+            constants.TEXT_OUTLINE,
+        )
+        if mode not in text_modes:
+            msg = (
+                "Invalid text drawing mode.  See documentation for valid modes"
+            )
             raise ValueError(msg)
         self.state.text_drawing_mode = mode
 
-    def set_text_position(self,x,y):
+    def set_text_position(self, x, y):
         """
         """
         m = list(self.text_matrix)
-        m[4:6] = x,y
+        m[4:6] = x, y
         self.text_matrix = cairo.Matrix(*m)
 
     def get_text_position(self):
@@ -1052,7 +1047,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         return tuple(self.text_matrix)[4:6]
 
-    def set_text_matrix(self,ttm):
+    def set_text_matrix(self, ttm):
         """
         """
         if isinstance(ttm, cairo.Matrix):
@@ -1066,7 +1061,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         return copy.copy(self.text_matrix)
 
-    def show_text(self,text, point=(0.0,0.0)):
+    def show_text(self, text, point=(0.0, 0.0)):
         """ Draws text on the device at the current text position.
             Leaves the current point unchanged.
         """
@@ -1084,19 +1079,19 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         cur_path = ctx.copy_path()
         ctx.save()
         ctx.transform(self.text_matrix)
-        ctx.transform(cairo.Matrix(1,0,0,1,x,y))
+        ctx.transform(cairo.Matrix(1, 0, 0, 1, x, y))
         ctx.new_path()
         ctx.text_path(text)
-        #need to set up text drawing mode
-        #'outline' and  'invisible' modes are not supported.
+        # need to set up text drawing mode
+        # 'outline' and  'invisible' modes are not supported.
         mode = self.state.text_drawing_mode
-        if mode in text_draw_modes['STROKE']:
+        if mode in text_draw_modes["STROKE"]:
             self._set_source_color(self.state.stroke_color)
             ctx.stroke_preserve()
-        if mode in text_draw_modes['FILL']:
+        if mode in text_draw_modes["FILL"]:
             self._set_source_color(self.state.fill_color)
             ctx.fill_preserve()
-        if mode in text_draw_modes['CLIP']:
+        if mode in text_draw_modes["CLIP"]:
             ctx.clip_preserve()
 
         ctx.restore()
@@ -1108,9 +1103,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         pass
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Painting paths (drawing and filling contours)
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def draw_path(self, mode=constants.FILL_STROKE):
         """ Walks through all the drawing subpaths and draw each element.
@@ -1189,22 +1184,22 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         pass
 
-    def get_text_extent(self,textstring):
+    def get_text_extent(self, textstring):
         """
             returns the width and height of the rendered text
         """
         xb, yb, w, h, xa, ya = self._ctx.text_extents(textstring)
         return xb, yb, w, h
 
-    def get_full_text_extent(self,textstring):
+    def get_full_text_extent(self, textstring):
         """
             How does this differ from 'get_text_extent' ???
 
             This just calls get_text_extent, for the time being.
         """
-        x,y,w,h = self.get_text_extent(textstring)
+        x, y, w, h = self.get_text_extent(textstring)
         ascent, descent, height, maxx, maxy = self._ctx.font_extents()
-        return w, ascent+descent, -descent, height
+        return w, ascent + descent, -descent, height
 
     def render_component(self, component, container_coords=False):
         """ Renders the given component.
@@ -1243,49 +1238,48 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
 
 class CompiledPath(object):
-
     def __init__(self):
         self.state = []
 
     def add_path(self, *args):
-        self.state.append(('begin_path', args))
+        self.state.append(("begin_path", args))
 
     def rect(self, *args):
-        self.state.append(('rect', args))
+        self.state.append(("rect", args))
 
     def move_to(self, *args):
-        self.state.append(('move_to', args))
+        self.state.append(("move_to", args))
 
     def line_to(self, *args):
-        self.state.append(('line_to', args))
+        self.state.append(("line_to", args))
 
     def close_path(self, *args):
-        self.state.append(('close_path', args))
+        self.state.append(("close_path", args))
 
     def quad_curve_to(self, *args):
-        self.state.append(('quad_curve_to', args))
+        self.state.append(("quad_curve_to", args))
 
     def curve_to(self, *args):
-        self.state.append(('curve_to', args))
+        self.state.append(("curve_to", args))
 
     def arc(self, *args):
-        self.state.append(('arc', args))
+        self.state.append(("arc", args))
 
     def total_vertices(self):
         return len(self.state) + 1
 
     def vertex(self, index):
-        return (self.state[index-1][1][0:2],)
+        return (self.state[index - 1][1][0:2],)
 
 
 def font_metrics_provider():
-    return GraphicsContext((1,1))
+    return GraphicsContext((1, 1))
 
-if __name__=="__main__":
-    from numpy import fabs, linspace, pi, sin
+
+if __name__ == "__main__":
+    from numpy import linspace
     from scipy.special import jn
 
-    from traits.api import false
     from chaco.api import ArrayPlotData, Plot, PlotGraphicsContext
     from chaco.example_support import COLOR_PALETTE
 
@@ -1301,10 +1295,14 @@ if __name__=="__main__":
         x = linspace(low, high, numpoints)
         pd = ArrayPlotData(index=x)
         p = Plot(pd, bgcolor="lightgray", padding=50, border_visible=True)
-        for t,i in zip(cycle(['line','scatter']),range(10)):
-            pd.set_data("y" + str(i), jn(i,x))
-            p.plot(("index", "y" + str(i)), color=tuple(COLOR_PALETTE[i]),
-                   width = 2.0 * dpi_scale, type=t)
+        for t, i in zip(cycle(["line", "scatter"]), range(10)):
+            pd.set_data("y" + str(i), jn(i, x))
+            p.plot(
+                ("index", "y" + str(i)),
+                color=tuple(COLOR_PALETTE[i]),
+                width=2.0 * dpi_scale,
+                type=t,
+            )
         p.x_grid.visible = True
         p.x_grid.line_width *= dpi_scale
         p.y_grid.visible = True
@@ -1313,60 +1311,61 @@ if __name__=="__main__":
         return p
 
     container = create_plot()
-    container.outer_bounds = [800,600]
+    container.outer_bounds = [800, 600]
     container.do_layout(force=True)
 
     def render_cairo_png():
-        w,h = 800,600
+        w, h = 800, 600
         scale = 1.0
-        s = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(w*scale),int(h*scale))
-        s.set_device_offset(0,h*scale)
+        s = cairo.ImageSurface(
+            cairo.FORMAT_ARGB32, int(w * scale), int(h * scale)
+        )
+        s.set_device_offset(0, h * scale)
         ctx = cairo.Context(s)
-        ctx.set_source_rgb(1,1,1)
+        ctx.set_source_rgb(1, 1, 1)
         ctx.paint()
-        ctx.scale(1,-1)
-        ctx.scale(scale,scale)
-        gc = GraphicsContext((w,h), context=ctx)
+        ctx.scale(1, -1)
+        ctx.scale(scale, scale)
+        gc = GraphicsContext((w, h), context=ctx)
         gc.render_component(container)
         s.flush()
         s.write_to_png("/tmp/kiva_cairo.png")
 
     def render_cairo_svg():
-        w,h = 800,600
+        w, h = 800, 600
         scale = 1.0
-        s = cairo.SVGSurface("/tmp/kiva_cairo.svg", w*scale,h*scale)
-        s.set_device_offset(0,h*scale)
+        s = cairo.SVGSurface("/tmp/kiva_cairo.svg", w * scale, h * scale)
+        s.set_device_offset(0, h * scale)
         ctx = cairo.Context(s)
-        ctx.set_source_rgb(1,1,1)
+        ctx.set_source_rgb(1, 1, 1)
         ctx.paint()
-        ctx.scale(1,-1)
-        ctx.scale(scale,scale)
-        gc = GraphicsContext((w,h), context=ctx)
+        ctx.scale(1, -1)
+        ctx.scale(scale, scale)
+        gc = GraphicsContext((w, h), context=ctx)
         gc.render_component(container)
         s.finish()
 
     def render_cairo_pdf():
-        w,h = 800,600
+        w, h = 800, 600
         scale = 1.0
-        s = cairo.PDFSurface("/tmp/kiva_cairo.pdf", w*scale,h*scale)
-        s.set_device_offset(0,h*scale)
+        s = cairo.PDFSurface("/tmp/kiva_cairo.pdf", w * scale, h * scale)
+        s.set_device_offset(0, h * scale)
         ctx = cairo.Context(s)
-        ctx.set_source_rgb(1,1,1)
+        ctx.set_source_rgb(1, 1, 1)
         ctx.paint()
-        ctx.scale(1,-1)
-        ctx.scale(scale,scale)
-        gc = GraphicsContext((w,h), context=ctx)
+        ctx.scale(1, -1)
+        ctx.scale(scale, scale)
+        gc = GraphicsContext((w, h), context=ctx)
         gc.render_component(container)
         s.finish()
 
     def render_agg():
-        gc2 = PlotGraphicsContext((800,600), dpi=DPI)
+        gc2 = PlotGraphicsContext((800, 600), dpi=DPI)
         gc2.render_component(container)
         gc2.save("/tmp/kiva_agg.png")
 
-    #render_agg()
+    # render_agg()
     render_cairo_png()
     render_cairo_svg()
     render_cairo_pdf()
     render_agg()
-

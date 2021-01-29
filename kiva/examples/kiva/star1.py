@@ -36,19 +36,27 @@ def stars():
     add_star(gc)
     gc.set_fill_color((0.0, 0.0, 1.0))
     gc.draw_path(constants.EOF_FILL_STROKE)
-    with tempfile.NamedTemporaryFile(suffix='.bmp') as fid:
+    with tempfile.NamedTemporaryFile(suffix=".bmp") as fid:
         gc.save(fid.name)
-        image = Image.from_file(fid.name, resist_width='weak',
-                                resist_height='weak')
+        image = Image.from_file(
+            fid.name, resist_width="weak", resist_height="weak"
+        )
     return image
 
 
 class Demo(DemoFrame):
     canvas = Instance(Component)
 
-    traits_view = View(Item('canvas', editor=ComponentEditor(),
-                            show_label=False, width=200, height=200),
-                       resizable=True)
+    traits_view = View(
+        Item(
+            "canvas",
+            editor=ComponentEditor(),
+            show_label=False,
+            width=200,
+            height=200,
+        ),
+        resizable=True,
+    )
 
     def _canvas_default(self):
         image = stars()

@@ -3,13 +3,13 @@ from numpy import array
 from kiva.image import GraphicsContext
 
 line_color = (0.0, 0.0, 0.0)
-fill_color = array((200., 184., 106.)) / 255
+fill_color = array((200.0, 184.0, 106.0)) / 255
 gc = GraphicsContext((900, 900))
 gc.rect(30, 30, 850, 300)
 gc.set_fill_color(fill_color)
 gc.fill_path()
 
-gc.set_fill_color((0., 0., 0., .4))
+gc.set_fill_color((0.0, 0.0, 0.0, 0.4))
 gc.translate_ctm(50, 50)
 gc.move_to(10, 10)
 gc.line_to(400, 400)
@@ -28,13 +28,13 @@ gc.draw_path()
 gc.save("sub_path1.bmp")
 
 line_color = (0.0, 0.0, 0.0)
-fill_color = array((200., 184., 106.)) / 255
+fill_color = array((200.0, 184.0, 106.0)) / 255
 gc = GraphicsContext((900, 900))
 gc.rect(30, 30, 850, 300)
 gc.set_fill_color(fill_color)
 gc.fill_path()
 
-gc.set_fill_color((0., 0., 0., .4))
+gc.set_fill_color((0.0, 0.0, 0.0, 0.4))
 gc.translate_ctm(50, 50)
 gc.move_to(10, 10)
 gc.line_to(400, 400)

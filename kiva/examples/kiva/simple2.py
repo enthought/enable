@@ -15,10 +15,11 @@ def simple():
     # directly manipulate the underlying Numeric array.
     # The color tuple is expressed as BGRA.
     gc.bmp_array[:99, :100] = (139, 60, 71, 255)
-    with tempfile.NamedTemporaryFile(suffix='.bmp') as fid:
+    with tempfile.NamedTemporaryFile(suffix=".bmp") as fid:
         gc.save(fid.name)
-        image = Image.from_file(fid.name, resist_width='weak',
-                                resist_height='weak')
+        image = Image.from_file(
+            fid.name, resist_width="weak", resist_height="weak"
+        )
     return image
 
 
@@ -35,7 +36,7 @@ class Demo(DemoFrame):
             image.top == container.contents_top,
             image.bottom == container.contents_bottom,
             image.layout_width == ratio * image.layout_height,
-            ]
+        ]
         return container
 
 

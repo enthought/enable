@@ -254,6 +254,7 @@ class AbstractGraphicsContext(object, metaclass=ABCMeta):
         with control point (cp_x, cp_y)
 
         """
+
     @abstractmethod
     def arc(self, x, y, radius, start_angle, end_angle, cw=False):
         """ Draw a circular arc of the given radius, centered at (x,y)

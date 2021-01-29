@@ -16,8 +16,9 @@ def save(img, file_name):
         pil_img = pilfromstring("RGB", size, st)
         pil_img.save(file_name)
     else:
-        raise NotImplementedError("currently only supports writing out "
-                                  "bgra32 images")
+        raise NotImplementedError(
+            "currently only supports writing out " "bgra32 images"
+        )
 
 
 class TestDrawDash(unittest.TestCase):
@@ -29,7 +30,7 @@ class TestDrawDash(unittest.TestCase):
             gc.line_to(0, 100)
             gc.stroke_path()
             gc.translate_ctm(10, 0)
-        save(gc, 'dash.bmp')
+        save(gc, "dash.bmp")
 
 
 if __name__ == "__main__":

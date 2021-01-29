@@ -25,11 +25,11 @@ class TestText(unittest.TestCase):
     def test_locale_independence(self):
         # Ensure that >ASCII Unicode text is decoded correctly regardless of
         # the locale.
-        text = u'\N{GREEK SMALL LETTER MU}'
+        text = "\N{GREEK SMALL LETTER MU}"
 
-        with locale_context(locale.LC_CTYPE, ('en', 'UTF-8')):
+        with locale_context(locale.LC_CTYPE, ("en", "UTF-8")):
             gc = agg.GraphicsContextArray((200, 200))
-            f = Font('modern')
+            f = Font("modern")
             with gc:
                 gc.set_font(f)
                 gc.translate_ctm(50, 50)
@@ -37,9 +37,9 @@ class TestText(unittest.TestCase):
                 gc.show_text(text)
                 x0, _ = gc.get_text_position()
 
-        with locale_context(locale.LC_CTYPE, ('en', 'ASCII')):
+        with locale_context(locale.LC_CTYPE, ("en", "ASCII")):
             gc = agg.GraphicsContextArray((200, 200))
-            f = Font('modern')
+            f = Font("modern")
             with gc:
                 gc.set_font(f)
                 gc.translate_ctm(50, 50)

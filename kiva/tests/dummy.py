@@ -6,21 +6,22 @@ from kiva.fonttools import Font
 # This is mostly a python translation of the tests in kiva/agg/src/dummy.cpp
 
 
-black =      (0.0, 0.0, 0.0, 1.0)
-white =      (1.0, 1.0, 1.0, 1.0)
-lightgray =  (0.2, 0.2, 0.2, 1.0)
-red =        (1.0, 0.0, 0.0, 1.0)
-green =      (0.0, 1.0, 0.0, 1.0)
-blue =       (0.0, 0.0, 1.0, 1.0)
-niceblue =   (0.411, 0.584, 0.843, 1.0)
+black = (0.0, 0.0, 0.0, 1.0)
+white = (1.0, 1.0, 1.0, 1.0)
+lightgray = (0.2, 0.2, 0.2, 1.0)
+red = (1.0, 0.0, 0.0, 1.0)
+green = (0.0, 1.0, 0.0, 1.0)
+blue = (0.0, 0.0, 1.0, 1.0)
+niceblue = (0.411, 0.584, 0.843, 1.0)
 
-PI = 3.141592654
+PI = 3.141_592_654
+
 
 def draw_sub_image(gc, width, height):
     gc.clear(white)
-    fill_color = green[:3] + (0.4,) #We want green, but with an alpha of 0.4
+    fill_color = green[:3] + (0.4,)  # We want green, but with an alpha of 0.4
     gc.set_fill_color(fill_color)
-    gc.rect(0,0,width,height)
+    gc.rect(0, 0, width, height)
     gc.fill_path()
 
     gc.set_stroke_color(red)
@@ -35,32 +36,32 @@ def draw_sub_image(gc, width, height):
 
 def test_arc_to2(gc, x2, y2, radiusstep=25.0):
     gc.set_stroke_color(lightgray)
-    gc.move_to(0,0)
-    gc.line_to(100,0)
+    gc.move_to(0, 0)
+    gc.line_to(100, 0)
     gc.line_to(x2, y2)
     gc.stroke_path()
     gc.set_stroke_color(black)
 
     numradii = 7
     for i in range(numradii):
-        gc.move_to(0,0)
-        gc.arc_to(100, 0, x2, y2, i*radiusstep+20.0)
+        gc.move_to(0, 0)
+        gc.arc_to(100, 0, x2, y2, i * radiusstep + 20.0)
     gc.stroke_path()
 
 
 def test_arc_curve(gc):
     with gc:
         gc.translate_ctm(50.0, 50.0)
-        gc.rotate_ctm(PI/8)
+        gc.rotate_ctm(PI / 8)
         gc.set_stroke_color(blue)
         gc.rect(0.5, 0.5, 210, 210)
         gc.stroke_path()
         gc.set_stroke_color(black)
         gc.set_line_width(1)
         gc.move_to(50.5, 25.5)
-        gc.arc(50.5, 50.5, 50.0, 0.0, PI/2, False)
+        gc.arc(50.5, 50.5, 50.0, 0.0, PI / 2, False)
         gc.move_to(100.5, 50.5)
-        gc.arc(100.5, 50.5, 50.0, 0.0, -PI/2*0.8, False)
+        gc.arc(100.5, 50.5, 50.0, 0.0, -PI / 2 * 0.8, False)
         gc.stroke_path()
 
     with gc:
@@ -76,6 +77,7 @@ def test_arc_curve(gc):
         gc.close_path()
         gc.stroke_path()
 
+
 def test_arc_to(gc):
     # We don't have compiled paths yet, so we simulate them by python functions
     def axes(gc):
@@ -83,17 +85,19 @@ def test_arc_to(gc):
         gc.line_to(100.5, 50.5)
         gc.move_to(50.5, 0.5)
         gc.line_to(50.5, 100.5)
+
     def box(gc):
         gc.move_to(0.5, 0.5)
         gc.line_to(100.5, 0.5)
         gc.line_to(100.5, 100.5)
         gc.line_to(0.5, 100.5)
         gc.close_path()
+
     def arc(gc):
-        gc.move_to(10,10)
-        gc.line_to(20,10)
+        gc.move_to(10, 10)
+        gc.line_to(20, 10)
         gc.arc_to(40, 10, 40, 30, 20)
-        gc.line_to(40,40)
+        gc.line_to(40, 40)
 
     def whole_shebang(gc):
         with gc:
@@ -103,9 +107,9 @@ def test_arc_to(gc):
             arc(gc)
 
             gc.translate_ctm(50.5, 50.5)
-            gc.rotate_ctm(-PI/2)
+            gc.rotate_ctm(-PI / 2)
             arc(gc)
-            gc.rotate_ctm(PI/2)
+            gc.rotate_ctm(PI / 2)
 
             gc.translate_ctm(50.5, -50.5)
             gc.rotate_ctm(-PI)
@@ -113,7 +117,7 @@ def test_arc_to(gc):
             gc.rotate_ctm(PI)
 
             gc.translate_ctm(-50.5, -50.5)
-            gc.rotate_ctm(-3*PI/2)
+            gc.rotate_ctm(-3 * PI / 2)
             arc(gc)
 
     gc.set_stroke_color(red)
@@ -125,14 +129,14 @@ def test_arc_to(gc):
 
         gc.translate_ctm(130.5, 50.0)
         with gc:
-            gc.rotate_ctm(PI/6)
+            gc.rotate_ctm(PI / 6)
             whole_shebang(gc)
             gc.set_stroke_color(blue)
             gc.stroke_path()
 
         gc.translate_ctm(130.5, 0.0)
         with gc:
-            gc.rotate_ctm(PI/3)
+            gc.rotate_ctm(PI / 3)
             gc.scale_ctm(1.0, 2.0)
             whole_shebang(gc)
             gc.stroke_path()
@@ -148,6 +152,7 @@ def test_arc_to(gc):
     gc.scale_ctm(0.75, -1.0)
     test_arc_to2(gc, 160.5, 76.5, 50.0)
 
+
 def test_simple_clip_stack(gc):
     gc.clear(white)
     gc.clip_to_rect(100.0, 100.0, 1.0, 1.0)
@@ -155,13 +160,16 @@ def test_simple_clip_stack(gc):
     gc.set_fill_color(red)
     gc.fill_path()
 
+
 def test_clip_stack(gc):
-    sub_windows = ((10.5, 250, 200, 200),
-                   (220.5, 250, 200, 200),
-                   (430.5, 250, 200, 200),
-                   (10.5, 10, 200, 200),
-                   (220.5, 10, 200, 200),
-                   (430.5, 10, 200, 200))
+    sub_windows = (
+        (10.5, 250, 200, 200),
+        (220.5, 250, 200, 200),
+        (430.5, 250, 200, 200),
+        (10.5, 10, 200, 200),
+        (220.5, 10, 200, 200),
+        (430.5, 10, 200, 200),
+    )
     gc.set_line_width(2)
     gc.set_stroke_color(black)
     gc.rects(sub_windows)
@@ -169,10 +177,8 @@ def test_clip_stack(gc):
 
     img = GraphicsContext((200, 200))
 
-    main_rects = ((40.5, 30.5, 120, 50),
-                  (40.5, 120.5, 120, 50))
-    disjoint_rects = ((60.5, 115.5, 80, 15),
-                      (60.5, 70.5, 80, 15))
+    main_rects = ((40.5, 30.5, 120, 50), (40.5, 120.5, 120, 50))
+    disjoint_rects = ((60.5, 115.5, 80, 15), (60.5, 70.5, 80, 15))
     vert_rect = (60.5, 10.5, 55, 180)
 
     # Draw the full image
@@ -182,7 +188,7 @@ def test_clip_stack(gc):
 
     # First clip
     img.clip_to_rects(main_rects)
-    draw_sub_image(img, 200, 200);
+    draw_sub_image(img, 200, 200)
     gc.draw_image(img, sub_windows[1])
 
     # Second Clip
@@ -211,17 +217,18 @@ def test_clip_stack(gc):
     draw_sub_image(img, 200, 200)
     gc.draw_image(img, sub_windows[5])
 
+
 def test_handling_text(gc):
-    font = Font(face_name="Arial", size = 32)
+    font = Font(face_name="Arial", size=32)
     gc.set_font(font)
     gc.translate_ctm(100.0, 100.0)
-    gc.move_to(-5,0)
-    gc.line_to(5,0)
-    gc.move_to(0,5)
-    gc.line_to(0,-5)
-    gc.move_to(0,0)
+    gc.move_to(-5, 0)
+    gc.line_to(5, 0)
+    gc.move_to(0, 5)
+    gc.line_to(0, -5)
+    gc.move_to(0, 0)
     gc.stroke_path()
-    txtRot = affine.affine_from_rotation(PI/6)
+    txtRot = affine.affine_from_rotation(PI / 6)
     gc.set_text_matrix(txtRot)
     gc.show_text("Hello")
     txtRot = affine.invert(txtRot)
@@ -229,19 +236,18 @@ def test_handling_text(gc):
     gc.show_text("inverted")
 
 
-
 if __name__ == "__main__":
     from kiva import ps, svg
+
     tests = (
         test_clip_stack,
-#        test_arc_to, # not supported
+        #        test_arc_to, # not supported
         test_handling_text,
     )
-    gcs = { 'eps': ps.PSGC, 'svg': svg.GraphicsContext }
+    gcs = {"eps": ps.PSGC, "svg": svg.GraphicsContext}
 
     for fmt, gc in gcs.items():
         for test_func in tests:
             context = gc((800, 600))
             test_func(context)
-            context.save(test_func.__name__ + '.' + fmt)
-
+            context.save(test_func.__name__ + "." + fmt)

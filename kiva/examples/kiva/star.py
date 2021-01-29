@@ -31,17 +31,18 @@ def stars():
         for i in range(0, 600, 5):
             with gc:
                 gc.translate_ctm(i, i)
-                gc.rotate_ctm(i * pi / 180.)
+                gc.rotate_ctm(i * pi / 180.0)
                 add_star(gc)
                 gc.draw_path()
 
     gc.set_fill_color((0.5, 0.5, 0.5, 0.4))
     gc.rect(150, 150, 200, 200)
     gc.fill_path()
-    with tempfile.NamedTemporaryFile(suffix='.bmp') as fid:
+    with tempfile.NamedTemporaryFile(suffix=".bmp") as fid:
         gc.save(fid.name)
-        image = Image.from_file(fid.name, resist_width='weak',
-                                resist_height='weak')
+        image = Image.from_file(
+            fid.name, resist_width="weak", resist_height="weak"
+        )
     return image
 
 
@@ -58,7 +59,7 @@ class Demo(DemoFrame):
             image.top == container.contents_top,
             image.bottom == container.contents_bottom,
             image.layout_width == ratio * image.layout_height,
-            ]
+        ]
 
         return container
 

@@ -19,7 +19,7 @@ with gc:
     gc.set_antialias(False)
     gc.set_fill_color((0, 1, 0))
     gc.translate_ctm(50, 50)
-    gc.rotate_ctm(3.1416/4)
+    gc.rotate_ctm(3.1416 / 4)
     gc.show_text("hello")
     gc.translate_ctm(-50, -50)
     gc.set_text_matrix(AffineMatrix())
@@ -27,7 +27,7 @@ with gc:
     gc.show_text("hello")
 
 t2 = perf_counter()
-print('aliased:', t2 - t1)
+print("aliased:", t2 - t1)
 gc.save("text_aliased.bmp")
 
 gc = GraphicsContextArray((200, 200))
@@ -43,7 +43,7 @@ with gc:
     gc.set_antialias(True)
     gc.set_fill_color((0, 1, 0))
     gc.translate_ctm(50, 50)
-    gc.rotate_ctm(3.1416/4)
+    gc.rotate_ctm(3.1416 / 4)
     gc.show_text("hello")
     gc.translate_ctm(-50, -50)
     gc.set_text_matrix(AffineMatrix())
@@ -51,7 +51,7 @@ with gc:
     gc.show_text("hello")
 
 t2 = perf_counter()
-print('antialiased:', t2 - t1)
+print("antialiased:", t2 - t1)
 gc.save("text_antialiased.bmp")
 
 """
