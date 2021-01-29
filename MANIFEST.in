@@ -7,12 +7,14 @@ include image_LICENSE.txt
 include image_LICENSE_*.txt
 include docs/Makefile
 include docs/kiva/agg/notes
-include kiva/_cython_speedups.cpp
+include kiva/_cython_speedups.*
 include kiva/_hit_test.*
 recursive-include docs *.py *.rst *.txt *.css *.png *.ico *.doc
 recursive-include enable/examples *.py *.svg *.jpg *.enaml
 recursive-include kiva/examples *.py *.txt *.gif *.jpg
 recursive-include kiva/agg *.py *.i *.cpp *.h *.c
+recursive-include kiva/agg/agg-24 *
+recursive-include kiva/agg/freetype2 *
 recursive-include kiva/agg/LICENSES *
 recursive-include kiva/fonttools/tests/data *.ttc *.ttf
 recursive-include kiva/fonttools/LICENSES *
