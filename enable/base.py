@@ -134,18 +134,21 @@ def intersect_coordinates ( coordinates1, coordinates2 ):
         return ( xl, yb, xr, yt )
     return empty_rectangle
 
-def intersect_bounds ( bounds1, bounds2 ):
+def intersect_bounds( bounds1, bounds2 ):
     "Compute the intersection of two bounds rectangles"
     if (bounds1 is empty_rectangle) or (bounds2 is empty_rectangle):
         return empty_rectangle
+    x1, y1, w1, h1 = bounds1
+    x2, y2, w2, h2 = bounds2
 
-    intersection = intersect_coordinates(
-                        bounds_to_coordinates( bounds1 ),
-                        bounds_to_coordinates( bounds2 ) )
-    if intersection is empty_rectangle:
+    x = max(x1, x2)
+    y = max(y1, y2)
+    w = min(w1 - x2 + x1, w2 - x1 + x2, w1, w2)
+    h = min(h1 - y2 + y1, h2 - y1 + y2, h1, h2)
+    if w <= 0 or h <= 0:
         return empty_rectangle
-    xl, yb, xr, yt = intersection
-    return ( xl, yb, xr - xl, yt - yb )
+    else:
+        return (x,y,w,h)
 
 def union_coordinates ( coordinates1, coordinates2 ):
     "Compute the union of two coordinate based rectangles"
