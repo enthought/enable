@@ -5,7 +5,6 @@ from enable.api import BaseTool, ColorTrait, LineStyle
 from traits.api import Bool, Float, HasTraits, List, Tuple, on_trait_change
 
 
-
 class Crosshair(BaseTool):
     """ Display a crosshair at the given SVG coordinates.
 
@@ -14,7 +13,7 @@ class Crosshair(BaseTool):
     """
 
     svg_coords = Tuple(Float, Float)
-    line_color = ColorTrait('black')
+    line_color = ColorTrait("black")
     line_width = Float(1.0)
     line_style = LineStyle("solid")
 
@@ -22,7 +21,7 @@ class Crosshair(BaseTool):
     mouse_in = Bool(False)
 
     visible = True
-    draw_mode = 'overlay'
+    draw_mode = "overlay"
 
     def draw(self, gc, view_bounds=None):
         """ Draws this tool on a graphics context.
@@ -43,10 +42,10 @@ class Crosshair(BaseTool):
             gc.set_stroke_color(self.line_color_)
             gc.set_line_width(self.line_width)
             gc.set_line_dash(self.line_style_)
-            gc.move_to(self.component.x, y+0.5)
-            gc.line_to(self.component.x2, y+0.5)
-            gc.move_to(x-0.5, self.component.y)
-            gc.line_to(x-0.5, self.component.y2)
+            gc.move_to(self.component.x, y + 0.5)
+            gc.line_to(self.component.x2, y + 0.5)
+            gc.move_to(x - 0.5, self.component.y)
+            gc.line_to(x - 0.5, self.component.y2)
             gc.stroke_path()
         finally:
             gc.restore_state()
@@ -76,7 +75,7 @@ class Crosshair(BaseTool):
         self.svg_coords = event.x, y
         event.handled = True
 
-    @on_trait_change('svg_coords,mouse_in')
+    @on_trait_change("svg_coords,mouse_in")
     def ensure_redraw(self):
         if self.component is not None:
             self.component.invalidate_and_redraw()
@@ -99,15 +98,14 @@ class MultiController(HasTraits):
         """ Synch a new Crosshair.
         """
         if crosshair not in self.crosshairs:
-            self.sync_trait('svg_coords', crosshair)
-            self.sync_trait('mouse_in', crosshair)
+            self.sync_trait("svg_coords", crosshair)
+            self.sync_trait("mouse_in", crosshair)
             self.crosshairs.append(crosshair)
 
     def remove(self, crosshair):
         """ Unsynch a recorded Crosshair.
         """
         if crosshair in self.crosshairs:
-            self.sync_trait('svg_coords', crosshair, remove=True)
-            self.sync_trait('mouse_in', crosshair, remove=True)
+            self.sync_trait("svg_coords", crosshair, remove=True)
+            self.sync_trait("mouse_in", crosshair, remove=True)
             self.crosshairs.append(crosshair)
-

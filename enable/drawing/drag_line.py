@@ -20,25 +20,25 @@ class DragLine(DrawingTool):
     line = Instance(Line, args=())
 
     # Override the default value of this inherited trait
-    draw_mode="overlay"
+    draw_mode = "overlay"
 
     def reset(self):
         self.line.vertex_color = self.vertex_color
         self.line.points = []
         self.event_state = "normal"
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # "complete" state
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def complete_draw(self, gc):
         """ Draw the completed line. """
         self.line.line_dash = None
         self.line._draw_mainlayer(gc)
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # "drawing" state
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def drawing_draw(self, gc):
         self.line.line_dash = (4.0, 2.0)
@@ -46,8 +46,8 @@ class DragLine(DrawingTool):
 
     def drawing_left_up(self, event):
         """ Handle the left mouse button coming up in the 'drawing' state. """
-        self.event_state = 'complete'
-        event.window.set_pointer('arrow')
+        self.event_state = "complete"
+        event.window.set_pointer("arrow")
         self.request_redraw()
         self.complete = True
         event.handled = True
@@ -60,15 +60,15 @@ class DragLine(DrawingTool):
             self.line.points.append((event.x + self.x, event.y - self.y))
             self.request_redraw()
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # "normal" state
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def normal_left_down(self, event):
         """ Handle the left button down in the 'normal' state. """
 
         self.line.points.append((event.x + self.x, event.y - self.y))
-        self.event_state = 'drawing'
-        event.window.set_pointer('pencil')
+        self.event_state = "drawing"
+        event.window.set_pointer("pencil")
         event.handled = True
         self.request_redraw()

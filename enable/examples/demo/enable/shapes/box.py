@@ -6,9 +6,9 @@ class Box(Shape):
     """ A moveable box shape. """
 
     # Protected 'Component' interface.
-    #---------------------------------
+    # ---------------------------------
 
-    def _draw_mainlayer(self, gc, view_bounds=None, mode='default'):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         """ Draw the component. """
         with gc:
             gc.set_fill_color(self._get_fill_color(self.event_state))

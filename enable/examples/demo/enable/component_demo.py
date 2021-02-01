@@ -9,7 +9,7 @@ from traitsui.api import Item, View
 
 class MyComponent(Component):
     def draw(self, gc, **kwargs):
-        w,h = gc.width(), gc.height()
+        w, h = gc.width(), gc.height()
         gc.clear()
 
         # Draw a rounded rect just inside the bounds
@@ -18,20 +18,12 @@ class MyComponent(Component):
 
         r = 15
         b = 3
-        gc.move_to(b, h/2)
-        gc.arc_to(b, h-b,
-                  w/2, h-b,
-                  r)
-        gc.arc_to(w-b, h-b,
-                  w-b, h/2,
-                  r)
-        gc.arc_to(w-b, b,
-                  w/2, b,
-                  r)
-        gc.arc_to(b, b,
-                  b, h/2,
-                  r)
-        gc.line_to(b, h/2)
+        gc.move_to(b, h / 2)
+        gc.arc_to(b, h - b, w / 2, h - b, r)
+        gc.arc_to(w - b, h - b, w - b, h / 2, r)
+        gc.arc_to(w - b, b, w / 2, b, r)
+        gc.arc_to(b, b, b, h / 2, r)
+        gc.line_to(b, h / 2)
         gc.stroke_path()
 
     def normal_key_pressed(self, event):
@@ -41,9 +33,17 @@ class MyComponent(Component):
 class Demo(HasTraits):
     canvas = Instance(Component)
 
-    traits_view = View(Item('canvas', editor=ComponentEditor(),
-                            show_label=False, width=200, height=200),
-                       resizable=True, title="Component Example")
+    traits_view = View(
+        Item(
+            "canvas",
+            editor=ComponentEditor(),
+            show_label=False,
+            width=200,
+            height=200,
+        ),
+        resizable=True,
+        title="Component Example",
+    )
 
     def _canvas_default(self):
         return MyComponent()

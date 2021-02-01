@@ -15,8 +15,12 @@ undo/redo infrastructure.
 
 """
 
-from pyface.undo.api import (CommandStack, ICommandStack, IUndoManager,
-                               UndoManager)
+from pyface.undo.api import (
+    CommandStack,
+    ICommandStack,
+    IUndoManager,
+    UndoManager,
+)
 from pyface.undo.action.api import UndoAction, RedoAction
 from pyface.action.api import Action, Group, MenuBarManager, MenuManager
 from traits.api import Instance
@@ -41,50 +45,51 @@ class UndoableMoveApplication(DemoApplication):
     #: The command stack that the MoveCommandTool will use.
     command_stack = Instance(ICommandStack)
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # DemoApplication interface
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def _create_window(self):
-        box = Box(bounds=[100,100], position=[50,50], color='red')
+        box = Box(bounds=[100, 100], position=[50, 50], color="red")
 
-        move_tool = MoveCommandTool(component=box,
-                                    command_stack=self.command_stack)
+        move_tool = MoveCommandTool(
+            component=box, command_stack=self.command_stack
+        )
         box.tools.append(move_tool)
 
         container = Container(bounds=[600, 600])
         container.add(box)
 
-        undo_tool = UndoTool(component=container,
-                             undo_manager=self.undo_manager,
-                             undo_keys=[KeySpec('Left')],
-                             redo_keys=[KeySpec('Right')])
+        undo_tool = UndoTool(
+            component=container,
+            undo_manager=self.undo_manager,
+            undo_keys=[KeySpec("Left")],
+            redo_keys=[KeySpec("Right")],
+        )
         container.tools.append(undo_tool)
 
         window = Window(self.control, -1, component=container)
         return window
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Traits handlers
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def _menu_bar_manager_default(self):
         # Create an action that exits the application.
-        exit_action = Action(name='E&xit', on_perform=self.close)
+        exit_action = Action(name="E&xit", on_perform=self.close)
         self.exit_action = exit_action
-        file_menu = MenuManager(name='&File')
+        file_menu = MenuManager(name="&File")
         file_menu.append(Group(exit_action))
 
-        self.undo = UndoAction(undo_manager=self.undo_manager,
-                               accelerator='Ctrl+Z')
-        self.redo = RedoAction(undo_manager=self.undo_manager,
-                               accelerator='Ctrl+Shift+Z')
+        self.undo = UndoAction(
+            undo_manager=self.undo_manager, accelerator="Ctrl+Z"
+        )
+        self.redo = RedoAction(
+            undo_manager=self.undo_manager, accelerator="Ctrl+Shift+Z"
+        )
         menu_bar_manager = MenuBarManager(
-            file_menu,
-            MenuManager(
-                self.undo,
-                self.redo,
-                name='&Edit')
+            file_menu, MenuManager(self.undo, self.redo, name="&Edit")
         )
         return menu_bar_manager
 

@@ -13,9 +13,9 @@ from enable.api import Component, ComponentEditor, Window
 # PyQt/traits problem (see below) we can't because it would drag in traits too
 # early.  Until it is fixed we just assume wx if we can import it.
 # Force the selection of a valid toolkit.
-#import enable.toolkit
+# import enable.toolkit
 if not ETSConfig.toolkit:
-    for toolkit, toolkit_module in (('wx', 'wx'), ('qt4', 'PyQt4')):
+    for toolkit, toolkit_module in (("wx", "wx"), ("qt4", "PyQt4")):
         try:
             exec("import " + toolkit_module)
             ETSConfig.toolkit = toolkit
@@ -26,15 +26,16 @@ if not ETSConfig.toolkit:
         raise RuntimeError("Can't load wx or qt4 backend for Chaco.")
 
 
-if ETSConfig.toolkit == 'wx' or ETSConfig.toolkit == 'qt4':
+if ETSConfig.toolkit == "wx" or ETSConfig.toolkit == "qt4":
 
     class DemoFrame(HasTraits):
 
         component = Instance(Component)
 
-        traits_view = View(Item('component', editor=ComponentEditor(),
-                                show_label=False),
-                           resizable=True)
+        traits_view = View(
+            Item("component", editor=ComponentEditor(), show_label=False),
+            resizable=True,
+        )
 
         def _component_default(self):
             return self._create_component()
@@ -44,15 +45,13 @@ if ETSConfig.toolkit == 'wx' or ETSConfig.toolkit == 'qt4':
             container with nested components """
             raise NotImplementedError
 
-
-    def demo_main(demo_class, size=(640,480), title="Enable Example"):
+    def demo_main(demo_class, size=(640, 480), title="Enable Example"):
         demo_class().configure_traits()
 
 
-elif ETSConfig.toolkit == 'pyglet':
+elif ETSConfig.toolkit == "pyglet":
 
     from pyglet import app
-    from pyglet import clock
 
     class DemoFrame(object):
         def __init__(self):
@@ -71,8 +70,7 @@ elif ETSConfig.toolkit == 'pyglet':
         def _create_window(self):
             return Window(self, -1, component=self._create_component())
 
-
-    def demo_main(demo_class, size=(640,480), title="Enable Example"):
+    def demo_main(demo_class, size=(640, 480), title="Enable Example"):
         """ Runs a simple application in Pyglet using an instance of
         **demo_class** as the main window or frame.
 

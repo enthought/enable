@@ -13,6 +13,7 @@ class Circle(Component):
     The circle moves with the mouse cursor but leaves a translucent version of
     itself in its original position until the mouse button is released.
     """
+
     color = (0.3, 0.4, 0.8, 1.0)
     bgcolor = "none"
 
@@ -34,8 +35,8 @@ class Circle(Component):
             gc.set_fill_color(self.color)
             dx, dy = self.bounds
             x, y = self.position
-            radius = min(dx/2.0, dy/2.0)
-            gc.arc(x+dx/2.0, y+dy/2.0, radius, 0.0, 2*3.14159)
+            radius = min(dx / 2.0, dy / 2.0)
+            gc.arc(x + dx / 2.0, y + dy / 2.0, radius, 0.0, 2 * 3.14159)
             gc.fill_path()
 
     def normal_left_down(self, event):
@@ -48,15 +49,16 @@ class Circle(Component):
         else:
             klass = DashedCircle
         dx, dy = self.bounds
-        self.shadow = klass(bounds=self.bounds, position=self.position,
-                            color=self.color)
+        self.shadow = klass(
+            bounds=self.bounds, position=self.position, color=self.color
+        )
         self.container.add(self.shadow)
         x, y = self.position
         self.offset_x = event.x - x
         self.offset_y = event.y - y
 
     def moving_mouse_move(self, event):
-        self.position = [event.x-self.offset_x, event.y-self.offset_y]
+        self.position = [event.x - self.offset_x, event.y - self.offset_y]
         self.request_redraw()
 
     def moving_left_up(self, event):
@@ -78,11 +80,11 @@ class LightCircle(Component):
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         with gc:
-            gc.set_fill_color(self.color[0:3] + (self.color[3]*0.3,))
+            gc.set_fill_color(self.color[0:3] + (self.color[3] * 0.3,))
             dx, dy = self.bounds
             x, y = self.position
-            radius = min(dx/2.0, dy/2.0)
-            gc.arc(x+dx/2.0, y+dy/2.0, radius, 0.0, 2*3.14159)
+            radius = min(dx / 2.0, dy / 2.0)
+            gc.arc(x + dx / 2.0, y + dy / 2.0, radius, 0.0, 2 * 3.14159)
             gc.fill_path()
 
 
@@ -98,25 +100,35 @@ class DashedCircle(Component):
             gc.set_fill_color(self.color)
             dx, dy = self.bounds
             x, y = self.position
-            radius = min(dx/2.0, dy/2.0)
-            gc.arc(x+dx/2.0, y+dy/2.0, radius, 0.0, 2*3.14159)
-            gc.set_stroke_color(self.color[0:3] + (self.color[3]*0.8,))
+            radius = min(dx / 2.0, dy / 2.0)
+            gc.arc(x + dx / 2.0, y + dy / 2.0, radius, 0.0, 2 * 3.14159)
+            gc.set_stroke_color(self.color[0:3] + (self.color[3] * 0.8,))
             gc.set_line_dash(self.line_dash)
             gc.stroke_path()
 
 
 class Demo(DemoFrame):
-
     def _create_component(self):
-        container = Container(bounds=[800, 600], bgcolor=(0.9, 0.7, 0.7, 1.0),
-                              auto_size=False, fit_window=False)
-        circle1 = Circle(bounds=[75,75], position=[100,100],
-                         shadow_type="dashed")
+        container = Container(
+            bounds=[800, 600],
+            bgcolor=(0.9, 0.7, 0.7, 1.0),
+            auto_size=False,
+            fit_window=False,
+        )
+        circle1 = Circle(
+            bounds=[75, 75], position=[100, 100], shadow_type="dashed"
+        )
         container.add(circle1)
 
-        scr = Scrolled(container, bounds=[200,200], position=[50,50],
-                       stay_inside=True, vertical_anchor='top',
-                       horizontal_anchor='left', fit_window=False)
+        scr = Scrolled(
+            container,
+            bounds=[200, 200],
+            position=[50, 50],
+            stay_inside=True,
+            vertical_anchor="top",
+            horizontal_anchor="left",
+            fit_window=False,
+        )
         return scr
 
 

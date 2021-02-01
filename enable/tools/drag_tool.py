@@ -1,8 +1,8 @@
 """ Defines the base DragTool class.
 """
 # Enthought library imports
-from traits.api import Bool, Enum, Tuple, Property, cached_property, List, Str
 from enable.base_tool import BaseTool, KeySpec
+from traits.api import Bool, Enum, List, Property, Str, Tuple, cached_property
 
 
 class DragTool(BaseTool):
@@ -37,9 +37,9 @@ class DragTool(BaseTool):
     # surrounding "mouse_leave" events: see note on `end_drag_on_leave` flag.
     capture_mouse = Bool(True)
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Private traits used by DragTool
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     # The possible states of this tool.
     _drag_state = Enum("nondrag", "dragging")
@@ -53,11 +53,11 @@ class DragTool(BaseTool):
 
     # private property to hold the current list of KeySpec instances of the
     # cancel keys
-    _cancel_keys = Property(List(KeySpec), depends_on='cancel_keys')
+    _cancel_keys = Property(List(KeySpec), depends_on="cancel_keys")
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Interface for subclasses
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def is_draggable(self, x, y):
         """ Returns whether the (x,y) position is in a region that is OK to
@@ -99,9 +99,9 @@ class DragTool(BaseTool):
         """
         pass
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Private methods for handling drag
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def _dispatch_stateful_event(self, event, suffix):
         # We intercept a lot of the basic events and re-map them if
@@ -135,8 +135,8 @@ class DragTool(BaseTool):
         return outcome
 
     def _drag_cancel_keypressed(self, event):
-        if self._drag_state != "nondrag" and \
-                         any(map(lambda x: x.match(event), self._cancel_keys)):
+        if (self._drag_state != "nondrag"
+                and any(map(lambda x: x.match(event), self._cancel_keys))):
             return self._cancel_drag(event)
         else:
             return False
@@ -145,13 +145,16 @@ class DragTool(BaseTool):
         state = self._drag_state
         button_down = getattr(event, self.drag_button + "_down")
         if state == "nondrag":
-            if button_down and self._mouse_down_received and \
-                   self.is_draggable(*self.mouse_down_position):
+            if (button_down
+                    and self._mouse_down_received
+                    and self.is_draggable(*self.mouse_down_position)):
                 self._drag_state = "dragging"
                 if self.capture_mouse:
                     event.window.set_mouse_owner(
-                        self, transform=event.net_transform(),
-                        history=event.dispatch_history)
+                        self,
+                        transform=event.net_transform(),
+                        history=event.dispatch_history,
+                    )
                 self.drag_start(event)
                 return self._drag_mouse_move(event)
             return False
@@ -197,9 +200,9 @@ class DragTool(BaseTool):
             pass
         return False
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Private methods for trait getter/setters
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     @cached_property
     def _get__cancel_keys(self):

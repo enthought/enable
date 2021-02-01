@@ -1,4 +1,4 @@
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Copyright (c) 2011, Enthought, Inc.
 # All rights reserved.
 #
@@ -7,12 +7,14 @@
 # under the conditions described in the aforementioned license.  The license
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 # Thanks for using Enthought open source!
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 from kiva.svg import CompiledPath, GraphicsContext, font_metrics_provider
 
+
 class NativeScrollBar(object):
     pass
+
 
 class Window(object):
     pass

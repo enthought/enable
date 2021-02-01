@@ -10,7 +10,7 @@ class Circle(Shape):
     radius = Float
 
     # 'CoordinateBox' interface.
-    #---------------------------
+    # ---------------------------
 
     def _bounds_changed(self):
         """ Static trait change handler. """
@@ -18,30 +18,36 @@ class Circle(Shape):
         self.radius = min(w, h) / 2.0
 
     # 'Component' interface.
-    #-----------------------
+    # -----------------------
 
     def is_in(self, x, y):
         """ Return True if a point is considered to be 'in' the component. """
         return self._distance_between(self.center, (x, y)) <= self.radius
 
     # Protected 'Component' interface.
-    #---------------------------------
+    # ---------------------------------
 
-    def _draw_mainlayer(self, gc, view_bounds=None, mode='default'):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         """ Draw the component. """
         with gc:
             gc.set_fill_color(self._get_fill_color(self.event_state))
 
             x, y = self.position
-            gc.arc(x + self.radius, y + self.radius, self.radius, 0,
-                   2*3.14159, False)
+            gc.arc(
+                x + self.radius,
+                y + self.radius,
+                self.radius,
+                0,
+                2 * 3.14159,
+                False,
+            )
             gc.fill_path()
 
             # Draw the shape's text.
             self._draw_text(gc)
 
     # 'Circle' interface.
-    #--------------------
+    # --------------------
 
     def _radius_changed(self):
         """ Static trait change handler. """

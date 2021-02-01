@@ -1,6 +1,6 @@
+import unittest
 
 import numpy as np
-import unittest
 
 from enable.kiva_graphics_context import GraphicsContext
 

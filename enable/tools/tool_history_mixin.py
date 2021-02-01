@@ -28,9 +28,9 @@ class ToolHistoryMixin(HasTraits):
     # The current index into _history
     _history_index = Int
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Abstract methods that subclasses must implement to handle keypresses
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def _next_state_pressed(self):
         """ Called when the tool needs to advance to the next state in the
@@ -57,10 +57,9 @@ class ToolHistoryMixin(HasTraits):
         """
         pass
 
-
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Protected methods for subclasses to use
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def _current_state(self):
         """ Returns the current history state.
@@ -83,7 +82,7 @@ class ToolHistoryMixin(HasTraits):
         match the new, truncated history. If it is False, the history index
         is unchanged.
         """
-        new_history = self._history[:self._history_index+1] + [state]
+        new_history = self._history[: self._history_index + 1] + [state]
         self._history = new_history
         if set_index:
             self._history_index = len(self._history) - 1
@@ -106,9 +105,9 @@ class ToolHistoryMixin(HasTraits):
 
         return self._history.pop()
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Private methods / event handlers
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def normal_key_pressed(self, event):
         """ Handles a key being pressed, and takes appropriate action if it is

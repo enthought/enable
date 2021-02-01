@@ -21,7 +21,8 @@ class KeySpec(object):
 
     or a trait::
 
-        magic_key = Instance(KeySpec, args=("Right", "control"), kw={'ignore': ['shift']})
+        magic_key = Instance(KeySpec, args=("Right", "control"),
+                             kw={'ignore': ['shift']})
 
     and then check to see if the key was pressed by calling::
 
@@ -32,6 +33,7 @@ class KeySpec(object):
     are specifying the user pressing Ctrl + Right_arrow with Alt not pressed
     and Shift either pressed or not.
     """
+
     def __init__(self, key, *modifiers, **kwmods):
         """ Creates this key spec with the given modifiers. """
         self.key = key
@@ -39,7 +41,7 @@ class KeySpec(object):
         self.alt = "alt" in mods
         self.shift = "shift" in mods
         self.control = "control" in mods
-        ignore = kwmods.get('ignore', [])
+        ignore = kwmods.get("ignore", [])
         self.ignore = set(m.lower() for m in ignore)
 
     def match(self, event):
@@ -47,20 +49,23 @@ class KeySpec(object):
         Returns True if the given Enable key_pressed event matches this key
         specification.
         """
-        return (self.key == getattr(event, 'character',None)) and \
-           ('alt' in self.ignore or self.alt == event.alt_down) and \
-           ('control' in self.ignore or self.control == event.control_down) and \
-           ('shift' in self.ignore or self.shift == event.shift_down)
+        return (
+            (self.key == getattr(event, "character", None))
+            and ("alt" in self.ignore or self.alt == event.alt_down)
+            and (
+                "control" in self.ignore or self.control == event.control_down
+            )
+            and ("shift" in self.ignore or self.shift == event.shift_down)
+        )
 
     @classmethod
     def from_string(cls, s):
         """ Create a KeySpec from a string joined by '+' characters. """
-        codes = s.split('+')
+        codes = s.split("+")
         key = codes[-1]
         modifiers = set(code.lower() for code in codes[:-1])
-        ignore = set('alt', 'shift', 'control') - modifiers
+        ignore = set("alt", "shift", "control") - modifiers
         return cls(key, *modifiers, ignore=ignore)
-
 
 
 class BaseTool(Interactor):
@@ -70,7 +75,8 @@ class BaseTool(Interactor):
     participate in layout, but are instead attached to a Component, which
     dispatches methods to the tool and calls the tools' draw() method.
 
-    See docs/event_handling.txt for more information on how tools are structured.
+    See docs/event_handling.txt for more information on how tools are
+    structured.
     """
 
     # The component that this tool is attached to.
@@ -104,10 +110,9 @@ class BaseTool(Interactor):
     #     needs to render.
     draw_mode = Enum("none", "overlay", "normal")
 
-
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Concrete methods
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def __init__(self, component=None, **kwtraits):
         if "component" in kwtraits:
@@ -130,9 +135,9 @@ class BaseTool(Interactor):
         if handler is not None:
             handler(event)
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Abstract methods that subclasses should implement
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def draw(self, gc, view_bounds=None):
         """ Draws this tool on a graphics context.

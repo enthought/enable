@@ -10,7 +10,6 @@ UndoTool
 ========
 
 Tool that triggers undo or redo when keys are pressed.
-
 """
 
 # Enthought library imports
@@ -22,12 +21,13 @@ from .command_tool import BaseUndoTool
 
 
 # default undo/redo/clear key specifications
-ctrl_z = KeySpec('z', 'control')
-ctrl_shift_z = KeySpec('z', 'control', 'shift')
+ctrl_z = KeySpec("z", "control")
+ctrl_shift_z = KeySpec("z", "control", "shift")
 
 
 class UndoTool(BaseUndoTool):
-    """ Tool that triggers undo or redo when keys are pressed """
+    """ Tool that triggers undo or redo when keys are pressed
+    """
 
     #: the key sequences which trigger undo actions
     undo_keys = List(Instance(KeySpec), [ctrl_z])
@@ -36,7 +36,8 @@ class UndoTool(BaseUndoTool):
     redo_keys = List(Instance(KeySpec), [ctrl_shift_z])
 
     def normal_key_pressed(self, event):
-        """ Respond to key presses which match either the undo or redo keys """
+        """ Respond to key presses which match either the undo or redo keys
+        """
         if self.undo_manager is not None:
             for key in self.undo_keys:
                 if key.match(event):

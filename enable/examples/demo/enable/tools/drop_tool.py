@@ -6,6 +6,7 @@ from enable.example_support import DemoFrame, demo_main
 from enable.api import Component, Container, Label
 from enable.tools.base_drop_tool import BaseDropTool
 
+
 class Box(Component):
 
     resizable = ""
@@ -17,6 +18,7 @@ class Box(Component):
             x, y = self.position
             gc.rect(x, y, dx, dy)
             gc.fill_path()
+
 
 class TextDropTool(BaseDropTool):
     """ Example implementation of a drop tool """
@@ -36,10 +38,9 @@ class TextDropTool(BaseDropTool):
 
 
 class MyFrame(DemoFrame):
-
     def _create_component(self):
         box = Box(bounds=[100.0, 100.0], position=[50.0, 50.0])
-        container = Container(bounds=[500,500])
+        container = Container(bounds=[500, 500])
         container.add(box)
         drop_tool = TextDropTool(component=container)
         container.tools.append(drop_tool)

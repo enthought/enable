@@ -12,6 +12,7 @@ class Box(Component):
     """
     The box moves wherever the user clicks and drags.
     """
+
     normal_pointer = Pointer("arrow")
     moving_pointer = Pointer("hand")
 
@@ -36,8 +37,9 @@ class Box(Component):
 
             # draw line around outer box
             gc.set_stroke_color((0, 0, 0, 1))
-            gc.rect(self.outer_x, self.outer_y, self.outer_width,
-                    self.outer_height)
+            gc.rect(
+                self.outer_x, self.outer_y, self.outer_width, self.outer_height
+            )
             gc.stroke_path()
 
     def normal_key_pressed(self, event):
@@ -69,14 +71,11 @@ class Box(Component):
 
 
 class Demo(DemoFrame):
-
     def _create_component(self):
         container = Container()
         box = Box(bounds=[100, 100], position=[50, 50], padding=15)
         container.add(box)
         return container
-
-
 
 
 if __name__ == "__main__":

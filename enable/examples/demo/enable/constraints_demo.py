@@ -1,7 +1,8 @@
 
 from enable.api import Component, ComponentEditor, ConstraintsContainer
-from enable.layout.api import (align, grid, horizontal, hbox, vbox, spacer,
-    vertical)
+from enable.layout.api import (
+    align, grid, hbox, horizontal, spacer, vbox, vertical
+)
 from traits.api import HasTraits, Bool, Instance, Str
 from traitsui.api import Item, View, HGroup, VGroup, CodeEditor
 
@@ -15,33 +16,32 @@ class Demo(HasTraits):
     share_layout = Bool(False)
 
     traits_view = View(
-                        HGroup(
-                            VGroup(
-                                Item('constraints_def',
-                                     editor=CodeEditor(),
-                                     height=100,
-                                     show_label=False,
-                                ),
-                                Item('share_layout'),
-                                Item('child_constraints_def',
-                                     editor=CodeEditor(),
-                                     height=100,
-                                     show_label=False,
-                                ),
-                            ),
-                            Item('canvas',
-                                 editor=ComponentEditor(),
-                                 show_label=False,
-                            ),
-                        ),
-                        resizable=True,
-                        title="Constraints Demo",
-                        width=1000,
-                        height=500,
-                 )
+        HGroup(
+            VGroup(
+                Item(
+                    "constraints_def",
+                    editor=CodeEditor(),
+                    height=100,
+                    show_label=False,
+                ),
+                Item("share_layout"),
+                Item(
+                    "child_constraints_def",
+                    editor=CodeEditor(),
+                    height=100,
+                    show_label=False,
+                ),
+            ),
+            Item("canvas", editor=ComponentEditor(), show_label=False),
+        ),
+        resizable=True,
+        title="Constraints Demo",
+        width=1000,
+        height=500,
+    )
 
     def _canvas_default(self):
-        parent = ConstraintsContainer(bounds=(500,500), padding=20)
+        parent = ConstraintsContainer(bounds=(500, 500), padding=20)
 
         one = Component(id="r", bgcolor=0xFF0000)
         two = Component(id="g", bgcolor=0x00FF00)
@@ -51,7 +51,9 @@ class Demo(HasTraits):
         return parent
 
     def _child_canvas_default(self):
-        parent = ConstraintsContainer(id="child", share_layout=self.share_layout)
+        parent = ConstraintsContainer(
+            id="child", share_layout=self.share_layout
+        )
 
         one = Component(id="c", bgcolor=0x00FFFF)
         two = Component(id="m", bgcolor=0xFF00FF)
@@ -80,7 +82,7 @@ class Demo(HasTraits):
 
         try:
             new_cns = eval(self.constraints_def)
-        except Exception as ex:
+        except Exception:
             return
 
         canvas.layout_constraints = new_cns
@@ -99,7 +101,7 @@ class Demo(HasTraits):
 
         try:
             new_cns = eval(self.child_constraints_def)
-        except Exception as ex:
+        except Exception:
             return
 
         canvas.layout_constraints = new_cns

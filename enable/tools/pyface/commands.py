@@ -22,6 +22,7 @@ from traits.util.camel_case import camel_case_to_words
 
 from enable.component import Component
 
+
 class ComponentCommand(AbstractCommand):
     """ Abstract command which operates on a Component """
 
@@ -35,14 +36,14 @@ class ComponentCommand(AbstractCommand):
     def __init__(self, component, **traits):
         super(ComponentCommand, self).__init__(component=component, **traits)
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # traits handlers
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def _component_name_default(self):
         if self.component is not None:
             return camel_case_to_words(self.component.__class__.__name__)
-        return ''
+        return ""
 
 
 class ResizeCommand(ComponentCommand):
@@ -85,14 +86,18 @@ class ResizeCommand(ComponentCommand):
     def __init__(self, component, new_rectangle=None, previous_rectangle=None,
                  **traits):
         if previous_rectangle is None:
-            previous_rectangle = tuple(component.position)+tuple(component.bounds)
+            previous_rectangle = tuple(component.position) + tuple(
+                component.bounds
+            )
 
         if new_rectangle is None:
-            if 'data' in traits:
-                data = traits.pop('data')
+            if "data" in traits:
+                data = traits.pop("data")
             else:
-                raise TypeError("ResizeCommand __init__ method requires "
-                                "'new_rectangle' argument.")
+                raise TypeError(
+                    "ResizeCommand __init__ method requires "
+                    "'new_rectangle' argument."
+                )
         else:
             data = new_rectangle
 
@@ -100,7 +105,8 @@ class ResizeCommand(ComponentCommand):
             component=component,
             data=data,
             previous_rectangle=previous_rectangle,
-            **traits)
+            **traits,
+        )
 
     @classmethod
     def move_command(cls, component, new_position, previous_position=None,
@@ -121,23 +127,25 @@ class ResizeCommand(ComponentCommand):
             component=component,
             new_rectangle=new_rectangle,
             previous_rectangle=previous_rectangle,
-            **traits)
+            **traits,
+        )
 
-
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # AbstractCommand interface
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def merge(self, other):
-        if self.mergeable and isinstance(other, self.__class__) and \
-                other.component == self.component:
+        if (self.mergeable
+                and isinstance(other, self.__class__)
+                and other.component == self.component):
             return self._merge_data(other)
         return super(ResizeCommand, self).merge(other)
 
     def do(self):
         if self.previous_rectangle == ():
-            self.previous_rectangle = tuple(self.component.position +
-                                            self.component.bounds)
+            self.previous_rectangle = tuple(
+                self.component.position + self.component.bounds
+            )
         self.redo()
 
     def redo(self):
@@ -146,9 +154,9 @@ class ResizeCommand(ComponentCommand):
     def undo(self):
         self._change_rectangle(self.previous_rectangle)
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Private interface
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def _change_rectangle(self, rectangle):
         x, y, w, h = rectangle
@@ -162,12 +170,12 @@ class ResizeCommand(ComponentCommand):
         self.mergeable = other.mergeable
         return True
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # traits handlers
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def _name_default(self):
-        return "Resize "+self.component_name
+        return "Resize " + self.component_name
 
 
 class MoveCommand(ComponentCommand):
@@ -195,7 +203,6 @@ class MoveCommand(ComponentCommand):
 
     The ``new_position`` argument is the same as the ``data`` trait on the
     class.  If both are provided, the ``new_position`` value is used.
-
     """
 
     #: The new position of the component as a tuple (x, y).
@@ -213,11 +220,13 @@ class MoveCommand(ComponentCommand):
             previous_position = component.position
 
         if new_position is None:
-            if 'data' in traits:
-                data = traits.pop('data')
+            if "data" in traits:
+                data = traits.pop("data")
             else:
-                raise TypeError("MoveCommand __init__ method requires "
-                                "'new_position' argument.")
+                raise TypeError(
+                    "MoveCommand __init__ method requires "
+                    "'new_position' argument."
+                )
         else:
             data = new_position
 
@@ -225,11 +234,12 @@ class MoveCommand(ComponentCommand):
             component=component,
             data=data,
             previous_position=previous_position,
-            **traits)
+            **traits,
+        )
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # AbstractCommand interface
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def do(self):
         self.redo()
@@ -241,29 +251,29 @@ class MoveCommand(ComponentCommand):
         self._change_position(self.previous_position)
 
     def merge(self, other):
-        if self.mergeable and isinstance(other, self.__class__) and \
-                other.component == self.component:
+        if (self.mergeable
+                and isinstance(other, self.__class__)
+                and other.component == self.component):
             return self._merge_data(other)
         return super(MoveCommand, self).merge(other)
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Private interface
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def _change_position(self, position):
         self.component.position = list(position)
         self.component._layout_needed = True
         self.component.request_redraw()
 
-
     def _merge_data(self, other):
         self.data = other.data
         self.mergeable = other.mergeable
         return True
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # traits handlers
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def _name_default(self):
-        return "Move "+self.component_name
+        return "Move " + self.component_name

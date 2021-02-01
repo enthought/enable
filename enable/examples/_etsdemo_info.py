@@ -32,7 +32,5 @@ def info(request):
     return {
         "version": 1,
         "name": "Enable Examples",
-        "root": (
-            pkg_resources.resource_filename("enable.examples", "demo")
-        )
+        "root": pkg_resources.resource_filename("enable.examples", "demo"),
     }

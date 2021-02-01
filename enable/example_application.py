@@ -16,6 +16,7 @@ in places where a DemoFrame is insufficient.
 
 from pyface.api import ApplicationWindow, GUI
 
+
 class DemoApplication(ApplicationWindow):
     """ Simple Pyface application displaying a component.
 
@@ -39,8 +40,8 @@ class DemoApplication(ApplicationWindow):
     def demo_main(cls, **traits):
         """ Create the demo application and start the mainloop, if needed
 
-        This should be called with appropriate arguments which will be passed to
-        the class' constructor.
+        This should be called with appropriate arguments which will be passed
+        to the class' constructor.
 
         """
         # get the Pyface GUI

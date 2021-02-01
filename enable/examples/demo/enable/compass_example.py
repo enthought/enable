@@ -3,7 +3,6 @@ from enable.example_support import demo_main, DemoFrame
 
 
 class Demo(DemoFrame):
-
     def _create_component(self):
         compass = Compass(scale=2, color="blue", clicked_color="red")
 

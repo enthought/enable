@@ -21,7 +21,6 @@ class MouseEventTool(BaseTool):
 
 @skip_if_not_wx
 class MouseWheelTestCase(TestCase):
-
     def setUp(self):
         import wx
 
@@ -33,9 +32,7 @@ class MouseWheelTestCase(TestCase):
         # set up wx components and tools
         self.parent = wx.Frame(None, size=(600, 600))
         self.window = Window(
-            self.parent,
-            size=(600, 600),
-            component=self.container
+            self.parent, size=(600, 600), component=self.container
         )
 
         # Hack: event processing code skips if window not actually shown by
@@ -56,8 +53,8 @@ class MouseWheelTestCase(TestCase):
         self.window._on_mouse_wheel(wx_event)
 
         # validate results
-        self.assertEqual(self.tool.event.mouse_wheel_axis, 'vertical')
-        self.assertAlmostEqual(self.tool.event.mouse_wheel, 5.0/3.0)
+        self.assertEqual(self.tool.event.mouse_wheel_axis, "vertical")
+        self.assertAlmostEqual(self.tool.event.mouse_wheel, 5.0 / 3.0)
 
         # "Expected failure" here
         # The expected value is probably wrong.
@@ -72,16 +69,17 @@ class MouseWheelTestCase(TestCase):
         wx_event = wx.MouseEvent(wx.wxEVT_MOUSEWHEEL)
         wx_event.GetWheelRotation = MagicMock(return_value=200)
         wx_event.GetWheelAxis = MagicMock(
-            return_value=wx.MOUSE_WHEEL_HORIZONTAL)
+            return_value=wx.MOUSE_WHEEL_HORIZONTAL
+        )
         wx_event.GetLinesPerAction = MagicMock(return_value=1)
         wx_event.GetWheelDelta = MagicMock(return_value=120)
 
         # dispatch event
-        self.window._handle_mouse_event('mouse_wheel', wx_event)
+        self.window._handle_mouse_event("mouse_wheel", wx_event)
 
         # validate results
-        self.assertEqual(self.tool.event.mouse_wheel_axis, 'horizontal')
-        self.assertAlmostEqual(self.tool.event.mouse_wheel, 5.0/3.0)
+        self.assertEqual(self.tool.event.mouse_wheel_axis, "horizontal")
+        self.assertAlmostEqual(self.tool.event.mouse_wheel, 5.0 / 3.0)
 
         # "Expected failure" here
         # The expected value is probably wrong.
