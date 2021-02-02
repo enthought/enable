@@ -1,7 +1,6 @@
 import contextlib
 import importlib
 import os
-import shutil
 import sys
 import tempfile
 import unittest
@@ -14,20 +13,15 @@ from traits.etsconfig.api import ETSConfig
 
 from .. import font_manager as font_manager_module
 from ..font_manager import (
-    createFontList,
-    default_font_manager,
-    FontEntry,
-    FontProperties,
-    FontManager,
+    createFontList, default_font_manager, FontEntry, FontManager,
     ttfFontProperty,
 )
 from ._testing import patch_global_font_manager
 
-data_dir = resource_filename('kiva.fonttools.tests', 'data')
+data_dir = resource_filename("kiva.fonttools.tests", "data")
 
 
 class TestCreateFontList(unittest.TestCase):
-
     def setUp(self):
         self.ttc_fontpath = os.path.join(data_dir, "TestTTC.ttc")
 
@@ -40,8 +34,8 @@ class TestCreateFontList(unittest.TestCase):
         for fontprop in fontlist:
             self.assertIsInstance(fontprop, FontEntry)
 
-    @mock.patch(
-        "kiva.fonttools.font_manager.ttfFontProperty", side_effect=ValueError)
+    @mock.patch("kiva.fonttools.font_manager.ttfFontProperty",
+                side_effect=ValueError)
     def test_ttc_exception_on_ttfFontProperty(self, m_ttfFontProperty):
         # When
         with self.assertLogs("kiva"):
@@ -51,8 +45,8 @@ class TestCreateFontList(unittest.TestCase):
         self.assertEqual(len(fontlist), 0)
         self.assertEqual(m_ttfFontProperty.call_count, 1)
 
-    @mock.patch(
-        "kiva.fonttools.font_manager.TTCollection", side_effect=RuntimeError)
+    @mock.patch("kiva.fonttools.font_manager.TTCollection",
+                side_effect=RuntimeError)
     def test_ttc_exception_on_TTCollection(self, m_TTCollection):
         # When
         with self.assertLogs("kiva"):
@@ -64,7 +58,6 @@ class TestCreateFontList(unittest.TestCase):
 
 
 class TestTTFFontProperty(unittest.TestCase):
-
     def test_font(self):
         # Given
         test_font = os.path.join(data_dir, "TestTTF.ttf")
@@ -235,12 +228,11 @@ def patch_system_fonts(ttf_files):
         List of file paths for TTF fonts
     """
 
-    def fake_find_system_fonts(fontpaths=None, fontext='ttf'):
+    def fake_find_system_fonts(fontpaths=None, fontext="ttf"):
         if fontext == "ttf":
             return ttf_files
         return []
 
     return mock.patch(
-        "kiva.fonttools.font_manager.findSystemFonts",
-        fake_find_system_fonts,
+        "kiva.fonttools.font_manager.findSystemFonts", fake_find_system_fonts
     )

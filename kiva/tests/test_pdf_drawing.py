@@ -21,10 +21,10 @@ else:
 @unittest.skipIf(PYPDF2_NOT_AVAILABLE, "PDF tests require PyPDF2")
 @unittest.skipIf(REPORTLAB_NOT_AVAILABLE, "Cannot import reportlab")
 class TestPDFDrawing(DrawingTester, unittest.TestCase):
-
     def create_graphics_context(self, width, height):
         from reportlab.pdfgen.canvas import Canvas
         from kiva.pdf import GraphicsContext
+
         filename = "{0}.pdf".format(self.filename)
         canvas = Canvas(filename, (width, height))
         return GraphicsContext(canvas)
@@ -45,11 +45,10 @@ class TestPDFDrawing(DrawingTester, unittest.TestCase):
         # Just a simple check that the path has been closed or the text has
         # been drawn.
         line = content.getData().splitlines()[-2]
-        if not any((
-                line.endswith(b'f'),
-                line.endswith(b'S'),
-                line.endswith(b'f*'),
-                line.endswith(b'ET') and b'hello kiva' in line)):
+        if not any((line.endswith(b'f'),
+                    line.endswith(b'S'),
+                    line.endswith(b'f*'),
+                    line.endswith(b'ET') and b'hello kiva' in line)):
             self.fail('Path was not closed')
 
 

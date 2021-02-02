@@ -14,8 +14,8 @@ from math import fabs
 import os
 import warnings
 
-import numpy as np
 import celiagg as agg
+import numpy as np
 
 from .abstract_graphics_context import AbstractGraphicsContext
 from .fonttools import Font
@@ -75,9 +75,10 @@ pix_format_canvases = {
     'bgra32': agg.CanvasBGRA32,
     'rgb24': agg.CanvasRGB24,
 }
-StateBundle = namedtuple('StateBundle',
-                         ['state', 'path', 'stroke', 'fill', 'transform',
-                          'text_transform', 'font'])
+StateBundle = namedtuple(
+    'StateBundle',
+    ['state', 'path', 'stroke', 'fill', 'transform', 'text_transform', 'font'],
+)
 
 
 class GraphicsContext(object):
@@ -175,7 +176,8 @@ class GraphicsContext(object):
             fill=self.fill_paint.copy(),
             transform=self.transform.copy(),
             text_transform=self.text_transform.copy(),
-            font=(None if self.font is None else self.font.copy()))
+            font=(None if self.font is None else self.font.copy()),
+        )
         self.__state_stack.append(state)
 
     def restore_state(self):
@@ -266,7 +268,7 @@ class GraphicsContext(object):
         """
         if lengths is not None:
             count = len(lengths)
-            lengths = np.array(lengths).reshape(count//2, 2)
+            lengths = np.array(lengths).reshape(count // 2, 2)
         else:
             lengths = []
         self.canvas_state.line_dash_pattern = lengths
@@ -371,7 +373,7 @@ class GraphicsContext(object):
             y1 = int(rect[1] * scale_y + ty)
             x2 = int((rect[0] + rect[2]) * scale_x + tx)
             y2 = int((rect[1] + rect[3]) * scale_y + ty)
-            rect = (x1, y1, abs(x2-x1), abs(y2-y1))
+            rect = (x1, y1, abs(x2 - x1), abs(y2 - y1))
             # XXX: The base transform is a half-pixel translate
             transform = agg.Transform(tx=0.5, ty=0.5)
 
@@ -379,8 +381,13 @@ class GraphicsContext(object):
         path.rect(*rect)
 
         self.canvas_state.drawing_mode = draw_modes[mode]
-        self.gc.draw_shape(path, transform, self.canvas_state,
-                           stroke=self.stroke_paint, fill=self.fill_paint)
+        self.gc.draw_shape(
+            path,
+            transform,
+            self.canvas_state,
+            stroke=self.stroke_paint,
+            fill=self.fill_paint,
+        )
 
     def add_path(self, path):
         """ Add a subpath to the current path.
@@ -447,7 +454,7 @@ class GraphicsContext(object):
             Region should be a 4-tuple or a sequence.
         """
         tx, ty = self.transform.tx, self.transform.ty
-        self.canvas_state.clip_box = agg.Rect(tx+x, ty+y, w, h)
+        self.canvas_state.clip_box = agg.Rect(tx + x, ty + y, w, h)
 
     def clip_to_rects(self, rects):
         """ Clip context to a collection of rectangles
@@ -510,8 +517,9 @@ class GraphicsContext(object):
     def _get_gradient_enums(self, spread, units):
         """ Configures a gradient object and sets it as the current brush.
         """
-        spread = gradient_spread_modes.get(spread,
-                                           agg.GradientSpread.SpreadPad)
+        spread = gradient_spread_modes.get(
+            spread, agg.GradientSpread.SpreadPad
+        )
         units = gradient_coord_modes.get(units, agg.GradientUnits.UserSpace)
         return spread, units
 
@@ -520,16 +528,18 @@ class GraphicsContext(object):
         """ Sets a linear gradient as the current brush.
         """
         spread, units = self._get_gradient_enums(spread_method, units)
-        self.fill_paint = agg.LinearGradientPaint(x1, y1, x2, y2,
-                                                  stops, spread, units)
+        self.fill_paint = agg.LinearGradientPaint(
+            x1, y1, x2, y2, stops, spread, units
+        )
 
     def radial_gradient(self, cx, cy, r, fx, fy, stops, spread_method,
                         units='userSpaceOnUse'):
         """ Sets a radial gradient as the current brush.
         """
         spread, units = self._get_gradient_enums(spread_method, units)
-        self.fill_paint = agg.RadialGradientPaint(cx, cy, r, fx, fy,
-                                                  stops, spread, units)
+        self.fill_paint = agg.RadialGradientPaint(
+            cx, cy, r, fx, fy, stops, spread, units
+        )
 
     # ----------------------------------------------------------------
     # Drawing Images
@@ -541,6 +551,7 @@ class GraphicsContext(object):
 
         rect - a tuple (x, y, w, h)
         """
+
         def get_format(array):
             if array.shape[2] == 3:
                 return agg.PixelFormat.RGB24
@@ -574,8 +585,9 @@ class GraphicsContext(object):
         transform.translate(x, y)
         transform.scale(sx, sy)
 
-        self.gc.draw_image(img_array, img_format, transform,
-                           self.canvas_state, bottom_up=True)
+        self.gc.draw_image(
+            img_array, img_format, transform, self.canvas_state, bottom_up=True
+        )
 
     # ----------------------------------------------------------------
     # Drawing Text
@@ -642,8 +654,13 @@ class GraphicsContext(object):
         transform.multiply(self.transform)
         transform.translate(*pos)
 
-        self.gc.draw_text(text, self.font, transform, self.canvas_state,
-                          stroke=self.stroke_paint)
+        self.gc.draw_text(
+            text,
+            self.font,
+            transform,
+            self.canvas_state,
+            stroke=self.stroke_paint,
+        )
 
     def show_text_at_point(self, text, x, y):
         """ Draw text at some point (x, y).
@@ -677,20 +694,32 @@ class GraphicsContext(object):
 
     def stroke_path(self):
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawStroke
-        self.gc.draw_shape(self.path.path, self.transform, self.canvas_state,
-                           stroke=self.stroke_paint)
+        self.gc.draw_shape(
+            self.path.path,
+            self.transform,
+            self.canvas_state,
+            stroke=self.stroke_paint,
+        )
         self.begin_path()
 
     def fill_path(self):
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawFill
-        self.gc.draw_shape(self.path.path, self.transform, self.canvas_state,
-                           fill=self.fill_paint)
+        self.gc.draw_shape(
+            self.path.path,
+            self.transform,
+            self.canvas_state,
+            fill=self.fill_paint,
+        )
         self.begin_path()
 
     def eof_fill_path(self):
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawEofFill
-        self.gc.draw_shape(self.path.path, self.transform, self.canvas_state,
-                           fill=self.fill_paint)
+        self.gc.draw_shape(
+            self.path.path,
+            self.transform,
+            self.canvas_state,
+            fill=self.fill_paint,
+        )
         self.begin_path()
 
     def stroke_rect(self, rect):
@@ -702,31 +731,35 @@ class GraphicsContext(object):
 
         self.canvas_state.line_width = width
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawStroke
-        self.gc.draw_shape(shape, self.transform, self.canvas_state,
-                           stroke=self.stroke_paint)
+        self.gc.draw_shape(
+            shape, self.transform, self.canvas_state, stroke=self.stroke_paint
+        )
 
     def fill_rect(self, rect):
         shape = agg.Path()
         shape.rect(*rect)
 
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawFill
-        self.gc.draw_shape(shape, self.transform, self.canvas_state,
-                           fill=self.fill_paint)
+        self.gc.draw_shape(
+            shape, self.transform, self.canvas_state, fill=self.fill_paint
+        )
 
     def fill_rects(self, rects):
         path = agg.Path()
         path.rects(rects)
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawFill
-        self.gc.draw_shape(path, self.transform, self.canvas_state,
-                           fill=self.fill_paint)
+        self.gc.draw_shape(
+            path, self.transform, self.canvas_state, fill=self.fill_paint
+        )
 
     def clear_rect(self, rect):
         shape = agg.Path()
         shape.rect(*rect)
         paint = agg.SolidPaint(0.0, 0.0, 0.0, 0.0)
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawFill
-        self.gc.draw_shape(shape, self.transform, self.canvas_state,
-                           fill=paint)
+        self.gc.draw_shape(
+            shape, self.transform, self.canvas_state, fill=paint
+        )
 
     def clear(self, clear_color=(1.0, 1.0, 1.0, 1.0)):
         self.gc.clear(*clear_color)
@@ -737,8 +770,13 @@ class GraphicsContext(object):
             Each subpath is drawn separately.
         """
         self.canvas_state.drawing_mode = draw_modes[mode]
-        self.gc.draw_shape(self.path.path, self.transform, self.canvas_state,
-                           stroke=self.stroke_paint, fill=self.fill_paint)
+        self.gc.draw_shape(
+            self.path.path,
+            self.transform,
+            self.canvas_state,
+            stroke=self.stroke_paint,
+            fill=self.fill_paint,
+        )
         self.begin_path()
 
     def get_empty_path(self):
@@ -753,8 +791,13 @@ class GraphicsContext(object):
         """
         shape = agg.ShapeAtPoints(path.path, points)
         self.canvas_state.drawing_mode = draw_modes[mode]
-        self.gc.draw_shape(shape, self.transform, self.canvas_state,
-                           stroke=self.stroke_paint, fill=self.fill_paint)
+        self.gc.draw_shape(
+            shape,
+            self.transform,
+            self.canvas_state,
+            stroke=self.stroke_paint,
+            fill=self.fill_paint,
+        )
 
     def save(self, filename, file_format=None):
         """ Save the contents of the context to a file

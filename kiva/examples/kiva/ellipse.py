@@ -34,15 +34,15 @@ def ellipse():
     gc.rect(95, 95, 10, 10)
     gc.fill_path()
     draw_ellipse(gc, 100, 100, 35.0, 25.0, pi / 6)
-    with tempfile.NamedTemporaryFile(suffix='.bmp') as fid:
+    with tempfile.NamedTemporaryFile(suffix=".bmp") as fid:
         gc.save(fid.name)
-        image = Image.from_file(fid.name, resist_width='weak',
-                                resist_height='weak')
+        image = Image.from_file(
+            fid.name, resist_width="weak", resist_height="weak"
+        )
     return image
 
 
 class Demo(DemoFrame):
-
     def _create_component(self):
         image = ellipse()
 

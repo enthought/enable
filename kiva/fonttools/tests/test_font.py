@@ -8,7 +8,6 @@ from kiva.fonttools.tests._testing import patch_global_font_manager
 
 
 class TestFont(unittest.TestCase):
-
     def setUp(self):
         # Invalidate the global font manager cache to avoid test interaction
         # as well as catching erroneous assumption on an existing cache.

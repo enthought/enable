@@ -55,8 +55,8 @@ calcsize(format)
 __version__ = "1.2"
 __copyright__ = "Copyright 1998, Just van Rossum <just@letterror.com>"
 
-import struct
 import re
+import struct
 
 
 class SStructError(Exception):
@@ -73,7 +73,7 @@ def pack(format, obj):
         value = obj[name]
         if name in fixes:
             # fixed point conversion
-            value = int(round(value*fixes[name]))
+            value = int(round(value * fixes[name]))
         elements.append(value)
     data = struct.pack(formatstring, *elements)
     return data
@@ -121,13 +121,13 @@ def calcsize(format):
 
 # matches "name:formatchar" (whitespace is allowed)
 _elementRE = re.compile(
-    r"\s*"                           # whitespace
-    r"([A-Za-z_][A-Za-z_0-9]*)"      # name (python identifier)
-    r"\s*:\s*"                       # whitespace : whitespace
-    r"([cbBhHiIlLfd]|[0-9]+[ps]|"    # formatchar...
-        r"([0-9]+)\.([0-9]+)(F))"    # ...formatchar                 # noqa
-    r"\s*"                           # whitespace
-    r"(#.*)?$"                       # [comment] + end of string
+    r"\s*"  # whitespace
+    r"([A-Za-z_][A-Za-z_0-9]*)"  # name (python identifier)
+    r"\s*:\s*"  # whitespace : whitespace
+    r"([cbBhHiIlLfd]|[0-9]+[ps]|"  # formatchar...
+    r"([0-9]+)\.([0-9]+)(F))"  # ...formatchar                 # noqa
+    r"\s*"  # whitespace
+    r"(#.*)?$"  # [comment] + end of string
 )
 
 
@@ -139,11 +139,7 @@ _extraRE = re.compile(r"\s*([x@=<>!])\s*(#.*)?$")
 _emptyRE = re.compile(r"\s*(#.*)?$")
 
 
-_fixedpointmappings = {
-    8: "b",
-    16: "h",
-    32: "l"
-}
+_fixedpointmappings = {8: "b", 16: "h", 32: "l"}
 
 
 _formatcache = {}
@@ -164,7 +160,7 @@ def getformat(format):
             m = _extraRE.match(line)
             if m:
                 formatchar = m.group(1)
-                if formatchar != 'x' and formatstring:
+                if formatchar != "x" and formatstring:
                     raise SStructError("Special format chars must be first")
             else:
                 m = _elementRE.match(line)

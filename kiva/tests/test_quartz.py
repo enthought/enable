@@ -4,19 +4,24 @@ from kiva.tests._testing import skip_if_not_wx
 
 
 def test_quartz_importable():
-    if sys.platform != 'darwin':
+    if sys.platform != "darwin":
         from unittest.case import SkipTest
+
         raise SkipTest("quartz is only built on OS X")
 
     from kiva.quartz import ABCGI
     from kiva.quartz import CTFont
     from kiva.quartz import mac_context
+    del ABCGI
+    del CTFont
+    del mac_context
 
 
 @skip_if_not_wx
 def test_macport():
-    if sys.platform != 'darwin':
+    if sys.platform != "darwin":
         from unittest.case import SkipTest
+
         raise SkipTest("macport is only built on OS X")
 
     import wx
@@ -27,17 +32,23 @@ def test_macport():
         """
         Simple test of get_macport().
         """
+
         def __init__(self):
-            wx.Frame.__init__(self, parent=None, id=-1, title="foo",
-                               pos=(100,100),
-                               size=(300,300))
+            wx.Frame.__init__(
+                self,
+                parent=None,
+                id=-1,
+                title="foo",
+                pos=(100, 100),
+                size=(300, 300),
+            )
             oldstyle = self.GetWindowStyle()
             oldstyle = oldstyle | wx.FULL_REPAINT_ON_RESIZE
             self.SetWindowStyle(oldstyle)
             self.Show(1)
             self.Bind(wx.EVT_PAINT, self.OnPaint)
             self.memdc = wx.MemoryDC()
-            self.bitmap = wx.EmptyBitmap(200,200)
+            self.bitmap = wx.EmptyBitmap(200, 200)
             self.memdc.SelectObject(self.bitmap)
 
         def OnPaint(self, evt):
@@ -52,7 +63,7 @@ def test_macport():
 
     class MyApp(wx.App):
         def OnInit(self):
-            w = SimpleWindow()
+            SimpleWindow()
             return 1
 
     app = MyApp(False)

@@ -44,7 +44,8 @@ with gc:
 
 
 class ScriptedComponent(Component):
-    """ An Enable component that draws its mainlayer from a script """
+    """ An Enable component that draws its mainlayer from a script
+    """
 
     #: kiva drawing code for mainlayer
     draw_script = Code(default_script)
@@ -54,26 +55,28 @@ class ScriptedComponent(Component):
 
     #: how long did the last draw take
     last_draw_time = Float(0.0)
-    fps_display = Property(Str, depends_on='last_draw_time')
+    fps_display = Property(Str, depends_on="last_draw_time")
 
     #: compiled code
     _draw_code = Any
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
-        """ Try running the compiled code with the graphics context as `gc` """
+        """ Try running the compiled code with the graphics context as `gc`
+        """
         with gc:
             try:
-                self.error = ''
+                self.error = ""
                 start_time = time.time()
-                exec(self._draw_code, {}, {'gc': gc})
+                exec(self._draw_code, {}, {"gc": gc})
                 self.last_draw_time = time.time() - start_time
             except Exception as exc:
                 self.error = str(exc)
 
     def _compile_script(self):
-        """ Try compiling the script to bytecode """
+        """ Try compiling the script to bytecode
+        """
         try:
-            self.error = ''
+            self.error = ""
             return compile(self.draw_script, "<script>", "exec")
         except SyntaxError as exc:
             self.error = str(exc)
@@ -101,7 +104,8 @@ class ScriptedComponent(Component):
 
 
 class ScriptedComponentView(ModelView):
-    """ ModelView of a ScriptedComponent displaying the script and image """
+    """ ModelView of a ScriptedComponent displaying the script and image
+    """
 
     #: the component we are editing
     model = Instance(ScriptedComponent, ())
@@ -109,27 +113,28 @@ class ScriptedComponentView(ModelView):
     view = View(
         HSplit(
             VGroup(
-                UItem('model.draw_script'),
+                UItem("model.draw_script"),
                 UItem(
-                    'model.error',
+                    "model.error",
                     visible_when="model.error != ''",
-                    style='readonly',
+                    style="readonly",
                     height=100,
-                )
+                ),
             ),
             VGroup(
-                UItem('model', editor=ComponentEditor(), springy=True),
-                UItem('model.fps_display', style='readonly'),
+                UItem("model", editor=ComponentEditor(), springy=True),
+                UItem("model.fps_display", style="readonly"),
             ),
         ),
         resizable=True,
-        title='Kiva Explorer',
+        title="Kiva Explorer",
     )
+
 
 # "popup" is a magically named variable for the etsdemo application which will
 # cause this demo to be run as a popup rather than trying to compress it into
 # a tab on the application
 popup = ScriptedComponentView()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     popup.configure_traits()

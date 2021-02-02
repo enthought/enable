@@ -14,8 +14,7 @@ from kiva.examples._etsdemo_info import info
 
 
 class TestKivaETSDemoInfo(unittest.TestCase):
-
     def test_info(self):
         # input to info is currently just a placeholder
         response = info({})
-        self.assertTrue(os.path.exists(response['root']))
+        self.assertTrue(os.path.exists(response["root"]))

@@ -1,10 +1,8 @@
-"""
-LineState Class
+""" LineState Class
 
 The LineState class is used by the GraphicsState for Kiva backends which need
 to have their state tracked by Python, rather than by an internal graphics
 state (eg. Wx, SVG and PDF backends, but not Agg or QPainter).
-
 """
 
 from numpy import alltrue, array, asarray, shape, sometrue
@@ -54,13 +52,16 @@ def line_state_equal(line1, line2):
     # Note: I think should be easy, but is breaking because of a bug in
     #       Numeric.  Waiting for confirmation.
     # ---------------------------------------------------------------------
-    dash_equal = (line1.line_dash[0] == line2.line_dash[0] and
-                  exactly_equal(line1.line_dash[1], line2.line_dash[1]))
-    result = (dash_equal and
-              exactly_equal(line1.line_color, line2.line_color) and
-              line1.line_width == line2.line_width and
-              line1.line_cap == line2.line_cap and
-              line1.line_join == line2.line_join)
+    dash_equal = line1.line_dash[0] == line2.line_dash[0] and exactly_equal(
+        line1.line_dash[1], line2.line_dash[1]
+    )
+    result = (
+        dash_equal
+        and exactly_equal(line1.line_color, line2.line_color)
+        and line1.line_width == line2.line_width
+        and line1.line_cap == line2.line_cap
+        and line1.line_join == line2.line_join
+    )
     return result
 
 
@@ -70,7 +71,6 @@ class LineState(object):
     This is split off from `GraphicsState` to make it easier to
     track line state changes.  All the methods for setting
     these variables are left in the GraphicsStateBase class.
-
     """
 
     def __init__(self, color, width, cap, join, dash):
@@ -79,7 +79,6 @@ class LineState(object):
         All input arguments that are containers are copied
         by the constructor.  This prevents two `LineState` objects
         from ever sharing and modifying the other's data.
-
         """
         self.line_color = array(color, copy=1)
         self.line_width = width
@@ -92,10 +91,16 @@ class LineState(object):
             self.line_dash = (dash[0], array(dash[1], copy=1))
 
     def copy(self):
-        """ Makes a copy of the current line state """
+        """ Makes a copy of the current line state
+        """
         # Could just use deepcopy...
-        return LineState(self.line_color, self.line_width, self.line_cap,
-                         self.line_join, self.line_dash)
+        return LineState(
+            self.line_color,
+            self.line_width,
+            self.line_cap,
+            self.line_join,
+            self.line_dash,
+        )
 
     def is_dashed(self):
         # if line_dash only has one entry, it is a solid line.

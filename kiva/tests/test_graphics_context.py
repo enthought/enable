@@ -1,26 +1,25 @@
 import unittest
 
-from numpy import (
-    alltrue, array, concatenate, dtype,
-    frombuffer, newaxis, ravel, ones, zeros)
-from PIL import Image as PILImage
 from hypothesis import given
 from hypothesis.strategies import sampled_from
+from numpy import (
+    alltrue, array, concatenate, dtype, frombuffer, newaxis, ones, ravel, zeros
+)
+from PIL import Image as PILImage
 
 
-from kiva.image import GraphicsContext
 from kiva.compat import piltostring
+from kiva.image import GraphicsContext
 
 # alpha blending is approximate in agg, so we allow some "slop" between
 # desired and actual results, allow channel differences of to 2.
 slop_allowed = 2
 
-UInt8 = dtype('uint8')
-Int32 = dtype('int32')
+UInt8 = dtype("uint8")
+Int32 = dtype("int32")
 
 
 class TestAlphaBlackImage(unittest.TestCase):
-
     def setUp(self):
         self.size = (1, 1)
         self.color = 0.0
@@ -50,7 +49,8 @@ class TestAlphaBlackImage(unittest.TestCase):
         # also, the alpha channel of the image is not copied into the
         # desination graphics context, so we have to ignore alphas
         self.assert_images_close(
-            desired[:, :, :-1], actual[:, :, :-1], diff_allowed=slop_allowed)
+            desired[:, :, :-1], actual[:, :, :-1], diff_allowed=slop_allowed
+        )
 
     @given(sampled_from([1.0, 0.0, 0.5]))
     def test_ambient_alpha(self, color):
@@ -65,10 +65,10 @@ class TestAlphaBlackImage(unittest.TestCase):
         gc_background = self.solid_bgra32(self.size, 1.0)
         orig = self.solid_bgra32(self.size, color)
         desired = self.alpha_blend(
-            gc_background, orig, ambient_alpha=amb_alpha)
+            gc_background, orig, ambient_alpha=amb_alpha
+        )
         # alpha blending is approximate, allow channel differences of to 2.
-        self.assert_images_close(
-            desired, actual, diff_allowed=slop_allowed)
+        self.assert_images_close(desired, actual, diff_allowed=slop_allowed)
 
     @given(sampled_from([1.0, 0.0, 0.5]))
     def test_ambient_plus_image_alpha(self, color):
@@ -84,7 +84,8 @@ class TestAlphaBlackImage(unittest.TestCase):
         gc_background = self.solid_bgra32(self.size, 1.0)
         orig = self.solid_bgra32(self.size, color, img_alpha)
         desired = self.alpha_blend(
-            gc_background, orig, ambient_alpha=amb_alpha)
+            gc_background, orig, ambient_alpha=amb_alpha
+        )
         # alpha blending is approximate, allow channel differences of to 2.
         self.assert_images_close(desired, actual, diff_allowed=slop_allowed)
 
@@ -127,7 +128,7 @@ class TestAlphaBlackImage(unittest.TestCase):
         self.assert_images_equal(desired, actual)
 
     def sun(self, interpolation_scheme="simple"):
-        pil_img = PILImage.open('doubleprom_soho_full.jpg')
+        pil_img = PILImage.open("doubleprom_soho_full.jpg")
         img = frombuffer(piltostring(pil_img), UInt8)
         img.resize((pil_img.size[1], pil_img.size[0], 3))
         alpha = ones(pil_img.size, UInt8) * 255
@@ -135,8 +136,8 @@ class TestAlphaBlackImage(unittest.TestCase):
         return GraphicsContext(img, "bgra32", interpolation_scheme)
 
     def alpha_blend(self, src1, src2, alpha=1.0, ambient_alpha=1.0):
-        alpha_ary = src2[:, :, 3]/255. * alpha * ambient_alpha
-        res = src1[:, :, :] * (1-alpha_ary) + src2[:, :, :] * alpha_ary
+        alpha_ary = src2[:, :, 3] / 255.0 * alpha * ambient_alpha
+        res = src1[:, :, :] * (1 - alpha_ary) + src2[:, :, :] * alpha_ary
         # alpha blending preserves the alpha mask channel of the
         # destination (src1)
         res[:, :, -1] = src1[:, :, -1]
@@ -155,12 +156,13 @@ class TestAlphaBlackImage(unittest.TestCase):
         except AssertionError:
             size = sum(array(desired.shape))
             if size < 10:
-                diff = abs(ravel(actual.astype(Int32)) -
-                           ravel(desired.astype(Int32)))
-                msg = '\n'
-                msg += 'desired: %s\n' % ravel(desired)
-                msg += 'actual: %s\n' % ravel(actual)
-                msg += 'abs diff: %s\n' % diff
+                diff = abs(
+                    ravel(actual.astype(Int32)) - ravel(desired.astype(Int32))
+                )
+                msg = "\n"
+                msg += "desired: %s\n" % ravel(desired)
+                msg += "actual: %s\n" % ravel(actual)
+                msg += "abs diff: %s\n" % diff
             else:
                 msg = "size: %d.  To large to display" % size
             raise AssertionError(msg)
@@ -170,15 +172,16 @@ class TestAlphaBlackImage(unittest.TestCase):
         try:
             # cast up so math doesn't underflow
             diff = abs(
-                ravel(actual.astype(Int32)) - ravel(desired.astype(Int32)))
+                ravel(actual.astype(Int32)) - ravel(desired.astype(Int32))
+            )
             assert alltrue(diff <= diff_allowed)
         except AssertionError:
             size = sum(array(desired.shape))
             if size < 10:
-                msg = '\n'
-                msg += 'desired: %s\n' % ravel(desired)
-                msg += 'actual: %s\n' % ravel(actual)
-                msg += 'abs diff: %s\n' % diff
+                msg = "\n"
+                msg += "desired: %s\n" % ravel(desired)
+                msg += "actual: %s\n" % ravel(actual)
+                msg += "abs diff: %s\n" % diff
             else:
                 msg = "size: %d.  To large to display" % size
             raise AssertionError(msg)

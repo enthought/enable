@@ -1,4 +1,3 @@
-
 from numpy import pi
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen.canvas import Canvas
@@ -30,28 +29,28 @@ def draw_round_rect(gc):
     w = 500
     h = 500
 
-    r = max(1, min(w, h)/10)
+    r = max(1, min(w, h) / 10)
     gc.set_line_width(2.0)
     gc.set_stroke_color((0.0, 0.0, 0.0, 1.0))
-    gc.move_to(w/3, h/2)
+    gc.move_to(w / 3, h / 2)
 
-    gc.arc_to(w/3, 2*h/3,
-              w/2, 2*h/3,
+    gc.arc_to(w / 3, 2 * h / 3,
+              w / 2, 2 * h / 3,
               r)
-    gc.arc_to(2*w/3, 2*h/3,
-              2*w/3, h/2,
+    gc.arc_to(2 * w / 3, 2 * h / 3,
+              2 * w / 3, h / 2,
               r)
-    gc.arc_to(2*w/3, h/3,
-              w/2, h/3,
+    gc.arc_to(2 * w / 3, h / 3,
+              w / 2, h / 3,
               r)
-    gc.arc_to(w/3, h/3,
-              w/3, h/2,
+    gc.arc_to(w / 3, h / 3,
+              w / 3, h / 2,
               r)
-    gc.line_to(w/3, h/2)
+    gc.line_to(w / 3, h / 2)
     gc.stroke_path()
 
 
-canvas = Canvas(filename='arcs.pdf', pagesize=letter)
+canvas = Canvas(filename="arcs.pdf", pagesize=letter)
 gc = GraphicsContext(canvas)
 
 gc.set_alpha(0.3)
