@@ -5,13 +5,9 @@
 """
 from ._version import full_version as __version__
 
-__requires__ = ["numpy", "traits", "traitsui", "pyface", "fonttools"]
-
-# Do not force installation of pillow if PIL is already available.
-try:
-    import PIL
-except ImportError:
-    __requires__.append("pillow")
+__requires__ = [
+    "numpy", "pillow", "traits", "traitsui", "pyface", "fonttools"
+]
 
 __extras_require__ = {
     # Dependencies for running enable/kiva's examples
