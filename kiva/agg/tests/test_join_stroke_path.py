@@ -185,7 +185,3 @@ class JoinStrokePathTestCase(unittest.TestCase, Utils):
             ]
         )
         self.assertRavelEqual(actual, desired)
-
-
-if __name__ == "__main__":
-    unittest.main()

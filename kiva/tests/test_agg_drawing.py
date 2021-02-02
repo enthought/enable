@@ -23,7 +23,3 @@ class TestAggDrawing(DrawingImageTester, unittest.TestCase):
                 0, 0, w, 0, grad_stops, "pad", b"userSpaceOnUse"
             )
             self.gc.fill_path()
-
-
-if __name__ == "__main__":
-    unittest.main()

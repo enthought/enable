@@ -25,7 +25,3 @@ class TestPSDrawing(DrawingTester, unittest.TestCase):
                     line.endswith("cliprestore"),
                     "(hello kiva) show\n" in lines)):
             self.fail("Path was not closed")
-
-
-if __name__ == "__main__":
-    unittest.main()

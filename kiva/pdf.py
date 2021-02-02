@@ -796,21 +796,3 @@ class GraphicsContext(GraphicsContextBase):
 
     def save(self):
         self.gc.save()
-
-
-def simple_test():
-    pdf = canvas.Canvas("bob.pdf")
-    gc = GraphicsContext(pdf)
-    gc.begin_path()
-    gc.move_to(50, 50)
-    gc.line_to(100, 100)
-    gc.draw_path()
-    gc.flush()
-    pdf.save()
-
-
-if __name__ == "__main__":
-    import sys
-
-    if len(sys.argv) == 1:
-        sys.exit("Usage: %s output_file" % sys.argv[0])

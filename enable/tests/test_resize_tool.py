@@ -144,7 +144,3 @@ class DragToolTestCase(unittest.TestCase):
             self.tool.set_delta(value, x, y)
             self.assertEqual(self.component.position, position)
             self.assertEqual(self.component.bounds, bounds)
-
-
-if __name__ == "__main__":
-    unittest.main()

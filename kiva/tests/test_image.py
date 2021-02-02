@@ -23,7 +23,3 @@ class TestImage(unittest.TestCase):
         self.assertEqual(image.width(), 100)
         self.assertEqual(image.height(), 120)
         self.assertEqual(image.format(), "rgb24")
-
-
-if __name__ == "__main__":
-    unittest.main()

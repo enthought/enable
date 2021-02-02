@@ -484,20 +484,3 @@ class GraphicsContextTestCase(unittest.TestCase):
         gc.move_to(x, y)
         gc.line_to(x, y)
         self.assertTrue(not gc.is_path_empty())
-
-    # -------------------------------------------------------------------------
-    # Test drawing path add line
-    #
-    # Testing needed!
-    # -------------------------------------------------------------------------
-
-    def test_add_line(self):
-        """
-        """
-        pass
-
-
-##################################################
-
-if __name__ == "__main__":
-    unittest.main()

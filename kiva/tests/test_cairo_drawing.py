@@ -16,7 +16,3 @@ class TestCairoDrawing(DrawingImageTester, unittest.TestCase):
         from kiva.cairo import GraphicsContext
 
         return GraphicsContext((width, height))
-
-
-if __name__ == "__main__":
-    unittest.main()

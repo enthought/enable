@@ -337,7 +337,3 @@ class GeometryTestCase(unittest.TestCase):
         self.assertTrue(size_f == SizeF((40.5, 20.5)))
         self.assertTrue(size_f.width == 40.5)
         self.assertTrue(size_f.height == 20.5)
-
-
-if __name__ == "__main__":
-    unittest.main()

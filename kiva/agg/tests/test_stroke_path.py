@@ -436,7 +436,3 @@ class StrokePathTestCase(unittest.TestCase, Utils):
         )
         actual = gc.bmp_array[:, :, 0]
         self.assertRavelEqual(desired, actual)
-
-
-if __name__ == "__main__":
-    unittest.main()

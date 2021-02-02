@@ -115,7 +115,3 @@ class TestAffineMatrix(unittest.TestCase):
         desired = numpy.array([1.0, 1.0, 1.0, 1.0, 0.0, 0.0])
         actual = val.asarray()
         assert numpy.allclose(desired, actual)
-
-
-if __name__ == "__main__":
-    unittest.main()

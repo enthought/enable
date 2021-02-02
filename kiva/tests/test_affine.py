@@ -185,7 +185,3 @@ class TransformPointsTestCase(unittest.TestCase):
         ctm = affine.scale(ctm, 10, 10)
         new_pt = affine.transform_points(ctm, pt)
         assert sum(new_pt[0] - array((-5.0, -5.0))) < 1e-15
-
-
-if __name__ == "__main__":
-    unittest.main()

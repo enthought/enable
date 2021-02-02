@@ -107,11 +107,9 @@ class DrawFrame(wx.Frame):
 
     def FillPath(self, path):
         for row in range(100):
-            # ~ print row,
             operation = self.grid.GetCellValue(row, 0)
             if not operation:
                 return
-            # ~ print operation,
             args = []
             for col in range(1, 20):
                 v = self.grid.GetCellValue(row, col)
@@ -119,7 +117,6 @@ class DrawFrame(wx.Frame):
                     break
                 args.append(float(v))
             self.pathOps[operation](path, *args)
-            # ~ print args
 
 
 if __name__ == "__main__":

@@ -364,7 +364,3 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
         gc.set_text_matrix(m)
         m2 = gc.get_text_matrix()
         self.assertEqual(m2, agg.AffineMatrix(1.0, 2.0, 3.0, 4.0, 5.0, 6.0))
-
-
-if __name__ == "__main__":
-    unittest.main()
