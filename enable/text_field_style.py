@@ -10,13 +10,13 @@ class TextFieldStyle(HasTraits):
     """
 
     # The color of the text
-    text_color = ColorTrait((0,0,0,1.0))
+    text_color = ColorTrait((0, 0, 0, 1.0))
 
     # The font for the text (must be monospaced!)
     font = KivaFont("Courier 12")
 
     # The color of highlighted text
-    highlight_color = ColorTrait((.65,0,0,1.0))
+    highlight_color = ColorTrait((0.65, 0, 0, 1.0))
 
     # The background color of highlighted items
     highlight_bgcolor = ColorTrait("lightgray")
@@ -31,10 +31,10 @@ class TextFieldStyle(HasTraits):
     text_offset = Int(5)
 
     # Cursor properties
-    cursor_color = ColorTrait((0,0,0,1))
+    cursor_color = ColorTrait((0, 0, 0, 1))
     cursor_width = Int(2)
 
     # Drawing properties
     border_visible = Bool(False)
-    border_color = ColorTrait((0,0,0,1))
-    bgcolor = ColorTrait((1,1,1,1))
+    border_color = ColorTrait((0, 0, 0, 1))
+    bgcolor = ColorTrait((1, 1, 1, 1))

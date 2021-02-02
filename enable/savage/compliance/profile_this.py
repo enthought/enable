@@ -17,7 +17,6 @@ class ProfileThis(HasTraits):
     # An event with the profiler just ending.
     profile_ended = Event()
 
-
     def start(self, name):
         """ Start a particular profile.
         """
@@ -37,10 +36,5 @@ class ProfileThis(HasTraits):
             name = self.active_profile_name
             p.disable()
             self.active_profile = None
-            self.active_profile_name = ''
+            self.active_profile_name = ""
             self.profile_ended = (name, p)
-
-
-
-
-

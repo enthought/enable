@@ -16,15 +16,16 @@ from .scrollbar import NativeScrollBar
 
 CompiledPath = ABCGI.CGMutablePath
 
+
 class GraphicsContext(ABCGI.CGLayerContext):
     def __init__(self, size_or_array, *args, **kwds):
-        gc = kwds.pop('window_gc', None)
+        gc = kwds.pop("window_gc", None)
         if not gc:
             # Create a tiny base context to spawn the CGLayerContext from.
             # We are better off making our Layer from the window gc since
             # the data formats will match and so it will be faster to draw the
             # layer.
-            gc = ABCGI.CGBitmapContext((1,1))
+            gc = ABCGI.CGBitmapContext((1, 1))
         if isinstance(size_or_array, np.ndarray):
             # Initialize the layer with an image.
             image = ABCGI.CGImage(size_or_array)
@@ -35,7 +36,9 @@ class GraphicsContext(ABCGI.CGLayerContext):
             image = None
             width, height = size_or_array
 
-        super(GraphicsContext, self).__init__((width, height), gc, *args, **kwds)
+        super(GraphicsContext, self).__init__(
+            (width, height), gc, *args, **kwds
+        )
         if image is not None:
             self.draw_image(image)
 
@@ -71,11 +74,13 @@ class Window(BaseWindow):
     """ An Enable Window for wxPython GUIs on OS X.
     """
 
-    #### 'BaseWindow' interface ################################################
+    # 'BaseWindow' interface ################################################
 
     def _create_gc(self, size, pix_format="bgra32"):
         self.dc = wx.ClientDC(self.control)
-        gc = _WindowGraphicsContext(self.dc.GetSizeTuple(), get_macport(self.dc))
+        gc = _WindowGraphicsContext(
+            self.dc.GetSizeTuple(), get_macport(self.dc)
+        )
         gc.begin()
         return gc
 
@@ -83,8 +88,7 @@ class Window(BaseWindow):
         self.dc = None
         self._gc = None  # force a new gc to be created for the next paint()
 
-
-    #### 'AbstractWindow' interface ############################################
+    # 'AbstractWindow' interface ############################################
 
     def _paint(self, event=None):
         size = self._get_control_size()

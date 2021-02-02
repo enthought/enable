@@ -1,16 +1,14 @@
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #  Copyright (c) 2013, Enthought, Inc.
 #  All rights reserved.
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
-
-STRENGTHS = set(['required', 'strong', 'medium', 'weak'])
+STRENGTHS = set(["required", "strong", "medium", "weak"])
 
 
 def add_symbolic_constraints(namespace):
     """ Add constraints to a namespace that are LinearExpressions of basic
     constraints.
-
     """
     bottom = namespace.bottom
     left = namespace.left
@@ -26,7 +24,6 @@ def add_symbolic_constraints(namespace):
 def add_symbolic_contents_constraints(namespace):
     """ Add constraints to a namespace that are LinearExpressions of basic
     constraints.
-
     """
     left = namespace.contents_left
     right = namespace.contents_right
@@ -42,6 +39,5 @@ def add_symbolic_contents_constraints(namespace):
 def get_from_constraints_namespace(self, name):
     """ Property getter for all attributes that come from the constraints
     namespace.
-
     """
     return getattr(self._constraints_vars, name)

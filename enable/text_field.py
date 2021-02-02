@@ -1,30 +1,30 @@
 # Standard library imports
 from math import floor, sqrt
-from bisect import insort_left
 
 # Enthought library imports
-from traits.api import (Bool, Int, Event, Instance, Any, Property,
-                                  List, DelegatesTo)
+from traits.api import (
+    Any, Bool, DelegatesTo, Event, Instance, Int, List, Property
+)
 
 # Local, relative imports
 from .component import Component
 from .font_metrics_provider import font_metrics_provider
 from .text_field_style import TextFieldStyle
 
-
 StyleDelegate = DelegatesTo("_style")
+
 
 class TextField(Component):
     """ A basic text entry field for Enable.
         fixme: Requires monospaced fonts.
     """
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Public traits
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     # The text to be edited
-    text = Property(depends_on=['_text_changed'])
+    text = Property(depends_on=["_text_changed"])
 
     # Events that get fired on certain keypresses
     accept = Event
@@ -41,9 +41,9 @@ class TextField(Component):
     # Is this text field editable?
     can_edit = Bool(True)
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Delegates for style
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     text_color = StyleDelegate
     font = StyleDelegate
@@ -55,20 +55,20 @@ class TextField(Component):
     border_color = StyleDelegate
     bgcolor = StyleDelegate
 
-
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Protected traits
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     # The style information used in drawing
     _style = Instance(TextFieldStyle, ())
 
-
     # The max width/height of the displayed text in characters
-    _text_width = Property(depends_on=['_style', 'height'],
-                           cached='_height_cache')
-    _text_height = Property(depends_on=['_style', 'width'],
-                            cached='_width_cache')
+    _text_width = Property(
+        depends_on=["_style", "height"], cached="_height_cache"
+    )
+    _text_height = Property(
+        depends_on=["_style", "width"], cached="_width_cache"
+    )
 
     # The x-y position of the cursor in the text
     _cursor_pos = List(Int)
@@ -89,21 +89,20 @@ class TextField(Component):
     _draw_cursor = Bool(False)
 
     # fixme: Shouldn't traits initialize these on its own?
-    # fixme again: I moved these out of __init__ because they weren't accessible
-    # from the _get__text_height and _get__text_width methods. Not sure if this
-    # is the right fix (dmartin)
+    # fixme again: I moved these out of __init__ because they weren't
+    # accessible from the _get__text_height and _get__text_width methods.
+    # Not sure if this is the right fix (dmartin)
     _width_cache = None
     _height_cache = None
 
-
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Public methods
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def __init__(self, **traits):
         # This will be overriden if 'text' is provided as a trait, but it
         # must be initialized if not
-        self._text = [ [] ]
+        self._text = [[]]
 
         # Initialize internal tracking variables
         self.reset()
@@ -120,18 +119,18 @@ class TextField(Component):
         # that is wide enough to display the text.
         if not self.can_edit and self.width == 0:
             x, y, width, height = self.metrics.get_text_extent(self.text)
-            offset = 2*self._style.text_offset
+            offset = 2 * self._style.text_offset
             self.width = width + offset
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Interactor interface
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def normal_mouse_enter(self, event):
         if not self.can_edit:
             return
 
-        event.window.set_pointer('ibeam')
+        event.window.set_pointer("ibeam")
         self.request_redraw()
         event.handled = True
 
@@ -139,7 +138,7 @@ class TextField(Component):
         if not self.can_edit:
             return
 
-        event.window.set_pointer('arrow')
+        event.window.set_pointer("arrow")
         self.request_redraw()
         event.handled = True
 
@@ -162,13 +161,14 @@ class TextField(Component):
             y = 0
         x = int(round(event_x / char_width))
 
-
         # Clip x and y so that they are with text bounds, then place the cursor
-        y = min(max(y, 0), len(self.__draw_text)-1)
+        y = min(max(y, 0), len(self.__draw_text) - 1)
         x = min(max(x, 0), len(self.__draw_text[y]))
         self._old_cursor_pos = self._cursor_pos
-        self._cursor_pos = [ self._draw_text_ystart + y,
-                             self._draw_text_xstart + x ]
+        self._cursor_pos = [
+            self._draw_text_ystart + y,
+            self._draw_text_xstart + x,
+        ]
 
     def cursor_left_up(self, event):
         if not self.can_edit:
@@ -209,7 +209,7 @@ class TextField(Component):
         if event.character == "Backspace":
             # Normal delete
             if self._cursor_pos[1] > 0:
-                del self._text[self._cursor_pos[0]][self._cursor_pos[1]-1]
+                del self._text[self._cursor_pos[0]][self._cursor_pos[1] - 1]
                 self._cursor_pos[1] -= 1
                 self._desired_cursor_x = self._cursor_pos[1]
                 self._text_changed = True
@@ -217,9 +217,9 @@ class TextField(Component):
             elif self._cursor_pos[0] - 1 >= 0:
                 index = self._cursor_pos[0] - 1
                 old_line_len = len(self._text[index])
-                self._text[index] += self._text[index+1]
-                del self._text[index+1]
-                del self.__draw_text[index+1-self._draw_text_xstart]
+                self._text[index] += self._text[index + 1]
+                del self._text[index + 1]
+                del self.__draw_text[index + 1 - self._draw_text_xstart]
                 self._cursor_pos[0] -= 1
                 self._cursor_pos[1] = old_line_len
                 self._desired_cursor_x = self._cursor_pos[1]
@@ -234,9 +234,9 @@ class TextField(Component):
             elif self._cursor_pos[0] + 1 < len(self._text):
                 index = self._cursor_pos[0]
                 old_line_len = len(self._text[index])
-                self._text[index] += self._text[index+1]
-                del self._text[index+1]
-                del self.__draw_text[index+1-self._draw_text_xstart]
+                self._text[index] += self._text[index + 1]
+                del self._text[index + 1]
+                del self.__draw_text[index + 1 - self._draw_text_xstart]
                 self._desired_cursor_x = self._cursor_pos[1]
                 self._text_changed = True
 
@@ -246,7 +246,7 @@ class TextField(Component):
             if self._cursor_pos[1] < 0:
                 self._cursor_pos[0] -= 1
                 if self._cursor_pos[0] < 0:
-                    self._cursor_pos = [ 0, 0 ]
+                    self._cursor_pos = [0, 0]
                 else:
                     self._cursor_pos[1] = len(self._text[self._cursor_pos[0]])
             self._desired_cursor_x = self._cursor_pos[1]
@@ -254,7 +254,7 @@ class TextField(Component):
             self._cursor_pos[1] += 1
             if self._cursor_pos[1] > len(self._text[self._cursor_pos[0]]):
                 self._cursor_pos[0] += 1
-                if self._cursor_pos[0] > len(self._text)-1:
+                if self._cursor_pos[0] > len(self._text) - 1:
                     self._cursor_pos[0] -= 1
                     self._cursor_pos[1] -= 1
                 else:
@@ -265,15 +265,19 @@ class TextField(Component):
             if self._cursor_pos[0] < 0:
                 self._cursor_pos[0] = 0
             else:
-                self._cursor_pos[1] = min(len(self._text[self._cursor_pos[0]]),
-                                          self._desired_cursor_x)
+                self._cursor_pos[1] = min(
+                    len(self._text[self._cursor_pos[0]]),
+                    self._desired_cursor_x,
+                )
         elif event.character == "Down":
             self._cursor_pos[0] += 1
             if self._cursor_pos[0] >= len(self._text):
                 self._cursor_pos[0] = len(self._text) - 1
             else:
-                self._cursor_pos[1] = min(len(self._text[self._cursor_pos[0]]),
-                                          self._desired_cursor_x)
+                self._cursor_pos[1] = min(
+                    len(self._text[self._cursor_pos[0]]),
+                    self._desired_cursor_x,
+                )
         elif event.character == "Home":
             self._cursor_pos[1] = 0
             self._desired_cursor_x = self._cursor_pos[1]
@@ -284,15 +288,17 @@ class TextField(Component):
         # Special characters
         elif event.character == "Tab":
             y, x = self._cursor_pos
-            self._text[y] = self._text[y][:x] + [" "]*4 + self._text[y][x:]
+            self._text[y] = self._text[y][:x] + [" "] * 4 + self._text[y][x:]
             self._cursor_pos[1] += 4
             self._desired_cursor_x = self._cursor_pos[1]
             self._text_changed = True
         elif event.character == "Enter":
             if self.multiline:
                 line = self._cursor_pos[0]
-                self._text.insert(line+1, self._text[line][self._cursor_pos[1]:])
-                self._text[line] = self._text[line][:self._cursor_pos[1]]
+                self._text.insert(
+                    line + 1, self._text[line][self._cursor_pos[1]:]
+                )
+                self._text[line] = self._text[line][: self._cursor_pos[1]]
                 self._cursor_pos[0] += 1
                 self._cursor_pos[1] = 0
                 self._desired_cursor_x = self._cursor_pos[1]
@@ -309,10 +315,9 @@ class TextField(Component):
         self.invalidate_draw()
         self.request_redraw()
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Component interface
-    #------------------------------------------------------------------------
-
+    # ------------------------------------------------------------------------
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         with gc:
@@ -321,11 +326,11 @@ class TextField(Component):
             gc.set_fill_color(self._style.text_color)
             char_w, char_h = self.metrics.get_text_extent("T")[2:4]
             char_h += self._style.line_spacing
-            lines = [ "".join(ln) for ln in self._draw_text ]
+            lines = ["".join(ln) for ln in self._draw_text]
             for i, line in enumerate(lines):
                 x = self.x + self._style.text_offset
                 if i > 0:
-                    y_offset = (i+1) * char_h - self._style.line_spacing
+                    y_offset = (i + 1) * char_h - self._style.line_spacing
                 else:
                     y_offset = char_h - self._style.line_spacing
                 y = self.y2 - y_offset - self._style.text_offset
@@ -333,8 +338,10 @@ class TextField(Component):
                 # Show text at the same scale as the graphics context
                 ctm = gc.get_ctm()
                 if hasattr(ctm, "__len__") and len(ctm) == 6:
-                    scale = sqrt( (ctm[0]+ctm[1]) * (ctm[0]+ctm[1]) / 2.0 + \
-                                  (ctm[2]+ctm[3]) * (ctm[2]+ctm[3]) / 2.0 )
+                    scale = sqrt(
+                        (ctm[0] + ctm[1]) * (ctm[0] + ctm[1]) / 2.0
+                        + (ctm[2] + ctm[3]) * (ctm[2] + ctm[3]) / 2.0
+                    )
                 elif hasattr(gc, "get_ctm_scale"):
                     scale = gc.get_ctm_scale()
                 else:
@@ -351,7 +358,7 @@ class TextField(Component):
                 y_offset = char_h * j
                 y = self.y2 - y_offset - self._style.text_offset
                 if not self.multiline:
-                    char_h -= float(self._style.line_spacing)*.5
+                    char_h -= float(self._style.line_spacing) * 0.5
 
                 gc.set_line_width(self._style.cursor_width)
                 gc.set_stroke_color(self._style.cursor_color)
@@ -362,30 +369,29 @@ class TextField(Component):
 
                 gc.stroke_path()
 
-
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # TextField interface
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def reset(self):
         """ Resets the text field. This involes reseting cursor position, text
-            position, etc.
+        position, etc.
         """
-        self._cursor_pos = [ 0, 0 ]
-        self._old_cursor_pos = [ 0, 0 ]
-        self.__draw_text = [ [] ]
+        self._cursor_pos = [0, 0]
+        self._old_cursor_pos = [0, 0]
+        self.__draw_text = [[]]
 
     def _scroll_horz(self, num):
         """ Horizontally scrolls all the text that is being drawn by 'num'
-            characters. If num is negative, scrolls left. If num is positive,
-            scrolls right.
+        characters. If num is negative, scrolls left. If num is positive,
+        scrolls right.
         """
         self._draw_text_xstart += num
         self._realign_horz()
 
     def _realign_horz(self):
-        """ Realign all the text being drawn such that the first character being
-            drawn in each line is the one at index '_draw_text_xstart.'
+        """ Realign all the text being drawn such that the first character
+        being drawn in each line is the one at index '_draw_text_xstart.'
         """
         for i in range(len(self.__draw_text)):
             line = self._text[self._draw_text_ystart + i]
@@ -393,26 +399,30 @@ class TextField(Component):
 
     def _scroll_vert(self, num):
         """ Vertically scrolls all the text that is being drawn by 'num' lines.
-            If num is negative, scrolls up. If num is positive, scrolls down.
+        If num is negative, scrolls up. If num is positive, scrolls down.
         """
         x, y = self._draw_text_xstart, self._draw_text_ystart
         if num < 0:
             self.__draw_text = self.__draw_text[:num]
-            lines = [ self._clip_line(line, x) for line in self._text[y+num:y] ]
+            lines = [
+                self._clip_line(line, x) for line in self._text[y + num:y]
+            ]
             self.__draw_text = lines + self.__draw_text
         elif num > 0:
             self.__draw_text = self.__draw_text[num:]
             y += self._text_height
-            lines = [ self._clip_line(line, x) for line in self._text[y:y+num] ]
+            lines = [
+                self._clip_line(line, x) for line in self._text[y:y + num]
+            ]
             self.__draw_text.extend(lines)
         self._draw_text_ystart += num
 
     def _clip_line(self, text, index, start=True):
         """ Return 'text' clipped beginning at 'index' if 'start' is True or
-            ending at 'index' if 'start' is False.
+        ending at 'index' if 'start' is False.
         """
-        box_width = self.width - 2*self._style.text_offset
-        total_width = 0.
+        box_width = self.width - 2 * self._style.text_offset
+        total_width = 0.0
         end_index = 1
         for t in text:
             w, h = self.metrics.get_text_extent(t)[2:4]
@@ -423,12 +433,12 @@ class TextField(Component):
                 break
 
         if start:
-            return text[index:min(index+end_index-1, len(text))]
+            return text[index:min(index + end_index - 1, len(text))]
         else:
-            return text[max(0, index-end_index):index]
+            return text[max(0, index - end_index):index]
 
     def _refresh_viewed_line(self, line):
-        """ Updates the appropriate line in __draw_text with the text at 'line'.
+        """ Updates the appropriate line in __draw_text with the text at 'line'
         """
         new_text = self._clip_line(self._text[line], self._draw_text_xstart)
         index = line - self._draw_text_ystart
@@ -445,29 +455,30 @@ class TextField(Component):
 
     def _focus_owner_changed(self, obj, name, old, new):
         if old == self and new != self:
-            obj.on_trait_change(self._focus_owner_changed, "focus_owner",
-                                   remove=True)
+            obj.on_trait_change(
+                self._focus_owner_changed, "focus_owner", remove=True
+            )
         self._draw_cursor = False
         self.request_redraw()
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Property getters/setters and trait event handlers
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def _get_text(self):
-        return "\n".join([ "".join(line) for line in self._text ])
+        return "\n".join(["".join(line) for line in self._text])
 
     def _set_text(self, val):
         if val == "":
-            self._text = [ [] ]
+            self._text = [[]]
         else:
-            self._text = [ list(line) for line in val.splitlines() ]
+            self._text = [list(line) for line in val.splitlines()]
         self.reset()
         self.request_redraw()
 
     def _get__draw_text(self):
         # Rebuilding from scratch
-        if self.__draw_text == [ [] ]:
+        if self.__draw_text == [[]]:
             if self.multiline:
                 self.__draw_text = []
                 self._draw_text_xstart, self._draw_text_ystart = 0, 0
@@ -476,7 +487,7 @@ class TextField(Component):
                     line = self._clip_line(self._text[i], 0)
                     self.__draw_text.append(line)
             else:
-                self.__draw_text = [ self._clip_line(self._text[0], 0) ]
+                self.__draw_text = [self._clip_line(self._text[0], 0)]
 
         # Updating only the things that need updating
         else:
@@ -486,13 +497,13 @@ class TextField(Component):
                 self._scroll_vert(-1)
 
             # Adjust down
-            elif (self._cursor_pos[0] - self._draw_text_ystart >=
-                  self._text_height):
+            elif (self._cursor_pos[0] - self._draw_text_ystart
+                    >= self._text_height):
                 self._scroll_vert(1)
 
             # Adjust left
             line = self._text[self._cursor_pos[0]]
-            chars_before_start = len(line[:self._draw_text_xstart])
+            chars_before_start = len(line[: self._draw_text_xstart])
             chars_after_start = len(line[self._draw_text_xstart:])
             if self._cursor_pos[1] < self._draw_text_xstart:
                 if chars_before_start <= self._text_width:
@@ -500,8 +511,8 @@ class TextField(Component):
                     self._realign_horz()
                 else:
                     self._scroll_horz(-self._text_width)
-            if (self._draw_text_xstart > 0 and
-                chars_after_start+1 < self._text_width):
+            if (self._draw_text_xstart > 0
+                    and chars_after_start + 1 < self._text_width):
                 self._scroll_horz(-1)
 
             # Adjust right
@@ -521,8 +532,8 @@ class TextField(Component):
         if self._width_cache is None:
             if self.metrics is not None:
                 char_width = self.metrics.get_text_extent("T")[2]
-                width = self.width - 2*self._style.text_offset
-                self._width_cache = int(floor(width/char_width))
+                width = self.width - 2 * self._style.text_offset
+                self._width_cache = int(floor(width / char_width))
         return self._width_cache
 
     def _get__text_height(self):
@@ -530,7 +541,7 @@ class TextField(Component):
             if self._height_cache is None:
                 if self.metrics is not None:
                     char_height = self.metrics.get_text_extent("T")[3]
-                    height = self.height - 2*self._style.text_offset
+                    height = self.height - 2 * self._style.text_offset
                     line_height = char_height + self._style.line_spacing
                     self._height_cache = int(floor(height / line_height))
             return self._height_cache
@@ -539,7 +550,7 @@ class TextField(Component):
 
     def __style_changed(self):
         """ Bg/border color is inherited from the style, so update it when the
-            style changes. The height of a line also depends on style.
+        style changes. The height of a line also depends on style.
         """
         self.bgcolor = self._style.bgcolor
         self.border_visible = self._style.border_visible
@@ -547,7 +558,7 @@ class TextField(Component):
 
         self.metrics.set_font(self._style.font)
         # FIXME!!  The height being passed in gets over-written here
-        #if not self.multiline:
+        # if not self.multiline:
         #    self.height = (self.metrics.get_text_extent("T")[3] +
         #                   self._style.text_offset*2)
 

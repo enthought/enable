@@ -9,7 +9,7 @@ from traits.api import Any, Array, Bool, Float
 from kiva.fonttools import Font
 
 
-if sys.platform == 'win32':
+if sys.platform == "win32":
     now = time.clock
 else:
     now = time.time
@@ -29,12 +29,11 @@ class SVGComponent(Component):
     profile_this = Any()
     should_profile = Bool(False)
 
-
-    def _draw_mainlayer(self, gc, view_bounds=None, mode='default'):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         if self.should_profile and self.profile_this is not None:
             # Only profile the first draw.
             self.should_profile = False
-            self.profile_this.start('Drawing')
+            self.profile_this.start("Drawing")
         start = now()
         gc.clear()
 
@@ -43,11 +42,11 @@ class SVGComponent(Component):
         if self.document is None:
             # fixme: The Mac backend doesn't accept style/width as non-integers
             #        in set_font, but does for select_font...
-            if sys.platform == 'darwin':
+            if sys.platform == "darwin":
                 gc.select_font("Helvetica", 36)
             else:
                 gc.set_font(Font("Helvetica", 36))
-            gc.show_text_at_point("Could not parse document.", 20, height-56)
+            gc.show_text_at_point("Could not parse document.", 20, height - 56)
             gc.restore_state()
             if self.profile_this is not None:
                 self.profile_this.stop()
@@ -56,7 +55,8 @@ class SVGComponent(Component):
         try:
             # SVG origin is upper right with y positive is down.
             # Set up the transforms to fix this up.
-            # FIXME: if the rendering stage fails, all subsequent renders are vertically flipped
+            # FIXME: if the rendering stage fails, all subsequent renders are
+            # vertically flipped
             gc.translate_ctm(0, height)
             # TODO: bother with zoom?
             # TODO: inspect the view bounds and scale to the shape of the
@@ -84,8 +84,7 @@ class ImageComponent(Component):
     # The RGB(A) data.
     image = Array()
 
-
-    def _draw_mainlayer(self, gc, view_bounds=None, mode='default'):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         gc.clear()
         if len(self.image.shape) != 3:
             # No image.
@@ -94,10 +93,11 @@ class ImageComponent(Component):
         try:
             width, height = self.bounds
             img_height, img_width = self.image.shape[:2]
-            gc.draw_image(self.image, (0.0,height-img_height,img_width,img_height))
+            gc.draw_image(
+                self.image, (0.0, height - img_height, img_width, img_height)
+            )
         finally:
             gc.restore_state()
 
     def _image_changed(self):
         self.invalidate_and_redraw()
-

@@ -9,12 +9,17 @@ size = (400, 100)
 
 class Demo(DemoFrame):
     def _create_component(self):
-        strings = array([["apple", "banana", "cherry", "durian"],
-                         ["eggfruit", "fig", "grape", "honeydew"]])
+        strings = array(
+            [
+                ["apple", "banana", "cherry", "durian"],
+                ["eggfruit", "fig", "grape", "honeydew"],
+            ]
+        )
         grid = TextGrid(string_array=strings)
         container = Container(bounds=size)
         container.add(grid)
         return container
+
 
 if __name__ == "__main__":
     # Save demo so that it doesn't get garbage collected when run within

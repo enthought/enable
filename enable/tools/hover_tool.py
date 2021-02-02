@@ -14,7 +14,7 @@ from pyface.timer.api import DoLaterTimer
 
 
 # Define a toolkit-specific function for determining the global mouse position
-if ETSConfig.toolkit == 'wx':
+if ETSConfig.toolkit == "wx":
     import wx
 
     def GetGlobalMousePosition():
@@ -26,17 +26,22 @@ if ETSConfig.toolkit == 'wx':
         else:
             raise RuntimeError("Unable to determine mouse position")
 
-elif ETSConfig.toolkit == 'qt4':
+
+elif ETSConfig.toolkit == "qt4":
     from pyface.qt import QtGui
 
     def GetGlobalMousePosition():
         pos = QtGui.QCursor.pos()
         return (pos.x(), pos.y())
 
+
 else:
+
     def GetGlobalMousePosition():
-        raise NotImplementedError("GetGlobalMousePosition is not defined for"
-                                  "toolkit '%s'." % ETSConfig.toolkit)
+        raise NotImplementedError(
+            "GetGlobalMousePosition is not defined for"
+            "toolkit '%s'." % ETSConfig.toolkit
+        )
 
 
 class HoverTool(BaseTool):
@@ -50,8 +55,10 @@ class HoverTool(BaseTool):
     """
 
     # Defines the part of the component that the hover tool will listen
-    area_type = Enum("top", "bottom", "left", "right", "borders",   # borders
-                     "UL", "UR", "LL", "LR", "corners")             # corners
+    area_type = Enum(
+        "top", "bottom", "left", "right", "borders",  # borders
+        "UL", "UR", "LL", "LR", "corners",  # corners
+    )
 
     # The width/height of the border or corner area.  (Corners are assumed to
     # be square.)
@@ -131,16 +138,11 @@ class HoverTool(BaseTool):
         area_type = self.area_type.lower()
         c = self.component
 
-        t = (c.y2 - y <= self.area)
-        b = (y - c.y <= self.area)
-        r = (c.x2 - x <= self.area)
-        l = (x - c.x <= self.area)
-        corner_mapping = {
-            "ul": t & l,
-            "ur": t & r,
-            "ll": b & l,
-            "lr": b & r,
-        }
+        t = c.y2 - y <= self.area
+        b = y - c.y <= self.area
+        r = c.x2 - x <= self.area
+        l = x - c.x <= self.area
+        corner_mapping = {"ul": t & l, "ur": t & r, "ll": b & l, "lr": b & r}
 
         if area_type in ("top", "bottom", "left", "right"):
             return locals()[area_type[0]]

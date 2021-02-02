@@ -1,4 +1,3 @@
-
 # Enthought library imports
 from traits.api import HasTraits
 
@@ -9,9 +8,9 @@ class Viewable(HasTraits):
     multiple viewports.
     """
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Public methods
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def request_redraw(self):
         # This overrides the default Component request_redraw by asking

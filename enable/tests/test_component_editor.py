@@ -15,26 +15,33 @@ ITEM_WIDTH, ITEM_HEIGHT = 700, 200
 
 class _ComponentDialog(HasTraits):
     """ View containing an item with ComponentEditor. """
+
     thing = Any
 
     traits_view = View(
-        Item('thing', editor=ComponentEditor(), show_label=False),
-        resizable=True
+        Item("thing", editor=ComponentEditor(), show_label=False),
+        resizable=True,
     )
 
 
 class _ComponentDialogWithSize(HasTraits):
     """ View containing an item with ComponentEditor and given size. """
+
     thing = Any
 
     traits_view = View(
-        Item('thing', editor=ComponentEditor(), show_label=False,
-             width=ITEM_WIDTH, height=ITEM_HEIGHT),
-        resizable=True
+        Item(
+            "thing",
+            editor=ComponentEditor(),
+            show_label=False,
+            width=ITEM_WIDTH,
+            height=ITEM_HEIGHT,
+        ),
+        resizable=True,
     )
 
-class TestComponentEditor(unittest.TestCase):
 
+class TestComponentEditor(unittest.TestCase):
     @skip_if_null
     def test_initial_component(self):
         # BUG: the initial size of an Item with ComponentEditor is zero
@@ -47,7 +54,6 @@ class TestComponentEditor(unittest.TestCase):
         self.assertGreater(size[0], 0)
         self.assertGreater(size[1], 0)
 
-
     @skip_if_null
     def test_initial_component_with_item_size(self):
         # BEH: the initial component size should respect the size of the
@@ -57,5 +63,5 @@ class TestComponentEditor(unittest.TestCase):
 
         size = get_dialog_size(ui.control)
 
-        self.assertGreater(size[0], ITEM_WIDTH-1)
-        self.assertGreater(size[1], ITEM_HEIGHT-1)
+        self.assertGreater(size[0], ITEM_WIDTH - 1)
+        self.assertGreater(size[1], ITEM_HEIGHT - 1)

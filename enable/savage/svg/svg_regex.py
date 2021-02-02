@@ -20,13 +20,18 @@ from functools import partial
 # Sentinel.
 class _EOF(object):
     def __repr__(self):
-        return 'EOF'
+        return "EOF"
+
+
 EOF = _EOF()
 
 lexicon = [
-    ('float', r'[-\+]?(?:(?:[0-9]*\.[0-9]+)|(?:[0-9]+\.?))(?:[Ee][-\+]?[0-9]+)?'),
-    ('int', r'[-\+]?[0-9]+'),
-    ('command', r'[AaCcHhLlMmQqSsTtVvZz]'),
+    (
+        "float",
+        r"[-\+]?(?:(?:[0-9]*\.[0-9]+)|(?:[0-9]+\.?))(?:[Ee][-\+]?[0-9]+)?",
+    ),
+    ("int", r"[-\+]?[0-9]+"),
+    ("command", r"[AaCcHhLlMmQqSsTtVvZz]"),
 ]
 
 
@@ -40,12 +45,13 @@ class Lexer(object):
 
         http://www.gooli.org/blog/a-simple-lexer-in-python/
     """
+
     def __init__(self, lexicon):
         self.lexicon = lexicon
         parts = []
         for name, regex in lexicon:
-            parts.append('(?P<%s>%s)' % (name, regex))
-        self.regex_string = '|'.join(parts)
+            parts.append("(?P<%s>%s)" % (name, regex))
+        self.regex_string = "|".join(parts)
         self.regex = re.compile(self.regex_string)
 
     def lex(self, text):
@@ -62,6 +68,7 @@ class Lexer(object):
                     break
         yield (EOF, None)
 
+
 svg_lexer = Lexer(lexicon)
 
 
@@ -73,9 +80,9 @@ class SVGPathParser(object):
     <path> data, so 'M' for absolute moveto, 'm' for relative moveto, 'Z' for
     closepath, etc. The kind of data it carries with it depends on the command.
     For 'Z' (closepath), it's just None. The others are lists of individual
-    argument groups. Multiple elements in these lists usually mean to repeat the
-    command. The notable exception is 'M' (moveto) where only the first element
-    is truly a moveto. The remainder are implicit linetos.
+    argument groups. Multiple elements in these lists usually mean to repeat
+    the command. The notable exception is 'M' (moveto) where only the first
+    element is truly a moveto. The remainder are implicit linetos.
 
     See the SVG documentation for the interpretation of the individual elements
     for each command.
@@ -88,29 +95,29 @@ class SVGPathParser(object):
         self.lexer = lexer
 
         self.command_dispatch = {
-            'Z': self.rule_closepath,
-            'z': self.rule_closepath,
-            'M': self.rule_moveto_or_lineto,
-            'm': self.rule_moveto_or_lineto,
-            'L': self.rule_moveto_or_lineto,
-            'l': self.rule_moveto_or_lineto,
-            'H': self.rule_orthogonal_lineto,
-            'h': self.rule_orthogonal_lineto,
-            'V': self.rule_orthogonal_lineto,
-            'v': self.rule_orthogonal_lineto,
-            'C': self.rule_curveto3,
-            'c': self.rule_curveto3,
-            'S': self.rule_curveto2,
-            's': self.rule_curveto2,
-            'Q': self.rule_curveto2,
-            'q': self.rule_curveto2,
-            'T': self.rule_curveto1,
-            't': self.rule_curveto1,
-            'A': self.rule_elliptical_arc,
-            'a': self.rule_elliptical_arc,
+            "Z": self.rule_closepath,
+            "z": self.rule_closepath,
+            "M": self.rule_moveto_or_lineto,
+            "m": self.rule_moveto_or_lineto,
+            "L": self.rule_moveto_or_lineto,
+            "l": self.rule_moveto_or_lineto,
+            "H": self.rule_orthogonal_lineto,
+            "h": self.rule_orthogonal_lineto,
+            "V": self.rule_orthogonal_lineto,
+            "v": self.rule_orthogonal_lineto,
+            "C": self.rule_curveto3,
+            "c": self.rule_curveto3,
+            "S": self.rule_curveto2,
+            "s": self.rule_curveto2,
+            "Q": self.rule_curveto2,
+            "q": self.rule_curveto2,
+            "T": self.rule_curveto1,
+            "t": self.rule_curveto1,
+            "A": self.rule_elliptical_arc,
+            "a": self.rule_elliptical_arc,
         }
 
-        self.number_tokens = set(['int', 'float'])
+        self.number_tokens = set(["int", "float"])
 
     def parse(self, text):
         """ Parse a string of SVG <path> data.
@@ -122,7 +129,7 @@ class SVGPathParser(object):
     def rule_svg_path(self, next, token):
         commands = []
         while token[0] is not EOF:
-            if token[0] != 'command':
+            if token[0] != "command":
                 raise SyntaxError("expecting a command; got %r" % (token,))
             rule = self.command_dispatch[token[1]]
             command_group, token = rule(next, token)
@@ -189,14 +196,18 @@ class SVGPathParser(object):
         while token[0] in self.number_tokens:
             rx = float(token[1])
             if rx < 0.0:
-                raise SyntaxError("expecting a nonnegative number; got %r" % (token,))
+                raise SyntaxError(
+                    "expecting a nonnegative number; got %r" % (token,)
+                )
 
             token = next()
             if token[0] not in self.number_tokens:
                 raise SyntaxError("expecting a number; got %r" % (token,))
             ry = float(token[1])
             if ry < 0.0:
-                raise SyntaxError("expecting a nonnegative number; got %r" % (token,))
+                raise SyntaxError(
+                    "expecting a nonnegative number; got %r" % (token,)
+                )
 
             token = next()
             if token[0] not in self.number_tokens:
@@ -204,13 +215,17 @@ class SVGPathParser(object):
             axis_rotation = float(token[1])
 
             token = next()
-            if token[1] not in ('0', '1'):
-                raise SyntaxError("expecting a boolean flag; got %r" % (token,))
+            if token[1] not in ("0", "1"):
+                raise SyntaxError(
+                    "expecting a boolean flag; got %r" % (token,)
+                )
             large_arc_flag = bool(int(token[1]))
 
             token = next()
-            if token[1] not in ('0', '1'):
-                raise SyntaxError("expecting a boolean flag; got %r" % (token,))
+            if token[1] not in ("0", "1"):
+                raise SyntaxError(
+                    "expecting a boolean flag; got %r" % (token,)
+                )
             sweep_flag = bool(int(token[1]))
 
             token = next()
@@ -224,7 +239,9 @@ class SVGPathParser(object):
             y = float(token[1])
 
             token = next()
-            arguments.append(((rx,ry), axis_rotation, large_arc_flag, sweep_flag, (x,y)))
+            arguments.append(
+                ((rx, ry), axis_rotation, large_arc_flag, sweep_flag, (x, y))
+            )
 
         return (command, arguments), token
 
@@ -234,7 +251,6 @@ class SVGPathParser(object):
         x = float(token[1])
         token = next()
         return x, token
-
 
     def rule_coordinate_pair(self, next, token):
         # Inline these since this rule is so common.
@@ -246,7 +262,7 @@ class SVGPathParser(object):
             raise SyntaxError("expecting a number; got %r" % (token,))
         y = float(token[1])
         token = next()
-        return (x,y), token
+        return (x, y), token
 
 
 svg_parser = SVGPathParser()

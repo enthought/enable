@@ -1,4 +1,3 @@
-
 from traits.api import Enum
 from enable.api import Component
 

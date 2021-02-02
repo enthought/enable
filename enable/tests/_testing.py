@@ -35,8 +35,7 @@ def is_null():
 
 
 skip_if_null = unittest.skipIf(
-    is_null(),
-    "Test not working on the 'null' backend"
+    is_null(), "Test not working on the 'null' backend"
 )
 
 skip_if_not_qt = unittest.skipIf(not is_qt(), "Test only for qt")

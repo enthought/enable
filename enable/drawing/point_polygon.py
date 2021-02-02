@@ -6,6 +6,7 @@ from traits.api import Int, Instance
 
 from .drawing_tool import DrawingTool
 
+
 class PointPolygon(DrawingTool):
     """ A point-to-point drawn polygon. """
 
@@ -25,9 +26,9 @@ class PointPolygon(DrawingTool):
         self.polygon.model.reset()
         self.event_state = "normal"
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # "complete" state
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def complete_draw(self, gc):
         """ Draw a closed polygon. """
@@ -51,8 +52,8 @@ class PointPolygon(DrawingTool):
                 # Otherwise, prepare to drag it.
                 else:
                     self._dragged = over
-                    event.window.set_pointer('right arrow')
-                    self.event_state = 'drag_point'
+                    event.window.set_pointer("right arrow")
+                    self.event_state = "drag_point"
 
                 self.request_redraw()
 
@@ -63,17 +64,17 @@ class PointPolygon(DrawingTool):
         over = self._over_point(event, self.polygon.model.points)
         if over is not None:
             if event.control_down:
-                event.window.set_pointer('bullseye')
+                event.window.set_pointer("bullseye")
             else:
-                event.window.set_pointer('right arrow')
+                event.window.set_pointer("right arrow")
         else:
             event.handled = False
-            event.window.set_pointer('arrow')
+            event.window.set_pointer("arrow")
         self.request_redraw()
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # "drag_point" state
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def drag_point_draw(self, gc):
         """ Draw the polygon in the 'drag_point' state. """
@@ -81,7 +82,7 @@ class PointPolygon(DrawingTool):
 
     def drag_point_left_up(self, event):
         """ Handle the left mouse coming up in the 'drag_point' state. """
-        self.event_state = 'complete'
+        self.event_state = "complete"
         self.request_redraw()
 
     def drag_point_mouse_move(self, event):
@@ -92,13 +93,15 @@ class PointPolygon(DrawingTool):
 
         # If the point has actually moved, update it.
         if dragged_point != (event.x, event.y):
-            polygon.model.points[self._dragged] = \
-                (event.x + self.x, event.y - self.y)
+            polygon.model.points[self._dragged] = (
+                event.x + self.x,
+                event.y - self.y,
+            )
             self.request_redraw()
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # "incomplete" state
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def incomplete_draw(self, gc):
         """ Draw the polygon in the 'incomplete' state. """
@@ -111,8 +114,8 @@ class PointPolygon(DrawingTool):
         # Remove the point that was placed by the first mouse up, since
         # another one will be placed on the up stroke of the double click.
         del self.polygon.model.points[-1]
-        event.window.set_pointer('right arrow')
-        self.event_state = 'complete'
+        event.window.set_pointer("right arrow")
+        self.event_state = "complete"
         self.complete = True
 
         self.request_redraw()
@@ -121,35 +124,40 @@ class PointPolygon(DrawingTool):
         """ Handle the left mouse button coming up in incomplete state. """
 
         # If the click was over the start vertex, we are done.
-        if self._is_over_start( event ):
+        if self._is_over_start(event):
             del self.polygon.model.points[-1]
-            self.event_state = 'complete'
-            event.window.set_pointer('right arrow')
+            self.event_state = "complete"
+            event.window.set_pointer("right arrow")
             self.complete = True
 
         # Otherwise, add the point and move on.
         else:
-            self.polygon.model.points.append((event.x + self.x, event.y - self.y))
+            self.polygon.model.points.append(
+                (event.x + self.x, event.y - self.y)
+            )
 
         self.request_redraw()
 
     def incomplete_mouse_move(self, event):
         """ Handle the mouse moving in incomplete state. """
         # If we move over the initial point, then we change the cursor.
-        if self._is_over_start( event ):
-            event.window.set_pointer('bullseye')
+        if self._is_over_start(event):
+            event.window.set_pointer("bullseye")
         else:
-            event.window.set_pointer('pencil')
+            event.window.set_pointer("pencil")
 
         # If the point has actually changed, then we need to update our model.
         if self.polygon.model.points != (event.x + self.x, event.y - self.y):
-            self.polygon.model.points[-1] = (event.x + self.x, event.y - self.y)
+            self.polygon.model.points[-1] = (
+                event.x + self.x,
+                event.y - self.y,
+            )
 
         self.request_redraw()
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # "normal" state
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def normal_left_up(self, event):
         """ Handle the left button up in the 'normal' state. """
@@ -160,26 +168,28 @@ class PointPolygon(DrawingTool):
         pt = (event.x + self.x, event.y - self.y)
         self.polygon.model.points.append(pt)
         self.polygon.model.points.append(pt)
-        self.event_state = 'incomplete'
+        self.event_state = "incomplete"
 
     def normal_mouse_move(self, event):
         """ Handle the mouse moving in the 'normal' state. """
-        event.window.set_pointer('pencil')
+        event.window.set_pointer("pencil")
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # private methods
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def _is_near_point(self, point, event):
         """ Determine if the pointer is near a specified point. """
         event_point = (event.x + self.x, event.y - self.y)
-        return ((abs(point[0] - event_point[0]) + \
-                 abs(point[1] - event_point[1])) <= self.proximity_distance)
+        return (
+            abs(point[0] - event_point[0]) + abs(point[1] - event_point[1])
+        ) <= self.proximity_distance
 
     def _is_over_start(self, event):
         """ Test if the event is 'over' the starting vertex. """
-        return (len(self.polygon.model.points) > 0 and
-                self._is_near_point(self.polygon.model.points[0], event))
+        return len(self.polygon.model.points) > 0 and self._is_near_point(
+            self.polygon.model.points[0], event
+        )
 
     def _over_point(self, event, points):
         """ Return the index of a point in points that event is 'over'.

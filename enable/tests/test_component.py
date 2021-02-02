@@ -36,7 +36,7 @@ class ComponentTestCase(unittest.TestCase):
     def test_set_outer_position(self):
         c = Component(bounds=[50.0, 60.0], padding=10, border_visible=False)
         # Test setting various things
-        c.outer_position = [0,0]
+        c.outer_position = [0, 0]
         self.assertTrue(c.outer_x == 0)
         self.assertTrue(c.outer_y == 0)
         self.assertTrue(c.x == 10)
@@ -58,9 +58,13 @@ class ComponentTestCase(unittest.TestCase):
         self.assertTrue(c.y == 30)
 
     def test_border(self):
-        c = Component(bounds=[50.0, 60.0],
-                      position=[20, 20],
-                      padding=10, border_visible=True, border_width=1)
+        c = Component(
+            bounds=[50.0, 60.0],
+            position=[20, 20],
+            padding=10,
+            border_visible=True,
+            border_width=1,
+        )
         self.assertTrue(c.outer_x == 10)
         self.assertTrue(c.outer_y == 10)
         self.assertTrue(c.outer_bounds[0] == 70)

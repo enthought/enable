@@ -21,12 +21,18 @@ def valid_range(object, name, value):
                 high = low + 1.0
             page_size = max(min(page_size, high - low), 0.0)
             line_size = max(min(line_size, page_size), 0.0)
-            return (float(low), float(high), float(page_size), float(line_size))
-    except:
+            return (
+                float(low),
+                float(high),
+                float(page_size),
+                float(line_size),
+            )
+    except Exception:
         raise
     raise TraitError
 
-valid_range.info = 'a (low,high,page_size,line_size) range tuple'
+
+valid_range.info = "a (low,high,page_size,line_size) range tuple"
 
 
 def valid_scroll_position(object, name, value):
@@ -36,7 +42,7 @@ def valid_scroll_position(object, name, value):
         low, high, page_size, line_size = object.range
         x = max(min(float(value), high - page_size), low)
         return x
-    except:
+    except Exception:
         raise
     raise TraitError
 
@@ -53,23 +59,23 @@ class QResizableScrollBar(QtGui.QScrollBar):
 class NativeScrollBar(Component):
     "An Enable scrollbar component that wraps/embeds the native Qt scrollbar"
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Public Traits
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     # The current position of the scroll bar.  This must be within the range
     # (self.low, self.high)
-    scroll_position = Trait( 0.0, valid_scroll_position )
+    scroll_position = Trait(0.0, valid_scroll_position)
 
     # A tuple (low, high, page_size, line_size).  Can be accessed using
     # convenience properties (see below).
-    range = Trait( ( 0.0, 100.0, 10.0, 1.0 ), valid_range )
+    range = Trait((0.0, 100.0, 10.0, 1.0), valid_range)
 
     # The orientation of the scrollbar
     orientation = Trait("horizontal", "vertical")
 
     # Is y=0 at the top or bottom?
-    origin = Trait('bottom', 'top')
+    origin = Trait("bottom", "top")
 
     # Determines if the scroll bar should be visible and respond to events
     enabled = Bool(True)
@@ -88,10 +94,9 @@ class NativeScrollBar(Component):
     # finishes interacting with this scrollbar via the scrollbar thumb.
     mouse_thumb = Enum("up", "down")
 
-
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Private Traits
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     _control = Any
     _clean = Bool(False)
     _last_widget_x = Float(0)
@@ -108,7 +113,6 @@ class NativeScrollBar(Component):
     # gets updated via user mouse interaction, since Qt is then responsible
     # for updating the scrollbar.
     _scroll_updated = Bool(True)
-
 
     def destroy(self):
         """ Destroy the native widget associated with this component.
@@ -129,11 +133,11 @@ class NativeScrollBar(Component):
         x_pos, y_pos = self.position
         x_size, y_size = map(int, self.bounds)
 
-        qt_xpos, qt_ypos = self._get_abs_coords(x_pos, y_pos+y_size-1)
+        qt_xpos, qt_ypos = self._get_abs_coords(x_pos, y_pos + y_size - 1)
 
         # We have to do this flip_y business because Qt and enable use opposite
-        # coordinate systems, and enable defines the component's position as its
-        # lower left corner, while Qt defines it as the upper left corner.
+        # coordinate systems, and enable defines the component's position as
+        # its lower left corner, while Qt defines it as the upper left corner.
         window = self.window
         if window is None:
             return
@@ -145,7 +149,8 @@ class NativeScrollBar(Component):
             self._create_control(window, self.range, self.scroll_position)
 
         if self._widget_moved:
-            if (self._last_widget_x != qt_xpos) or (self._last_widget_y != qt_ypos):
+            if (self._last_widget_x != qt_xpos
+                    or self._last_widget_y != qt_ypos):
                 self._control.move(qt_xpos, qt_ypos)
             controlsize = self._control.size()
             if x_size != controlsize.width() or y_size != controlsize.height():
@@ -154,7 +159,7 @@ class NativeScrollBar(Component):
         if self._scroll_updated:
             self._update_control(self.range, self.scroll_position)
 
-        #self._control.raise_()
+        # self._control.raise_()
 
         self._last_widget_x = qt_xpos
         self._last_widget_y = qt_ypos
@@ -164,10 +169,11 @@ class NativeScrollBar(Component):
         self._widget_moved = False
 
     def _create_control(self, window, enable_range, value):
-        qt_orientation = dict(
-            horizontal=QtCore.Qt.Horizontal,
-            vertical=QtCore.Qt.Vertical,
-        )[self.orientation]
+        qt_orientation = {
+            'horizontal': QtCore.Qt.Horizontal,
+            'vertical': QtCore.Qt.Vertical
+        }[self.orientation]
+
         self._control = QResizableScrollBar(qt_orientation, window.control)
         self._update_control(enable_range, value)
         self._control.valueChanged.connect(self._update_enable_pos)
@@ -182,7 +188,7 @@ class NativeScrollBar(Component):
         # The maximum value of a QScrollBar is the maximum position of the
         # scroll bar, not the document length. We need to subtract the length
         # of the scroll bar itself.
-        max_value = maximum-page_size
+        max_value = maximum - page_size
         # invert values for vertical ranges because of coordinate system issues
         value = self._correct_value(value, minimum, max_value)
 
@@ -207,18 +213,19 @@ class NativeScrollBar(Component):
             The maximum value that the Qt scrollbar can be set to (height of
             the scrolled component, less the page size).
         """
-        if self.orientation != 'vertical':
+        if self.orientation != "vertical":
             return value
         return max_value - (value - min_value)
 
-
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Qt Event handlers
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def _update_enable_pos(self, value):
         # invert values for vertical ranges because of coordinate system issues
-        value = self._correct_value(value, self.low, self.high-self.page_size)
+        value = self._correct_value(
+            value, self.low, self.high - self.page_size
+        )
         self.scroll_position = value
 
     def _on_slider_pressed(self):
@@ -234,13 +241,15 @@ class NativeScrollBar(Component):
     def _on_destroyed(self):
         self._control = None
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Basic trait event handlers
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def _range_changed(self):
         low, high, page_size, line_size = self.range
-        self.scroll_position = max(min(self.scroll_position, high-page_size), low)
+        self.scroll_position = max(
+            min(self.scroll_position, high - page_size), low
+        )
         self._scroll_updated = True
         self.request_redraw()
 
@@ -249,8 +258,10 @@ class NativeScrollBar(Component):
 
     def _mouse_wheel_changed(self, event):
         # FIXME: convert to Qt.
-        event.handled  = True
-        self.scroll_position += (event.mouse_wheel * self.range[3] * self.mouse_wheel_speed)
+        event.handled = True
+        self.scroll_position += (
+            event.mouse_wheel * self.range[3] * self.mouse_wheel_speed
+        )
 
     def _scroll_position_changed(self):
         self._scroll_updated = True
@@ -276,9 +287,9 @@ class NativeScrollBar(Component):
         self._widget_moved = True
         self.request_redraw()
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Property getters and setters
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def _get_low(self):
         return self.range[0]
@@ -286,7 +297,7 @@ class NativeScrollBar(Component):
     def _set_low(self, low):
         ignore, high, page_size, line_size = self.range
         self._clean = False
-        self.range =(low, high, page_size, line_size)
+        self.range = (low, high, page_size, line_size)
 
     def _get_high(self):
         return self.range[1]
@@ -294,7 +305,7 @@ class NativeScrollBar(Component):
     def _set_high(self, high):
         low, ignore, page_size, line_size = self.range
         self._clean = False
-        self.range =(low, high, page_size, line_size)
+        self.range = (low, high, page_size, line_size)
 
     def _get_page_size(self):
         return self.range[2]
@@ -302,7 +313,7 @@ class NativeScrollBar(Component):
     def _set_page_size(self, page_size):
         low, high, ignore, line_size = self.range
         self._clean = False
-        self.range =(low, high, page_size, line_size)
+        self.range = (low, high, page_size, line_size)
 
     def _get_line_size(self):
         return self.range[3]
@@ -310,4 +321,4 @@ class NativeScrollBar(Component):
     def _set_line_size(self, line_size):
         low, high, page_size, ignore = self.range
         self._clean = False
-        self.range =(low, high, page_size, line_size)
+        self.range = (low, high, page_size, line_size)

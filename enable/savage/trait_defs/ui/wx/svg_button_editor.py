@@ -1,4 +1,4 @@
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #
 #  Copyright (c) 2009, Enthought, Inc.
 #  All rights reserved.
@@ -10,7 +10,7 @@
 #
 #  Thanks for using Enthought open source!
 #
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 """ Traits UI button editor for SVG images.
 """
@@ -36,10 +36,10 @@ from .wx_render_panel import RenderPanel
 
 
 class ButtonRenderPanel(RenderPanel):
-    def __init__(self, parent, button, padding=(8,8)):
+    def __init__(self, parent, button, padding=(8, 8)):
         self.button = button
         self.document = button.document
-        self.state = 'up'
+        self.state = "up"
 
         self.toggle_document = button.toggle_document
         self.toggle_state = button.factory.toggle_state
@@ -62,7 +62,7 @@ class ButtonRenderPanel(RenderPanel):
 
     def GetBackgroundColour(self):
         bgcolor = copy.copy(WindowColor)
-        if self.state == 'down':
+        if self.state == "down":
             red, green, blue = bgcolor.Get()[:3]
             red -= 15
             green -= 15
@@ -78,8 +78,9 @@ class ButtonRenderPanel(RenderPanel):
 
         gc = wx.GraphicsContext.Create(dc)
 
-        if self.toggle_state and self.button.factory.toggle and \
-                not self.button.factory.toggle_filename:
+        if (self.toggle_state
+                and self.button.factory.toggle
+                and not self.button.factory.toggle_filename):
             self._draw_toggle(gc)
 
         # Put the icon in the middle of the alotted space. If the text is wider
@@ -88,13 +89,14 @@ class ButtonRenderPanel(RenderPanel):
         # otherwise, the icon will be drawn starting after the left padding.
 
         best_size = self.DoGetBestSize()
-        x_offset = (best_size.width - self.button.factory.width)/2.0
+        x_offset = (best_size.width - self.button.factory.width) / 2.0
         y_offset = self.padding[1] / 2.0
         gc.Translate(x_offset, y_offset)
         gc.Scale(float(self.zoom_x) / 100, float(self.zoom_y) / 100)
 
-        if self.toggle_state and self.button.factory.toggle and \
-                self.button.factory.toggle_filename:
+        if (self.toggle_state
+                and self.button.factory.toggle
+                and self.button.factory.toggle_filename):
             self.toggle_document.render(gc)
             label_text = self.button.factory.toggle_label
         else:
@@ -109,11 +111,11 @@ class ButtonRenderPanel(RenderPanel):
         # same across platforms...
 
         text_width = dc.GetTextExtent(label_text)[0]
-        text_x = (best_size.width - text_width)/2.0
+        text_x = (best_size.width - text_width) / 2.0
         text_y = self.button.factory.height
-        gc.Scale(100/float(self.zoom_x), 100/float(self.zoom_y))
+        gc.Scale(100 / float(self.zoom_x), 100 / float(self.zoom_y))
 
-        if sys.platform == 'darwin':
+        if sys.platform == "darwin":
             gc.Translate(-x_offset + text_x, -y_offset + text_y)
             dc.DrawText(label_text, 0, 0)
         else:
@@ -135,12 +137,12 @@ class ButtonRenderPanel(RenderPanel):
                 tooltip = wx.ToolTip(self.button.factory.tooltip)
             self.button.control.SetToolTip(tooltip)
 
-        self.state = 'down'
+        self.state = "down"
         evt.Skip()
         self.Refresh()
 
     def OnLeftUp(self, evt):
-        self.state = 'up'
+        self.state = "up"
         self.button.update_editor()
         evt.Skip()
         self.Refresh()
@@ -179,12 +181,20 @@ class ButtonRenderPanel(RenderPanel):
         zoom_scale_y = float(self.zoom_y) / 100
         doc_size = self.document.getSize()
         toggle_doc_size = self.toggle_document.getSize()
-        w_scale = zoom_scale_x * doc_size[0] / (toggle_doc_size[0]-self.padding[0]-1)
-        h_scale = zoom_scale_y * doc_size[1] / (toggle_doc_size[1]-self.padding[1]-1)
+        w_scale = (
+            zoom_scale_x
+            * doc_size[0]
+            / (toggle_doc_size[0] - self.padding[0] - 1)
+        )
+        h_scale = (
+            zoom_scale_y
+            * doc_size[1]
+            / (toggle_doc_size[1] - self.padding[1] - 1)
+        )
 
         # move to the center of the allotted area
         best_size = self.DoGetBestSize()
-        x_offset = (best_size.width - self.button.factory.width)/2.0
+        x_offset = (best_size.width - self.button.factory.width) / 2.0
         y_offset = self.padding[1] / 2.0
         gc.Translate(x_offset, y_offset)
 
@@ -194,40 +204,50 @@ class ButtonRenderPanel(RenderPanel):
 
         # And return the scaling factor back to what it originally was
         # and return to the origial location
-        gc.Scale(1/w_scale, 1/h_scale)
+        gc.Scale(1 / w_scale, 1 / h_scale)
         gc.Translate(-x_offset, -y_offset)
 
 
-class SVGButtonEditor ( Editor ):
+class SVGButtonEditor(Editor):
     """ Traits UI 'display only' image editor.
     """
 
     document = Instance(SVGDocument)
     toggle_document = Instance(SVGDocument)
 
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Editor API
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
-    def init ( self, parent ):
+    def init(self, parent):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
 
-        self.document = SVGDocument.createFromFile(self.factory.filename, renderer=Renderer)
+        self.document = SVGDocument.createFromFile(
+            self.factory.filename, renderer=Renderer
+        )
 
         # load the button toggle document which will be displayed when the
         # button is toggled.
         if self.factory.toggle_filename:
-            self.toggle_document = SVGDocument.createFromFile(self.factory.toggle_filename, renderer=Renderer)
+            self.toggle_document = SVGDocument.createFromFile(
+                self.factory.toggle_filename, renderer=Renderer
+            )
         else:
-            tree = etree.parse(os.path.join(os.path.dirname(__file__), 'data', 'button_toggle.svg'))
-            self.toggle_document = SVGDocument(tree.getroot(), renderer=Renderer)
+            tree = etree.parse(
+                os.path.join(
+                    os.path.dirname(__file__), "data", "button_toggle.svg"
+                )
+            )
+            self.toggle_document = SVGDocument(
+                tree.getroot(), renderer=Renderer
+            )
 
         padding = (self.factory.width_padding, self.factory.height_padding)
-        self.control = ButtonRenderPanel( parent, self, padding=padding )
+        self.control = ButtonRenderPanel(parent, self, padding=padding)
 
-        if self.factory.tooltip != '':
+        if self.factory.tooltip != "":
             self.control.SetToolTip(wx.ToolTip(self.factory.tooltip))
 
         svg_w, svg_h = self.control.GetBestSize()
@@ -235,21 +255,22 @@ class SVGButtonEditor ( Editor ):
         self.control.zoom_y /= float(svg_h) / self.factory.height
         self.control.Refresh()
 
-    def prepare ( self, parent ):
+    def prepare(self, parent):
         """ Finishes setting up the editor. This differs from the base class
             in that self.update_editor() is not called at the end, which
             would fire an event.
         """
         name = self.extended_name
-        if name != 'None':
-            self.context_object.on_trait_change( self._update_editor, name,
-                                                 dispatch = 'ui' )
-        self.init( parent )
+        if name != "None":
+            self.context_object.on_trait_change(
+                self._update_editor, name, dispatch="ui"
+            )
+        self.init(parent)
         self._sync_values()
 
-    def update_editor ( self ):
+    def update_editor(self):
         """ Updates the editor when the object trait changes externally to the
             editor.
         """
-        factory    = self.factory
+        factory = self.factory
         self.value = factory.value

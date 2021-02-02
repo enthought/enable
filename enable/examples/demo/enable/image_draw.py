@@ -11,11 +11,11 @@ THIS_DIR = os.path.split(__file__)[0]
 
 
 class Demo(DemoFrame):
-
     def _create_component(self):
-        path = os.path.join(THIS_DIR, 'deepfield.jpg')
-        image = Image.from_file(path, resist_width='weak',
-                                resist_height='weak')
+        path = os.path.join(THIS_DIR, "deepfield.jpg")
+        image = Image.from_file(
+            path, resist_width="weak", resist_height="weak"
+        )
 
         container = ConstraintsContainer(bounds=[500, 500])
         container.add(image)

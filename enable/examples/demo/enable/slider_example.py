@@ -3,7 +3,6 @@ from enable.example_support import demo_main, DemoFrame
 
 
 class Demo(DemoFrame):
-
     def _create_component(self):
         slider = Slider()
         slider.set_slider_pixels(10)

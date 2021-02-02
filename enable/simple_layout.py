@@ -2,6 +2,7 @@
    OverlayPlotContainer.  Designed to be called from a container, but
    separated out because they are useful from ViewPort and Container"""
 
+
 def simple_container_get_preferred_size(container, components=None):
     """ Returns the size (width,height) that is preferred for this component.
 
@@ -52,8 +53,12 @@ def simple_container_get_preferred_size(container, components=None):
         max_height = container.default_size[1]
 
     # Add in our padding and border
-    container._cached_preferred_size = (max_width + container.hpadding, max_height + container.vpadding)
+    container._cached_preferred_size = (
+        max_width + container.hpadding,
+        max_height + container.vpadding,
+    )
     return container._cached_preferred_size
+
 
 def simple_container_do_layout(container, components=None):
     """ Actually performs a layout (called by do_layout()).
@@ -68,7 +73,7 @@ def simple_container_do_layout(container, components=None):
     height = container.height
 
     for component in components:
-        if hasattr(container, '_should_layout'):
+        if hasattr(container, "_should_layout"):
             if not container._should_layout(component):
                 continue
 

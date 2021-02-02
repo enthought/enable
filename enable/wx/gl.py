@@ -1,7 +1,8 @@
 import wx
 
 import pyglet
-pyglet.options['shadow_window'] = False
+
+pyglet.options["shadow_window"] = False
 from wx.glcanvas import GLCanvas
 
 from traits.api import Instance
@@ -9,6 +10,7 @@ from kiva.gl import CompiledPath, FakePygletContext, GraphicsContext
 
 from .base_window import BaseWindow
 from .scrollbar import NativeScrollBar
+
 
 class Window(BaseWindow):
 
@@ -23,15 +25,16 @@ class Window(BaseWindow):
 
         self._gc = None
 
-    def _create_control(self, parent, wid, pos = wx.DefaultPosition,
-                        size = wx.DefaultSize):
-        return GLCanvas(parent, wid, pos, size,
-                        style=wx.CLIP_CHILDREN|wx.WANTS_CHARS)
+    def _create_control(self, parent, wid, pos=wx.DefaultPosition,
+                        size=wx.DefaultSize):
+        return GLCanvas(
+            parent, wid, pos, size, style=wx.CLIP_CHILDREN | wx.WANTS_CHARS
+        )
 
     def _create_gc(self, size, pix_format=None):
         """ Create a GraphicsContext instance.
         """
-        gc = GraphicsContext((size[0]+1,size[1]+1))
+        gc = GraphicsContext((size[0] + 1, size[1] + 1))
         if self._pyglet_gl_context is None:
             self._pyglet_gl_context = FakePygletContext()
         gc.gl_init()
@@ -39,8 +42,9 @@ class Window(BaseWindow):
         return gc
 
     def _init_gc(self):
-        """ Gives the GC a chance to initialize itself before components perform layout
-        and draw.  This is called every time through the paint loop.
+        """ Gives the GC a chance to initialize itself before components
+        perform layout and draw.  This is called every time through the paint
+        loop.
         """
         dc = wx.PaintDC(self.control)
         self._pyglet_gl_context.set_current()
@@ -65,8 +69,10 @@ class Window(BaseWindow):
         self._update_region = []
         self.control.SwapBuffers()
 
+
 def font_metrics_provider():
     from kiva.fonttools import Font
+
     gc = GraphicsContext((1, 1))
     gc.set_font(Font())
     return gc

@@ -11,7 +11,6 @@ MoveCommandTool
 
 A MoveTool that uses Pyface's undo/redo infrastructure to create undoable move
 commands.
-
 """
 
 from traits.api import Bool, Tuple
@@ -28,12 +27,11 @@ class MoveCommandTool(MoveTool, BaseCommandTool):
     This tool pushes a single MoveCommands onto its CommandStack at
     the end of the drag operation.  If the drag is cancelled, then no command
     is issued, and no commands are issued during the drag operation.
-
     """
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # 'MoveCommandTool' interface
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     #: Whether or not subsequent moves can be merged with this one.
     mergeable = Bool
@@ -41,9 +39,9 @@ class MoveCommandTool(MoveTool, BaseCommandTool):
     #: The initial component position.
     _initial_position = Tuple(0, 0)
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # 'DragTool' interface
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def drag_start(self, event):
         if self.component:
@@ -52,13 +50,15 @@ class MoveCommandTool(MoveTool, BaseCommandTool):
         return super(MoveCommandTool, self).drag_start(event)
 
     def drag_end(self, event):
-        """ End the drag operation, issuing a MoveCommands """
+        """ End the drag operation, issuing a MoveCommands
+        """
         if self.component:
             command = self.command(
                 component=self.component,
                 previous_position=self._initial_position,
                 new_position=tuple(self.component.position),
-                mergeable=self.mergeable)
+                mergeable=self.mergeable,
+            )
             self.command_stack.push(command)
             event.handled = True
 
@@ -68,16 +68,15 @@ class MoveCommandTool(MoveTool, BaseCommandTool):
         A drag is usually cancelled by receiving a mouse_leave event when
         `end_drag_on_leave` is True, or by the user pressing any of the
         `cancel_keys`.
-
         """
         if self.component:
             self.component.position = list(self._initial_position)
 
             event.handled = True
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Trait handlers
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def _command_default(self):
         return MoveCommand
