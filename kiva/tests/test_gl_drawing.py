@@ -65,7 +65,3 @@ class TestGLDrawing(DrawingImageTester, unittest.TestCase):
                 filename, file=file_handle, encoder=PNGImageEncoder()
             )
         self.assertImageSavedWithContent(filename)
-
-
-if __name__ == "__main__":
-    unittest.main()

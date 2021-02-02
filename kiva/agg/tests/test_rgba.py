@@ -57,7 +57,3 @@ class RgbaTestCase(unittest.TestCase, Utils):
         actual = first.premultiply().asarray()
         desired = array((0.5, 0.5, 0.5, 0.5))
         self.assertRavelEqual(actual, desired)
-
-
-if __name__ == "__main__":
-    unittest.main()

@@ -141,7 +141,3 @@ class TestPointsInPolygon(unittest.TestCase):
 
         result = points_in_polygon(points, polygon)
         self.assertTrue(allclose(array([1, 1]), result))
-
-
-if __name__ == "__main__":
-    unittest.main()

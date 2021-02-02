@@ -52,7 +52,6 @@ class TestLength(unittest.TestCase):
 
     def testValidValues(self):
         for string, expected in self.valid:
-            # ~ print string, expected
             got = self.parser.parseString(string)
             self.assertEqual(expected, tuple(got))
 

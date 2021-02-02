@@ -6,16 +6,6 @@ from kiva import agg
 
 from .test_utils import Utils
 
-# UNCOMMENT THIS TO SEE THE IMPORT ISSUES FROM TICKET
-# https://svn.enthought.com/enthought/ticket/537 (agg causes python crash
-# during unit tests)
-#
-# import sys
-# module_names = [name for name in sys.modules.keys() if name.find('agg') >= 0]
-# module_names.sort()
-# for name in module_names:
-#    print name, sys.modules[name]
-
 
 class TestCompiledPath(unittest.TestCase, Utils):
     def test_init(self):
@@ -261,7 +251,3 @@ class TestCompiledPath(unittest.TestCase, Utils):
     def test_rects_list(self):
         rects = [[1.0, 1.0, 1.0, 1.0], [2.0, 2.0, 1.0, 1.0]]
         self.base_helper_rects(rects)
-
-
-if __name__ == "__main__":
-    unittest.main()

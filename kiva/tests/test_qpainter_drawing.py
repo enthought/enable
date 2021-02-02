@@ -40,7 +40,3 @@ class TestQPainterDrawing(DrawingImageTester, unittest.TestCase):
     @unittest.skipIf(is_qt5 and is_linux, "Currently segfaulting")
     def test_text_clip(self):
         super().test_text_clip()
-
-
-if __name__ == "__main__":
-    unittest.main()

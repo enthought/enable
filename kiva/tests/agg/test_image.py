@@ -258,7 +258,3 @@ class test_interpolation_image(unittest.TestCase):
     def test_sinc144_timing(self):
         scheme = "sinc144"
         self.generic_timing(scheme, self.size)
-
-
-if __name__ == "__main__":
-    unittest.main()

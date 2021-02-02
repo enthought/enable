@@ -31,7 +31,3 @@ class TestDrawDash(unittest.TestCase):
             gc.stroke_path()
             gc.translate_ctm(10, 0)
         save(gc, "dash.bmp")
-
-
-if __name__ == "__main__":
-    unittest.main()

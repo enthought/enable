@@ -44,7 +44,3 @@ class TestKivaTestAssistant(KivaTestAssistant, unittest.TestCase):
         # drawing something
         drawable.should_process = True
         self.assertPathsAreProcessed(drawable)
-
-
-if __name__ == "__main__":
-    unittest.main()

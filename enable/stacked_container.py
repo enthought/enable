@@ -65,7 +65,6 @@ class HStackedContainer(StackedContainer):
         else:
             align = "max"
 
-        # import pdb; pdb.set_trace()
         return stack_layout(self, components, align)
 
 
@@ -103,5 +102,4 @@ class VStackedContainer(StackedContainer):
         else:
             align = "max"
 
-        # import pdb; pdb.set_trace()
         return stack_layout(self, components, align)

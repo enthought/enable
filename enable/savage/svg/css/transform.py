@@ -49,9 +49,3 @@ matrix = Literal("matrix") + Parenthised(
 transform = skewY | skewX | rotate | scale | translate | matrix
 
 transformList = delimitedList(Group(transform), delim=maybeComma)
-
-if __name__ == "__main__":
-    import unittest
-    from tests.test_css import *
-
-    unittest.main()

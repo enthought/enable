@@ -117,10 +117,6 @@ def valueToPixels(val, defaultUnits="px"):
     try:
         val, unit = values.length.parseString(val)
     except ParseException:
-        import pdb
-
-        pdb.set_trace()
-        print("valueToPixels(%r, %r)" % (val, defaultUnits))
         raise
     val *= units_to_px.get(unit, 1)
     return val
@@ -1116,12 +1112,3 @@ class SVGDocument(object):
         for op, args in self.ops:
             op(context, *args)
 
-
-if __name__ == "__main__":
-    from tests.test_document import (
-        TestBrushFromColourValue,
-        TestValueToPixels,
-        unittest,
-    )
-
-    unittest.main()

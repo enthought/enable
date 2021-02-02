@@ -206,7 +206,4 @@ def ptest():
 
 
 if __name__ == "__main__":
-
-    # ~ from tests.test_pathdata import *
-    # ~ unittest.main()
     profile()

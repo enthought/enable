@@ -14,7 +14,3 @@ class UnicodeTest(unittest.TestCase):
         f1 = AggFontType("Arial")
         f2 = AggFontType(b"Arial")
         self.assertEqual(f1, f2)
-
-
-if __name__ == "__main__":
-    unittest.main()

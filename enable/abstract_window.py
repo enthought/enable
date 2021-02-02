@@ -245,8 +245,6 @@ class AbstractWindow(HasTraits):
         else:
             self._update_region = None
 
-    #        print damaged_regions
-
     # -------------------------------------------------------------------------
     #  Generic keyboard event handler:
     # -------------------------------------------------------------------------

@@ -19,7 +19,3 @@ class TestSVGDrawing(DrawingTester, unittest.TestCase):
         elements = [element for element in tree.iter()]
         if not len(elements) in [4, 7]:
             self.fail("The expected number of elements was not found")
-
-
-if __name__ == "__main__":
-    unittest.main()

@@ -50,7 +50,3 @@ class TestPDFDrawing(DrawingTester, unittest.TestCase):
                     line.endswith(b'f*'),
                     line.endswith(b'ET') and b'hello kiva' in line)):
             self.fail('Path was not closed')
-
-
-if __name__ == "__main__":
-    unittest.main()
