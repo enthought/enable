@@ -21,7 +21,9 @@ from traits.api import (
     Any, Button, Dict, HasTraits, HTML, Instance, List, Property, Str,
     on_trait_change
 )
-from traitsui import api as tui
+from traitsui.api import (
+    EnumEditor, HGroup, HSplit, Item, Tabbed, VGroup, View, VSplit
+)
 
 from enable.savage.svg import document
 from enable.savage.trait_defs.ui.svg_editor import SVGEditor
@@ -128,72 +130,72 @@ class Comparator(HasTraits):
     wx_doc_sike = Instance(Sike, args=())
     kiva_doc_sike = Instance(Sike, args=())
 
-    traits_view = tui.View(
-        tui.Tabbed(
-            tui.VGroup(
-                tui.HGroup(
-                    tui.Item(
+    traits_view = View(
+        Tabbed(
+            VGroup(
+                HGroup(
+                    Item(
                         "current_file",
-                        editor=tui.EnumEditor(name="svg_files"),
+                        editor=EnumEditor(name="svg_files"),
                         style="simple",
                         width=1.0,
                         show_label=False,
                     ),
-                    tui.Item(
+                    Item(
                         "move_backward",
                         show_label=False,
                         enabled_when="svg_files.index(current_file) != 0",
                     ),
-                    tui.Item(
+                    Item(
                         "move_forward",
                         show_label=False,
                         enabled_when=("svg_files.index(current_file) "
                                       "!= len(svg_files)-1"),
                     ),
                 ),
-                tui.VSplit(
-                    tui.HSplit(
-                        tui.Item(
+                VSplit(
+                    HSplit(
+                        Item(
                             "description",
                             label="Description",
                             show_label=False,
                         ),
-                        tui.Item(
+                        Item(
                             "current_xml_view",
                             editor=xml_tree_editor,
                             show_label=False,
                         ),
                     ),
-                    tui.HSplit(
-                        tui.Item(
+                    HSplit(
+                        Item(
                             "document", editor=SVGEditor(), show_label=False
                         ),
-                        tui.Item("kiva_component", show_label=False),
-                        tui.Item("ref_component", show_label=False),
-                        # TODO: tui.Item('agg_component', show_label=False),
+                        Item("kiva_component", show_label=False),
+                        Item("ref_component", show_label=False),
+                        # TODO: Item('agg_component', show_label=False),
                     ),
                 ),
                 label="SVG",
             ),
-            tui.Item(
+            Item(
                 "parsing_sike",
                 style="custom",
                 show_label=False,
                 label="Parsing Profile",
             ),
-            tui.Item(
+            Item(
                 "drawing_sike",
                 style="custom",
                 show_label=False,
                 label="Kiva Drawing Profile",
             ),
-            tui.Item(
+            Item(
                 "wx_doc_sike",
                 style="custom",
                 show_label=False,
                 label="Creating WX document",
             ),
-            tui.Item(
+            Item(
                 "kiva_doc_sike",
                 style="custom",
                 show_label=False,

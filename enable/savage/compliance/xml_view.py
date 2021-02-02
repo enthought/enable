@@ -4,7 +4,7 @@
 
 
 from traits.api import HasTraits, List, Property, Str
-from traitsui import api as tui
+from traitsui.api import Item, ModelView, TreeEditor, TreeNode, View
 
 
 known_namespaces = {
@@ -83,12 +83,12 @@ def xml_to_tree(root):
     return element
 
 
-xml_tree_editor = tui.TreeEditor(
+xml_tree_editor = TreeEditor(
     nodes=[
-        tui.TreeNode(
+        TreeNode(
             node_for=[Element], children="kids", label="label", menu=False
         ),
-        tui.TreeNode(
+        TreeNode(
             node_for=[Attribute], children="", label="label", menu=False
         ),
     ],
@@ -97,12 +97,12 @@ xml_tree_editor = tui.TreeEditor(
 )
 
 
-class XMLTree(tui.ModelView):
+class XMLTree(ModelView):
     """ Handler for viewing XML trees.
     """
 
-    traits_view = tui.View(
-        tui.Item("model", editor=xml_tree_editor, show_label=False),
+    traits_view = View(
+        Item("model", editor=xml_tree_editor, show_label=False),
         width=1024,
         height=768,
         resizable=True,

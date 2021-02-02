@@ -8,8 +8,10 @@ from traits.api import (
     Any, Bool, Constant, Dict, Event, Float, HasTraits, Instance, Int, List,
     Property, Str, on_trait_change
 )
-from traitsui import api as tui
-from traitsui.tabular_adapter import TabularAdapter
+from traitsui.api import (
+    CodeEditor, Group, HGroup, Item, Label, TabularAdapter, TabularEditor,
+    UItem, VGroup, View,
+)
 
 
 class SuperTuple(tuple):
@@ -127,7 +129,7 @@ class ProfileAdapter(TabularAdapter):
 
 
 def get_profile_editor(adapter):
-    return tui.TabularEditor(
+    return TabularEditor(
         adapter=adapter,
         editable=False,
         operations=[],
@@ -164,9 +166,9 @@ class ProfileResults(HasTraits):
                 name=name, view_element=view_element
             )
 
-        view = tui.View(
-            tui.Group(tui.Item("total_time", style="readonly")),
-            tui.Item(
+        view = View(
+            Group(Item("total_time", style="readonly")),
+            Item(
                 "records",
                 editor=get_profile_editor(self.adapter),
                 show_label=False,
@@ -278,18 +280,18 @@ class Sike(HasTraits):
     line = Int(1)
     code = Str()
 
-    traits_view = tui.View(
-        tui.VGroup(
-            tui.HGroup(tui.Item("basenames"), tui.Item("percentages")),
-            tui.HGroup(
-                tui.UItem("main_results"),
-                tui.VGroup(
-                    tui.Label("Callees"),
-                    tui.UItem("callee_results"),
-                    tui.Label("Callers"),
-                    tui.UItem("caller_results"),
-                    tui.UItem("filename", style="readonly"),
-                    tui.UItem("code", editor=tui.CodeEditor(line="line")),
+    traits_view = View(
+        VGroup(
+            HGroup(Item("basenames"), Item("percentages")),
+            HGroup(
+                UItem("main_results"),
+                VGroup(
+                    Label("Callees"),
+                    UItem("callee_results"),
+                    Label("Callers"),
+                    UItem("caller_results"),
+                    UItem("filename", style="readonly"),
+                    UItem("code", editor=CodeEditor(line="line")),
                 ),
                 style="custom",
             ),
