@@ -17,8 +17,7 @@ default_script = """# Write your code here.
 # The graphics context is available as gc.
 
 from math import pi
-from kiva import constants
-from kiva.fonttools import Font
+from kiva.api import CAP_ROUND, JOIN_ROUND, Font
 
 with gc:
     gc.set_fill_color((1.0, 1.0, 0.0, 1.0))
@@ -35,8 +34,8 @@ with gc:
 
     gc.set_stroke_color((0.0, 0.0, 1.0, 1.0))
     gc.set_line_width(7)
-    gc.set_line_join(constants.JOIN_ROUND)
-    gc.set_line_cap(constants.CAP_ROUND)
+    gc.set_line_join(JOIN_ROUND)
+    gc.set_line_cap(CAP_ROUND)
     gc.rect(100, 400, 50, 50)
     gc.stroke_path()
 

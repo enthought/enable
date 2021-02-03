@@ -1,6 +1,6 @@
 from enable.kiva_graphics_context import GraphicsContext
 from kiva import agg
-from kiva.fonttools import Font
+from kiva.api import Font
 
 # Do some basic drawing tests and write the results out to PNG files.
 # This is mostly a python translation of the tests in kiva/agg/src/dummy.cpp

@@ -1,6 +1,5 @@
 from enable.kiva_graphics_context import GraphicsContext
-from kiva import affine
-from kiva.fonttools import Font
+from kiva.api import Font, affine_from_rotation, invert
 
 # Do some basic drawing tests and write the results out to files.
 # This is mostly a python translation of the tests in kiva/agg/src/dummy.cpp
@@ -228,10 +227,10 @@ def test_handling_text(gc):
     gc.line_to(0, -5)
     gc.move_to(0, 0)
     gc.stroke_path()
-    txtRot = affine.affine_from_rotation(PI / 6)
+    txtRot = affine_from_rotation(PI / 6)
     gc.set_text_matrix(txtRot)
     gc.show_text("Hello")
-    txtRot = affine.invert(txtRot)
+    txtRot = invert(txtRot)
     gc.set_text_matrix(txtRot)
     gc.show_text("inverted")
 

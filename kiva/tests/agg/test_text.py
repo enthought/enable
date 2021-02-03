@@ -3,7 +3,7 @@ import locale
 import unittest
 
 from kiva import agg
-from kiva.fonttools import Font
+from kiva.api import Font
 
 
 @contextmanager

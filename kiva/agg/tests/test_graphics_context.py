@@ -3,7 +3,7 @@ import unittest
 from numpy import all, allclose, array, dtype, pi, ones
 
 from kiva import agg
-from kiva.fonttools import Font
+from kiva.api import Font
 
 
 class GraphicsContextArrayTestCase(unittest.TestCase):
