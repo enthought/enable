@@ -3,7 +3,7 @@
 import os
 import unittest
 
-from kiva.fonttools import Font
+from kiva.api import Font
 from kiva.fonttools.tests._testing import patch_global_font_manager
 
 

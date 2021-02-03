@@ -24,10 +24,10 @@ Enable package.
 # Enthought library imports
 from traits.api import TraitError
 
-from kiva.constants import (
-    BOLD, DECORATIVE, DEFAULT, ITALIC, MODERN, NORMAL, ROMAN, SCRIPT, SWISS
+from kiva.api import (
+    BOLD, DECORATIVE, DEFAULT, ITALIC, MODERN, NORMAL, ROMAN, SCRIPT, SWISS,
+    Font,
 )
-from kiva.fonttools import Font
 
 from .colors import color_table, transparent_color
 

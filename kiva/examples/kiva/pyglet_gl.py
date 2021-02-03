@@ -1,7 +1,7 @@
 from numpy import array
 from pyglet.window import key, Window
 
-from kiva.constants import STROKE
+from kiva.api import STROKE
 
 try:
     from kiva.gl import GraphicsContext

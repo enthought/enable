@@ -11,7 +11,7 @@
 
 import numpy as np
 
-from kiva.fonttools import Font
+from kiva.api import Font
 from kiva.quartz import ABCGI
 
 

@@ -6,7 +6,7 @@ Define the base Enable object traits
 from numpy import arange, array
 
 # Enthought library imports
-from kiva.trait_defs.kiva_font_trait import KivaFont
+from kiva.trait_defs.api import KivaFont
 from traits.api import (
     List, Range, Trait, TraitFactory, TraitPrefixList, TraitPrefixMap
 )

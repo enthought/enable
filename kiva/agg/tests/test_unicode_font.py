@@ -1,7 +1,7 @@
 import unittest
 
 from kiva.agg import AggFontType, GraphicsContextArray
-from kiva.fonttools import Font
+from kiva.api import Font
 
 
 class UnicodeTest(unittest.TestCase):

@@ -238,8 +238,8 @@ Thicknesses::
 
 Joins::
 
+    from kiva.api import JOIN_ROUND, JOIN_BEVEL, JOIN_MITER
     from kiva.image import GraphicsContext
-    from kiva.constants import JOIN_ROUND, JOIN_BEVEL, JOIN_MITER
 
     gc = GraphicsContext((200, 100))
     gc.set_line_width(8)
@@ -259,8 +259,8 @@ Joins::
 
 Caps::
 
+    from kiva.api import CAP_ROUND, CAP_BUTT, CAP_SQUARE
     from kiva.image import GraphicsContext
-    from kiva.constants import CAP_ROUND, CAP_BUTT, CAP_SQUARE
 
     gc = GraphicsContext((200, 100))
     gc.set_line_width(8)
@@ -307,8 +307,8 @@ available:
 Winding vs. Even-Odd Fill::
 
     from numpy import pi
+    from kiva.api import FILL, EOF_FILL
     from kiva.image import GraphicsContext
-    from kiva.constants import FILL, EOF_FILL
 
     gc = GraphicsContext((200, 100))
     gc.set_fill_color((0.0, 0.0, 0.0))
@@ -343,7 +343,7 @@ Text can be rendered at a point by first setting the font to use, then setting
 the text location using ``set_text_position()`` and then ``show_text()`` to
 render the text::
 
-    from kiva.fonttools import Font
+    from kiva.api import Font
     from kiva.image import GraphicsContext
 
     gc = GraphicsContext((200, 100))

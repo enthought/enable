@@ -10,7 +10,7 @@ from numpy import (
 )
 
 from kiva import agg
-from kiva.fonttools import Font
+from kiva.api import Font
 from kiva.compat import pilfromstring, piltostring
 
 

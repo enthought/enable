@@ -10,7 +10,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 
-from kiva.fonttools import Font
+from kiva.api import Font
 from kiva.quartz import get_mac_context, ABCGI
 
 from .base_window import BaseWindow

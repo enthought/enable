@@ -8,7 +8,7 @@ import tempfile
 from enable.api import ConstraintsContainer
 from enable.example_support import DemoFrame, demo_main
 from enable.primitives.image import Image
-from kiva.constants import STROKE
+from kiva.api import STROKE
 from kiva.image import GraphicsContext, CompiledPath
 
 

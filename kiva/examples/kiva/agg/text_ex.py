@@ -1,8 +1,7 @@
 from time import perf_counter
 
 from kiva.agg import AffineMatrix, GraphicsContextArray
-from kiva.constants import MODERN
-from kiva.fonttools import Font
+from kiva.api import MODERN, Font
 
 gc = GraphicsContextArray((200, 200))
 

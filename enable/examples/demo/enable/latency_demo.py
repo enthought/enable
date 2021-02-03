@@ -8,8 +8,7 @@ from traits.api import Float
 
 from enable.api import Component, Container, ColorTrait, black_color_trait
 from enable.example_support import DemoFrame, demo_main
-from kiva.constants import SWISS
-from kiva.fonttools import Font
+from kiva.api import SWISS, Font
 
 font = Font(family=SWISS)
 

@@ -6,8 +6,7 @@ import tempfile
 import numpy
 from PIL import Image
 
-from kiva.fonttools import Font
-from kiva.constants import MODERN
+from kiva.api import MODERN, Font
 
 
 class DrawingTester(object):
