@@ -1,3 +1,16 @@
+""" API for enable.tools subpackage.
+
+- :class:`~.DragTool`
+- :class:`~.HoverTool`
+- :class:`~.MoveTool`
+- :class:`~.ResizeTool`
+- :class:`~.TraitsTool`
+- :class:`~.ViewportPanTool`
+- :class:`~.ViewportZoomTool`
+- :class:`~.ValueDragTool`
+- :class:`~.AttributeDragTool`
+"""
+
 from .drag_tool import DragTool
 from .hover_tool import HoverTool
 from .move_tool import MoveTool
