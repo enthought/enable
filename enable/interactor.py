@@ -1,7 +1,7 @@
 """ Defines the Interactor class """
 
 # Enthought library imports
-from kiva.affine import affine_identity
+from kiva.api import affine_identity
 from traits.api import Any, Bool, HasTraits, List, Property, Str, Trait
 
 # Local relative imports
