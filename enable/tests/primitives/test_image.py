@@ -9,7 +9,7 @@ from pkg_resources import resource_filename
 
 from kiva.image import GraphicsContext
 from traits.api import TraitError
-from traits.testing.unittest_tools import UnittestTools
+from traits.testing.api import UnittestTools
 
 from enable.primitives.image import Image
 

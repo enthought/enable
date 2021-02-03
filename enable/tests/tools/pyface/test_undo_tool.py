@@ -11,7 +11,7 @@ from unittest.mock import MagicMock
 
 # Enthought library imports
 from pyface.undo.api import UndoManager
-from traits.testing.unittest_tools import UnittestTools
+from traits.testing.api import UnittestTools
 
 # Local library imports
 from enable.base_tool import KeySpec
