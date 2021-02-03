@@ -11,7 +11,7 @@ Button Tool
 """
 
 from traits.api import Bool
-from kiva.constants import FILL, STROKE
+from kiva.api import FILL, STROKE
 
 from enable.api import Container, transparent_color
 from enable.colors import ColorTrait

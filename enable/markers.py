@@ -8,7 +8,7 @@ from numpy import array, pi
 # Enthought library imports
 from traits.api import HasTraits, Bool, Instance, Trait
 from traitsui.api import EnumEditor
-from kiva.constants import (
+from kiva.api import (
     CIRCLE_MARKER, CROSS_MARKER, DIAMOND_MARKER, DOT_MARKER, FILL_STROKE,
     INVERTED_TRIANGLE_MARKER, NO_MARKER, PIXEL_MARKER, PLUS_MARKER,
     SQUARE_MARKER, STROKE, TRIANGLE_MARKER
@@ -22,12 +22,12 @@ class AbstractMarker(HasTraits):
     """ Abstract class for markers.
     """
 
-    # How this marker is to be stroked (from kiva.constants).
+    # How this marker is to be stroked (from kiva.api).
     # Since this needs to be a class variable, it can't be a trait.
     draw_mode = STROKE
     # draw_mode = Enum(FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE)
 
-    # The kiva marker type (from kiva.constants).
+    # The kiva marker type (from kiva.api).
     kiva_marker = NO_MARKER
 
     # Close the path object after drawing this marker?

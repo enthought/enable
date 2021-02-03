@@ -6,7 +6,7 @@ from uuid import uuid4
 from traits.api import (
     Any, Bool, Delegate, Enum, Float, Instance, Int, List, Property, Str, Trait
 )
-from kiva.constants import FILL, STROKE
+from kiva.api import FILL, STROKE
 
 # Local relative imports
 from .colors import black_color_trait, white_color_trait

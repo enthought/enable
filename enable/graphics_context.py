@@ -1,4 +1,4 @@
-from kiva.constants import FILL
+from kiva.api import FILL
 
 # Relative imports
 from .abstract_window import AbstractWindow

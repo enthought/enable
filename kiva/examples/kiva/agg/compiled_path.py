@@ -1,6 +1,6 @@
 from numpy import array
 
-from kiva.constants import STROKE
+from kiva.api import STROKE
 from kiva.image import CompiledPath, GraphicsContext
 
 cross = CompiledPath()

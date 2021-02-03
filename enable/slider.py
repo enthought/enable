@@ -1,7 +1,7 @@
 from numpy import linspace, zeros
 
 # Enthought library imports
-from kiva.constants import STROKE
+from kiva.api import STROKE
 from traits.api import (
     Any, Bool, Enum, Float, Int, Property, Trait, on_trait_change,
 )

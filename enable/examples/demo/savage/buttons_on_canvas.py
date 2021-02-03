@@ -13,8 +13,7 @@ import xml.etree.cElementTree as etree
 from enable.api import BaseTool, Component, ComponentEditor, Container
 from enable.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
 from enable.savage.svg.document import SVGDocument
-from kiva.constants import MODERN
-from kiva.fonttools import Font
+from kiva.api import MODERN, Font
 from traits.api import Callable, Enum, HasTraits, Instance, List, Str
 from traitsui.api import Item, View
 

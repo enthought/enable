@@ -1,6 +1,6 @@
 from numpy import cos, sin, arange, pi, array
 
-from kiva.constants import FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE
+from kiva.api import FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE
 from kiva.image import GraphicsContext
 
 

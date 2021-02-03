@@ -1,5 +1,5 @@
 from enable.api import Container, Component, ColorTrait
-from kiva.constants import FILL, FILL_STROKE
+from kiva.api import FILL, FILL_STROKE
 from kiva.trait_defs.kiva_font_trait import KivaFont
 from traits.api import Any, Bool, Delegate, Enum, Instance, Int, List, Str
 
