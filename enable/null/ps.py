@@ -21,7 +21,7 @@ class Window(object):
 
 
 def font_metrics_provider():
-    from kiva.fonttools import Font
+    from kiva.api import Font
 
     gc = GraphicsContext((1, 1))
     gc.set_font(Font())

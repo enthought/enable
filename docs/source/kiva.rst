@@ -343,7 +343,7 @@ Text can be rendered at a point by first setting the font to use, then setting
 the text location using ``set_text_position()`` and then ``show_text()`` to
 render the text::
 
-    from kiva.fonttools import Font
+    from kiva.api import Font
     from kiva.image import GraphicsContext
 
     gc = GraphicsContext((200, 100))

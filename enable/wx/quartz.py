@@ -7,7 +7,7 @@ import numpy as np
 import wx
 
 # Enthought library imports.
-from kiva.fonttools import Font
+from kiva.api import Font
 from kiva.quartz import get_macport, ABCGI
 
 # Local imports.

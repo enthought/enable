@@ -6,7 +6,7 @@ import numpy as np
 
 from enable.compiled_path import CompiledPath as KivaCompiledPath
 from kiva import affine, constants, fonttools
-from kiva.fonttools import Font
+from kiva.api import Font
 
 from enable.savage.svg import svg_extras
 from enable.savage.svg.backends.null.null_renderer import (
