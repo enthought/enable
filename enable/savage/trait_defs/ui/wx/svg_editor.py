@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #
 #  Copyright (c) 2008, Enthought, Inc.
 #  All rights reserved.
@@ -13,14 +13,14 @@
 #  Author: Bryce Hendrix
 #  Date:   08/06/2008
 #
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 """ Traits UI 'display only' SVG editor.
 """
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #  Imports:
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 from traitsui.wx.editor import Editor
 
@@ -30,9 +30,10 @@ from enable.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
 from .kiva_render_panel import RenderPanel as KivaRenderPanel
 from .wx_render_panel import RenderPanel as WxRenderPanel
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #  'SVGEditor' class:
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
 
 class SVGEditor(Editor):
     """ Traits UI 'display only' SVG editor.
@@ -40,10 +41,10 @@ class SVGEditor(Editor):
 
     scrollable = True
 
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     #  Finishes initializing the editor by creating the underlying toolkit
     #  widget:
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def init(self, parent):
         """ Finishes initializing the editor by creating the underlying toolkit
@@ -59,9 +60,9 @@ class SVGEditor(Editor):
         else:
             self.control = KivaRenderPanel(parent, document=document)
 
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     #  Updates the editor when the object trait changes external to the editor:
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def update_editor(self):
         """ Updates the editor when the object trait changes externally to the
@@ -70,4 +71,3 @@ class SVGEditor(Editor):
         if self.control.document != self.value:
             self.control.document = self.value
             self.control.Refresh()
-

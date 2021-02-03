@@ -29,9 +29,9 @@ class AbstractOverlay(Component):
     # Typically, an overlay does not render a background.
     bgcolor = "transparent"
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Abstract methods (to be implemented by subclasses)
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
 
     def overlay(self, other_component, gc, view_bounds=None, mode="normal"):
         """ Draws this component overlaid on another component.
@@ -45,10 +45,9 @@ class AbstractOverlay(Component):
         """
         pass
 
-
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Concrete methods / reimplementations of Component methods
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
 
     def __init__(self, component=None, *args, **kw):
         if component is not None:

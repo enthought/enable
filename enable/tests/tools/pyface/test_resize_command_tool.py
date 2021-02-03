@@ -11,7 +11,7 @@ from unittest.mock import MagicMock
 
 # Enthought library imports
 from pyface.undo.api import CommandStack
-from traits.testing.unittest_tools import UnittestTools
+from traits.testing.api import UnittestTools
 
 # Local library imports
 from enable.component import Component
@@ -23,34 +23,37 @@ from enable.tools.pyface.resize_command_tool import ResizeCommandTool
 
 class ResizeCommandToolTestCase(unittest.TestCase, EnableTestAssistant,
                                 UnittestTools):
-
     def setUp(self):
         self.command_stack = CommandStack()
         self.command_stack.push = MagicMock()
         self.component = Component(position=[50, 50], bounds=[100, 100])
         self.container = Container()
         self.container.add(self.component)
-        self.tool = ResizeCommandTool(component=self.component,
-                                      command_stack=self.command_stack)
+        self.tool = ResizeCommandTool(
+            component=self.component, command_stack=self.command_stack
+        )
         self.component.tools.append(self.tool)
 
     def test_drag_component(self):
         window = self.create_mock_window()
 
         # start the mouse drag
-        mouse_down_event = self.mouse_down(self.component, 145, 145,
-                                           window=window)
+        mouse_down_event = self.mouse_down(
+            self.component, 145, 145, window=window
+        )
         self.assertTrue(mouse_down_event.handled)
         self.assertTrue(self.tool._mouse_down_received)
 
         # start moving the mouse
-        mouse_move_event = self.mouse_move(self.component, 145, 145,
-                                           window=window)
+        mouse_move_event = self.mouse_move(
+            self.component, 145, 145, window=window
+        )
         self.assertTrue(mouse_move_event.handled)
 
         # move the mouse to the final location
-        mouse_move_event = self.mouse_move(self.component, 195, 95,
-                                           window=window)
+        mouse_move_event = self.mouse_move(
+            self.component, 195, 95, window=window
+        )
         self.assertTrue(mouse_move_event.handled)
 
         # release the mouse, ending the drag
@@ -74,23 +77,26 @@ class ResizeCommandToolTestCase(unittest.TestCase, EnableTestAssistant,
         window = self.create_mock_window()
 
         # start the mouse drag
-        mouse_down_event = self.mouse_down(self.component, 145, 145,
-                                           window=window)
+        mouse_down_event = self.mouse_down(
+            self.component, 145, 145, window=window
+        )
         self.assertTrue(mouse_down_event.handled)
         self.assertTrue(self.tool._mouse_down_received)
 
         # start moving the mouse
-        mouse_move_event = self.mouse_move(self.component, 145, 145,
-                                           window=window)
+        mouse_move_event = self.mouse_move(
+            self.component, 145, 145, window=window
+        )
         self.assertTrue(mouse_move_event.handled)
 
         # move the mouse to the final location
-        mouse_move_event = self.mouse_move(self.component, 195, 95,
-                                           window=window)
+        mouse_move_event = self.mouse_move(
+            self.component, 195, 95, window=window
+        )
         self.assertTrue(mouse_move_event.handled)
 
         # send an escape to cancel the event
-        escape_event = self.send_key(self.component, 'Esc', window=window)
+        escape_event = self.send_key(self.component, "Esc", window=window)
         self.assertTrue(escape_event.handled)
 
         # release the mouse, ending the drag

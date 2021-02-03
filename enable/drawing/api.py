@@ -1,3 +1,18 @@
+""" API for enable.drawing subpackage.
+
+- :class:`~.DragLine`
+- :class:`~.DragPolygon`
+- :class:`~.PointLine`
+- :class:`~.PointPolygon`
+- :class:`~.DragSegment`
+- :class:`~.DragBox`
+- :class:`~.DrawingTool`
+- :class:`~.Button`
+- :class:`~.ToolbarButton`
+- :class:`~.DrawingCanvasToolbar`
+- :class:`~.DrawingCanvas`
+"""
+
 from .drag_line import DragLine
 from .drag_polygon import DragPolygon
 from .point_line import PointLine
@@ -5,4 +20,6 @@ from .point_polygon import PointPolygon
 from .drag_segment import DragSegment
 from .drag_box import DragBox
 from .drawing_tool import DrawingTool
-from .drawing_canvas import Button, ToolbarButton, DrawingCanvasToolbar, DrawingCanvas
+from .drawing_canvas import (
+    Button, ToolbarButton, DrawingCanvasToolbar, DrawingCanvas,
+)

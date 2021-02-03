@@ -11,7 +11,7 @@ Button Tool
 """
 
 from traits.api import Bool
-from kiva.constants import FILL, STROKE
+from kiva.api import FILL, STROKE
 
 from enable.api import Container, transparent_color
 from enable.colors import ColorTrait
@@ -25,7 +25,7 @@ class SelectableBox(Box):
 
     selected = Bool
 
-    selected_color = ColorTrait('green')
+    selected_color = ColorTrait("green")
 
     def select(self, selected):
         self.selected = selected
@@ -37,7 +37,7 @@ class SelectableBox(Box):
         "Draw the box background in a specified graphics context"
 
         # Set up all the control variables for quick access:
-        bs  = self.border_size
+        bs = self.border_size
         bsd = bs + bs
         bsh = bs / 2.0
         x, y = self.position
@@ -67,34 +67,40 @@ class MyFrame(DemoFrame):
     """
 
     def button_clicked(self):
-        print('clicked')
+        print("clicked")
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # DemoApplication interface
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def _create_component(self):
         # create a box that changes color when clicked
-        push_button_box = SelectableBox(bounds=[100,50], position=[50, 50], color='red')
+        push_button_box = SelectableBox(
+            bounds=[100, 50], position=[50, 50], color="red"
+        )
 
         # create a basic push button tool for it
         push_button_tool = ButtonTool(component=push_button_box)
         push_button_box.tools.append(push_button_tool)
 
         # print when box clicked, change color when button down
-        push_button_tool.on_trait_change(self.button_clicked, 'clicked')
-        push_button_tool.on_trait_change(push_button_box.select, 'down')
+        push_button_tool.on_trait_change(self.button_clicked, "clicked")
+        push_button_tool.on_trait_change(push_button_box.select, "down")
 
         # another box for a toggle button
-        toggle_box = SelectableBox(bounds=[100,50], position=[50, 125],
-            color='lightblue', selected_color='blue')
+        toggle_box = SelectableBox(
+            bounds=[100, 50],
+            position=[50, 125],
+            color="lightblue",
+            selected_color="blue",
+        )
 
         # a toggle button tool
         toggle_button_tool = ButtonTool(component=toggle_box, togglable=True)
         toggle_box.tools.append(toggle_button_tool)
 
         # change color when checked down
-        toggle_button_tool.on_trait_change(toggle_box.select, 'checked')
+        toggle_button_tool.on_trait_change(toggle_box.select, "checked")
 
         container = Container(bounds=[600, 600])
         container.add(push_button_box)

@@ -6,6 +6,7 @@ from traits.api import Bool, Enum, Float, Tuple
 
 from .drag_tool import DragTool
 
+
 class ViewportPanTool(DragTool):
     """ A tool that enables the user to pan around a viewport by clicking a
     mouse button and dragging.
@@ -17,11 +18,11 @@ class ViewportPanTool(DragTool):
     # Scaling factor on the panning "speed".
     speed = Float(1.0)
 
-    # The modifier key that, if depressed when the drag is initiated, constrains
-    # the panning to happen in the only direction of largest initial motion.
-    # It is possible to permanently restrict this tool to always drag along one
-    # direction.  To do so, set constrain=True, constrain_key=None, and
-    # constrain_direction to the desired direction.
+    # The modifier key that, if depressed when the drag is initiated,
+    # constrains the panning to happen in the only direction of largest initial
+    # motion. It is possible to permanently restrict this tool to always drag
+    # along one direction.  To do so, set constrain=True, constrain_key=None,
+    # and constrain_direction to the desired direction.
     constrain_key = Enum(None, "shift", "control", "alt")
 
     # Constrain the panning to one direction?
@@ -44,10 +45,9 @@ class ViewportPanTool(DragTool):
     # set programmatically.
     _auto_constrain = Bool(False)
 
-
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Inherited BaseTool traits
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     # The tool is not visible (overrides BaseTool).
     visible = False
@@ -69,7 +69,8 @@ class ViewportPanTool(DragTool):
         """
         if self._auto_constrain and self.constrain_direction is None:
             # Determine the constraint direction
-            if abs(event.x - self._original_xy[0]) > abs(event.y - self._original_xy[1]):
+            if (abs(event.x - self._original_xy[0])
+                    > abs(event.y - self._original_xy[1])):
                 self.constrain_direction = "x"
             else:
                 self.constrain_direction = "y"
@@ -87,8 +88,8 @@ class ViewportPanTool(DragTool):
             new_position[ndx] -= delta
 
         if self.constrain:
-            self.component.view_position[self.constrain_direction] = \
-                        new_position[self.constrain_direction]
+            _dir = self.constrain_direction
+            self.component.view_position[_dir] = new_position[_dir]
         else:
             self.component.view_position = new_position
         event.handled = True

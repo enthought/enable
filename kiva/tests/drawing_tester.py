@@ -6,18 +6,16 @@ import tempfile
 import numpy
 from PIL import Image
 
-from kiva.fonttools import Font
-from kiva.constants import MODERN
+from kiva.api import MODERN, Font
 
 
 class DrawingTester(object):
     """ Basic drawing tests for graphics contexts.
-
     """
 
     def setUp(self):
         self.directory = tempfile.mkdtemp()
-        self.filename = os.path.join(self.directory, 'rendered')
+        self.filename = os.path.join(self.directory, "rendered")
         self.gc = self.create_graphics_context(300, 300)
         self.gc.clear()
         self.gc.set_stroke_color((1.0, 0.0, 0.0))
@@ -131,25 +129,22 @@ class DrawingTester(object):
             self.gc.arc(150, 150, 100, 0.0, 2 * numpy.pi)
             self.gc.fill_path()
 
-    #### Required methods ####################################################
+    # Required methods ####################################################
 
     @contextlib.contextmanager
     def draw_and_check(self):
         """ A context manager to check the result.
-
         """
         raise NotImplementedError()
 
     def create_graphics_context(self, width, length):
         """ Create the desired graphics context
-
         """
         raise NotImplementedError()
 
 
 class DrawingImageTester(DrawingTester):
     """ Basic drawing tests for graphics contexts of gui toolkits.
-
     """
 
     @contextlib.contextmanager
@@ -161,7 +156,6 @@ class DrawingImageTester(DrawingTester):
 
     def assertImageSavedWithContent(self, filename):
         """ Load the image and check that there is some content in it.
-
         """
         image = numpy.array(Image.open(filename))
         # default is expected to be a totally white image
@@ -173,7 +167,8 @@ class DrawingImageTester(DrawingTester):
             check = numpy.sum(image == [255, 0, 0, 255], axis=2) == 4
         else:
             self.fail(
-                'Pixel size is not 3 or 4, but {0}'.format(image.shape[2]))
+                "Pixel size is not 3 or 4, but {0}".format(image.shape[2])
+            )
         if check.any():
             return
-        self.fail('The image looks empty, no red pixels where drawn')
+        self.fail("The image looks empty, no red pixels where drawn")

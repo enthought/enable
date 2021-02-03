@@ -13,8 +13,7 @@ import xml.etree.cElementTree as etree
 from enable.api import BaseTool, Component, ComponentEditor, Container
 from enable.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
 from enable.savage.svg.document import SVGDocument
-from kiva.constants import MODERN
-from kiva.fonttools import Font
+from kiva.api import MODERN, Font
 from traits.api import Callable, Enum, HasTraits, Instance, List, Str
 from traitsui.api import Item, View
 
@@ -25,7 +24,7 @@ class CanvasButton(Component):
     label = Str()
     callback = Callable
     callback_args = List(Str)
-    state = Enum('up', 'down')
+    state = Enum("up", "down")
 
     bounds = [64, 64]
 
@@ -36,15 +35,16 @@ class CanvasButton(Component):
 
         # set the toggle doc if it wasn't passed in as a keyword arg
         if self.toggle_document is None:
-            toggle_filename = os.path.join(os.path.dirname(__file__),
-                                           'button_toggle.svg')
+            toggle_filename = os.path.join(
+                os.path.dirname(__file__), "button_toggle.svg"
+            )
             self.toggle_document = self._load_svg_document(toggle_filename)
 
         self.callback = callback
         self.callback_args = callback_args
 
     def draw(self, gc, view_bounds, mode):
-        if self.state == 'down':
+        if self.state == "down":
             self._draw_svg_document(gc, self.toggle_document)
 
         self._draw_svg_document(gc, self.document)
@@ -61,10 +61,12 @@ class CanvasButton(Component):
 
     def _draw_svg_document(self, gc, document):
         with gc:
-            gc.translate_ctm(self.x, self.y+self.height)
+            gc.translate_ctm(self.x, self.y + self.height)
             doc_size = document.getSize()
-            gc.scale_ctm(self.width/float(doc_size[0]),
-                         -self.height/float(doc_size[1]))
+            gc.scale_ctm(
+                self.width / float(doc_size[0]),
+                -self.height / float(doc_size[1]),
+            )
             document.render(gc)
 
     def _draw_label(self, gc):
@@ -73,7 +75,7 @@ class CanvasButton(Component):
             gc.set_font(font)
 
             _x, _y, width, height = gc.get_text_extent(self.label)
-            text_x = self.x + (self.width - width)/2.0
+            text_x = self.x + (self.width - width) / 2.0
             text_y = self.y - height
 
             gc.show_text(self.label, (text_x, text_y))
@@ -99,9 +101,9 @@ class ButtonSelectionTool(BaseTool):
 
     def normal_left_down(self, event):
         for component in self.component.components:
-            if isinstance(component, CanvasButton) \
-                    and component.is_in(event.x, event.y):
-                component.state = 'down'
+            if (isinstance(component, CanvasButton)
+                    and component.is_in(event.x, event.y)):
+                component.state = "down"
                 component.request_redraw()
                 component.perform()
                 break
@@ -109,18 +111,19 @@ class ButtonSelectionTool(BaseTool):
     def normal_left_up(self, event):
         for component in self.component.components:
             if isinstance(component, CanvasButton):
-                component.state = 'up'
+                component.state = "up"
                 component.request_redraw()
 
 
 class ButtonCanvasView(HasTraits):
     canvas = Instance(Container)
 
-    traits_view = View(Item('canvas', editor=ComponentEditor(),
-                            show_label=False),
-                       width=400,
-                       height=400,
-                       resizable=True)
+    traits_view = View(
+        Item("canvas", editor=ComponentEditor(), show_label=False),
+        width=400,
+        height=400,
+        resizable=True,
+    )
 
     def __init__(self, *args, **kw):
         super(ButtonCanvasView, self).__init__(*args, **kw)
@@ -137,7 +140,9 @@ class ButtonCanvasView(HasTraits):
         data_dir = os.path.dirname(__file__)
         self.canvas.add_button(
             CanvasButton(
-                os.path.join(data_dir, 'edit-copy.svg'), self.do_copy, [],
+                os.path.join(data_dir, "edit-copy.svg"),
+                self.do_copy,
+                [],
                 label="Copy",
                 x=150,
                 y=150,
@@ -145,7 +150,9 @@ class ButtonCanvasView(HasTraits):
         )
         self.canvas.add_button(
             CanvasButton(
-                os.path.join(data_dir, 'edit-paste.svg'), self.do_paste, [],
+                os.path.join(data_dir, "edit-paste.svg"),
+                self.do_paste,
+                [],
                 label="Paste",
                 x=250,
                 y=150,

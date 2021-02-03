@@ -1,4 +1,3 @@
-import copy
 import numpy
 import warnings
 import wx
@@ -8,14 +7,15 @@ from enable.savage.svg.backends.null.null_renderer import NullRenderer
 
 def _fixup_path_methods(path):
     def _new_add_rounded_rectangle(self, x, y, w, h, rx, ry):
-        r = numpy.sqrt(rx*rx + ry*ry)
+        r = numpy.sqrt(rx * rx + ry * ry)
         self.AddRoundedRectangle(x, y, w, h, r)
 
     path.__class__.AddRoundedRectangleEx = _new_add_rounded_rectangle
 
 
 class AbstractGradientBrush(object):
-    """ Abstract base class for gradient brushes so they can be detected easily.
+    """ Abstract base class for gradient brushes so they can be detected
+    easily.
     """
 
     def IsOk(self):
@@ -27,6 +27,7 @@ class AbstractGradientBrush(object):
         x0, y0, w, h = bbox
         gc.concat_ctm(((w, 0, 0), (0, h, 0), (x0, y0, 1)))
 
+
 class Renderer(NullRenderer):
 
     NullBrush = wx.NullBrush
@@ -35,18 +36,18 @@ class Renderer(NullRenderer):
     TransparentPen = wx.TRANSPARENT_PEN
 
     caps = {
-            'butt':wx.CAP_BUTT,
-            'round':wx.CAP_ROUND,
-            'square':wx.CAP_PROJECTING
-            }
+        "butt": wx.CAP_BUTT,
+        "round": wx.CAP_ROUND,
+        "square": wx.CAP_PROJECTING,
+    }
 
     joins = {
-            'miter':wx.JOIN_MITER,
-            'round':wx.JOIN_ROUND,
-            'bevel':wx.JOIN_BEVEL
-            }
+        "miter": wx.JOIN_MITER,
+        "round": wx.JOIN_ROUND,
+        "bevel": wx.JOIN_BEVEL,
+    }
 
-    fill_rules = {'nonzero':wx.WINDING_RULE, 'evenodd': wx.ODDEVEN_RULE}
+    fill_rules = {"nonzero": wx.WINDING_RULE, "evenodd": wx.ODDEVEN_RULE}
 
     def __init__(self):
         pass
@@ -56,8 +57,10 @@ class Renderer(NullRenderer):
         return wx.GraphicsContext.ConcatTransform(*args)
 
     @staticmethod
-    def createAffineMatrix(a,b,c,d,x,y):
-        return wx.GraphicsRenderer.GetDefaultRenderer().CreateMatrix(a,b,c,d,x,y)
+    def createAffineMatrix(a, b, c, d, x, y):
+        return wx.GraphicsRenderer.GetDefaultRenderer().CreateMatrix(
+            a, b, c, d, x, y
+        )
 
     @staticmethod
     def createBrush(color_tuple):
@@ -72,17 +75,19 @@ class Renderer(NullRenderer):
         return wx.Pen(wx.Colour(*color_tuple))
 
     @staticmethod
-    def createLinearGradientBrush(x1,y1,x2,y2, stops, spreadMethod='pad',
-                                  transforms=None, units='userSpaceOnUse'):
+    def createLinearGradientBrush(x1, y1, x2, y2, stops, spreadMethod="pad",
+                                  transforms=None, units="userSpaceOnUse"):
 
         stops = numpy.transpose(stops)
 
         def convert_stop(stop):
             offset, red, green, blue, opacity = stop
-            color = wx.Colour(red*255, green*255, blue*255, opacity*255)
+            color = wx.Colour(
+                red * 255, green * 255, blue * 255, opacity * 255
+            )
             return offset, color
 
-        if wx.VERSION[:2] > (2,9):
+        if wx.VERSION[:2] > (2, 9):
             # wxPython 2.9+ supports a collection of stops
             wx_stops = wx.GraphicsGradientStops()
             for stop in stops:
@@ -90,33 +95,39 @@ class Renderer(NullRenderer):
                 wx_stops.Add(color, offset)
 
             wx_renderer = wx.GraphicsRenderer.GetDefaultRenderer()
-            return wx_renderer.CreateLinearGradientBrush(x1, y1, x2, y2, wx_stops)
+            return wx_renderer.CreateLinearGradientBrush(
+                x1, y1, x2, y2, wx_stops
+            )
 
         else:
             if len(stops) > 2:
-                warnings.warn("wxPython 2.8 only supports 2 gradient stops, but %d were specified" % len(stops))
+                msg = ("wxPython 2.8 only supports 2 gradient stops, but %d "
+                       "were specified")
+                warnings.warn(msg % len(stops))
 
             start_offset, start_color = convert_stop(stops[0])
             end_offset, end_color = convert_stop(stops[1])
 
             wx_renderer = wx.GraphicsRenderer.GetDefaultRenderer()
-            return wx_renderer.CreateLinearGradientBrush(x1, y1, x2, y2,
-                                                         start_color, end_color)
-
+            return wx_renderer.CreateLinearGradientBrush(
+                x1, y1, x2, y2, start_color, end_color
+            )
 
     @staticmethod
-    def createRadialGradientBrush(cx,cy, r, stops, fx=None,fy=None,
-                                  spreadMethod='pad', transforms=None,
-                                  units='userSpaceOnUse'):
+    def createRadialGradientBrush(cx, cy, r, stops, fx=None, fy=None,
+                                  spreadMethod="pad", transforms=None,
+                                  units="userSpaceOnUse"):
 
         stops = numpy.transpose(stops)
 
         def convert_stop(stop):
             offset, red, green, blue, opacity = stop
-            color = wx.Colour(red*255, green*255, blue*255, opacity*255)
+            color = wx.Colour(
+                red * 255, green * 255, blue * 255, opacity * 255
+            )
             return offset, color
 
-        if wx.VERSION[:2] > (2,9):
+        if wx.VERSION[:2] > (2, 9):
             # wxPython 2.9+ supports a collection of stops
             wx_stops = wx.GraphicsGradientStops()
             for stop in stops:
@@ -124,12 +135,16 @@ class Renderer(NullRenderer):
                 wx_stops.Add(color, offset)
 
             wx_renderer = wx.GraphicsRenderer.GetDefaultRenderer()
-            return wx_renderer.CreateRadialGradientBrush(fx, fy, cx, cy, r, wx_stops)
+            return wx_renderer.CreateRadialGradientBrush(
+                fx, fy, cx, cy, r, wx_stops
+            )
 
         else:
 
             if len(stops) > 2:
-                warnings.warn("wxPython 2.8 only supports 2 gradient stops, but %d were specified" % len(stops))
+                msg = ("wxPython 2.8 only supports 2 gradient stops, but %d "
+                       "were specified")
+                warnings.warn(msg % len(stops))
 
             start_offset, start_color = convert_stop(stops[0])
             end_offset, end_color = convert_stop(stops[-1])
@@ -140,8 +155,9 @@ class Renderer(NullRenderer):
                 fy = cy
 
             wx_renderer = wx.GraphicsRenderer.GetDefaultRenderer()
-            return wx_renderer.CreateRadialGradientBrush(fx, fy, cx, cy, r,
-                                                         start_color, end_color)
+            return wx_renderer.CreateRadialGradientBrush(
+                fx, fy, cx, cy, r, start_color, end_color
+            )
 
     @staticmethod
     def fillPath(*args):
@@ -187,7 +203,7 @@ class Renderer(NullRenderer):
 
     @staticmethod
     def setFontSize(font, size):
-        if '__WXMSW__' in wx.PlatformInfo:
+        if "__WXMSW__" in wx.PlatformInfo:
             i = int(size)
             font.SetPixelSize((i, i))
         else:
@@ -214,7 +230,6 @@ class Renderer(NullRenderer):
     def setFont(context, font, brush):
         return context.SetFont(font, brush.Colour)
 
-
     @staticmethod
     def strokePath(*args):
         return wx.GraphicsContext.StrokePath(*args)
@@ -230,16 +245,16 @@ class Renderer(NullRenderer):
         return wx.GraphicsContext.Translate(*args)
 
     @staticmethod
-    def DrawText(context, text, x, y, brush=NullGraphicsBrush, anchor='start'):
-        #SVG spec appears to originate text from the bottom
-        #rather than the top as with our API. This function
-        #will measure and then re-orient the text as needed.
+    def DrawText(context, text, x, y, brush=NullGraphicsBrush, anchor="start"):
+        # SVG spec appears to originate text from the bottom
+        # rather than the top as with our API. This function
+        # will measure and then re-orient the text as needed.
         w, h = context.GetTextExtent(text)
 
-        if anchor != 'start':
-            if anchor == 'middle':
-                x -= w/2.0
-            elif anchor == 'end':
+        if anchor != "start":
+            if anchor == "middle":
+                x -= w / 2.0
+            elif anchor == "end":
                 x -= w
 
         y -= h

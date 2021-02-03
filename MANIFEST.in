@@ -5,11 +5,18 @@ include font_LICENSE.txt
 include fonttools_LICENSE.txt
 include image_LICENSE.txt
 include image_LICENSE_*.txt
-include kiva/agg/agg.i
 include docs/Makefile
 include docs/kiva/agg/notes
+include kiva/_cython_speedups.*
+include kiva/_hit_test.*
 recursive-include docs *.py *.rst *.txt *.css *.png *.ico *.doc
 recursive-include enable/examples *.py *.svg *.jpg *.enaml
 recursive-include kiva/examples *.py *.txt *.gif *.jpg
-recursive-include kiva/quartz *.pyx *.pxi *.pxd mac_context*.*
+recursive-include kiva/agg *.py *.i *.cpp *.h *.c
+recursive-include kiva/agg/agg-24 *
+recursive-include kiva/agg/freetype2 *
+recursive-include kiva/agg/LICENSES *
 recursive-include kiva/fonttools/tests/data *.ttc *.ttf
+recursive-include kiva/fonttools/LICENSES *
+recursive-include kiva/gl *.h *.cpp *.i LICENSE_*
+recursive-include kiva/quartz *.pyx *.pxi *.pxd mac_context*.*

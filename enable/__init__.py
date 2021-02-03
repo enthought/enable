@@ -6,49 +6,24 @@
 from ._version import full_version as __version__
 
 __requires__ = [
-    'numpy',
-    'traits',
-    'traitsui',
-    'pyface',
-    'fonttools'
+    "numpy", "pillow", "traits", "traitsui", "pyface", "fonttools"
 ]
-
-# Do not force installation of pillow if PIL is already available.
-try:
-    import PIL
-except ImportError:
-    __requires__.append('pillow')
 
 __extras_require__ = {
     # Dependencies for running enable/kiva's examples
-    'examples': [
-        'chaco',
-        'mayavi',
-        'scipy',
-        'kiwisolver',
-        'pyglet'
-    ],
+    "examples": ["chaco", "mayavi", "scipy", "kiwisolver", "pyglet"],
     # Dependencies for GL backend support
-    'gl': [
-        'pygarrayimage',
-        'pyglet',
-    ],
+    "gl": ["pygarrayimage", "pyglet"],
     # Dependencies for constrained layout
-    'layout': [
-        'kiwisolver',
-    ],
+    "layout": ["kiwisolver"],
     # Dependencies for PDF backend
-    'pdf': [
-        'reportlab',
-    ],
+    "pdf": ["reportlab"],
     # Dependencies for SVG backend
-    'svg': [
-        'pyparsing',
-    ],
+    "svg": ["pyparsing"],
     # Dependencies purely for running tests.
-    'test': [
-        'hypothesis',
-        'PyPDF2',    # for pdf drawing tests in kiva.
+    "test": [
+        "hypothesis",
+        "PyPDF2",  # for pdf drawing tests in kiva.
         "setuptools",
-    ]
+    ],
 }

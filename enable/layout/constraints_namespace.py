@@ -1,7 +1,7 @@
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #  Copyright (c) 2013, Enthought, Inc.
 #  All rights reserved.
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 from kiwisolver import Variable
 
 from .linear_symbolic import LinearSymbolic
@@ -15,6 +15,7 @@ class ConstraintsNamespace(object):
     with them, without having to specifically update this client code.
 
     """
+
     def __init__(self, name, owner):
         """ Initialize a ConstraintsNamespace.
 
@@ -52,7 +53,7 @@ class ConstraintsNamespace(object):
         if name in constraints:
             res = constraints[name]
         else:
-            label = '{0}|{1}|{2}'.format(self._name, self._owner, name)
+            label = "{0}|{1}|{2}".format(self._name, self._owner, name)
             res = constraints[name] = Variable(label)
         return res
 

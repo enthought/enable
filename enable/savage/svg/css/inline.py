@@ -1,5 +1,6 @@
 """ Parser for inline CSS in style attributes """
 
+
 def inlineStyle(styleString):
     if len(styleString) == 0:
         return {}

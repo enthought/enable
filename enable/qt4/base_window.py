@@ -1,4 +1,4 @@
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Copyright (c) 2008, Riverbank Computing Limited
 # All rights reserved.
 #
@@ -8,11 +8,12 @@
 # Author: Riverbank Computing Limited
 # Description: <Enthought enable package component>
 #
-# In an e-mail to enthought-dev on 2008.09.12 at 2:49 AM CDT, Phil Thompson said:
+# In an e-mail to enthought-dev on 2008.09.12 at 2:49 AM CDT,
+# Phil Thompson said:
 # The advantage is that all of the PyQt code in ETS can now be re-licensed to
 # use the BSD - and I hereby give my permission for that to be done. It's
 # been on my list of things to do.
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 import warnings
 
 # Qt imports.
@@ -25,12 +26,15 @@ from traits.api import Instance
 
 # Local imports.
 from .constants import (
-    BUTTON_NAME_MAP, KEY_MAP, MOUSE_WHEEL_AXIS_MAP, POINTER_MAP,
-    DRAG_RESULTS_MAP
+    BUTTON_NAME_MAP,
+    KEY_MAP,
+    MOUSE_WHEEL_AXIS_MAP,
+    POINTER_MAP,
+    DRAG_RESULTS_MAP,
 )
 
 
-is_qt4 = (QtCore.__version_info__[0] <= 4)
+is_qt4 = QtCore.__version_info__[0] <= 4
 
 
 class _QtWindowHandler(object):
@@ -45,8 +49,9 @@ class _QtWindowHandler(object):
         qt_window.setAutoFillBackground(True)
         qt_window.setFocusPolicy(QtCore.Qt.WheelFocus)
         qt_window.setMouseTracking(True)
-        qt_window.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                QtGui.QSizePolicy.Expanding)
+        qt_window.setSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding
+        )
         # We prevent context menu events being generated from inside this
         # widget. If a containing parent widget handles a context menu event,
         # then Enable might not get the right-click events. Enable does not
@@ -82,9 +87,9 @@ class _QtWindowHandler(object):
                 component.outer_y = 0
                 component.outer_height = dy
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Qt Keyboard event handlers
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def keyPressEvent(self, event):
         handled = False
@@ -109,9 +114,9 @@ class _QtWindowHandler(object):
             # Allow the parent Qt widget handle the event.
             event.ignore()
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Qt Mouse event handlers
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def enterEvent(self, event):
         if self._enable_window:
@@ -183,33 +188,32 @@ class _QtWindowHandler(object):
 
         return qt_size_hint
 
-
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Qt Drag and drop event handlers
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def dragEnterEvent(self, event):
         if self._enable_window:
             self._enable_window._drag_result = QtCore.Qt.IgnoreAction
-            self._enable_window._handle_drag_event('drag_over', event)
+            self._enable_window._handle_drag_event("drag_over", event)
             event.setDropAction(self._enable_window._drag_result)
             event.accept()
 
     def dragLeaveEvent(self, event):
         if self._enable_window:
-            self._enable_window._handle_drag_event('drag_leave', event)
+            self._enable_window._handle_drag_event("drag_leave", event)
 
     def dragMoveEvent(self, event):
         if self._enable_window:
             self._enable_window._drag_result = QtCore.Qt.IgnoreAction
-            self._enable_window._handle_drag_event('drag_over', event)
+            self._enable_window._handle_drag_event("drag_over", event)
             event.setDropAction(self._enable_window._drag_result)
             event.accept()
 
     def dropEvent(self, event):
         if self._enable_window:
             self._enable_window._drag_result = event.proposedAction()
-            self._enable_window._handle_drag_event('dropped_on', event)
+            self._enable_window._handle_drag_event("dropped_on", event)
             event.setDropAction(self._enable_window._drag_result)
             event.accept()
 
@@ -288,6 +292,7 @@ class _QtGLWindow(QtOpenGL.QGLWidget):
     def paintEvent(self, event):
         super(_QtGLWindow, self).paintEvent(event)
         self.handler.paintEvent(event)
+        self.swapBuffers()
 
     def resizeEvent(self, event):
         super(_QtGLWindow, self).resizeEvent(event)
@@ -333,7 +338,7 @@ class _QtGLWindow(QtOpenGL.QGLWidget):
         self.handler.dropEvent(event)
 
     # TODO: by symmetry this belongs here, but we need to test it
-    #def sizeHint(self):
+    # def sizeHint(self):
     #    qt_size_hint = super(_QtGLWindow, self).sizeHint()
     #    return self.handler.sizeHint(qt_size_hint)
 
@@ -357,21 +362,21 @@ class _Window(AbstractWindow):
         if size is not None:
             self.control.resize(*size)
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Implementations of abstract methods in AbstractWindow
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def set_drag_result(self, result):
         if result not in DRAG_RESULTS_MAP:
             raise RuntimeError("Unknown drag result '%s'" % result)
         self._drag_result = DRAG_RESULTS_MAP[result]
 
-    def _capture_mouse ( self ):
+    def _capture_mouse(self):
         "Capture all future mouse events"
         # Nothing needed with Qt.
         pass
 
-    def _release_mouse ( self ):
+    def _release_mouse(self):
         "Release the mouse capture"
         # Nothing needed with Qt.
         pass
@@ -386,11 +391,11 @@ class _Window(AbstractWindow):
                 event.ignore()
                 return None
 
-        if event_type == 'character':
+        if event_type == "character":
             key = str(event.text())
         else:
-            # Convert the keypress to a standard enable key if possible, otherwise
-            # to text.
+            # Convert the keypress to a standard enable key if possible,
+            # otherwise to text.
             key_code = event.key()
             key = KEY_MAP.get(key_code)
             if key is None:
@@ -404,13 +409,17 @@ class _Window(AbstractWindow):
 
         modifiers = event.modifiers()
 
-        return KeyEvent(event_type=event_type, character=key, x=x,
-                        y=self._flip_y(y),
-                        alt_down=bool(modifiers & QtCore.Qt.AltModifier),
-                        shift_down=bool(modifiers & QtCore.Qt.ShiftModifier),
-                        control_down=bool(modifiers & QtCore.Qt.ControlModifier),
-                        event=event,
-                        window=self)
+        return KeyEvent(
+            event_type=event_type,
+            character=key,
+            x=x,
+            y=self._flip_y(y),
+            alt_down=bool(modifiers & QtCore.Qt.AltModifier),
+            shift_down=bool(modifiers & QtCore.Qt.ShiftModifier),
+            control_down=bool(modifiers & QtCore.Qt.ControlModifier),
+            event=event,
+            window=self,
+        )
 
     def _create_mouse_event(self, event):
         # If the control no longer exists, don't send mouse event
@@ -440,7 +449,7 @@ class _Window(AbstractWindow):
                 delta = event.delta()
                 mouse_wheel = delta / float(8 * degrees_per_step)
                 mouse_wheel_axis = MOUSE_WHEEL_AXIS_MAP[event.orientation()]
-                if mouse_wheel_axis == 'horizontal':
+                if mouse_wheel_axis == "horizontal":
                     mouse_wheel_delta = (delta, 0)
                 else:
                     mouse_wheel_delta = (0, delta)
@@ -450,15 +459,19 @@ class _Window(AbstractWindow):
                     delta = event.angleDelta()
                 mouse_wheel_delta = (delta.x(), delta.y())
                 if abs(mouse_wheel_delta[0]) > abs(mouse_wheel_delta[1]):
-                    mouse_wheel = mouse_wheel_delta[0] / float(8 * degrees_per_step)
-                    mouse_wheel_axis = 'horizontal'
+                    mouse_wheel = mouse_wheel_delta[0] / float(
+                        8 * degrees_per_step
+                    )
+                    mouse_wheel_axis = "horizontal"
                 else:
-                    mouse_wheel = mouse_wheel_delta[1] / float(8 * degrees_per_step)
-                    mouse_wheel_axis = 'vertical'
+                    mouse_wheel = mouse_wheel_delta[1] / float(
+                        8 * degrees_per_step
+                    )
+                    mouse_wheel_axis = "vertical"
         else:
             mouse_wheel = 0
             mouse_wheel_delta = (0, 0)
-            mouse_wheel_axis = 'vertical'
+            mouse_wheel_axis = "vertical"
 
         return MouseEvent(
             x=x,
@@ -472,7 +485,7 @@ class _Window(AbstractWindow):
             left_down=bool(buttons & QtCore.Qt.LeftButton),
             middle_down=bool(buttons & QtCore.Qt.MidButton),
             right_down=bool(buttons & QtCore.Qt.RightButton),
-            window=self
+            window=self,
         )
 
     def _create_drag_event(self, event):
@@ -498,14 +511,20 @@ class _Window(AbstractWindow):
             copy = event.proposedAction() == QtCore.Qt.CopyAction
         except AttributeError:
             # this is a DragLeave event
-            return DragEvent(x=x, y=self._flip_y(y), obj=None, copy=False,
-                        window=self, mimedata=None)
+            return DragEvent(
+                x=x,
+                y=self._flip_y(y),
+                obj=None,
+                copy=False,
+                window=self,
+                mimedata=None,
+            )
 
         try:
             from traitsui.qt4.clipboard import PyMimeData
         except ImportError:
-            # traitsui isn't available, warn and just make mimedata available on
-            # event
+            # traitsui isn't available, warn and just make mimedata available
+            # on event
             warnings.warn("traitsui.qt4 is unavailable", ImportWarning)
             obj = None
         else:
@@ -518,12 +537,19 @@ class _Window(AbstractWindow):
                         # try to extract file info from mimedata
                         # XXX this is for compatibility with what wx does
                         from apptools.io.api import File
+
                         obj = [File(path=path) for path in files]
                     except ImportError:
                         warnings.warn("apptools is unavailable", ImportWarning)
 
-        return DragEvent(x=x, y=self._flip_y(y), obj=obj, copy=copy,
-                        window=self, mimedata=mimedata)
+        return DragEvent(
+            x=x,
+            y=self._flip_y(y),
+            obj=obj,
+            copy=copy,
+            window=self,
+            mimedata=mimedata,
+        )
 
     def _redraw(self, coordinates=None):
         if self.control:
@@ -562,7 +588,7 @@ class _Window(AbstractWindow):
         self.control.setFocus()
 
     def _on_key_pressed(self, event):
-        return self._handle_key_event('key_pressed', event)
+        return self._handle_key_event("key_pressed", event)
 
     def get_pointer_position(self):
         pos = self.control.mapFromGlobal(QtGui.QCursor.pos())
@@ -570,10 +596,9 @@ class _Window(AbstractWindow):
         y = self._flip_y(pos.y())
         return x, y
 
-
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Private methods
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def _flip_y(self, y):
         "Converts between a Kiva and a Qt y coordinate"

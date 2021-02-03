@@ -1,4 +1,4 @@
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Copyright (c) 2011, Enthought, Inc.
 # All rights reserved.
 #
@@ -10,9 +10,10 @@
 #
 # Author: Enthought, Inc.
 # Description: <Enthought enable package component>
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 # Import the toolkit specific version.
 from .toolkit import toolkit_object
-CompiledPath = toolkit_object('CompiledPath')
+
+CompiledPath = toolkit_object("CompiledPath")

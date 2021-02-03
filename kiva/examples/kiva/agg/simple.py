@@ -7,7 +7,6 @@ gc.set_stroke_color((1, 0, 0))
 # gc.move_to(0,0)
 # gc.line_to(100,100)
 # gc.stroke_path()
-# print gc.bmp_array[:6,:6,0]
 
 gc.set_fill_color((0, 0, 1))
 # gc.rect(0,0,5,5)

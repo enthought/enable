@@ -1,9 +1,8 @@
-
-
 from numpy import array
 from pyglet.window import key, Window
 
-from kiva.constants import STROKE
+from kiva.api import STROKE
+
 try:
     from kiva.gl import GraphicsContext
 except ImportError as e:
@@ -13,6 +12,7 @@ except ImportError as e:
 class TestWindow(Window):
     """ Press Q or Escape to exit
     """
+
     def __init__(self, *args, **kw):
         Window.__init__(self, *args, **kw)
         self.init_window()
@@ -53,5 +53,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-

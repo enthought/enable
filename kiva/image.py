@@ -1,4 +1,4 @@
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Copyright (c) 2005, Enthought, Inc.
 # some parts copyright 2002 by Space Telescope Science Institute
 # All rights reserved.
@@ -8,7 +8,7 @@
 # under the conditions described in the aforementioned license.  The license
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 # Thanks for using Enthought open source!
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 """ This backend supports Kiva drawing into memory buffers.
 
     Though this can be used to perform drawing in non-GUI applications,
@@ -33,9 +33,9 @@ from .agg import GraphicsContextSystem, Image
 # multiple times.
 from .agg import CompiledPath
 
+
 def font_metrics_provider():
     """ Create an object to be used for querying font metrics.
     """
 
     return GraphicsContext((1, 1))
-

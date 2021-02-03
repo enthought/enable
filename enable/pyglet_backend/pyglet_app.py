@@ -12,8 +12,10 @@ import pyglet
 
 __all__ = ["get_app", "PygletApp"]
 
+
 def get_app():
     """ Returns a reference to the current running Pyglet App """
     return pyglet.app
+
 
 PygletApp = pyglet.app

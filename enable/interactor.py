@@ -1,12 +1,13 @@
 """ Defines the Interactor class """
 
 # Enthought library imports
-from kiva.affine import affine_identity
+from kiva.api import affine_identity
 from traits.api import Any, Bool, HasTraits, List, Property, Str, Trait
 
 # Local relative imports
 from enable.colors import ColorTrait
 from .enable_traits import cursor_style_trait, Pointer
+
 
 class Interactor(HasTraits):
     """
@@ -47,7 +48,8 @@ class Interactor(HasTraits):
     # states.
     event_state = Str("normal")
 
-    # The cursor shape that should be displayed when this interactor is "active"
+    # The cursor shape that should be displayed when this interactor is
+    # "active"
     pointer = Pointer
 
     # The "tooltip" to display if a user mouse-overs this interactor
@@ -77,7 +79,6 @@ class Interactor(HasTraits):
     # Shadow trait for the **active_tool** property.  Must be an instance of
     # BaseTool or one of its subclasses.
     _active_tool = Any
-
 
     def dispatch(self, event, suffix):
         """ Public method for sending mouse/keyboard events to this interactor.

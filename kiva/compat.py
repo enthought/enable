@@ -1,15 +1,13 @@
-"""
-Compatibility module to help support various versions of PIL and
+""" Compatibility module to help support various versions of PIL and
 Pillow.
-
 """
 from PIL import Image
 
-HAS_FROM_BYTES = hasattr(Image, 'frombytes')
+HAS_FROM_BYTES = hasattr(Image, "frombytes")
 
 
 def piltostring(image):
-    if hasattr(image, 'tobytes'):
+    if hasattr(image, "tobytes"):
         return image.tobytes()
     else:
         return image.tostring()

@@ -17,9 +17,13 @@ import numpy as np
 
 from enable.api import Component
 from enable.component_editor import ComponentEditor
-from traits.api import (Any, Button, Dict, HasTraits, HTML, Instance,
-    List, Property, Str, on_trait_change)
-from traitsui import api as tui
+from traits.api import (
+    Any, Button, Dict, HasTraits, HTML, Instance, List, Property, Str,
+    on_trait_change
+)
+from traitsui.api import (
+    EnumEditor, HGroup, HSplit, Item, Tabbed, VGroup, View, VSplit
+)
 
 from enable.savage.svg import document
 from enable.savage.trait_defs.ui.svg_editor import SVGEditor
@@ -35,16 +39,20 @@ from .xml_view import xml_to_tree, xml_tree_editor
 
 logger = logging.getLogger()
 this_dir = os.path.abspath(os.path.dirname(__file__))
+SVG_TS_NS = "http://www.w3.org/2000/02/svg/testsuite/description/"
+
 
 class ComponentTrait(Instance):
     """ Convenience trait for Enable Components.
     """
+
     def __init__(self, **kwds):
-        kwds.setdefault('klass', Component)
+        kwds.setdefault("klass", Component)
         super(ComponentTrait, self).__init__(**kwds)
 
     def create_editor(self):
         return ComponentEditor()
+
 
 def normalize_text(text):
     """ Utility to normalize the whitespace in text.
@@ -52,7 +60,8 @@ def normalize_text(text):
     This is used in order to prevent wx's HTML widget from overzealously trying
     to interpret the whitespace as indicating preformatted text.
     """
-    return ' '.join(text.strip().split())
+    return " ".join(text.strip().split())
+
 
 def activate_tool(component, tool):
     """ Add and activate an overlay tool.
@@ -62,11 +71,12 @@ def activate_tool(component, tool):
     component.active_tool = tool
     return tool
 
+
 class Comparator(HasTraits):
     """ The main application.
     """
 
-    #### Configuration traits ##################################################
+    # Configuration traits ##################################################
 
     # The root directory of the test suite.
     suitedir = Str()
@@ -79,14 +89,13 @@ class Comparator(HasTraits):
     svg_files = List()
 
     # The name of the default PNG file to display when no reference PNG exists.
-    default_png = Str(os.path.join(this_dir, 'images/default.png'))
+    default_png = Str(os.path.join(this_dir, "images/default.png"))
 
-
-    #### State traits ##########################################################
+    # State traits ##########################################################
 
     # The currently selected SVG file.
     current_file = Str()
-    abs_current_file = Property(depends_on=['current_file'])
+    abs_current_file = Property(depends_on=["current_file"])
 
     # The current XML ElementTree root Element and its XMLTree view model.
     current_xml = Any()
@@ -95,15 +104,15 @@ class Comparator(HasTraits):
     # The profilers.
     profile_this = Instance(ProfileThis, args=())
 
+    # GUI traits ############################################################
 
-    #### GUI traits ############################################################
-
-    # The text showing the current mouse coordinates over any of the components.
-    mouse_coords = Property(Str, depends_on=['ch_controller.svg_coords'])
+    # The text showing the current mouse coordinates over any of the
+    # components.
+    mouse_coords = Property(Str, depends_on=["ch_controller.svg_coords"])
 
     # Move forward and backward through the list of SVG files.
-    move_forward = Button('>>')
-    move_backward = Button('<<')
+    move_forward = Button(">>")
+    move_backward = Button("<<")
 
     # The description of the test.
     description = HTML()
@@ -118,57 +127,96 @@ class Comparator(HasTraits):
     # The profiler views.
     parsing_sike = Instance(Sike, args=())
     drawing_sike = Instance(Sike, args=())
-    wx_doc_sike  = Instance(Sike, args=())
-    kiva_doc_sike= Instance(Sike, args=())
+    wx_doc_sike = Instance(Sike, args=())
+    kiva_doc_sike = Instance(Sike, args=())
 
-
-
-    traits_view = tui.View(
-        tui.Tabbed(
-            tui.VGroup(
-                tui.HGroup(
-                    tui.Item('current_file', editor=tui.EnumEditor(name='svg_files'),
-                        style='simple', width=1.0, show_label=False),
-                    tui.Item('move_backward', show_label=False,
-                        enabled_when="svg_files.index(current_file) != 0"),
-                    tui.Item('move_forward', show_label=False,
-                        enabled_when="svg_files.index(current_file) != len(svg_files)-1"),
-                ),
-                tui.VSplit(
-                    tui.HSplit(
-                        tui.Item('description', label='Description', show_label=False),
-                        tui.Item('current_xml_view', editor=xml_tree_editor, show_label=False),
+    traits_view = View(
+        Tabbed(
+            VGroup(
+                HGroup(
+                    Item(
+                        "current_file",
+                        editor=EnumEditor(name="svg_files"),
+                        style="simple",
+                        width=1.0,
+                        show_label=False,
                     ),
-                    tui.HSplit(
-                        tui.Item('document', editor=SVGEditor(), show_label=False),
-                        tui.Item('kiva_component', show_label=False),
-                        tui.Item('ref_component', show_label=False),
-                        # TODO: tui.Item('agg_component', show_label=False),
+                    Item(
+                        "move_backward",
+                        show_label=False,
+                        enabled_when="svg_files.index(current_file) != 0",
+                    ),
+                    Item(
+                        "move_forward",
+                        show_label=False,
+                        enabled_when=("svg_files.index(current_file) "
+                                      "!= len(svg_files)-1"),
                     ),
                 ),
-                label='SVG',
+                VSplit(
+                    HSplit(
+                        Item(
+                            "description",
+                            label="Description",
+                            show_label=False,
+                        ),
+                        Item(
+                            "current_xml_view",
+                            editor=xml_tree_editor,
+                            show_label=False,
+                        ),
+                    ),
+                    HSplit(
+                        Item(
+                            "document", editor=SVGEditor(), show_label=False
+                        ),
+                        Item("kiva_component", show_label=False),
+                        Item("ref_component", show_label=False),
+                        # TODO: Item('agg_component', show_label=False),
+                    ),
+                ),
+                label="SVG",
             ),
-            tui.Item('parsing_sike', style='custom', show_label=False,
-                label='Parsing Profile'),
-            tui.Item('drawing_sike', style='custom', show_label=False,
-                label='Kiva Drawing Profile'),
-            tui.Item('wx_doc_sike', style='custom', show_label=False,
-                label='Creating WX document'),
-            tui.Item('kiva_doc_sike', style='custom', show_label=False,
-                label='Creating WX document'),
+            Item(
+                "parsing_sike",
+                style="custom",
+                show_label=False,
+                label="Parsing Profile",
+            ),
+            Item(
+                "drawing_sike",
+                style="custom",
+                show_label=False,
+                label="Kiva Drawing Profile",
+            ),
+            Item(
+                "wx_doc_sike",
+                style="custom",
+                show_label=False,
+                label="Creating WX document",
+            ),
+            Item(
+                "kiva_doc_sike",
+                style="custom",
+                show_label=False,
+                label="Creating WX document",
+            ),
         ),
-
         width=1280,
         height=768,
         resizable=True,
-        statusbar='mouse_coords',
-        title='SVG Comparator',
+        statusbar="mouse_coords",
+        title="SVG Comparator",
     )
 
     def __init__(self, **traits):
         super(Comparator, self).__init__(**traits)
-        kiva_ch = activate_tool(self.kiva_component, Crosshair(self.kiva_component))
-        ref_ch = activate_tool(self.ref_component, Crosshair(self.ref_component))
+        kiva_ch = activate_tool(
+            self.kiva_component, Crosshair(self.kiva_component)
+        )
+        ref_ch = activate_tool(
+            self.ref_component, Crosshair(self.ref_component)
+        )
         self.ch_controller = MultiController(kiva_ch, ref_ch)
 
     @classmethod
@@ -180,14 +228,14 @@ class Comparator(HasTraits):
         related PNGs under <dirname>/png/ and that there are no subdirectories.
         """
         dirname = os.path.abspath(dirname)
-        svgs = glob.glob(os.path.join(dirname, 'svg', '*.svg'))
-        pngdir = os.path.join(dirname, 'png')
+        svgs = glob.glob(os.path.join(dirname, "svg", "*.svg"))
+        pngdir = os.path.join(dirname, "png")
         d = {}
         for svg in svgs:
             png = None
             base = os.path.splitext(os.path.basename(svg))[0]
-            for prefix in ('full-', 'basic-', 'tiny-', ''):
-                fn = os.path.join(pngdir, prefix+base+'.png')
+            for prefix in ("full-", "basic-", "tiny-", ""):
+                fn = os.path.join(pngdir, prefix + base + ".png")
                 if os.path.exists(fn):
                     png = os.path.basename(fn)
                     break
@@ -196,7 +244,6 @@ class Comparator(HasTraits):
         x = cls(suitedir=dirname, svg_png=d, svg_files=svgs, **traits)
         x.current_file = svgs[0]
         return x
-
 
     def display_reference_png(self, filename):
         """ Read the image file and shove its data into the display component.
@@ -208,49 +255,49 @@ class Comparator(HasTraits):
     def display_test_description(self):
         """ Extract the test description for display.
         """
-        html = ET.Element('html')
+        html = ET.Element("html")
 
-        title = self.current_xml.find('.//{http://www.w3.org/2000/svg}title')
+        title = self.current_xml.find(".//{http://www.w3.org/2000/svg}title")
         if title is not None:
             title_text = title.text
         else:
             title_text = os.path.splitext(self.current_file)[0]
-        p = ET.SubElement(html, 'p')
-        b = ET.SubElement(p, 'b')
-        b.text = 'Title: '
+        p = ET.SubElement(html, "p")
+        b = ET.SubElement(p, "b")
+        b.text = "Title: "
         b.tail = title_text
 
         desc_text = None
         version_text = None
-        desc = self.current_xml.find('.//{http://www.w3.org/2000/svg}desc')
+        desc = self.current_xml.find(".//{http://www.w3.org/2000/svg}desc")
         if desc is not None:
             desc_text = desc.text
         else:
-            testcase = self.current_xml.find('.//{http://www.w3.org/2000/02/svg/testsuite/description/}SVGTestCase')
+            testcase = self.current_xml.find(f".//{{SVG_TS_NS}}SVGTestCase")
             if testcase is not None:
-                desc_text = testcase.get('desc', None)
-                version_text = testcase.get('version', None)
+                desc_text = testcase.get("desc", None)
+                version_text = testcase.get("version", None)
         if desc_text is not None:
-            p = ET.SubElement(html, 'p')
-            b = ET.SubElement(p, 'b')
-            b.text = 'Description: '
+            p = ET.SubElement(html, "p")
+            b = ET.SubElement(p, "b")
+            b.text = "Description: "
             b.tail = normalize_text(desc_text)
 
         if version_text is None:
-            script = self.current_xml.find('.//{http://www.w3.org/2000/02/svg/testsuite/description/}OperatorScript')
+            script = self.current_xml.find(f".//{{SVG_TS_NS}}OperatorScript")
             if script is not None:
-                version_text = script.get('version', None)
+                version_text = script.get("version", None)
         if version_text is not None:
-            p = ET.SubElement(html, 'p')
-            b = ET.SubElement(p, 'b')
-            b.text = 'Version: '
+            p = ET.SubElement(html, "p")
+            b = ET.SubElement(p, "b")
+            b.text = "Version: "
             b.tail = version_text
 
-        paras = self.current_xml.findall('.//{http://www.w3.org/2000/02/svg/testsuite/description/}Paragraph')
+        paras = self.current_xml.findall(f".//{{SVG_TS_NS}}Paragraph")
         if len(paras) > 0:
-            div = ET.SubElement(html, 'div')
+            div = ET.SubElement(html, "div")
             for para in paras:
-                p = ET.SubElement(div, 'p')
+                p = ET.SubElement(div, "p")
                 p.text = normalize_text(para.text)
                 # Copy over any children elements like <a>.
                 p[:] = para[:]
@@ -283,76 +330,75 @@ class Comparator(HasTraits):
 
     def _move_backward_fired(self):
         idx = self.svg_files.index(self.current_file)
-        idx = max(idx-1, 0)
+        idx = max(idx - 1, 0)
         self.current_file = self.svg_files[idx]
 
     def _move_forward_fired(self):
         idx = self.svg_files.index(self.current_file)
-        idx = min(idx+1, len(self.svg_files)-1)
+        idx = min(idx + 1, len(self.svg_files) - 1)
         self.current_file = self.svg_files[idx]
 
     def _get_abs_current_file(self):
-        return self.locate_file(self.current_file, 'svg')
+        return self.locate_file(self.current_file, "svg")
 
     def _current_file_changed(self, new):
         # Reset the warnings filters. While it's good to only get 1 warning per
         # file, we want to get the same warning again if a new file issues it.
         warnings.resetwarnings()
 
-        self.profile_this.start('Parsing')
+        self.profile_this.start("Parsing")
         self.current_xml = ET.parse(self.abs_current_file).getroot()
         self.current_xml_view = xml_to_tree(self.current_xml)
         resources = document.ResourceGetter.fromfilename(self.abs_current_file)
         self.profile_this.stop()
         try:
-            self.profile_this.start('Creating WX document')
-            self.document = document.SVGDocument(self.current_xml,
-                                                 resources=resources,
-                                                 renderer=WxRenderer)
-        except:
-            logger.exception('Error parsing document %s', new)
+            self.profile_this.start("Creating WX document")
+            self.document = document.SVGDocument(
+                self.current_xml, resources=resources, renderer=WxRenderer
+            )
+        except Exception:
+            logger.exception("Error parsing document %s", new)
             self.document = None
 
         self.profile_this.stop()
 
         try:
-            self.profile_this.start('Creating Kiva document')
-            self.kiva_component.document = document.SVGDocument(self.current_xml,
-                                                                resources=resources,
-                                                                renderer=KivaRenderer)
-        except Exception as e:
-            logger.exception('Error parsing document %s', new)
+            self.profile_this.start("Creating Kiva document")
+            self.kiva_component.document = document.SVGDocument(
+                self.current_xml, resources=resources, renderer=KivaRenderer
+            )
+        except Exception:
+            logger.exception("Error parsing document %s", new)
             self.kiva_component.document
 
         self.profile_this.stop()
-
 
         png_file = self.svg_png.get(new, None)
         if png_file is None:
             png_file = self.default_png
         else:
-            png_file = self.locate_file(png_file, 'png')
+            png_file = self.locate_file(png_file, "png")
         self.display_test_description()
         self.display_reference_png(png_file)
 
     def _get_mouse_coords(self):
         if self.ch_controller is None:
-            return ''
+            return ""
         else:
-            return '%1.3g %1.3g' % self.ch_controller.svg_coords
+            return "%1.3g %1.3g" % self.ch_controller.svg_coords
 
-    @on_trait_change('profile_this:profile_ended')
+    @on_trait_change("profile_this:profile_ended")
     def _update_profiling(self, new):
         if new is not None:
             name, p = new
             stats = pstats.Stats(p)
-            if name == 'Parsing':
+            if name == "Parsing":
                 self.parsing_sike.stats = stats
-            elif name == 'Drawing':
+            elif name == "Drawing":
                 self.drawing_sike.stats = stats
-            elif name == 'Creating WX document':
+            elif name == "Creating WX document":
                 self.wx_doc_sike.stats = stats
-            elif name == 'Creating Kiva document':
+            elif name == "Creating Kiva document":
                 self.kiva_doc_sike.stats = stats
 
 
@@ -366,9 +412,10 @@ class OpenClipartComparator(Comparator):
         """ Load SVG and reference PNGs from an OpenClipart directory.
         """
         dirname = os.path.abspath(dirname)
+
         def remove_prefix(path, dirname=dirname):
             if path.startswith(dirname + os.path.sep):
-                path = path[len(dirname)+1:]
+                path = path[len(dirname) + 1:]
             return path
 
         svg_png = {}
@@ -376,8 +423,8 @@ class OpenClipartComparator(Comparator):
             for fn in files:
                 fn = os.path.join(d, fn)
                 base, ext = os.path.splitext(fn)
-                if ext == '.svg':
-                    png = os.path.join(d, base+'.png')
+                if ext == ".svg":
+                    png = os.path.join(d, base + ".png")
                     if os.path.exists(png):
                         png = remove_prefix(png)
                     else:
@@ -396,12 +443,20 @@ class OpenClipartComparator(Comparator):
 
 def main():
     import argparse
+
     parser = argparse.ArgumentParser()
-    parser.add_argument('--openclipart', action='store_true',
-        help="The suite is in OpenClipart layout rather than the SVG test suite layout.")
-    parser.add_argument('--suitedir', nargs='?',
-        default=os.path.join(this_dir, 'w3c_svg_11'),
-        help="The directory with the test suite. [default: %(default)s]")
+    parser.add_argument(
+        "--openclipart",
+        action="store_true",
+        help=("The suite is in OpenClipart layout rather than the SVG test "
+              "suite layout."),
+    )
+    parser.add_argument(
+        "--suitedir",
+        nargs="?",
+        default=os.path.join(this_dir, "w3c_svg_11"),
+        help="The directory with the test suite. [default: %(default)s]",
+    )
 
     args = parser.parse_args()
     logging.basicConfig(stream=sys.stdout)
@@ -417,8 +472,8 @@ def main():
             svgdir, svg = os.path.split(args.suitedir)
             suitedir = os.path.split(svgdir)[0]
         c = klass(suitedir=suitedir)
-        png = os.path.splitext(svg)[0] + '.png'
-        if not os.path.exists(c.locate_file(png, 'png')):
+        png = os.path.splitext(svg)[0] + ".png"
+        if not os.path.exists(c.locate_file(png, "png")):
             png = None
         c.svg_png = {svg: png}
         c.svg_files = [svg]
@@ -427,5 +482,6 @@ def main():
         c = klass.fromsuitedir(args.suitedir)
     c.configure_traits()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

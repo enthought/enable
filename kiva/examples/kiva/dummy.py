@@ -1,7 +1,6 @@
-
 from enable.kiva_graphics_context import GraphicsContext
 from kiva import agg
-from kiva.fonttools import Font
+from kiva.api import Font
 
 # Do some basic drawing tests and write the results out to PNG files.
 # This is mostly a python translation of the tests in kiva/agg/src/dummy.cpp
@@ -15,7 +14,7 @@ GREEN = (0.0, 1.0, 0.0, 1.0)
 BLUE = (0.0, 0.0, 1.0, 1.0)
 NICEBLUE = (0.411, 0.584, 0.843, 1.0)
 
-PI = 3.141592654
+PI = 3.141_592_654
 
 
 def draw_sub_image(gc, width, height):
@@ -53,16 +52,16 @@ def test_arc_to2(gc, x2, y2, radiusstep=25.0):
 def test_arc_curve(gc):
     with gc:
         gc.translate_ctm(50.0, 50.0)
-        gc.rotate_ctm(PI/8)
+        gc.rotate_ctm(PI / 8)
         gc.set_stroke_color(BLUE)
         gc.rect(0.5, 0.5, 210, 210)
         gc.stroke_path()
         gc.set_stroke_color(BLACK)
         gc.set_line_width(1)
         gc.move_to(50.5, 25.5)
-        gc.arc(50.5, 50.5, 50.0, 0.0, PI/2, False)
+        gc.arc(50.5, 50.5, 50.0, 0.0, PI / 2, False)
         gc.move_to(100.5, 50.5)
-        gc.arc(100.5, 50.5, 50.0, 0.0, -PI/2*0.8, False)
+        gc.arc(100.5, 50.5, 50.0, 0.0, -PI / 2 * 0.8, False)
         gc.stroke_path()
 
     with gc:
@@ -108,9 +107,9 @@ def test_arc_to(gc):
             arc(gc)
 
             gc.translate_ctm(50.5, 50.5)
-            gc.rotate_ctm(-PI/2)
+            gc.rotate_ctm(-PI / 2)
             arc(gc)
-            gc.rotate_ctm(PI/2)
+            gc.rotate_ctm(PI / 2)
 
             gc.translate_ctm(50.5, -50.5)
             gc.rotate_ctm(-PI)
@@ -118,7 +117,7 @@ def test_arc_to(gc):
             gc.rotate_ctm(PI)
 
             gc.translate_ctm(-50.5, -50.5)
-            gc.rotate_ctm(-3*PI/2)
+            gc.rotate_ctm(-3 * PI / 2)
             arc(gc)
 
     gc.set_stroke_color(RED)
@@ -130,14 +129,14 @@ def test_arc_to(gc):
 
         gc.translate_ctm(130.5, 50.0)
         with gc:
-            gc.rotate_ctm(PI/6)
+            gc.rotate_ctm(PI / 6)
             whole_shebang(gc)
             gc.set_stroke_color(BLUE)
             gc.stroke_path()
 
         gc.translate_ctm(130.5, 0.0)
         with gc:
-            gc.rotate_ctm(PI/3)
+            gc.rotate_ctm(PI / 3)
             gc.scale_ctm(1.0, 2.0)
             whole_shebang(gc)
             gc.stroke_path()
@@ -163,12 +162,14 @@ def test_simple_clip_stack(gc):
 
 
 def test_clip_stack(gc):
-    sub_windows = ((10.5, 250, 200, 200),
-                   (220.5, 250, 200, 200),
-                   (430.5, 250, 200, 200),
-                   (10.5, 10, 200, 200),
-                   (220.5, 10, 200, 200),
-                   (430.5, 10, 200, 200))
+    sub_windows = (
+        (10.5, 250, 200, 200),
+        (220.5, 250, 200, 200),
+        (430.5, 250, 200, 200),
+        (10.5, 10, 200, 200),
+        (220.5, 10, 200, 200),
+        (430.5, 10, 200, 200),
+    )
     gc.set_line_width(2)
     gc.set_stroke_color(BLACK)
     gc.rects(sub_windows)
@@ -176,10 +177,8 @@ def test_clip_stack(gc):
 
     img = GraphicsContext((200, 200))
 
-    main_rects = ((40.5, 30.5, 120, 50),
-                  (40.5, 120.5, 120, 50))
-    disjoint_rects = ((60.5, 115.5, 80, 15),
-                      (60.5, 70.5, 80, 15))
+    main_rects = ((40.5, 30.5, 120, 50), (40.5, 120.5, 120, 50))
+    disjoint_rects = ((60.5, 115.5, 80, 15), (60.5, 70.5, 80, 15))
     vert_rect = (60.5, 10.5, 55, 180)
 
     # Draw the full image
@@ -229,7 +228,7 @@ def test_handling_text(gc):
     gc.line_to(0, -5)
     gc.move_to(0, 0)
     gc.stroke_path()
-    txtRot = agg.rotation_matrix(PI/6)
+    txtRot = agg.rotation_matrix(PI / 6)
     gc.set_text_matrix(txtRot)
     gc.show_text("Hello")
     txtRot.invert()
@@ -239,9 +238,11 @@ def test_handling_text(gc):
 
 
 if __name__ == "__main__":
-    tests = ((test_clip_stack, "clip_stack.png"),
-             (test_arc_to, "arc_to.png"),
-             (test_handling_text, "handling_text.png"))
+    tests = (
+        (test_clip_stack, "clip_stack.png"),
+        (test_arc_to, "arc_to.png"),
+        (test_handling_text, "handling_text.png"),
+    )
 
     for test_func, filename in tests:
         img = GraphicsContext((800, 600))

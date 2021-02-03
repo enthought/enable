@@ -7,7 +7,6 @@ from kiva.image import GraphicsContext
 
 
 class TestAggDrawing(DrawingImageTester, unittest.TestCase):
-
     def create_graphics_context(self, width, height):
         return GraphicsContext((width, height))
 
@@ -15,14 +14,12 @@ class TestAggDrawing(DrawingImageTester, unittest.TestCase):
         color_nodes = [(0.0, 1.0, 0.0, 0.0), (1.0, 0.0, 0.0, 0.0)]
         with self.draw_and_check():
             w, h = self.gc.width(), self.gc.height()
-            grad_stops = np.array([(x, r, g, b, 1.0)
-                                   for x, r, g, b in color_nodes])
+            grad_stops = np.array(
+                [(x, r, g, b, 1.0) for x, r, g, b in color_nodes]
+            )
 
             self.gc.rect(0, 0, w, h)
-            self.gc.linear_gradient(0, 0, w, 0, grad_stops,
-                                    u'pad', b'userSpaceOnUse')
+            self.gc.linear_gradient(
+                0, 0, w, 0, grad_stops, "pad", b"userSpaceOnUse"
+            )
             self.gc.fill_path()
-
-
-if __name__ == "__main__":
-    unittest.main()

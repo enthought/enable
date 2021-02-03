@@ -9,23 +9,23 @@ except ImportError:
 else:
     PYGLET_NOT_AVAILABLE = False
 
-
 from kiva.tests.drawing_tester import DrawingImageTester
 
-is_windows = (sys.platform in ('win32', 'cygwin'))
+is_windows = sys.platform in ("win32", "cygwin")
+
 
 @unittest.skipIf(is_windows, "Pyglet/GL backend issues on Windows")
 @unittest.skipIf(PYGLET_NOT_AVAILABLE, "Cannot import pyglet")
 class TestGLDrawing(DrawingImageTester, unittest.TestCase):
-
     def tearDown(self):
-        if hasattr(self, 'window') and self.window is not None:
+        if hasattr(self, "window") and self.window is not None:
             self.window.close()
             del self.window
         DrawingImageTester.tearDown(self)
 
     def create_graphics_context(self, width, height):
         from kiva.gl import GraphicsContext
+
         self.window = pyglet.window.Window(width=width, height=height)
         gc = GraphicsContext((width, height))
         gc.gl_init()
@@ -38,7 +38,8 @@ class TestGLDrawing(DrawingImageTester, unittest.TestCase):
 
     @unittest.skipIf(
         sys.platform == "darwin",
-        "Error getting sfnt font name on OSX (enthought/enable#541)")
+        "Error getting sfnt font name on OSX (enthought/enable#541)",
+    )
     def test_text(self):
         DrawingImageTester.test_text(self)
 
@@ -64,7 +65,3 @@ class TestGLDrawing(DrawingImageTester, unittest.TestCase):
                 filename, file=file_handle, encoder=PNGImageEncoder()
             )
         self.assertImageSavedWithContent(filename)
-
-
-if __name__ == "__main__":
-    unittest.main()

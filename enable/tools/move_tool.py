@@ -1,11 +1,11 @@
-
 from traits.api import Bool, Enum, Tuple
 
 from .drag_tool import DragTool
 
 
 class MoveTool(DragTool):
-    """ Generic tool for moving a component's position relative to its container
+    """ Generic tool for moving a component's position relative to its
+    container
     """
 
     drag_button = Enum("left", "right")

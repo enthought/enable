@@ -46,6 +46,7 @@ class Circle(Component):
     The circle moves with the mouse cursor but leaves a translucent version of
     itself in its original position until the mouse button is released.
     """
+
     color = (0.6, 0.7, 1.0, 1.0)
     bgcolor = "none"
 
@@ -83,16 +84,21 @@ class Circle(Component):
             klass = LightCircle
         else:
             klass = DashedCircle
-        self.shadow = klass(bounds=self.bounds, position=self.position,
-                            color=(1.0, 1.0, 1.0, 1.0))
+        self.shadow = klass(
+            bounds=self.bounds,
+            position=self.position,
+            color=(1.0, 1.0, 1.0, 1.0),
+        )
         self.container.insert(0, self.shadow)
         x, y = self.position
         self.prev_x = event.x
         self.prev_y = event.y
 
     def moving_mouse_move(self, event):
-        self.position = [self.x + (event.x - self.prev_x),
-                         self.y + (event.y - self.prev_y)]
+        self.position = [
+            self.x + (event.x - self.prev_x),
+            self.y + (event.y - self.prev_y),
+        ]
         self.prev_x = event.x
         self.prev_y = event.y
         self.request_redraw()
@@ -147,14 +153,16 @@ class DashedCircle(Component):
 
 
 class Demo(DemoFrame):
-
     def _create_component(self):
-        circle1 = Circle(bounds=[75, 75], position=[50, 50],
-                         shadow_type="dashed")
-        circle2 = Circle(bounds=[75, 75], position=[200, 50],
-                         shadow_type="light")
-        container = MyFilledContainer(bounds=[500, 500],
-                                      bgcolor=(0.5, 0.5, 0.5, 1.0))
+        circle1 = Circle(
+            bounds=[75, 75], position=[50, 50], shadow_type="dashed"
+        )
+        circle2 = Circle(
+            bounds=[75, 75], position=[200, 50], shadow_type="light"
+        )
+        container = MyFilledContainer(
+            bounds=[500, 500], bgcolor=(0.5, 0.5, 0.5, 1.0)
+        )
         container.auto_size = True
         container.add(circle1)
         container.add(circle2)

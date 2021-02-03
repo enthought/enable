@@ -133,12 +133,6 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath=".\gl_graphics_context.cpp">
-			</File>
-			<File
-				RelativePath=".\gl_graphics_context.h">
-			</File>
-			<File
 				RelativePath="kiva_affine_helpers.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -309,9 +303,6 @@
 			</File>
 			<File
 				RelativePath="font_type.i">
-			</File>
-			<File
-				RelativePath=".\gl_graphics_context.i">
 			</File>
 			<File
 				RelativePath="graphics_context.i">

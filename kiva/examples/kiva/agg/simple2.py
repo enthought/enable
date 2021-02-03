@@ -7,5 +7,5 @@ gc.save("rect.bmp")
 
 # directly manipulate the underlying
 # Numeric array.
-gc.bmp_array[:100, :100] = 255 * .5
+gc.bmp_array[:100, :100] = 255 * 0.5
 gc.save("rect2.bmp")

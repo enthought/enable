@@ -5,6 +5,7 @@ from enable.savage.svg.document import SVGDocument
 from enable.api import Container, Window
 from traits.api import Instance, Float
 
+
 class KivaContainer(Container):
 
     document = Instance(SVGDocument)
@@ -26,7 +27,6 @@ class KivaContainer(Container):
             self.document.render(gc)
 
 
-
 class RenderPanel(wx.Window):
     def __init__(self, parent, document=None):
         super(RenderPanel, self).__init__(parent)
@@ -37,18 +37,20 @@ class RenderPanel(wx.Window):
 
         self.container = KivaContainer(document=self.document)
 
-        size = wx.Size(200,200)
+        size = wx.Size(200, 200)
         if document is not None:
             size = document.getSize()
 
-        self._window = Window( parent=self, size=size, component=self.container )
+        self._window = Window(parent=self, size=size, component=self.container)
         self.control = self._window.control
         self._parent = parent
-        
-        self.SetBackgroundColour([int(255*c) for c in self.container.bgcolor_])        
+
+        self.SetBackgroundColour(
+            [int(255 * c) for c in self.container.bgcolor_]
+        )
 
     def GetBestSize(self):
         if not self.document:
-            return (-1,-1)
+            return (-1, -1)
 
         return self.document.getSize()

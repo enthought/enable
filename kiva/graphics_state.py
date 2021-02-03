@@ -1,10 +1,8 @@
-"""
-GraphicsState Class
+""" GraphicsState Class
 
 The GraphicsState class is used Kiva backends which need to have their state
 tracked by Python, rather than by an internal graphics state (eg. Wx, SVG and
 PDF backends, but not Agg or QPainter).
-
 """
 import copy
 
@@ -85,7 +83,6 @@ class GraphicsState(LineState):
     rendering_intent
         deals with colors and color correction in
         a sophisticated way.
-
     """
 
     def __init__(self):
@@ -99,7 +96,8 @@ class GraphicsState(LineState):
         # FIXME: This is a very wierd class. The following code is here to
         # make the basecore2d and the PS, SVG context managers happy
         super(GraphicsState, self).__init__(
-            line_color, line_width, line_cap, line_join, line_dash)
+            line_color, line_width, line_cap, line_join, line_dash
+        )
         self.line_state = self
 
         # All other default values.

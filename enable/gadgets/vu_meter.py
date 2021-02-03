@@ -1,15 +1,14 @@
-
 import math
 
 from traits.api import Float, Property, List, Str, Range
 from enable.api import Component
-from kiva.trait_defs.kiva_font_trait import KivaFont
+from kiva.trait_defs.api import KivaFont
 from kiva import affine
 
 
 def percent_to_db(percent):
     if percent == 0.0:
-        db = float('-inf')
+        db = float("-inf")
     else:
         db = 20 * math.log10(percent / 100.0)
     return db
@@ -64,14 +63,14 @@ class VUMeter(Component):
     _outer_radial_margin = Float(60.0)
 
     # The angle (in radians) of the span of the curve axis.
-    _phi = Property(Float, depends_on=['angle'])
+    _phi = Property(Float, depends_on=["angle"])
 
     # This is the radius of the circular axis (in screen coordinates).
-    _axis_radius = Property(Float, depends_on=['_phi', 'width', 'height'])
+    _axis_radius = Property(Float, depends_on=["_phi", "width", "height"])
 
-    #---------------------------------------------------------------------
+    # ---------------------------------------------------------------------
     # Trait Property methods
-    #---------------------------------------------------------------------
+    # ---------------------------------------------------------------------
 
     def _get_db(self):
         db = percent_to_db(self.percent)
@@ -96,16 +95,16 @@ class VUMeter(Component):
         R = min(R1, R2)
         return R
 
-    #---------------------------------------------------------------------
+    # ---------------------------------------------------------------------
     # Trait change handlers
-    #---------------------------------------------------------------------
+    # ---------------------------------------------------------------------
 
     def _anytrait_changed(self):
         self.request_redraw()
 
-    #---------------------------------------------------------------------
+    # ---------------------------------------------------------------------
     # Component API
-    #---------------------------------------------------------------------
+    # ---------------------------------------------------------------------
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
 
@@ -155,12 +154,12 @@ class VUMeter(Component):
 
                 text = str(db)
                 if db > 0:
-                    text = '+' + text
+                    text = "+" + text
                 self._draw_rotated_label(gc, text, theta, R + 0.4 * M)
 
             # Draw the secondary ticks on the curve axis.
             for db in [-15, -9, -8, -6, -4, -0.5, 0.5]:
-                ##db_percent = 100 * math.pow(10.0, db / 20.0)
+                # db_percent = 100 * math.pow(10.0, db / 20.0)
                 db_percent = db_to_percent(db)
                 theta = self._percent_to_theta(db_percent)
                 x1 = R * math.cos(theta)
@@ -199,8 +198,7 @@ class VUMeter(Component):
                 tx, ty, tw, th = gc.get_text_extent(self.text)
                 gc.set_fill_color((0, 0, 0, 0.25))
                 gc.set_text_matrix(affine.affine_from_rotation(0))
-                gc.set_text_position(-0.5 * tw,
-                                     (0.75 * beta + 0.25) * R)
+                gc.set_text_position(-0.5 * tw, (0.75 * beta + 0.25) * R)
                 gc.show_text(self.text)
 
             # Draw the red curved axis.
@@ -220,27 +218,37 @@ class VUMeter(Component):
             # Draw the filled arc at the bottom.
             gc.set_line_width(2)
             gc.set_stroke_color((0, 0, 0))
-            gc.arc(0, 0, beta * R, math.radians(self.angle),
-                                     math.radians(180 - self.angle))
+            gc.arc(
+                0,
+                0,
+                beta * R,
+                math.radians(self.angle),
+                math.radians(180 - self.angle),
+            )
             gc.stroke_path()
             gc.set_fill_color((0, 0, 0, 0.25))
-            gc.arc(0, 0, beta * R, math.radians(self.angle),
-                                     math.radians(180 - self.angle))
+            gc.arc(
+                0,
+                0,
+                beta * R,
+                math.radians(self.angle),
+                math.radians(180 - self.angle),
+            )
             gc.fill_path()
 
             # Draw the needle.
             percent = self.percent
-            # If percent exceeds max_percent, the needle is drawn at max_percent.
+            # If percent exceeds max_percent, the needle is drawn at
+            # max_percent.
             if percent > self.max_percent:
                 percent = self.max_percent
             needle_theta = self._percent_to_theta(percent)
             gc.rotate_ctm(needle_theta - 0.5 * math.pi)
             self._draw_vertical_needle(gc)
 
-
-    #---------------------------------------------------------------------
+    # ---------------------------------------------------------------------
     # Private methods
-    #---------------------------------------------------------------------
+    # ---------------------------------------------------------------------
 
     def _draw_vertical_needle(self, gc):
         """ Draw the needle of the meter, pointing straight up. """
@@ -264,7 +272,7 @@ class VUMeter(Component):
             # Draw the thin part of the needle from the blob to the tip.
             gc.move_to(lw, blob_y)
             control_y = blob_y + 0.25 * (tip_y - blob_y)
-            gc.quad_curve_to( 0.2 * lw, control_y, 0, tip_y)
+            gc.quad_curve_to(0.2 * lw, control_y, 0, tip_y)
             gc.quad_curve_to(-0.2 * lw, control_y, -lw, blob_y)
             gc.line_to(lw, blob_y)
             gc.fill_path()
@@ -295,8 +303,12 @@ class VUMeter(Component):
         theta is the angle of the needle measured counterclockwise from
         the horizontal (i.e. the traditional angle of polar coordinates).
         """
-        angle = (self.angle + (180.0 - 2 * self.angle) *
-                          (self.max_percent - percent) / self.max_percent)
+        angle = (
+            self.angle
+            + (180.0 - 2 * self.angle)
+            * (self.max_percent - percent)
+            / self.max_percent
+        )
         theta = math.radians(angle)
         return theta
 

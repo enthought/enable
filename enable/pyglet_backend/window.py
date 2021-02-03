@@ -19,8 +19,7 @@ from enable.graphics_context import GraphicsContextEnable
 from enable.abstract_window import AbstractWindow
 
 # local, relative imports
-from .constants import ASCII_CONTROL_KEYS, KEY_MAP, \
-        POINTER_MAP, TEXT_KEYS
+from .constants import ASCII_CONTROL_KEYS, KEY_MAP, POINTER_MAP, TEXT_KEYS
 
 
 class PygletMouseEvent(object):
@@ -28,6 +27,7 @@ class PygletMouseEvent(object):
     this to encapsulate all the possible state when we receive any mouse-
     related event.
     """
+
     def __init__(self, x, y, dx=0, dy=0, buttons=0, modifiers=None,
                  scroll_x=0, scroll_y=0):
         """ **buttons** is a list of buttons """
@@ -56,9 +56,10 @@ class PygletWindow(window.Window):
     that is a reference to the instance of a subclass of AbstractWindow.
     """
 
-    VALID_CTOR_KWARGS = ("width", "height", "caption", "resizable", "style",
-                         "fullscreen", "visible", "vsync", "display", "screen",
-                         "config", "context")
+    VALID_CTOR_KWARGS = (
+        "width", "height", "caption", "resizable", "style", "fullscreen",
+        "visible", "vsync", "display", "screen", "config", "context"
+    )
 
     def __init__(self, enable_window, **kwargs):
         """ PygletWindow needs a reference to the Enable window; other
@@ -79,17 +80,16 @@ class PygletWindow(window.Window):
         self.key_state = key.KeyStateHandler()
         self.push_handlers(self.key_state)
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Public methods
     # These are not inherited from/part of the pyglet.window.Window interface
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def on_draw(self):
         "Called by the mainloop to perform the actual draw"
         if self._dirty:
             self.enable_window._paint()
             self._dirty = False
-
 
     def request_redraw(self, coordinates=None):
         """ Called by **self.enable_window** to request a redraw
@@ -100,9 +100,9 @@ class PygletWindow(window.Window):
         # call to glScissor()
         self._dirty = True
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Key/text handling
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def on_key_press(self, symbol, modifiers):
         # use the bare tuple as the event
@@ -123,7 +123,7 @@ class PygletWindow(window.Window):
         if focus_owner is None:
             return
 
-        if event_type == 'character':
+        if event_type == "character":
             key = event
             if not key:
                 return None
@@ -135,14 +135,15 @@ class PygletWindow(window.Window):
                 key = key_code
 
         return KeyEvent(
-            event_type = event_type,
-            character = key,
-            alt_down = keys[key.LALT] | keys[key.RALT],
-            control_down = keys[key.LCTRL] | keys[key.RCTRL],
-            shift_down = keys[key.LSHIFT] | keys[key.RSHIFT],
-            x = self._mouse_x,
-            y = self._mouse_y,
-            window = self.enable_window)
+            event_type=event_type,
+            character=key,
+            alt_down=keys[key.LALT] | keys[key.RALT],
+            control_down=keys[key.LCTRL] | keys[key.RCTRL],
+            shift_down=keys[key.LSHIFT] | keys[key.RSHIFT],
+            x=self._mouse_x,
+            y=self._mouse_y,
+            window=self.enable_window,
+        )
 
     def on_text_motion(self, motion):
         # TODO: See notes.
@@ -152,19 +153,25 @@ class PygletWindow(window.Window):
         # TODO: See notes.
         pass
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Mouse handling
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def on_mouse_motion(self, x, y, dx, dy):
         event = PygletMouseEvent(x, y, dx, dy)
-        self.enable_window._handle_mouse_event("mouse_move", event, set_focus=False)
+        self.enable_window._handle_mouse_event(
+            "mouse_move", event, set_focus=False
+        )
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         # TODO: Determine the difference between this and on_mouse_motion;
         # confirm that the correct buttons in **buttons** are down.
-        event = PygletMouseEvent(x, y, dx, dy, buttons=buttons, modifiers=modifiers)
-        self.enable_window._handle_mouse_event("mouse_move", event, set_focus=False)
+        event = PygletMouseEvent(
+            x, y, dx, dy, buttons=buttons, modifiers=modifiers
+        )
+        self.enable_window._handle_mouse_event(
+            "mouse_move", event, set_focus=False
+        )
 
     def on_mouse_press(self, x, y, button, modifiers):
         return self._on_mouse_updown(x, y, button, modifiers, "down")
@@ -182,27 +189,37 @@ class PygletWindow(window.Window):
         elif button == mouse.RIGHT:
             name = "right"
         else:
-            raise RuntimeError("Unknown mouse button state in _on_mouse_updown()")
-        self.enable_window._handle_mouse_event(name+"_"+which, event, set_focus=False)
+            raise RuntimeError(
+                "Unknown mouse button state in _on_mouse_updown()"
+            )
+        self.enable_window._handle_mouse_event(
+            name + "_" + which, event, set_focus=False
+        )
         # TODO: Confirm that we should consume mouse press/release events
         return True
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         # TODO: Handle scroll_x
         event = PygletMouseEvent(x, y, scroll_x=scroll_x, scroll_y=scroll_y)
-        self.enable_window._handle_mouse_event("mouse_wheel", event, set_focus=False)
+        self.enable_window._handle_mouse_event(
+            "mouse_wheel", event, set_focus=False
+        )
 
     def on_mouse_enter(self, x, y):
         event = PygletMouseEvent(x, y)
-        self.enable_window._handle_mouse_event("mouse_enter", event, set_focus=False)
+        self.enable_window._handle_mouse_event(
+            "mouse_enter", event, set_focus=False
+        )
 
     def on_mouse_leave(self, x, y):
         event = PygletMouseEvent(x, y)
-        self.enable_window._handle_mouse_event("mouse_leave", event, set_focus=False)
+        self.enable_window._handle_mouse_event(
+            "mouse_leave", event, set_focus=False
+        )
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Window
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def on_resize(self, width, height):
         self._dirty = True
@@ -237,16 +254,17 @@ class PygletWindow(window.Window):
         """ The window was minimized or hidden. """
         pass
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # GL context stuff - see the pyglet.window.Window documentation on these
     # methods
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def on_context_lost(self):
         pass
 
     def on_context_state_lost(self):
         pass
+
 
 class Window(AbstractWindow):
 
@@ -261,7 +279,7 @@ class Window(AbstractWindow):
     _drag_result = Any
 
     def __init__(self, parent=None, id=-1, pos=None, size=None, config=None,
-        fullscreen=False, resizable=True, vsync=True, **traits):
+                 fullscreen=False, resizable=True, vsync=True, **traits):
         """ **parent** is an unneeded argument with the pyglet backend, but
         we need to preserve compatibility with other AbstractWindow
         subclasses.
@@ -287,8 +305,9 @@ class Window(AbstractWindow):
         screen = display.get_default_screen()
         if config is None:
             if self.enable_antialias:
-                template_config = gl.Config(double_buffer=True, sample_buffers=True,
-                    samples=4)
+                template_config = gl.Config(
+                    double_buffer=True, sample_buffers=True, samples=4
+                )
             else:
                 template_config = gl.Config(double_buffer=False)
             try:
@@ -297,10 +316,14 @@ class Window(AbstractWindow):
                 # Rats. No antialiasing.
                 config = screen.get_best_config(gl.Config(double_buffer=True))
         # Create the underlying control.
-        kwds = dict(config=config, fullscreen=fullscreen,
-            resizable=resizable, vsync=vsync)
+        kwds = dict(
+            config=config,
+            fullscreen=fullscreen,
+            resizable=resizable,
+            vsync=vsync,
+        )
         if size is not None and not fullscreen:
-            kwds['width'], kwds['height'] = size
+            kwds["width"], kwds["height"] = size
         self.control = PygletWindow(enable_window=self, **kwds)
         if pos is not None:
             self.control.set_location(*pos)
@@ -319,7 +342,7 @@ class Window(AbstractWindow):
         width, height = self._size
         component = self.component
         if hasattr(component, "fit_window") and component.fit_window:
-            component.outer_position = [0,0]
+            component.outer_position = [0, 0]
             component.outer_bounds = [width, height]
         elif hasattr(component, "resizable"):
             if "h" in component.resizable:
@@ -337,14 +360,14 @@ class Window(AbstractWindow):
         # full-screen "Game Mode", and not designed for mouse capture in a
         # traditional GUI toolkit sense.
 
-        #if not self._mouse_captured:
+        # if not self._mouse_captured:
         #    self.control.set_mouse_exclusive(True)
         #    self._mouse_captured = True
         pass
 
     def _release_mouse(self):
         "Release the mouse capture"
-        #if self._mouse_captured:
+        # if self._mouse_captured:
         #    self._mouse_captured = False
         #    self.control.set_mouse_exclusive(False)
         pass
@@ -368,43 +391,49 @@ class Window(AbstractWindow):
             buttons = event.buttons
             if buttons is None:
                 buttons = 0
-            return MouseEvent( x = x, y = y,
-                               alt_down     = event.alt_pressed,
-                               control_down = event.ctrl_pressed,
-                               shift_down   = event.shift_pressed,
-                               left_down    = bool(mouse.LEFT & buttons),
-                               middle_down  = bool(mouse.MIDDLE & buttons),
-                               right_down   = bool(mouse.RIGHT & buttons),
-                               mouse_wheel  = event.scroll_y,
-                               window = self)
+            return MouseEvent(
+                x=x,
+                y=y,
+                alt_down=event.alt_pressed,
+                control_down=event.ctrl_pressed,
+                shift_down=event.shift_pressed,
+                left_down=bool(mouse.LEFT & buttons),
+                middle_down=bool(mouse.MIDDLE & buttons),
+                right_down=bool(mouse.RIGHT & buttons),
+                mouse_wheel=event.scroll_y,
+                window=self,
+            )
         else:
             # If no event specified, make one up:
             x = self.control._mouse_x
             y = self.control._mouse_y
             self._last_mouse_pos = (x, y)
-            return MouseEvent( x = x, y = y,
-                               alt_down     = event.alt_pressed,
-                               control_down = event.ctrl_pressed,
-                               shift_down   = event.shift_pressed,
-                               left_down    = False,
-                               middle_down  = False,
-                               right_down   = False,
-                               mouse_wheel  = 0,
-                               window = self)
+            return MouseEvent(
+                x=x,
+                y=y,
+                alt_down=event.alt_pressed,
+                control_down=event.ctrl_pressed,
+                shift_down=event.shift_pressed,
+                left_down=False,
+                middle_down=False,
+                right_down=False,
+                mouse_wheel=0,
+                window=self,
+            )
 
-    def _create_gc(self, size, pix_format = "rgba32"):
+    def _create_gc(self, size, pix_format="rgba32"):
         "Create a Kiva graphics context of a specified size."
         # Unlike the vector-based Agg and Quartz GraphicsContexts which place
         # pixel coordinates at the lower-left corner, the Pyglet backend is
         # raster-based and places coordinates at the center of pixels.
-        gc = GraphicsContextEnable((size[0]+1, size[1]+1), window=self)
+        gc = GraphicsContextEnable((size[0] + 1, size[1] + 1), window=self)
         gc.translate_ctm(0.5, 0.5)
         gc.gl_init()
         return gc
 
     def _init_gc(self):
-        #gc = self._gc
-        #gc.gl_init()
+        # gc = self._gc
+        # gc.gl_init()
         pass
 
     def _redraw(self, coordinates=None):
@@ -428,8 +457,10 @@ class Window(AbstractWindow):
             cursor = self.control.get_system_mouse_cursor(POINTER_MAP[pointer])
             self.control.set_mouse_cursor(cursor)
         else:
-            warnings.warn("Unable to set mouse pointer '%s' in"
-                          "Enable's Pyglet backend." % pointer)
+            warnings.warn(
+                "Unable to set mouse pointer '%s' in"
+                "Enable's Pyglet backend." % pointer
+            )
             cursor = self.control.get_system_mouse_cursor(POINTER_MAP["arrow"])
             self.control.set_mouse_cursor(cursor)
 
@@ -437,7 +468,9 @@ class Window(AbstractWindow):
         """ Set up or cancel a timer for a specified component.  To cancel the
         timer, set interval=None.
         """
-        raise NotImplementedError("set_timer_interval() not implemented yet in Pyglet backend.")
+        raise NotImplementedError(
+            "set_timer_interval() not implemented yet in Pyglet backend."
+        )
 
     def _set_focus(self):
         """ Sets the keyboard focus to this window.
@@ -448,9 +481,9 @@ class Window(AbstractWindow):
         """
         self.control.activate()
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Unnecessary methods but provided for compatibility
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     def _paint(self, event=None):
         # Override the base class _paint() method because we need to call
         # _create_gc() each time *before* self.component draws.
@@ -465,7 +498,7 @@ class Window(AbstractWindow):
         gc.clear(self.bgcolor_)
         self.component.draw(gc, view_bounds=(0, 0, size[0], size[1]))
         self._update_region = []
-        #self.control.flip()
+        # self.control.flip()
 
     def _window_paint(self, event):
         "Do a backend-specific screen update"
@@ -487,13 +520,13 @@ class Window(AbstractWindow):
         x -= x0
         y -= y0
         y = self.control.height - y
-        return (x,y)
+        return (x, y)
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Unimplemented or unimplementable methods in Pyglet
     # (These are mostly due to the fact that it is an access layer to GL and
     # not a full GUI toolkit.)
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def set_tooltip(self, tooltip):
         "Set the current tooltip for the window"
@@ -501,8 +534,12 @@ class Window(AbstractWindow):
 
     def create_menu(self, menu_definition, owner):
         "Create a Menu from a string description"
-        raise NotImplementedError("create_menu() is not implemented in Pyglet backend.")
+        raise NotImplementedError(
+            "create_menu() is not implemented in Pyglet backend."
+        )
 
     def popup_menu(self, menu, x, y):
         "Pop-up a Menu at a specified location"
-        raise NotImplementedError("popup_menu() is not implemented in Pyglet backend.")
+        raise NotImplementedError(
+            "popup_menu() is not implemented in Pyglet backend."
+        )

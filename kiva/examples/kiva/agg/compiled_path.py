@@ -1,14 +1,17 @@
 from numpy import array
 
-from kiva.image import GraphicsContext, CompiledPath
-from kiva.constants import STROKE
+from kiva.api import STROKE
+from kiva.image import CompiledPath, GraphicsContext
 
 cross = CompiledPath()
 cross.scale_ctm(10.0, 10.0)
 lines = array(
-    [(0, 1), (0, 2), (1, 2), (1, 3),
-     (2, 3), (2, 2), (3, 2), (3, 1), (2, 1),
-     (2, 0), (1, 0), (1, 1), (0, 1)]
+    [
+        (0, 1), (0, 2), (1, 2), (1, 3),
+        (2, 3), (2, 2), (3, 2), (3, 1),
+        (2, 1), (2, 0), (1, 0), (1, 1),
+        (0, 1),
+    ]
 )
 cross.lines(lines)
 

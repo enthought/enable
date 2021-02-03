@@ -11,10 +11,11 @@ def rect():
     gc.clear()
     gc.rect(100, 100, 300, 300)
     gc.draw_path()
-    with tempfile.NamedTemporaryFile(suffix='.bmp') as fid:
+    with tempfile.NamedTemporaryFile(suffix=".bmp") as fid:
         gc.save(fid.name)
-        image = Image.from_file(fid.name, resist_width='weak',
-                                resist_height='weak')
+        image = Image.from_file(
+            fid.name, resist_width="weak", resist_height="weak"
+        )
     return image
 
 
@@ -31,7 +32,7 @@ class Demo(DemoFrame):
             image.top == container.contents_top,
             image.bottom == container.contents_bottom,
             image.layout_width == ratio * image.layout_height,
-            ]
+        ]
         return container
 
 

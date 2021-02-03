@@ -1,6 +1,5 @@
 """ The base class for moveable shapes. """
 
-
 # Standard library imports.
 import math
 
@@ -8,20 +7,19 @@ import math
 from enable.colors import ColorTrait
 from enable.component import Component
 from enable.enable_traits import Pointer
-from kiva.constants import MODERN
-from kiva.fonttools import Font
+from kiva.api import MODERN, Font
 from traits.api import Float, Property, Str, Tuple
 
 
 class Shape(Component):
     """ The base class for moveable shapes. """
 
-    #### 'Component' interface ################################################
+    # 'Component' interface ################################################
 
     # The background color of this component.
-    bgcolor = 'transparent'
+    bgcolor = "transparent"
 
-    #### 'Shape' interface ####################################################
+    # 'Shape' interface ####################################################
 
     # The coordinates of the center of the shape.
     center = Property(Tuple)
@@ -30,10 +28,10 @@ class Shape(Component):
     fill_color = ColorTrait
 
     # The pointer for the 'normal' event state.
-    normal_pointer = Pointer('arrow')
+    normal_pointer = Pointer("arrow")
 
     # The pointer for the 'moving' event state.
-    moving_pointer = Pointer('hand')
+    moving_pointer = Pointer("hand")
 
     # The text color.
     text_color = ColorTrait
@@ -41,7 +39,7 @@ class Shape(Component):
     # The text displayed in the shape.
     text = Str
 
-    #### 'Private' interface ##################################################
+    # 'Private' interface ##################################################
 
     # The difference between the location of a mouse-click and the component's
     # origin.
@@ -55,13 +53,13 @@ class Shape(Component):
     def normal_key_pressed(self, event):
         """ Event handler. """
 
-        print('normal_key_pressed', event.character)
+        print("normal_key_pressed", event.character)
 
     def normal_left_down(self, event):
         """ Event handler. """
 
         if self.is_in(event.x, event.y):
-            self.event_state = 'moving'
+            self.event_state = "moving"
 
             event.window.mouse_owner = self
             event.window.set_pointer(self.moving_pointer)
@@ -102,7 +100,7 @@ class Shape(Component):
     def moving_left_up(self, event):
         """ Event handler. """
 
-        self.event_state = 'normal'
+        self.event_state = "normal"
 
         event.window.set_pointer(self.normal_pointer)
         event.window.mouse_owner = None
@@ -124,8 +122,8 @@ class Shape(Component):
         dx, dy = self.bounds
         ox, oy = self.position
 
-        cx = ox + dx/2
-        cy = oy + dy/2
+        cx = ox + dx / 2
+        cy = oy + dy / 2
 
         return cx, cy
 
@@ -155,14 +153,14 @@ class Shape(Component):
 
             dx, dy = self.bounds
             x, y = self.position
-            gc.set_text_position(x+(dx-tw)/2, y+(dy-th)/2)
+            gc.set_text_position(x + (dx - tw) / 2, y + (dy - th) / 2)
 
             gc.show_text(self.text)
 
     def _get_fill_color(self, event_state):
         """ Return the fill color based on the event state. """
 
-        if event_state == 'normal':
+        if event_state == "normal":
             fill_color = self.fill_color_
 
         else:
@@ -174,7 +172,7 @@ class Shape(Component):
     def _get_text_color(self, event_state):
         """ Return the text color based on the event state. """
 
-        if event_state == 'normal':
+        if event_state == "normal":
             text_color = self.text_color_
 
         else:

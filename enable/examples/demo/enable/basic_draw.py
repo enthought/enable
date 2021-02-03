@@ -3,7 +3,7 @@ This demonstrates the most basic drawing capabilities using Enable.  A new
 component is created and added to a container.
 """
 from enable.example_support import DemoFrame, demo_main
-from enable.api import Component, Container, Window
+from enable.api import Component, Container
 
 
 class Box(Component):
@@ -20,7 +20,6 @@ class Box(Component):
 
 
 class Demo(DemoFrame):
-
     def _create_component(self):
         box = Box(bounds=[100.0, 100.0], position=[50.0, 50.0])
         container = Container(bounds=[500, 500])

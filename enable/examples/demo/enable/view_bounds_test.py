@@ -1,5 +1,5 @@
-"""
-Demonstrates how clipping of objects occurs with the view_bounds parameter to draw().
+""" Demonstrates how clipping of objects occurs with the view_bounds parameter
+to draw().
 """
 
 from enable.api import Container, Component, Scrolled
@@ -35,7 +35,7 @@ class VerboseContainer(Container):
 
         if view_bounds:
             v = view_bounds
-            new_bounds = (v[0]-self.x, v[1]-self.y, v[2], v[3])
+            new_bounds = (v[0] - self.x, v[1] - self.y, v[2], v[3])
         else:
             new_bounds = None
 
@@ -44,10 +44,15 @@ class VerboseContainer(Container):
             gc.set_stroke_color((0.0, 0.0, 0.0, 1.0))
             for component in self._components:
                 # See if the component is visible:
-                tmp = intersect_bounds(component.position + component.bounds,
-                                       new_bounds)
+                tmp = intersect_bounds(
+                    component.position + component.bounds, new_bounds
+                )
                 if tmp == empty_rectangle:
-                    print("skipping component:", component.__class__.__name__, end=' ')
+                    print(
+                        "skipping component:",
+                        component.__class__.__name__,
+                        end=" ",
+                    )
                     print("\tbounds:", component.position, component.bounds)
                     continue
 
@@ -56,20 +61,21 @@ class VerboseContainer(Container):
 
 
 class Demo(DemoFrame):
-
     def _create_component(self):
-        container = VerboseContainer(auto_size=False, bounds = [800,800])
-        a = Box(bounds=[50.0,50.0], position=[50.0,50.0])
-        b = Box(bounds=[50.0,50.0], position=[200.0,50.0])
-        c = Box(bounds=[50.0,50.0], position=[50.0,200.0])
-        d = Box(bounds=[50.0,50.0], position=[200.0,200.0])
+        container = VerboseContainer(auto_size=False, bounds=[800, 800])
+        a = Box(bounds=[50.0, 50.0], position=[50.0, 50.0])
+        b = Box(bounds=[50.0, 50.0], position=[200.0, 50.0])
+        c = Box(bounds=[50.0, 50.0], position=[50.0, 200.0])
+        d = Box(bounds=[50.0, 50.0], position=[200.0, 200.0])
         container.add(a)
         container.add(b)
         container.add(c)
         container.add(d)
-        scr = Scrolled(container, bounds=[300,300], position=[50,50],
-                       fit_window=False)
+        scr = Scrolled(
+            container, bounds=[300, 300], position=[50, 50], fit_window=False
+        )
         return scr
+
 
 if __name__ == "__main__":
     title = "Use the scroll bars to show and hide components"

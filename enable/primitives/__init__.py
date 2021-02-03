@@ -1,4 +1,3 @@
 """
 Drawing primitives for Enable
 """
-

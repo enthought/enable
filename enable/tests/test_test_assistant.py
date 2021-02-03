@@ -7,7 +7,6 @@ from enable.tests._testing import skip_if_null
 
 
 class TestTestAssistant(unittest.TestCase):
-
     def test_mouse_move(self):
         test_assistant = EnableTestAssistant()
         component = Component(bounds=[100, 200])
@@ -27,7 +26,6 @@ class TestTestAssistant(unittest.TestCase):
         component.normal_left_down = mock.Mock()
         test_assistant.mouse_down(component, x=0, y=0)
         component.normal_left_down.assert_called_once()
-
 
     def test_mouse_dclick(self):
         test_assistant = EnableTestAssistant()
@@ -62,8 +60,10 @@ class TestTestAssistant(unittest.TestCase):
         test_assistant = EnableTestAssistant()
         component = Component(bounds=[100, 200])
 
-        with mock.patch.object(Window, 'get_pointer_position',
-                            return_value=None):
+        patch = mock.patch.object(
+            Window, "get_pointer_position", return_value=None
+        )
+        with patch:
             window = Window(None, component=component)
             event = test_assistant.mouse_move(component, 10, 20, window)
 

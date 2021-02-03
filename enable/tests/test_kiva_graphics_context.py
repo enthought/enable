@@ -1,6 +1,6 @@
+import unittest
 
 import numpy as np
-import unittest
 
 from enable.kiva_graphics_context import GraphicsContext
 
@@ -18,7 +18,3 @@ class TestGCErrors(unittest.TestCase):
 
         # Pass in a 3D array, but with an invalid size in the last dimension.
         self.assertRaises(ValueError, gc.draw_image, arr.reshape(2, 2, 1))
-
-
-if __name__ == "__main__":
-    unittest.main()

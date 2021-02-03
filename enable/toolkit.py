@@ -1,4 +1,4 @@
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Copyright (c) 2007, Riverbank Computing Limited
 # All rights reserved.
 #
@@ -7,7 +7,7 @@
 # under the conditions described in the aforementioned license.  The license
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 #
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # Standard library imports.
 import sys
@@ -26,22 +26,30 @@ def _init_toolkit():
 
     if not ETSConfig.toolkit:
         # Force Traits to decide on its toolkit if it hasn't already
-        from traitsui.toolkit import toolkit as traits_toolkit
+        from traitsui.api import toolkit as traits_toolkit
+
         traits_toolkit()
 
     # Import the selected backend
-    backend = 'enable.%s.%s' % (ETSConfig.toolkit, ETSConfig.kiva_backend)
+    backend = "enable.%s.%s" % (ETSConfig.toolkit, ETSConfig.kiva_backend)
     try:
         __import__(backend)
     except (ImportError, SystemExit):
         t, v, _tb = sys.exc_info()
-        raise ImportError("Unable to import the %s backend for the %s "
-                "toolkit (reason: %s)." % (ETSConfig.kiva_backend, ETSConfig.toolkit,
-                        format_exception_only(t, v)))
+        raise ImportError(
+            "Unable to import the %s backend for the %s "
+            "toolkit (reason: %s)."
+            % (
+                ETSConfig.kiva_backend,
+                ETSConfig.toolkit,
+                format_exception_only(t, v),
+            )
+        )
 
     # Save the imported toolkit module.
     global _toolkit_backend
     _toolkit_backend = backend
+
 
 # Do this once then disappear.
 _init_toolkit()
@@ -54,7 +62,9 @@ def toolkit_object(name):
     try:
         be_obj = getattr(sys.modules[_toolkit_backend], name)
     except AttributeError:
-        raise NotImplementedError("the %s.%s enable backend doesn't implement %s" %
-                                  (ETSConfig.toolkit, ETSConfig.kiva_backend, name))
+        raise NotImplementedError(
+            "the %s.%s enable backend doesn't implement %s"
+            % (ETSConfig.toolkit, ETSConfig.kiva_backend, name)
+        )
 
     return be_obj

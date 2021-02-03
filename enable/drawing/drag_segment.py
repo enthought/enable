@@ -1,17 +1,18 @@
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #
 #  Copyright (c) 2005, Enthought, Inc.
 #  All rights reserved.
 #
 #  Author: Scott Swarts <swarts@enthought.com>
 #
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # Enthought library imports
 from enable.api import Line, Pointer
 from traits.api import Event, Instance
 
 from .drawing_tool import DrawingTool
+
 
 class DragSegment(DrawingTool):
     """A dragged line segment"""
@@ -27,26 +28,26 @@ class DragSegment(DrawingTool):
     complete = Event
 
     # Pointer for the complete state.
-    complete_pointer = Pointer('arrow')
+    complete_pointer = Pointer("arrow")
 
     # Pointer for the drawing state.
-    drawing_pointer = Pointer('cross')
+    drawing_pointer = Pointer("cross")
 
     # Pointer for the normal state.
-    normal_pointer = Pointer('cross')
+    normal_pointer = Pointer("cross")
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # DrawingTool interface
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def reset(self):
         self.line.vertex_color = self.vertex_color
         self.line.points = []
         self.event_state = "normal"
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # "complete" state
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def complete_draw(self, gc):
         """ Draw the completed line. """
@@ -54,9 +55,9 @@ class DragSegment(DrawingTool):
         self.line._draw_mainlayer(gc)
         self.request_redraw()
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # "drawing" state
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def drawing_draw(self, gc):
         self.line.line_dash = (4.0, 2.0)
@@ -71,14 +72,14 @@ class DragSegment(DrawingTool):
 
     def drawing_left_up(self, event):
         """ Handle the left mouse button coming up in the 'drawing' state. """
-        self.event_state = 'complete'
+        self.event_state = "complete"
         event.window.set_pointer(self.complete_pointer)
         self.request_redraw()
         self.complete = True
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # "normal" state
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def normal_left_down(self, event):
         """ Handle the left button down in the 'normal' state. """
@@ -89,7 +90,7 @@ class DragSegment(DrawingTool):
         self.updated = self
 
         # Go into the drawing state
-        self.event_state = 'drawing'
+        self.event_state = "drawing"
         event.window.set_pointer(self.drawing_pointer)
 
         self.request_redraw()

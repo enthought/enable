@@ -32,7 +32,5 @@ def info(request):
     return {
         "version": 1,
         "name": "Kiva Examples",
-        "root": (
-            pkg_resources.resource_filename("kiva.examples", "kiva")
-        ),
+        "root": pkg_resources.resource_filename("kiva.examples", "kiva"),
     }

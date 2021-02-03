@@ -29,17 +29,17 @@ def dash(sz=(1000, 1000)):
     gc.close_path()
     gc.draw_path()
     t2 = perf_counter()
-    with tempfile.NamedTemporaryFile(suffix='.bmp') as fid:
+    with tempfile.NamedTemporaryFile(suffix=".bmp") as fid:
         gc.save(fid.name)
-        image = Image.from_file(fid.name, resist_width='weak',
-                                resist_height='weak')
+        image = Image.from_file(
+            fid.name, resist_width="weak", resist_height="weak"
+        )
     tot_time = t2 - t1
-    print('time:', tot_time)
+    print("time:", tot_time)
     return image
 
 
 class Demo(DemoFrame):
-
     def _create_component(self):
         image = dash()
 
@@ -52,7 +52,7 @@ class Demo(DemoFrame):
             image.top == container.contents_top,
             image.bottom == container.contents_bottom,
             image.layout_width == ratio * image.layout_height,
-            ]
+        ]
         return container
 
 

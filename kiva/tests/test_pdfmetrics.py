@@ -1,7 +1,7 @@
-import os
-import unittest
-import tempfile
 from contextlib import contextmanager
+import os
+import tempfile
+import unittest
 
 from kiva.pdfmetrics import parseAFMFile
 
@@ -44,7 +44,7 @@ class TestparseAFMFile(unittest.TestCase):
             self.assertEqual(topLevel, {})
             self.assertEqual(glyphLevel, [])
 
-        text_mac = text.replace('\n', '\r')
+        text_mac = text.replace("\n", "\r")
         with ensure_deleted() as f:
             f.write(text_mac)
             f.close()

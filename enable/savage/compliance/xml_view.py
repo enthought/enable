@@ -4,33 +4,35 @@
 
 
 from traits.api import HasTraits, List, Property, Str
-from traitsui import api as tui
+from traitsui.api import Item, ModelView, TreeEditor, TreeNode, View
 
 
 known_namespaces = {
-    '{http://www.w3.org/2000/svg}': 'svg',
-    '{http://www.w3.org/2000/02/svg/testsuite/description/}': 'testcase',
-    '{http://www.w3.org/1999/xlink}': 'xlink',
-    '{http://www.w3.org/XML/1998/namespace}': 'xml',
-    '{http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd}': 'sodipodi',
-    '{http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd}': 'sodipodi',
-    '{http://purl.org/dc/elements/1.1/}': 'dc',
-    '{http://web.resource.org/cc/}': 'cc',
-    '{http://www.w3.org/1999/02/22-rdf-syntax-ns#}': 'rdf',
-    '{http://www.inkscape.org/namespaces/inkscape}': 'inkscape',
-    '{http://ns.adobe.com/AdobeIllustrator/10.0/}': 'adobei',
-    '{http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/}': 'adobea',
-    '{http://ns.adobe.com/Graphs/1.0/}': 'graphs',
-    '{http://ns.adobe.com/Extensibility/1.0/}': 'adobex',
+    "{http://www.w3.org/2000/svg}": "svg",
+    "{http://www.w3.org/2000/02/svg/testsuite/description/}": "testcase",
+    "{http://www.w3.org/1999/xlink}": "xlink",
+    "{http://www.w3.org/XML/1998/namespace}": "xml",
+    "{http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd}": "sodipodi",
+    "{http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd}": "sodipodi",
+    "{http://purl.org/dc/elements/1.1/}": "dc",
+    "{http://web.resource.org/cc/}": "cc",
+    "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}": "rdf",
+    "{http://www.inkscape.org/namespaces/inkscape}": "inkscape",
+    "{http://ns.adobe.com/AdobeIllustrator/10.0/}": "adobei",
+    "{http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/}": "adobea",
+    "{http://ns.adobe.com/Graphs/1.0/}": "graphs",
+    "{http://ns.adobe.com/Extensibility/1.0/}": "adobex",
 }
+
 
 def normalize_name(name):
     """ Normalize XML names to abbreviate namespaces.
     """
     for ns in known_namespaces:
         if name.startswith(ns):
-            name = '%s:%s' % (known_namespaces[ns], name[len(ns):])
+            name = "%s:%s" % (known_namespaces[ns], name[len(ns):])
     return name
+
 
 class Attribute(HasTraits):
     """ View model for an XML attribute.
@@ -42,7 +44,8 @@ class Attribute(HasTraits):
     label = Property()
 
     def _get_label(self):
-        return '%s : %s' % (normalize_name(self.name), self.value)
+        return "%s : %s" % (normalize_name(self.name), self.value)
+
 
 class Element(HasTraits):
     """ View model for an XML element.
@@ -80,33 +83,26 @@ def xml_to_tree(root):
     return element
 
 
-xml_tree_editor = tui.TreeEditor(
-    nodes = [
-        tui.TreeNode(
-            node_for = [Element],
-            children = 'kids',
-            label = 'label',
-            menu = False,
+xml_tree_editor = TreeEditor(
+    nodes=[
+        TreeNode(
+            node_for=[Element], children="kids", label="label", menu=False
         ),
-        tui.TreeNode(
-            node_for = [Attribute],
-            children = '',
-            label = 'label',
-            menu = False,
-        )
+        TreeNode(
+            node_for=[Attribute], children="", label="label", menu=False
+        ),
     ],
-    editable = False,
-    show_icons = False,
+    editable=False,
+    show_icons=False,
 )
 
 
-class XMLTree(tui.ModelView):
+class XMLTree(ModelView):
     """ Handler for viewing XML trees.
     """
 
-    traits_view = tui.View(
-        tui.Item('model', editor=xml_tree_editor, show_label=False),
-
+    traits_view = View(
+        Item("model", editor=xml_tree_editor, show_label=False),
         width=1024,
         height=768,
         resizable=True,
@@ -120,13 +116,15 @@ class XMLTree(tui.ModelView):
 def main():
     from xml.etree import cElementTree as ET
     import argparse
+
     parser = argparse.ArgumentParser()
-    parser.add_argument('file')
+    parser.add_argument("file")
 
     args = parser.parse_args()
     xml = ET.parse(args.file).getroot()
     t = XMLTree.fromxml(xml)
     t.configure_traits()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

@@ -20,10 +20,10 @@ class PointLine(DrawingTool):
     proximity_distance = Int(4)
 
     # The cursor shapes to use for various modes
-    normal_cursor = cursor_style_trait('arrow')
-    drawing_cursor = cursor_style_trait('pencil')
-    delete_cursor = cursor_style_trait('bullseye')
-    move_cursor = cursor_style_trait('sizing')
+    normal_cursor = cursor_style_trait("arrow")
+    drawing_cursor = cursor_style_trait("pencil")
+    delete_cursor = cursor_style_trait("bullseye")
+    move_cursor = cursor_style_trait("sizing")
 
     # The index of the vertex being dragged, if any.
     _dragged = Int
@@ -36,7 +36,7 @@ class PointLine(DrawingTool):
 
     def get_point(self, index):
         """ Get the point at the specified index. """
-        return self.line.points[ index ]
+        return self.line.points[index]
 
     def set_point(self, index, point):
         """ Set the point at the specified index to point. """
@@ -46,17 +46,17 @@ class PointLine(DrawingTool):
         """ Remove the point with the specified index. """
         del self.line.points[index]
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # DrawingTool interface
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def reset(self):
         self.line.points = []
         self.event_state = "normal"
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # "complete" state
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def complete_draw(self, gc):
         # Draw the completed line
@@ -65,7 +65,8 @@ class PointLine(DrawingTool):
             self.line._draw_mainlayer(gc)
 
     def complete_left_down(self, event):
-        """ Handle the left mouse button going down in the 'complete' state. """
+        """ Handle the left mouse button going down in the 'complete' state.
+        """
 
         # Ignore the click if it contains modifiers we do not handle.
         if event.shift_down or event.alt_down:
@@ -84,7 +85,7 @@ class PointLine(DrawingTool):
                 else:
                     self._dragged = over
                     event.window.set_pointer(self.move_cursor)
-                    self.event_state = 'drag_point'
+                    self.event_state = "drag_point"
                     self.request_redraw()
 
     def complete_mouse_move(self, event):
@@ -101,9 +102,9 @@ class PointLine(DrawingTool):
             event.window.set_pointer(self.normal_cursor)
         self.request_redraw()
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # "drag" state
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def drag_point_draw(self, gc):
         """ Draw the polygon in the 'drag_point' state. """
@@ -111,7 +112,7 @@ class PointLine(DrawingTool):
 
     def drag_point_left_up(self, event):
         """ Handle the left mouse coming up in the 'drag_point' state. """
-        self.event_state = 'complete'
+        self.event_state = "complete"
         self.updated = self
 
     def drag_point_mouse_move(self, event):
@@ -123,9 +124,9 @@ class PointLine(DrawingTool):
             self.set_point(self._dragged, (event.x, event.y))
             self.request_redraw()
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # "incomplete" state
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def incomplete_draw(self, gc):
         """ Draw the line in the 'incomplete' state. """
@@ -140,7 +141,7 @@ class PointLine(DrawingTool):
         # another one will be placed on the down stroke of the double click.
         self.remove_point(-1)
         event.window.set_pointer(self.move_cursor)
-        self.event_state = 'complete'
+        self.event_state = "complete"
         self.complete = True
         self.request_redraw()
 
@@ -160,9 +161,9 @@ class PointLine(DrawingTool):
             self.set_point(-1, (event.x, event.y))
         self.request_redraw()
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # "normal" state
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def normal_left_down(self, event):
         """ Handle the left button up in the 'normal' state. """
@@ -172,7 +173,7 @@ class PointLine(DrawingTool):
         # will be moved with the mouse from now on.
         self.add_point((event.x, event.y))
         self.add_point((event.x, event.y))
-        self.event_state = 'incomplete'
+        self.event_state = "incomplete"
         self.updated = self
         self.line_dash = (4.0, 2.0)
 
@@ -180,9 +181,9 @@ class PointLine(DrawingTool):
         """ Handle the mouse moving in the 'normal' state. """
         event.window.set_pointer(self.drawing_cursor)
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Private interface
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def _updated_fired(self, event):
         # The self.updated trait is used by point_line and can be used by
@@ -194,13 +195,15 @@ class PointLine(DrawingTool):
         """ Determine if the pointer is near a specified point. """
         event_point = (event.x, event.y)
 
-        return ((abs( point[0] - event_point[0] ) + \
-                 abs( point[1] - event_point[1] )) <= self.proximity_distance)
+        return (
+            abs(point[0] - event_point[0]) + abs(point[1] - event_point[1])
+        ) <= self.proximity_distance
 
     def _is_over_start(self, event):
         """ Test if the event is 'over' the starting vertex. """
-        return (len(self.points) > 0 and
-                self._is_near_point(self.points[0], event))
+        return len(self.points) > 0 and self._is_near_point(
+            self.points[0], event
+        )
 
     def _over_point(self, event, points):
         """ Return the index of a point in points that event is 'over'.

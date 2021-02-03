@@ -1,39 +1,34 @@
 from numpy import cos, sin, arange, pi, array
 
-from kiva.constants import FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE
+from kiva.api import FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE
 from kiva.image import GraphicsContext
 
 
 def draw_circle(gc, radius=2):
     gc.begin_path()
     angle = 0
-    gc.move_to(radius*cos(angle), radius*sin(angle))
-    for angle in arange(pi/4, 2*pi, pi/4):
-        gc.line_to(radius*cos(angle), radius*sin(angle))
+    gc.move_to(radius * cos(angle), radius * sin(angle))
+    for angle in arange(pi / 4, 2 * pi, pi / 4):
+        gc.line_to(radius * cos(angle), radius * sin(angle))
     gc.close_path()
     gc.fill_path()
 
 
-star_points = [(-20, -30),
-               (0, 30),
-               (20, -30),
-               (-30, 10),
-               (30, 10),
-               (-20, -30)]
+star_points = [(-20, -30), (0, 30), (20, -30), (-30, 10), (30, 10), (-20, -30)]
 ring_point = (0, 35)
 ring_radius = 5
 
-fill_color = array((200., 184., 106.)) / 255
-point_color = array((.3, .3, .3))
+fill_color = array((200.0, 184.0, 106.0)) / 255
+point_color = array((0.3, 0.3, 0.3))
 line_color = point_color
 
-for i in range(len(star_points)+1):
+for i in range(len(star_points) + 1):
     gc = GraphicsContext((800, 800))
     gc.scale_ctm(8.0, 8.0)
     gc.translate_ctm(50, 50)
 
     # draw star
-    gc.set_alpha(.5)
+    gc.set_alpha(0.5)
     x, y = star_points[0]
     gc.move_to(x, y)
     for x, y in star_points[1:]:
@@ -43,7 +38,7 @@ for i in range(len(star_points)+1):
     gc.get_fill_color()
     gc.fill_path()
 
-    gc.set_alpha(.4)
+    gc.set_alpha(0.4)
     gc.set_stroke_color(line_color)
     gc.set_fill_color(line_color)
     gc.set_line_width(12)
@@ -100,7 +95,7 @@ pairs = list(zip(modes, offsets))
 center = array((50, 50))
 for mode, offset in pairs:
     with gc:
-        xo, yo = center+offset
+        xo, yo = center + offset
         gc.translate_ctm(xo, yo)
         gc.set_stroke_color(line_color)
         gc.set_fill_color(fill_color)

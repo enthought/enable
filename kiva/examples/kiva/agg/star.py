@@ -25,7 +25,7 @@ with gc:
     for i in range(0, 600, 5):
         with gc:
             gc.translate_ctm(i, i)
-            gc.rotate_ctm(i * pi / 180.)
+            gc.rotate_ctm(i * pi / 180.0)
             add_star(gc)
             gc.draw_path()
 

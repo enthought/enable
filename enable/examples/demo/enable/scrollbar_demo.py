@@ -3,32 +3,39 @@ from enable.example_support import DemoFrame, demo_main
 
 
 class Demo(DemoFrame):
-
     def _create_component(self):
-        label = Label(text="h:\nv:", font="modern 16",
-                      position=[20, 50],
-                      bounds=[100, 100],
-                      bgcolor="red",
-                      color="white",
-                      hjustify="center",
-                      vjustify="center")
+        label = Label(
+            text="h:\nv:",
+            font="modern 16",
+            position=[20, 50],
+            bounds=[100, 100],
+            bgcolor="red",
+            color="white",
+            hjustify="center",
+            vjustify="center",
+        )
 
-        vscroll = NativeScrollBar(orientation="vertical",
-                                  bounds=[15, label.height],
-                                  position=[label.x2, label.y],
-                                  range=(0, 100.0, 10.0, 1.0),
-                                  enabled=True)
+        vscroll = NativeScrollBar(
+            orientation="vertical",
+            bounds=[15, label.height],
+            position=[label.x2, label.y],
+            range=(0, 100.0, 10.0, 1.0),
+            enabled=True,
+        )
         vscroll.on_trait_change(self._update_vscroll, "scroll_position")
 
-        hscroll = NativeScrollBar(orientation="horizontal",
-                                  bounds=[label.width, 15],
-                                  position=[label.x, label.y - 15],
-                                  range=(0, 100.0, 10.0, 1.0),
-                                  enabled=True)
+        hscroll = NativeScrollBar(
+            orientation="horizontal",
+            bounds=[label.width, 15],
+            position=[label.x, label.y - 15],
+            range=(0, 100.0, 10.0, 1.0),
+            enabled=True,
+        )
         hscroll.on_trait_change(self._update_hscroll, "scroll_position")
 
-        container = Container(bounds=[200, 200], border_visible=True,
-                              padding=15)
+        container = Container(
+            bounds=[200, 200], border_visible=True, padding=15
+        )
         container.add(label, hscroll, vscroll)
         container.on_trait_change(self._update_layout, "bounds")
         container.on_trait_change(self._update_layout, "bounds_items")

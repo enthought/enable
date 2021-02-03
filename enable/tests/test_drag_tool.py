@@ -16,40 +16,39 @@ class DummyTool(DragTool):
 
 
 class DragToolTestCase(EnableTestAssistant, unittest.TestCase):
-
     def setUp(self):
         self.tool = DummyTool()
 
     def test_default_cancel_key(self):
         tool = self.tool
-        tool._drag_state = 'dragging'  # force dragging state
-        event = self.send_key(tool, 'Esc')
+        tool._drag_state = "dragging"  # force dragging state
+        event = self.send_key(tool, "Esc")
         self.assertEqual(tool.canceled, 1)
         self.assertTrue(event.handled)
 
     def test_multiple_cancel_keys(self):
         tool = self.tool
 
-        tool._drag_state = 'dragging'  # force dragging state
-        tool.cancel_keys = ['a', 'Left']
-        event = self.send_key(tool, 'Esc')
+        tool._drag_state = "dragging"  # force dragging state
+        tool.cancel_keys = ["a", "Left"]
+        event = self.send_key(tool, "Esc")
         self.assertEqual(tool.canceled, 0)
         self.assertFalse(event.handled)
 
-        tool._drag_state = 'dragging'  # force dragging state
-        event = self.send_key(tool, 'a')
+        tool._drag_state = "dragging"  # force dragging state
+        event = self.send_key(tool, "a")
         self.assertEqual(tool.canceled, 1)
         self.assertTrue(event.handled)
 
-        tool._drag_state = 'dragging'  # force dragging state
-        event = self.send_key(tool, 'Left')
+        tool._drag_state = "dragging"  # force dragging state
+        event = self.send_key(tool, "Left")
         self.assertEqual(tool.canceled, 2)
         self.assertTrue(event.handled)
 
     def test_other_key_pressed(self):
         tool = self.tool
-        tool._drag_state = 'dragging'  # force dragging state
-        event = self.send_key(tool, 'Left')
+        tool._drag_state = "dragging"  # force dragging state
+        event = self.send_key(tool, "Left")
         self.assertEqual(tool.canceled, 0)
         self.assertFalse(event.handled)
 
@@ -59,21 +58,18 @@ class DragToolTestCase(EnableTestAssistant, unittest.TestCase):
         # and the _drag_state will be 'nondrag'
         tool = self.tool
         tool.end_drag_on_leave = True
-        tool._drag_state = 'dragging'  # force dragging state
+        tool._drag_state = "dragging"  # force dragging state
         event = self.mouse_leave(interactor=tool, x=0, y=0)
         self.assertEqual(tool.canceled, 1)
-        self.assertEqual(tool._drag_state, 'nondrag')
+        self.assertEqual(tool._drag_state, "nondrag")
         self.assertTrue(event.handled)
 
         # When end_drag_on_leave is false then the drag_cancel is not called
         # (i.e. counter is not increased) and the _drag_state will still
         # be 'dragging'
         tool.end_drag_on_leave = False
-        tool._drag_state = 'dragging'  # force dragging state
+        tool._drag_state = "dragging"  # force dragging state
         event = self.mouse_leave(interactor=tool, x=0, y=0)
         self.assertEqual(tool.canceled, 1)
-        self.assertEqual(tool._drag_state, 'dragging')
+        self.assertEqual(tool._drag_state, "dragging")
         self.assertFalse(event.handled)
-
-if __name__ == '__main__':
-    unittest.main()

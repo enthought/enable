@@ -1,8 +1,9 @@
 # Enthought library imports
 from enable.api import ColorTrait, Component
 from enable.font_metrics_provider import font_metrics_provider
-from kiva.trait_defs.kiva_font_trait import KivaFont
-from traits.api import Bool, Enum, Instance, Int, Property, Str, Tuple
+from kiva.trait_defs.api import KivaFont
+from traits.api import Bool, Enum, Int, Str, Tuple
+
 
 class Button(Component):
 
@@ -35,15 +36,15 @@ class Button(Component):
     end_radius = Int(10)
 
     # Default size of the button if no label is present
-    bounds=[32,32]
+    bounds = [32, 32]
 
     # Cached value of the measured sizes of self.label
     _text_extents = Tuple
 
     def perform(self, event):
-        """
-        Called when the button is depressed.  'event' is the Enable mouse event
-        that triggered this call.
+        """ Called when the button is depressed.
+
+        'event' is the Enable mouse event that triggered this call.
         """
         pass
 
@@ -69,19 +70,30 @@ class Button(Component):
 
         gc.move_to(self.x + self.end_radius, self.y)
 
-        gc.arc_to(self.x + self.width, self.y,
-                self.x + self.width,
-                self.y + self.end_radius, self.end_radius)
-        gc.arc_to(self.x + self.width,
-                self.y + self.height,
-                self.x + self.width - self.end_radius,
-                self.y + self.height, self.end_radius)
-        gc.arc_to(self.x, self.y + self.height,
-                self.x, self.y,
-                self.end_radius)
-        gc.arc_to(self.x, self.y,
-                self.x + self.width + self.end_radius,
-                self.y, self.end_radius)
+        gc.arc_to(
+            self.x + self.width,
+            self.y,
+            self.x + self.width,
+            self.y + self.end_radius,
+            self.end_radius,
+        )
+        gc.arc_to(
+            self.x + self.width,
+            self.y + self.height,
+            self.x + self.width - self.end_radius,
+            self.y + self.height,
+            self.end_radius,
+        )
+        gc.arc_to(
+            self.x, self.y + self.height, self.x, self.y, self.end_radius
+        )
+        gc.arc_to(
+            self.x,
+            self.y,
+            self.x + self.width + self.end_radius,
+            self.y,
+            self.end_radius,
+        )
 
         gc.draw_path()
         self._draw_label(gc)
@@ -90,22 +102,22 @@ class Button(Component):
         if self.label != "":
             if self._text_extents is None or len(self._text_extents) == 0:
                 self._recompute_font_metrics()
-            x,y,w,h = self._text_extents
+            x, y, w, h = self._text_extents
             gc.set_font(self.label_font)
             text_offset = 0.0
 
             if self.shadow_text:
                 # Draw shadow text
                 gc.set_fill_color(self.label_shadow_)
-                x_pos = self.x + (self.width-w-x)/2 + 0.5
-                y_pos = self.y + (self.height-h-y)/2 - 0.5
+                x_pos = self.x + (self.width - w - x) / 2 + 0.5
+                y_pos = self.y + (self.height - h - y) / 2 - 0.5
                 gc.show_text_at_point(self.label, x_pos, y_pos)
                 text_offset = 0.5
 
             # Draw foreground text to button
             gc.set_fill_color(self.label_color_)
-            x_pos = self.x + (self.width-w-x)/2 - text_offset
-            y_pos = self.y + (self.height-h-y)/2 + text_offset
+            x_pos = self.x + (self.width - w - x) / 2 - text_offset
+            y_pos = self.y + (self.height - h - y) / 2 + text_offset
             gc.show_text_at_point(self.label, x_pos, y_pos)
 
     def normal_left_down(self, event):
@@ -134,7 +146,7 @@ class Button(Component):
 
 class SampleButtonButton(Button):
 
-    label = Str('Sample Button')
+    label = Str("Sample Button")
 
     def perform(self, event):
         print("this button is a sample")

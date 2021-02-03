@@ -3,6 +3,7 @@
 
 # TODO: stolen from Chaco PlotContainers, should change their classes to use
 
+
 def stacked_preferred_size(container, components=None):
     """ Returns the size (width,height) that is preferred for this component.
 
@@ -35,24 +36,28 @@ def stacked_preferred_size(container, components=None):
     if total_size >= container.spacing:
         total_size -= container.spacing
 
-    if (container.stack_dimension not in container.resizable) and \
-       (container.stack_dimension not in container.fit_components):
+    if (container.stack_dimension not in container.resizable
+            and container.stack_dimension not in container.fit_components):
         total_size = container.bounds[ndx]
     elif no_visible_components or (total_size == 0):
         total_size = container.default_size[ndx]
 
-    if (container.other_dimension not in container.resizable) and \
-       (container.other_dimension not in container.fit_components):
+    if (container.other_dimension not in container.resizable
+            and container.other_dimension not in container.fit_components):
         max_other_size = container.bounds[other_ndx]
     elif no_visible_components or (max_other_size == 0):
         max_other_size = container.default_size[other_ndx]
 
     if ndx == 0:
-        container._cached_preferred_size = (total_size + container.hpadding,
-                                       max_other_size + container.vpadding)
+        container._cached_preferred_size = (
+            total_size + container.hpadding,
+            max_other_size + container.vpadding,
+        )
     else:
-        container._cached_preferred_size = (max_other_size + container.hpadding,
-                                       total_size + container.vpadding)
+        container._cached_preferred_size = (
+            max_other_size + container.hpadding,
+            total_size + container.vpadding,
+        )
 
     return container._cached_preferred_size
 
@@ -123,10 +128,11 @@ def stack_layout(container, components, align):
         bounds = new_bounds_dict.get(component, list(component.outer_bounds))
         cur_pos += bounds[ndx] + container.spacing
 
-        if (bounds[other_ndx] > size[other_ndx]) or \
-                (other_dim in component.resizable):
-            # If the component is resizable in the other dimension or it exceeds the
-            # container bounds, set it to the maximum size of the container
+        if (bounds[other_ndx] > size[other_ndx]
+                or other_dim in component.resizable):
+            # If the component is resizable in the other dimension or it
+            # exceeds the container bounds, set it to the maximum size of the
+            # container
 
             position[other_ndx] = 0
             bounds[other_ndx] = size[other_ndx]
@@ -137,7 +143,9 @@ def stack_layout(container, components, align):
             elif align == "max":
                 position[other_ndx] = size[other_ndx] - bounds[other_ndx]
             elif align == "center":
-                position[other_ndx] = (size[other_ndx] - bounds[other_ndx]) / 2.0
+                position[other_ndx] = (
+                    size[other_ndx] - bounds[other_ndx]
+                ) / 2.0
 
         component.outer_position = position
         component.outer_bounds = bounds

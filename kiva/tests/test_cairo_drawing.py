@@ -12,11 +12,7 @@ else:
 
 @unittest.skipIf(CAIRO_NOT_AVAILABLE, "Cannot import cairo")
 class TestCairoDrawing(DrawingImageTester, unittest.TestCase):
-
     def create_graphics_context(self, width, height):
         from kiva.cairo import GraphicsContext
+
         return GraphicsContext((width, height))
-
-
-if __name__ == "__main__":
-    unittest.main()

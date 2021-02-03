@@ -4,7 +4,7 @@ from traits.api import Enum, Float, Int, Str, Tuple
 from enable.api import ColorTrait
 from enable.example_support import DemoFrame, demo_main
 from enable.tools.api import DragTool
-from kiva.trait_defs.kiva_font_trait import KivaFont
+from kiva.trait_defs.api import KivaFont
 
 
 class Region(PlotComponent, DragTool):
@@ -33,8 +33,7 @@ class Region(PlotComponent, DragTool):
         event.handled = True
 
     def dragging(self, event):
-        self.position = [event.x - self._offset[0],
-                         event.y - self._offset[1]]
+        self.position = [event.x - self._offset[0], event.y - self._offset[1]]
         event.handled = True
         self.request_redraw()
 
@@ -59,8 +58,12 @@ class Overlay(AbstractOverlay):
 
             # Draw a small, light rectangle representing this overlay
             gc.set_fill_color((1.0, 1.0, 1.0, self.alpha))
-            gc.rect(tx-self.margin, ty-self.margin,
-                         twidth+2*self.margin, theight+2*self.margin)
+            gc.rect(
+                tx - self.margin,
+                ty - self.margin,
+                twidth + 2 * self.margin,
+                theight + 2 * self.margin,
+            )
             gc.fill_path()
 
             gc.set_text_position(tx, ty)
@@ -68,7 +71,6 @@ class Overlay(AbstractOverlay):
 
 
 class Demo(DemoFrame):
-
     def _create_component(self):
         rect1 = Region("orchid", position=[50, 50])
         rect2 = Region("cornflowerblue", position=[200, 50])
@@ -76,7 +78,7 @@ class Demo(DemoFrame):
         rect2.overlays.append(Overlay("Two", component=rect2))
         container1 = OverlayPlotContainer(bounds=[400, 400], resizable="")
         container1.add(rect1, rect2)
-        container1.bgcolor = (0.60, 0.98, 0.60, 0.5) #"palegreen"
+        container1.bgcolor = (0.60, 0.98, 0.60, 0.5)  # "palegreen"
 
         rect3 = Region("purple", position=[50, 50])
         rect4 = Region("teal", position=[200, 50])

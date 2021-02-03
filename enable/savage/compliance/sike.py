@@ -4,27 +4,40 @@ from collections import defaultdict
 import os
 import pstats
 
-from traits.api import (Any, Bool, Constant, Dict, Event, Float,
-    HasTraits, Instance, Int, List, Property, Str, on_trait_change)
-from traitsui import api as tui
-from traitsui.tabular_adapter import TabularAdapter
+from traits.api import (
+    Any, Bool, Constant, Dict, Event, Float, HasTraits, Instance, Int, List,
+    Property, Str, on_trait_change
+)
+from traitsui.api import (
+    CodeEditor, Group, HGroup, Item, Label, TabularAdapter, TabularEditor,
+    UItem, VGroup, View,
+)
 
 
 class SuperTuple(tuple):
     """ Generic super-tuple using pre-defined attribute names.
     """
+
     __names__ = []
+
     def __new__(cls, *args, **kwds):
         self = tuple.__new__(cls, *args, **kwds)
         for i, attr in enumerate(cls.__names__):
             setattr(self, attr, self[i])
         return self
 
+
 class Subrecord(SuperTuple):
     """ The records referring to the calls a function makes.
     """
-    __names__ = ['file_line_name', 'ncalls', 'nonrec_calls',
-        'inline_time', 'cum_time']
+
+    __names__ = [
+        "file_line_name",
+        "ncalls",
+        "nonrec_calls",
+        "inline_time",
+        "cum_time",
+    ]
 
     @property
     def file(self):
@@ -38,26 +51,36 @@ class Subrecord(SuperTuple):
     def func_name(self):
         return self[0][2]
 
+
 class Record(Subrecord):
     """ The top-level profiling record of a function.
     """
-    __names__ = ['file_line_name', 'ncalls', 'nonrec_calls',
-        'inline_time', 'cum_time', 'callers']
+
+    __names__ = [
+        "file_line_name",
+        "ncalls",
+        "nonrec_calls",
+        "inline_time",
+        "cum_time",
+        "callers",
+    ]
 
 
 profile_columns = [
-    ('# Calls', 'ncalls'),
-    ('# Nonrec', 'nonrec_calls'),
-    ('Self Time', 'inline_time'),
-    ('Cum. Time', 'cum_time'),
-    ('Name', 'func_name'),
-    ('Line', 'line'),
-    ('File', 'file'),
+    ("# Calls", "ncalls"),
+    ("# Nonrec", "nonrec_calls"),
+    ("Self Time", "inline_time"),
+    ("Cum. Time", "cum_time"),
+    ("Name", "func_name"),
+    ("Line", "line"),
+    ("File", "file"),
 ]
+
 
 class ProfileAdapter(TabularAdapter):
     """ Display profiling records in a TabularEditor.
     """
+
     columns = profile_columns
 
     # Whether filenames should only be displayed as basenames or not.
@@ -76,11 +99,11 @@ class ProfileAdapter(TabularAdapter):
     func_name_width = Constant(200)
     line_width = Constant(50)
 
-    ncalls_alignment = Constant('right')
-    nonrec_calls_alignment = Constant('right')
-    inline_time_alignment = Constant('right')
-    cum_time_alignment = Constant('right')
-    line_alignment = Constant('right')
+    ncalls_alignment = Constant("right")
+    nonrec_calls_alignment = Constant("right")
+    inline_time_alignment = Constant("right")
+    cum_time_alignment = Constant("right")
+    line_alignment = Constant("right")
 
     file_text = Property(Str)
     inline_time_text = Property(Str)
@@ -88,32 +111,33 @@ class ProfileAdapter(TabularAdapter):
 
     def _get_file_text(self):
         fn = self.item.file_line_name[0]
-        if self.basenames and fn != '~':
+        if self.basenames and fn != "~":
             fn = os.path.basename(fn)
         return fn
 
     def _get_inline_time_text(self):
         if self.percentages:
-            return '%2.3f' % (self.item.inline_time * 100.0 / self.total_time)
+            return "%2.3f" % (self.item.inline_time * 100.0 / self.total_time)
         else:
             return str(self.item.inline_time)
 
     def _get_cum_time_text(self):
         if self.percentages:
-            return '%2.3f' % (self.item.cum_time * 100.0 / self.total_time)
+            return "%2.3f" % (self.item.cum_time * 100.0 / self.total_time)
         else:
             return str(self.item.cum_time)
 
 
 def get_profile_editor(adapter):
-    return tui.TabularEditor(
+    return TabularEditor(
         adapter=adapter,
         editable=False,
         operations=[],
-        selected='selected_record',
-        column_clicked='column_clicked',
-        dclicked='dclicked',
+        selected="selected_record",
+        column_clicked="column_clicked",
+        dclicked="dclicked",
     )
+
 
 class ProfileResults(HasTraits):
     """ Display profiling results.
@@ -129,7 +153,7 @@ class ProfileResults(HasTraits):
     total_time = Float(1.0)
 
     # The column name to sort on.
-    sort_key = Str('inline_time')
+    sort_key = Str("inline_time")
     sort_ascending = Bool(False)
 
     adapter = Instance(ProfileAdapter)
@@ -138,16 +162,17 @@ class ProfileResults(HasTraits):
 
     def trait_view(self, name=None, view_element=None):
         if name or view_element is not None:
-            return super(ProfileResults, self).trait_view(name=name,
-                view_element=view_element)
+            return super(ProfileResults, self).trait_view(
+                name=name, view_element=view_element
+            )
 
-        view = tui.View(
-            tui.Group(
-                tui.Item('total_time', style='readonly'),
+        view = View(
+            Group(Item("total_time", style="readonly")),
+            Item(
+                "records",
+                editor=get_profile_editor(self.adapter),
+                show_label=False,
             ),
-            tui.Item('records', editor=get_profile_editor(self.adapter),
-                show_label=False),
-
             width=1024,
             height=768,
             resizable=True,
@@ -167,16 +192,18 @@ class ProfileResults(HasTraits):
             records = records[::-1]
         return records
 
-
     def _adapter_default(self):
-        return ProfileAdapter(basenames=self.basenames,
-            percentages=self.percentages, total_time=self.total_time)
+        return ProfileAdapter(
+            basenames=self.basenames,
+            percentages=self.percentages,
+            total_time=self.total_time,
+        )
 
-    @on_trait_change('total_time,percentages,basenames')
+    @on_trait_change("total_time,percentages,basenames")
     def _adapter_traits_changed(self, object, name, old, new):
         setattr(self.adapter, name, new)
 
-    @on_trait_change('sort_key,sort_ascending')
+    @on_trait_change("sort_key,sort_ascending")
     def _resort(self):
         self.records = self.sort_records(self.records)
 
@@ -195,9 +222,10 @@ class ProfileResults(HasTraits):
 
 
 class SillyStatsWrapper(object):
-    """ Wrap any object with a .stats attribute or a .stats dictionary such that
-    it can be passed to a Stats() constructor.
+    """ Wrap any object with a .stats attribute or a .stats dictionary such
+    that it can be passed to a Stats() constructor.
     """
+
     def __init__(self, obj=None):
         if obj is None:
             self.stats = {}
@@ -206,9 +234,9 @@ class SillyStatsWrapper(object):
         elif isinstance(obj, str):
             # Load from a file.
             self.stats = pstats.Stats(obj)
-        elif hasattr(obj, 'stats'):
+        elif hasattr(obj, "stats"):
             self.stats = obj.stats
-        elif hasattr(obj, 'create_stats'):
+        elif hasattr(obj, "create_stats"):
             obj.create_stats()
             self.stats = obj.stats
         else:
@@ -244,8 +272,7 @@ class Sike(HasTraits):
     # Map from the (file, lineno, name) tuple to the record.
     record_map = Dict()
 
-
-    #### GUI traits ############################################################
+    # GUI traits ############################################################
 
     basenames = Bool(True)
     percentages = Bool(True)
@@ -253,32 +280,27 @@ class Sike(HasTraits):
     line = Int(1)
     code = Str()
 
-    traits_view = tui.View(
-        tui.VGroup(
-            tui.HGroup(
-                tui.Item('basenames'),
-                tui.Item('percentages'),
-            ),
-            tui.HGroup(
-                tui.UItem('main_results'),
-                tui.VGroup(
-                    tui.Label('Callees'),
-                    tui.UItem('callee_results'),
-                    tui.Label('Callers'),
-                    tui.UItem('caller_results'),
-                    tui.UItem('filename', style='readonly'),
-                    tui.UItem('code', editor=tui.CodeEditor(line='line')),
+    traits_view = View(
+        VGroup(
+            HGroup(Item("basenames"), Item("percentages")),
+            HGroup(
+                UItem("main_results"),
+                VGroup(
+                    Label("Callees"),
+                    UItem("callee_results"),
+                    Label("Callers"),
+                    UItem("caller_results"),
+                    UItem("filename", style="readonly"),
+                    UItem("code", editor=CodeEditor(line="line")),
                 ),
-                style='custom',
+                style="custom",
             ),
         ),
-
         width=1024,
         height=768,
         resizable=True,
-        title='Profiling results',
+        title="Profiling results",
     )
-
 
     @classmethod
     def fromstats(cls, stats, **traits):
@@ -302,13 +324,25 @@ class Sike(HasTraits):
         """ Create a list of records from a stats dictionary.
         """
         records = []
-        for file_line_name, (ncalls, nonrec_calls, inline_time, cum_time,
-            calls) in stats.items():
+        for (
+            file_line_name,
+            (ncalls, nonrec_calls, inline_time, cum_time, calls),
+        ) in stats.items():
             newcalls = []
             for sub_file_line_name, sub_call in calls.items():
                 newcalls.append(Subrecord((sub_file_line_name,) + sub_call))
-            records.append(Record((file_line_name, ncalls, nonrec_calls,
-                inline_time, cum_time, newcalls)))
+            records.append(
+                Record(
+                    (
+                        file_line_name,
+                        ncalls,
+                        nonrec_calls,
+                        inline_time,
+                        cum_time,
+                        newcalls,
+                    )
+                )
+            )
         return records
 
     def get_callee_map(self, records):
@@ -318,46 +352,50 @@ class Sike(HasTraits):
         for record in records:
             for caller in record.callers:
                 callees[caller.file_line_name].append(
-                    Subrecord((record.file_line_name,)+caller[1:]))
+                    Subrecord((record.file_line_name,) + caller[1:])
+                )
         return callees
 
-    @on_trait_change('percentages,basenames')
+    @on_trait_change("percentages,basenames")
     def _adapter_traits_changed(self, object, name, old, new):
-        for obj in [self.main_results, self.callee_results,
-            self.caller_results]:
+        for obj in [
+            self.main_results,
+            self.callee_results,
+            self.caller_results,
+        ]:
             setattr(obj, name, new)
 
-    @on_trait_change('main_results:selected_record')
+    @on_trait_change("main_results:selected_record")
     def update_sub_results(self, new):
         if new is None:
             return
         self.caller_results.total_time = new.cum_time
         self.caller_results.records = new.callers
         self.callee_results._resort()
-        self.caller_results.selected_record = self.caller_results.activated_record = None
+        self.caller_results.selected_record = (
+            self.caller_results.activated_record
+        ) = None
 
         self.callee_results.total_time = new.cum_time
-        self.callee_results.records = self.callee_map.get(new.file_line_name,
-            [])
+        self.callee_results.records = self.callee_map.get(
+            new.file_line_name, []
+        )
         self.callee_results._resort()
-        self.callee_results.selected_record = self.callee_results.activated_record = None
+        self.callee_results.selected_record = (
+            self.callee_results.activated_record
+        ) = None
 
         filename, line, name = new.file_line_name
         if os.path.exists(filename):
-            with open(filename, 'ru') as f:
+            with open(filename, "ru") as f:
                 code = f.read()
             self.code = code
             self.filename = filename
             self.line = line
         else:
-            self.trait_set(
-                code = '',
-                filename = '',
-                line = 1,
-            )
+            self.trait_set(code="", filename="", line=1)
 
-    @on_trait_change('caller_results:dclicked,'
-        'callee_results:dclicked')
+    @on_trait_change("caller_results:dclicked," "callee_results:dclicked")
     def goto_record(self, new):
         if new is None:
             return
@@ -365,12 +403,13 @@ class Sike(HasTraits):
             record = self.record_map[new.item.file_line_name]
             self.main_results.selected_record = record
 
-    @on_trait_change('stats')
+    @on_trait_change("stats")
     def _refresh_stats(self):
         """ Refresh the records from the stored Stats object.
         """
         self.main_results.records = self.main_results.sort_records(
-            self.records_from_stats(self.stats.stats))
+            self.records_from_stats(self.stats.stats)
+        )
         self.callee_map = self.get_callee_map(self.main_results.records)
         self.record_map = {}
         total_time = 0.0
@@ -382,8 +421,9 @@ class Sike(HasTraits):
 
 def main():
     import argparse
+
     parser = argparse.ArgumentParser()
-    parser.add_argument('file')
+    parser.add_argument("file")
 
     args = parser.parse_args()
     stats = pstats.Stats(args.file)
@@ -392,5 +432,5 @@ def main():
     app.configure_traits()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

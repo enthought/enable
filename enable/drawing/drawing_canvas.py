@@ -1,6 +1,6 @@
 from enable.api import Container, Component, ColorTrait
-from kiva.constants import FILL, FILL_STROKE
-from kiva.trait_defs.kiva_font_trait import KivaFont
+from kiva.api import FILL, FILL_STROKE
+from kiva.trait_defs.api import KivaFont
 from traits.api import Any, Bool, Delegate, Enum, Instance, Int, List, Str
 
 
@@ -26,7 +26,7 @@ class Button(Component):
     radio_group = Any
 
     # Default size of the button if no label is present
-    bounds=[32,32]
+    bounds = [32, 32]
 
     # Generally, buttons are not resizable
     resizable = ""
@@ -50,26 +50,47 @@ class Button(Component):
         with gc:
             gc.set_fill_color(self.color_)
             gc.set_stroke_color(self.border_color_)
-            gc.draw_rect((int(self.x), int(self.y), int(self.width)-1, int(self.height)-1), FILL_STROKE)
+            gc.draw_rect(
+                (
+                    int(self.x),
+                    int(self.y),
+                    int(self.width) - 1,
+                    int(self.height) - 1,
+                ),
+                FILL_STROKE,
+            )
             self._draw_label(gc)
 
     def draw_down(self, gc, view_bounds):
         with gc:
             gc.set_fill_color(self.down_color_)
             gc.set_stroke_color(self.border_color_)
-            gc.draw_rect((int(self.x), int(self.y), int(self.width)-1, int(self.height)-1), FILL_STROKE)
+            gc.draw_rect(
+                (
+                    int(self.x),
+                    int(self.y),
+                    int(self.width) - 1,
+                    int(self.height) - 1,
+                ),
+                FILL_STROKE,
+            )
             self._draw_label(gc, color=self.down_label_color_)
 
     def _draw_label(self, gc, color=None):
         if self.label != "":
             gc.set_font(self.label_font)
-            x,y,w,h = gc.get_text_extent(self.label)
+            x, y, w, h = gc.get_text_extent(self.label)
             if color is None:
                 color = self.label_color_
             gc.set_fill_color(color)
             gc.set_stroke_color(color)
-            gc.show_text(self.label, (self.x+(self.width-w-x)/2,
-                                  self.y+(self.height-h-y)/2))
+            gc.show_text(
+                self.label,
+                (
+                    self.x + (self.width - w - x) / 2,
+                    self.y + (self.height - h - y) / 2,
+                ),
+            )
 
     def normal_left_down(self, event):
         self.button_state = "down"
@@ -100,12 +121,12 @@ class ToolbarButton(Button):
 
 
 class DrawingCanvasToolbar(Container):
-    """
-    The tool bar hosts Buttons and also consumes other mouse events, so that tools
-    on the underlying canvas don't get them.
+    """ The tool bar hosts Buttons and also consumes other mouse events, so
+    that tools on the underlying canvas don't get them.
 
-    FIXME: Right now this toolbar only supports the addition of buttons, and not
-           button removal.  (Why would you ever want to remove a useful button?)
+    FIXME: Right now this toolbar only supports the addition of buttons, and
+           not button removal.  (Why would you ever want to remove a useful
+           button?)
     """
 
     canvas = Instance("DrawingCanvas")
@@ -122,13 +143,19 @@ class DrawingCanvasToolbar(Container):
             button.toolbar = self
             # Compute the new position for the button
             button.x = self.button_spacing + self._last_button_position
-            self._last_button_position += button.width + self.button_spacing * 2
+            self._last_button_position += (
+                button.width + self.button_spacing * 2
+            )
             button.y = int((self.height - button.height) / 2)
 
     def _canvas_changed(self, old, new):
         if old:
-            old.on_trait_change(self._canvas_bounds_changed, "bounds", remove=True)
-            old.on_trait_change(self._canvas_bounds_changed, "bounds_items", remove=True)
+            old.on_trait_change(
+                self._canvas_bounds_changed, "bounds", remove=True
+            )
+            old.on_trait_change(
+                self._canvas_bounds_changed, "bounds_items", remove=True
+            )
 
         if new:
             new.on_trait_change(self._canvas_bounds_changed, "bounds")
@@ -139,7 +166,9 @@ class DrawingCanvasToolbar(Container):
         self.y = self.canvas.height - self.height
 
     def _dispatch_stateful_event(self, event, suffix):
-        super(DrawingCanvasToolbar, self)._dispatch_stateful_event(event, suffix)
+        super(DrawingCanvasToolbar, self)._dispatch_stateful_event(
+            event, suffix
+        )
         event.handled = True
 
 
@@ -155,7 +184,8 @@ class DrawingCanvas(Container):
     active_tool = Any
 
     # Listening tools are always enabled and get all events (unless the active
-    # tool has vetoed it), but they cannot prevent other tools from getting events.
+    # tool has vetoed it), but they cannot prevent other tools from getting
+    # events.
     listening_tools = List
 
     # The background color of the canvas
@@ -198,7 +228,7 @@ class DrawingCanvas(Container):
         if active_tool and active_tool.draw_mode == "exclusive":
             active_tool.draw(gc, view_bounds, mode)
         else:
-            #super(DrawingCanvas, self)._draw(gc, view_bounds, mode)
+            # super(DrawingCanvas, self)._draw(gc, view_bounds, mode)
             for tool in self.listening_tools:
                 tool.draw(gc, view_bounds, mode)
             if active_tool:
@@ -211,11 +241,19 @@ class DrawingCanvas(Container):
             with gc:
                 gc.set_antialias(False)
                 gc.set_fill_color(self.bgcolor_)
-                gc.draw_rect((int(self.x), int(self.y), int(self.width)-1, int(self.height)-1), FILL)
+                gc.draw_rect(
+                    (
+                        int(self.x),
+                        int(self.y),
+                        int(self.width) - 1,
+                        int(self.height) - 1,
+                    ),
+                    FILL,
+                )
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Event listeners
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def _tools_items_changed(self):
         self.request_redraw()

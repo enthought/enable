@@ -9,7 +9,6 @@ import kiwisolver as kiwi
 
 class LinearSymbolic(object, metaclass=ABCMeta):
     """ An abstract base class for testing linear symbolic interfaces.
-
     """
 
 

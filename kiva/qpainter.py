@@ -1,4 +1,4 @@
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Copyright (c) 2010, Enthought, Inc
 # All rights reserved.
 #
@@ -7,7 +7,7 @@
 # under the conditions described in the aforementioned license.  The license
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 # Thanks for using Enthought open source!
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 """ This is the QPainter backend for kiva. """
 
 from functools import partial
@@ -44,18 +44,19 @@ draw_modes[constants.FILL_STROKE] = QtCore.Qt.OddEvenFill
 draw_modes[constants.EOF_FILL_STROKE] = QtCore.Qt.WindingFill
 
 gradient_coord_modes = {}
-gradient_coord_modes['userSpaceOnUse'] = QtGui.QGradient.LogicalMode
-gradient_coord_modes['objectBoundingBox'] = QtGui.QGradient.ObjectBoundingMode
+gradient_coord_modes["userSpaceOnUse"] = QtGui.QGradient.LogicalMode
+gradient_coord_modes["objectBoundingBox"] = QtGui.QGradient.ObjectBoundingMode
 
 gradient_spread_modes = {}
-gradient_spread_modes['pad'] = QtGui.QGradient.PadSpread
-gradient_spread_modes['repeat'] = QtGui.QGradient.RepeatSpread
-gradient_spread_modes['reflect'] = QtGui.QGradient.ReflectSpread
+gradient_spread_modes["pad"] = QtGui.QGradient.PadSpread
+gradient_spread_modes["repeat"] = QtGui.QGradient.RepeatSpread
+gradient_spread_modes["reflect"] = QtGui.QGradient.ReflectSpread
 
 
 class GraphicsContext(object):
     """ Simple wrapper around a Qt QPainter object.
     """
+
     def __init__(self, size, *args, **kwargs):
         super(GraphicsContext, self).__init__()
         self._width = size[0]
@@ -83,8 +84,9 @@ class GraphicsContext(object):
         self.gc.setWorldTransform(trans)
 
         # enable antialiasing
-        self.gc.setRenderHints(QtGui.QPainter.Antialiasing |
-                               QtGui.QPainter.TextAntialiasing, True)
+        self.gc.setRenderHints(
+            QtGui.QPainter.Antialiasing | QtGui.QPainter.TextAntialiasing, True
+        )
         # set the pen and brush to useful defaults
         self.gc.setPen(QtCore.Qt.black)
         self.gc.setBrush(QtGui.QBrush(QtCore.Qt.SolidPattern))
@@ -143,8 +145,9 @@ class GraphicsContext(object):
                                        the current coordinate matrix.
         """
         m11, m12, m21, m22, tx, ty = transform
-        self.gc.setTransform(QtGui.QTransform(m11, m12, m21, m22, tx, ty),
-                             True)
+        self.gc.setTransform(
+            QtGui.QTransform(m11, m12, m21, m22, tx, ty), True
+        )
 
     def get_ctm(self):
         """ Return the current coordinate transform matrix.
@@ -185,8 +188,10 @@ class GraphicsContext(object):
     def set_antialias(self, value):
         """ Set/Unset antialiasing for bitmap graphics context.
         """
-        self.gc.setRenderHints(QtGui.QPainter.Antialiasing |
-                               QtGui.QPainter.TextAntialiasing, value)
+        self.gc.setRenderHints(
+            QtGui.QPainter.Antialiasing | QtGui.QPainter.TextAntialiasing,
+            value,
+        )
 
     def set_line_width(self, width):
         """ Set the line width for drawing
@@ -436,8 +441,9 @@ class GraphicsContext(object):
 
             Region should be a 4-tuple or a sequence.
         """
-        self.gc.setClipRect(QtCore.QRectF(x, y, w, h),
-                            operation=QtCore.Qt.IntersectClip)
+        self.gc.setClipRect(
+            QtCore.QRectF(x, y, w, h), operation=QtCore.Qt.IntersectClip
+        )
 
     def clip_to_rects(self, rects):
         """
@@ -516,10 +522,12 @@ class GraphicsContext(object):
     def _apply_gradient(self, grad, stops, spread_method, units):
         """ Configures a gradient object and sets it as the current brush.
         """
-        grad.setSpread(gradient_spread_modes.get(spread_method,
-                                                 QtGui.QGradient.PadSpread))
-        grad.setCoordinateMode(gradient_coord_modes.get(
-            units, QtGui.QGradient.LogicalMode))
+        grad.setSpread(
+            gradient_spread_modes.get(spread_method, QtGui.QGradient.PadSpread)
+        )
+        grad.setCoordinateMode(
+            gradient_coord_modes.get(units, QtGui.QGradient.LogicalMode)
+        )
 
         for stop in stops:
             grad.setColorAt(stop[0], QtGui.QColor.fromRgbF(*stop[1:]))
@@ -527,14 +535,14 @@ class GraphicsContext(object):
         self.gc.setBrush(QtGui.QBrush(grad))
 
     def linear_gradient(self, x1, y1, x2, y2, stops, spread_method,
-                        units='userSpaceOnUse'):
+                        units="userSpaceOnUse"):
         """ Sets a linear gradient as the current brush.
         """
         grad = QtGui.QLinearGradient(x1, y1, x2, y2)
         self._apply_gradient(grad, stops, spread_method, units)
 
     def radial_gradient(self, cx, cy, r, fx, fy, stops, spread_method,
-                        units='userSpaceOnUse'):
+                        units="userSpaceOnUse"):
         """ Sets a radial gradient as the current brush.
         """
         grad = QtGui.QRadialGradient(cx, cy, r, fx, fy)
@@ -557,7 +565,7 @@ class GraphicsContext(object):
                 12x12. QImage is very particular about its data.
             """
             y, x, d = array.shape
-            pad = lambda v: (4 - (v % 4)) % 4
+            pad = (lambda v: (4 - (v % 4)) % 4)
             nx = max(x + pad(x), 12)
             ny = max(y, 12)
             if x == nx and y == ny:
@@ -566,7 +574,7 @@ class GraphicsContext(object):
             ret[:y, :x] = array[:]
             return ret
 
-        if type(img) == type(np.array([])):
+        if isinstance(img, np.ndarray):
             # Numeric array
             if img.shape[2] == 3:
                 format = QtGui.QImage.Format_RGB888
@@ -574,19 +582,24 @@ class GraphicsContext(object):
                 format = QtGui.QImage.Format_RGB32
             width, height = img.shape[:2]
             copy_array = copy_padded(img)
-            draw_img = QtGui.QImage(img.astype(np.uint8), copy_array.shape[1],
-                                    height, format)
+            draw_img = QtGui.QImage(
+                img.astype(np.uint8), copy_array.shape[1], height, format
+            )
             pixmap = QtGui.QPixmap.fromImage(draw_img)
         elif isinstance(img, agg.GraphicsContextArray):
-            converted_img = img.convert_pixel_format('bgra32', inplace=0)
+            converted_img = img.convert_pixel_format("bgra32", inplace=0)
             copy_array = copy_padded(converted_img.bmp_array)
             width, height = img.width(), img.height()
-            draw_img = QtGui.QImage(copy_array.flatten(),
-                                    copy_array.shape[1], height,
-                                    QtGui.QImage.Format_RGB32)
+            draw_img = QtGui.QImage(
+                copy_array.flatten(),
+                copy_array.shape[1],
+                height,
+                QtGui.QImage.Format_RGB32,
+            )
             pixmap = QtGui.QPixmap.fromImage(draw_img)
-        elif (isinstance(img, GraphicsContext) and
-              isinstance(img.qt_dc, QtGui.QPixmap) and img.gc.isActive()):
+        elif (isinstance(img, GraphicsContext)
+                and isinstance(img.qt_dc, QtGui.QPixmap)
+                and img.gc.isActive()):
             # An offscreen Qt kiva context
             # Calling qpainter.device() appears to introduce a memory leak.
             # using the display context and calling qpainter.isActive() has
@@ -594,9 +607,8 @@ class GraphicsContext(object):
             pixmap = img.qt_dc
             width, height = pixmap.width(), pixmap.height()
         else:
-            msg = ("Cannot render image of type '%r' into Qt4 context." %
-                   type(img))
-            warnings.warn(msg)
+            msg = "Cannot render image of type '%r' into Qt4 context."
+            warnings.warn(msg % type(img))
             return
 
         # create a rect object to draw into
@@ -847,11 +859,17 @@ class CompiledPath(object):
         self.path.moveTo(x, y)
 
     def arc(self, x, y, r, start_angle, end_angle, clockwise=False):
-        sweep_angle = (end_angle-start_angle if not clockwise
-                       else start_angle-end_angle)
+        sweep_angle = (
+            end_angle - start_angle
+            if not clockwise
+            else start_angle - end_angle
+        )
         self.path.moveTo(x, y)
-        self.path.arcTo(QtCore.QRectF(x-r, y-r, r*2, r*2),
-                        np.rad2deg(start_angle), np.rad2deg(sweep_angle))
+        self.path.arcTo(
+            QtCore.QRectF(x - r, y - r, r * 2, r * 2),
+            np.rad2deg(start_angle),
+            np.rad2deg(sweep_angle),
+        )
 
     def arc_to(self, x1, y1, x2, y2, r):
         # get the current pen position

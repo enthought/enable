@@ -6,10 +6,9 @@ from math import pi
 from numpy import asarray
 
 # Enthought library imports
-from kiva.constants import FILL, STROKE
-from kiva.trait_defs.kiva_font_trait import KivaFont
-from traits.api import Bool, Enum, Float, HasTraits, Int, \
-                                 List, Str
+from kiva.api import FILL, STROKE
+from kiva.trait_defs.api import KivaFont
+from traits.api import Bool, Enum, Float, HasTraits, Int, List, Str
 
 # Local, relative imports
 from .colors import black_color_trait, transparent_color_trait
@@ -56,20 +55,18 @@ class Label(Component):
     # By default, labels are not resizable
     resizable = ""
 
-
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Private traits
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     _bounding_box = List()
     _position_cache_valid = Bool(False)
 
-
-    def __init__(self, text = "", **kwtraits):
-        if 'text' not in kwtraits:
-            kwtraits['text'] = text
+    def __init__(self, text="", **kwtraits):
+        if "text" not in kwtraits:
+            kwtraits["text"] = text
         HasTraits.__init__(self, **kwtraits)
-        self._bounding_box = [0,0]
+        self._bounding_box = [0, 0]
 
     def _calc_line_positions(self, gc):
         if not self._position_cache_valid:
@@ -78,23 +75,35 @@ class Label(Component):
                 # The bottommost line starts at postion (0,0).
                 x_pos = []
                 y_pos = []
-                self._bounding_box = [0,0]
+                self._bounding_box = [0, 0]
                 margin = self.margin
                 prev_y_pos = margin
                 prev_y_height = -self.line_spacing
                 max_width = 0
                 for line in self.text.split("\n")[::-1]:
                     if line != "":
-                        (width, height, descent, leading) = gc.get_full_text_extent(line)
+                        (
+                            width,
+                            height,
+                            descent,
+                            leading,
+                        ) = gc.get_full_text_extent(line)
                         if width > max_width:
                             max_width = width
-                        new_y_pos = prev_y_pos + prev_y_height - descent + self.line_spacing
+                        new_y_pos = (
+                            prev_y_pos
+                            + prev_y_height
+                            - descent
+                            + self.line_spacing
+                        )
                     else:
-                        # For blank lines, we use the height of the previous line, if there
-                        # is one.  The width is 0.
+                        # For blank lines, we use the height of the previous
+                        # line, if there is one.  The width is 0.
                         leading = 0
                         if prev_y_height != -self.line_spacing:
-                            new_y_pos = prev_y_pos + prev_y_height + self.line_spacing
+                            new_y_pos = (
+                                prev_y_pos + prev_y_height + self.line_spacing
+                            )
                             height = prev_y_height
                         else:
                             new_y_pos = prev_y_pos
@@ -104,8 +113,10 @@ class Label(Component):
                     prev_y_pos = new_y_pos
                     prev_y_height = height
 
-            width = max_width + 2*margin + 2*self.border_width
-            height = prev_y_pos + prev_y_height + margin + 2*self.border_width
+            width = max_width + 2 * margin + 2 * self.border_width
+            height = (
+                prev_y_pos + prev_y_height + margin + 2 * self.border_width
+            )
             self._bounding_box = [width, height]
 
             if self.hjustify == "left":
@@ -179,21 +190,28 @@ class Label(Component):
             if self.border_width > 0:
                 gc.set_stroke_color(self.border_color_)
                 gc.set_line_width(self.border_width)
-                border_offset = (self.border_width-1)/2.0
-                gc.draw_rect((border_offset, border_offset,
-                              width-2*border_offset, height-2*border_offset), STROKE)
+                border_offset = (self.border_width - 1) / 2.0
+                gc.draw_rect(
+                    (
+                        border_offset,
+                        border_offset,
+                        width - 2 * border_offset,
+                        height - 2 * border_offset,
+                    ),
+                    STROKE,
+                )
 
             gc.set_fill_color(self.color_)
             gc.set_stroke_color(self.color_)
             gc.set_font(self.font)
-            if self.font.size<=8.0:
+            if self.font.size <= 8.0:
                 gc.set_antialias(0)
             else:
                 gc.set_antialias(1)
 
-            gc.rotate_ctm(pi/180.0*self.rotate_angle)
+            gc.rotate_ctm(pi / 180.0 * self.rotate_angle)
 
-            #margin = self.margin
+            # margin = self.margin
             lines = self.text.split("\n")
             gc.translate_ctm(self.border_width, self.border_width)
             width, height = self.get_width_height(gc)
@@ -202,7 +220,7 @@ class Label(Component):
                 if line == "":
                     continue
 
-                if self.rotate_angle==90. or self.rotate_angle==270.:
+                if self.rotate_angle == 90.0 or self.rotate_angle == 270.0:
                     x_offset = round(self._line_ypos[i])
                     # this should really be "... - height/2" but
                     # that looks wrong

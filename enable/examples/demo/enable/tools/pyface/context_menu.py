@@ -9,6 +9,7 @@ from enable.tools.pyface.context_menu_tool import ContextMenuTool
 
 from pyface.action.api import MenuManager, Action
 
+
 class Box(Component):
 
     resizable = ""
@@ -21,18 +22,19 @@ class Box(Component):
             gc.rect(x, y, dx, dy)
             gc.fill_path()
 
+
 class Demo(DemoFrame):
     def hello(self):
         print("Hello World")
 
     def _create_component(self):
         box = Box(bounds=[100.0, 100.0], position=[50.0, 50.0])
-        menu=MenuManager()
+        menu = MenuManager()
         menu.append(Action(name="Hello World", on_perform=self.hello))
         context_menu = ContextMenuTool(component=box, menu_manager=menu)
 
         box.tools.append(context_menu)
-        container = Container(bounds=[500,500])
+        container = Container(bounds=[500, 500])
         container.add(box)
 
         return container

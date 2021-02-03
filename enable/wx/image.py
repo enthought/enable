@@ -1,4 +1,4 @@
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Copyright (c) 2011, Enthought, Inc.
 # All rights reserved.
 #
@@ -7,7 +7,7 @@
 # under the conditions described in the aforementioned license.  The license
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 # Thanks for using Enthought open source!
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 import numpy as np
 import sys
@@ -18,16 +18,17 @@ from kiva.agg import CompiledPath, GraphicsContextSystem as GraphicsContext
 from .base_window import BaseWindow
 from .scrollbar import NativeScrollBar
 
+
 def _wx_bitmap_from_buffer(buf, width, height):
     """ Given a pixel buffer in ARGB order, return a WX bitmap
         object with the pixels in BGRA order.
     """
     arr = np.frombuffer(buf, dtype=np.uint8).reshape((width, height, 4))
     copy = np.zeros_like(arr)
-    copy[...,0::4] = arr[...,2::4]
-    copy[...,1::4] = arr[...,1::4]
-    copy[...,2::4] = arr[...,0::4]
-    copy[...,3::4] = arr[...,3::4]
+    copy[..., 0::4] = arr[..., 2::4]
+    copy[..., 1::4] = arr[..., 1::4]
+    copy[..., 2::4] = arr[..., 0::4]
+    copy[..., 3::4] = arr[..., 3::4]
     return wx.BitmapFromBufferRGBA(width, height, np.ravel(copy))
 
 
@@ -37,9 +38,12 @@ class Window(BaseWindow):
         # We have to set bottom_up=0 or otherwise the PixelMap will
         # appear upside down when blitting. Note that this is not the
         # case on Windows.
-        bottom_up = 0 if sys.platform != 'win32' else 1
-        gc = GraphicsContext((size[0]+1, size[1]+1), pix_format = pix_format,
-                             bottom_up = bottom_up)
+        bottom_up = 0 if sys.platform != "win32" else 1
+        gc = GraphicsContext(
+            (size[0] + 1, size[1] + 1),
+            pix_format=pix_format,
+            bottom_up=bottom_up,
+        )
         gc.translate_ctm(0.5, 0.5)
         return gc
 
@@ -53,19 +57,23 @@ class Window(BaseWindow):
         pixel_map = self._gc.pixel_map
         wdc = control._dc = wx.PaintDC(control)
 
-        if hasattr(pixel_map, 'draw_to_wxwindow'):
+        if hasattr(pixel_map, "draw_to_wxwindow"):
             pixel_map.draw_to_wxwindow(control, 0, 0)
         else:
             # This should just be the Mac OS X code path
-            bmp = _wx_bitmap_from_buffer(pixel_map.convert_to_argb32string(),
-                                         self._gc.width(), self._gc.height())
+            bmp = _wx_bitmap_from_buffer(
+                pixel_map.convert_to_argb32string(),
+                self._gc.width(),
+                self._gc.height(),
+            )
             wdc.DrawBitmap(bmp, 0, 0)
 
         control._dc = None
 
 
 def font_metrics_provider():
-    from kiva.fonttools import Font
+    from kiva.api import Font
+
     gc = GraphicsContext((1, 1))
     gc.set_font(Font())
     return gc

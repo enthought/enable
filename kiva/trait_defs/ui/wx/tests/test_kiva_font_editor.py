@@ -11,7 +11,6 @@ if is_wx():
 
 @skip_if_not_wx
 class TestFacename(unittest.TestCase):
-
     def test_all_facenames(self):
         # Test loading of available face names does not fail.
         # The available face names depend on the system

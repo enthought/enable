@@ -7,15 +7,15 @@
 #
 import unittest
 
-from traits.testing.unittest_tools import UnittestTools
+from traits.testing.api import UnittestTools
 
 from enable.component import Component
 from enable.testing import EnableTestAssistant
 from enable.tools.button_tool import ButtonTool
 
 
-class ButtonToolTestCase(EnableTestAssistant, UnittestTools, unittest.TestCase):
-
+class ButtonToolTestCase(EnableTestAssistant, UnittestTools,
+                         unittest.TestCase):
     def setUp(self):
         self.component = Component(position=[50, 50], bounds=[100, 100])
         self.tool = ButtonTool(component=self.component)
@@ -23,27 +23,27 @@ class ButtonToolTestCase(EnableTestAssistant, UnittestTools, unittest.TestCase):
 
     def test_click_function(self):
         tool = self.tool
-        with self.assertTraitDoesNotChange(tool, 'down'):
-            with self.assertTraitChanges(tool, 'clicked', count=1):
-                with self.assertTraitDoesNotChange(tool, 'checked'):
+        with self.assertTraitDoesNotChange(tool, "down"):
+            with self.assertTraitChanges(tool, "clicked", count=1):
+                with self.assertTraitDoesNotChange(tool, "checked"):
                     tool.click()
 
     def test_click_function_togglable(self):
         tool = self.tool
         tool.togglable = True
 
-        with self.assertTraitDoesNotChange(tool, 'down'):
-            with self.assertTraitChanges(tool, 'clicked', count=1):
-                with self.assertTraitChanges(tool, 'checked', count=1):
+        with self.assertTraitDoesNotChange(tool, "down"):
+            with self.assertTraitChanges(tool, "clicked", count=1):
+                with self.assertTraitChanges(tool, "checked", count=1):
                     tool.click()
 
         self.assertTrue(tool.checked)
 
     def test_toggle_function_untogglable(self):
         tool = self.tool
-        with self.assertTraitDoesNotChange(tool, 'down'):
-            with self.assertTraitDoesNotChange(tool, 'clicked'):
-                with self.assertTraitChanges(tool, 'checked'):
+        with self.assertTraitDoesNotChange(tool, "down"):
+            with self.assertTraitDoesNotChange(tool, "clicked"):
+                with self.assertTraitChanges(tool, "checked"):
                     tool.toggle()
 
         self.assertTrue(tool.checked)
@@ -52,9 +52,9 @@ class ButtonToolTestCase(EnableTestAssistant, UnittestTools, unittest.TestCase):
         tool = self.tool
         tool.togglable = True
 
-        with self.assertTraitDoesNotChange(tool, 'down'):
-            with self.assertTraitDoesNotChange(tool, 'clicked'):
-                with self.assertTraitChanges(tool, 'checked', count=1):
+        with self.assertTraitDoesNotChange(tool, "down"):
+            with self.assertTraitDoesNotChange(tool, "clicked"):
+                with self.assertTraitChanges(tool, "checked", count=1):
                     tool.toggle()
 
         self.assertTrue(tool.checked)
@@ -64,9 +64,9 @@ class ButtonToolTestCase(EnableTestAssistant, UnittestTools, unittest.TestCase):
         tool.togglable = True
         tool.checked = True
 
-        with self.assertTraitDoesNotChange(tool, 'down'):
-            with self.assertTraitDoesNotChange(tool, 'clicked'):
-                with self.assertTraitChanges(tool, 'checked', count=1):
+        with self.assertTraitDoesNotChange(tool, "down"):
+            with self.assertTraitDoesNotChange(tool, "clicked"):
+                with self.assertTraitChanges(tool, "checked", count=1):
                     tool.toggle()
 
         self.assertFalse(tool.checked)
@@ -76,24 +76,25 @@ class ButtonToolTestCase(EnableTestAssistant, UnittestTools, unittest.TestCase):
         component = self.component
         tool = self.tool
 
-        with self.assertTraitChanges(tool, 'down', count=1):
-            with self.assertTraitDoesNotChange(tool, 'clicked'):
-                with self.assertTraitDoesNotChange(tool, 'checked'):
+        with self.assertTraitChanges(tool, "down", count=1):
+            with self.assertTraitDoesNotChange(tool, "clicked"):
+                with self.assertTraitDoesNotChange(tool, "checked"):
                     event = self.mouse_down(component, 100, 100, window=window)
 
         self.assertTrue(event.handled)
-        self.assertTrue(tool.event_state, 'pressed')
+        self.assertTrue(tool.event_state, "pressed")
         self.assertTrue(tool.down)
         self.assertFalse(tool.checked)
 
-        with self.assertTraitChanges(tool, 'down', count=1):
-            with self.assertTraitChanges(tool, 'clicked', count=1):
-                with self.assertTraitDoesNotChange(tool, 'checked'):
-                    event = self.mouse_up(self.component, 100, 100,
-                                          window=window)
+        with self.assertTraitChanges(tool, "down", count=1):
+            with self.assertTraitChanges(tool, "clicked", count=1):
+                with self.assertTraitDoesNotChange(tool, "checked"):
+                    event = self.mouse_up(
+                        self.component, 100, 100, window=window
+                    )
 
         self.assertTrue(event.handled)
-        self.assertTrue(tool.event_state, 'normal')
+        self.assertTrue(tool.event_state, "normal")
         self.assertFalse(tool.down)
         self.assertFalse(tool.checked)
 
@@ -103,24 +104,25 @@ class ButtonToolTestCase(EnableTestAssistant, UnittestTools, unittest.TestCase):
         tool = self.tool
         tool.togglable = True
 
-        with self.assertTraitChanges(tool, 'down', count=1):
-            with self.assertTraitDoesNotChange(tool, 'clicked'):
-                with self.assertTraitDoesNotChange(tool, 'checked'):
+        with self.assertTraitChanges(tool, "down", count=1):
+            with self.assertTraitDoesNotChange(tool, "clicked"):
+                with self.assertTraitDoesNotChange(tool, "checked"):
                     event = self.mouse_down(component, 100, 100, window=window)
 
         self.assertTrue(event.handled)
-        self.assertTrue(tool.event_state, 'pressed')
+        self.assertTrue(tool.event_state, "pressed")
         self.assertTrue(tool.down)
         self.assertFalse(tool.checked)
 
-        with self.assertTraitChanges(tool, 'down', count=1):
-            with self.assertTraitChanges(tool, 'clicked', count=1):
-                with self.assertTraitChanges(tool, 'checked', count=1):
-                    event = self.mouse_up(self.component, 100, 100,
-                                          window=window)
+        with self.assertTraitChanges(tool, "down", count=1):
+            with self.assertTraitChanges(tool, "clicked", count=1):
+                with self.assertTraitChanges(tool, "checked", count=1):
+                    event = self.mouse_up(
+                        self.component, 100, 100, window=window
+                    )
 
         self.assertTrue(event.handled)
-        self.assertTrue(tool.event_state, 'normal')
+        self.assertTrue(tool.event_state, "normal")
         self.assertFalse(tool.down)
         self.assertTrue(tool.checked)
 
@@ -131,24 +133,25 @@ class ButtonToolTestCase(EnableTestAssistant, UnittestTools, unittest.TestCase):
         tool.togglable = True
         tool.checked = True
 
-        with self.assertTraitChanges(tool, 'down', count=1):
-            with self.assertTraitDoesNotChange(tool, 'clicked'):
-                with self.assertTraitDoesNotChange(tool, 'checked'):
+        with self.assertTraitChanges(tool, "down", count=1):
+            with self.assertTraitDoesNotChange(tool, "clicked"):
+                with self.assertTraitDoesNotChange(tool, "checked"):
                     event = self.mouse_down(component, 100, 100, window=window)
 
         self.assertTrue(event.handled)
-        self.assertTrue(tool.event_state, 'pressed')
+        self.assertTrue(tool.event_state, "pressed")
         self.assertTrue(tool.down)
         self.assertTrue(tool.checked)
 
-        with self.assertTraitChanges(tool, 'down', count=1):
-            with self.assertTraitChanges(tool, 'clicked', count=1):
-                with self.assertTraitChanges(tool, 'checked', count=1):
-                    event = self.mouse_up(self.component, 100, 100,
-                                          window=window)
+        with self.assertTraitChanges(tool, "down", count=1):
+            with self.assertTraitChanges(tool, "clicked", count=1):
+                with self.assertTraitChanges(tool, "checked", count=1):
+                    event = self.mouse_up(
+                        self.component, 100, 100, window=window
+                    )
 
         self.assertTrue(event.handled)
-        self.assertTrue(tool.event_state, 'normal')
+        self.assertTrue(tool.event_state, "normal")
         self.assertFalse(tool.down)
         self.assertFalse(tool.checked)
 
@@ -158,24 +161,25 @@ class ButtonToolTestCase(EnableTestAssistant, UnittestTools, unittest.TestCase):
         tool = self.tool
         tool.enabled = False
 
-        with self.assertTraitDoesNotChange(tool, 'down'):
-            with self.assertTraitDoesNotChange(tool, 'clicked'):
-                with self.assertTraitDoesNotChange(tool, 'checked'):
+        with self.assertTraitDoesNotChange(tool, "down"):
+            with self.assertTraitDoesNotChange(tool, "clicked"):
+                with self.assertTraitDoesNotChange(tool, "checked"):
                     event = self.mouse_down(component, 100, 100, window=window)
 
         self.assertFalse(event.handled)
-        self.assertTrue(tool.event_state, 'normal')
+        self.assertTrue(tool.event_state, "normal")
         self.assertFalse(tool.down)
         self.assertFalse(tool.checked)
 
-        with self.assertTraitDoesNotChange(tool, 'down'):
-            with self.assertTraitDoesNotChange(tool, 'clicked'):
-                with self.assertTraitDoesNotChange(tool, 'checked'):
-                    event = self.mouse_up(self.component, 100, 100,
-                                          window=window)
+        with self.assertTraitDoesNotChange(tool, "down"):
+            with self.assertTraitDoesNotChange(tool, "clicked"):
+                with self.assertTraitDoesNotChange(tool, "checked"):
+                    event = self.mouse_up(
+                        self.component, 100, 100, window=window
+                    )
 
         self.assertFalse(event.handled)
-        self.assertTrue(tool.event_state, 'normal')
+        self.assertTrue(tool.event_state, "normal")
         self.assertFalse(tool.down)
         self.assertFalse(tool.checked)
 
@@ -184,61 +188,65 @@ class ButtonToolTestCase(EnableTestAssistant, UnittestTools, unittest.TestCase):
         component = self.component
         tool = self.tool
 
-        with self.assertTraitChanges(tool, 'down', count=1):
-            with self.assertTraitDoesNotChange(tool, 'clicked'):
-                with self.assertTraitDoesNotChange(tool, 'checked'):
+        with self.assertTraitChanges(tool, "down", count=1):
+            with self.assertTraitDoesNotChange(tool, "clicked"):
+                with self.assertTraitDoesNotChange(tool, "checked"):
                     event = self.mouse_down(component, 100, 100, window=window)
 
         self.assertTrue(event.handled)
-        self.assertTrue(tool.event_state, 'pressed')
+        self.assertTrue(tool.event_state, "pressed")
         self.assertTrue(tool.down)
         self.assertFalse(tool.checked)
 
         # move mouse out of component
-        with self.assertTraitChanges(tool, 'down', count=1):
-            with self.assertTraitDoesNotChange(tool, 'clicked'):
-                with self.assertTraitDoesNotChange(tool, 'checked'):
-                    event = self.mouse_move(self.component, 25, 25,
-                                            window=window)
+        with self.assertTraitChanges(tool, "down", count=1):
+            with self.assertTraitDoesNotChange(tool, "clicked"):
+                with self.assertTraitDoesNotChange(tool, "checked"):
+                    event = self.mouse_move(
+                        self.component, 25, 25, window=window
+                    )
 
         self.assertFalse(event.handled)
-        self.assertTrue(tool.event_state, 'pressed')
+        self.assertTrue(tool.event_state, "pressed")
         self.assertFalse(tool.down)
         self.assertFalse(tool.checked)
 
         # move mouse into component
-        with self.assertTraitChanges(tool, 'down', count=1):
-            with self.assertTraitDoesNotChange(tool, 'clicked'):
-                with self.assertTraitDoesNotChange(tool, 'checked'):
-                    event = self.mouse_move(self.component, 100, 100,
-                                            window=window)
+        with self.assertTraitChanges(tool, "down", count=1):
+            with self.assertTraitDoesNotChange(tool, "clicked"):
+                with self.assertTraitDoesNotChange(tool, "checked"):
+                    event = self.mouse_move(
+                        self.component, 100, 100, window=window
+                    )
 
         self.assertFalse(event.handled)
-        self.assertTrue(tool.event_state, 'pressed')
+        self.assertTrue(tool.event_state, "pressed")
         self.assertTrue(tool.down)
         self.assertFalse(tool.checked)
 
         # move mouse out of component
-        with self.assertTraitChanges(tool, 'down', count=1):
-            with self.assertTraitDoesNotChange(tool, 'clicked'):
-                with self.assertTraitDoesNotChange(tool, 'checked'):
-                    event = self.mouse_move(self.component, 200, 200,
-                                            window=window)
+        with self.assertTraitChanges(tool, "down", count=1):
+            with self.assertTraitDoesNotChange(tool, "clicked"):
+                with self.assertTraitDoesNotChange(tool, "checked"):
+                    event = self.mouse_move(
+                        self.component, 200, 200, window=window
+                    )
 
         self.assertFalse(event.handled)
-        self.assertTrue(tool.event_state, 'pressed')
+        self.assertTrue(tool.event_state, "pressed")
         self.assertFalse(tool.down)
         self.assertFalse(tool.checked)
 
         # release button
-        with self.assertTraitDoesNotChange(tool, 'down'):
-            with self.assertTraitDoesNotChange(tool, 'clicked'):
-                with self.assertTraitDoesNotChange(tool, 'checked'):
-                    event = self.mouse_up(self.component, 200, 200,
-                                          window=window)
+        with self.assertTraitDoesNotChange(tool, "down"):
+            with self.assertTraitDoesNotChange(tool, "clicked"):
+                with self.assertTraitDoesNotChange(tool, "checked"):
+                    event = self.mouse_up(
+                        self.component, 200, 200, window=window
+                    )
 
         self.assertFalse(event.handled)
-        self.assertTrue(tool.event_state, 'normal')
+        self.assertTrue(tool.event_state, "normal")
         self.assertFalse(tool.down)
         self.assertFalse(tool.checked)
 
@@ -247,36 +255,38 @@ class ButtonToolTestCase(EnableTestAssistant, UnittestTools, unittest.TestCase):
         component = self.component
         tool = self.tool
 
-        with self.assertTraitChanges(tool, 'down', count=1):
-            with self.assertTraitDoesNotChange(tool, 'clicked'):
-                with self.assertTraitDoesNotChange(tool, 'checked'):
+        with self.assertTraitChanges(tool, "down", count=1):
+            with self.assertTraitDoesNotChange(tool, "clicked"):
+                with self.assertTraitDoesNotChange(tool, "checked"):
                     event = self.mouse_down(component, 100, 100, window=window)
 
         self.assertTrue(event.handled)
-        self.assertTrue(tool.event_state, 'pressed')
+        self.assertTrue(tool.event_state, "pressed")
         self.assertTrue(tool.down)
         self.assertFalse(tool.checked)
 
         # move mouse out of component
-        with self.assertTraitChanges(tool, 'down', count=1):
-            with self.assertTraitDoesNotChange(tool, 'clicked'):
-                with self.assertTraitDoesNotChange(tool, 'checked'):
-                    event = self.mouse_leave(self.component, 25, 25,
-                                             window=window)
+        with self.assertTraitChanges(tool, "down", count=1):
+            with self.assertTraitDoesNotChange(tool, "clicked"):
+                with self.assertTraitDoesNotChange(tool, "checked"):
+                    event = self.mouse_leave(
+                        self.component, 25, 25, window=window
+                    )
 
         self.assertFalse(event.handled)
-        self.assertTrue(tool.event_state, 'pressed')
+        self.assertTrue(tool.event_state, "pressed")
         self.assertFalse(tool.down)
         self.assertFalse(tool.checked)
 
         # move mouse into component
-        with self.assertTraitChanges(tool, 'down', count=1):
-            with self.assertTraitDoesNotChange(tool, 'clicked'):
-                with self.assertTraitDoesNotChange(tool, 'checked'):
-                    event = self.mouse_enter(self.component, 100, 100,
-                                             window=window)
+        with self.assertTraitChanges(tool, "down", count=1):
+            with self.assertTraitDoesNotChange(tool, "clicked"):
+                with self.assertTraitDoesNotChange(tool, "checked"):
+                    event = self.mouse_enter(
+                        self.component, 100, 100, window=window
+                    )
 
         self.assertFalse(event.handled)
-        self.assertTrue(tool.event_state, 'pressed')
+        self.assertTrue(tool.event_state, "pressed")
         self.assertTrue(tool.down)
         self.assertFalse(tool.checked)

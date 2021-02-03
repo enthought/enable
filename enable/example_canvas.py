@@ -1,4 +1,4 @@
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Copyright (c) 2011, Enthought, Inc.
 # All rights reserved.
 #
@@ -7,11 +7,12 @@
 # under the conditions described in the aforementioned license.  The license
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 # Thanks for using Enthought open source!
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 """ A suitable replacement for the old Canvas class in Kiva.
 """
 
 from enable.api import Component, Window
+
 
 class _DummyComponent(Component):
     def __init__(self, draw_func, *args, **kwargs):

@@ -1,26 +1,25 @@
-
 # Standard library imports
 import copy
 import unittest
-
 
 # Enthought library imports
 from traits.api import Any, Tuple
 
 # Enable imports
-from enable.api import BasicEvent, Canvas, Component, Container, \
-        Viewport, AbstractWindow
+from enable.api import (
+    AbstractWindow, BasicEvent, Canvas, Component, Container, Viewport
+)
 
 
 class EnableUnitTest(unittest.TestCase):
-
     def assert_dims(self, obj, **dims):
         """
         checks that each of the named dimensions of the object are a
         certain value.  e.g.   assert_dims(component, x=5.0, y=7.0).
         """
         for dim, val in dims.items():
-            self.assertTrue( getattr(obj, dim) == val )
+            self.assertTrue(getattr(obj, dim) == val)
+
 
 class TestComponent(Component):
     """ A component used for testing event handling.  Most notably, it
@@ -36,6 +35,7 @@ class TestComponent(Component):
         super(TestComponent, self)._dispatch_stateful_event(event, suffix)
         self.last_event = copy.copy(event)
 
+
 class TestContainer(Container):
 
     last_event = Any
@@ -43,6 +43,7 @@ class TestContainer(Container):
     def _dispatch_stateful_event(self, event, suffix):
         super(TestContainer, self)._dispatch_stateful_event(event, suffix)
         self.last_event = copy.copy(event)
+
 
 class TestCanvas(Canvas):
 
@@ -57,39 +58,50 @@ class DummyWindow(AbstractWindow):
     """ A stubbed-out subclass of AbstractWindow that passes on most virtual
     methods instead of raising an exception.
     """
+
     def _capture_mouse(self):
         pass
+
     def _release_mouse(self):
         pass
+
     def _create_mouse_event(self, event):
         return event
+
     def _redraw(self, *args, **kw):
         pass
+
     def _get_control_size(self):
         return self._size
+
     def _create_gc(self, *args, **kw):
         pass
+
     def _window_paint(self, event):
         pass
+
     def set_pointer(self, pointer):
         pass
+
     def _set_timer_interval(self, component, interval):
         pass
+
     def _set_focus(self):
         pass
+
     def screen_to_window(self, x, y):
-        return (x,y)
+        return (x, y)
 
 
 class EventTransformTestCase(EnableUnitTest):
-
     def test_simple_container(self):
         """ Tests event handling of nested containers """
-        comp = TestComponent(position=[50,50])
-        inner_container = TestContainer(bounds=[100.0, 100.0],
-                                        position=[50,50])
+        comp = TestComponent(position=[50, 50])
+        inner_container = TestContainer(
+            bounds=[100.0, 100.0], position=[50, 50]
+        )
         inner_container.add(comp)
-        outer_container = TestContainer(bounds=[200,200])
+        outer_container = TestContainer(bounds=[200, 200])
         outer_container.add(inner_container)
 
         event = BasicEvent(x=105, y=105)
@@ -102,13 +114,14 @@ class EventTransformTestCase(EnableUnitTest):
 
     def test_viewport_container(self):
         """ Tests event handling of viewports (scaling and translation) """
-        comp = TestComponent(position=[20,20])
+        comp = TestComponent(position=[20, 20])
 
-        container = TestContainer(bounds=[100,100], position=[50,50])
+        container = TestContainer(bounds=[100, 100], position=[50, 50])
         container.add(comp)
 
-        viewport = Viewport(component=container, bounds=[400,400],
-                            position=[30,30])
+        viewport = Viewport(
+            component=container, bounds=[400, 400], position=[30, 30]
+        )
 
         # Test unscaled event
         event = BasicEvent(x=105, y=105)
@@ -122,7 +135,7 @@ class EventTransformTestCase(EnableUnitTest):
         # Translate the viewport's view_position
         container.last_event = None
         comp.last_event = None
-        viewport.view_position = [-10,-10]
+        viewport.view_position = [-10, -10]
         event = BasicEvent(x=115, y=115)
         viewport.dispatch(event, "left_down")
 
@@ -151,23 +164,28 @@ class EventTransformTestCase(EnableUnitTest):
         """ Tests saving the event's net_transform as well as the dispatch
         history when capturing a mouse and dispatching subsequent events.
         """
+
         class MouseCapturingComponent(TestComponent):
             captured_event_pos = Tuple
+
             def normal_left_down(self, event):
                 self.captured_event_pos = (event.x, event.y)
                 event.window.set_mouse_owner(self, event.net_transform())
 
-        comp = MouseCapturingComponent(position=[20,20])
+        comp = MouseCapturingComponent(position=[20, 20])
 
-        container = TestContainer(bounds=[100,100], position=[50,50])
+        container = TestContainer(bounds=[100, 100], position=[50, 50])
         container.add(comp)
 
-        viewport = Viewport(component=container, bounds=[400,400],
-                            position=[30,30],
-                            fit_window=False,
-                            resizable="")
+        viewport = Viewport(
+            component=container,
+            bounds=[400, 400],
+            position=[30, 30],
+            fit_window=False,
+            resizable="",
+        )
 
-        window = DummyWindow(_size=(500,500))
+        window = DummyWindow(_size=(500, 500))
         window.component = viewport
 
         # Create the first event (to trigger the mouse capture)
