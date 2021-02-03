@@ -405,12 +405,8 @@ def macos_extensions():
 
 
 if __name__ == "__main__":
-    if sys.platform.startswith("win"):
-        write_version_py(filename='enable\\_version.py')
-        write_version_py(filename='kiva\\_version.py')
-    else:
-        write_version_py(filename='enable/_version.py')
-        write_version_py(filename='kiva/_version.py')
+    write_version_py(filename=os.path.join('enable', '_version.py'))
+    write_version_py(filename=os.path.join('kiva', '_version.py'))
 
     from enable import __version__, __extras_require__, __requires__
 
