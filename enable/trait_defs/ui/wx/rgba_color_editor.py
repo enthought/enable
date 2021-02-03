@@ -21,9 +21,8 @@ from enable.window import Window
 from traits.api import Bool
 from traits.trait_base import SequenceTypes
 
-from traitsui.api import View
+from traitsui.api import EditorFactory, View
 from traitsui.wx.editor import Editor
-from traitsui.editor_factory import EditorFactory
 from traitsui.wx.editor_factory import ReadonlyEditor
 from traitsui.wx.helper import position_window
 

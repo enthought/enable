@@ -23,8 +23,7 @@ from enable.savage.trait_defs.ui.toolkit import toolkit_object
 
 from traits.api import Bool, Enum, Int, Property, Range, Str, Any
 
-from traitsui.api import View
-from traitsui.basic_editor_factory import BasicEditorFactory
+from traitsui.api import BasicEditorFactory, View
 from traitsui.ui_traits import AView
 
 # -----------------------------------------------------------------------------

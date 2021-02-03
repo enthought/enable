@@ -25,8 +25,7 @@
 from enable.savage.trait_defs.ui.toolkit import toolkit_object
 
 from traits.api import Property
-
-from traitsui.basic_editor_factory import BasicEditorFactory
+from traitsui.api import BasicEditorFactory
 
 # -----------------------------------------------------------------------------
 #  'SVGEditor' editor factory class:

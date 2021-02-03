@@ -2,7 +2,7 @@ from contextlib import contextmanager
 import unittest
 
 from enable.tests._testing import skip_if_not_qt
-from pyface.gui import GUI
+from pyface.api import GUI
 
 from enable.container import Container
 from enable.window import Window

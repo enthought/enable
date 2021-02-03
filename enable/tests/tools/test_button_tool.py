@@ -7,7 +7,7 @@
 #
 import unittest
 
-from traits.testing.unittest_tools import UnittestTools
+from traits.testing.api import UnittestTools
 
 from enable.component import Component
 from enable.testing import EnableTestAssistant

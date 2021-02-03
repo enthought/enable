@@ -3,10 +3,8 @@
 import unittest
 
 from enable.component_editor import ComponentEditor
-from traits.has_traits import HasTraits
-from traits.trait_types import Any
-from traitsui.item import Item
-from traitsui.view import View
+from traits.api import Any, HasTraits
+from traitsui.api import Item, View
 
 from enable.tests._testing import get_dialog_size, skip_if_null
 

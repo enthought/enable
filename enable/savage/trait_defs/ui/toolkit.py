@@ -24,7 +24,7 @@ def _init_toolkit():
     """
 
     # Force Traits to decide on its toolkit if it hasn't already
-    from traitsui.toolkit import toolkit as traits_toolkit
+    from traitsui.api import toolkit as traits_toolkit
 
     traits_toolkit()
 
