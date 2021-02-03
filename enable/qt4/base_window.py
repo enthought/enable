@@ -92,15 +92,27 @@ class _QtWindowHandler(object):
     # ------------------------------------------------------------------------
 
     def keyPressEvent(self, event):
+        handled = False
         if self._enable_window:
-            if not self._enable_window._on_key_pressed(event):
-                # for consistency with wx, we only generate character events
-                # if key_pressed not handled
-                self._enable_window._on_character(event)
+            handled = self._enable_window._handle_key_event(
+                "key_pressed", event)
+            if not handled:
+                # for consistency with wx, we only generate character events if
+                # key_pressed not handled
+                handled = self._enable_window._handle_key_event(
+                    "character", event)
+        if not handled:
+            # Allow the parent Qt widget handle the event.
+            event.ignore()
 
     def keyReleaseEvent(self, event):
+        handled = False
         if self._enable_window:
-            self._enable_window._on_key_released(event)
+            handled = self._enable_window._handle_key_event(
+                "key_released", event)
+        if not handled:
+            # Allow the parent Qt widget handle the event.
+            event.ignore()
 
     # ------------------------------------------------------------------------
     # Qt Mouse event handlers
@@ -134,8 +146,13 @@ class _QtWindowHandler(object):
             self._enable_window._handle_mouse_event(name + "_up", event)
 
     def wheelEvent(self, event):
+        handled = False
         if self._enable_window:
-            self._enable_window._handle_mouse_event("mouse_wheel", event)
+            handled = self._enable_window._handle_mouse_event(
+                "mouse_wheel", event)
+        if not handled:
+            # Allow the parent Qt widget handle the event.
+            event.ignore()
 
     def sizeHint(self, qt_size_hint):
         """ Combine the Qt and enable size hints.
