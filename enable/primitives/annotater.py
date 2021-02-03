@@ -3,7 +3,7 @@ Define an Annotater component that allows a user to annotate an underlying
 component
 """
 
-from traits.api import Event, Trait, TraitPrefixList
+from traits.api import Event, PrefixList
 from traitsui.api import Group, View
 
 from enable.api import Component
@@ -13,7 +13,8 @@ from enable.colors import ColorTrait
 class Annotater(Component):
 
     color = ColorTrait((0.0, 0.0, 0.0, 0.2))
-    style = Trait("rectangular", TraitPrefixList(["rectangular", "freehand"]))
+    style = PrefixList(["rectangular", "freehand"],
+                       default_value="rectangular")
     annotation = Event
 
     traits_view = View(

@@ -20,7 +20,7 @@ import os.path
 
 # Enthought library imports
 from enable.colors import ColorTrait
-from traits.api import Bool, Delegate, HasTraits, Str, Trait, TraitPrefixList
+from traits.api import Bool, Delegate, HasTraits, PrefixList, Str, Trait
 from traitsui.api import View, Group
 
 # Local relative imports
@@ -45,7 +45,7 @@ LEFT_OR_RIGHT = LEFT | RIGHT
 TOP_OR_BOTTOM = TOP | BOTTOM
 
 
-orientation_trait = Trait("text", TraitPrefixList(["text", "component"]))
+orientation_trait = PrefixList(["text", "component"], default_value="text")
 
 
 class LabelTraits(HasTraits):

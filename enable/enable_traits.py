@@ -3,13 +3,11 @@ Define the base Enable object traits
 """
 
 # Major library imports
-from numpy import arange, array
+from numpy import array, ndarray
 
 # Enthought library imports
 from kiva.trait_defs.api import KivaFont
-from traits.api import (
-    List, Range, Trait, TraitFactory, TraitPrefixList, TraitPrefixMap
-)
+from traits.api import List, PrefixList, PrefixMap, Range, Trait, TraitFactory
 from traitsui.api import ImageEnumEditor, EnumEditor
 
 # Try to get the CList trait; for traits 2 backwards compatibility, fall back
@@ -28,7 +26,7 @@ from .base import default_font_name
 # -----------------------------------------------------------------------------
 
 # numpy 'array' type:
-ArrayType = type(arange(1.0))
+ArrayType = ndarray
 
 # Basic sequence types:
 basic_sequence_types = (list, tuple)
@@ -134,10 +132,10 @@ ComponentMinSize = Range(0.0, 99999.0)
 ComponentMaxSize = ComponentMinSize(99999.0)
 
 # Pointer shape trait:
-Pointer = Trait("arrow", TraitPrefixList(pointer_shapes))
+Pointer = PrefixList(pointer_shapes, default_value="arrow")
 
 # Cursor style trait:
-cursor_style_trait = Trait("default", TraitPrefixMap(cursor_styles))
+cursor_style_trait = PrefixMap(cursor_styles, default_value="default")
 
 spacing_trait = Range(0, 63, value=4)
 padding_trait = Range(0, 63, value=4)
