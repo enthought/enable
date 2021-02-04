@@ -472,10 +472,16 @@ if __name__ == "__main__":
               'build_ext': build_ext,
           },
           entry_points={
-              "etsdemo_data": [
-                  "enable_examples = enable.examples._etsdemo_info:info",
-                  "kiva_examples = kiva.examples._etsdemo_info:info",
-              ]
+            'enable.toolkits': [
+                'null = enable.null.toolkit:toolkit',
+                'qt = enable.qt4.toolkit:toolkit',
+                'qt4 = enable.qt4.toolkit:toolkit',
+                'wx = enable.wx.toolkit:toolkit',
+            ],
+            'etsdemo_data': [
+                'enable_examples = enable.examples._etsdemo_info:info',
+                'kiva_examples = kiva.examples._etsdemo_info:info',
+            ]
           },
           ext_modules=ext_modules,
           packages=find_packages(exclude=['ci', 'docs']),
