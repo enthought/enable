@@ -1572,9 +1572,9 @@ cdef class CGBitmapContext(CGContext):
         """
 
         try:
-            from kiva.compat import pilfromstring
+            from PIL import Image as PilImage
         except ImportError:
-            raise ImportError("need PIL (or Pillow) to save images")
+            raise ImportError("need Pillow to save images")
 
         if self.bits_per_pixel == 32:
             if self.alpha_info == kCGImageAlphaPremultipliedLast:
@@ -1591,7 +1591,7 @@ cdef class CGBitmapContext(CGContext):
         if file_format is None:
             file_format = ''
 
-        img = pilfromstring(mode, (self.width(), self.height()), self)
+        img = PilImage.frombytes(mode, (self.width(), self.height()), self)
         if 'A' in mode:
             # Check the output format to see if it can handle an alpha channel.
             no_alpha_formats = ('jpg', 'bmp', 'eps', 'jpeg')
@@ -1749,7 +1749,6 @@ cdef class CGImageFile(CGImage):
         cdef CGImageAlphaInfo alpha_info
 
         from PIL import Image
-        from kiva.compat import piltostring
         import types
 
         if type(image_or_filename) is str:
@@ -1791,10 +1790,10 @@ cdef class CGImageFile(CGImage):
         self.bmp_array = c_numpy.PyArray_SimpleNew(3, &(dims[0]), c_numpy.NPY_UBYTE)
 
         data = self.bmp_array.data
-        s = piltostring(img)
-        py_data = PyBytes_AsString(s)
+        bs = img.tobytes()
+        py_data = PyBytes_AsString(bs)
 
-        memcpy(<void*>data, <void*>py_data, len(s))
+        memcpy(<void*>data, <void*>py_data, len(bs))
 
         self.data = data
 

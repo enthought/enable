@@ -104,7 +104,7 @@ def main2():
     from PIL import Image
 
     pil_img = Image.open("doubleprom_soho_full.jpg")
-    img = np.fromstring(pil_img.tostring(), dtype=np.uint8)
+    img = np.array(pil_img)
     img = img.resize((pil_img.size[1], pil_img.size[0], 3))
 
     alpha = np.ones(pil_img.size, dtype=np.uint8) * 255
@@ -122,7 +122,7 @@ def main3():
     from PIL import Image
 
     pil_img = Image.open("doubleprom_soho_full.jpg")
-    img = np.fromstring(pil_img.tostring(), dtype=np.uint8)
+    img = np.array(pil_img)
     img = img.resize((pil_img.size[1], pil_img.size[0], 3))
 
     alpha = np.ones(pil_img.size, dtype=np.uint8) * 255
@@ -151,7 +151,7 @@ def main4():
     from PIL import Image
 
     pil_img = Image.open("doubleprom_soho_full.jpg")
-    img = np.fromstring(pil_img.tostring(), dtype=np.uint8)
+    img = np.array(pil_img)
     img = img.resize((pil_img.size[1], pil_img.size[0], 3))
     print("typecode:", img.dtype, np.iscontiguous(img))
     print(img.shape)

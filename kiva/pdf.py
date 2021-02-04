@@ -578,8 +578,8 @@ class GraphicsContext(GraphicsContextBase):
         # do it nicely (using convert_pixel_format), and if not, we do
         # it brute-force using Agg.
         from reportlab.lib.utils import ImageReader
+        from PIL import Image
         from kiva import agg
-        from kiva.compat import pilfromstring, piltostring
 
         if isinstance(img, ndarray):
             # Numeric array
@@ -600,10 +600,10 @@ class GraphicsContext(GraphicsContextBase):
             return
 
         # converted_img now holds an Agg graphics context with the image
-        pil_img = pilfromstring(
+        pil_img = Image.frombytes(
             format,
             (converted_img.width(), converted_img.height()),
-            piltostring(converted_img.bmp_array),
+            converted_img.bmp_array.tobytes(),
         )
 
         if rect is None:

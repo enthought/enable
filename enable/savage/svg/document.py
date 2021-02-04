@@ -203,17 +203,16 @@ class ResourceGetter(object):
         renderer.
 
         """
-        path, open = self.resolve(path)
-        fin = open(path)
-
-        from PIL import Image
-        from kiva.compat import piltostring
         import numpy
+        from PIL import Image
 
-        pil_img = Image.open(fin)
+        path, open = self.resolve(path)
+        with open(path) as fin:
+            pil_img = Image.open(fin)
+
         if pil_img.mode not in ("RGB", "RGBA"):
             pil_img = pil_img.convert("RGBA")
-        img = numpy.frombuffer(piltostring(pil_img), numpy.uint8)
+        img = numpy.frombuffer(pil_img.tobytes(), numpy.uint8)
         shape = (pil_img.size[1], pil_img.size[0], len(pil_img.mode))
         img.shape = shape
         return img

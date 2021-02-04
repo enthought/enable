@@ -8,7 +8,6 @@ from numpy import (
 from PIL import Image as PILImage
 
 
-from kiva.compat import piltostring
 from kiva.image import GraphicsContext
 
 # alpha blending is approximate in agg, so we allow some "slop" between
@@ -129,7 +128,7 @@ class TestAlphaBlackImage(unittest.TestCase):
 
     def sun(self, interpolation_scheme="simple"):
         pil_img = PILImage.open("doubleprom_soho_full.jpg")
-        img = frombuffer(piltostring(pil_img), UInt8)
+        img = frombuffer(pil_img.tobytes(), UInt8)
         img.resize((pil_img.size[1], pil_img.size[0], 3))
         alpha = ones(pil_img.size, UInt8) * 255
         img = concatenate((img[:, :, ::-1], alpha[:, :, newaxis]), -1).copy()
