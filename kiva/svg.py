@@ -33,7 +33,7 @@ Miscellaneous notes:
   </a>
 """
 from base64 import b64encode
-from io import StringIO
+from io import BytesIO, StringIO
 import os
 import warnings
 
@@ -243,7 +243,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
         Requires the Python Imaging Library (PIL).
         """
-        from kiva.compat import pilfromstring, piltostring, Image as PilImage
+        from PIL import Image as PilImage
 
         # We turn img into a PIL object, since that is what ReportLab
         # requires.  To do this, we first determine if the input image
@@ -252,31 +252,28 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         # it brute-force using Agg.
 
         if isinstance(img, ndarray):
-            # Numeric array
-            converted_img = agg.GraphicsContextArray(img, pix_format="rgba32")
-            format = "RGBA"
+            # From numpy array
+            pilformat = "RGBA"
+            pil_img = PilImage.fromarray(img, pilformat)
         elif isinstance(img, agg.GraphicsContextArray):
+            converted_img = img
             if img.format().startswith("RGBA"):
-                format = "RGBA"
+                pilformat = "RGBA"
             elif img.format().startswith("RGB"):
-                format = "RGB"
+                pilformat = "RGB"
             else:
                 converted_img = img.convert_pixel_format("rgba32", inplace=0)
-                format = "RGBA"
+                pilformat = "RGBA"
             # Should probably take this into account
             # interp = img.get_image_interpolation()
+            # Conversion from GraphicsContextArray
+            pil_img = PilImage.fromarray(converted_img.bmp_array, pilformat)
         else:
             warnings.warn(
                 "Cannot render image of type %r into SVG context." % type(img)
             )
             return
 
-        # converted_img now holds an Agg graphics context with the image
-        pil_img = pilfromstring(
-            format,
-            (converted_img.width(), converted_img.height()),
-            piltostring(converted_img.bmp_array),
-        )
         if rect is None:
             rect = (0, 0, img.width(), img.height())
 
@@ -287,9 +284,9 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
                 (int(width), int(height)), PilImage.NEAREST
             )
 
-        png_buffer = StringIO()
+        png_buffer = BytesIO()
         pil_img.save(png_buffer, "png")
-        b64_img_data = b64encode(png_buffer.getvalue())
+        b64_img_data = b64encode(png_buffer.getvalue()).decode('utf8')
         png_buffer.close()
 
         # Draw the actual image.

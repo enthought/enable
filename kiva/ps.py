@@ -192,39 +192,36 @@ class PSGC(basecore2d.GraphicsContextBase):
 
         Requires the Python Imaging Library (PIL).
         """
-        from kiva.compat import pilfromstring, piltostring, Image as PilImage
+        from PIL import Image as PilImage
 
         if isinstance(img, ndarray):
-            # Numeric array
-            converted_img = agg.GraphicsContextArray(img, pix_format="rgba32")
-            format = "RGBA"
+            # From numpy array
+            pilformat = "RGBA"
+            pil_img = PilImage.fromarray(img, pilformat)
         elif isinstance(img, agg.GraphicsContextArray):
+            converted_img = img
             if img.format().startswith("RGBA"):
-                format = "RGBA"
+                pilformat = "RGBA"
             elif img.format().startswith("RGB"):
-                format = "RGB"
+                pilformat = "RGB"
             else:
                 converted_img = img.convert_pixel_format("rgba32", inplace=0)
-                format = "RGBA"
+                pilformat = "RGBA"
             # Should probably take this into account
             # interp = img.get_image_interpolation()
+            # Conversion from GraphicsContextArray
+            pil_img = PilImage.fromarray(converted_img.bmp_array, pilformat)
         else:
             warnings.warn(
                 "Cannot render image of type %r into EPS context." % type(img)
             )
             return
 
-        # converted_img now holds an Agg graphics context with the image
-        pil_img = pilfromstring(
-            format,
-            (converted_img.width(), converted_img.height()),
-            piltostring(converted_img.bmp_array),
-        )
         if rect is None:
             rect = (0, 0, img.width(), img.height())
 
         # PIL PS output doesn't support alpha.
-        if format != "RGB":
+        if pilformat != "RGB":
             pil_img = pil_img.convert("RGB")
 
         left, top, width, height = rect

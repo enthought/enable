@@ -803,9 +803,9 @@ class GraphicsContext(object):
         """ Save the contents of the context to a file
         """
         try:
-            from kiva.compat import pilfromstring
+            from PIL import Image
         except ImportError:
-            raise ImportError("need PIL (or Pillow) to save images")
+            raise ImportError("need Pillow to save images")
 
         if file_format is None:
             file_format = ''
@@ -817,8 +817,7 @@ class GraphicsContext(object):
         data[..., 1] = pixels[..., 1]
         data[..., 2] = pixels[..., 0]
         data[..., 3] = pixels[..., 3]
-        size = (int(self._width), int(self._height))
-        img = pilfromstring('RGBA', size, data)
+        img = Image.fromarray(data, 'RGBA')
 
         # Check the output format to see if it can handle an alpha channel.
         no_alpha_formats = ('jpg', 'bmp', 'eps', 'jpeg')

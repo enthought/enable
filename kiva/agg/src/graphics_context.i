@@ -210,7 +210,7 @@ namespace kiva {
     %pythoncode
     %{
         # used in GraphicsContextArray constructors
-        from numpy import array, zeros, uint8, frombuffer, shape, ndarray, resize, dtype
+        from numpy import array, asarray, zeros, uint8, frombuffer, shape, ndarray, resize, dtype
         import numpy
 
         # Define paths for the two markers that Agg renders incorrectly
@@ -823,6 +823,8 @@ namespace kiva {
                     file format does not support alpha, the image is saved in
                     rgb24 format.
                 """
+                from PIL import Image
+
                 FmtsWithoutAlpha = ('jpg', 'bmp', 'eps', "jpeg")
                 size = (self.width(), self.height())
                 fmt = self.format()
@@ -848,8 +850,7 @@ namespace kiva {
                 else:
                     bmp = self.bmp_array
 
-                from kiva import compat
-                img = compat.pilfromstring(pilformat, size, bmp.tostring())
+                img = Image.fromarray(bmp, pilformat)
                 img.save(filename, format=file_format, options=pil_options)
 
 
@@ -907,17 +908,17 @@ class Image(GraphicsContextArray):
         """
         # read the file using PIL
         from PIL import Image as PilImage
-        from kiva.compat import piltostring
+
         pil_img = PilImage.open(file)
 
-        # Convert image to a numeric array
+        # Convert image to a numpy array
         if (pil_img.mode not in ["RGB","RGBA"] or
             (cvar.ALWAYS_32BIT_WORKAROUND_FLAG and pil_img.mode != "RGBA")):
             pil_img = pil_img.convert(mode="RGBA")
+
         depth = pil_depth_map[pil_img.mode]
-        img = frombuffer(piltostring(pil_img),uint8)
-        img = resize(img, (pil_img.size[1],pil_img.size[0],depth))
         format = pil_format_map[pil_img.mode]
+        img = asarray(pil_img)
 
         GraphicsContextArray.__init__(self, img, pix_format=format,
                                       interpolation=interpolation,

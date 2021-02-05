@@ -3,15 +3,14 @@ import os
 import sys
 import unittest
 
-from PIL import Image
 from numpy import (
     alltrue, array, concatenate, dtype, frombuffer, newaxis, pi, ravel, ones,
     zeros,
 )
+from PIL import Image
 
 from kiva import agg
 from kiva.api import Font
-from kiva.compat import pilfromstring, piltostring
 
 
 # alpha blending is approximate in agg, so we allow some "slop" between
@@ -27,11 +26,9 @@ def save(img, file_name):
     """
     format = img.format()
     if format == "bgra32":
-        size = (img.bmp_array.shape[1], img.bmp_array.shape[0])
         bgr = img.bmp_array[:, :, :3]
         rgb = bgr[:, :, ::-1].copy()
-        st = rgb.tostring()
-        pil_img = pilfromstring("RGB", size, st)
+        pil_img = Image.fromarray(rgb, "RGB")
         pil_img.save(file_name)
     else:
         raise NotImplementedError(
@@ -54,7 +51,7 @@ def test_name():
 def sun(interpolation_scheme="simple"):
     path = os.path.join(os.path.dirname(__file__), "doubleprom_soho_full.jpg")
     pil_img = Image.open(path)
-    img = frombuffer(piltostring(pil_img), UInt8)
+    img = frombuffer(pil_img.tobytes(), UInt8)
     img.resize((pil_img.size[1], pil_img.size[0], 3))
 
     alpha = ones(pil_img.size, UInt8) * 255

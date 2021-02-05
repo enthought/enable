@@ -3,12 +3,11 @@ import unittest
 from hypothesis import given
 from hypothesis.strategies import sampled_from
 from numpy import (
-    alltrue, array, concatenate, dtype, frombuffer, newaxis, ones, ravel, zeros
+    alltrue, array, asarray, concatenate, dtype, newaxis, ones, ravel, zeros
 )
 from PIL import Image as PILImage
 
 
-from kiva.compat import piltostring
 from kiva.image import GraphicsContext
 
 # alpha blending is approximate in agg, so we allow some "slop" between
@@ -129,8 +128,7 @@ class TestAlphaBlackImage(unittest.TestCase):
 
     def sun(self, interpolation_scheme="simple"):
         pil_img = PILImage.open("doubleprom_soho_full.jpg")
-        img = frombuffer(piltostring(pil_img), UInt8)
-        img.resize((pil_img.size[1], pil_img.size[0], 3))
+        img = asarray(pil_img)
         alpha = ones(pil_img.size, UInt8) * 255
         img = concatenate((img[:, :, ::-1], alpha[:, :, newaxis]), -1).copy()
         return GraphicsContext(img, "bgra32", interpolation_scheme)

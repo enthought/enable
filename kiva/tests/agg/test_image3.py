@@ -104,8 +104,7 @@ def main2():
     from PIL import Image
 
     pil_img = Image.open("doubleprom_soho_full.jpg")
-    img = np.fromstring(pil_img.tostring(), dtype=np.uint8)
-    img = img.resize((pil_img.size[1], pil_img.size[0], 3))
+    img = np.asarray(pil_img)
 
     alpha = np.ones(pil_img.size, dtype=np.uint8) * 255
     img = np.concatenate((img[:, :, ::-1], alpha[:, :, np.newaxis]), -1).copy()
@@ -122,8 +121,7 @@ def main3():
     from PIL import Image
 
     pil_img = Image.open("doubleprom_soho_full.jpg")
-    img = np.fromstring(pil_img.tostring(), dtype=np.uint8)
-    img = img.resize((pil_img.size[1], pil_img.size[0], 3))
+    img = np.asarray(pil_img)
 
     alpha = np.ones(pil_img.size, dtype=np.uint8) * 255
     img = np.concatenate((img[:, :, ::-1], alpha[:, :, np.newaxis]), -1).copy()
@@ -151,8 +149,7 @@ def main4():
     from PIL import Image
 
     pil_img = Image.open("doubleprom_soho_full.jpg")
-    img = np.fromstring(pil_img.tostring(), dtype=np.uint8)
-    img = img.resize((pil_img.size[1], pil_img.size[0], 3))
+    img = np.asarray(pil_img)
     print("typecode:", img.dtype, np.iscontiguous(img))
     print(img.shape)
     agg_img = agg.Image(img, "rgb24", interpolation_scheme="simple")
