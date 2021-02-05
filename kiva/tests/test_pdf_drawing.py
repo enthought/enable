@@ -46,6 +46,7 @@ class TestPDFDrawing(DrawingTester, unittest.TestCase):
         # been drawn.
         line = content.getData().splitlines()[-2]
         if not any((line.endswith(b'f'),
+                    line.endswith(b'Q'),
                     line.endswith(b'S'),
                     line.endswith(b'f*'),
                     line.endswith(b'ET') and b'hello kiva' in line)):

@@ -33,6 +33,11 @@ class TestQPainterDrawing(DrawingImageTester, unittest.TestCase):
 
         return GraphicsContext((width, height))
 
+    @unittest.expectedFailure
+    def test_image(self):
+        """ QPainter interprets images as BGRA. """
+        super().test_image()
+
     @unittest.skipIf(is_qt5 and is_linux, "Currently segfaulting")
     def test_text(self):
         super().test_text()
