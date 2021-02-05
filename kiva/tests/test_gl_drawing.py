@@ -31,6 +31,13 @@ class TestGLDrawing(DrawingImageTester, unittest.TestCase):
         gc.gl_init()
         return gc
 
+    @unittest.expectedFailure
+    def test_image(self):
+        """ gl image drawing is broken. It depends on pygarrayimage, which
+        is not actively maintained and appears to be broken now.
+        """
+        DrawingImageTester.test_image()
+
     @unittest.skip("gl graphics context does not support star_clip (#164)")
     def test_star_clip(self):
         # FIXME: overriding test since it segfaults

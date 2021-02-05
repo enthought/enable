@@ -26,6 +26,12 @@ class DrawingTester(object):
         del self.gc
         shutil.rmtree(self.directory)
 
+    def test_image(self):
+        img = numpy.zeros((20, 20, 4), dtype=numpy.uint8)
+        img[5:15, 5:15, (0, 3)] = 255
+        with self.draw_and_check():
+            self.gc.draw_image(img, (100, 100, 20, 20))
+
     def test_line(self):
         with self.draw_and_check():
             self.gc.begin_path()
@@ -171,4 +177,4 @@ class DrawingImageTester(DrawingTester):
             )
         if check.any():
             return
-        self.fail("The image looks empty, no red pixels where drawn")
+        self.fail("The image looks empty, no red pixels were drawn")

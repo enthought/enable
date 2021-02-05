@@ -23,5 +23,6 @@ class TestPSDrawing(DrawingTester, unittest.TestCase):
         if not any((line.endswith("fill"),
                     line.endswith("stroke"),
                     line.endswith("cliprestore"),
+                    line.endswith("grestore"),
                     "(hello kiva) show\n" in lines)):
             self.fail("Path was not closed")

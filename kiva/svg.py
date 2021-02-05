@@ -275,10 +275,10 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             return
 
         if rect is None:
-            rect = (0, 0, img.width(), img.height())
+            rect = (0, 0, pil_img.width, pil_img.height)
 
         left, top, width, height = rect
-        if width != img.width() or height != img.height():
+        if width != pil_img.width or height != pil_img.height:
             # This is not strictly required.
             pil_img = pil_img.resize(
                 (int(width), int(height)), PilImage.NEAREST
