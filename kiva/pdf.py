@@ -582,29 +582,24 @@ class GraphicsContext(GraphicsContextBase):
         from kiva import agg
 
         if isinstance(img, ndarray):
-            # Numeric array
-            converted_img = agg.GraphicsContextArray(img, pix_format="rgba32")
-            format = "RGBA"
+            # Conversion from numpy array
+            pil_img = Image.fromarray(img, "RGBA")
         elif isinstance(img, agg.GraphicsContextArray):
+            converted_img = img
             if img.format().startswith("RGBA"):
-                format = "RGBA"
+                pilformat = "RGBA"
             elif img.format().startswith("RGB"):
-                format = "RGB"
+                pilformat = "RGB"
             else:
                 converted_img = img.convert_pixel_format("rgba32", inplace=0)
-                format = "RGBA"
+                pilformat = "RGBA"
+            # Conversion from GraphicsContextArray
+            pil_img = Image.fromarray(converted_img.bmp_array, pilformat)
         else:
             warnings.warn(
                 "Cannot render image of type %r into PDF context." % type(img)
             )
             return
-
-        # converted_img now holds an Agg graphics context with the image
-        pil_img = Image.frombytes(
-            format,
-            (converted_img.width(), converted_img.height()),
-            converted_img.bmp_array.tobytes(),
-        )
 
         if rect is None:
             rect = (0, 0, img.width(), img.height())

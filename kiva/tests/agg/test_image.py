@@ -26,10 +26,9 @@ def save(img, file_name):
     """
     format = img.format()
     if format == "bgra32":
-        size = (img.bmp_array.shape[1], img.bmp_array.shape[0])
         bgr = img.bmp_array[:, :, :3]
         rgb = bgr[:, :, ::-1].copy()
-        pil_img = Image.frombytes("RGB", size, rgb.tobytes())
+        pil_img = Image.fromarray(rgb, "RGB")
         pil_img.save(file_name)
     else:
         raise NotImplementedError(

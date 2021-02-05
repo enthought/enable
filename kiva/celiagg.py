@@ -817,8 +817,7 @@ class GraphicsContext(object):
         data[..., 1] = pixels[..., 1]
         data[..., 2] = pixels[..., 0]
         data[..., 3] = pixels[..., 3]
-        size = (int(self._width), int(self._height))
-        img = Image.frombytes('RGBA', size, data)
+        img = Image.fromarray(data, 'RGBA')
 
         # Check the output format to see if it can handle an alpha channel.
         no_alpha_formats = ('jpg', 'bmp', 'eps', 'jpeg')

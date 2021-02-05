@@ -212,9 +212,7 @@ class ResourceGetter(object):
 
         if pil_img.mode not in ("RGB", "RGBA"):
             pil_img = pil_img.convert("RGBA")
-        img = numpy.frombuffer(pil_img.tobytes(), numpy.uint8)
-        shape = (pil_img.size[1], pil_img.size[0], len(pil_img.mode))
-        img.shape = shape
+        img = numpy.asarray(pil_img)
         return img
 
 
