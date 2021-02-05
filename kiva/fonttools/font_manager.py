@@ -48,6 +48,7 @@ import tempfile
 import warnings
 
 from fontTools.ttLib import TTCollection, TTFont, TTLibError
+
 from traits.etsconfig.api import ETSConfig
 
 from . import afm
@@ -233,26 +234,6 @@ def get_configdir():
     if not _is_writable_dir(p):
         raise IOError("Configuration directory %s must be writable" % p)
     return p
-
-
-def is_string_like(obj):
-    """ Return True if *obj* looks like a string
-    """
-    from numpy import ma
-
-    if isinstance(obj, str):
-        return True
-    # numpy strings are subclass of str, ma strings are not
-    if ma.isMaskedArray(obj):
-        if obj.ndim == 0 and obj.dtype.kind in "SU":
-            return True
-        else:
-            return False
-        try:
-            obj + ""
-        except Exception:
-            return False
-        return True
 
 
 def decode_prop(prop):
@@ -812,8 +793,6 @@ class FontProperties(object):
       - family: A list of font names in decreasing order of priority.
         The items may include a generic font family name, either
         'serif', 'sans-serif', 'cursive', 'fantasy', or 'monospace'.
-        In that case, the actual font to be used will be looked up
-        from the associated rcParam in :file:`matplotlibrc`.
 
       - style: Either 'normal', 'italic' or 'oblique'.
 
@@ -833,11 +812,6 @@ class FontProperties(object):
         'small', 'medium', 'large', 'x-large', 'xx-large' or an
         absolute font size, e.g. 12
 
-    The default font property for TrueType fonts (as specified in the
-    default :file:`matplotlibrc` file) is::
-
-      sans-serif, normal, normal, normal, normal, scalable.
-
     Alternatively, a font may be specified using an absolute path to a
     .ttf file, by using the *fname* kwarg.
 
@@ -845,18 +819,6 @@ class FontProperties(object):
     e.g.  'large', instead of absolute font sizes, e.g. 12.  This
     approach allows all text sizes to be made larger or smaller based
     on the font manager's default font size.
-
-    This class will also accept a `fontconfig
-    <http://www.fontconfig.org/>`_ pattern, if it is the only argument
-    provided.  See the documentation on `fontconfig patterns
-    <http://www.fontconfig.org/fontconfig-user.html>`_.  This support
-    does not require fontconfig to be installed.  We are merely
-    borrowing its pattern syntax for use here.
-
-    Note that matplotlib's internal font manager and fontconfig use a
-    different algorithm to lookup fonts, so the results of the same pattern
-    may be different in matplotlib than in other applications that use
-    fontconfig.
     """
 
     def __init__(self, family=None, style=None, variant=None, weight=None,
@@ -876,14 +838,6 @@ class FontProperties(object):
         if _init is not None:
             self.__dict__.update(_init.__dict__)
             return
-
-        if is_string_like(family):
-            # Treat family as a fontconfig pattern if it is the only
-            # parameter provided.
-            if (style is None and variant is None and weight is None
-                    and stretch is None and size is None and fname is None):
-                self.set_fontconfig_pattern(family)
-                return
 
         self.set_family(family)
         self.set_style(style)
@@ -986,9 +940,9 @@ class FontProperties(object):
         if family is None:
             self._family = None
         else:
-            if "" != b"" and isinstance(family, bytes):
-                family = family.decode("utf8")
-            if is_string_like(family):
+            if isinstance(family, bytes):
+                family = [family.decode("utf8")]
+            elif isinstance(family, str):
                 family = [family]
             self._family = family
 
