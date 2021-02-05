@@ -17,7 +17,7 @@
 """
 
 # Major library imports
-from io import StringIO
+from io import BytesIO, StringIO
 import os
 import warnings
 
@@ -225,7 +225,7 @@ class PSGC(basecore2d.GraphicsContextBase):
             pil_img = pil_img.convert("RGB")
 
         left, top, width, height = rect
-        if width != img.width() or height != img.height():
+        if width != pil_img.width or height != pil_img.height:
             # This is not strictly required.
             pil_img = pil_img.resize(
                 (int(width), int(height)), PilImage.NEAREST
@@ -240,7 +240,9 @@ class PSGC(basecore2d.GraphicsContextBase):
         )
         self.contents.write("%.3f %.3f translate\n" % (left, top))
         # Rely on PIL's EpsImagePlugin to do the hard work here.
-        pil_img.save(self.contents, "eps", eps=0)
+        fp = BytesIO()
+        pil_img.save(fp, "eps", eps=0)
+        self.contents.write(fp.getvalue().decode('utf8'))
         self.contents.write("grestore\n")
 
     def device_transform_device_ctm(self, func, args):

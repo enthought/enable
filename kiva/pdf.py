@@ -602,7 +602,7 @@ class GraphicsContext(GraphicsContextBase):
             return
 
         if rect is None:
-            rect = (0, 0, img.width(), img.height())
+            rect = (0, 0, pil_img.width, pil_img.height)
 
         # Draw the actual image.
         # Wrap it in an ImageReader object, because that's what reportlab
