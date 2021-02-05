@@ -1,10 +1,10 @@
-from timeit import Timer
 import os
-import sys
+import tempfile
+from timeit import Timer
 import unittest
 
 from numpy import (
-    alltrue, array, concatenate, dtype, frombuffer, newaxis, pi, ravel, ones,
+    alltrue, array, concatenate, dtype, frombuffer, newaxis, ones, pi, ravel,
     zeros,
 )
 from PIL import Image
@@ -21,31 +21,21 @@ UInt8 = dtype("uint8")
 Int32 = dtype("int32")
 
 
-def save(img, file_name):
+def save(img):
     """ This only saves the rgb channels of the image
     """
-    format = img.format()
-    if format == "bgra32":
+    imgformat = img.format()
+    if imgformat == "bgra32":
         bgr = img.bmp_array[:, :, :3]
         rgb = bgr[:, :, ::-1].copy()
         pil_img = Image.fromarray(rgb, "RGB")
-        pil_img.save(file_name)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = os.path.join(tmpdir, 'img.bmp')
+            pil_img.save(path)
     else:
         raise NotImplementedError(
             "currently only supports writing out bgra32 images"
         )
-
-
-def test_name():
-    f = sys._getframe()
-    class_name = f.f_back.f_locals["self"].__class__.__name__.replace(
-        "test_", ""
-    )
-    method_name = f.f_back.f_code.co_name.replace("check_", "")
-    # !! make sure we delete f or the their are memory leaks that
-    # !! result (gc's passed to save are not released)
-    del f
-    return ".".join((class_name, method_name))
 
 
 def sun(interpolation_scheme="simple"):
@@ -124,7 +114,7 @@ class test_text_image(unittest.TestCase):
         f = Font("modern")
         gc.set_font(f)
         gc.show_text("hello")
-        save(gc, test_name() + ".bmp")
+        save(gc)
 
     def test_no_antialias(self):
         gc = agg.GraphicsContextArray((200, 50), pix_format="bgra32")
@@ -132,7 +122,7 @@ class test_text_image(unittest.TestCase):
         gc.set_font(f)
         gc.set_antialias(0)
         gc.show_text("hello")
-        save(gc, test_name() + ".bmp")
+        save(gc)
 
     def test_rotate(self):
         text = "hello"
@@ -149,7 +139,7 @@ class test_text_image(unittest.TestCase):
         gc.rect(tx, ty, sx, sy)
         gc.stroke_path()
         gc.show_text(text)
-        save(gc, test_name() + ".bmp")
+        save(gc)
 
 
 class test_sun(unittest.TestCase):
@@ -164,43 +154,43 @@ class test_sun(unittest.TestCase):
 
     def test_simple(self):
         gc = self.generic_sun("nearest")
-        save(gc, test_name() + ".bmp")
+        save(gc)
 
     def test_bilinear(self):
         gc = self.generic_sun("bilinear")
-        save(gc, test_name() + ".bmp")
+        save(gc)
 
     def test_bicubic(self):
         gc = self.generic_sun("bicubic")
-        save(gc, test_name() + ".bmp")
+        save(gc)
 
     def test_spline16(self):
         gc = self.generic_sun("spline16")
-        save(gc, test_name() + ".bmp")
+        save(gc)
 
     def test_spline36(self):
         gc = self.generic_sun("spline36")
-        save(gc, test_name() + ".bmp")
+        save(gc)
 
     def test_sinc64(self):
         gc = self.generic_sun("sinc64")
-        save(gc, test_name() + ".bmp")
+        save(gc)
 
     def test_sinc144(self):
         gc = self.generic_sun("sinc144")
-        save(gc, test_name() + ".bmp")
+        save(gc)
 
     def test_sinc256(self):
         gc = self.generic_sun("sinc256")
-        save(gc, test_name() + ".bmp")
+        save(gc)
 
     def test_blackman100(self):
         gc = self.generic_sun("blackman100")
-        save(gc, test_name() + ".bmp")
+        save(gc)
 
     def test_blackman256(self):
         gc = self.generic_sun("blackman256")
-        save(gc, test_name() + ".bmp")
+        save(gc)
 
 
 def bench(stmt="pass", setup="pass", repeat=5, adjust_runs=True):
@@ -211,7 +201,7 @@ def bench(stmt="pass", setup="pass", repeat=5, adjust_runs=True):
         for i in range(100):
             number = 10 ** i
             time = timer.timeit(number)
-            if time > 0.2:
+            if time > 0.02:
                 break
     else:
         number = 1

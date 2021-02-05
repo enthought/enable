@@ -1,13 +1,11 @@
-import unittest
 from math import pi
+import os
+import tempfile
+import unittest
 
 import numpy
 
 from kiva import agg
-
-
-def save_path(filename):
-    return filename
 
 
 def draw_arcs(gc, x2, y2, radiusstep=25.0):
@@ -104,11 +102,13 @@ class TestAffineMatrix(unittest.TestCase):
         gc.translate_ctm(-300.5, 100.5)
         gc.scale_ctm(0.75, -1.0)
         draw_arcs(gc, 160.5, 76.5, 50.0)
-        gc.save(save_path("arc_to.png"))
+        with tempfile.TemporaryDirectory() as dirpath:
+            gc.save(os.path.join(dirpath, "arc_to.png"))
 
     def test_arc(self):
         gc = agg.GraphicsContextArray((640, 648))
-        gc.save(save_path("arc.png"))
+        with tempfile.TemporaryDirectory() as dirpath:
+            gc.save(os.path.join(dirpath, "arc.png"))
 
     def test_skewing_matrix(self):
         val = agg.skewing_matrix(pi / 4.0, pi / 4.0)
