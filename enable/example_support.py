@@ -7,7 +7,7 @@ from traits.api import HasTraits, Instance
 from traits.etsconfig.api import ETSConfig
 from traitsui.api import Item, View
 
-from enable.api import Component, ComponentEditor, Window
+from enable.api import Component, ComponentEditor
 
 # FIXME - it should be enough to do the following import, but because of the
 # PyQt/traits problem (see below) we can't because it would drag in traits too
@@ -26,69 +26,23 @@ if not ETSConfig.toolkit:
         raise RuntimeError("Can't load wx or qt4 backend for Chaco.")
 
 
-if ETSConfig.toolkit == "wx" or ETSConfig.toolkit == "qt4":
+class DemoFrame(HasTraits):
 
-    class DemoFrame(HasTraits):
+    component = Instance(Component)
 
-        component = Instance(Component)
+    traits_view = View(
+        Item("component", editor=ComponentEditor(), show_label=False),
+        resizable=True,
+    )
 
-        traits_view = View(
-            Item("component", editor=ComponentEditor(), show_label=False),
-            resizable=True,
-        )
+    def _component_default(self):
+        return self._create_component()
 
-        def _component_default(self):
-            return self._create_component()
-
-        def _create_component(self):
-            """ Create and return a component which is typically a
-            container with nested components """
-            raise NotImplementedError
-
-    def demo_main(demo_class, size=(640, 480), title="Enable Example"):
-        demo_class().configure_traits()
+    def _create_component(self):
+        """ Create and return a component which is typically a
+        container with nested components """
+        raise NotImplementedError
 
 
-elif ETSConfig.toolkit == "pyglet":
-
-    from pyglet import app
-
-    class DemoFrame(object):
-        def __init__(self):
-            if app:
-                window = self._create_window()
-                if window:
-                    self.enable_win = window
-                else:
-                    self.enable_win = None
-
-        def _create_component(self):
-            """ Create and return a component which is typically a
-            container with nested components """
-            raise NotImplementedError
-
-        def _create_window(self):
-            return Window(self, -1, component=self._create_component())
-
-    def demo_main(demo_class, size=(640, 480), title="Enable Example"):
-        """ Runs a simple application in Pyglet using an instance of
-        **demo_class** as the main window or frame.
-
-        **demo_class** should be a subclass of DemoFrame or the pyglet
-        backend's Window class.
-        """
-        if issubclass(demo_class, DemoFrame):
-            frame = demo_class()
-            if frame.enable_win is not None:
-                window = frame.enable_win.control
-            else:
-                window = None
-        else:
-            window = demo_class().control
-
-        if window is not None:
-            if not window.fullscreen:
-                window.set_size(*size)
-            window.set_caption(title)
-
-        app.run()
+def demo_main(demo_class, size=(640, 480), title="Enable Example"):
+    demo_class().configure_traits()
