@@ -4,8 +4,8 @@ enable: low-level drawing and interaction
 
 https://docs.enthought.com/enable
 
-.. image:: https://travis-ci.org/enthought/enable.svg?branch=master
-   :target: https://travis-ci.org/enthought/enable
+.. image:: https://github.com/enthought/enable/workflows/Test%20with%20EDM/badge.svg
+   :target: https://github.com/enthought/enable/actions?query=workflow%3A%22Test+with+EDM%22
    :alt: Build status
 
 The Enable *project* provides two related multi-platform *packages* for drawing
