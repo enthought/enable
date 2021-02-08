@@ -1,3 +1,13 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
+
 # Enable documentation build configuration file, created by
 # sphinx-quickstart on Mon Jul 21 22:01:37 2008.
 #
@@ -42,7 +52,7 @@ master_doc = 'index'
 
 # General substitutions.
 project = 'enable'
-copyright = '2008-2019, Enthought'
+copyright = '2005-2021, Enthought'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.

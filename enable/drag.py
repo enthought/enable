@@ -1,16 +1,12 @@
-# ---------------------------------------------------------------------------
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
 #
-#  Define the classes used to support the Enable package 'drag' functionality.
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
 #
-#  Written by: David C. Morrill
-#
-#  Date: 09/22/2003
-#
-#  (c) Copyright 2003 by Enthought, Inc.
-#
-#  Classes defined: DragHandler
-#
-# ---------------------------------------------------------------------------
+# Thanks for using Enthought open source!
 
 from .base import (
     add_rectangles, bounds_to_coordinates, intersect_coordinates, send_event_to

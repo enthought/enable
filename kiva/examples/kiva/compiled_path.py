@@ -1,3 +1,13 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
+
 # CompiledPath should always be imported from the same backend as the
 # GC you are using.  In this case, we are using the image GraphicsContext
 # so we can save to disk when we're done, so we grab the CompiledPath
