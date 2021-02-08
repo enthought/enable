@@ -23,9 +23,12 @@ from setuptools.command.install import install as base_install
 MAJOR = 4
 MINOR = 8
 MICRO = 1
-
+PRERELEASE = ""
 IS_RELEASED = False
-VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
+
+# Templates for version strings.
+RELEASED_VERSION = "{major}.{minor}.{micro}{prerelease}"
+UNRELEASED_VERSION = "{major}.{minor}.{micro}{prerelease}.dev{dev}"
 
 
 # Distutils will collect the `.py` files for the distribution before
@@ -52,7 +55,7 @@ def read_version_py(path):
         code = compile(fp.read(), 'kiva._version', 'exec')
     context = {}
     exec(code, context)
-    return context['git_revision'], context['full_version']
+    return context['git_revision'], context['version']
 
 
 def git_version():
@@ -93,18 +96,25 @@ def git_version():
 def write_version_py(filename):
     template = """\
 # THIS FILE IS GENERATED FROM ENABLE SETUP.PY
-version = '{version}'
-full_version = '{full_version}'
-git_revision = '{git_revision}'
-is_released = {is_released}
 
-if not is_released:
-    version = full_version
+#: The full version of the package, including a development suffix
+#: for unreleased versions of the package.
+version = "{version}"
+
+#: The full version of the package, same as 'version'
+#: Kept for backward compatibility
+full_version = version
+
+#: The Git revision from which this release was made.
+git_revision = "{git_revision}"
+
+#: Flag whether this is a final release
+is_released = {is_released}
 """
     # Adding the git rev number needs to be done inside
     # write_version_py(), otherwise the import of kiva._version messes
     # up the build under Python 3.
-    fullversion = VERSION
+    version_template = RELEASED_VERSION if IS_RELEASED else UNRELEASED_VERSION
     kiva_version_path = os.path.join(os.path.dirname(__file__), 'kiva',
                                      '_version.py')
     if os.path.exists(os.path.join(os.path.dirname(__file__), '.git')):
@@ -112,13 +122,13 @@ if not is_released:
     elif os.path.exists(kiva_version_path):
         # must be a source distribution, use existing version file
         try:
-            git_revision, full_version = read_version_py(kiva_version_path)
+            git_revision, version = read_version_py(kiva_version_path)
         except (SyntaxError, KeyError):
             raise RuntimeError("Unable to read git_revision. Try removing "
                                "kiva/_version.py and the build directory "
                                "before building.")
 
-        match = re.match(r'.*?\.dev(?P<dev_num>\d+)', full_version)
+        match = re.match(r'.*?\.dev(?P<dev_num>\d+)', version)
         if match is None:
             dev_num = '0'
         else:
@@ -127,14 +137,20 @@ if not is_released:
         git_revision = 'Unknown'
         dev_num = '0'
 
-    if not IS_RELEASED:
-        fullversion += '.dev{0}'.format(dev_num)
-
     with open(filename, "wt") as fp:
-        fp.write(template.format(version=VERSION,
-                                 full_version=fullversion,
-                                 git_revision=git_revision,
-                                 is_released=IS_RELEASED))
+        fp.write(
+            template.format(
+                version=version_template.format(
+                    major=MAJOR,
+                    minor=MINOR,
+                    micro=MICRO,
+                    prerelease=PRERELEASE,
+                    dev=dev_num
+                ),
+                git_revision=git_revision,
+                is_released=IS_RELEASED
+            )
+        )
 
 
 def agg_extensions():
