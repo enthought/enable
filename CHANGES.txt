@@ -32,6 +32,7 @@ Enhancements
 Changes
 -------
 
+* Use Pyface-style toolkit selection. (#571)
 * Remove the old and outdated pyglet and vtk backends. (#570)
 * Remove the PIL/pillow kiva compatibility wrapper code. (#569)
 * Remove quartz ``CGGLContext``. (#515)
@@ -42,6 +43,7 @@ Changes
   #464, #465, #479, #506)
 * Split out the GL backend. (#392)
 * Add opacity to null-toolkit-defined rgba_color_trait. (#374)
+* Don't use a ``GraphicsContext`` for storage in the ``Image`` component. (#251)
 
 Fixes
 -----
