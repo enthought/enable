@@ -20,9 +20,9 @@ import numpy
 from setuptools import Extension, find_packages, setup
 from setuptools.command.install import install as base_install
 
-MAJOR = 4
-MINOR = 8
-MICRO = 1
+MAJOR = 5
+MINOR = 1
+MICRO = 0
 PRERELEASE = ""
 IS_RELEASED = False
 
