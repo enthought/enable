@@ -1,17 +1,153 @@
 Enable CHANGELOG
 ================
 
-Changes since Enable 4.8.0
-==========================
+Enable 5.0.0
+============
+
+Thanks to:
+
+* Aaron Ayres
+* Per A. Brodtkorb (@pbrod)
+* Alexandre Chabot-Leclerc
+* Kit Yan Choi
+* Jim Corson
+* Mark Dickinson
+* Matt Hancock
+* Hugo van Kemenade (@hugovk)
+* Robert Kern
+* Midhun Madhusoodanan (@midhun-pm)
+* Shoeb Mohammed
+* Zach Pope
+* Rahul Poruri
+* Jonathan Rocher (@jonathanrocher)
+* Corran Webster
+* John Wiggins
 
 Enhancements
 ------------
 
+* Contribute examples to ``etsdemo``. (#494)
+* Add ``Container.components`` setter. (#387)
+
+Changes
+-------
+
+* Use Pyface-style toolkit selection. (#571)
+* Remove the old and outdated pyglet and vtk backends. (#570)
+* Remove the PIL/pillow kiva compatibility wrapper code. (#569)
+* Remove quartz ``CGGLContext``. (#515)
+* Make kiva explorer a popup. (#510)
+* Remove import time side effect of creating the font cache in the
+  ``font_manager``. (#488)
+* Drop support for Python <= 3.6 from the codebase. (#384, #461, #462, #463,
+  #464, #465, #479, #506)
+* Split out the GL backend. (#392)
+* Add opacity to null-toolkit-defined rgba_color_trait. (#374)
+* Don't use a ``GraphicsContext`` for storage in the ``Image`` component. (#251)
+
 Fixes
 -----
 
+* Allow unhandled key and mouse-wheel events to bubble up. (#552)
+* Fix ``Font.findfontname`` ``AttributeError`` when the default font manager
+  has not been initialized. (#531)
+* Fix ``AttributeError`` on Python 3.9 due to the use of removed API in
+  ``xml``. (#492)
+* Make font style- and stretch- check case insensitive. (#405)
+* Add a missing ``self`` argument to a method. (#468)
+* WxPython4 fixes. (#403)
+* Pass file object into ``TTCollection`` and close when done. (#378)
+* Fix ``DeprecationWarning``\s due to escape characters. (#371)
+* Don't mess with logging configuration. (#370)
+* Fix KeyError while parsing ttfFontProperty. (#365)
+
+Documentation
+-------------
+
+* Improve module docstrings in kiva and enable api modules. (#518, #564)
+* Mention in the README ``libglu1-mesa-dev`` is a build dependency on Linux. (#546)
+* Use templates when generating api docs for ``enable`` and ``kiva``. (#526)
+* Ignore toolkit-specific modules in api documentation. (#522, #527)
+* Cleanup and fix errors in demos and examples. (#388, #402, #508, #511)
+* Add a click command to build docs. (#499)
+* Fix failing documentation build on Python 3. (#478)
+* Expand ``DragTool`` comments. (#452)
+* Add a demo runner for enable. (#383)
+
+Testing
+-------
+
+* Clean up some of the agg tests. (#573)
+* Add a unit test for drawing images. (#572)
+* Unskip most of the ``TestGLDrawing`` tests on OSX. (#540)
+* Address resource warnings because of open file handles. (#529)
+* Rename test module so it gets discovered by unittest. (#528)
+* Fix tests for PySide2 and add PySide2 to the testing matrix. (#484)
+* Make tests for font manager quieter. (#487)
+* Use unittest as the test runner instead of nose. (#475)
+* Switch on default warnings flag for CI test command. (#469)
+* Replace use of ``tempfile.mktemp`` with ``tempfile.NamedTemporaryFile``. (#456)
+* Add ``dclick`` option to test assistant. (#444)
+
 Maintenance
 -----------
+
+* Remove files that are not used or needed. (#578)
+* Use a standard copyright header. (#577)
+* Remove ``is_string_like``. (#568)
+* Stop using deprecated trait handlers. (#567)
+* Use kiva api modules where possible. (#565)
+* Use ``traits.api``, ``traitsui.api`` and ``pyface.api`` where possible. (#566)
+* Remove outdated/broken debugging constructs. (#560)
+* Cleanup non-standard use of ``traitsui.api`` imports. (#561)
+* Add ``tox.ini`` for flake8 control. (#559)
+* Run black on enable and kiva. (#557, #558)
+* Remove outdated/unnecessary files. (#521)
+* Remove ``TODO.txt`` file from the manifest. (#523)
+* Use ``pyface.undo`` instead of ``apptools.undo``. (#507)
+* Remove module-level ``findfont`` in ``font_manager``. (#505)
+* Remove ``USE_FONTCONFIG`` in ``font_manager``. (#498)
+* Warn if attempted ``pyface`` and ``traitsui`` imports fail. (#481)
+* Remove todo files in the repository. (#474)
+* Add disclaimer in complaince with FreeType License. (#477)
+* Add or update README files to mention what are vendored code. (#476)
+* Remove unnecessary empty return statements. (#455)
+* Replace default list argument with None. (#467)
+* Use ``is`` instead of ``==`` when comparing to ``None``. (#457)
+* Remove dead/commented out code. (#466)
+* Remove EOF markers from files. (#453)
+* Fix test failures when testing against TraitsUI 7.1.0. (#446)
+* Update badges and links in README. (#420)
+* Regenerate ``_cython_speedups.cpp`` for compatibility with Python 3.8. (#376)
+* Defer imports from ``font_manager`` in ``font`` module. (#368)
+
+Build and Continuous Integration
+--------------------------------
+
+* Update ``setup.py`` to allow creation of release candidates. (#575)
+* Provide the right path to the version file on windows. (#563)
+* Unconditionally list ``pillow`` as a runtime dependency. (#562)
+* Move to a single ``setup.py`` file. (#535)
+* Declare ``setuptools`` as a test dependency. (#547)
+* Move from Travis, Appveyor CI to GitHub Actions CI. (#538, #539. #542, #544,
+  #548, #549, #579)
+* Remove code coverage reporting on PRs. (#536)
+* Unset and remove ``use_2to3`` from ``setup.py``. (#520)
+* Update CI requirements. (#513)
+* Require wx toolkit CI job to pass. (#459)
+* Use config when bootstrapping an edm environment. (#489)
+* Remove install requirement version numbers from README. (#470)
+* Make improvements to ``edmtool`` utility. (#454)
+* Fix missing new dependencies in cron job. (#448)
+* Use PyQt5 from EDM instead of PyPI. (#437)
+* Re-add Wx as a supported toolkit. (#432)
+* Update cron job to install dependencies from git source. (#428)
+* Use Python 3.6 as the default runtime in edmtool. (#430)
+* Make CI green again and remove Python 3.5 from CI. (#424)
+* Add optional demo dependencies to ``setup.py``. (#386)
+* Upgrade to EDM 2.0.0. (#373)
+* Prevent nose from capturing logs. (#367)
+* Fix the environment name used in CI. (#366)
 
 Enable 4.8.0
 ============
