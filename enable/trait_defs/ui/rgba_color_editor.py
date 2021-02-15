@@ -11,7 +11,7 @@ from traits.etsconfig.api import ETSConfig
 
 if ETSConfig.toolkit == "wx":
     from .wx.rgba_color_editor import RGBAColorEditor
-elif ETSConfig.toolkit == "qt4":
+elif ETSConfig.toolkit.startswith("qt"):
     from .qt4.rgba_color_editor import RGBAColorEditor
 else:
     RGBAColorEditor = None
