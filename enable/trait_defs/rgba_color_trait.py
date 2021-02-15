@@ -31,7 +31,7 @@ if ETSConfig.toolkit == "wx":
             color.Blue() / 255.0,
             1.0,
         )
-elif ETSConfig.toolkit == "qt4":
+elif ETSConfig.toolkit.startswith("qt"):
     from traitsui.qt4.color_trait import standard_colors
 
     def rgba_color(color):

@@ -33,7 +33,7 @@ if ETSConfig.toolkit == "wx":
             raise RuntimeError("Unable to determine mouse position")
 
 
-elif ETSConfig.toolkit == "qt4":
+elif ETSConfig.toolkit.startswith("qt"):
     from pyface.qt import QtGui
 
     def GetGlobalMousePosition():
