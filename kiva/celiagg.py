@@ -549,31 +549,40 @@ class GraphicsContext(object):
 
     def draw_image(self, img, rect=None):
         """
-        img is either a N*M*3 or N*M*4 numpy array, or a Kiva image
+        img is either a N*M*3 or N*M*4 numpy array, or a PIL Image
 
         rect - a tuple (x, y, w, h)
         """
+        from PIL import Image
 
-        def get_format(array):
-            if array.shape[2] == 3:
-                return agg.PixelFormat.RGB24
-            elif array.shape[2] == 4:
-                return agg.PixelFormat.RGBA32
+        def normalize_image(img):
+            if not img.mode.startswith('RGB'):
+                img = img.convert('RGB')
+
+            if img.mode == 'RGB':
+                return img, agg.PixelFormat.RGB24
+            elif img.mode == 'RGBA':
+                return img, agg.PixelFormat.RGBA32
 
         img_format = agg.PixelFormat.RGB24
         if isinstance(img, np.ndarray):
             # Numeric array
-            img_array = img.astype(np.uint8)
-            img_format = get_format(img_array)
-        elif isinstance(img, GraphicsContext):
-            img_array = img.gc.array
-            img_format = pix_formats[img.pix_format]
+            img = Image.fromarray(img)
+            img, img_format = normalize_image(img)
+            img_array = np.array(img)
+        elif isinstance(img, Image.Image):
+            img, img_format = normalize_image(img)
+            img_array = np.array(img)
         elif hasattr(img, 'bmp_array'):
             # An offscreen kiva context
             # XXX: Use a copy to kill the read-only flag which plays havoc
             # with the Cython memoryviews used by celiagg
-            img_array = img.bmp_array.copy()
-            img_format = get_format(img_array)
+            img = Image.fromarray(img.bmp_array)
+            img, img_format = normalize_image(img)
+            img_array = np.array(img)
+        elif isinstance(img, GraphicsContext):
+            img_array = img.gc.array
+            img_format = pix_formats[img.pix_format]
         else:
             msg = "Cannot render image of type '{}' into celiagg context."
             warnings.warn(msg.format(type(img)))
