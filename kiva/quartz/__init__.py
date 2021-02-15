@@ -10,6 +10,8 @@
 import sys
 
 if sys.platform == "darwin":
+    from kiva.quartz.mac_context import get_mac_context  # noqa: F401
+
     def get_macport(dc):
         """ Returns the Port or the CGContext of a wxDC (or child class)
         instance.
