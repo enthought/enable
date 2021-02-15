@@ -20,7 +20,7 @@ from traitsui.api import BasicEditorFactory
 
 if ETSConfig.toolkit == "wx":
     from traitsui.wx.editor import Editor
-elif ETSConfig.toolkit == "qt4":
+elif ETSConfig.toolkit.startswith("qt"):
     from traitsui.qt4.editor import Editor
 else:
     Editor = object

@@ -18,7 +18,7 @@ from traits.etsconfig.api import ETSConfig
 
 if ETSConfig.toolkit == "wx":
     from .ui.wx.kiva_font_editor import KivaFontEditor
-elif ETSConfig.toolkit == "qt4":
+elif ETSConfig.toolkit.startswith("qt"):
     # FIXME
     # from .ui.qt4.kiva_font_editor import KivaFontEditor
     KivaFontEditor = None

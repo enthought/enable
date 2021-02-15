@@ -282,7 +282,7 @@ if ETSConfig.toolkit == "wx":
         editor=ColorEditorFactory,
     )
 
-elif ETSConfig.toolkit == "qt4":
+elif ETSConfig.toolkit.startswith("qt"):
     from pyface.qt import QtGui
     from traitsui.qt4.color_editor import (
         ToolkitEditorFactory as StandardColorEditorFactory,
