@@ -251,6 +251,8 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             pil_img = img
         elif hasattr(img, "bmp_array"):
             # An offscreen kiva agg context
+            if hasattr(img, "convert_pixel_format"):
+                img = img.convert_pixel_format("rgba32", inplace=0)
             pil_img = Image.fromarray(img.bmp_array)
         else:
             warnings.warn(

@@ -867,6 +867,18 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             )
         elif isinstance(img, Image.Image):
             converted_img = img.convert("RGBA")
+            img_width, img_height = img.width, img.height
+            img_surface = cairo.ImageSurface.create_for_data(
+                converted_img.flatten(),
+                cairo.FORMAT_RGB24,
+                img_width,
+                img_height,
+            )
+        elif hasattr(img, "bmp_array"):
+            # a kiva agg context
+            if hasattr(img, "convert_pixel_format"):
+                img = img.convert_pixel_format("rgba32", inplace=0)
+            converted_img = Image.fromarray(img.bmp_array)
             flipped_array = numpy.flipud(numpy.array(converted_img))
             img_width, img_height = img.width, img.height
             img_surface = cairo.ImageSurface.create_for_data(
