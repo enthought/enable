@@ -19,6 +19,7 @@ class Window(BaseGLWindow):
         gc = GraphicsContext((size[0] + 1, size[1] + 1))
         self._fake_pyglet_context = FakePygletContext()
         gc.gl_init()
+        gc.scale_ctm(self._dpr, self._dpr)
         gc.translate_ctm(0.5, 0.5)
         return gc
 

@@ -17,6 +17,8 @@ from .scrollbar import NativeScrollBar
 class Window(BaseWindow):
     def _create_gc(self, size, pix_format=None):
         gc = GraphicsContext((size[0] + 1, size[1] + 1), parent=self.control)
+        # NOTE: We don't set the scale to the device pixel ratio here as with
+        # other kiva backends. It's handled internally by Qt.
         gc.translate_ctm(0.5, 0.5)
 
         return gc
