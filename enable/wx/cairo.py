@@ -22,7 +22,10 @@ from enable.base import union_bounds
 class Window(BaseWindow):
     def _create_gc(self, size, pix_format="bgra32"):
         "Create a Kiva graphics context of a specified size"
-        gc = GraphicsContext((size[0] + 1, size[1] + 1))
+        gc = GraphicsContext(
+            (size[0] + 1, size[1] + 1),
+            base_pixel_scale=self.base_pixel_scale,
+        )
         gc.translate_ctm(0.5, 0.5)
         return gc
 
