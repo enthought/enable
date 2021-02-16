@@ -16,7 +16,7 @@ Interactive editor for exploring Kiva image drawing.
 import numpy as np
 from PIL import Image
 
-from traits.api import Any, Enum, Instance
+from traits.api import Enum, Instance
 from traitsui.api import HSplit, Item, ModelView, VGroup, View
 
 from enable.api import Component, ComponentEditor
@@ -26,7 +26,7 @@ class ImageComponent(Component):
     """ An Enable component that draws an image
     """
     #: The image data to draw
-    image = Any()
+    image = Instance(Image.Image)
 
     #: What's the color space of the image?
     image_mode = Enum('RGB', 'RGBA', 'L', 'P')
@@ -54,8 +54,7 @@ class ImageComponent(Component):
         if components == 4:
             img[:, :, 3] = np.linspace(0, 255, num=512*512).reshape(512, 512)
 
-        pilimg = Image.fromarray(img).convert(mode)
-        return np.array(pilimg)
+        return Image.fromarray(img).convert(mode)
 
     def _image_mode_changed(self):
         self.image = self._image_default()
