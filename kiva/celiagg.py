@@ -455,8 +455,12 @@ class GraphicsContext(object):
 
             Region should be a 4-tuple or a sequence.
         """
-        tx, ty = self.transform.tx, self.transform.ty
-        self.canvas_state.clip_box = agg.Rect(tx + x, ty + y, w, h)
+        # The passed in rect should be transformed.
+        # NOTE: Rotations will have an undefined result
+        x0, y0 = self.transform.worldToScreen(x, y)
+        x1, y1 = self.transform.worldToScreen(x + w, y + h)
+        w, h = abs(x1 - x0), abs(y1 - y0)
+        self.canvas_state.clip_box = agg.Rect(x0, y0, w, h)
 
     def clip_to_rects(self, rects):
         """ Clip context to a collection of rectangles
