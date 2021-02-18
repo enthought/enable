@@ -17,6 +17,10 @@ except ImportError:
     PYGLET_NOT_AVAILABLE = True
 else:
     PYGLET_NOT_AVAILABLE = False
+try:
+    from pyface.qt import is_qt5
+except ImportError:
+    is_qt5 = False
 
 from kiva.tests.drawing_tester import DrawingImageTester
 
@@ -34,6 +38,10 @@ class TestGLDrawing(DrawingImageTester, unittest.TestCase):
 
     def create_graphics_context(self, width, height, pixel_scale):
         from kiva.gl import GraphicsContext
+
+        # XXX: Testing GL for the null toolkit made me do this!
+        if not is_qt5:
+            pixel_scale = 1.0
 
         # Back out the pixel scaling when creating the Window
         self.window = pyglet.window.Window(
