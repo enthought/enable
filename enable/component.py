@@ -766,16 +766,18 @@ class Component(CoordinateBox, Interactor):
             if not self.draw_valid:
                 # get a reference to the GraphicsContext class from the object
                 GraphicsContext = gc.__class__
-                dpr = self.window._dpr
+                # Some pixels are bigger than others
+                pixel_scale = self.window.base_pixel_scale
+                size = (int(width * pixel_scale), int(height * pixel_scale))
                 if hasattr(GraphicsContext, "create_from_gc"):
                     # For some backends, such as the mac, a much more efficient
                     # backbuffer can be created from the window gc.
-                    bb = GraphicsContext.create_from_gc(
-                        gc, (int(width * dpr), int(height * dpr))
-                    )
+                    bb = GraphicsContext.create_from_gc(gc, size)
                 else:
-                    bb = GraphicsContext((int(width * dpr), int(height * dpr)))
-                bb.scale_ctm(dpr, dpr)
+                    bb = GraphicsContext(size)
+
+                # Always scale by base_pixel_scale here
+                bb.scale_ctm(pixel_scale, pixel_scale)
 
                 # if not fill_padding, then we have to fill the backbuffer
                 # with the window color. This is the only way I've found that

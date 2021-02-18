@@ -15,7 +15,7 @@ from enable.window import Window
 
 from traits.etsconfig.api import ETSConfig
 
-from traits.api import Property, Tuple
+from traits.api import Bool, Property, Tuple
 from traitsui.api import BasicEditorFactory
 
 if ETSConfig.toolkit == "wx":
@@ -42,7 +42,12 @@ class _ComponentEditor(Editor):
 
         size = self._get_initial_size()
 
-        self._window = Window(parent, size=size, component=self.value)
+        self._window = Window(
+            parent,
+            size=size,
+            component=self.value,
+            high_resolution=self.factory.high_resolution,
+        )
 
         self.control = self._window.control
         self._window.bgcolor = self.factory.bgcolor
@@ -93,6 +98,9 @@ class ComponentEditor(BasicEditorFactory):
 
     # The background color for the window
     bgcolor = ColorTrait("sys_window")
+
+    # When available, use HiDPI for GraphicsContext rasterization.
+    high_resolution = Bool(True)
 
     # The default size of the Window wrapping this Enable component
     size = Tuple((400, 400))

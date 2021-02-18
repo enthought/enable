@@ -365,9 +365,8 @@ class _Window(AbstractWindow):
             parent = parent.parentWidget()
         self.control = self._create_control(parent, self)
 
-        self._dpr = 1.0
-        if hasattr(self.control, "devicePixelRatio"):
-            self._dpr = self.control.devicePixelRatio()
+        if self.high_resolution and hasattr(self.control, "devicePixelRatio"):
+            self.base_pixel_scale = self.control.devicePixelRatio()
 
         if pos is not None:
             self.control.move(*pos)
@@ -577,8 +576,8 @@ class _Window(AbstractWindow):
 
     def _get_control_size(self):
         if self.control:
-            return (int(self.control.width() * self._dpr),
-                    int(self.control.height() * self._dpr))
+            return (int(self.control.width() * self.base_pixel_scale),
+                    int(self.control.height() * self.base_pixel_scale))
 
         return None
 
@@ -617,8 +616,8 @@ class _Window(AbstractWindow):
     def _flip_y(self, y):
         """ Converts between a Kiva and a Qt y coordinate
         """
-        # Handle the device pixel ratio adjustment here
-        return int(self._size[1] / self._dpr - y - 1)
+        # Handle the pixel scale adjustment here since `self._size` is involved
+        return int(self._size[1] / self.base_pixel_scale - y - 1)
 
 
 class BaseGLWindow(_Window):

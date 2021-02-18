@@ -20,12 +20,11 @@ class Window(BaseWindow):
         gc = GraphicsContext(
             (size[0] + 1, size[1] + 1),
             pix_format=pix_format,
+            base_pixel_scale=self.base_pixel_scale,
             # We have to set bottom_up=0 or otherwise the PixelMap will
             # appear upside down in the QImage.
             bottom_up=0,
         )
-
-        gc.scale_ctm(self._dpr, self._dpr)
         gc.translate_ctm(0.5, 0.5)
 
         return gc

@@ -102,6 +102,10 @@ class GraphicsContext(object):
         self.font = None
         self.__state_stack = []
 
+        # For HiDPI support
+        base_scale = kwargs.pop('base_pixel_scale', 1)
+        self.transform.scale(base_scale, base_scale)
+
     # ----------------------------------------------------------------
     # Size info
     # ----------------------------------------------------------------
