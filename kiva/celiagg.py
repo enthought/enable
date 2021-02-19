@@ -15,9 +15,9 @@ import warnings
 import celiagg as agg
 import numpy as np
 
-from .abstract_graphics_context import AbstractGraphicsContext
-from .fonttools import Font
+from kiva.abstract_graphics_context import AbstractGraphicsContext
 import kiva.constants as constants
+from kiva.fonttools import Font
 
 # These are the symbols that a backend has to define.
 __all__ = ["CompiledPath", "Font", "font_metrics_provider", "GraphicsContext"]
@@ -608,15 +608,16 @@ class GraphicsContext(object):
     # Drawing Text
     # ----------------------------------------------------------------
 
-    def select_font(self, name, size, textEncoding):
+    def select_font(self, face_name, size=12, style='regular', encoding=None):
         """ Set the font for the current graphics context.
         """
-        self.font = agg.Font(name, size)
+        self.set_font(Font(face_name, size=size, style=style))
 
     def set_font(self, font):
         """ Set the font for the current graphics context.
         """
-        self.select_font(font.findfont(), font.size, None)
+        filename, face_index = font.findfont()
+        self.font = agg.Font(filename, font.size, face_index)
 
     def set_font_size(self, size):
         """ Set the font size for the current graphics context.

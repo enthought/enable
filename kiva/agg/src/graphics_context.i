@@ -560,11 +560,12 @@ namespace kiva {
                         and (font.encoding == cur_font.encoding):
                         return
                     else:
-                        newfilename = font.findfont()
+                        newfilename, face_index = font.findfont()
                         agg_font = AggFontType(font.face_name, font.size, font.family, font.style,
-                                               font.encoding, False)
+                                               font.encoding, face_index, False)
                         agg_font.filename = newfilename
                 else:
+                    # XXX: What are we expecting here?
                     agg_font = AggFontType(font.face_name, font.size, font.family, font.style, font.encoding)
                 try:
                     retval = _agg.GraphicsContextArray_set_font(self, agg_font)

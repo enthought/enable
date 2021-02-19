@@ -112,11 +112,12 @@ class Font(object):
         self.encoding = encoding
 
     def findfont(self):
-        """ Returns the file name containing the font that most closely matches
-        our font properties.
+        """ Returns the file name and face index of the font that most closely
+        matches our font properties.
         """
         fp = self._make_font_props()
-        return str(default_font_manager().findfont(fp))
+        filename, face_index = default_font_manager().findfont(fp)
+        return str(filename), face_index
 
     def findfontname(self):
         """ Returns the name of the font that most closely matches our font
@@ -181,7 +182,7 @@ class Font(object):
     def __repr__(self):
         fmt = (
             "Font(size=%d,family=%d,weight=%d, style=%d, face_name='%s', "
-            + "encoding=%d)"
+            "encoding=%d)"
         )
         return fmt % (
             self.size,

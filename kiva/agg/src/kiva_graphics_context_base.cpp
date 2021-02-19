@@ -668,12 +668,12 @@ void graphics_context_base::_grab_font_manager()
 #ifdef KIVA_USE_FREETYPE
     if (font->filename != "")
     {
-        font_engine->load_font(font->filename.c_str(), 0,
+        font_engine->load_font(font->filename.c_str(), font->face_index,
                                agg24::glyph_ren_agg_gray8);
     }
     else
     {
-        font_engine->load_font(font->name.c_str(), 0,
+        font_engine->load_font(font->name.c_str(), font->face_index,
                                agg24::glyph_ren_agg_gray8);
     }
 #endif

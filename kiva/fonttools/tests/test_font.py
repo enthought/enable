@@ -30,8 +30,9 @@ class TestFont(unittest.TestCase):
         # the path from which the font manager loads font files, then this test
         # can be less fragile.
         font = Font(face_name="")
-        font_file_path = font.findfont()
+        font_file_path, face_index = font.findfont()
         self.assertTrue(os.path.exists(font_file_path))
+        self.assertEqual(face_index, 0)
 
     def test_find_font_some_face_name(self):
         font = Font(face_name="ProbablyNotFound")
@@ -39,8 +40,9 @@ class TestFont(unittest.TestCase):
         # There will be warnings as there will be no match for the requested
         # face name.
         with self.assertWarns(UserWarning):
-            font_file_path = font.findfont()
+            font_file_path, face_index = font.findfont()
         self.assertTrue(os.path.exists(font_file_path))
+        self.assertEqual(face_index, 0)
 
     def test_find_font_name(self):
         font = Font(face_name="ProbablyNotFound")

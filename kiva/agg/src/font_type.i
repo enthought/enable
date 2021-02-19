@@ -26,7 +26,8 @@ namespace kiva
             std::string name;
             int family;
             int style;     
-            int encoding;  
+            int encoding;
+            int face_index;
             std::string filename;
             
             // constructor
@@ -35,6 +36,7 @@ namespace kiva
                       int _family=0,
                       int _style=0,
                       int _encoding=0,
+                      int _face_index=0,
                       bool validate=true);
                       
             int change_filename(std::string _filename);
@@ -47,12 +49,11 @@ namespace kiva
     char *__repr__()
     {
         static char tmp[1024];
-        // Write out elements of trans_affine in a,b,c,d,tx,ty order
         // !! We should work to make output formatting conform to 
         // !! whatever it Numeric does (which needs to be cleaned up also).
-        sprintf(tmp,"Font(%s,%d,%d,%d,%d)", self->name.c_str(), self->family,
-                                         self->size, self->style, 
-                                         self->encoding);
+        sprintf(tmp,"Font(%s,%d,%d,%d,%d,%d)",
+                self->name.c_str(), self->family, self->size, self->style,
+                self->encoding, self->face_index);
         return tmp;
     }
     int __eq__(kiva::font_type& other)
@@ -61,14 +62,15 @@ namespace kiva
                 self->family == other.family &&
                 self->size == other.size &&
                 self->style == other.style &&
-                self->encoding == other.encoding);
+                self->encoding == other.encoding &&
+                self->face_index == other.face_index);
     }    
 }
 
 %pythoncode
 %{
 def unicode_safe_init(self, _name="Arial", _size=12, _family=0, _style=0,
-                      _encoding=0, validate=True):
+                      _encoding=0, _face_index=0, validate=True):
     ### HACK:  C++ stuff expects a string (not unicode) for the face_name, so fix
     ###        if needed.
     ### Only for python < 3
@@ -79,7 +81,7 @@ def unicode_safe_init(self, _name="Arial", _size=12, _family=0, _style=0,
         if isinstance(_name, bytes):
             _name = _name.decode()
     obj = _agg.new_AggFontType(_name, _size, _family, _style,
-                               _encoding, validate)
+                               _encoding, _face_index, validate)
     _swig_setattr(self, AggFontType, "this", obj)
     _swig_setattr(self, AggFontType, "thisown", 1)
 
