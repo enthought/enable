@@ -39,7 +39,6 @@ import warnings
 from numpy import arange, ndarray, ravel
 
 # Local, relative Kiva imports
-from kiva import agg
 from . import affine
 from . import basecore2d
 from . import constants
@@ -237,36 +236,24 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         pixel size.  If 'rect' is provided, then the image is resized
         into the (w,h) given and drawn into this GC at point (x,y).
 
-        img_gc is either a Numeric array (WxHx3 or WxHx4) or a GC from Kiva's
-        Agg backend (kiva.agg.GraphicsContextArray).
+        img_gc is either a Numeric array (WxHx3 or WxHx4) or a PIL Image.
 
         Requires the Python Imaging Library (PIL).
         """
-        from PIL import Image as PilImage
+        from PIL import Image
 
         # We turn img into a PIL object, since that is what ReportLab
-        # requires.  To do this, we first determine if the input image
-        # GC needs to be converted to RGBA/RGB.  If so, we see if we can
-        # do it nicely (using convert_pixel_format), and if not, we do
-        # it brute-force using Agg.
-
+        # requires.
         if isinstance(img, ndarray):
             # From numpy array
-            pilformat = "RGBA"
-            pil_img = PilImage.fromarray(img, pilformat)
-        elif isinstance(img, agg.GraphicsContextArray):
-            converted_img = img
-            if img.format().startswith("RGBA"):
-                pilformat = "RGBA"
-            elif img.format().startswith("RGB"):
-                pilformat = "RGB"
-            else:
-                converted_img = img.convert_pixel_format("rgba32", inplace=0)
-                pilformat = "RGBA"
-            # Should probably take this into account
-            # interp = img.get_image_interpolation()
-            # Conversion from GraphicsContextArray
-            pil_img = PilImage.fromarray(converted_img.bmp_array, pilformat)
+            pil_img = Image.fromarray(img)
+        elif isinstance(img, Image.Image):
+            pil_img = img
+        elif hasattr(img, "bmp_array"):
+            # An offscreen kiva agg context
+            if hasattr(img, "convert_pixel_format"):
+                img = img.convert_pixel_format("rgba32", inplace=0)
+            pil_img = Image.fromarray(img.bmp_array)
         else:
             warnings.warn(
                 "Cannot render image of type %r into SVG context." % type(img)
@@ -279,9 +266,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         left, top, width, height = rect
         if width != pil_img.width or height != pil_img.height:
             # This is not strictly required.
-            pil_img = pil_img.resize(
-                (int(width), int(height)), PilImage.NEAREST
-            )
+            pil_img = pil_img.resize((int(width), int(height)), Image.NEAREST)
 
         png_buffer = BytesIO()
         pil_img.save(png_buffer, "png")

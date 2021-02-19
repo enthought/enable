@@ -28,14 +28,23 @@ def image_as_array(img):
     Typically, this is used to adapt an agg GraphicsContextArray which has been
     used for image storage in Kiva applications.
     """
+    from PIL import Image
+
     if hasattr(img, "bmp_array"):
         # Yup, a GraphicsContextArray.
-        return img.bmp_array
+        img = Image.fromarray(img.bmp_array)
     elif isinstance(img, ndarray):
-        return img
+        img = Image.fromarray(img)
+    elif isinstance(img, Image.Image):
+        pass
     else:
         msg = "can't convert %r into a numpy array" % (img,)
         raise NotImplementedError(msg)
+
+    # Ensure RGB or RGBA formats
+    if not img.mode.startswith("RGB"):
+        img = img.convert("RGB")
+    return array(img)
 
 
 def get_dpi():
