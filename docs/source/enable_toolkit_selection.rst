@@ -101,7 +101,7 @@ The objects which are supplied by a toolkit/backend implementation are:
 
 Because this is done via the setuptools entrypoint mechanism, it means that code
 outside of Enable can contribute a custom toolkit and backends. To create a new
-toolkit, you should need to do the following:
+toolkit, you need to do the following:
 
 1. Create a package for the toolkit
 2. Add a ``toolkit.py`` module (its name is just a convention) which should
