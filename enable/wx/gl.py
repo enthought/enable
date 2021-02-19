@@ -43,7 +43,10 @@ class Window(BaseWindow):
     def _create_gc(self, size, pix_format=None):
         """ Create a GraphicsContext instance.
         """
-        gc = GraphicsContext((size[0] + 1, size[1] + 1))
+        gc = GraphicsContext(
+            (size[0] + 1, size[1] + 1),
+            base_pixel_scale=self.base_pixel_scale,
+        )
         if self._pyglet_gl_context is None:
             self._pyglet_gl_context = FakePygletContext()
         gc.gl_init()
