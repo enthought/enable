@@ -2,8 +2,8 @@ Enable Concepts
 ===============
 
 This document contains notes from a brain dump session by Peter Wang with
-Janet Swisher on March 19, 2008. It is notes rather than full explanations,
-which we hope to add later.
+Janet Swisher on March 19, 2008. It is notes rather than full explanations, but
+gives good background from the original developer of Enable.
 
 Enable Component
 ----------------
@@ -74,7 +74,7 @@ a bridge between the OS and GUI toolkit. The :attr:`window` trait delegates all
 the way up the containment chain to the top-level component, which has an actual
 reference to the actual window.
 
-The reference to the window is useful because Chaco doesn't make calls directly
+The reference to the window is useful because Enable doesn't make calls directly
 to the GUI toolkit. Rather, it asks the window to do things for it, such as
 creating a context menu.
 
@@ -97,8 +97,8 @@ is to dispatch to:
 5. its listener tools
 
 That logic is in :class:`Component`, in the :meth:`\_new_dispatch` method, which
-is called from :meth:`Component.dispatch` (:meth:`\_old_dispatch` will be
-removed in 3.0). If any of these handlers sets event.handled to True, event
+is called from :meth:`Component.dispatch` (:meth:`\_old_dispatch` is still
+being used by Chaco). If any of these handlers sets event.handled to True, event
 propagation stops. If an event gets as far as the listener tools, then all of
 them get the event.
 
@@ -180,7 +180,6 @@ Currently, this is used for the canvas, and for geophysical plotting. You could
 use it for something like a magnifying-glass view of a portion of a component or
 plot without duplicating it.
 
-.. Recording timestamp: (0:23:52)
 
 Layout
 ~~~~~~
@@ -196,6 +195,9 @@ also have lists of overlays and underlays.
 You can get access to the actual bounds of the component, including its
 padding with the :samp:`outer_{name}` attributes. Those also take into account
 the thickness of any border around the component.
+
+For more control over layout, there is a
+:ref:`constraints-based layout<constraints-layout>` system available.
 
 Rendering
 ~~~~~~~~~
@@ -254,23 +256,3 @@ Enable Container
 nested. Containers are responsible for event dispatch, draw dispatch, and
 layout. Containers override a lot of Component methods, so that they behave more
 like containers than plain components do.
-
-.. Recording timestamp: (0:43:40)
-
-Examples
---------
-
-BasicDraw
-~~~~~~~~~
-
-Just draws a box. Subclasses :class:`Component`, and implements
-:meth:`\_draw_mainlayer`. Uses :class:`DemoFrame` and :func:`demo_main`
-boilerplate code to simplify the example code.
-
-BasicMove
-~~~~~~~~~
-
-Adds interaction. Has a more complex :meth:`\_draw_mainlayer`; defines an event
-handler.
-
-
