@@ -1,3 +1,5 @@
+.. _constraints-layout:
+
 Enable Constraints Layout
 =========================
 

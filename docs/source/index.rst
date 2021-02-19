@@ -10,6 +10,7 @@ Enable Documentation
   enable_basic_tools.rst
   enable_drag_and_drop.rst
   enable_undo_redo.rst
+  enable_toolkit_selection.rst
 
   kiva.rst
   credits.rst

@@ -34,6 +34,7 @@ import sys, os
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
     "sphinx.ext.autodoc",
+    'sphinx.ext.intersphinx',
     "sphinx.ext.napoleon",
     # Link to code in sphinx generated API docs
     "sphinx.ext.viewcode",
@@ -206,3 +207,9 @@ latex_documents = [
 
 # If false, no module index is generated.
 #latex_use_modindex = True
+
+# Intersphinx mappings
+intersphinx_mapping = {
+    'traits': ('http://docs.enthought.com/traits', None),
+    'pyface': ('http://docs.enthought.com/pyface', None),
+}
