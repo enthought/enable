@@ -161,6 +161,19 @@ class DrawingTester(object):
 class DrawingImageTester(DrawingTester):
     """ Basic drawing tests for graphics contexts of gui toolkits.
     """
+    def setUp(self):
+        self.directory = tempfile.mkdtemp()
+        self.filename = os.path.join(self.directory, "rendered")
+        self.gc = self.create_graphics_context(600, 600, 2.0)
+        self.gc.clear()
+        self.gc.set_stroke_color((1.0, 0.0, 0.0))
+        self.gc.set_fill_color((1.0, 0.0, 0.0))
+        self.gc.set_line_width(5)
+
+    def create_graphics_context(self, width, length, pixel_scale):
+        """ Create the desired graphics context
+        """
+        raise NotImplementedError()
 
     @contextlib.contextmanager
     def draw_and_check(self):
@@ -175,7 +188,7 @@ class DrawingImageTester(DrawingTester):
         image = numpy.array(Image.open(filename))
         # default is expected to be a totally white image
 
-        self.assertEqual(image.shape[:2], (300, 300))
+        self.assertEqual(image.shape[:2], (600, 600))
         if image.shape[2] == 3:
             check = numpy.sum(image == [255, 0, 0], axis=2) == 3
         elif image.shape[2] == 4:

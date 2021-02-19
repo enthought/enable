@@ -76,9 +76,12 @@ class GraphicsContext(object):
         self.gc = QtGui.QPainter(self.qt_dc)
         self.path = CompiledPath()
 
+        # For HiDPI support, we only need to adjust for `size`
+        base_pixel_scale = kwargs.pop("base_pixel_scale", 1)
+
         # flip y
         trans = QtGui.QTransform()
-        trans.translate(0, size[1])
+        trans.translate(0, size[1] / base_pixel_scale)
         trans.scale(1.0, -1.0)
         self.gc.setWorldTransform(trans)
 

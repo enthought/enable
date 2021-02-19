@@ -37,14 +37,13 @@ class TestQPainterDrawing(DrawingImageTester, unittest.TestCase):
 
         DrawingImageTester.setUp(self)
 
-    def create_graphics_context(self, width, height):
+    def create_graphics_context(self, width, height, pixel_scale):
         from kiva.qpainter import GraphicsContext
 
-        return GraphicsContext((width, height))
+        return GraphicsContext((width, height), base_pixel_scale=pixel_scale)
 
-    @unittest.expectedFailure
+    @unittest.skip("QPainter interprets images as BGRA.")
     def test_image(self):
-        """ QPainter interprets images as BGRA. """
         super().test_image()
 
     @unittest.skipIf(is_qt5 and is_linux, "Currently segfaulting")
