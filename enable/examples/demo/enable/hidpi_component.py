@@ -8,7 +8,10 @@
 #
 # Thanks for using Enthought open source!
 """
-Basic demo of controlling the pixel resolution of an Enable component
+Basic demo of controlling the pixel resolution of an Enable component.
+
+HiDPI graphics are available when using Qt 5.x+ or WxWidgets 4.x+. With Qt 4.x,
+you will not see any difference between the two components.
 """
 import math
 
