@@ -850,13 +850,10 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
     def draw_image(self, img, rect=None):
         """
-        img is either a N*M*3 or N*M*4 numpy array, or a Kiva image
-
-        rect - what is this? assume it's a tuple (x,y, w, h)
-        Only works with numpy arrays. What is a "Kiva Image" anyway?
-        Not Yet Tested.
+        `img` is either a N*M*3 or N*M*4 numpy array, or a PIL Image
+        `rect` is a tuple (x, y, w, h)
         """
-        from kiva import agg
+        from PIL import Image
 
         if isinstance(img, numpy.ndarray):
             # Numeric array
@@ -868,18 +865,27 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             img_surface = cairo.ImageSurface.create_for_data(
                 img.astype(numpy.uint8), format, img_width, img_height
             )
-        elif isinstance(img, agg.GraphicsContextArray):
-            converted_img = img.convert_pixel_format("rgba32", inplace=0)
-            flipped_array = numpy.flipud(converted_img.bmp_array)
-            img_width, img_height = (
-                converted_img.width(),
-                converted_img.height(),
-            )
+        elif isinstance(img, Image.Image):
+            converted_img = img.convert("RGBA")
+            img_width, img_height = img.width, img.height
             img_surface = cairo.ImageSurface.create_for_data(
-                flipped_array.flatten(),
+                converted_img.flatten(),
                 cairo.FORMAT_RGB24,
                 img_width,
                 img_height,
+            )
+        elif hasattr(img, "bmp_array"):
+            # a kiva agg context
+            if hasattr(img, "convert_pixel_format"):
+                img = img.convert_pixel_format("rgba32", inplace=0)
+            converted_img = Image.fromarray(img.bmp_array)
+            flipped_array = numpy.flipud(numpy.array(converted_img))
+            img_width, img_height = img.width, img.height
+            img_surface = cairo.ImageSurface.create_for_data(
+                flipped_array.flatten(),
+                cairo.FORMAT_RGB24,
+                img.width,
+                img.height,
             )
         elif isinstance(img, GraphicsContext):
             # Another cairo kiva context

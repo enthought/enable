@@ -732,10 +732,14 @@ cdef class CGContext:
     def draw_image(self, object image, object rect=None):
         """ Draw an image or another CGContext onto a region.
         """
+        from PIL import Image
+
         if rect is None:
             rect = (0, 0, self.width(), self.height())
         if isinstance(image, numpy.ndarray):
             self._draw_cgimage(CGImage(image), rect)
+        elif isinstance(image, Image.Image):
+            self._draw_cgimage(CGImage(numpy.array(image)), rect)
         elif isinstance(image, CGImage):
             self._draw_cgimage(image, rect)
         elif hasattr(image, 'bmp_array'):

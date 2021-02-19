@@ -556,48 +556,27 @@ class GraphicsContext(object):
 
     def draw_image(self, img, rect=None):
         """
-        img is either a N*M*3 or N*M*4 numpy array, or a Kiva image
+        img is either a N*M*3 or N*M*4 numpy array, or a PIL Image
 
         rect - a tuple (x, y, w, h)
         """
-        from kiva import agg
-
-        def copy_padded(array):
-            """ Pad image width to a multiple of 4 pixels, and minimum dims of
-                12x12. QImage is very particular about its data.
-            """
-            y, x, d = array.shape
-            pad = (lambda v: (4 - (v % 4)) % 4)
-            nx = max(x + pad(x), 12)
-            ny = max(y, 12)
-            if x == nx and y == ny:
-                return array
-            ret = np.zeros((ny, nx, d), dtype=np.uint8)
-            ret[:y, :x] = array[:]
-            return ret
+        from PIL import Image, ImageQt
 
         if isinstance(img, np.ndarray):
             # Numeric array
-            if img.shape[2] == 3:
-                format = QtGui.QImage.Format_RGB888
-            elif img.shape[2] == 4:
-                format = QtGui.QImage.Format_RGB32
-            width, height = img.shape[:2]
-            copy_array = copy_padded(img)
-            draw_img = QtGui.QImage(
-                img.astype(np.uint8), copy_array.shape[1], height, format
-            )
+            pilimg = Image.fromarray(img)
+            width, height = pilimg.width, pilimg.height
+            draw_img = ImageQt.ImageQt(pilimg)
             pixmap = QtGui.QPixmap.fromImage(draw_img)
-        elif isinstance(img, agg.GraphicsContextArray):
-            converted_img = img.convert_pixel_format("bgra32", inplace=0)
-            copy_array = copy_padded(converted_img.bmp_array)
-            width, height = img.width(), img.height()
-            draw_img = QtGui.QImage(
-                copy_array.flatten(),
-                copy_array.shape[1],
-                height,
-                QtGui.QImage.Format_RGB32,
-            )
+        elif isinstance(img, Image.Image):
+            width, height = img.width, img.height
+            draw_img = ImageQt.ImageQt(img)
+            pixmap = QtGui.QPixmap.fromImage(draw_img)
+        elif hasattr(img, "bmp_array"):
+            # An offscreen kiva agg context
+            pilimg = Image.fromarray(img.bmp_array)
+            width, height = pilimg.width, pilimg.height
+            draw_img = ImageQt.ImageQt(pilimg)
             pixmap = QtGui.QPixmap.fromImage(draw_img)
         elif (isinstance(img, GraphicsContext)
                 and isinstance(img.qt_dc, QtGui.QPixmap)
