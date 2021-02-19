@@ -28,7 +28,7 @@ def _wx_bitmap_from_buffer(buf, width, height):
     copy[..., 1::4] = arr[..., 1::4]
     copy[..., 2::4] = arr[..., 0::4]
     copy[..., 3::4] = arr[..., 3::4]
-    return wx.BitmapFromBufferRGBA(width, height, np.ravel(copy))
+    return wx.Bitmap.FromBufferRGBA(width, height, np.ravel(copy))
 
 
 class Window(BaseWindow):
@@ -41,6 +41,7 @@ class Window(BaseWindow):
         gc = GraphicsContext(
             (size[0] + 1, size[1] + 1),
             pix_format=pix_format,
+            base_pixel_scale=self.base_pixel_scale,
             bottom_up=bottom_up,
         )
         gc.translate_ctm(0.5, 0.5)
@@ -65,6 +66,7 @@ class Window(BaseWindow):
                 self._gc.width(),
                 self._gc.height(),
             )
+            bmp.SetSize(control.GetSize())
             wdc.DrawBitmap(bmp, 0, 0)
 
         control._dc = None

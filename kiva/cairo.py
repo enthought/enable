@@ -97,6 +97,8 @@ class PixelMap(object):
         image = wx.EmptyImage(self.width, self.height)
         image.SetDataBuffer(arr.data)
         bmp = wx.BitmapFromImage(image, depth=-1)
+        # Scale HiDPI images to fit window
+        bmp.SetSize(window.GetSize())
 
         window_dc.BeginDrawing()
         window_dc.DrawBitmap(bmp, x, y)
