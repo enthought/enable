@@ -42,10 +42,6 @@ class TestQPainterDrawing(DrawingImageTester, unittest.TestCase):
 
         return GraphicsContext((width, height), base_pixel_scale=pixel_scale)
 
-    @unittest.skip("QPainter interprets images as BGRA.")
-    def test_image(self):
-        super().test_image()
-
     @unittest.skipIf(is_qt5 and is_linux, "Currently segfaulting")
     def test_text(self):
         super().test_text()

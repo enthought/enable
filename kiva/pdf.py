@@ -566,8 +566,7 @@ class GraphicsContext(GraphicsContextBase):
         pixel size.  If 'rect' is provided, then the image is resized
         into the (w, h) given and drawn into this GC at point (x, y).
 
-        img_gc is either a Numeric array (WxHx3 or WxHx4) or a GC from Kiva's
-        Agg backend (kiva.agg.GraphicsContextArray).
+        img_gc is either a Numeric array (WxHx3 or WxHx4) or a PIL Image.
 
         Requires the Python Imaging Library (PIL).
         """
@@ -579,22 +578,17 @@ class GraphicsContext(GraphicsContextBase):
         # it brute-force using Agg.
         from reportlab.lib.utils import ImageReader
         from PIL import Image
-        from kiva import agg
 
         if isinstance(img, ndarray):
             # Conversion from numpy array
-            pil_img = Image.fromarray(img, "RGBA")
-        elif isinstance(img, agg.GraphicsContextArray):
-            converted_img = img
-            if img.format().startswith("RGBA"):
-                pilformat = "RGBA"
-            elif img.format().startswith("RGB"):
-                pilformat = "RGB"
-            else:
-                converted_img = img.convert_pixel_format("rgba32", inplace=0)
-                pilformat = "RGBA"
-            # Conversion from GraphicsContextArray
-            pil_img = Image.fromarray(converted_img.bmp_array, pilformat)
+            pil_img = Image.fromarray(img)
+        elif isinstance(img, Image.Image):
+            pil_img = img
+        elif hasattr(img, "bmp_array"):
+            # An offscreen kiva agg context
+            if hasattr(img, "convert_pixel_format"):
+                img = img.convert_pixel_format("rgba32", inplace=0)
+            pil_img = Image.fromarray(img.bmp_array)
         else:
             warnings.warn(
                 "Cannot render image of type %r into PDF context." % type(img)
