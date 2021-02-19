@@ -177,6 +177,10 @@ class BaseWindow(AbstractWindow):
         # Create the delegate:
         self.control = control = self._create_control(parent, wid, pos, size)
 
+        # Figure out the pixel scale factor
+        if self.high_resolution:
+            self.base_pixel_scale = self.control.GetContentScaleFactor()
+
         # Set up the 'erase background' event handler:
         control.Bind(wx.EVT_ERASE_BACKGROUND, self._on_erase_background)
 
@@ -263,7 +267,8 @@ class BaseWindow(AbstractWindow):
     def _flip_y(self, y):
         """ Convert from a Kiva to a wxPython y coordinate
         """
-        return int(self._size[1] - 1 - y)
+        # Handle the device pixel ratio adjustment here
+        return int(self._size[1] / self.base_pixel_scale - 1 - y)
 
     def _on_erase_background(self, event):
         pass
@@ -325,7 +330,7 @@ class BaseWindow(AbstractWindow):
 
         if focus_owner is not None:
             if event_type == "character":
-                key = chr(event.GetUniChar())
+                key = chr(event.GetUnicodeKey())
                 if not key:
                     return None
             else:
@@ -333,7 +338,7 @@ class BaseWindow(AbstractWindow):
                 if key_code in KEY_MAP:
                     key = KEY_MAP.get(key_code)
                 else:
-                    key = chr(event.GetUniChar()).lower()
+                    key = chr(event.GetUnicodeKey()).lower()
 
             # Use the last-seen mouse coordinates instead of GetX/GetY due
             # to wx bug.
@@ -439,7 +444,7 @@ class BaseWindow(AbstractWindow):
         """
         result = None
         if self.control:
-            result = self.control.GetSize()
+            result = self.control.GetSize() * self.base_pixel_scale
         return result
 
     def _window_paint(self, event):
@@ -451,8 +456,8 @@ class BaseWindow(AbstractWindow):
         """ Set the current pointer (i.e. cursor) shape
         """
         ptr = POINTER_MAP[pointer]
-        if type(ptr) is int:
-            POINTER_MAP[pointer] = ptr = wx.StockCursor(ptr)
+        if isinstance(ptr, type(wx.CURSOR_ARROW)):
+            POINTER_MAP[pointer] = ptr = wx.Cursor(ptr)
         self.control.SetCursor(ptr)
 
     def set_tooltip(self, tooltip):
