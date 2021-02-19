@@ -16,7 +16,11 @@ from .scrollbar import NativeScrollBar
 
 class Window(BaseWindow):
     def _create_gc(self, size, pix_format=None):
-        gc = GraphicsContext((size[0] + 1, size[1] + 1), parent=self.control)
+        gc = GraphicsContext(
+            (size[0] + 1, size[1] + 1),
+            base_pixel_scale=self.base_pixel_scale,
+            parent=self.control,
+        )
         gc.translate_ctm(0.5, 0.5)
 
         return gc

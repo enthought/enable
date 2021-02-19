@@ -31,7 +31,8 @@ try:
 
     class GraphicsContextSystem(GraphicsContextArray):
         def __init__(self, size, pix_format=default_pix_format,
-                     interpolation="nearest", bottom_up=True):
+                     interpolation="nearest", base_pixel_scale=1.0,
+                     bottom_up=True):
             assert isinstance(size, tuple), repr(size)
             width, height = size
             pixel_map = PixelMap(
@@ -42,7 +43,8 @@ try:
                 bool(bottom_up),
             ).set_bmp_array()
             GraphicsContextArray.__init__(
-                self, pixel_map.bmp_array, pix_format, interpolation, bottom_up
+                self, pixel_map.bmp_array, pix_format, interpolation,
+                base_pixel_scale, bottom_up
             )
             self.pixel_map = pixel_map
 

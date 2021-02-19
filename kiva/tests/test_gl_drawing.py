@@ -32,11 +32,13 @@ class TestGLDrawing(DrawingImageTester, unittest.TestCase):
             del self.window
         DrawingImageTester.tearDown(self)
 
-    def create_graphics_context(self, width, height):
+    def create_graphics_context(self, width, height, pixel_scale):
         from kiva.gl import GraphicsContext
 
+        # XXX: Ignore scaling in the unit tests so this works on CI.
+        # But really, we should just get rid of this rotted backend.
         self.window = pyglet.window.Window(width=width, height=height)
-        gc = GraphicsContext((width, height))
+        gc = GraphicsContext((width, height), base_pixel_scale=1.0)
         gc.gl_init()
         return gc
 

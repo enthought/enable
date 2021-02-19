@@ -447,8 +447,12 @@ class GraphicsContext(GraphicsContextGL):
     def __init__(self, size, *args, **kw):
         # Ignore the pix_format argument for now
         kw.pop("pix_format", None)
+        base_scale = kw.pop("base_pixel_scale", 1)
         GraphicsContextGL.__init__(self, size[0], size[1], *args, **kw)
         self.corner_pixel_origin = True
+
+        # For HiDPI support
+        self.scale_ctm(base_scale, base_scale)
 
         self._font_stack = []
         self._current_font = None
