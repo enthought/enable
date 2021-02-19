@@ -305,7 +305,8 @@ namespace kiva {
             %{
             # We define our own constructor AND destructor.
             def __init__(self, ary_or_size, pix_format="bgra32",
-                         interpolation="nearest", bottom_up=1):
+                         interpolation="nearest", base_pixel_scale=1.0,
+                         bottom_up=1):
                 """ When specifying size, it must be a two element tuple.
                     Array input is always treated as an image.
 
@@ -357,6 +358,9 @@ namespace kiva {
 
                 obj = graphics_context_from_array(ary,pix_format_id,interpolation_id,
                                                   bottom_up)
+
+                # Apply base scale for a HiDPI context
+                _agg.GraphicsContextArray_scale_ctm(obj, base_pixel_scale, base_pixel_scale)
 
                 _swig_setattr(self, GraphicsContextArray, 'this', obj)
                 # swig 1.3.28 does not have real thisown, thisown is mapped

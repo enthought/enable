@@ -14,7 +14,7 @@ from numpy import dot
 
 # Enthought library imports
 from traits.api import (
-    Any, Bool, Event, HasTraits, Instance, List, Property, Trait, Tuple,
+    Any, Bool, Event, Float, HasTraits, Instance, List, Property, Trait, Tuple,
 )
 
 
@@ -55,6 +55,14 @@ class AbstractWindow(HasTraits):
     # When a component captures the mouse, it can optionally store a
     # dispatch order for events (until it releases the mouse).
     mouse_owner_dispatch_history = Trait(None, None, List)
+
+    # A scaling constant applied to any GraphicsContext used for drawing the
+    # window's component.
+    base_pixel_scale = Float(1.0)
+
+    # When True, allow `base_pixel_scale` to be greater than 1 if the
+    # underlying toolkit supports it.
+    high_resolution = Bool(True)
 
     # The background window of the window.  The entire window first gets
     # painted with this color before the component gets to draw.

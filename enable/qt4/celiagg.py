@@ -22,7 +22,11 @@ class Window(BaseWindow):
     _shuffle_buffer = Array(shape=(None, None, 4), dtype=np.uint8)
 
     def _create_gc(self, size, pix_format="rgba32"):
-        gc = GraphicsContext((size[0] + 1, size[1] + 1), pix_format=pix_format)
+        gc = GraphicsContext(
+            (size[0] + 1, size[1] + 1),
+            pix_format=pix_format,
+            base_pixel_scale=self.base_pixel_scale,
+        )
         gc.translate_ctm(0.5, 0.5)
 
         self._shuffle_buffer = np.empty(
@@ -44,7 +48,7 @@ class Window(BaseWindow):
         image = QtGui.QImage(
             self._shuffle_buffer, w, h, QtGui.QImage.Format_RGB32
         )
-        rect = QtCore.QRect(0, 0, w, h)
+        rect = QtCore.QRectF(0, 0, self.control.width(), self.control.height())
         painter = QtGui.QPainter(self.control)
         painter.drawImage(rect, image)
 
