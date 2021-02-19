@@ -816,13 +816,16 @@ class GraphicsContext(object):
         if file_format is None:
             file_format = ''
 
-        # Data is BGRA; Convert to RGBA
         pixels = self.gc.array
-        data = np.empty(pixels.shape, dtype=np.uint8)
-        data[..., 0] = pixels[..., 2]
-        data[..., 1] = pixels[..., 1]
-        data[..., 2] = pixels[..., 0]
-        data[..., 3] = pixels[..., 3]
+        if self.pix_format.startswith('bgra'):
+            # Data is BGRA; Convert to RGBA
+            data = np.empty(pixels.shape, dtype=np.uint8)
+            data[..., 0] = pixels[..., 2]
+            data[..., 1] = pixels[..., 1]
+            data[..., 2] = pixels[..., 0]
+            data[..., 3] = pixels[..., 3]
+        else:
+            data = pixels
         img = Image.fromarray(data, 'RGBA')
 
         # Check the output format to see if it can handle an alpha channel.
