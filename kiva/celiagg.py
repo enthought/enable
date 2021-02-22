@@ -850,6 +850,7 @@ class GraphicsContext(object):
 
         pixels = self.gc.array
         if self.pix_format.startswith('bgra'):
+            # Data is BGRA; Convert to RGBA
             data = np.empty(pixels.shape, dtype=np.uint8)
             data[..., 0] = pixels[..., 2]
             data[..., 1] = pixels[..., 1]

@@ -847,8 +847,8 @@ namespace kiva {
                 else:
                     bmp = self.bmp_array
 
-                from kiva import compat
-                return compat.pilfromstring(pilformat, size, bmp.tostring())
+                from PIL import Image
+                return Image(bmp, pilformat)
 
             def save(self, filename, file_format=None, pil_options=None):
                 """ Save the GraphicsContext to a file.  Output files are always
