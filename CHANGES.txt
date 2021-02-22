@@ -32,6 +32,8 @@ Enhancements
 Changes
 -------
 
+* Add HiDPI support (#591, #595)
+* Accept a PIL Image as input to ``draw_image`` (#590)
 * Use Pyface-style toolkit selection. (#571)
 * Remove the old and outdated pyglet and vtk backends. (#570)
 * Remove the PIL/pillow kiva compatibility wrapper code. (#569)
@@ -48,6 +50,10 @@ Changes
 Fixes
 -----
 
+* Allow scaling in ``kiva.agg`` ``draw_marker_at_points`` (#594)
+* Celiagg's ``clip_to_rect`` should respect the transform matrix (#592)
+* Handle ``ETSConfig.toolkit == 'qt'`` (#587)
+* Undo removal of get_mac_context import (#586)
 * Allow unhandled key and mouse-wheel events to bubble up. (#552)
 * Fix ``Font.findfontname`` ``AttributeError`` when the default font manager
   has not been initialized. (#531)
@@ -64,6 +70,9 @@ Fixes
 Documentation
 -------------
 
+* Add documentation for toolkit/backend selection (#597)
+* Add an example of controlling HiDPI usage (#596)
+* Add an Image Explorer demo (#589)
 * Improve module docstrings in kiva and enable api modules. (#518, #564)
 * Mention in the README ``libglu1-mesa-dev`` is a build dependency on Linux. (#546)
 * Use templates when generating api docs for ``enable`` and ``kiva``. (#526)
