@@ -1,29 +1,34 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 """ The base class for moveable shapes. """
 
-
 # Standard library imports.
-from __future__ import print_function
-
 import math
 
 # Enthought library imports.
 from enable.colors import ColorTrait
 from enable.component import Component
 from enable.enable_traits import Pointer
-from kiva.constants import MODERN
-from kiva.fonttools import Font
+from kiva.api import MODERN, Font
 from traits.api import Float, Property, Str, Tuple
 
 
 class Shape(Component):
     """ The base class for moveable shapes. """
 
-    #### 'Component' interface ################################################
+    # 'Component' interface ################################################
 
     # The background color of this component.
-    bgcolor = 'transparent'
+    bgcolor = "transparent"
 
-    #### 'Shape' interface ####################################################
+    # 'Shape' interface ####################################################
 
     # The coordinates of the center of the shape.
     center = Property(Tuple)
@@ -32,10 +37,10 @@ class Shape(Component):
     fill_color = ColorTrait
 
     # The pointer for the 'normal' event state.
-    normal_pointer = Pointer('arrow')
+    normal_pointer = Pointer("arrow")
 
     # The pointer for the 'moving' event state.
-    moving_pointer = Pointer('hand')
+    moving_pointer = Pointer("hand")
 
     # The text color.
     text_color = ColorTrait
@@ -43,7 +48,7 @@ class Shape(Component):
     # The text displayed in the shape.
     text = Str
 
-    #### 'Private' interface ##################################################
+    # 'Private' interface ##################################################
 
     # The difference between the location of a mouse-click and the component's
     # origin.
@@ -57,15 +62,13 @@ class Shape(Component):
     def normal_key_pressed(self, event):
         """ Event handler. """
 
-        print('normal_key_pressed', event.character)
-
-        return
+        print("normal_key_pressed", event.character)
 
     def normal_left_down(self, event):
         """ Event handler. """
 
         if self.is_in(event.x, event.y):
-            self.event_state = 'moving'
+            self.event_state = "moving"
 
             event.window.mouse_owner = self
             event.window.set_pointer(self.moving_pointer)
@@ -79,8 +82,6 @@ class Shape(Component):
             if len(siblings) > 1:
                 siblings.remove(self)
                 siblings.append(self)
-
-        return
 
     def moving_mouse_move(self, event):
         """ Event handler. """
@@ -105,26 +106,20 @@ class Shape(Component):
         self.position = [left, bottom]
         self.request_redraw()
 
-        return
-
     def moving_left_up(self, event):
         """ Event handler. """
 
-        self.event_state = 'normal'
+        self.event_state = "normal"
 
         event.window.set_pointer(self.normal_pointer)
         event.window.mouse_owner = None
 
         self.request_redraw()
 
-        return
-
     def moving_mouse_leave(self, event):
         """ Event handler. """
 
         self.moving_left_up(event)
-
-        return
 
     ###########################################################################
     # 'Shape' interface
@@ -136,8 +131,8 @@ class Shape(Component):
         dx, dy = self.bounds
         ox, oy = self.position
 
-        cx = ox + dx/2
-        cy = oy + dy/2
+        cx = ox + dx / 2
+        cy = oy + dy / 2
 
         return cx, cy
 
@@ -167,16 +162,14 @@ class Shape(Component):
 
             dx, dy = self.bounds
             x, y = self.position
-            gc.set_text_position(x+(dx-tw)/2, y+(dy-th)/2)
+            gc.set_text_position(x + (dx - tw) / 2, y + (dy - th) / 2)
 
             gc.show_text(self.text)
-
-        return
 
     def _get_fill_color(self, event_state):
         """ Return the fill color based on the event state. """
 
-        if event_state == 'normal':
+        if event_state == "normal":
             fill_color = self.fill_color_
 
         else:
@@ -188,7 +181,7 @@ class Shape(Component):
     def _get_text_color(self, event_state):
         """ Return the text color based on the event state. """
 
-        if event_state == 'normal':
+        if event_state == "normal":
             text_color = self.text_color_
 
         else:
@@ -196,5 +189,3 @@ class Shape(Component):
             text_color = (r, g, b, 0.5)
 
         return text_color
-
-#### EOF ######################################################################

@@ -1,11 +1,12 @@
-#-----------------------------------------------------------------------------
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
 #
-#  Copyright (c) 2005, Enthought, Inc.
-#  All rights reserved.
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
 #
-#  Author: Scott Swarts <swarts@enthought.com>
-#
-#-----------------------------------------------------------------------------
+# Thanks for using Enthought open source!
 
 """A drag drawn box
 """
@@ -27,6 +28,7 @@ from traits.api import Event, Float, Trait, Tuple
 # class 'DragBox'
 ##############################################################################
 
+
 class DragBox(Box):
     """A drag drawn box
     """
@@ -35,7 +37,7 @@ class DragBox(Box):
     # Traits
     ##########################################################################
 
-    ### 'DragBox' interface ############################################
+    # 'DragBox' interface ############################################
 
     # Event fired when complete:
     complete = Event
@@ -44,18 +46,18 @@ class DragBox(Box):
     x_bounds = Trait(None, None, Tuple(Float, Float))
     y_bounds = Trait(None, None, Tuple(Float, Float))
 
-    #### Pointers. ####
+    # Pointers. ####
 
     # Pointer for the complete state:
-    complete_pointer = Pointer('cross')
+    complete_pointer = Pointer("cross")
 
     # Pointer for the drawing state:
-    drawing_pointer = Pointer('cross')
+    drawing_pointer = Pointer("cross")
 
     # Pointer for the normal state:
-    normal_pointer = Pointer('cross')
+    normal_pointer = Pointer("cross")
 
-    #### Private traits
+    # Private traits
 
     # Position of the left down:
     start_x = Float
@@ -69,46 +71,38 @@ class DragBox(Box):
     # 'Component' interface
     ##########################################################################
 
-    #### 'normal' state ######################################################
+    # 'normal' state ######################################################
 
-    def normal_left_down ( self, event ):
+    def normal_left_down(self, event):
         """ Handle the left button down in the 'normal' state. """
 
-        self.event_state = 'drawing'
+        self.event_state = "drawing"
         self.pointer = self.drawing_pointer
 
         self.start_x = event.x
         self.start_y = event.y
         self._set_bounds(event)
 
-        return
-
-    def normal_mouse_move (self, event):
+    def normal_mouse_move(self, event):
         """ Handle the mouse moving in the 'normal' state. """
 
         self.pointer = self.normal_pointer
 
-        return
-
-    #### 'drawing' state #####################################################
+    # 'drawing' state #####################################################
 
     def drawing_mouse_move(self, event):
         """ Handle the mouse moving in the 'drawing' state. """
 
         self._set_bounds(event)
 
-
     def drawing_left_up(self, event):
         """ Handle the left mouse button coming up in the 'drawing' state. """
 
-        self.event_state = 'complete'
+        self.event_state = "complete"
         self.pointer = self.complete_pointer
 
         self.complete = True
         self._set_bounds(event)
-
-        return
-
 
     ##########################################################################
     # Private interface
@@ -123,13 +117,10 @@ class DragBox(Box):
             x, dx = self.x_bounds
         else:
             x = min(self.start_x, event.x)
-            dx = abs(event.x-self.start_x)
+            dx = abs(event.x - self.start_x)
         if self.y_bounds is not None:
             y, dy = self.y_bounds
         else:
             y = min(self.start_y, event.y)
-            dy = abs(event.y-self.start_y)
+            dy = abs(event.y - self.start_y)
         self.bounds = (x, y, dx, dy)
-
-
-#### EOF ######################################################################

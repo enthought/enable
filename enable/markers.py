@@ -1,3 +1,12 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 """
 Defines markers classes, used by a variety of renderers.
 """
@@ -8,11 +17,11 @@ from numpy import array, pi
 # Enthought library imports
 from traits.api import HasTraits, Bool, Instance, Trait
 from traitsui.api import EnumEditor
-from kiva.constants import STROKE, FILL_STROKE, \
-            SQUARE_MARKER, DIAMOND_MARKER, CIRCLE_MARKER, \
-            CROSS_MARKER, TRIANGLE_MARKER, \
-            INVERTED_TRIANGLE_MARKER, PLUS_MARKER, DOT_MARKER, \
-            PIXEL_MARKER, NO_MARKER
+from kiva.api import (
+    CIRCLE_MARKER, CROSS_MARKER, DIAMOND_MARKER, DOT_MARKER, FILL_STROKE,
+    INVERTED_TRIANGLE_MARKER, NO_MARKER, PIXEL_MARKER, PLUS_MARKER,
+    SQUARE_MARKER, STROKE, TRIANGLE_MARKER
+)
 
 # Local imports
 from .compiled_path import CompiledPath
@@ -21,12 +30,13 @@ from .compiled_path import CompiledPath
 class AbstractMarker(HasTraits):
     """ Abstract class for markers.
     """
-    # How this marker is to be stroked (from kiva.constants).
+
+    # How this marker is to be stroked (from kiva.api).
     # Since this needs to be a class variable, it can't be a trait.
     draw_mode = STROKE
-    #draw_mode = Enum(FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE)
+    # draw_mode = Enum(FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE)
 
-    # The kiva marker type (from kiva.constants).
+    # The kiva marker type (from kiva.api).
     kiva_marker = NO_MARKER
 
     # Close the path object after drawing this marker?
@@ -67,6 +77,7 @@ class AbstractMarker(HasTraits):
 class SquareMarker(AbstractMarker):
     """ A marker that is a square.
     """
+
     # How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
     # The Kiva marker type. (Overrides AbstractMarker.)
@@ -81,6 +92,7 @@ class SquareMarker(AbstractMarker):
 class DiamondMarker(AbstractMarker):
     """ A marker that is a diamond.
     """
+
     # How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
     # The Kiva marker type. (Overrides AbstractMarker.)
@@ -89,45 +101,47 @@ class DiamondMarker(AbstractMarker):
     antialias = False
 
     def _add_to_path(self, path, size):
-        path.lines(array(((0, -size),
-                          (-size, 0),
-                          (0, size),
-                          (size, 0))))
+        path.lines(array(((0, -size), (-size, 0), (0, size), (size, 0))))
 
 
 class CircleMarker(AbstractMarker):
     """ A marker that is a circle.
     """
+
     # How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
     # The Kiva marker type. (Overrides AbstractMarker.)
     kiva_marker = CIRCLE_MARKER
     # Array of points in a circle
-    circle_points = array([[ 1.   ,  0.   ],
-                           [ 0.966,  0.259],
-                           [ 0.866,  0.5  ],
-                           [ 0.707,  0.707],
-                           [ 0.5  ,  0.866],
-                           [ 0.259,  0.966],
-                           [ 0.   ,  1.   ],
-                           [-0.259,  0.966],
-                           [-0.5  ,  0.866],
-                           [-0.707,  0.707],
-                           [-0.866,  0.5  ],
-                           [-0.966,  0.259],
-                           [-1.   ,  0.   ],
-                           [-0.966, -0.259],
-                           [-0.866, -0.5  ],
-                           [-0.707, -0.707],
-                           [-0.5  , -0.866],
-                           [-0.259, -0.966],
-                           [ 0.   , -1.   ],
-                           [ 0.259, -0.966],
-                           [ 0.5  , -0.866],
-                           [ 0.707, -0.707],
-                           [ 0.866, -0.5  ],
-                           [ 0.966, -0.259],
-                           [ 1.   ,  0.   ]])
+    circle_points = array(
+        [
+            [1.0, 0.0],
+            [0.966, 0.259],
+            [0.866, 0.5],
+            [0.707, 0.707],
+            [0.5, 0.866],
+            [0.259, 0.966],
+            [0.0, 1.0],
+            [-0.259, 0.966],
+            [-0.5, 0.866],
+            [-0.707, 0.707],
+            [-0.866, 0.5],
+            [-0.966, 0.259],
+            [-1.0, 0.0],
+            [-0.966, -0.259],
+            [-0.866, -0.5],
+            [-0.707, -0.707],
+            [-0.5, -0.866],
+            [-0.259, -0.966],
+            [0.0, -1.0],
+            [0.259, -0.966],
+            [0.5, -0.866],
+            [0.707, -0.707],
+            [0.866, -0.5],
+            [0.966, -0.259],
+            [1.0, 0.0],
+        ]
+    )
 
     def _add_to_path(self, path, size):
         if size <= 5:
@@ -142,6 +156,7 @@ class CircleMarker(AbstractMarker):
 class TriangleMarker(AbstractMarker):
     """ A marker that is a triangle with one apex pointing up.
     """
+
     # How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
     # The Kiva marker type. (Overrides AbstractMarker.)
@@ -150,14 +165,13 @@ class TriangleMarker(AbstractMarker):
     antialias = False
 
     def _add_to_path(self, path, size):
-        path.lines(array(((-size, -size),
-                          (size, -size),
-                          (0,  0.732 * size))))
+        path.lines(array(((-size, -size), (size, -size), (0, 0.732 * size))))
 
 
 class Inverted_TriangleMarker(AbstractMarker):
     """ A marker that is a triangle with one apex pointing down.
     """
+
     # How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
     # The Kiva marker type. (Overrides AbstractMarker.)
@@ -166,42 +180,39 @@ class Inverted_TriangleMarker(AbstractMarker):
     antialias = False
 
     def _add_to_path(self, path, size):
-        path.lines(array(((-size, size),
-                          (size, size),
-                          (0, -0.732 * size))))
+        path.lines(array(((-size, size), (size, size), (0, -0.732 * size))))
 
 
 class LeftTriangleMarker(AbstractMarker):
     """ A marker that is a triangle with one apex pointing left.
     """
+
     # How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = True
 
     def _add_to_path(self, path, size):
-        path.lines(array([(size, -size),
-                          (size, size),
-                          (-0.732 * size, 0)]))
+        path.lines(array([(size, -size), (size, size), (-0.732 * size, 0)]))
 
 
 class RightTriangleMarker(AbstractMarker):
     """ A marker that is a triangle with one apex pointing right.
     """
+
     # How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = True
 
     def _add_to_path(self, path, size):
-        path.lines(array([(-size, -size),
-                          (-size, size),
-                          (0.732 * size, 0)]))
+        path.lines(array([(-size, -size), (-size, size), (0.732 * size, 0)]))
 
 
 class PentagonMarker(AbstractMarker):
     """ A marker that is a pentagon.
     """
+
     # How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
     # Do not render anti-aliased. (Overrides AbstractMarker.)
@@ -209,16 +220,23 @@ class PentagonMarker(AbstractMarker):
 
     def _add_to_path(self, path, size):
         # xi = size * cos(2*pi*i/5. + pi/2), yi = size * sin(2*pi*i/5. + pi/2)
-        path.lines(array([(0, size),
-                          (0.951 * size, 0.309 * size),
-                          (0.588 * size, -0.809 * size),
-                          (-0.588 * size, -0.809 * size),
-                          (-0.951 * size, 0.309 * size)]))
+        path.lines(
+            array(
+                [
+                    (0, size),
+                    (0.951 * size, 0.309 * size),
+                    (0.588 * size, -0.809 * size),
+                    (-0.588 * size, -0.809 * size),
+                    (-0.951 * size, 0.309 * size),
+                ]
+            )
+        )
 
 
 class Hexagon1Marker(AbstractMarker):
     """ A marker that is a hexagon, with the flat sides on the sides.
     """
+
     # How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
     # Do not render anti-aliased. (Overrides AbstractMarker.)
@@ -226,17 +244,24 @@ class Hexagon1Marker(AbstractMarker):
 
     def _add_to_path(self, path, size):
         # xi = size * cos(2*pi*i/6.), yi = size * sin(2*pi*i/6.)
-        path.lines(array([(size, 0),
-                          (0.5 * size, 0.866 * size),
-                          (-0.5 * size, 0.866 * size),
-                          (-size, 0),
-                          (-0.5 * size, -0.866 * size),
-                          (0.5 * size, -0.866 * size)]))
+        path.lines(
+            array(
+                [
+                    (size, 0),
+                    (0.5 * size, 0.866 * size),
+                    (-0.5 * size, 0.866 * size),
+                    (-size, 0),
+                    (-0.5 * size, -0.866 * size),
+                    (0.5 * size, -0.866 * size),
+                ]
+            )
+        )
 
 
 class Hexagon2Marker(AbstractMarker):
     """ A marker that is a hexagon, with the flat sides on the top and bottom.
     """
+
     # How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
     # Do not render anti-aliased. (Overrides AbstractMarker.)
@@ -244,17 +269,24 @@ class Hexagon2Marker(AbstractMarker):
 
     def _add_to_path(self, path, size):
         # Like Hexagon1Marker but with an offset of 30 deg.
-        path.lines(array([(0.866 * size, 0.5 * size),
-                          (0., size),
-                          (-0.866 * size, 0.5 * size),
-                          (-0.866 * size, -0.5 * size),
-                          (0., -size),
-                          (0.866 * size, -0.5 * size)]))
+        path.lines(
+            array(
+                [
+                    (0.866 * size, 0.5 * size),
+                    (0.0, size),
+                    (-0.866 * size, 0.5 * size),
+                    (-0.866 * size, -0.5 * size),
+                    (0.0, -size),
+                    (0.866 * size, -0.5 * size),
+                ]
+            )
+        )
 
 
 class PlusMarker(AbstractMarker):
     """ A marker that is a plus-sign.
     """
+
     # How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = STROKE
     # The Kiva marker type. (Overrides AbstractMarker.)
@@ -264,7 +296,7 @@ class PlusMarker(AbstractMarker):
 
     def _add_to_path(self, path, size):
         path.move_to(0, -size)
-        path.line_to(0,  size)
+        path.line_to(0, size)
         path.move_to(-size, 0)
         path.line_to(size, 0)
 
@@ -272,6 +304,7 @@ class PlusMarker(AbstractMarker):
 class CrossMarker(AbstractMarker):
     """ A marker that is an X.
     """
+
     # How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = STROKE
     # The Kiva marker type. (Overrides AbstractMarker.)
@@ -281,14 +314,15 @@ class CrossMarker(AbstractMarker):
 
     def _add_to_path(self, path, size):
         path.move_to(-size, -size)
-        path.line_to(size,  size)
+        path.line_to(size, size)
         path.move_to(size, -size)
-        path.line_to(-size,  size)
+        path.line_to(-size, size)
 
 
 class StarMarker(AbstractMarker):
     """ A marker that is a (filled) star.
     """
+
     # How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
     # Do not render anti-aliased. (Overrides AbstractMarker.)
@@ -298,21 +332,28 @@ class StarMarker(AbstractMarker):
         # Generated from
         # i = arange(10), thetai = 2*pi * i/10., ri = 0.75 + (-1)**i * 0.25
         # xi = ri * sin(thetai), yi = ri * cos(thetai)
-        path.lines(array([(0.0, size),
-                          (0.294 * size, 0.405 * size),
-                          (0.951 * size, 0.309 * size),
-                          (0.476 * size, -0.155 * size),
-                          (0.588 * size, -0.809 * size),
-                          (0, -0.5 * size),
-                          (-0.588 * size, -0.809 * size),
-                          (-0.476 * size, -0.155 * size),
-                          (-0.951 * size, 0.309 * size),
-                          (-0.294 * size, 0.405 * size)]))
+        path.lines(
+            array(
+                [
+                    (0.0, size),
+                    (0.294 * size, 0.405 * size),
+                    (0.951 * size, 0.309 * size),
+                    (0.476 * size, -0.155 * size),
+                    (0.588 * size, -0.809 * size),
+                    (0, -0.5 * size),
+                    (-0.588 * size, -0.809 * size),
+                    (-0.476 * size, -0.155 * size),
+                    (-0.951 * size, 0.309 * size),
+                    (-0.294 * size, 0.405 * size),
+                ]
+            )
+        )
 
 
 class CrossPlusMarker(AbstractMarker):
     """ A marker that is an X and a + superimposed.
     """
+
     # How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = STROKE
     # Do not render anti-aliased. (Overrides AbstractMarker.)
@@ -321,12 +362,12 @@ class CrossPlusMarker(AbstractMarker):
     def _add_to_path(self, path, size):
         # Darw an X
         path.move_to(-size, -size)
-        path.line_to(size,  size)
+        path.line_to(size, size)
         path.move_to(size, -size)
-        path.line_to(-size,  size)
+        path.line_to(-size, size)
         # Draw a +
         path.move_to(0, -size)
-        path.line_to(0,  size)
+        path.line_to(0, size)
         path.move_to(-size, 0)
         path.line_to(size, 0)
 
@@ -334,6 +375,7 @@ class CrossPlusMarker(AbstractMarker):
 class DotMarker(AbstractMarker):
     """ A marker that is a dot.
     """
+
     # How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
     # The Kiva marker type. (Overrides AbstractMarker.)
@@ -346,6 +388,7 @@ class DotMarker(AbstractMarker):
 class PixelMarker(AbstractMarker):
     """ A marker that is a pixel.
     """
+
     # How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = STROKE
     # The Kiva marker type. (Overrides AbstractMarker.)
@@ -362,6 +405,7 @@ class PixelMarker(AbstractMarker):
 class CustomMarker(AbstractMarker):
     """ A marker that is a custom shape.
     """
+
     # How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = STROKE
     # The Kiva marker type. (Overrides AbstractMarker.)
@@ -397,33 +441,51 @@ class CustomMarker(AbstractMarker):
         else:
             return self.path
 
+
 # String names for marker types.
-marker_names = ("square", "circle", "triangle", "inverted_triangle",
-                "left_triangle", "right_triangle", "pentagon", "hexagon",
-                "hexagon2", "plus", "cross", "star", "cross_plus", "diamond",
-                "dot", "pixel")
+marker_names = (
+    "square",
+    "circle",
+    "triangle",
+    "inverted_triangle",
+    "left_triangle",
+    "right_triangle",
+    "pentagon",
+    "hexagon",
+    "hexagon2",
+    "plus",
+    "cross",
+    "star",
+    "cross_plus",
+    "diamond",
+    "dot",
+    "pixel",
+)
 
 # Mapping of marker string names to classes.
-MarkerNameDict = {"square": SquareMarker,
-                  "circle": CircleMarker,
-                  "triangle": TriangleMarker,
-                  "inverted_triangle": Inverted_TriangleMarker,
-                  "left_triangle":LeftTriangleMarker,
-                  "right_triangle": RightTriangleMarker,
-                  "pentagon": PentagonMarker,
-                  "hexagon": Hexagon1Marker,
-                  "hexagon2": Hexagon2Marker,
-                  "plus": PlusMarker,
-                  "cross": CrossMarker,
-                  "star": StarMarker,
-                  "cross_plus": CrossPlusMarker,
-                  "diamond": DiamondMarker,
-                  "dot": DotMarker,
-                  "pixel": PixelMarker,
-                  "custom": CustomMarker}
+MarkerNameDict = {
+    "square": SquareMarker,
+    "circle": CircleMarker,
+    "triangle": TriangleMarker,
+    "inverted_triangle": Inverted_TriangleMarker,
+    "left_triangle": LeftTriangleMarker,
+    "right_triangle": RightTriangleMarker,
+    "pentagon": PentagonMarker,
+    "hexagon": Hexagon1Marker,
+    "hexagon2": Hexagon2Marker,
+    "plus": PlusMarker,
+    "cross": CrossMarker,
+    "star": StarMarker,
+    "cross_plus": CrossPlusMarker,
+    "diamond": DiamondMarker,
+    "dot": DotMarker,
+    "pixel": PixelMarker,
+    "custom": CustomMarker,
+}
 
 # A mapped trait that allows string naming of marker classes.
-MarkerTrait = Trait("square", MarkerNameDict,
-                     editor=EnumEditor(values=marker_names))
+MarkerTrait = Trait(
+    "square", MarkerNameDict, editor=EnumEditor(values=marker_names)
+)
 
 marker_trait = MarkerTrait

@@ -1,14 +1,12 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
 #
-#  Copyright (c) 2017, Enthought, Inc.
-#  All rights reserved.
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
 #
-#  This software is provided without warranty under the terms of the BSD
-#  license included in enthought/LICENSE.txt and may be redistributed only
-#  under the conditions described in the aforementioned license.  The license
-#  is also available online at http://www.enthought.com/licenses/BSD.txt
-#
-#  Thanks for using Enthought open source!
-#
+# Thanks for using Enthought open source!
 """
 Tasks for Test Runs
 ===================
@@ -54,8 +52,8 @@ using::
 
     python edmtool.py test_all
 
-Currently supported runtime values are ``2.7`` and ``3.5``, and currently
-supported toolkits are ``null``, ``pyqt``, and ``wx``.  Not all
+Currently supported runtime value is `3.6``, and currently
+supported toolkits are ``null``, ``pyqt``, and ``pyqt5``.  Not all
 combinations of toolkits and runtimes will work, but the tasks will fail with
 a clear error if that is the case.
 
@@ -76,8 +74,6 @@ how to run commands within an EDM enviornment.
 
 """
 
-from __future__ import print_function
-
 import glob
 import os
 import subprocess
@@ -89,104 +85,264 @@ from contextlib import contextmanager
 import click
 
 supported_combinations = {
-    '3.5': {'pyqt', 'pyqt5', 'null'},
-    '3.6': {'pyqt', 'pyqt5', 'null'},
+    '3.6': {'pyside2', 'pyqt', 'pyqt5', 'wx', 'null'},
 }
 
 dependencies = {
-    "six",
-    "nose",
-    "mock",
+    "apptools",
+    "celiagg",
     "coverage",
+    "Cython",
+    "fonttools",
+    "hypothesis",
+    "kiwisolver",
     "numpy",
     "pygments",
     "pyparsing",
+    "pillow",
+    "reportlab",
     "swig",
-    "unittest2",
+    "traits",
+    "traitsui",
+    "pyface",
     "pypdf2",
     "swig",
-    # required by some demos
-    "chaco",
-    "mayavi",
-    "scipy",
+    "unittest2",
 }
+
+# Dependencies we install from source for cron tests
+# Order from packages with the most dependencies to one with the least
+# dependencies. Packages are forced re-installed in this order.
+source_dependencies = [
+    "apptools",
+    "traitsui",
+    "pyface",
+    "traits",
+]
 
 extra_dependencies = {
     'pyqt': {'pyqt'},
-    'pyqt5': set(),
-    'wx': {'wxpython'},
+    'pyqt5': {'pyqt5'},
+    'pyside2': {'pyside2'},
+    # XXX once wxPython 4 is available in EDM, we will want it here
+    "wx": set(),
     'null': set()
 }
 
 environment_vars = {
+    'pyside2': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyside2'},
     'pyqt': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyqt'},
     'pyqt5': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyqt5'},
     'wx': {'ETS_TOOLKIT': 'wx'},
     'null': {'ETS_TOOLKIT': 'null.image'},
 }
 
-if sys.version_info < (3, 0):
-    import string
-    pillow_trans = string.maketrans('<=>', '___')
-else:
-    pillow_trans = ''.maketrans({'<': '_', '=': '_', '>': '_'})
-
-if sys.platform == 'darwin':
-    dependencies.add('Cython')
+#: Path to the top-level source directory
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 
-@click.group()
+github_url_fmt = "git+http://github.com/enthought/{0}.git#egg={0}"
+
+
+# Ensure that "-h" is supported for getting help.
+CONTEXT_SETTINGS = {
+    "help_option_names": ["-h", "--help"],
+}
+
+# Config file for EDM
+EDM_CONFIG = os.path.join(ROOT, "ci", ".edm.yaml")
+
+
+@click.group(context_settings=CONTEXT_SETTINGS)
 def cli():
     pass
 
 
 @cli.command()
-@click.option('--runtime', default='3.5')
+@click.option('--runtime', default='3.6')
 @click.option('--toolkit', default='null')
-@click.option('--pillow', default='pillow')
 @click.option('--environment', default=None)
-def install(runtime, toolkit, pillow, environment):
+@click.option(
+    "--source/--no-source",
+    default=False,
+    help="Install ETS packages from source",
+)
+def install(runtime, toolkit, environment, source):
     """ Install project and dependencies into a clean EDM environment.
 
     """
-    parameters = get_parameters(runtime, toolkit, pillow, environment)
+    parameters = get_parameters(runtime, toolkit, environment)
     parameters['packages'] = ' '.join(
         dependencies | extra_dependencies.get(toolkit, set()))
     # edm commands to setup the development environment
     commands = [
-        "edm environments create {environment} --force --version={runtime}",
-        "edm install -y -e {environment} {packages}",
-        "edm run -e {environment} -- pip install {pillow}",
+        ("edm --config {edm_config} environments create {environment} "
+         "--force --version={runtime}"),
+        ("edm --config {edm_config} install -y -e {environment} {packages} "
+        "--add-repository enthought/lgpl"),
         ("edm run -e {environment} -- pip install -r ci/requirements.txt"
-         " --no-dependencies --ignore-installed"),
+         " --no-dependencies"),
     ]
 
-    # pip install pyqt5, because we don't have it in EDM yet
-    if toolkit == 'pyqt5':
-        commands.append("edm run -e {environment} -- pip install pyqt5==5.9.2")
-
-    commands.append("edm run -e {environment} -- python setup.py install")
+    if toolkit == "wx":
+        if sys.platform == "darwin":
+            commands.append(
+                "edm run -e {environment} -- python -m pip install wxPython<4.1"  # noqa: E501
+            )
+        elif sys.platform == "linux":
+            # XXX this is mainly for TravisCI workers; need a generic solution
+            commands.append(
+                "edm run -e {environment} -- pip install -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04/ wxPython<4.1"  # noqa: E501
+            )
+        else:
+            commands.append(
+                "edm run -e {environment} -- python -m pip install wxPython"
+            )
 
     click.echo("Creating environment '{environment}'".format(**parameters))
     execute(commands, parameters)
+
+    if source:
+        # Remove EDM ETS packages and install them from source
+        cmd_fmt = (
+            "edm plumbing remove-package "
+            "--environment {environment} --force "
+        )
+        commands = [cmd_fmt + source_pkg for source_pkg in source_dependencies]
+        execute(commands, parameters)
+        source_pkgs = [
+            github_url_fmt.format(pkg) for pkg in source_dependencies
+        ]
+        # Without the --no-dependencies flag such that new dependencies on
+        # master are brought in.
+        commands = [
+            "python -m pip install --force-reinstall {pkg}".format(pkg=pkg)
+            for pkg in source_pkgs
+        ]
+        commands = [
+            "edm run -e {environment} -- " + command for command in commands
+        ]
+        execute(commands, parameters)
+
+    # No matter what happens before, always install local source again with no
+    # dependencies or we risk testing against an released enable.
+    install_local = (
+        "edm run -e {environment} -- "
+        "pip install --force-reinstall --no-dependencies " + ROOT
+    )
+    execute([install_local], parameters)
+
     click.echo('Done install')
 
 
 @cli.command()
-@click.option('--runtime', default='3.5')
+@click.option('--runtime', default='3.6')
 @click.option('--toolkit', default='null')
-@click.option('--pillow', default='pillow')
 @click.option('--environment', default=None)
-def test(runtime, toolkit, pillow, environment):
+def docs(runtime, toolkit, environment):
+    """ Build documentation. """
+    parameters = get_parameters(runtime, toolkit, environment)
+    packages = " ".join([
+        "sphinx",
+        "enthought_sphinx_theme",
+    ])
+    ignore = " ".join([
+        "enable/null",
+        "enable/pyglet_backend",
+        "enable/qt4",
+        "enable/savage/trait_defs/ui/qt4",
+        "enable/savage/trait_defs/ui/wx",
+        "enable/trait_defs/ui/qt4",
+        "enable/trait_defs/ui/wx",
+        "enable/vtk_backend",
+        "enable/wx",
+        "*/tests",
+    ])
+    commands = [
+        "edm install -y -e {environment} " + packages,
+    ]
+    click.echo(
+        "Installing documentation tools in  '{environment}'".format(
+            **parameters
+        )
+    )
+    execute(commands, parameters)
+    click.echo("Done installing documentation tools")
+
+    click.echo(
+        "Regenerating API docs in  '{environment}'".format(**parameters)
+    )
+    api_path = os.path.join("docs", "source", "api")
+    templates_path = os.path.join(api_path, "templates")
+    commands = [
+        "edm run -e {environment} -- sphinx-apidoc --separate --no-toc -o "
+        + api_path
+        + " -t " + templates_path
+        + " enable "
+        + ignore
+    ]
+    execute(commands, parameters)
+    click.echo("Done regenerating enable API docs")
+
+    commands = [
+        "edm run -e {environment} -- sphinx-apidoc --separate --no-toc -o "
+        + api_path
+        + " -t " + templates_path
+        + " kiva "
+        + " */tests"
+    ]
+    execute(commands, parameters)
+    click.echo("Done regenerating kiva API docs")
+
+    try:
+        os.chdir("docs")
+        command = (
+            "edm run -e {environment} -- sphinx-build -b html "
+            "-d build/doctrees "
+            "source "
+            "build/html"
+        )
+        click.echo(
+            "Building documentation in  '{environment}'".format(**parameters)
+        )
+        execute([command], parameters)
+    finally:
+        os.chdir("..")
+    click.echo("Done building documentation")
+
+
+@cli.command()
+@click.option('--runtime', default='3.6')
+@click.option('--toolkit', default='null')
+@click.option('--environment', default=None)
+def shell(runtime, toolkit, environment):
+    """ Create a shell into the EDM development environment
+    (aka 'activate' it).
+
+    """
+    parameters = get_parameters(runtime, toolkit, environment)
+    commands = [
+        "edm shell -e {environment}",
+    ]
+    execute(commands, parameters)
+
+
+@cli.command()
+@click.option('--runtime', default='3.6')
+@click.option('--toolkit', default='null')
+@click.option('--environment', default=None)
+def test(runtime, toolkit, environment):
     """ Run the test suite in a given environment with the specified toolkit.
 
     """
-    parameters = get_parameters(runtime, toolkit, pillow, environment)
+    parameters = get_parameters(runtime, toolkit, environment)
     environ = environment_vars.get(toolkit, {}).copy()
     environ['PYTHONUNBUFFERED'] = "1"
     commands = [
-        "edm run -e {environment} -- coverage run -m nose.core enable -v --nologcapture",
-        "edm run -e {environment} -- coverage run -a -m nose.core kiva -v --nologcapture",
+        ("edm run -e {environment} -- python -W default -m"
+        "coverage run -m unittest discover enable -v"),
+        ("edm run -e {environment} -- python -W default -m"
+        "coverage run -a -m unittest discover kiva -v"),
     ]
 
     # We run in a tempdir to avoid accidentally picking up wrong traitsui
@@ -201,15 +357,14 @@ def test(runtime, toolkit, pillow, environment):
 
 
 @cli.command()
-@click.option('--runtime', default='3.5')
+@click.option('--runtime', default='3.6')
 @click.option('--toolkit', default='null')
-@click.option('--pillow', default='pillow')
 @click.option('--environment', default=None)
-def cleanup(runtime, toolkit, pillow, environment):
+def cleanup(runtime, toolkit, environment):
     """ Remove a development environment.
 
     """
-    parameters = get_parameters(runtime, toolkit, pillow, environment)
+    parameters = get_parameters(runtime, toolkit, environment)
     commands = [
         "edm run -e {environment} -- python setup.py clean",
         "edm environments remove {environment} --purge -y",
@@ -220,16 +375,16 @@ def cleanup(runtime, toolkit, pillow, environment):
 
 
 @cli.command()
-@click.option('--runtime', default='3.5')
+@click.option('--runtime', default='3.6')
 @click.option('--toolkit', default='null')
-@click.option('--pillow', default='pillow')
-def test_clean(runtime, toolkit, pillow):
+def test_clean(runtime, toolkit):
     """ Run tests in a clean environment, cleaning up afterwards
 
     """
-    args = ['--toolkit={}'.format(toolkit),
-            '--runtime={}'.format(runtime),
-            '--pillow={}'.format(pillow)]
+    args = [
+        '--toolkit={}'.format(toolkit),
+        '--runtime={}'.format(runtime),
+    ]
     try:
         install(args=args, standalone_mode=False)
         test(args=args, standalone_mode=False)
@@ -238,15 +393,14 @@ def test_clean(runtime, toolkit, pillow):
 
 
 @cli.command()
-@click.option('--runtime', default='3.5')
+@click.option('--runtime', default='3.6')
 @click.option('--toolkit', default='null')
-@click.option('--pillow', default='pillow')
 @click.option('--environment', default=None)
-def update(runtime, toolkit, pillow, environment):
+def update(runtime, toolkit, environment):
     """ Update/Reinstall package into environment.
 
     """
-    parameters = get_parameters(runtime, toolkit, pillow, environment)
+    parameters = get_parameters(runtime, toolkit, environment)
     commands = [
         "edm run -e {environment} -- python setup.py install"]
     click.echo("Re-installing in  '{environment}'".format(**parameters))
@@ -270,20 +424,21 @@ def test_all():
 # Utility routines
 # ----------------------------------------------------------------------------
 
-def get_parameters(runtime, toolkit, pillow, environment):
+def get_parameters(runtime, toolkit, environment):
     """Set up parameters dictionary for format() substitution
     """
-    parameters = {'runtime': runtime, 'toolkit': toolkit, 'pillow': pillow,
+    parameters = {'runtime': runtime, 'toolkit': toolkit,
                   'environment': environment}
     if toolkit not in supported_combinations[runtime]:
-        msg = ("Python {runtime}, toolkit {toolkit}, and pillow {pillow} "
+        msg = ("Python {runtime} and toolkit {toolkit} "
                "not supported by test environments")
         raise RuntimeError(msg.format(**parameters))
     if environment is None:
         tmpl = 'enable-test-{runtime}-{toolkit}'
         environment = tmpl.format(**parameters)
-        environment += '-{}'.format(str(pillow).translate(pillow_trans))
         parameters['environment'] = environment
+
+    parameters["edm_config"] = EDM_CONFIG
     return parameters
 
 

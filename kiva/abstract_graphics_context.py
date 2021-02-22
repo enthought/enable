@@ -1,13 +1,18 @@
-from __future__ import absolute_import
-
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 from abc import ABCMeta, abstractmethod
-
-import six
 
 from .constants import FILL_STROKE, SQUARE_MARKER
 
-@six.add_metaclass(ABCMeta)
-class AbstractGraphicsContext(object):
+
+class AbstractGraphicsContext(object, metaclass=ABCMeta):
     """ Abstract Base Class for Kiva Graphics Contexts """
 
     # ----------------------------------------------------------------
@@ -258,6 +263,7 @@ class AbstractGraphicsContext(object):
         with control point (cp_x, cp_y)
 
         """
+
     @abstractmethod
     def arc(self, x, y, radius, start_angle, end_angle, cw=False):
         """ Draw a circular arc of the given radius, centered at (x,y)
@@ -333,7 +339,7 @@ class AbstractGraphicsContext(object):
         """
 
     @abstractmethod
-    def draw_image(image, rect=None):
+    def draw_image(self, image, rect=None):
         """ Render an image into a rectangle
 
         The rectangle is specified as an (x, y, w, h) tuple.  If it is not

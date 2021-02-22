@@ -1,3 +1,12 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 from cProfile import Profile
 
 from traits.api import Any, Dict, Event, HasTraits, Str
@@ -16,7 +25,6 @@ class ProfileThis(HasTraits):
 
     # An event with the profiler just ending.
     profile_ended = Event()
-
 
     def start(self, name):
         """ Start a particular profile.
@@ -37,10 +45,5 @@ class ProfileThis(HasTraits):
             name = self.active_profile_name
             p.disable()
             self.active_profile = None
-            self.active_profile_name = ''
+            self.active_profile_name = ""
             self.profile_ended = (name, p)
-
-
-
-
-

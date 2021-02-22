@@ -1,18 +1,19 @@
-# ------------------------------------------------------------------------------
-#  Copyright (c) 2014, Enthought, Inc.
-#  All rights reserved.
-# ------------------------------------------------------------------------------
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 from abc import ABCMeta
-
-import six
 
 import kiwisolver as kiwi
 
 
-@six.add_metaclass(ABCMeta)
-class LinearSymbolic(object):
+class LinearSymbolic(object, metaclass=ABCMeta):
     """ An abstract base class for testing linear symbolic interfaces.
-
     """
 
 

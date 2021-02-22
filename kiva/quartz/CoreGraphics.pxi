@@ -1,11 +1,16 @@
-# :Author:    Robert Kern
-# :Copyright: 2004, Enthought, Inc.
-# :License:   BSD Style
-
+# (C) Copyright 2004-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 cdef extern from "ApplicationServices/ApplicationServices.h":
     ctypedef void*  CGContextRef
-    
+
     ctypedef double CGFloat
 
     ctypedef struct CGPoint:
@@ -457,11 +462,6 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     ctypedef void (*CGPathApplierFunction)(void *info, CGPathElement *element)
 
     void CGPathApply(CGPathRef path, void *info, CGPathApplierFunction function)
-
-    CGContextRef CGGLContextCreate(void *glContext, CGSize size,
-        CGColorSpaceRef colorspace)
-    void CGGLContextUpdateViewportSize(CGContextRef context, CGSize size)
-
 
     ctypedef void* CGFunctionRef
 

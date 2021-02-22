@@ -1,30 +1,12 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
 #
-# (C) Copyright 2015 Enthought, Inc., Austin, TX
-# All right reserved.
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
 #
-# This file is open source software distributed according to the terms in
-# LICENSE.txt
-#
-
-"""
-Enable Apptools Integration
-===========================
-
-Apptools (https://github.com/enthought/apptools) is a library of useful code
-for building GUI applications.  It includes code for features like preferences,
-undo/redo support, and seelction management.
-
-The code in this sub-package helps applications interface with the
-functionality provided by Apptools, but is optional from the point of view
-of the Enable codebase as a whole.
-
-"""
-
-from __future__ import absolute_import
+# Thanks for using Enthought open source!
 
 # Support for Undo/Redo with Enable
-from .commands import ComponentCommand, MoveCommand, ResizeCommand
-from .command_tool import BaseCommandTool, BaseUndoTool
-from .move_command_tool import MoveCommandTool
-from .resize_command_tool import ResizeCommandTool
-from .undo_tool import UndoTool
+from enable.tools.pyface.api import *  # noqa: F401,F403

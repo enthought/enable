@@ -1,17 +1,25 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 """
 Define the event objects and traits used by Enable components.
 
 For a list of all the possible event suffixes, see interactor.py.
 """
-import six.moves as sm
+from functools import reduce
 
 # Major library imports
 from numpy import array, dot
 
 # Enthought imports
 from kiva import affine
-from traits.api import (Any, Bool, Float, HasTraits, Int,
-    Event, List, ReadOnly)
+from traits.api import Any, Bool, Float, HasTraits, Int, Event, List, ReadOnly
 
 
 class BasicEvent(HasTraits):
@@ -27,10 +35,10 @@ class BasicEvent(HasTraits):
     window = Any
 
     # (x,y) position stack; initialized to an empty list
-    _pos_stack = List( () )
+    _pos_stack = List(())
 
     # Affine transform stack; initialized to an empty list
-    _transform_stack = List( () )
+    _transform_stack = List(())
 
     # This is a list of objects that have transformed the event's
     # coordinates.  This can be used to recreate the dispatch path
@@ -49,14 +57,13 @@ class BasicEvent(HasTraits):
         self.y = y
         if caller is not None:
             self.dispatch_history.append(caller)
-        return
 
     def pop(self, count=1, caller=None):
         """
         Restores a previous position of the event.  If **count** is provided,
         then pops **count** elements off of the event stack.
         """
-        for i in range(count-1):
+        for i in range(count - 1):
             self._pos_stack.pop()
             self._transform_stack.pop()
         self.x, self.y = self._pos_stack.pop()
@@ -64,7 +71,6 @@ class BasicEvent(HasTraits):
         if caller is not None:
             if caller == self.dispatch_history[-1]:
                 self.dispatch_history.pop()
-        return
 
     def offset_xy(self, origin_x, origin_y, caller=None):
         r"""
@@ -74,10 +80,11 @@ class BasicEvent(HasTraits):
         Basically, a component calls event.offset_xy(\*self.position) to shift
         the event into its own coordinate frame.
         """
-        self.push_transform(affine.affine_from_translation(-origin_x, -origin_y))
+        self.push_transform(
+            affine.affine_from_translation(-origin_x, -origin_y)
+        )
         if caller is not None:
             self.dispatch_history.append(caller)
-        return
 
     def scale_xy(self, scale_x, scale_y, caller=None):
         """
@@ -90,10 +97,9 @@ class BasicEvent(HasTraits):
         # Note that the meaning of scale_x and scale_y for Enable
         # is the inverted from the meaning for Kiva.affine.
         # TODO: Fix this discrepancy.
-        self.push_transform(affine.affine_from_scale(1/scale_x, 1/scale_y))
+        self.push_transform(affine.affine_from_scale(1 / scale_x, 1 / scale_y))
         if caller is not None:
             self.dispatch_history.append(caller)
-        return
 
     def net_transform(self):
         """
@@ -104,7 +110,7 @@ class BasicEvent(HasTraits):
         if len(self._transform_stack) == 0:
             return affine.affine_identity()
         else:
-            return sm.reduce(dot, self._transform_stack[::-1])
+            return reduce(dot, self._transform_stack[::-1])
 
     def current_pointer_position(self):
         """
@@ -113,10 +119,13 @@ class BasicEvent(HasTraits):
         window_pos = self.window.get_pointer_position()
         return tuple(dot(array(window_pos + (1,)), self.net_transform())[:2])
 
-
     def __repr__(self):
-        s = '%s(x=%r, y=%r, handled=%r)' % (self.__class__.__name__, self.x,
-            self.y, self.handled)
+        s = "%s(x=%r, y=%r, handled=%r)" % (
+            self.__class__.__name__,
+            self.x,
+            self.y,
+            self.handled,
+        )
         return s
 
 
@@ -131,6 +140,7 @@ class MouseEvent(BasicEvent):
     mouse_wheel_axis = ReadOnly
     mouse_wheel_delta = ReadOnly
 
+
 mouse_event_trait = Event(MouseEvent)
 
 
@@ -138,43 +148,63 @@ class DragEvent(BasicEvent):
     """ A system UI drag-and-drop operation.  This is not the same as a
     DragTool event.
     """
-    x0   = Float
-    y0   = Float
+
+    x0 = Float
+    y0 = Float
     copy = ReadOnly
-    obj  = ReadOnly
+    obj = ReadOnly
     start_event = ReadOnly
 
     def __repr__(self):
-        s = ('%s(x=%r, y=%r, x0=%r, y0=%r, handled=%r)' %
-            (self.__class__.__name__, self.x, self.y, self.x0, self.y0,
-                self.handled))
+        s = "%s(x=%r, y=%r, x0=%r, y0=%r, handled=%r)" % (
+            self.__class__.__name__,
+            self.x,
+            self.y,
+            self.x0,
+            self.y0,
+            self.handled,
+        )
         return s
+
 
 drag_event_trait = Event(DragEvent)
 
 
 class KeyEvent(BasicEvent):
-    event_type   = ReadOnly    # one of 'key_pressed', 'key_released' or 'character'
+    event_type = (
+        ReadOnly
+    )  # one of 'key_pressed', 'key_released' or 'character'
 
     # 'character' is a single unicode character or is a string describing the
     # high-bit and control characters.  (See module enable.toolkit_constants)
     # depending on the event type, it may represent the physical key pressed,
     # or the text that was generated by a keystroke
-    character    = ReadOnly
+    character = ReadOnly
 
-    alt_down     = ReadOnly
+    alt_down = ReadOnly
     control_down = ReadOnly
-    shift_down   = ReadOnly
+    shift_down = ReadOnly
 
-    event        = ReadOnly    # XXX the underlying toolkit's event object, remove?
+    event = ReadOnly  # XXX the underlying toolkit's event object, remove?
 
     def __repr__(self):
-        s = ('%s(event_type=%r, character=%r, alt_down=%r, control_down=%r, shift_down=%r, handled=%r)' %
-            (self.__class__.__name__, self.event_type, self.character, self.alt_down,
-                self.control_down, self.shift_down, self.handled))
+        s = (
+            ("%s(event_type=%r, character=%r, alt_down=%r, control_down=%r, "
+             "shift_down=%r, handled=%r)")
+            % (
+                self.__class__.__name__,
+                self.event_type,
+                self.character,
+                self.alt_down,
+                self.control_down,
+                self.shift_down,
+                self.handled,
+            )
+        )
         return s
 
-key_event_trait = Event( KeyEvent )
+
+key_event_trait = Event(KeyEvent)
 
 
 class BlobEvent(BasicEvent):
@@ -212,9 +242,17 @@ class BlobEvent(BasicEvent):
             self.dispatch_history.append(caller)
 
     def __repr__(self):
-        s = '%s(bid=%r, x=%r, y=%r, x0=%r, y0=%r, handled=%r)' % (self.__class__.__name__,
-            self.bid, self.x, self.y, self.x0, self.y0, self.handled)
+        s = "%s(bid=%r, x=%r, y=%r, x0=%r, y0=%r, handled=%r)" % (
+            self.__class__.__name__,
+            self.bid,
+            self.x,
+            self.y,
+            self.x0,
+            self.y0,
+            self.handled,
+        )
         return s
+
 
 blob_event_trait = Event(BlobEvent)
 
@@ -230,8 +268,8 @@ class BlobFrameEvent(BasicEvent):
 
     The position traits are meaningless. These events will get passed down
     through all components. Also, no component should mark it as handled. The
-    event must be dispatched through whether the component takes action based on
-    it or not.
+    event must be dispatched through whether the component takes action based
+    on it or not.
 
     NOTE: Frames without any blob events may or may not generate
     BlobFrameEvents.
@@ -248,14 +286,11 @@ class BlobFrameEvent(BasicEvent):
     t = Float(0.0)
 
     # Never mark this event as handled. Let every component respond to it.
-    #handled = ReadOnly(False)
+    # handled = ReadOnly(False)
 
     def __repr__(self):
-        s = '%s(fid=%r, t=%r)' % (self.__class__.__name__,
-            self.fid, self.t)
+        s = "%s(fid=%r, t=%r)" % (self.__class__.__name__, self.fid, self.t)
         return s
 
+
 blob_frame_event_trait = Event(BlobFrameEvent)
-
-
-# EOF

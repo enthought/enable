@@ -6,20 +6,27 @@
 *~
 .DS_Store
 
+# Docs files to ignore
+/docs/source/api/*.rst
+!docs/source/api/enable.api.rst
+!docs/source/api/kiva.api.rst
+docs/build/
+
 # Ignore the build directories
 *.egg-info/
 build/
 dist/
-docs/build/
 
 # SWIG & Cython intermediate files
 kiva/agg/agg.py
 kiva/agg/agg_wrap.cpp
 kiva/agg/plat_support.py
-kiva/agg/src/gl/plat_support_wrap.cpp
 kiva/agg/src/gtk1/plat_support_wrap.cpp
+kiva/agg/src/osx/plat_support_wrap.cpp
 kiva/agg/src/win32/plat_support_wrap.cpp
 kiva/agg/src/x11/plat_support_wrap.cpp
+kiva/gl/gl.py
+kiva/gl/gl_wrap.cpp
 kiva/quartz/ABCGI.c
 kiva/quartz/CTFont.c
 

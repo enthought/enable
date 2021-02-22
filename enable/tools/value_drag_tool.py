@@ -1,11 +1,12 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
 #
-# (C) Copyright 2012 Enthought, Inc., Austin, TX
-# All right reserved.
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
 #
-# This file is open source software distributed according to the terms in
-# LICENSE.txt
-#
-
+# Thanks for using Enthought open source!
 """
 Value Drag Tools
 ================
@@ -13,15 +14,13 @@ Value Drag Tools
 This module contains tools to handle simple dragging interactions where the
 drag operation has a direct effect on some underlying value.  This can
 potentially be used as the basis for many different interactions,
-
 """
-import six
-
-
-from traits.api import Str, Float, Set, Enum, Bool, Tuple, Dict, Event, Any, Either
+from traits.api import (
+    Any, Bool, Dict, Either, Enum, Event, Float, Set, Str, Tuple
+)
 from .drag_tool import DragTool
 
-keys = set(['shift', 'alt', 'control'])
+keys = {"shift", "alt", "control"}
 
 
 class IdentityMapper(object):
@@ -41,11 +40,11 @@ class ValueDragTool(DragTool):
     The tool allows the use of an x_mapper and y_mapper to map between
     screen coordinates and more abstract data coordinates.  These mappers must
     be objects with a map_data() method that maps a component-space coordinate
-    to a data-space coordinate.  Chaco mappers satisfy the required API, and the
-    tool will look for 'x_mapper' and 'y_mapper' attributes on the component
-    to use as the defaults, facilitating interoperability with Chaco plots.
-    Failing that, a simple identity mapper is provided which does nothing.
-    Coordinates are given relative to the component.
+    to a data-space coordinate.  Chaco mappers satisfy the required API, and
+    the tool will look for 'x_mapper' and 'y_mapper' attributes on the
+    component to use as the defaults, facilitating interoperability with Chaco
+    plots. Failing that, a simple identity mapper is provided which does
+    nothing. Coordinates are given relative to the component.
 
     Subclasses of this tool need to supply get_value() and set_delta() methods.
     The get_value method returns the current underlying value, while the
@@ -53,7 +52,6 @@ class ValueDragTool(DragTool):
     position, and sets the underlying value appropriately.  The object stores
     the original value at the start of the operation as the original_value
     attribute.
-
     """
 
     #: set of modifier keys that must be down to invoke the tool
@@ -82,7 +80,6 @@ class ValueDragTool(DragTool):
 
     def get_value(self):
         """ Return the current value that is being modified
-
         """
         pass
 
@@ -93,7 +90,6 @@ class ValueDragTool(DragTool):
         delta_x and delta_y in data coordinates.  These deltas are total
         displacement from the original location, not incremental.  The value
         parameter is the original value at the point where the drag started.
-
         """
         pass
 
@@ -110,8 +106,12 @@ class ValueDragTool(DragTool):
 
     def dragging(self, event):
         position = event.current_pointer_position()
-        delta_x = self.x_mapper.map_data(position[0]) - self.original_data_point[0]
-        delta_y = self.y_mapper.map_data(position[1]) - self.original_data_point[1]
+        delta_x = (
+            self.x_mapper.map_data(position[0]) - self.original_data_point[0]
+        )
+        delta_y = (
+            self.y_mapper.map_data(position[1]) - self.original_data_point[1]
+        )
         self.set_delta(self.original_value, delta_x, delta_y)
         return True
 
@@ -124,7 +124,8 @@ class ValueDragTool(DragTool):
         # override button down to handle modifier keys correctly
         if not event.handled and self._drag_state == "nondrag":
             key_states = dict((key, key in self.modifier_keys) for key in keys)
-            if not all(getattr(event, key+'_down') == state for key, state in key_states.items()):
+            if (not all(getattr(event, key + "_down") == state
+                        for key, state in key_states.items())):
                 return False
             self.mouse_down_position = (event.x, event.y)
             if not self.is_draggable(*self.mouse_down_position):
@@ -138,11 +139,11 @@ class ValueDragTool(DragTool):
 
     def _x_mapper_default(self):
         # if the component has an x_mapper, try to use it by default
-        return getattr(self.component, 'x_mapper', identity_mapper)
+        return getattr(self.component, "x_mapper", identity_mapper)
 
     def _y_mapper_default(self):
         # if the component has an x_mapper, try to use it by default
-        return getattr(self.component, 'y_mapper', identity_mapper)
+        return getattr(self.component, "y_mapper", identity_mapper)
 
 
 class AttributeDragTool(ValueDragTool):
@@ -153,7 +154,6 @@ class AttributeDragTool(ValueDragTool):
     simply provide the model object and the attributes that you want to be
     changed by the drag.  If only one attribute is required, the other can be
     left as an empty string.
-
     """
 
     #: the model object which has the attributes we are modifying
@@ -169,7 +169,7 @@ class AttributeDragTool(ValueDragTool):
     x_bounds = Tuple(Either(Float, Str, None), Either(Float, Str, None))
 
     #: max and min values for y value
-    y_bounds = Tuple(Either(Float,Str,  None), Either(Float, Str, None))
+    y_bounds = Tuple(Either(Float, Str, None), Either(Float, Str, None))
 
     x_name = Str
 
@@ -183,7 +183,6 @@ class AttributeDragTool(ValueDragTool):
         Returns a 2-tuple of (x, y) values.  If either x_attr or y_attr is
         the empty string, then the corresponding component of the tuple is
         None.
-
         """
         x_value = None
         y_value = None
@@ -203,19 +202,18 @@ class AttributeDragTool(ValueDragTool):
 
         Note that setting x and y are two separate operations, and so will fire
         two trait notification events.
-
         """
         inspector_value = {}
         if self.x_attr:
-            x_value =  value[0] + delta_x
+            x_value = value[0] + delta_x
             if self.x_bounds[0] is not None:
-                if isinstance(self.x_bounds[0], six.string_types):
+                if isinstance(self.x_bounds[0], str):
                     m = getattr(self.model, self.x_bounds[0])
                 else:
                     m = self.x_bounds[0]
                 x_value = max(x_value, m)
             if self.x_bounds[1] is not None:
-                if isinstance(self.x_bounds[1], six.string_types):
+                if isinstance(self.x_bounds[1], str):
                     M = getattr(self.model, self.x_bounds[1])
                 else:
                     M = self.x_bounds[1]
@@ -225,13 +223,13 @@ class AttributeDragTool(ValueDragTool):
         if self.y_attr:
             y_value = value[1] + delta_y
             if self.y_bounds[0] is not None:
-                if isinstance(self.y_bounds[0], six.string_types):
+                if isinstance(self.y_bounds[0], str):
                     m = getattr(self.model, self.y_bounds[0])
                 else:
                     m = self.y_bounds[0]
                 y_value = max(y_value, m)
             if self.y_bounds[1] is not None:
-                if isinstance(self.y_bounds[1], six.string_types):
+                if isinstance(self.y_bounds[1], str):
                     M = getattr(self.model, self.y_bounds[1])
                 else:
                     M = self.y_bounds[1]
@@ -241,7 +239,7 @@ class AttributeDragTool(ValueDragTool):
         self.new_value = inspector_value
 
     def _x_name_default(self):
-        return self.x_attr.replace('_', ' ').capitalize()
+        return self.x_attr.replace("_", " ").capitalize()
 
     def _y_name_default(self):
-        return self.y_attr.replace('_', ' ').capitalize()
+        return self.y_attr.replace("_", " ").capitalize()

@@ -1,3 +1,12 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 import contextlib
 import os
 import shutil
@@ -6,18 +15,16 @@ import tempfile
 import numpy
 from PIL import Image
 
-from kiva.fonttools import Font
-from kiva.constants import MODERN
+from kiva.api import MODERN, Font
 
 
 class DrawingTester(object):
     """ Basic drawing tests for graphics contexts.
-
     """
 
     def setUp(self):
         self.directory = tempfile.mkdtemp()
-        self.filename = os.path.join(self.directory, 'rendered')
+        self.filename = os.path.join(self.directory, "rendered")
         self.gc = self.create_graphics_context(300, 300)
         self.gc.clear()
         self.gc.set_stroke_color((1.0, 0.0, 0.0))
@@ -27,6 +34,12 @@ class DrawingTester(object):
     def tearDown(self):
         del self.gc
         shutil.rmtree(self.directory)
+
+    def test_image(self):
+        img = numpy.zeros((20, 20, 4), dtype=numpy.uint8)
+        img[5:15, 5:15, (0, 3)] = 255
+        with self.draw_and_check():
+            self.gc.draw_image(img, (100, 100, 20, 20))
 
     def test_line(self):
         with self.draw_and_check():
@@ -131,26 +144,36 @@ class DrawingTester(object):
             self.gc.arc(150, 150, 100, 0.0, 2 * numpy.pi)
             self.gc.fill_path()
 
-    #### Required methods ####################################################
+    # Required methods ####################################################
 
     @contextlib.contextmanager
     def draw_and_check(self):
         """ A context manager to check the result.
-
         """
         raise NotImplementedError()
 
     def create_graphics_context(self, width, length):
         """ Create the desired graphics context
-
         """
         raise NotImplementedError()
 
 
 class DrawingImageTester(DrawingTester):
     """ Basic drawing tests for graphics contexts of gui toolkits.
-
     """
+    def setUp(self):
+        self.directory = tempfile.mkdtemp()
+        self.filename = os.path.join(self.directory, "rendered")
+        self.gc = self.create_graphics_context(600, 600, 2.0)
+        self.gc.clear()
+        self.gc.set_stroke_color((1.0, 0.0, 0.0))
+        self.gc.set_fill_color((1.0, 0.0, 0.0))
+        self.gc.set_line_width(5)
+
+    def create_graphics_context(self, width, length, pixel_scale):
+        """ Create the desired graphics context
+        """
+        raise NotImplementedError()
 
     @contextlib.contextmanager
     def draw_and_check(self):
@@ -161,19 +184,19 @@ class DrawingImageTester(DrawingTester):
 
     def assertImageSavedWithContent(self, filename):
         """ Load the image and check that there is some content in it.
-
         """
         image = numpy.array(Image.open(filename))
         # default is expected to be a totally white image
 
-        self.assertEqual(image.shape[:2], (300, 300))
+        self.assertEqual(image.shape[:2], (600, 600))
         if image.shape[2] == 3:
             check = numpy.sum(image == [255, 0, 0], axis=2) == 3
         elif image.shape[2] == 4:
             check = numpy.sum(image == [255, 0, 0, 255], axis=2) == 4
         else:
             self.fail(
-                'Pixel size is not 3 or 4, but {0}'.format(image.shape[2]))
+                "Pixel size is not 3 or 4, but {0}".format(image.shape[2])
+            )
         if check.any():
             return
-        self.fail('The image looks empty, no red pixels where drawn')
+        self.fail("The image looks empty, no red pixels were drawn")

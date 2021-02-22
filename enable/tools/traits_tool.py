@@ -1,4 +1,14 @@
-""" Defines the TraitsTool and Fifo classes, and get_nested_components function.
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
+""" Defines the TraitsTool and Fifo classes, and get_nested_components
+function.
 """
 
 # Enthought library imports
@@ -6,25 +16,29 @@ from enable.base_tool import BaseTool
 from enable.container import Container
 
 
-
 class Fifo:
     """ Slightly-modified version of the Fifo class from the Python cookbook:
         http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/68436
     """
+
     def __init__(self):
         self.nextin = 0
         self.nextout = 0
         self.data = {}
+
     def append(self, value):
         self.data[self.nextin] = value
         self.nextin += 1
+
     def extend(self, values):
         if len(values) > 0:
-            for i,val in enumerate(values):
-                self.data[i+self.nextin] = val
-            self.nextin += i+1
+            for i, val in enumerate(values):
+                self.data[i + self.nextin] = val
+            self.nextin += i + 1
+
     def isempty(self):
         return self.nextout >= self.nextin
+
     def pop(self):
         value = self.data[self.nextout]
         del self.data[self.nextout]
@@ -42,11 +56,11 @@ def get_nested_components(container):
     """
     components = []
     worklist = Fifo()
-    worklist.append((container, (0,0)))
+    worklist.append((container, (0, 0)))
     while 1:
         item, offset = worklist.pop()
         if isinstance(item, Container):
-            new_offset = (offset[0]+item.x, offset[1]+item.y)
+            new_offset = (offset[0] + item.x, offset[1] + item.y)
             for c in item.components:
                 worklist.append((c, new_offset))
         if worklist.isempty():
@@ -64,7 +78,6 @@ class TraitsTool(BaseTool):
     draw_mode = "none"
     # This tool is not visible (overrides BaseTool).
     visible = False
-
 
     def normal_left_dclick(self, event):
         """ Handles the left mouse button being double-clicked when the tool
@@ -92,7 +105,7 @@ class TraitsTool(BaseTool):
         # Hittest against all the candidate and take the first one
         item = None
         for candidate, offset in candidates:
-            if candidate.is_in(x-offset[0], y-offset[1]):
+            if candidate.is_in(x - offset[0], y - offset[1]):
                 item = candidate
                 break
 
@@ -102,8 +115,3 @@ class TraitsTool(BaseTool):
             event.handled = True
             self.component.active_tool = None
             item.request_redraw()
-        return
-
-
-
-# EOF

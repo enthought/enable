@@ -1,16 +1,22 @@
-#------------------------------------------------------------------------------
-#  Copyright (c) 2013, Enthought, Inc.
-#  All rights reserved.
-#------------------------------------------------------------------------------
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 from contextlib import contextmanager
+
 import kiwisolver as kiwi
 
 
 class LayoutManager(object):
     """ A class which uses a kiwi solver to manage a system
     of constraints.
-
     """
+
     def __init__(self):
         self._solver = kiwi.Solver()
         self._edit_stack = []
@@ -25,10 +31,9 @@ class LayoutManager(object):
         constraints : Iterable
             An iterable that yields the constraints to add to the
             solvers.
-
         """
         if self._initialized:
-            raise RuntimeError('Solver already initialized')
+            raise RuntimeError("Solver already initialized")
         solver = self._solver
         for cn in constraints:
             solver.addConstraint(cn)
@@ -45,10 +50,9 @@ class LayoutManager(object):
 
         new_cns : list
             The list of kiwi constraints to add to the solver.
-
         """
         if not self._initialized:
-            raise RuntimeError('Solver not yet initialized')
+            raise RuntimeError("Solver not yet initialized")
         solver = self._solver
         for cn in old_cns:
             solver.removeConstraint(cn)
@@ -84,10 +88,9 @@ class LayoutManager(object):
             The strength with which to perform the layout using the
             current size of the container. i.e. the strength of the
             resize. The default is kiwisolver.strength.medium.
-
         """
         if not self._initialized:
-            raise RuntimeError('Layout with uninitialized solver')
+            raise RuntimeError("Layout with uninitialized solver")
         if self._running:
             return
         try:
@@ -129,10 +132,9 @@ class LayoutManager(object):
         result : (float, float)
             The floating point (min_width, min_height) size of the
             container which would best satisfy the set of constraints.
-
         """
         if not self._initialized:
-            raise RuntimeError('Get min size on uninitialized solver')
+            raise RuntimeError("Get min size on uninitialized solver")
         solver = self._solver
         pairs = ((width, strength), (height, strength))
         with self._edit_context(pairs):
@@ -171,11 +173,10 @@ class LayoutManager(object):
         result : (float or -1, float or -1)
             The floating point (max_width, max_height) size of the
             container which would best satisfy the set of constraints.
-
         """
         if not self._initialized:
-            raise RuntimeError('Get max size on uninitialized solver')
-        max_val = 2**24 - 1  # Arbitrary, but the max allowed by Qt.
+            raise RuntimeError("Get max size on uninitialized solver")
+        max_val = 2 ** 24 - 1  # Arbitrary, but the max allowed by Qt.
         solver = self._solver
         pairs = ((width, strength), (height, strength))
         with self._edit_context(pairs):
@@ -203,7 +204,6 @@ class LayoutManager(object):
         pairs : sequence
             A sequence of 2-tuples of (var, strength) which should be
             added as edit variables to the solver.
-
         """
         solver = self._solver
         stack = self._edit_stack
@@ -219,7 +219,6 @@ class LayoutManager(object):
 
         The current edit variables will be removed and the previous
         edit variables will be re-added.
-
         """
         solver = self._solver
         stack = self._edit_stack
@@ -241,7 +240,6 @@ class LayoutManager(object):
         pairs : list
             A list of 2-tuple of (var, strength) which should be added
             as temporary edit variables to the solver.
-
         """
         self._push_edit_vars(pairs)
         yield

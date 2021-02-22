@@ -1,11 +1,11 @@
-# Copyright (c) 2005-2014, Enthought, Inc.
-# some parts copyright 2002 by Space Telescope Science Institute
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
 # All rights reserved.
 #
 # This software is provided without warranty under the terms of the BSD
-# license included in enthought/LICENSE.txt and may be redistributed only
-# under the conditions described in the aforementioned license.  The license
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
 # is also available online at http://www.enthought.com/licenses/BSD.txt
+#
 # Thanks for using Enthought open source!
 
 """ PDF implementation of the core2d drawing library
@@ -17,13 +17,11 @@
     The PDF implementation relies heavily on the ReportLab project.
 """
 
-from __future__ import absolute_import, print_function
-
 # standard library imports
-import six.moves as sm
-import warnings
 import copy
-from numpy import array, pi
+import warnings
+
+from numpy import ndarray, pi
 
 # ReportLab PDF imports
 import reportlab.pdfbase.pdfmetrics
@@ -67,8 +65,10 @@ class GraphicsContext(GraphicsContextBase):
     """
     Simple wrapper around a PDF graphics context.
     """
+
     def __init__(self, pdf_canvas, *args, **kwargs):
         from .image import GraphicsContext as GraphicsContextImage
+
         self.gc = pdf_canvas
         self.current_pdf_path = None
         self.current_point = (0, 0)
@@ -343,7 +343,7 @@ class GraphicsContext(GraphicsContextBase):
         if self.current_pdf_path is None:
             self.begin_path()
 
-        for start, end in sm.zip(starts, ends):
+        for start, end in zip(starts, ends):
             self.current_pdf_path.moveTo(start[0], start[1])
             self.current_pdf_path.lineTo(end[0], end[1])
             self.current_point = (end[0], end[1])
@@ -406,10 +406,12 @@ class GraphicsContext(GraphicsContextBase):
         if self.current_pdf_path is None:
             self.begin_path()
 
-        self.current_pdf_path.arc(x - radius, y - radius,
-                                  x + radius, y + radius,
-                                  start_angle * 180.0 / pi,
-                                  (end_angle-start_angle) * 180.0 / pi)
+        self.current_pdf_path.arc(
+            x - radius, y - radius,
+            x + radius, y + radius,
+            start_angle * 180.0 / pi,
+            (end_angle - start_angle) * 180.0 / pi,
+        )
         self.current_point = (x, y)
 
     def arc_to(self, x1, y1, x2, y2, radius):
@@ -419,8 +421,9 @@ class GraphicsContext(GraphicsContextBase):
             self.begin_path()
 
         # Get the endpoints on the curve where it touches the line segments
-        t1, t2 = arc_to_tangent_points(self.current_point,
-                                       (x1, y1), (x2, y2), radius)
+        t1, t2 = arc_to_tangent_points(
+            self.current_point, (x1, y1), (x2, y2), radius
+        )
 
         # draw!
         self.current_pdf_path.lineTo(*t1)
@@ -563,8 +566,7 @@ class GraphicsContext(GraphicsContextBase):
         pixel size.  If 'rect' is provided, then the image is resized
         into the (w, h) given and drawn into this GC at point (x, y).
 
-        img_gc is either a Numeric array (WxHx3 or WxHx4) or a GC from Kiva's
-        Agg backend (kiva.agg.GraphicsContextArray).
+        img_gc is either a Numeric array (WxHx3 or WxHx4) or a PIL Image.
 
         Requires the Python Imaging Library (PIL).
         """
@@ -575,40 +577,33 @@ class GraphicsContext(GraphicsContextBase):
         # do it nicely (using convert_pixel_format), and if not, we do
         # it brute-force using Agg.
         from reportlab.lib.utils import ImageReader
-        from kiva import agg
-        from kiva.compat import pilfromstring, piltostring
+        from PIL import Image
 
-        if type(img) == type(array([])):
-            # Numeric array
-            converted_img = agg.GraphicsContextArray(img, pix_format='rgba32')
-            format = 'RGBA'
-        elif isinstance(img, agg.GraphicsContextArray):
-            if img.format().startswith('RGBA'):
-                format = 'RGBA'
-            elif img.format().startswith('RGB'):
-                format = 'RGB'
-            else:
-                converted_img = img.convert_pixel_format('rgba32', inplace=0)
-                format = 'RGBA'
+        if isinstance(img, ndarray):
+            # Conversion from numpy array
+            pil_img = Image.fromarray(img)
+        elif isinstance(img, Image.Image):
+            pil_img = img
+        elif hasattr(img, "bmp_array"):
+            # An offscreen kiva agg context
+            if hasattr(img, "convert_pixel_format"):
+                img = img.convert_pixel_format("rgba32", inplace=0)
+            pil_img = Image.fromarray(img.bmp_array)
         else:
-            warnings.warn("Cannot render image of type %r into PDF context."
-                          % type(img))
+            warnings.warn(
+                "Cannot render image of type %r into PDF context." % type(img)
+            )
             return
 
-        # converted_img now holds an Agg graphics context with the image
-        pil_img = pilfromstring(format,
-                                (converted_img.width(),
-                                 converted_img.height()),
-                                piltostring(converted_img.bmp_array))
-
         if rect is None:
-            rect = (0, 0, img.width(), img.height())
+            rect = (0, 0, pil_img.width, pil_img.height)
 
         # Draw the actual image.
         # Wrap it in an ImageReader object, because that's what reportlab
         # actually needs.
-        self.gc.drawImage(ImageReader(pil_img),
-                          rect[0], rect[1], rect[2], rect[3])
+        self.gc.drawImage(
+            ImageReader(pil_img), rect[0], rect[1], rect[2], rect[3]
+        )
 
     # ----------------------------------------------------------------
     # Drawing Text
@@ -717,7 +712,7 @@ class GraphicsContext(GraphicsContextBase):
         return width, height, descent, 0
 
     def get_text_extent(self, textstring):
-        w, h, d, l = self.get_full_text_extent(textstring)
+        w, h, *_ = self.get_full_text_extent(textstring)
         return w, h
 
     # ----------------------------------------------------------------
@@ -790,20 +785,3 @@ class GraphicsContext(GraphicsContextBase):
 
     def save(self):
         self.gc.save()
-
-
-def simple_test():
-    pdf = canvas.Canvas("bob.pdf")
-    gc = GraphicsContext(pdf)
-    gc.begin_path()
-    gc.move_to(50, 50)
-    gc.line_to(100, 100)
-    gc.draw_path()
-    gc.flush()
-    pdf.save()
-
-
-if __name__ == "__main__":
-    import sys
-    if len(sys.argv) == 1:
-        sys.exit("Usage: %s output_file" % sys.argv[0])

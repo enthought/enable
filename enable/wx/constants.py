@@ -1,64 +1,65 @@
-#------------------------------------------------------------------------------
-# Copyright (c) 2011, Enthought, Inc.
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
 # All rights reserved.
 #
 # This software is provided without warranty under the terms of the BSD
-# license included in enthought/LICENSE.txt and may be redistributed only
-# under the conditions described in the aforementioned license.  The license
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
 # is also available online at http://www.enthought.com/licenses/BSD.txt
+#
 # Thanks for using Enthought open source!
-#------------------------------------------------------------------------------
-
-from __future__ import absolute_import
 
 import warnings
 
 import wx
 
 from ..toolkit_constants import (
-    pointer_names, key_names, mouse_wheel_axes_names
+    pointer_names,
+    key_names,
+    mouse_wheel_axes_names,
 )
 
-DRAG_RESULTS_MAP = { "error":   wx.DragError,
-                     "none":    wx.DragNone,
-                     "copy":    wx.DragCopy,
-                     "move":    wx.DragMove,
-                     "link":    wx.DragLink,
-                     "cancel":  wx.DragCancel }
+DRAG_RESULTS_MAP = {
+    "error": wx.DragError,
+    "none": wx.DragNone,
+    "copy": wx.DragCopy,
+    "move": wx.DragMove,
+    "link": wx.DragLink,
+    "cancel": wx.DragCancel,
+}
 
 # Map from pointer shape name to pointer shapes:
 pointer_shapes = [
-   wx.CURSOR_ARROW,
-   wx.CURSOR_ARROWWAIT,
-   wx.CURSOR_BLANK,
-   wx.CURSOR_BULLSEYE,
-   wx.CURSOR_CHAR,
-   wx.CURSOR_CROSS,
-   wx.CURSOR_HAND,
-   wx.CURSOR_IBEAM,
-   wx.CURSOR_LEFT_BUTTON,
-   wx.CURSOR_MAGNIFIER,
-   wx.CURSOR_MIDDLE_BUTTON,
-   wx.CURSOR_NO_ENTRY,
-   wx.CURSOR_PAINT_BRUSH,
-   wx.CURSOR_PENCIL,
-   wx.CURSOR_POINT_LEFT,
-   wx.CURSOR_POINT_RIGHT,
-   wx.CURSOR_QUESTION_ARROW,
-   wx.CURSOR_RIGHT_ARROW,
-   wx.CURSOR_RIGHT_BUTTON,
-   wx.CURSOR_SIZENS,
-   wx.CURSOR_SIZENESW,
-   wx.CURSOR_SIZENWSE,
-   wx.CURSOR_SIZEWE,
-   wx.CURSOR_SIZEWE,
-   wx.CURSOR_SIZENS,
-   wx.CURSOR_SIZENWSE,
-   wx.CURSOR_SIZENESW,
-   wx.CURSOR_SIZING,
-   wx.CURSOR_SPRAYCAN,
-   wx.CURSOR_WAIT,
-   wx.CURSOR_WATCH,
+    wx.CURSOR_ARROW,
+    wx.CURSOR_ARROWWAIT,
+    wx.CURSOR_BLANK,
+    wx.CURSOR_BULLSEYE,
+    wx.CURSOR_CHAR,
+    wx.CURSOR_CROSS,
+    wx.CURSOR_HAND,
+    wx.CURSOR_IBEAM,
+    wx.CURSOR_LEFT_BUTTON,
+    wx.CURSOR_MAGNIFIER,
+    wx.CURSOR_MIDDLE_BUTTON,
+    wx.CURSOR_NO_ENTRY,
+    wx.CURSOR_PAINT_BRUSH,
+    wx.CURSOR_PENCIL,
+    wx.CURSOR_POINT_LEFT,
+    wx.CURSOR_POINT_RIGHT,
+    wx.CURSOR_QUESTION_ARROW,
+    wx.CURSOR_RIGHT_ARROW,
+    wx.CURSOR_RIGHT_BUTTON,
+    wx.CURSOR_SIZENS,
+    wx.CURSOR_SIZENESW,
+    wx.CURSOR_SIZENWSE,
+    wx.CURSOR_SIZEWE,
+    wx.CURSOR_SIZEWE,
+    wx.CURSOR_SIZENS,
+    wx.CURSOR_SIZENWSE,
+    wx.CURSOR_SIZENESW,
+    wx.CURSOR_SIZING,
+    wx.CURSOR_SPRAYCAN,
+    wx.CURSOR_WAIT,
+    wx.CURSOR_WATCH,
 ]
 
 if len(pointer_names) != len(pointer_shapes):
@@ -124,8 +125,8 @@ key_symbols = [
     wx.WXK_NUMPAD7,
     wx.WXK_NUMPAD8,
     wx.WXK_NUMPAD9,
-    wx.WXK_NEXT,
-    wx.WXK_PRIOR,
+    wx.WXK_PAGEDOWN,  # Formerly: wx.WXK_NEXT
+    wx.WXK_PAGEUP,  # Formerly: wx.WXK_PRIOR
     wx.WXK_PAUSE,
     wx.WXK_PRINT,
     wx.WXK_RIGHT,
@@ -139,13 +140,12 @@ key_symbols = [
 ]
 
 
-
 if len(key_symbols) != len(key_names):
     warnings.warn("The WX toolkit backend keymap is out of sync!")
 
 KEY_MAP = dict(zip(key_symbols, key_names))
 
-if tuple(float(v) for v in wx.__version__.split('.')) < (2, 9, 4):
+if wx.VERSION[:3] < (2, 9, 4):
     mouse_wheel_axes = [0, 1]
 else:
     mouse_wheel_axes = [wx.MOUSE_WHEEL_VERTICAL, wx.MOUSE_WHEEL_HORIZONTAL]

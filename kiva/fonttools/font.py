@@ -1,28 +1,36 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 """
 Defines the Kiva Font class and a utility method to parse free-form font
 specification strings into Font instances.
 """
-
-from __future__ import absolute_import, print_function
-
-import six
-
 import copy
-from kiva.constants import (DEFAULT, DECORATIVE, ROMAN, SCRIPT, SWISS, MODERN,
-                            TELETYPE, NORMAL, ITALIC, BOLD, BOLD_ITALIC)
+
+from kiva.constants import (
+    BOLD_ITALIC, BOLD, DECORATIVE, DEFAULT, ITALIC, MODERN, NORMAL, ROMAN,
+    SCRIPT, SWISS, TELETYPE,
+)
+from .font_manager import default_font_manager, FontProperties
 
 # Various maps used by str_to_font
 font_families = {
-    'default':    DEFAULT,
-    'decorative': DECORATIVE,
-    'roman':      ROMAN,
-    'script':     SCRIPT,
-    'swiss':      SWISS,
-    'modern':     MODERN
+    "default": DEFAULT,
+    "decorative": DECORATIVE,
+    "roman": ROMAN,
+    "script": SCRIPT,
+    "swiss": SWISS,
+    "modern": MODERN,
 }
-font_styles = {'italic': ITALIC}
-font_weights = {'bold': BOLD}
-font_noise = ['pt', 'point', 'family']
+font_styles = {"italic": ITALIC}
+font_weights = {"bold": BOLD}
+font_noise = ["pt", "point", "family"]
 
 
 def str_to_font(fontspec):
@@ -45,15 +53,21 @@ def str_to_font(fontspec):
             style = font_styles[lword]
         elif lword in font_weights:
             weight = font_weights[lword]
-        elif lword == 'underline':
+        elif lword == "underline":
             underline = 1
         elif lword not in font_noise:
             try:
                 point_size = int(lword)
-            except:
+            except Exception:
                 facename.append(word)
-    return Font(size=point_size, family=family, weight=weight, style=style,
-                underline=underline, face_name=' '.join(facename))
+    return Font(
+        size=point_size,
+        family=family,
+        weight=weight,
+        style=style,
+        underline=underline,
+        face_name=" ".join(facename),
+    )
 
 
 class Font(object):
@@ -76,21 +90,19 @@ class Font(object):
         MODERN: "sans-serif",
         DECORATIVE: "fantasy",
         SCRIPT: "script",
-        TELETYPE: "monospace"
+        TELETYPE: "monospace",
     }
 
     def __init__(self, face_name="", size=12, family=SWISS, weight=NORMAL,
                  style=NORMAL, underline=0, encoding=DEFAULT):
-        if (type(size) != int) or (type(family) != type(SWISS)) or \
-            (type(weight) != type(NORMAL)) or (type(style) != type(NORMAL)) or \
-            (type(underline) != int) or (not isinstance(face_name, six.string_types)) or \
-            (type(encoding) != type(DEFAULT)):
-                raise RuntimeError("Bad value in Font() constructor.")
-        ### HACK:  C++ stuff expects a string (not unicode) for the face_name, so fix
-        ###        if needed.
-        ### Only for python < 3
-        if six.PY2 and isinstance(face_name, six.text_type):
-            face_name = face_name.encode("latin1")
+        if ((type(size) != int)
+                or (type(family) != type(SWISS))
+                or (type(weight) != type(NORMAL))
+                or (type(style) != type(NORMAL))
+                or (type(underline) != int)
+                or (not isinstance(face_name, str))
+                or (type(encoding) != type(DEFAULT))):
+            raise RuntimeError("Bad value in Font() constructor.")
         self.size = size
         self.family = family
         self.weight = weight
@@ -103,10 +115,8 @@ class Font(object):
         """ Returns the file name containing the font that most closely matches
         our font properties.
         """
-        from .font_manager import fontManager
-
         fp = self._make_font_props()
-        return str(fontManager.findfont(fp))
+        return str(default_font_manager().findfont(fp))
 
     def findfontname(self):
         """ Returns the name of the font that most closely matches our font
@@ -119,8 +129,6 @@ class Font(object):
         """ Returns a font_manager.FontProperties object that encapsulates our
         font properties
         """
-        from .font_manager import FontProperties
-
         # XXX: change the weight to a numerical value
         if self.style == BOLD or self.style == BOLD_ITALIC:
             weight = "bold"
@@ -130,8 +138,12 @@ class Font(object):
             style = "italic"
         else:
             style = "normal"
-        fp = FontProperties(family=self.familymap[self.family], style=style,
-                            weight=weight, size=self.size)
+        fp = FontProperties(
+            family=self.familymap[self.family],
+            style=style,
+            weight=weight,
+            size=self.size,
+        )
         if self.face_name != "":
             fp.set_name(self.face_name)
         return fp
@@ -151,13 +163,13 @@ class Font(object):
     def __eq__(self, other):
         result = False
         try:
-            if (self.family == other.family and
-                    self.size == other.size and
-                    self.weight == other.weight and
-                    self.style == other.style and
-                    self.underline == other.underline and
-                    self.face_name == other.face_name and
-                    self.encoding == other.encoding):
+            if (self.family == other.family
+                    and self.size == other.size
+                    and self.weight == other.weight
+                    and self.style == other.style
+                    and self.underline == other.underline
+                    and self.face_name == other.face_name
+                    and self.encoding == other.encoding):
                 result = True
         except AttributeError:
             pass
@@ -167,7 +179,15 @@ class Font(object):
         return not self.__eq__(other)
 
     def __repr__(self):
-        fmt = ("Font(size=%d,family=%d,weight=%d, style=%d, face_name='%s', " +
-               "encoding=%d)")
-        return fmt % (self.size, self.family, self.weight, self.style,
-                      self.face_name, self.encoding)
+        fmt = (
+            "Font(size=%d,family=%d,weight=%d, style=%d, face_name='%s', "
+            + "encoding=%d)"
+        )
+        return fmt % (
+            self.size,
+            self.family,
+            self.weight,
+            self.style,
+            self.face_name,
+            self.encoding,
+        )

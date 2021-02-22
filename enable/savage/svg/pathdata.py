@@ -1,23 +1,33 @@
-"""
-    SVG path data parser
-
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
+""" SVG path data parser
 
     Usage::
 
         steps = svg.parseString(pathdata)
         for command, arguments in steps:
             pass
-
 """
 
-from pyparsing import (ParserElement, Literal, Word, CaselessLiteral,
-    Optional, Combine, Forward, ZeroOrMore, nums, oneOf, Group, ParseException, OneOrMore)
+from pyparsing import (
+    CaselessLiteral, Combine, Group, Literal, OneOrMore, Optional,
+    ParseException, Word, ZeroOrMore, nums, oneOf
+)
 
-#ParserElement.enablePackrat()
+# ParserElement.enablePackrat()
+
 
 def Command(char):
     """ Case insensitive but case preserving"""
     return CaselessPreservingLiteral(char)
+
 
 def Arguments(token):
     return Group(token)
@@ -27,102 +37,116 @@ class CaselessPreservingLiteral(CaselessLiteral):
     """ Like CaselessLiteral, but returns the match as found
         instead of as defined.
     """
-    def __init__( self, matchString ):
-        super(CaselessPreservingLiteral,self).__init__( matchString.upper() )
+
+    def __init__(self, matchString):
+        super(CaselessPreservingLiteral, self).__init__(matchString.upper())
         self.name = "'%s'" % matchString
         self.errmsg = "Expected " + self.name
 
-    def parseImpl( self, instring, loc, doActions=True ):
-        test = instring[ loc:loc+self.matchLen ]
+    def parseImpl(self, instring, loc, doActions=True):
+        test = instring[loc:loc + self.matchLen]
         if test.upper() == self.match:
-            return loc+self.matchLen, test
-        #~ raise ParseException( instring, loc, self.errmsg )
+            return loc + self.matchLen, test
+        # ~ raise ParseException( instring, loc, self.errmsg )
         raise ParseException(instring, loc, self.errmsg, self)
+
 
 def Sequence(token):
     """ A sequence of the token"""
-    return OneOrMore(token+maybeComma)
+    return OneOrMore(token + maybeComma)
+
 
 digit_sequence = Word(nums)
 
 sign = oneOf("+ -")
 
+
 def convertToFloat(s, loc, toks):
     try:
         return float(toks[0])
-    except:
-        raise ParseException(loc, "invalid float format %s"%toks[0])
+    except Exception:
+        raise ParseException(loc, "invalid float format %s" % toks[0])
 
-exponent = CaselessLiteral("e")+Optional(sign)+Word(nums)
 
-#note that almost all these fields are optional,
-#and this can match almost anything. We rely on Pythons built-in
-#float() function to clear out invalid values - loosely matching like this
-#speeds up parsing quite a lot
+exponent = CaselessLiteral("e") + Optional(sign) + Word(nums)
+
+# note that almost all these fields are optional,
+# and this can match almost anything. We rely on Pythons built-in
+# float() function to clear out invalid values - loosely matching like this
+# speeds up parsing quite a lot
 floatingPointConstant = Combine(
-    Optional(sign) +
-    Optional(Word(nums)) +
-    Optional(Literal(".") + Optional(Word(nums)))+
-    Optional(exponent)
+    Optional(sign)
+    + Optional(Word(nums))
+    + Optional(Literal(".") + Optional(Word(nums)))
+    + Optional(exponent)
 )
 
 floatingPointConstant.setParseAction(convertToFloat)
 
 number = floatingPointConstant
 
-#same as FP constant but don't allow a - sign
+# same as FP constant but don't allow a - sign
 nonnegativeNumber = Combine(
-    Optional(Word(nums)) +
-    Optional(Literal(".") + Optional(Word(nums)))+
-    Optional(exponent)
+    Optional(Word(nums))
+    + Optional(Literal(".") + Optional(Word(nums)))
+    + Optional(exponent)
 )
 nonnegativeNumber.setParseAction(convertToFloat)
 
 coordinate = number
 
-#comma or whitespace can seperate values all over the place in SVG
-maybeComma = Optional(Literal(',')).suppress()
+# comma or whitespace can seperate values all over the place in SVG
+maybeComma = Optional(Literal(",")).suppress()
 
 coordinateSequence = Sequence(coordinate)
 
-coordinatePair = (coordinate + maybeComma + coordinate).setParseAction(lambda t: tuple(t))
+coordinatePair = (coordinate + maybeComma + coordinate).setParseAction(
+    lambda t: tuple(t)
+)
 coordinatePairSequence = Sequence(coordinatePair)
 
 coordinatePairPair = coordinatePair + maybeComma + coordinatePair
 coordinatePairPairSequence = Sequence(Group(coordinatePairPair))
 
-coordinatePairTriple = coordinatePair + maybeComma + coordinatePair + maybeComma + coordinatePair
+coordinatePairTriple = (
+    coordinatePair + maybeComma + coordinatePair + maybeComma + coordinatePair
+)
 coordinatePairTripleSequence = Sequence(Group(coordinatePairTriple))
 
-#commands
+# commands
 lineTo = Group(Command("L") + Arguments(coordinatePairSequence))
 
 moveTo = Group(Command("M") + Arguments(coordinatePairSequence))
 
-closePath = Group(Command("Z")).setParseAction(lambda t: ('Z', (None,)))
+closePath = Group(Command("Z")).setParseAction(lambda t: ("Z", (None,)))
 
 flag = oneOf("1 0").setParseAction(lambda t: bool(int((t[0]))))
 
 arcRadius = (
-    nonnegativeNumber + maybeComma + #rx
-    nonnegativeNumber #ry
+    nonnegativeNumber + maybeComma + nonnegativeNumber  # rx, ry
 ).setParseAction(lambda t: tuple(t))
 
 arcFlags = (flag + maybeComma + flag).setParseAction(lambda t: tuple(t))
 
 ellipticalArcArgument = Group(
-    arcRadius + maybeComma + #rx, ry
-    number + maybeComma +#rotation
-    arcFlags + #large-arc-flag, sweep-flag
-    coordinatePair #(x,y)
+    arcRadius + maybeComma  # rx, ry
+    + number + maybeComma  # rotation
+    + arcFlags  # large-arc-flag, sweep-flag
+    + coordinatePair  # (x,y)
 )
 
 
-ellipticalArc = Group(Command("A") + Arguments(Sequence(ellipticalArcArgument)))
+ellipticalArc = Group(
+    Command("A") + Arguments(Sequence(ellipticalArcArgument))
+)
 
-smoothQuadraticBezierCurveto = Group(Command("T") + Arguments(coordinatePairSequence))
+smoothQuadraticBezierCurveto = Group(
+    Command("T") + Arguments(coordinatePairSequence)
+)
 
-quadraticBezierCurveto = Group(Command("Q") + Arguments(coordinatePairPairSequence))
+quadraticBezierCurveto = Group(
+    Command("Q") + Arguments(coordinatePairPairSequence)
+)
 
 smoothCurve = Group(Command("S") + Arguments(coordinatePairPairSequence))
 
@@ -132,18 +156,28 @@ horizontalLine = Group(Command("H") + Arguments(coordinateSequence))
 verticalLine = Group(Command("V") + Arguments(coordinateSequence))
 
 drawToCommand = (
-    lineTo | moveTo | closePath | ellipticalArc | smoothQuadraticBezierCurveto |
-    quadraticBezierCurveto | smoothCurve | curve | horizontalLine | verticalLine
-    )
+    lineTo
+    | moveTo
+    | closePath
+    | ellipticalArc
+    | smoothQuadraticBezierCurveto
+    | quadraticBezierCurveto
+    | smoothCurve
+    | curve
+    | horizontalLine
+    | verticalLine
+)
 
-#~ number.debug = True
+# ~ number.debug = True
 moveToDrawToCommands = moveTo + ZeroOrMore(drawToCommand)
 
 svg = ZeroOrMore(moveToDrawToCommands)
 svg.keepTabs = True
 
+
 def profile():
     import cProfile
+
     p = cProfile.Profile()
     p.enable()
     ptest()
@@ -151,6 +185,7 @@ def profile():
     ptest()
     p.disable()
     p.print_stats()
+
 
 bpath = """M204.33 139.83 C196.33 133.33 206.68 132.82 206.58 132.58 C192.33 97.08 169.35
     81.41 167.58 80.58 C162.12 78.02 159.48 78.26 160.45 76.97 C161.41 75.68 167.72 79.72 168.58
@@ -174,17 +209,10 @@ bpath = """M204.33 139.83 C196.33 133.33 206.68 132.82 206.58 132.58 C192.33 97.
     39.71 105.83 39.71 105.83 C39.71 105.83 22.08 85.79 19.46 80.83 C-31.19 -14.67 114.07 63.59 118.22 66.33 C185.58 110.83 202 145.83
     202 145.83 C202 145.83 202.36 143.28 203 141.83 C203.64 140.39 204.56 140.02 204.33 139.83 z"""
 
+
 def ptest():
     svg.parseString(bpath)
 
 
-
-
-
-if __name__ == '__main__':
-
-    #~ from tests.test_pathdata import *
-    #~ unittest.main()
+if __name__ == "__main__":
     profile()
-
-

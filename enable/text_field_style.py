@@ -1,3 +1,13 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
+
 # Enthought library imports
 from traits.api import HasTraits, Int, Bool
 from kiva.trait_defs.api import KivaFont
@@ -10,13 +20,13 @@ class TextFieldStyle(HasTraits):
     """
 
     # The color of the text
-    text_color = ColorTrait((0,0,0,1.0))
+    text_color = ColorTrait((0, 0, 0, 1.0))
 
     # The font for the text (must be monospaced!)
     font = KivaFont("Courier 12")
 
     # The color of highlighted text
-    highlight_color = ColorTrait((.65,0,0,1.0))
+    highlight_color = ColorTrait((0.65, 0, 0, 1.0))
 
     # The background color of highlighted items
     highlight_bgcolor = ColorTrait("lightgray")
@@ -31,10 +41,10 @@ class TextFieldStyle(HasTraits):
     text_offset = Int(5)
 
     # Cursor properties
-    cursor_color = ColorTrait((0,0,0,1))
+    cursor_color = ColorTrait((0, 0, 0, 1))
     cursor_width = Int(2)
 
     # Drawing properties
     border_visible = Bool(False)
-    border_color = ColorTrait((0,0,0,1))
-    bgcolor = ColorTrait((1,1,1,1))
+    border_color = ColorTrait((0, 0, 0, 1))
+    bgcolor = ColorTrait((1, 1, 1, 1))

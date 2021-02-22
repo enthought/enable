@@ -1,27 +1,39 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 import svg
-import six
-import six.moves as sm
 
 import wx
 import wx.py.shell
 import wx.aui
 import wx.grid
 
+
 class PathGrid(wx.grid.Grid):
     def __init__(self, parent, pathOps):
         super(PathGrid, self).__init__(parent)
-        self.CreateGrid(100,10)
+        self.CreateGrid(100, 10)
         firstColAttr = wx.grid.GridCellAttr()
         choices = sorted(pathOps.keys())
         firstColAttr.SetEditor(wx.grid.GridCellChoiceEditor(choices))
-        self.SetColMinimalWidth(0,140)
+        self.SetColMinimalWidth(0, 140)
         self.SetColAttr(0, firstColAttr)
+
 
 class PathPanel(wx.Panel):
     ctx = None
     path = None
+
     def __init__(self, parent, contextSource):
-        super(PathPanel, self).__init__(parent, style=wx.FULL_REPAINT_ON_RESIZE)
+        super(PathPanel, self).__init__(
+            parent, style=wx.FULL_REPAINT_ON_RESIZE
+        )
         self.contextSource = contextSource
         self.Bind(wx.EVT_PAINT, self.OnPaint)
 
@@ -42,11 +54,14 @@ class PathPanel(wx.Panel):
         self.ctx.DrawPath(self.path)
 
 
-
 class DrawFrame(wx.Frame):
     def __init__(self, parent, *args, **kwargs):
         wx.Frame.__init__(self, parent, *args, **kwargs)
-        self.pathOps = {k: v for (k,v) in six.iteritems(wx.GraphicsPath.__dict__) if k.startswith("Add")}
+        self.pathOps = {
+            k: v
+            for (k, v) in wx.GraphicsPath.__dict__.items()
+            if k.startswith("Add")
+        }
         self.pathOps["CloseSubpath"] = wx.GraphicsPath.CloseSubpath
         self.pathOps["MoveToPoint"] = wx.GraphicsPath.MoveToPoint
         self.pathOps[""] = None
@@ -57,32 +72,34 @@ class DrawFrame(wx.Frame):
         self.panel = PathPanel(self, self.CreateContext)
 
         self.locals = {
-            "wx":wx,
-            "frame":self,
-            "panel":self.panel,
-            "context":None
+            "wx": wx,
+            "frame": self,
+            "panel": self.panel,
+            "context": None,
         }
 
         self.nb = wx.aui.AuiNotebook(self)
 
-        self.shell = wx.py.shell.Shell(self.nb, locals = self.locals)
+        self.shell = wx.py.shell.Shell(self.nb, locals=self.locals)
 
         self.grid = PathGrid(self.nb, self.pathOps)
-
 
         self.nb.AddPage(self.shell, "Shell")
         self.nb.AddPage(self.grid, "Path", True)
 
-
-        self._mgr.AddPane(self.nb,
-            wx.aui.AuiPaneInfo().Bottom().CaptionVisible(False).BestSize((-1,300))
+        self._mgr.AddPane(
+            self.nb,
+            wx.aui.AuiPaneInfo()
+            .Bottom()
+            .CaptionVisible(False)
+            .BestSize((-1, 300)),
         )
         self._mgr.AddPane(self.panel, wx.aui.AuiPaneInfo().CenterPane())
 
         self._mgr.Update()
 
         wx.CallAfter(self.panel.GetContext)
-        #wx.CallAfter(self.shell.SetFocus)
+        # wx.CallAfter(self.shell.SetFocus)
         self.Bind(wx.grid.EVT_GRID_CELL_CHANGE, self.OnPathChange)
 
     def CreateContext(self, target):
@@ -98,27 +115,22 @@ class DrawFrame(wx.Frame):
         self.panel.SetPath(path)
 
     def FillPath(self, path):
-        for row in sm.range(100):
-            #~ print row,
+        for row in range(100):
             operation = self.grid.GetCellValue(row, 0)
             if not operation:
                 return
-            #~ print operation,
             args = []
-            for col in sm.range(1,20):
+            for col in range(1, 20):
                 v = self.grid.GetCellValue(row, col)
                 if not v:
                     break
                 args.append(float(v))
             self.pathOps[operation](path, *args)
-            #~ print args
 
 
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app = wx.App(False)
-    frame = DrawFrame(None, size=(800,600))
+    frame = DrawFrame(None, size=(800, 600))
     frame.Centre()
     frame.Show()
     app.MainLoop()

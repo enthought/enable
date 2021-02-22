@@ -1,6 +1,12 @@
-
-import six
-
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 # Enthought library imports
 from traits.api import HasTraits, Enum, Instance, Property, Tuple
 
@@ -16,9 +22,12 @@ else:
     from .layout.constraints_namespace import ConstraintsNamespace
     from .layout.ab_constrainable import ABConstrainable
     from .layout.utils import (
-        add_symbolic_constraints, STRENGTHS, get_from_constraints_namespace)
+        add_symbolic_constraints,
+        STRENGTHS,
+        get_from_constraints_namespace,
+    )
 
-    ConstraintPolicyEnum = Enum('ignore', *STRENGTHS)
+    ConstraintPolicyEnum = Enum("ignore", *STRENGTHS)
 
     del kiwisolver
 
@@ -60,10 +69,9 @@ class CoordinateBox(HasTraits):
 
     height = Property
 
-
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Constraints-based layout
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     if ENABLE_CONSTRAINTS:
 
@@ -103,16 +111,16 @@ class CoordinateBox(HasTraits):
         layout_size_hint = Tuple(0.0, 0.0)
 
         # How strongly a layout box hugs it's width hint.
-        hug_width = ConstraintPolicyEnum('weak')
+        hug_width = ConstraintPolicyEnum("weak")
 
         # How strongly a layout box hugs it's height hint.
-        hug_height = ConstraintPolicyEnum('weak')
+        hug_height = ConstraintPolicyEnum("weak")
 
         # How strongly a layout box resists clipping its contents.
-        resist_width = ConstraintPolicyEnum('strong')
+        resist_width = ConstraintPolicyEnum("strong")
 
         # How strongly a layout box resists clipping its contents.
-        resist_height = ConstraintPolicyEnum('strong')
+        resist_height = ConstraintPolicyEnum("strong")
 
         # A namespace containing the constraints for this CoordinateBox
         _constraints_vars = Instance(ConstraintsNamespace)
@@ -123,9 +131,9 @@ class CoordinateBox(HasTraits):
         # The list of size constraints to apply to the object.
         _size_constraints = Property
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Public methods
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def is_in(self, x, y):
         "Returns if the point x,y is in the box"
@@ -141,53 +149,49 @@ class CoordinateBox(HasTraits):
         b = self.bounds
         return (p[0], p[1], p[0] + b[0] - 1, p[1] + b[1] - 1)
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Property setters and getters
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def _get_x(self):
         return self.position[0]
 
     def _set_x(self, val):
         self.position[0] = val
-        return
 
     def _get_y(self):
         return self.position[1]
 
     def _set_y(self, val):
         self.position[1] = val
-        return
 
     def _get_width(self):
         return self.bounds[0]
 
     def _set_width(self, val):
 
-        if isinstance(val, six.string_types):
+        if isinstance(val, str):
             try:
                 val = float(val)
-            except:
+            except ValueError:
                 pass
 
         old_value = self.bounds[0]
         self.bounds[0] = val
-        self.trait_property_changed('width', old_value, val)
-        return
+        self.trait_property_changed("width", old_value, val)
 
     def _get_height(self):
         return self.bounds[1]
 
     def _set_height(self, val):
-        if isinstance(val, six.string_types):
+        if isinstance(val, str):
             try:
                 val = float(val)
-            except:
+            except ValueError:
                 pass
         old_value = self.bounds[1]
         self.bounds[1] = val
-        self.trait_property_changed('height', old_value, val)
-        return
+        self.trait_property_changed("height", old_value, val)
 
     def _get_x2(self):
         if self.bounds[0] == 0:
@@ -196,7 +200,6 @@ class CoordinateBox(HasTraits):
 
     def _set_x2(self, val):
         self.position[0] = val - self.bounds[0] + 1
-        return
 
     def _old_set_x2(self, val):
         new_width = val - self.position[0] + 1
@@ -204,7 +207,6 @@ class CoordinateBox(HasTraits):
             raise RuntimeError("Attempted to set negative component width.")
         else:
             self.bounds[0] = new_width
-        return
 
     def _get_y2(self):
         if self.bounds[1] == 0:
@@ -213,7 +215,6 @@ class CoordinateBox(HasTraits):
 
     def _set_y2(self, val):
         self.position[1] = val - self.bounds[1] + 1
-        return
 
     def _old_set_y2(self, val):
         new_height = val - self.position[1] + 1
@@ -221,12 +222,11 @@ class CoordinateBox(HasTraits):
             raise RuntimeError("Attempted to set negative component height.")
         else:
             self.bounds[1] = new_height
-        return
 
     if ENABLE_CONSTRAINTS:
 
         def __constraints_vars_default(self):
-            obj_name = self.id if hasattr(self, 'id') else ''
+            obj_name = self.id if hasattr(self, "id") else ""
             cns_names = ConstraintsNamespace(type(self).__name__, obj_name)
             add_symbolic_constraints(cns_names)
             return cns_names
@@ -252,17 +252,17 @@ class CoordinateBox(HasTraits):
             hug_width, hug_height = self.hug_width, self.hug_height
             resist_width, resist_height = self.resist_width, self.resist_height
             if width_hint >= 0:
-                if hug_width != 'ignore':
+                if hug_width != "ignore":
                     cn = (width == width_hint) | hug_width
                     push(cn)
-                if resist_width != 'ignore':
+                if resist_width != "ignore":
                     cn = (width >= width_hint) | resist_width
                     push(cn)
             if height_hint >= 0:
-                if hug_height != 'ignore':
+                if hug_height != "ignore":
                     cn = (height == height_hint) | hug_height
                     push(cn)
-                if resist_height != 'ignore':
+                if resist_height != "ignore":
                     cn = (height >= height_hint) | resist_height
                     push(cn)
 

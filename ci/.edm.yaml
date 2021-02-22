@@ -1,0 +1,3 @@
+store_url: https://packages.enthought.com
+repositories:
+  - enthought/free

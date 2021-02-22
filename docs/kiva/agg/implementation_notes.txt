@@ -1,0 +1,95 @@
+Kiva Agg Stroke path pipeline
+------------------------------
+
+The stroke_path pipeline is made up of 8 functions. (geeze...)  This strange
+stringing-together-of-functions is due to aggs template based render pipeline.
+Most of the functions are templatized on their input parameter type.  Depending
+upon the steps needed in the render pipeline, the next function is called with a
+different input type.
+
+For example, one of the first steps in the process checks to see if a path has
+curves.  If it doesn't, we don't need to do curve conversion.  If it does, the
+conversion needs to occur.  Normally, this would be done with a if/then to
+call a separate function.  But agg does curve conversion through a template
+mechanism agg::conv_curve<T> that adapts the input path type into a new path
+type that interprets curves correctly.  Here is an example snippet of code:
+
+    if (!this->path.has_curves())
+    {
+        this->stroke_path_dash_conversion(this->path);
+    }
+    else
+    {
+        agg::conv_curve<kiva::compiled_path> curved_path(this->path);
+        this->stroke_path_dash_conversion(curved_path);
+    }
+
+So, stroke_path_dash_conversion(curved_path) is called in either case.  It
+is just called with the input path in one case, and the input path converted
+to a curved path in the second.
+
+Here is how the individual functions string together.
+
+    1. stroke_path()
+
+       This one is the exposed API method.  It does very little
+       besides call _stroke_path and clean up the path at the end.
+
+    2. _stroke_path()
+
+       Checks to see if the path has curves in it.  If needed, curve
+       conversion is inserted into the render pipeline.  Otherwise,
+       the step is by-passed for maximum speed.  Either way,
+       stroke_path_dash_conversion() is always the next method called.
+
+    3. template <class path_type>
+       stroke_path_dash_conversion(path_type& input_path)
+
+       If the line is dashed, dash conversion is inserted into the
+       pipeline.  Otherwise it is not.  Either way,
+       stroke_path_choose_clipping_renderer() is always the next method
+       called.
+
+    4. template <class path_type>
+       void stroke_path_choose_clipping_renderer(path_type& input_path)
+
+           This will choose between single rect clipping, multi-rect-clipping
+           and arbitrary path clipping in the future.  fix me: Currently,
+           only multi-rect-clipping is used.
+
+
+        5. template <class path_type, class render_type>
+           void stroke_path_choose_rasterizer(path_type& input_path,
+                                           renderer_type& input_renderer)
+
+       Depending on settings (aliasing, joins, caps, etc.), there
+       are multiple different rasterizers to choose from -- each with
+       different capabilities and efficiencies.  This method calls the
+       most efficient render function possible for the required settings.
+
+        6. Finally... One of the following functions is used to actually
+           paint the pixels to the image.
+
+           template <class path_type, class render_type>
+           void stroke_path_outline(path_type& input_path,
+                                    renderer_type& input_renderer)
+
+           The most efficient is the line_width=1 and aliased.  It is
+           much faster than the others.
+           (Together now, "How much faster is it?").  fix me: Get answer.
+
+           template <class path_type, class render_type>
+           void stroke_path_outline_aa(path_type& input_path,
+                                       renderer_type& input_renderer)
+
+       The second most efficient method outline rasterizer is
+       used if the line width <= 10, the line cap is ROUND or BUTT
+       and the join is MITER.
+
+       template <class path_type, class render_type, class scanline_type>
+           void stroke_path_scanline_aa(path_type& input_path,
+                                        renderer_type& renderer,
+                                                scanline_type& scanline)
+
+       If line width > 10, cap is SQUARE or join is ROUND or BEVEL, this
+       method is used.

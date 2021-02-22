@@ -1,20 +1,22 @@
-# Copyright (c) 2008-2013 by Enthought, Inc.
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
 # All rights reserved.
-try:
-    from unittest.mock import Mock
-except ImportError:
-    from mock import Mock
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
+from unittest.mock import Mock
 
 from kiva.image import GraphicsContext
 
 
 class KivaTestAssistant(object):
     """ Mixin test helper for kiva drawing tests.
-
     """
 
-    def create_mock_gc(
-            self, width, height, methods=()):
+    def create_mock_gc(self, width, height, methods=()):
         """ Create an image graphics context that with mocked methods.
 
         Parameters
@@ -24,7 +26,6 @@ class KivaTestAssistant(object):
 
         methods : iterable
            the methods which are going to be mocked with a Mock object.
-
         """
         gc = GraphicsContext((int(width), int(height)))
         gc.clear((0.0, 0.0, 0.0, 0.0))
@@ -49,16 +50,17 @@ class KivaTestAssistant(object):
         note ::
 
            A drawable that draws nothing will pass this check.
-
         """
         gc = GraphicsContext((width, height))
         drawable.draw(gc)
         compiled_path = gc._get_path()
         total_vertices = compiled_path.total_vertices()
         self.assertEqual(
-            total_vertices, 0,
-            msg='There are {0} vertices in compiled paths {1} that '
-            'have not been processed'.format(total_vertices, compiled_path))
+            total_vertices,
+            0,
+            msg="There are {0} vertices in compiled paths {1} that "
+            "have not been processed".format(total_vertices, compiled_path),
+        )
 
     def assertPathsAreCreated(self, drawable, width=200, height=200):
         """ Check that drawing creates paths.
@@ -77,12 +79,12 @@ class KivaTestAssistant(object):
 
         height : int, optional
             The height of the array buffer (default is 200).
-
         """
-        gc = self.create_mock_gc(width, height, ('draw_path', 'stroke_path'))
+        gc = self.create_mock_gc(width, height, ("draw_path", "stroke_path"))
         drawable.draw(gc)
         compiled_path = gc._get_path()
         self.assertTrue(
             compiled_path.total_vertices() > 0,
-            msg='There are no compiled paths '
-            'created: {0}'.format(compiled_path))
+            msg="There are no compiled paths "
+            "created: {0}".format(compiled_path),
+        )

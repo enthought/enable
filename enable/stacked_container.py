@@ -1,3 +1,12 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 """ Containers which lay out their components horizontally or vertically
 
 """
@@ -6,6 +15,7 @@ from traits.api import Enum, Float
 
 from .container import Container
 from .stacked_layout import stacked_preferred_size, stack_layout
+
 
 class StackedContainer(Container):
     """ Base class for stacked containers
@@ -64,8 +74,8 @@ class HStackedContainer(StackedContainer):
         else:
             align = "max"
 
-        #import pdb; pdb.set_trace()
         return stack_layout(self, components, align)
+
 
 class VStackedContainer(StackedContainer):
     """
@@ -101,5 +111,4 @@ class VStackedContainer(StackedContainer):
         else:
             align = "max"
 
-        #import pdb; pdb.set_trace()
         return stack_layout(self, components, align)

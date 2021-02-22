@@ -1,10 +1,17 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 """ Defines the enable Canvas class """
 
-from __future__ import with_statement
-
 # Enthought library imports
-from traits.api import Bool, Trait, Tuple, List
-from kiva.constants import FILL
+from traits.api import Bool, List, Trait, Tuple
+from kiva.api import FILL
 
 
 # Local relative imports
@@ -28,22 +35,23 @@ class Canvas(Container):
     viewports.)
     """
 
-    # This optional tuple of (x,y,x2,y2) allows viewports to inform the canvas of
-    # the "region of interest" that it should use when computing its notional
-    # bounds for clipping and event handling purposes.  If this trait is None,
-    # then the canvas really does behave as if it has no bounds.
+    # This optional tuple of (x,y,x2,y2) allows viewports to inform the canvas
+    # of the "region of interest" that it should use when computing its
+    # notional bounds for clipping and event handling purposes.  If this trait
+    # is None, then the canvas really does behave as if it has no bounds.
     view_bounds = Trait(None, None, Tuple)
 
-    # The (x,y) position of the lower-left corner of the rectangle corresponding
-    # to the dimensions in self.bounds.  Unlike self.position, this position is
-    # in the canvas's space, and not in the coordinate space of the parent.
+    # The (x,y) position of the lower-left corner of the rectangle
+    # corresponding to the dimensions in self.bounds.  Unlike self.position,
+    # this position is in the canvas's space, and not in the coordinate space
+    # of the parent.
     bounds_offset = List
 
     draw_axes = Bool(False)
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Inherited traits
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     # Use the auto-size/fit_components mechanism to ensure that the bounding
     # box around our inner components gets updated properly.
@@ -54,13 +62,13 @@ class Canvas(Container):
     fit_window = False
     resizable = "hv"
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Protected traits
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     # The (x, y, x2, y2) coordinates of the bounding box of the components
     # in our inner coordinate space
-    _bounding_box = Tuple((0,0,100,100))
+    _bounding_box = Tuple((0, 0, 100, 100))
 
     def compact(self):
         """
@@ -81,13 +89,16 @@ class Canvas(Container):
                 component.container = None
                 self._components.remove(component)
             else:
-                raise RuntimeError("Unable to remove component from container.")
+                raise RuntimeError(
+                    "Unable to remove component from container."
+                )
 
             # Check to see if we need to compact.
             x, y, x2, y2 = self._bounding_box
-            if (component.outer_x2 == x2-x) or \
-                    (component.outer_y2 == y2-y) or \
-                    (component.x == 0) or (component.y == 0):
+            if ((component.outer_x2 == x2 - x)
+                    or (component.outer_y2 == y2 - y)
+                    or (component.x == 0)
+                    or (component.y == 0)):
                 needs_compact = True
 
         if needs_compact:
@@ -99,10 +110,9 @@ class Canvas(Container):
             self.view_bounds = view_bounds
         super(Canvas, self).draw(gc, view_bounds, mode)
 
-
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Protected methods
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def _should_compact(self):
         if self.auto_size:
@@ -111,9 +121,10 @@ class Canvas(Container):
             else:
                 llx = lly = 0
             for component in self.components:
-                if (component.outer_x2 >= self.width) or \
-                   (component.outer_y2 >= self.height) or \
-                   (component.outer_x < llx) or (component.outer_y < lly):
+                if (component.outer_x2 >= self.width
+                        or component.outer_y2 >= self.height
+                        or component.outer_x < llx
+                        or component.outer_y < lly):
                     return True
         else:
             return False
@@ -124,7 +135,7 @@ class Canvas(Container):
                 x, y, x2, y2 = self.view_bounds
             else:
                 x, y, x2, y2 = self._bounding_box
-            r = (x, y, x2-x+1, y2-y+1)
+            r = (x, y, x2 - x + 1, y2 - y + 1)
 
             with gc:
                 gc.set_antialias(False)
@@ -135,14 +146,13 @@ class Canvas(Container):
         if not self.overlay_border and self.border_visible:
             # Tell _draw_border to ignore the self.overlay_border
             self._draw_border(gc, view_bounds, mode, force_draw=True)
-        return
 
     def _draw_underlay(self, gc, view_bounds=None, mode="default"):
         if self.draw_axes:
             x, y, x2, y2 = self.view_bounds
             if (x <= 0 <= x2) or (y <= 0 <= y2):
                 with gc:
-                    gc.set_stroke_color((0,0,0,1))
+                    gc.set_stroke_color((0, 0, 0, 1))
                     gc.set_line_width(1.0)
                     gc.move_to(0, y)
                     gc.line_to(0, y2)
@@ -155,18 +165,17 @@ class Canvas(Container):
         # Overload the parent class's implementation to skip visibility test
         if view_bounds:
             v = view_bounds
-            new_bounds = (v[0]-self.x, v[1]-self.y, v[2], v[3])
+            new_bounds = (v[0] - self.x, v[1] - self.y, v[2], v[3])
         else:
             new_bounds = None
         return new_bounds
 
-
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Event handlers
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def _bounds_offset_default(self):
-        return [0,0]
+        return [0, 0]
 
     def _view_bounds_changed(self):
         llx, lly, urx, ury = self._bounding_box

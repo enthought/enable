@@ -1,0 +1,72 @@
+# This workflow installs dependencies from master
+
+name: ETS from source
+
+on:
+  schedule:
+    - cron:  '0 0 * * 5'
+
+jobs:
+  test-ets:
+    strategy:
+      matrix:
+        # Note that Ubuntu 20 cannot be used because its SWIG version is 4.0
+        # (enthought/enable#360)
+        os: [ubuntu-18.04]
+        toolkit: ['pyside2', 'wx']
+        python-version: [3.8]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Check out
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install PySide2 (from PyPI) dependencies for Linux
+        run: |
+          sudo apt-get update
+          sudo apt-get install qt5-default
+          sudo apt-get install libxkbcommon-x11-0
+          sudo apt-get install libxcb-icccm4
+          sudo apt-get install libxcb-image0
+          sudo apt-get install libxcb-keysyms1
+          sudo apt-get install libxcb-randr0
+          sudo apt-get install libxcb-render-util0
+          sudo apt-get install libxcb-xinerama0
+        if: matrix.toolkit != 'wx'
+      - name: Install Wx dependencies for Linux
+        run: |
+          sudo apt-get update
+          sudo apt-get install libsdl2-2.0-0
+        if: matrix.toolkit == 'wx'
+      - name: Install GL dependencies for Linux
+        run: sudo apt-get install libglu1-mesa-dev
+      - name: Install build dependencies
+        run: |
+          python -m pip install -U pip setuptools wheel
+          python -m pip install numpy
+      - name: Install prebuilt wxPython
+        run: python -m pip install -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04 wxPython
+        if: matrix.toolkit == 'wx'
+      - name: Install source dependencies
+        run: |
+          python -m pip install git+http://github.com/enthought/traits.git#egg=traits
+          python -m pip install git+http://github.com/enthought/pyface.git#egg=pyface[${{ matrix.toolkit }}]
+          python -m pip install git+http://github.com/enthought/traitsui.git#egg=traitsui[${{ matrix.toolkit }}]
+      - name: Install local packages
+        run: python -m pip install .[gl,layout,pdf,svg,test]
+      - name: Sanity check package version
+        run: python -m pip list
+      - name: Run enable test suite
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          # kiva agg requires at least 15-bit color depth.
+          # The --server-args assumes xvfb-run is called, hence Linux only.
+          run: --server-args="-screen 0 1024x768x24" python -m unittest discover -v enable
+          working-directory: ${{ runner.temp }}
+      - name: Run kiva test suite
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          run: python -m unittest discover -v kiva
+          working-directory: ${{ runner.temp }}

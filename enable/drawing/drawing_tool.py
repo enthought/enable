@@ -1,4 +1,12 @@
-
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 from traits.api import Enum
 from enable.api import Component
 
@@ -38,13 +46,11 @@ class DrawingTool(Component):
         self.reset()
         self.request_redraw()
         self.normal_left_down(event)
-        return
 
     def _draw_mainlayer(self, gc, view_bounds, mode="default"):
         draw_func = getattr(self, self.event_state + "_draw", None)
         if draw_func:
             draw_func(gc)
-        return
 
     def request_redraw(self):
         if self.container is not None:
@@ -53,7 +59,3 @@ class DrawingTool(Component):
             self.canvas.request_redraw()
         else:
             pass
-        return
-
-
-# EOF

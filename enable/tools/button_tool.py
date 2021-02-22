@@ -1,17 +1,17 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
 #
-# (C) Copyright 2015 Enthought, Inc., Austin, TX
-# All right reserved.
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
 #
-# This file is open source software distributed according to the terms in
-# LICENSE.txt
-#
-
+# Thanks for using Enthought open source!
 """
 ButtonTool
 ==========
 
 A simple tool that responds to mouse clicks.
-
 """
 
 from traits.api import Bool, Event
@@ -32,11 +32,11 @@ class ButtonTool(BaseTool):
     Components may also want to listen to the ``down`` attribute to change
     the way that they are drawn in response to the mouse position, for example
     by highlighting the component.
-
     """
-    #-------------------------------------------------------------------------
+
+    # -------------------------------------------------------------------------
     # 'ButtonTool' interface
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     #: Event fired when button is clicked
     clicked = Event
@@ -59,7 +59,6 @@ class ButtonTool(BaseTool):
         Used by the tool to determine when to start a click and when the
         button should be considered pressed down (this controls the state
         of the ``down`` trait).
-
         """
         return self.component.is_in(x, y)
 
@@ -67,7 +66,6 @@ class ButtonTool(BaseTool):
         """ Perform a click, toggling if needed, and firing the clicked event
 
         This doesn't change the state of the ``down`` trait.
-
         """
         if self.togglable:
             self.toggle()
@@ -80,19 +78,18 @@ class ButtonTool(BaseTool):
 
         Default is to invert the checked state, but subclasses could implement
         move complex cycling of toggle states.
-
         """
         self.checked = not self.checked
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # 'BaseTool' stateful event handlers
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def normal_left_down(self, event):
         if self.enabled and self.is_clickable(event.x, event.y):
             event.window.mouse_owner = self
             self.down = True
-            self.event_state = 'pressed'
+            self.event_state = "pressed"
             self.component.active_tool = self
             event.handled = True
 

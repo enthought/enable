@@ -1,74 +1,70 @@
-#-------------------------------------------------------------------------------
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
 #
-#  Define the classes used to support the Enable package 'drag_resize'
-#  functionality.
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
 #
-#  Written by: David C. Morrill
-#
-#  Date: 02/04/2004
-#
-#  (c) Copyright 2004 by Enthought, Inc.
-#
-#  Classes defined: DragResizeHandler
-#
-#-------------------------------------------------------------------------------
+# Thanks for using Enthought open source!
 
-from .base import bounds_to_coordinates, TOP, BOTTOM, LEFT, RIGHT
+from traits.api import Any
+
+from .base import BOTTOM, LEFT, RIGHT, TOP, bounds_to_coordinates
 from .interactor import Interactor
 
-from .traits.api import Any
-
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #  'DragResizeHandler' class:
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
-class DragResizeHandler ( Interactor ):
 
-    #---------------------------------------------------------------------------
+class DragResizeHandler(Interactor):
+
+    # -------------------------------------------------------------------------
     #  Trait definitions:
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     # User-supplied drag event validation function:
     drag_validate = Any
 
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     #  Initialize the object:
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
-    def init( self, component, bounds_rect, anchor, unconstrain,
-                    drag_event, start_event ):
-        self.component   = component
+    def init(self, component, bounds_rect, anchor, unconstrain, drag_event,
+             start_event):
+        self.component = component
         self.bounds_rect = bounds_rect
-        self.anchor      = anchor
+        self.anchor = anchor
         self.unconstrain = unconstrain
-        self.drag_event  = drag_event
+        self.drag_event = drag_event
         self.start_event = start_event
-        self.drag_x      = self.start_x = start_event.x
-        self.drag_y      = self.start_y = start_event.y
+        self.drag_x = self.start_x = start_event.x
+        self.drag_y = self.start_y = start_event.y
 
         # Get the coordinates of the anchor point:
-        xl, yb, xr, yt = bounds_to_coordinates( component.bounds )
+        xl, yb, xr, yt = bounds_to_coordinates(component.bounds)
         if (anchor & LEFT) != 0:
             self.anchor_x = xl
-            self.float_x  = xr
+            self.float_x = xr
         else:
             self.anchor_x = xr
-            self.float_x  = xl
+            self.float_x = xl
         if (anchor & BOTTOM) != 0:
             self.anchor_y = yb
-            self.float_y  = yt
+            self.float_y = yt
         else:
             self.anchor_y = yt
-            self.float_y  = yb
+            self.float_y = yb
 
         # Set up the drag termination handler:
-        self.on_trait_change( self.drag_done, drag_event )
+        self.on_trait_change(self.drag_done, drag_event)
 
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     #  Handle the mouse moving while resizing:
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
-    def _mouse_move_changed ( self, event ):
+    def _mouse_move_changed(self, event):
         # Get the current drag location:
         x = event.x
         y = event.y
@@ -83,8 +79,8 @@ class DragResizeHandler ( Interactor ):
 
         # Calculate the new 'floating' point:
         unconstrain = self.unconstrain
-        ax, ay      = self.anchor_x, self.anchor_y
-        nx, ny      = self.float_x,  self.float_y
+        ax, ay = self.anchor_x, self.anchor_y
+        nx, ny = self.float_x, self.float_y
         if (unconstrain & (LEFT | RIGHT)) != 0:
             nx = self.float_x + x - self.start_x
             if nx > ax:
@@ -105,15 +101,15 @@ class DragResizeHandler ( Interactor ):
         # Make sure the new point is inside the drag bounds (if required):
         if self.bounds_rect is not None:
             bxl, byb, bxr, byt = self.bounds_rect
-            nx = max( min( nx, bxr ), bxl )
-            ny = max( min( ny, byt ), byb )
+            nx = max(min(nx, bxr), bxl)
+            ny = max(min(ny, byt), byb)
 
         # Calculate the new size of the component and make sure that it meets
         # the min and max size requirements for the component:
-        component    = self.component
-        mindx, maxdx = component.min_width,  component.max_width
+        component = self.component
+        mindx, maxdx = component.min_width, component.max_width
         mindy, maxdy = component.min_height, component.max_height
-        ndx, ndy     = abs( nx - ax ) + 1, abs( ny - ay ) + 1
+        ndx, ndy = abs(nx - ax) + 1, abs(ny - ay) + 1
         if ndx > maxdx:
             if nx > ax:
                 nx = ax + maxdx
@@ -140,23 +136,22 @@ class DragResizeHandler ( Interactor ):
                 ny = ay - mindy
 
         # Update the bounds of the component:
-        bounds = ( min( nx,  ax ),     min( ny,  ay ),
-                   abs( nx - ax ) + 1, abs( ny - ay ) + 1 )
+        bounds = (min(nx, ax), min(ny, ay), abs(nx - ax) + 1, abs(ny - ay) + 1)
         if self.drag_validate is not None:
-            bounds = self.drag_validate( event, bounds )
+            bounds = self.drag_validate(event, bounds)
         if bounds != component.bounds:
             component.bounds = bounds
 
             # Tell the 'paint' routine we are doing a drag resize operation:
             event.window.drag_resize_update()
 
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     #  Handle the user releasing the original drag button:
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
-    def drag_done ( self, event ):
+    def drag_done(self, event):
         # 'Unhook' the drag done notification handler:
-        self.on_trait_change( self.drag_done, self.drag_event, remove = True )
+        self.on_trait_change(self.drag_done, self.drag_event, remove=True)
 
         # Inform the component that the resize operation is complete:
         self.component.resized = True

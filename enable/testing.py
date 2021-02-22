@@ -1,12 +1,16 @@
-# Copyright (c) 2008-2013 by Enthought, Inc.
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
 # All rights reserved.
-try:
-    from unittest.mock import Mock
-except ImportError:
-    from mock import Mock
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
+from unittest.mock import Mock
 
 from enable.abstract_window import AbstractWindow
-from enable.events import MouseEvent, KeyEvent, DragEvent
+from enable.events import DragEvent, KeyEvent, MouseEvent
 from kiva.testing import KivaTestAssistant
 
 
@@ -27,7 +31,6 @@ class _MockWindow(AbstractWindow):
 
 class EnableTestAssistant(KivaTestAssistant):
     """ Mixin helper for enable/chaco components.
-
     """
 
     def press_move_release(self, interactor, points, window=None,
@@ -64,24 +67,40 @@ class EnableTestAssistant(KivaTestAssistant):
         shift_down : boolean, optional
             The button is pressed while `shift` is down. Default value is
             False.
-
         """
         x, y = points[0]
         window = self.create_mock_window() if window is None else window
-        self.mouse_down(interactor, x, y, 'left', window=window,
-                        alt_down=alt_down,
-                        control_down=control_down,
-                        shift_down=shift_down)
+        self.mouse_down(
+            interactor,
+            x,
+            y,
+            "left",
+            window=window,
+            alt_down=alt_down,
+            control_down=control_down,
+            shift_down=shift_down,
+        )
         for x, y in points[1:-1]:
-            self.mouse_move(interactor, x, y, window=window,
-                            alt_down=alt_down,
-                            control_down=control_down,
-                            shift_down=shift_down)
+            self.mouse_move(
+                interactor,
+                x,
+                y,
+                window=window,
+                alt_down=alt_down,
+                control_down=control_down,
+                shift_down=shift_down,
+            )
         x, y = points[-1]
-        self.mouse_up(interactor, x, y, 'left', window=window,
-                      alt_down=alt_down,
-                      control_down=control_down,
-                      shift_down=shift_down)
+        self.mouse_up(
+            interactor,
+            x,
+            y,
+            "left",
+            window=window,
+            alt_down=alt_down,
+            control_down=control_down,
+            shift_down=shift_down,
+        )
 
     def create_mock_window(self):
         """ Creates a Mock class that behaves as an enable Abstract Window.
@@ -90,7 +109,6 @@ class EnableTestAssistant(KivaTestAssistant):
         -------
         window : Mock
             A mock class instance of an abstract window.
-
         """
         window = _MockWindow()
         window._capture_mouse = Mock()
@@ -131,13 +149,14 @@ class EnableTestAssistant(KivaTestAssistant):
         key_event : KeyEvent
              The enable KEyEvent instance of the desired event ready to be
              passed to an enable Interactor.
-
         """
-        key_event = KeyEvent(character=key,
-                             event_type='key_pressed',
-                             alt_down=alt_down,
-                             control_down=control_down,
-                             shift_down=shift_down)
+        key_event = KeyEvent(
+            character=key,
+            event_type="key_pressed",
+            alt_down=alt_down,
+            control_down=control_down,
+            shift_down=shift_down,
+        )
         if window is None:
             key_event.window = self.create_mock_window()
         else:
@@ -151,11 +170,11 @@ class EnableTestAssistant(KivaTestAssistant):
         # provide defaults for all key shift states
         event_attributes = {
             # key shift states
-            'alt_down': False,
-            'control_down': False,
-            'shift_down': False,
-            'mouse_wheel': 0,
-            'mouse_wheel_axis': 'vertical',
+            "alt_down": False,
+            "control_down": False,
+            "shift_down": False,
+            "mouse_wheel": 0,
+            "mouse_wheel_axis": "vertical",
         }
         event_attributes.update(**kwargs)
         event = MouseEvent(**event_attributes)
@@ -163,12 +182,11 @@ class EnableTestAssistant(KivaTestAssistant):
 
     def create_drag_event(self, **kwargs):
         """ Creates a DragEvent() with the specified attributes.
-
         """
         event = DragEvent(**kwargs)
         return event
 
-    def mouse_down(self, interactor, x, y, button='left', window=None,
+    def mouse_down(self, interactor, x, y, button="left", window=None,
                    alt_down=False, control_down=False, shift_down=False):
         """ Send a mouse button down event to the interactor.
 
@@ -209,19 +227,78 @@ class EnableTestAssistant(KivaTestAssistant):
 
         """
         window = self.create_mock_window() if window is None else window
-        event_attributes = {'x': x, 'y': y,
-                            'alt_down': alt_down,
-                            'control_down': control_down,
-                            'shift_down': shift_down,
-                            '{0}_down'.format(button): True,
-                            'window': window}
+        event_attributes = {
+            "x": x,
+            "y": y,
+            "alt_down": alt_down,
+            "control_down": control_down,
+            "shift_down": shift_down,
+            "{0}_down".format(button): True,
+            "window": window,
+        }
         event = self.create_mouse_event(**event_attributes)
-        self._mouse_event_dispatch(interactor, event,
-                                   '{0}_down'.format(button))
+        self._mouse_event_dispatch(
+            interactor, event, "{0}_down".format(button)
+        )
         return event
 
-    def mouse_move(self, interactor, x, y, window=None,
-                   alt_down=False, control_down=False, shift_down=False):
+    def mouse_dclick(self, interactor, x, y, button="left", window=None,
+                     alt_down=False, control_down=False, shift_down=False):
+        """ Send a mouse double-click event to the interactor.
+
+        Parameters
+        ----------
+        interactor : Interactor
+            The interactor (or subclass) where to dispatch the event.
+
+        x : float
+            The x coordinates of the mouse position
+
+        y : float
+            The y coordinates of the mouse position
+
+        button : {'left', 'right'}, optional
+            The mouse button for which to simulate a press (down) action.
+
+        window : AbstractWindow, optional
+            The enable AbstractWindow to associate with the event. Default
+            is to create a mock class instance. If the window has a mouse
+            owner then that interactor is used.
+
+        alt_down : boolean, optional
+            The button is pressed while `alt` is down. Default value is False.
+
+        control_down : boolean, optional
+            The button is pressed while `control` is down. Default value is
+            False.
+
+        shift_down : boolean, optional
+            The button is pressed while `shift` is down. Default value is
+            False.
+
+        Returns
+        -------
+        event : MouseEvent
+            The event instance after it has be processed by the `interactor`.
+        """
+        window = self.create_mock_window() if window is None else window
+        event_attributes = {
+            "x": x,
+            "y": y,
+            "alt_down": alt_down,
+            "control_down": control_down,
+            "shift_down": shift_down,
+            "{0}_down".format(button): True,
+            "window": window,
+        }
+        event = self.create_mouse_event(**event_attributes)
+        self._mouse_event_dispatch(
+            interactor, event, "{0}_dclick".format(button)
+        )
+        return event
+
+    def mouse_move(self, interactor, x, y, window=None, alt_down=False,
+                   control_down=False, shift_down=False):
         """ Send a mouse move event to the interactor.
 
         Parameters
@@ -257,21 +334,23 @@ class EnableTestAssistant(KivaTestAssistant):
         -------
         event : MouseEvent
             The event instance after it has be processed by the `interactor`.
-
         """
         window = self.create_mock_window() if window is None else window
-        event = self.create_mouse_event(x=x, y=y,
-                                        window=window,
-                                        alt_down=alt_down,
-                                        control_down=control_down,
-                                        shift_down=shift_down)
-        if hasattr(window.get_pointer_position, 'return_value'):
+        event = self.create_mouse_event(
+            x=x,
+            y=y,
+            window=window,
+            alt_down=alt_down,
+            control_down=control_down,
+            shift_down=shift_down,
+        )
+        if hasattr(window.get_pointer_position, "return_value"):
             # Note: Non-mock windows shouldn't try to get pointer position
             window.get_pointer_position.return_value = (x, y)
-        self._mouse_event_dispatch(interactor, event, 'mouse_move')
+        self._mouse_event_dispatch(interactor, event, "mouse_move")
         return event
 
-    def mouse_up(self, interactor, x, y, button='left', window=None,
+    def mouse_up(self, interactor, x, y, button="left", window=None,
                  alt_down=False, control_down=False, shift_down=False):
         """ Send a mouse button up event to the interactor.
 
@@ -309,15 +388,17 @@ class EnableTestAssistant(KivaTestAssistant):
         -------
         event : MouseEvent
             The event instance after it has be processed by the `interactor`.
-
         """
         window = self.create_mock_window() if window is None else window
-        event = self.create_mouse_event(x=x, y=y,
-                                        window=window,
-                                        alt_down=alt_down,
-                                        control_down=control_down,
-                                        shift_down=shift_down)
-        self._mouse_event_dispatch(interactor, event, '{0}_up'.format(button))
+        event = self.create_mouse_event(
+            x=x,
+            y=y,
+            window=window,
+            alt_down=alt_down,
+            control_down=control_down,
+            shift_down=shift_down,
+        )
+        self._mouse_event_dispatch(interactor, event, "{0}_up".format(button))
         return event
 
     def mouse_leave(self, interactor, x, y, window=None,
@@ -358,12 +439,15 @@ class EnableTestAssistant(KivaTestAssistant):
 
         """
         window = self.create_mock_window() if window is None else window
-        event = self.create_mouse_event(x=x, y=y,
-                                        window=window,
-                                        alt_down=alt_down,
-                                        control_down=control_down,
-                                        shift_down=shift_down)
-        self._mouse_event_dispatch(interactor, event, 'mouse_leave')
+        event = self.create_mouse_event(
+            x=x,
+            y=y,
+            window=window,
+            alt_down=alt_down,
+            control_down=control_down,
+            shift_down=shift_down,
+        )
+        self._mouse_event_dispatch(interactor, event, "mouse_leave")
         return event
 
     def mouse_enter(self, interactor, x, y, window=None,
@@ -404,12 +488,15 @@ class EnableTestAssistant(KivaTestAssistant):
 
         """
         window = self.create_mock_window() if window is None else window
-        event = self.create_mouse_event(x=x, y=y,
-                                        window=window,
-                                        alt_down=alt_down,
-                                        control_down=control_down,
-                                        shift_down=shift_down)
-        self._mouse_event_dispatch(interactor, event, 'mouse_enter')
+        event = self.create_mouse_event(
+            x=x,
+            y=y,
+            window=window,
+            alt_down=alt_down,
+            control_down=control_down,
+            shift_down=shift_down,
+        )
+        self._mouse_event_dispatch(interactor, event, "mouse_enter")
         return event
 
     def send_key(self, interactor, key, window=None):
@@ -535,7 +622,6 @@ class EnableTestAssistant(KivaTestAssistant):
         self._drag_event_dispatch(interactor, event, "drag_leave")
         return event
 
-
     def _mouse_event_dispatch(self, interactor, event, suffix):
         mouse_owner = event.window.mouse_owner
         if mouse_owner is None:
@@ -546,9 +632,9 @@ class EnableTestAssistant(KivaTestAssistant):
     def _key_event_dispatch(self, interactor, event):
         focus_owner = event.window.focus_owner
         if focus_owner is None:
-            interactor.dispatch(event, 'key_pressed')
+            interactor.dispatch(event, "key_pressed")
         else:
-            focus_owner.dispatch(event, 'key_pressed')
+            focus_owner.dispatch(event, "key_pressed")
 
     def _drag_event_dispatch(self, interactor, event, suffix):
         interactor.dispatch(event, suffix)

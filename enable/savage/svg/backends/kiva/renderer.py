@@ -1,107 +1,99 @@
-from __future__ import print_function
-
-from math import sqrt, pi
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
+from math import pi
 import sys
 import warnings
-
-import six
 
 import numpy as np
 
 from enable.compiled_path import CompiledPath as KivaCompiledPath
 from kiva import affine, constants, fonttools
-from kiva.fonttools import Font
+from kiva.api import Font
 
 from enable.savage.svg import svg_extras
-from enable.savage.svg.backends.null.null_renderer import NullRenderer, AbstractGradientBrush
+from enable.savage.svg.backends.null.null_renderer import (
+    NullRenderer,
+    AbstractGradientBrush,
+)
 
 # Get the Canvas class for drawing on...
+
 
 def _GetCurrentPoint(gc):
     total_vertices = gc.total_vertices()
     if total_vertices == 0:
         return (0.0, 0.0)
-    return gc.vertex(total_vertices-1)[0]
+    return gc.vertex(total_vertices - 1)[0]
+
 
 class CompiledPath(KivaCompiledPath):
 
-    AddPath             = KivaCompiledPath.add_path
-    AddRectangle        = KivaCompiledPath.rect
-    MoveToPoint         = KivaCompiledPath.move_to
-    AddLineToPoint      = KivaCompiledPath.line_to
-    CloseSubpath        = KivaCompiledPath.close_path
-    if hasattr(KivaCompiledPath, 'get_current_point'):
+    AddPath = KivaCompiledPath.add_path
+    AddRectangle = KivaCompiledPath.rect
+    MoveToPoint = KivaCompiledPath.move_to
+    AddLineToPoint = KivaCompiledPath.line_to
+    CloseSubpath = KivaCompiledPath.close_path
+    if hasattr(KivaCompiledPath, "get_current_point"):
         GetCurrentPoint = KivaCompiledPath.get_current_point
     else:
         GetCurrentPoint = _GetCurrentPoint
     AddQuadCurveToPoint = KivaCompiledPath.quad_curve_to
 
     def AddCurveToPoint(self, ctrl1, ctrl2, endpoint):
-         self.curve_to(ctrl1[0], ctrl1[1],
-                       ctrl2[0], ctrl2[1],
-                       endpoint[0], endpoint[1])
+        self.curve_to(
+            ctrl1[0], ctrl1[1], ctrl2[0], ctrl2[1], endpoint[0], endpoint[1]
+        )
 
     def AddEllipticalArcTo(self, x, y, w, h, theta0, dtheta, phi=0):
-        for i, (x1,y1, x2,y2, x3,y3, x4,y4) in enumerate(svg_extras.bezier_arc(
-            x, y, x+w, y+h, theta0, dtheta)):
-            self.curve_to(x2,y2, x3,y3, x4,y4)
+        arc = svg_extras.bezier_arc(x, y, x + w, y + h, theta0, dtheta)
+        for i, (x1, y1, x2, y2, x3, y3, x4, y4) in enumerate(arc):
+            self.curve_to(x2, y2, x3, y3, x4, y4)
 
-    def elliptical_arc_to(self, rx, ry, phi, large_arc_flag, sweep_flag, x2, y2):
+    def elliptical_arc_to(self, rx, ry, phi, large_arc_flag, sweep_flag, x2,
+                          y2):
         x1, y1 = self.GetCurrentPoint()
-        arcs = svg_extras.elliptical_arc_to(self, rx, ry, phi,
-                                            large_arc_flag, sweep_flag,
-                                            x1, y1, x2, y2)
+        arcs = svg_extras.elliptical_arc_to(
+            self, rx, ry, phi, large_arc_flag, sweep_flag, x1, y1, x2, y2
+        )
 
         for arc in arcs:
             self.curve_to(*arc)
 
     def AddCircle(self, x, y, r):
-        self.arc(x, y, r, 0.0, 2*pi)
+        self.arc(x, y, r, 0.0, 2 * pi)
 
-    def AddEllipse(self, cx,cy, rx,ry):
-        for i, (x1,y1, x2,y2, x3,y3, x4,y4) in enumerate(svg_extras.bezier_arc(
-            cx-rx, cy-ry, cx+rx, cy+ry, 0, 360)):
+    def AddEllipse(self, cx, cy, rx, ry):
+        arc = svg_extras.bezier_arc(cx - rx, cy - ry, cx + rx, cy + ry, 0, 360)
+        for i, (x1, y1, x2, y2, x3, y3, x4, y4) in enumerate(arc):
             if i == 0:
-                self.move_to(x1,y1)
-            self.curve_to(x2,y2, x3,y3, x4,y4)
+                self.move_to(x1, y1)
+            self.curve_to(x2, y2, x3, y3, x4, y4)
 
     def AddRoundedRectangleEx(self, x, y, w, h, rx, ry):
-        #origin
-        self.move_to(x+rx, y)
-        self.line_to(x+w-rx, y)
-        #top right
+        # origin
+        self.move_to(x + rx, y)
+        self.line_to(x + w - rx, y)
+        # top right
         cx = rx * 2
         cy = ry * 2
-        self.AddEllipticalArcTo(
-            x+w-cx, y,
-            cx, cy,
-            270, 90,
-        )
-        self.AddLineToPoint(x+w, y+h-ry)
-        #top left
-        self.AddEllipticalArcTo(
-            x+w-cx, y+h-cy,
-            cx, cy,
-            0, 90,
-        )
-        self.line_to(x+rx, y+h)
-        #bottom left
-        self.AddEllipticalArcTo(
-            x, y+h-cy,
-            cx, cy,
-            90,
-            90,
-        )
-        self.line_to(x, y+ry)
-        #bottom right
-        self.AddEllipticalArcTo(
-            x, y,
-            cx, cy,
-            180,
-            90,
-        )
+        self.AddEllipticalArcTo(x + w - cx, y, cx, cy, 270, 90)
+        self.AddLineToPoint(x + w, y + h - ry)
+        # top left
+        self.AddEllipticalArcTo(x + w - cx, y + h - cy, cx, cy, 0, 90)
+        self.line_to(x + rx, y + h)
+        # bottom left
+        self.AddEllipticalArcTo(x, y + h - cy, cx, cy, 90, 90)
+        self.line_to(x, y + ry)
+        # bottom right
+        self.AddEllipticalArcTo(x, y, cx, cy, 180, 90)
         self.close_path()
-
 
 
 class Pen(object):
@@ -133,7 +125,7 @@ class Pen(object):
         # fixme: Should the pen affect text as well?
         # fixme: How about line style, thickness, etc.
         # translate from 0-255 to 0-1 values.
-        color = tuple([x/255.0 for x in self.color])
+        color = tuple([x / 255.0 for x in self.color])
         gc.set_stroke_color(color)
         gc.set_line_join(self.join)
         gc.set_line_cap(self.cap)
@@ -151,7 +143,7 @@ class ColorBrush(object):
         self.Colour = self.color
 
     def __repr__(self):
-        return 'ColorBrush(%r)' % (self.color,)
+        return "ColorBrush(%r)" % (self.color,)
 
     def IsOk(self):
         return True
@@ -161,29 +153,44 @@ class ColorBrush(object):
         """
         # translate from 0-255 to 0-1 values.
         try:
-            color = tuple([x/255.0 for x in list(self.color)])
-        except:
-            color = (0,0,0,1)
+            color = tuple([x / 255.0 for x in list(self.color)])
+        except Exception:
+            color = (0, 0, 0, 1)
         gc.set_fill_color(color)
+
 
 class LinearGradientBrush(AbstractGradientBrush):
     """ A Brush representing a linear gradient.
     """
-    def __init__(self, x1,y1, x2,y2, stops, spreadMethod='pad',
-        transforms=[], units='userSpaceOnUse'):
+
+    def __init__(self, x1, y1, x2, y2, stops, spreadMethod="pad",
+                 transforms=None, units="userSpaceOnUse"):
         self.x1 = x1
         self.y1 = y1
         self.x2 = x2
         self.y2 = y2
         self.stops = stops
         self.spreadMethod = spreadMethod
+        if transforms is None:
+            transforms = []
         self.transforms = transforms
         self.units = units
 
     def __repr__(self):
-        return ('LinearGradientBrush(%r,%r, %r,%r, %r, spreadMethod=%r, '
-            'transforms=%r, units=%r)' % (self.x1,self.y1, self.x2,self.y2, self.stops,
-                self.spreadMethod, self.transforms, self.units))
+        return (
+            "LinearGradientBrush(%r,%r, %r,%r, %r, spreadMethod=%r, "
+            "transforms=%r, units=%r)"
+            % (
+                self.x1,
+                self.y1,
+                self.x2,
+                self.y2,
+                self.stops,
+                self.spreadMethod,
+                self.transforms,
+                self.units,
+            )
+        )
 
     def set_on_gc(self, gc, bbox=None):
 
@@ -200,31 +207,37 @@ class LinearGradientBrush(AbstractGradientBrush):
         y1 = self.y1
         y2 = self.y2
 
-        if sys.platform == 'darwin':
-            if self.spreadMethod != 'pad':
-                warnings.warn("spreadMethod %r is not supported. Using 'pad'" % self.spreadMethod)
+        if sys.platform == "darwin":
+            if self.spreadMethod != "pad":
+                warnings.warn(
+                    "spreadMethod %r is not supported. Using 'pad'"
+                    % self.spreadMethod
+                )
 
             if bbox is not None:
                 gc.clip_to_rect(*bbox)
 
         else:
-            if self.units == 'objectBoundingBox' and bbox is not None:
-                x1 = (bbox[2] + bbox[0])*x1
-                y1 = (bbox[3] + bbox[1])*y1
-                x2 = (bbox[2] + bbox[0])*x2
-                y2 = (bbox[3] + bbox[1])*y2
+            if self.units == "objectBoundingBox" and bbox is not None:
+                x1 = (bbox[2] + bbox[0]) * x1
+                y1 = (bbox[3] + bbox[1]) * y1
+                x2 = (bbox[2] + bbox[0]) * x2
+                y2 = (bbox[3] + bbox[1]) * y2
 
                 self.bbox_transform(gc, bbox)
 
         stops = np.transpose(self.stops)
-        gc.linear_gradient(x1, y1, x2, y2, stops, self.spreadMethod, self.units)
+        gc.linear_gradient(
+            x1, y1, x2, y2, stops, self.spreadMethod, self.units
+        )
 
 
 class RadialGradientBrush(AbstractGradientBrush):
     """ A Brush representing a radial gradient.
     """
-    def __init__(self, cx,cy, r, stops, fx=None,fy=None, spreadMethod='pad',
-        transforms=[], units='userSpaceOnUse'):
+
+    def __init__(self, cx, cy, r, stops, fx=None, fy=None, spreadMethod="pad",
+                 transforms=None, units="userSpaceOnUse"):
         self.cx = cx
         self.cy = cy
         self.r = r
@@ -236,14 +249,27 @@ class RadialGradientBrush(AbstractGradientBrush):
             fy = self.cy
         self.fy = fy
         self.spreadMethod = spreadMethod
+        if transforms is None:
+            transforms = []
         self.transforms = transforms
         self.units = units
 
     def __repr__(self):
-        return ('RadialGradientBrush(%r,%r, %r, %r, fx=%r,fy=%r, '
-            'spreadMethod=%r, transforms=%r, units=%r)' % (self.cx,self.cy,
-                self.r, self.stops, self.fx,self.fy, self.spreadMethod,
-                self.transforms, self.units))
+        return (
+            "RadialGradientBrush(%r,%r, %r, %r, fx=%r,fy=%r, "
+            "spreadMethod=%r, transforms=%r, units=%r)"
+            % (
+                self.cx,
+                self.cy,
+                self.r,
+                self.stops,
+                self.fx,
+                self.fy,
+                self.spreadMethod,
+                self.transforms,
+                self.units,
+            )
+        )
 
     def set_on_gc(self, gc, bbox=None):
 
@@ -260,25 +286,32 @@ class RadialGradientBrush(AbstractGradientBrush):
         fx = self.fx
         fy = self.fy
 
-        if sys.platform == 'darwin':
-            if self.spreadMethod != 'pad':
-                warnings.warn("spreadMethod %r is not supported. Using 'pad'" % self.spreadMethod)
+        if sys.platform == "darwin":
+            if self.spreadMethod != "pad":
+                warnings.warn(
+                    "spreadMethod %r is not supported. Using 'pad'"
+                    % self.spreadMethod
+                )
 
             if bbox is not None:
                 gc.clip_to_rect(*bbox)
 
         else:
-            if self.units == 'objectBoundingBox' and bbox is not None:
-                cx = (bbox[2] + bbox[0])*cx
-                cy = (bbox[3] + bbox[1])*cy
-                fx = (bbox[2] + bbox[0])*fx
-                fy = (bbox[3] + bbox[1])*fy
-                r *= np.sqrt((bbox[2] - bbox[0])**2 + (bbox[3] - bbox[1])**2)
+            if self.units == "objectBoundingBox" and bbox is not None:
+                cx = (bbox[2] + bbox[0]) * cx
+                cy = (bbox[3] + bbox[1]) * cy
+                fx = (bbox[2] + bbox[0]) * fx
+                fy = (bbox[3] + bbox[1]) * fy
+                r *= np.sqrt(
+                    (bbox[2] - bbox[0]) ** 2 + (bbox[3] - bbox[1]) ** 2
+                )
 
                 self.bbox_transform(gc, bbox)
 
         stops = np.transpose(self.stops)
-        gc.radial_gradient(cx, cy, r, fx, fy, stops, self.spreadMethod, self.units)
+        gc.radial_gradient(
+            cx, cy, r, fx, fy, stops, self.spreadMethod, self.units
+        )
 
 
 def font_style(font):
@@ -287,20 +320,23 @@ def font_style(font):
         fixme: Shouldn't the backends handle this?
     """
 
-    if font.style == 'italic' and font.weight == 'bold':
-        style = 'bold italic'
-    elif font.style == 'italic':
-        style = 'italic'
-    elif font.weight== 'bold':
-        style = 'bold'
-    elif font.style in [0, 'regular','normal']:
-        style = 'regular'
+    if font.style == "italic" and font.weight == "bold":
+        style = "bold italic"
+    elif font.style == "italic":
+        style = "italic"
+    elif font.weight == "bold":
+        style = "bold"
+    elif font.style in [0, "regular", "normal"]:
+        style = "regular"
     else:
-        print("Font style '%s' and weight: '%s' not known."
-              " Using style='regular'" % (font.style, font.weight))
-        style = 'regular'
+        print(
+            "Font style '%s' and weight: '%s' not known."
+            " Using style='regular'" % (font.style, font.weight)
+        )
+        style = "regular"
 
     return style
+
 
 class Renderer(NullRenderer):
     # fimxe: Shouldn't this just be the GraphicsContext?
@@ -312,18 +348,18 @@ class Renderer(NullRenderer):
     TransparentPen = Pen((1.0, 1.0, 1.0, 0.0))
 
     caps = {
-            'butt':constants.CAP_BUTT,
-            'round':constants.CAP_ROUND,
-            'square':constants.CAP_SQUARE
-            }
+        "butt": constants.CAP_BUTT,
+        "round": constants.CAP_ROUND,
+        "square": constants.CAP_SQUARE,
+    }
 
     joins = {
-            'miter':constants.JOIN_MITER,
-            'round':constants.JOIN_ROUND,
-            'bevel':constants.JOIN_BEVEL
-            }
+        "miter": constants.JOIN_MITER,
+        "round": constants.JOIN_ROUND,
+        "bevel": constants.JOIN_BEVEL,
+    }
 
-    fill_rules = {'nonzero':constants.FILL, 'evenodd': constants.EOF_FILL}
+    fill_rules = {"nonzero": constants.FILL, "evenodd": constants.EOF_FILL}
 
     def __init__(self):
         pass
@@ -333,10 +369,9 @@ class Renderer(NullRenderer):
         return gc.concat_ctm(matrix)
 
     @classmethod
-    def createAffineMatrix(cls, a,b,c,d,x,y):
+    def createAffineMatrix(cls, a, b, c, d, x, y):
         # FIXME: should we create a 6x1 or 3x3 matrix???
-        return (a,b,c,d,x,y)
-#        return affine.affine_from_values(a,b,c,d,x,y)
+        return (a, b, c, d, x, y)
 
     @classmethod
     def createBrush(cls, color_tuple):
@@ -345,7 +380,6 @@ class Renderer(NullRenderer):
     @classmethod
     def createNativePen(cls, pen):
         # fixme: Not really sure what to do here...
-        #return wx.GraphicsRenderer_GetDefaultRenderer().CreatePen(pen)
         return pen
 
     @classmethod
@@ -353,31 +387,34 @@ class Renderer(NullRenderer):
         return Pen(color_tuple)
 
     @classmethod
-    def createLinearGradientBrush(cls, x1,y1,x2,y2, stops, spreadMethod='pad',
-                                  transforms=[], units='userSpaceOnUse'):
-        return LinearGradientBrush(x1,y1,x2,y2,stops, spreadMethod, transforms,
-            units)
+    def createLinearGradientBrush(cls, x1, y1, x2, y2, stops,
+                                  spreadMethod="pad", transforms=None,
+                                  units="userSpaceOnUse"):
+        return LinearGradientBrush(
+            x1, y1, x2, y2, stops, spreadMethod, transforms, units
+        )
 
     @classmethod
-    def createRadialGradientBrush(cls, cx,cy, r, stops, fx=None,fy=None,
-                                  spreadMethod='pad', transforms=[],
-                                  units='userSpaceOnUse'):
-        return RadialGradientBrush(cx,cy, r, stops, fx,fy, spreadMethod,
-            transforms, units)
+    def createRadialGradientBrush(cls, cx, cy, r, stops, fx=None, fy=None,
+                                  spreadMethod="pad", transforms=None,
+                                  units="userSpaceOnUse"):
+        return RadialGradientBrush(
+            cx, cy, r, stops, fx, fy, spreadMethod, transforms, units
+        )
 
     @classmethod
     def getCurrentPoint(cls, path):
         return path.GetCurrentPoint()
 
     @classmethod
-    def getFont(cls, font_name='Arial'):
+    def getFont(cls, font_name="Arial"):
         kiva_style = constants.NORMAL
-        if '-' in font_name:
-            font_name, style = font_name.split('-', 2)
+        if "-" in font_name:
+            font_name, style = font_name.split("-", 2)
             style = style.lower()
-            if 'bold' in style:
+            if "bold" in style:
                 kiva_style += constants.BOLD
-            if 'italic' in style:
+            if "italic" in style:
                 kiva_style += constants.ITALIC
         return Font(font_name, style=kiva_style)
 
@@ -397,7 +434,6 @@ class Renderer(NullRenderer):
     def pushState(cls, gc):
         return gc.save_state()
 
-
     @classmethod
     def setFontSize(cls, font, size):
         # Agg expects only integer fonts
@@ -406,7 +442,7 @@ class Renderer(NullRenderer):
 
     @classmethod
     def setFontStyle(cls, font, style):
-        if isinstance(style, six.string_types):
+        if isinstance(style, str):
             if style not in fonttools.font.font_styles:
                 warnings.warn('font style "%s" not supported' % style)
             else:
@@ -416,7 +452,7 @@ class Renderer(NullRenderer):
 
     @classmethod
     def setFontWeight(cls, font, weight):
-        if isinstance(weight, six.string_types):
+        if isinstance(weight, str):
             if weight not in fonttools.font.font_weights:
                 warnings.warn('font weight "%s" not supported' % weight)
             else:
@@ -426,7 +462,7 @@ class Renderer(NullRenderer):
 
     @classmethod
     def setFont(cls, gc, font, brush):
-        color = tuple([c/255.0 for c in getattr(brush, 'color', (0,0,0))])
+        color = tuple([c / 255.0 for c in getattr(brush, "color", (0, 0, 0))])
 
         # text color is controlled by stroke instead of fill color in kiva.
         gc.set_stroke_color(color)
@@ -434,25 +470,26 @@ class Renderer(NullRenderer):
         try:
             # fixme: The Mac backend doesn't accept style/width as non-integers
             #        in set_font, but does for select_font...
-            if sys.platform == 'darwin':
+            if sys.platform == "darwin":
                 style = font_style(font)
                 gc.select_font(font.face_name, font.size, style=style)
             else:
                 gc.set_font(font)
 
-
         except ValueError:
-            warnings.warn("failed to find set '%s'.  Using Arial" % font.face_name)
-            if sys.platform == 'darwin':
+            warnings.warn(
+                "failed to find set '%s'.  Using Arial" % font.face_name
+            )
+            if sys.platform == "darwin":
                 style = font_style(font)
-                gc.select_font('Arial', font.size, style)
+                gc.select_font("Arial", font.size, style)
             else:
                 gc.set_font(font)
 
     @classmethod
     def setBrush(cls, gc, brush):
         if brush is Renderer.NullBrush:
-            #fixme: What do I do in this case?  Seem
+            # fixme: What do I do in this case?  Seem
             pass
         else:
             brush.set_on_gc(gc)
@@ -483,7 +520,7 @@ class Renderer(NullRenderer):
         gc.add_path(path)
 
         gc.clip()
-        if hasattr(path, 'get_bounding_box'):
+        if hasattr(path, "get_bounding_box"):
             bbox = path.get_bounding_box()
         else:
             bbox = [np.inf, np.inf, -np.inf, -np.inf]
@@ -523,7 +560,7 @@ class Renderer(NullRenderer):
         return w, h
 
     @classmethod
-    def DrawText(cls, gc, text, x, y, brush, anchor='start'):
+    def DrawText(cls, gc, text, x, y, brush, anchor="start"):
         """ Draw text at the given x,y position with the color of the
             given brush.
 
@@ -531,31 +568,27 @@ class Renderer(NullRenderer):
         """
         gc.save_state()
         try:
-            color = tuple([c/255.0 for c in getattr(brush, 'color', (0,0,0))])
+            color = tuple(
+                [c / 255.0 for c in getattr(brush, "color", (0, 0, 0))]
+            )
             # Setting stroke instead of fill color because that is
             # what kiva uses.
             gc.set_stroke_color(color)
 
             # PDF (our API) has the origin in the lower left.
             # SVG (what we are rendering) has the origin in the upper right.
-            # The ctm (our API) has been set up with a scaling and translation to
-            # draw as if the upper right is the origin and positive is down so
-            # that the SVG will render correctly.  This works great accept for
-            # text which will render up side down.  To fix this, we set the
+            # The ctm (our API) has been set up with a scaling and translation
+            # to draw as if the upper right is the origin and positive is down
+            # so that the SVG will render correctly.  This works great accept
+            # for text which will render up side down.  To fix this, we set the
             # text transform matrix to have y going up so the text is rendered
             # upright.  But since, +y is now *up*, we need to draw at -y.
 
-            # fixme: There is something wrong with the text matrix.  The following
-            #        commands don't work and I would expect them to.
-            #text_matrix = affine.affine_from_values(1,0,0,-1,x,-y)
-            #gc.set_text_matrix(text_matrix)
-            #gc.show_text_at_point(text, 0, 0)
-
-            if anchor != 'start':
+            if anchor != "start":
                 tx, ty, tw, th = gc.get_text_extent(text)
-                if anchor == 'middle':
-                    x -= tw/2.0
-                elif anchor == 'end':
+                if anchor == "middle":
+                    x -= tw / 2.0
+                elif anchor == "end":
                     x -= tw
             gc.scale_ctm(1.0, -1.0)
             gc.show_text_at_point(text, x, -y)
@@ -564,9 +597,8 @@ class Renderer(NullRenderer):
 
     @classmethod
     def DrawImage(cls, gc, image, x, y, width, height):
-        rect = (x, y, width, height)
         gc.save_state()
-        gc.translate_ctm(x, y+height)
+        gc.translate_ctm(x, y + height)
         gc.scale_ctm(1.0, -1.0)
-        gc.draw_image(image, (0,0,width,height))
+        gc.draw_image(image, (0, 0, width, height))
         gc.restore_state()

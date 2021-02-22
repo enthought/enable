@@ -1,23 +1,20 @@
-# -----------------------------------------------------------------------------
-# Copyright (c) 2016, Enthought, Inc
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
 # All rights reserved.
 #
 # This software is provided without warranty under the terms of the BSD
-# license included in enthought/LICENSE.txt and may be redistributed only
-# under the conditions described in the aforementioned license.  The license
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
 # is also available online at http://www.enthought.com/licenses/BSD.txt
+#
 # Thanks for using Enthought open source!
-# -----------------------------------------------------------------------------
-from __future__ import absolute_import, print_function, division
-
 from collections import namedtuple
 from io import BytesIO
 from math import fabs
 import os
 import warnings
 
-import numpy as np
 import celiagg as agg
+import numpy as np
 
 from .abstract_graphics_context import AbstractGraphicsContext
 from .fonttools import Font
@@ -77,9 +74,10 @@ pix_format_canvases = {
     'bgra32': agg.CanvasBGRA32,
     'rgb24': agg.CanvasRGB24,
 }
-StateBundle = namedtuple('StateBundle',
-                         ['state', 'path', 'stroke', 'fill', 'transform',
-                          'text_transform', 'font'])
+StateBundle = namedtuple(
+    'StateBundle',
+    ['state', 'path', 'stroke', 'fill', 'transform', 'text_transform', 'font'],
+)
 
 
 class GraphicsContext(object):
@@ -104,6 +102,10 @@ class GraphicsContext(object):
         self.transform = agg.Transform()
         self.font = None
         self.__state_stack = []
+
+        # For HiDPI support
+        base_scale = kwargs.pop('base_pixel_scale', 1)
+        self.transform.scale(base_scale, base_scale)
 
     # ----------------------------------------------------------------
     # Size info
@@ -177,7 +179,8 @@ class GraphicsContext(object):
             fill=self.fill_paint.copy(),
             transform=self.transform.copy(),
             text_transform=self.text_transform.copy(),
-            font=(None if self.font is None else self.font.copy()))
+            font=(None if self.font is None else self.font.copy()),
+        )
         self.__state_stack.append(state)
 
     def restore_state(self):
@@ -268,7 +271,7 @@ class GraphicsContext(object):
         """
         if lengths is not None:
             count = len(lengths)
-            lengths = np.array(lengths).reshape(count//2, 2)
+            lengths = np.array(lengths).reshape(count // 2, 2)
         else:
             lengths = []
         self.canvas_state.line_dash_pattern = lengths
@@ -373,7 +376,7 @@ class GraphicsContext(object):
             y1 = int(rect[1] * scale_y + ty)
             x2 = int((rect[0] + rect[2]) * scale_x + tx)
             y2 = int((rect[1] + rect[3]) * scale_y + ty)
-            rect = (x1, y1, abs(x2-x1), abs(y2-y1))
+            rect = (x1, y1, abs(x2 - x1), abs(y2 - y1))
             # XXX: The base transform is a half-pixel translate
             transform = agg.Transform(tx=0.5, ty=0.5)
 
@@ -381,8 +384,13 @@ class GraphicsContext(object):
         path.rect(*rect)
 
         self.canvas_state.drawing_mode = draw_modes[mode]
-        self.gc.draw_shape(path, transform, self.canvas_state,
-                           stroke=self.stroke_paint, fill=self.fill_paint)
+        self.gc.draw_shape(
+            path,
+            transform,
+            self.canvas_state,
+            stroke=self.stroke_paint,
+            fill=self.fill_paint,
+        )
 
     def add_path(self, path):
         """ Add a subpath to the current path.
@@ -448,8 +456,12 @@ class GraphicsContext(object):
 
             Region should be a 4-tuple or a sequence.
         """
-        tx, ty = self.transform.tx, self.transform.ty
-        self.canvas_state.clip_box = agg.Rect(tx+x, ty+y, w, h)
+        # The passed in rect should be transformed.
+        # NOTE: Rotations will have an undefined result
+        x0, y0 = self.transform.worldToScreen(x, y)
+        x1, y1 = self.transform.worldToScreen(x + w, y + h)
+        w, h = abs(x1 - x0), abs(y1 - y0)
+        self.canvas_state.clip_box = agg.Rect(x0, y0, w, h)
 
     def clip_to_rects(self, rects):
         """ Clip context to a collection of rectangles
@@ -512,8 +524,9 @@ class GraphicsContext(object):
     def _get_gradient_enums(self, spread, units):
         """ Configures a gradient object and sets it as the current brush.
         """
-        spread = gradient_spread_modes.get(spread,
-                                           agg.GradientSpread.SpreadPad)
+        spread = gradient_spread_modes.get(
+            spread, agg.GradientSpread.SpreadPad
+        )
         units = gradient_coord_modes.get(units, agg.GradientUnits.UserSpace)
         return spread, units
 
@@ -522,16 +535,18 @@ class GraphicsContext(object):
         """ Sets a linear gradient as the current brush.
         """
         spread, units = self._get_gradient_enums(spread_method, units)
-        self.fill_paint = agg.LinearGradientPaint(x1, y1, x2, y2,
-                                                  stops, spread, units)
+        self.fill_paint = agg.LinearGradientPaint(
+            x1, y1, x2, y2, stops, spread, units
+        )
 
     def radial_gradient(self, cx, cy, r, fx, fy, stops, spread_method,
                         units='userSpaceOnUse'):
         """ Sets a radial gradient as the current brush.
         """
         spread, units = self._get_gradient_enums(spread_method, units)
-        self.fill_paint = agg.RadialGradientPaint(cx, cy, r, fx, fy,
-                                                  stops, spread, units)
+        self.fill_paint = agg.RadialGradientPaint(
+            cx, cy, r, fx, fy, stops, spread, units
+        )
 
     # ----------------------------------------------------------------
     # Drawing Images
@@ -539,30 +554,40 @@ class GraphicsContext(object):
 
     def draw_image(self, img, rect=None):
         """
-        img is either a N*M*3 or N*M*4 numpy array, or a Kiva image
+        img is either a N*M*3 or N*M*4 numpy array, or a PIL Image
 
         rect - a tuple (x, y, w, h)
         """
-        def get_format(array):
-            if array.shape[2] == 3:
-                return agg.PixelFormat.RGB24
-            elif array.shape[2] == 4:
-                return agg.PixelFormat.RGBA32
+        from PIL import Image
+
+        def normalize_image(img):
+            if not img.mode.startswith('RGB'):
+                img = img.convert('RGB')
+
+            if img.mode == 'RGB':
+                return img, agg.PixelFormat.RGB24
+            elif img.mode == 'RGBA':
+                return img, agg.PixelFormat.RGBA32
 
         img_format = agg.PixelFormat.RGB24
         if isinstance(img, np.ndarray):
             # Numeric array
-            img_array = img.astype(np.uint8)
-            img_format = get_format(img_array)
-        elif isinstance(img, GraphicsContext):
-            img_array = img.gc.array
-            img_format = pix_formats[img.pix_format]
+            img = Image.fromarray(img)
+            img, img_format = normalize_image(img)
+            img_array = np.array(img)
+        elif isinstance(img, Image.Image):
+            img, img_format = normalize_image(img)
+            img_array = np.array(img)
         elif hasattr(img, 'bmp_array'):
             # An offscreen kiva context
             # XXX: Use a copy to kill the read-only flag which plays havoc
             # with the Cython memoryviews used by celiagg
-            img_array = img.bmp_array.copy()
-            img_format = get_format(img_array)
+            img = Image.fromarray(img.bmp_array)
+            img, img_format = normalize_image(img)
+            img_array = np.array(img)
+        elif isinstance(img, GraphicsContext):
+            img_array = img.gc.array
+            img_format = pix_formats[img.pix_format]
         else:
             msg = "Cannot render image of type '{}' into celiagg context."
             warnings.warn(msg.format(type(img)))
@@ -576,8 +601,9 @@ class GraphicsContext(object):
         transform.translate(x, y)
         transform.scale(sx, sy)
 
-        self.gc.draw_image(img_array, img_format, transform,
-                           self.canvas_state, bottom_up=True)
+        self.gc.draw_image(
+            img_array, img_format, transform, self.canvas_state, bottom_up=True
+        )
 
     # ----------------------------------------------------------------
     # Drawing Text
@@ -644,8 +670,13 @@ class GraphicsContext(object):
         transform.multiply(self.transform)
         transform.translate(*pos)
 
-        self.gc.draw_text(text, self.font, transform, self.canvas_state,
-                          stroke=self.stroke_paint)
+        self.gc.draw_text(
+            text,
+            self.font,
+            transform,
+            self.canvas_state,
+            stroke=self.stroke_paint,
+        )
 
     def show_text_at_point(self, text, x, y):
         """ Draw text at some point (x, y).
@@ -679,20 +710,32 @@ class GraphicsContext(object):
 
     def stroke_path(self):
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawStroke
-        self.gc.draw_shape(self.path.path, self.transform, self.canvas_state,
-                           stroke=self.stroke_paint)
+        self.gc.draw_shape(
+            self.path.path,
+            self.transform,
+            self.canvas_state,
+            stroke=self.stroke_paint,
+        )
         self.begin_path()
 
     def fill_path(self):
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawFill
-        self.gc.draw_shape(self.path.path, self.transform, self.canvas_state,
-                           fill=self.fill_paint)
+        self.gc.draw_shape(
+            self.path.path,
+            self.transform,
+            self.canvas_state,
+            fill=self.fill_paint,
+        )
         self.begin_path()
 
     def eof_fill_path(self):
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawEofFill
-        self.gc.draw_shape(self.path.path, self.transform, self.canvas_state,
-                           fill=self.fill_paint)
+        self.gc.draw_shape(
+            self.path.path,
+            self.transform,
+            self.canvas_state,
+            fill=self.fill_paint,
+        )
         self.begin_path()
 
     def stroke_rect(self, rect):
@@ -704,31 +747,35 @@ class GraphicsContext(object):
 
         self.canvas_state.line_width = width
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawStroke
-        self.gc.draw_shape(shape, self.transform, self.canvas_state,
-                           stroke=self.stroke_paint)
+        self.gc.draw_shape(
+            shape, self.transform, self.canvas_state, stroke=self.stroke_paint
+        )
 
     def fill_rect(self, rect):
         shape = agg.Path()
         shape.rect(*rect)
 
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawFill
-        self.gc.draw_shape(shape, self.transform, self.canvas_state,
-                           fill=self.fill_paint)
+        self.gc.draw_shape(
+            shape, self.transform, self.canvas_state, fill=self.fill_paint
+        )
 
     def fill_rects(self, rects):
         path = agg.Path()
         path.rects(rects)
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawFill
-        self.gc.draw_shape(path, self.transform, self.canvas_state,
-                           fill=self.fill_paint)
+        self.gc.draw_shape(
+            path, self.transform, self.canvas_state, fill=self.fill_paint
+        )
 
     def clear_rect(self, rect):
         shape = agg.Path()
         shape.rect(*rect)
         paint = agg.SolidPaint(0.0, 0.0, 0.0, 0.0)
         self.canvas_state.drawing_mode = agg.DrawingMode.DrawFill
-        self.gc.draw_shape(shape, self.transform, self.canvas_state,
-                           fill=paint)
+        self.gc.draw_shape(
+            shape, self.transform, self.canvas_state, fill=paint
+        )
 
     def clear(self, clear_color=(1.0, 1.0, 1.0, 1.0)):
         self.gc.clear(*clear_color)
@@ -739,8 +786,13 @@ class GraphicsContext(object):
             Each subpath is drawn separately.
         """
         self.canvas_state.drawing_mode = draw_modes[mode]
-        self.gc.draw_shape(self.path.path, self.transform, self.canvas_state,
-                           stroke=self.stroke_paint, fill=self.fill_paint)
+        self.gc.draw_shape(
+            self.path.path,
+            self.transform,
+            self.canvas_state,
+            stroke=self.stroke_paint,
+            fill=self.fill_paint,
+        )
         self.begin_path()
 
     def get_empty_path(self):
@@ -755,8 +807,13 @@ class GraphicsContext(object):
         """
         shape = agg.ShapeAtPoints(path.path, points)
         self.canvas_state.drawing_mode = draw_modes[mode]
-        self.gc.draw_shape(shape, self.transform, self.canvas_state,
-                           stroke=self.stroke_paint, fill=self.fill_paint)
+        self.gc.draw_shape(
+            shape,
+            self.transform,
+            self.canvas_state,
+            stroke=self.stroke_paint,
+            fill=self.fill_paint,
+        )
 
     def save(self, filename, file_format=None):
         """ Save the contents of the context to a file
@@ -784,15 +841,15 @@ class GraphicsContext(object):
         Returns
         -------
         img : Image
-            A PIL/Pillow Image object with the data in RGBA or RGB format.
+            A PIL/Pillow Image object with the data in RGBA format.
         """
         try:
-            from kiva.compat import pilfromstring
+            from PIL import Image
         except ImportError:
-            raise ImportError("need PIL (or Pillow) to save images")
+            raise ImportError('Need Pillow to save images')
 
         pixels = self.gc.array
-        if self.pix_format == 'bgra32':
+        if self.pix_format.startswith('bgra'):
             data = np.empty(pixels.shape, dtype=np.uint8)
             data[..., 0] = pixels[..., 2]
             data[..., 1] = pixels[..., 1]
@@ -800,12 +857,8 @@ class GraphicsContext(object):
             data[..., 3] = pixels[..., 3]
         else:
             data = pixels
-        size = (int(self._width), int(self._height))
 
-        if data.shape[-1] == 3:
-            return pilfromstring('RGB', size, data)
-        else:
-            return pilfromstring('RGBA', size, data)
+        return Image.fromarray(data, 'RGBA')
 
     def _repr_png_(self):
         """ Return a the current contents of the context as PNG image.

@@ -1,10 +1,12 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
 #
-# (C) Copyright 2015 Enthought, Inc., Austin, TX
-# All right reserved.
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
 #
-# This file is open source software distributed according to the terms in
-# LICENSE.txt
-#
+# Thanks for using Enthought open source!
 """
 Example Application Support
 ===========================
@@ -14,10 +16,8 @@ in places where a DemoFrame is insufficient.
 
 """
 
-from __future__ import (division, absolute_import, print_function,
-                        unicode_literals)
-
 from pyface.api import ApplicationWindow, GUI
+
 
 class DemoApplication(ApplicationWindow):
     """ Simple Pyface application displaying a component.
@@ -42,8 +42,8 @@ class DemoApplication(ApplicationWindow):
     def demo_main(cls, **traits):
         """ Create the demo application and start the mainloop, if needed
 
-        This should be called with appropriate arguments which will be passed to
-        the class' constructor.
+        This should be called with appropriate arguments which will be passed
+        to the class' constructor.
 
         """
         # get the Pyface GUI

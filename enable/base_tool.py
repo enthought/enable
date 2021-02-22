@@ -1,3 +1,12 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 """
 Defines the base class for all Chaco tools.  See docs/event_handling.txt for an
 overview of how event handling works in Chaco.
@@ -21,7 +30,8 @@ class KeySpec(object):
 
     or a trait::
 
-        magic_key = Instance(KeySpec, args=("Right", "control"), kw={'ignore': ['shift']})
+        magic_key = Instance(KeySpec, args=("Right", "control"),
+                             kw={'ignore': ['shift']})
 
     and then check to see if the key was pressed by calling::
 
@@ -32,6 +42,7 @@ class KeySpec(object):
     are specifying the user pressing Ctrl + Right_arrow with Alt not pressed
     and Shift either pressed or not.
     """
+
     def __init__(self, key, *modifiers, **kwmods):
         """ Creates this key spec with the given modifiers. """
         self.key = key
@@ -39,7 +50,7 @@ class KeySpec(object):
         self.alt = "alt" in mods
         self.shift = "shift" in mods
         self.control = "control" in mods
-        ignore = kwmods.get('ignore', [])
+        ignore = kwmods.get("ignore", [])
         self.ignore = set(m.lower() for m in ignore)
 
     def match(self, event):
@@ -47,20 +58,23 @@ class KeySpec(object):
         Returns True if the given Enable key_pressed event matches this key
         specification.
         """
-        return (self.key == getattr(event, 'character',None)) and \
-           ('alt' in self.ignore or self.alt == event.alt_down) and \
-           ('control' in self.ignore or self.control == event.control_down) and \
-           ('shift' in self.ignore or self.shift == event.shift_down)
+        return (
+            (self.key == getattr(event, "character", None))
+            and ("alt" in self.ignore or self.alt == event.alt_down)
+            and (
+                "control" in self.ignore or self.control == event.control_down
+            )
+            and ("shift" in self.ignore or self.shift == event.shift_down)
+        )
 
     @classmethod
     def from_string(cls, s):
         """ Create a KeySpec from a string joined by '+' characters. """
-        codes = s.split('+')
+        codes = s.split("+")
         key = codes[-1]
         modifiers = set(code.lower() for code in codes[:-1])
-        ignore = set('alt', 'shift', 'control') - modifiers
+        ignore = set("alt", "shift", "control") - modifiers
         return cls(key, *modifiers, ignore=ignore)
-
 
 
 class BaseTool(Interactor):
@@ -70,7 +84,8 @@ class BaseTool(Interactor):
     participate in layout, but are instead attached to a Component, which
     dispatches methods to the tool and calls the tools' draw() method.
 
-    See docs/event_handling.txt for more information on how tools are structured.
+    See docs/event_handling.txt for more information on how tools are
+    structured.
     """
 
     # The component that this tool is attached to.
@@ -104,17 +119,15 @@ class BaseTool(Interactor):
     #     needs to render.
     draw_mode = Enum("none", "overlay", "normal")
 
-
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Concrete methods
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def __init__(self, component=None, **kwtraits):
         if "component" in kwtraits:
             component = kwtraits["component"]
         super(BaseTool, self).__init__(**kwtraits)
         self.component = component
-        return
 
     def dispatch(self, event, suffix):
         """ Dispatches a mouse event based on the current event state.
@@ -122,7 +135,6 @@ class BaseTool(Interactor):
         Overrides enable.Interactor.
         """
         self._dispatch_stateful_event(event, suffix)
-        return
 
     def _dispatch_stateful_event(self, event, suffix):
         # Override the default enable.Interactor behavior of automatically
@@ -131,11 +143,10 @@ class BaseTool(Interactor):
         handler = getattr(self, self.event_state + "_" + suffix, None)
         if handler is not None:
             handler(event)
-        return
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Abstract methods that subclasses should implement
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def draw(self, gc, view_bounds=None):
         """ Draws this tool on a graphics context.
@@ -161,4 +172,3 @@ class BaseTool(Interactor):
         """
         # Compatibility with new AbstractController interface
         self._deactivate()
-        return

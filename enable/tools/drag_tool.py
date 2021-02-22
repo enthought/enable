@@ -1,9 +1,17 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 """ Defines the base DragTool class.
 """
-import six.moves as sm
 # Enthought library imports
-from traits.api import Bool, Enum, Tuple, Property, cached_property, List, Str
 from enable.base_tool import BaseTool, KeySpec
+from traits.api import Bool, Enum, List, Property, Str, Tuple, cached_property
 
 
 class DragTool(BaseTool):
@@ -17,7 +25,9 @@ class DragTool(BaseTool):
     drag_button = Enum("left", "right")
 
     # End the drag operation if the mouse leaves the associated component?
-    end_drag_on_leave = Bool(True)
+    # NOTE: This behavior depends on "mouse_leave" events, which in general
+    # are not fired when `capture_mouse` is True (default).
+    end_drag_on_leave = Bool(False)
 
     # These keys, if pressed during drag, cause the drag operation to reset.
     cancel_keys = List(Str, ["Esc"])
@@ -30,13 +40,15 @@ class DragTool(BaseTool):
     # The modifier key that must be used to activate the tool.
     modifier_key = Enum("none", "shift", "alt", "control")
 
-    # Whether or not to capture the mouse during the drag operation.  In
-    # general this is a good idea.
+    # Whether or not to capture the mouse during the drag operation. In effect,
+    # this routes mouse events back to this tool for dispatching, rather than
+    # allowing the event to be handled by the window. This may have effects
+    # surrounding "mouse_leave" events: see note on `end_drag_on_leave` flag.
     capture_mouse = Bool(True)
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Private traits used by DragTool
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     # The possible states of this tool.
     _drag_state = Enum("nondrag", "dragging")
@@ -50,11 +62,11 @@ class DragTool(BaseTool):
 
     # private property to hold the current list of KeySpec instances of the
     # cancel keys
-    _cancel_keys = Property(List(KeySpec), depends_on='cancel_keys')
+    _cancel_keys = Property(List(KeySpec), depends_on="cancel_keys")
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Interface for subclasses
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def is_draggable(self, x, y):
         """ Returns whether the (x,y) position is in a region that is OK to
@@ -96,9 +108,9 @@ class DragTool(BaseTool):
         """
         pass
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Private methods for handling drag
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def _dispatch_stateful_event(self, event, suffix):
         # We intercept a lot of the basic events and re-map them if
@@ -122,7 +134,6 @@ class DragTool(BaseTool):
             BaseTool._dispatch_stateful_event(self, event, suffix)
         else:
             event.handled = True
-        return
 
     def _cancel_drag(self, event):
         self._drag_state = "nondrag"
@@ -133,8 +144,8 @@ class DragTool(BaseTool):
         return outcome
 
     def _drag_cancel_keypressed(self, event):
-        if self._drag_state != "nondrag" and \
-                         any(sm.map(lambda x: x.match(event), self._cancel_keys)):
+        if (self._drag_state != "nondrag"
+                and any(map(lambda x: x.match(event), self._cancel_keys))):
             return self._cancel_drag(event)
         else:
             return False
@@ -143,13 +154,16 @@ class DragTool(BaseTool):
         state = self._drag_state
         button_down = getattr(event, self.drag_button + "_down")
         if state == "nondrag":
-            if button_down and self._mouse_down_received and \
-                   self.is_draggable(*self.mouse_down_position):
+            if (button_down
+                    and self._mouse_down_received
+                    and self.is_draggable(*self.mouse_down_position)):
                 self._drag_state = "dragging"
                 if self.capture_mouse:
                     event.window.set_mouse_owner(
-                        self, transform=event.net_transform(),
-                        history=event.dispatch_history)
+                        self,
+                        transform=event.net_transform(),
+                        history=event.dispatch_history,
+                    )
                 self.drag_start(event)
                 return self._drag_mouse_move(event)
             return False
@@ -195,13 +209,10 @@ class DragTool(BaseTool):
             pass
         return False
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Private methods for trait getter/setters
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     @cached_property
     def _get__cancel_keys(self):
         return [KeySpec(key) for key in self.cancel_keys]
-
-
-# EOF

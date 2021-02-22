@@ -1,10 +1,18 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 """ Defines the SimpleZoom class.
 """
 from numpy import inf
 
 # Enthought library imports
-from traits.api import Bool, Enum, Float, Instance, Int, List, \
-    Trait, Tuple
+from traits.api import Bool, Enum, Float, Instance, Int, List, Trait, Tuple
 
 # Enable imports
 from enable.base_tool import KeySpec
@@ -13,6 +21,7 @@ from enable.abstract_overlay import AbstractOverlay
 
 from .base_zoom_tool import BaseZoomTool
 from .tool_history_mixin import ToolHistoryMixin
+
 
 class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
     """ Selects a range along the index or value axis.
@@ -30,23 +39,23 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
     #   Select a range across a single index or value axis.
     # box:
     #   Perform a "box" selection on two axes.
-    tool_mode = Enum("range", "box") #Enum("box", "range")
+    tool_mode = Enum("range", "box")  # Enum("box", "range")
 
     # Is the tool always "on"? If True, left-clicking always initiates
     # a zoom operation; if False, the user must press a key to enter zoom mode.
     always_on = Bool(False)
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Zoom control
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     # The axis to which the selection made by this tool is perpendicular. This
     # only applies in 'range' mode.
     axis = Enum("x", "y")
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Interaction control
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     # Enable the mousewheel for zooming?
     enable_wheel = Bool(True)
@@ -55,14 +64,14 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
     drag_button = Enum("left", "right")
 
     # Conversion ratio from wheel steps to zoom factors.
-    wheel_zoom_step = Float(.25)
+    wheel_zoom_step = Float(0.25)
 
-    # The key press to enter zoom mode, if **always_on** is False.  Has no effect
-    # if **always_on** is True.
+    # The key press to enter zoom mode, if **always_on** is False.
+    # Has no effect if **always_on** is True.
     enter_zoom_key = Instance(KeySpec, args=("z",))
 
-    # The key press to leave zoom mode, if **always_on** is False.  Has no effect
-    # if **always_on** is True.
+    # The key press to leave zoom mode, if **always_on** is False.
+    # Has no effect if **always_on** is True.
     exit_zoom_key = Instance(KeySpec, args=("z",))
 
     # Disable the tool after the zoom is completed?
@@ -83,9 +92,9 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
     # out more than 5 times from the original bounds.
     min_zoom = Float(-inf)
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Appearance properties (for Box mode)
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     # The pointer to use when drawing a zoom box.
     pointer = "magnifier"
@@ -110,16 +119,17 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
     # The possible event states of this zoom tool.
     event_state = Enum("normal", "selecting")
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Key mappings
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
-    # The key that cancels the zoom and resets the view to the original defaults.
+    # The key that cancels the zoom and resets the view to the original
+    # defaults.
     cancel_zoom_key = Instance(KeySpec, args=("Esc",))
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Private traits
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     # If **always_on** is False, this attribute indicates whether the tool
     # is currently enabled.
@@ -150,7 +160,6 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
         else:
             self._orig_position = self.component.view_position
             self._orig_bounds = self.component.view_bounds
-        return
 
     def enable(self, event=None):
         """ Provides a programmatic way to enable this tool, if
@@ -164,7 +173,6 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
         self._enabled = True
         if event and event.window:
             event.window.set_pointer(self.pointer)
-        return
 
     def disable(self, event=None):
         """ Provides a programmatic way to enable this tool, if **always_on**
@@ -179,7 +187,6 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
             self.component.active_tool = None
         if event and event.window:
             event.window.set_pointer("arrow")
-        return
 
     def reset(self, event=None):
         """ Resets the tool to normal state, with no start or end position.
@@ -187,7 +194,6 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
         self.event_state = "normal"
         self._screen_start = None
         self._screen_end = None
-
 
     def deactivate(self, component):
         """ Called when this is no longer the active tool.
@@ -202,11 +208,10 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
         If the tool is enabled or always on, it starts selecting.
         """
         if self.always_on or self._enabled:
-            # we need to make sure that there isn't another active tool that we will
-            # interfere with.
+            # we need to make sure that there isn't another active tool that
+            # we will interfere with.
             if self.drag_button == "left":
                 self._start_select(event)
-        return
 
     def normal_right_down(self, event):
         """ Handles the right mouse button being pressed while the tool is
@@ -217,7 +222,6 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
         if self.always_on or self._enabled:
             if self.drag_button == "right":
                 self._start_select(event)
-        return
 
     def normal_mouse_wheel(self, event):
         """ Handles the mouse wheel being used when the tool is in the 'normal'
@@ -256,37 +260,38 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
 
             self.component.trait_setq(view_position=[x_pos, y_pos])
             bounds = self.component.view_bounds
-            self.component.view_bounds = [bounds[0] / zoom , bounds[1] / zoom]
+            self.component.view_bounds = [bounds[0] / zoom, bounds[1] / zoom]
 
             event.handled = True
             self.component.request_redraw()
-        return
 
     def _component_changed(self):
         self._reset_state_to_current()
-        return
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Implementation of PlotComponent interface
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     def _activate(self):
         """ Called by PlotComponent to set this as the active tool.
         """
         self.enable()
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # implementations of abstract methods on ToolHistoryMixin
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     def _reset_state_to_current(self):
         """ Clears the tool history, and sets the current state to be the
         first state in the history.
         """
         if self.tool_mode == "range":
             i = self._get_range_index()
-            self._reset_state((self.component.view_position[i],
-                               self.component.view_bounds[i]))
+            self._reset_state(
+                (
+                    self.component.view_position[i],
+                    self.component.view_bounds[i],
+                )
+            )
         else:
-            self._reset_state((self.component.view_position,
-                                self.component.view_bounds))
-
-# EOF
+            self._reset_state(
+                (self.component.view_position, self.component.view_bounds)
+            )

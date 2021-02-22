@@ -1,13 +1,12 @@
-# -----------------------------------------------------------------------------
-# Copyright (c) 2016, Enthought, Inc.
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
 # All rights reserved.
 #
 # This software is provided without warranty under the terms of the BSD
-# license included in enthought/LICENSE.txt and may be redistributed only
-# under the conditions described in the aforementioned license.  The license
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
 # is also available online at http://www.enthought.com/licenses/BSD.txt
+#
 # Thanks for using Enthought open source!
-# -----------------------------------------------------------------------------
 
 import numpy as np
 from kiva.celiagg import CompiledPath, GraphicsContext  # noqa
@@ -23,11 +22,16 @@ class Window(BaseWindow):
     _shuffle_buffer = Array(shape=(None, None, 4), dtype=np.uint8)
 
     def _create_gc(self, size, pix_format="rgba32"):
-        gc = GraphicsContext((size[0]+1, size[1]+1), pix_format=pix_format)
+        gc = GraphicsContext(
+            (size[0] + 1, size[1] + 1),
+            pix_format=pix_format,
+            base_pixel_scale=self.base_pixel_scale,
+        )
         gc.translate_ctm(0.5, 0.5)
 
-        self._shuffle_buffer = np.empty((size[1]+1, size[0]+1, 4,),
-                                        dtype=np.uint8)
+        self._shuffle_buffer = np.empty(
+            (size[1] + 1, size[0] + 1, 4), dtype=np.uint8
+        )
 
         return gc
 
@@ -41,9 +45,10 @@ class Window(BaseWindow):
         # self._gc is an image context
         w = self._gc.width()
         h = self._gc.height()
-        image = QtGui.QImage(self._shuffle_buffer, w, h,
-                             QtGui.QImage.Format_RGB32)
-        rect = QtCore.QRect(0, 0, w, h)
+        image = QtGui.QImage(
+            self._shuffle_buffer, w, h, QtGui.QImage.Format_RGB32
+        )
+        rect = QtCore.QRectF(0, 0, self.control.width(), self.control.height())
         painter = QtGui.QPainter(self.control)
         painter.drawImage(rect, image)
 
@@ -57,7 +62,7 @@ class Window(BaseWindow):
         dst = self._shuffle_buffer
         src_fmt = self._gc.pix_format
 
-        if src_fmt.startswith('rgb'):
+        if src_fmt.startswith("rgb"):
             indices = (2, 1, 0)
         else:
             indices = (0, 1, 2)
@@ -65,14 +70,15 @@ class Window(BaseWindow):
         dst[..., 1] = src[..., indices[1]]
         dst[..., 2] = src[..., indices[2]]
 
-        if src_fmt in ('rgba32', 'bgra32'):
+        if src_fmt in ("rgba32", "bgra32"):
             dst[..., 3] = src[..., 3]
         else:
             dst[..., 3] = 255
 
 
 def font_metrics_provider():
-    from kiva.fonttools import Font
+    from kiva.api import Font
+
     gc = GraphicsContext((1, 1))
     gc.set_font(Font())
     return gc

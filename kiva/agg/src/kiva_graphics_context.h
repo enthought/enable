@@ -1,3 +1,12 @@
+// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// All rights reserved.
+//
+// This software is provided without warranty under the terms of the BSD
+// license included in LICENSE.txt and may be redistributed only under
+// the conditions described in the aforementioned license. The license
+// is also available online at http://www.enthought.com/licenses/BSD.txt
+//
+// Thanks for using Enthought open source!
 #ifndef KIVA_GRAPHICS_CONTEXT_H
 #define KIVA_GRAPHICS_CONTEXT_H
 
@@ -1161,7 +1170,7 @@ namespace kiva
         int success = 0;
         agg24::trans_affine ctm = this->get_ctm();
 
-        if ( only_translation(ctm) &&
+        if ( only_scale_and_translation(ctm) &&
             (this->state.line_width == 1.0 ||
              this->state.line_width == 0.0))
              //&& this->state.line_join == JOIN_MITER )
@@ -1175,12 +1184,16 @@ namespace kiva
             line_color.a *= this->state.line_width;
             m.line_color(line_color);
 
-            double tx, ty;
-            get_translation(ctm, &tx, &ty);
+            double mx, my, sx, sy;
+            get_scale(ctm, &sx, &sy);
 
             for(int i = 0; i < Npts*2; i+=2)
             {
-                m.marker((int)(pts[i]+tx), int(pts[i+1]+ty), size, type);
+                mx = pts[i];
+                my = pts[i+1];
+                ctm.transform(&mx, &my);
+                // XXX: Assuming scale is uniform in both directions
+                m.marker(int(mx), int(my), size * sx, type);
             }
             success = 1;
         }

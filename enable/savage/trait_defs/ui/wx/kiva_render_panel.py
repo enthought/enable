@@ -1,9 +1,19 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 import wx
 
 from enable.savage.svg.backends.kiva import renderer
 from enable.savage.svg.document import SVGDocument
 from enable.api import Container, Window
 from traits.api import Instance, Float
+
 
 class KivaContainer(Container):
 
@@ -26,7 +36,6 @@ class KivaContainer(Container):
             self.document.render(gc)
 
 
-
 class RenderPanel(wx.Window):
     def __init__(self, parent, document=None):
         super(RenderPanel, self).__init__(parent)
@@ -37,18 +46,20 @@ class RenderPanel(wx.Window):
 
         self.container = KivaContainer(document=self.document)
 
-        size = wx.Size(200,200)
+        size = wx.Size(200, 200)
         if document is not None:
             size = document.getSize()
 
-        self._window = Window( parent=self, size=size, component=self.container )
+        self._window = Window(parent=self, size=size, component=self.container)
         self.control = self._window.control
         self._parent = parent
-        
-        self.SetBackgroundColour([int(255*c) for c in self.container.bgcolor_])        
+
+        self.SetBackgroundColour(
+            [int(255 * c) for c in self.container.bgcolor_]
+        )
 
     def GetBestSize(self):
         if not self.document:
-            return (-1,-1)
+            return (-1, -1)
 
         return self.document.getSize()

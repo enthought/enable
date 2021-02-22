@@ -1,14 +1,25 @@
-#------------------------------------------------------------------------------
-#  Copyright (c) 2013, Enthought, Inc.
-#  All rights reserved.
-#------------------------------------------------------------------------------
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 from collections import deque
 
-import six
-
 # traits imports
-from traits.api import Any, Bool, Callable, Dict, Either, Instance, List, \
-    Property
+from traits.api import (
+    Any,
+    Bool,
+    Callable,
+    Dict,
+    Either,
+    Instance,
+    List,
+    Property,
+)
 
 # local imports
 from .container import Container
@@ -16,7 +27,9 @@ from .coordinate_box import CoordinateBox
 from .layout.layout_helpers import expand_constraints
 from .layout.layout_manager import LayoutManager
 from .layout.utils import (
-    add_symbolic_contents_constraints, get_from_constraints_namespace)
+    add_symbolic_contents_constraints,
+    get_from_constraints_namespace,
+)
 
 
 class ConstraintsContainer(Container):
@@ -24,6 +37,7 @@ class ConstraintsContainer(Container):
     constraints-based layout solver.
 
     """
+
     # A read-only symbolic object that represents the left boundary of
     # the component
     contents_left = Property(fget=get_from_constraints_namespace)
@@ -90,9 +104,9 @@ class ConstraintsContainer(Container):
     _offset_table = List
     _layout_table = List
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Public methods
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def do_layout(self, size=None, force=False):
         """ Make sure child components get a chance to refresh their layout.
@@ -120,10 +134,13 @@ class ConstraintsContainer(Container):
                     dx, dy = offset_table[offset_index]
                     nx, ny = item.left.value(), item.bottom.value()
                     item.position = (nx - dx, ny - dy)
-                    item.bounds = (item.layout_width.value(),
-                                   item.layout_height.value())
+                    item.bounds = (
+                        item.layout_width.value(),
+                        item.layout_height.value(),
+                    )
                     offset_table[running_index] = (nx, ny)
                     running_index += 1
+
             mgr_layout(layout, width_var, height_var, (width, height))
 
             self.invalidate_draw()
@@ -140,9 +157,9 @@ class ConstraintsContainer(Container):
         elif self._layout_owner is not None:
             self._layout_owner.relayout()
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Layout Sharing
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     def transfer_layout_ownership(self, owner):
         """ A method which can be called by other components in the
         hierarchy to gain ownership responsibility for the layout
@@ -188,9 +205,9 @@ class ConstraintsContainer(Container):
                 return True
         return False
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Traits methods
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     def _bounds_changed(self, old, new):
         """ Run the solver when the container's bounds change.
         """
@@ -209,11 +226,12 @@ class ConstraintsContainer(Container):
         """
         add_symbolic_contents_constraints(self._constraints_vars)
 
-        return [self.contents_left == self.left,
-                self.contents_bottom == self.bottom,
-                self.contents_right == self.left + self.layout_width,
-                self.contents_top == self.bottom + self.layout_height,
-            ]
+        return [
+            self.contents_left == self.left,
+            self.contents_bottom == self.bottom,
+            self.contents_right == self.left + self.layout_width,
+            self.contents_top == self.bottom + self.layout_height,
+        ]
 
     def _get__layout_constraints(self):
         """ React to changes of the user controlled constraints.
@@ -234,8 +252,11 @@ class ConstraintsContainer(Container):
         """
         # Remove stale components from the map
         for item in event.removed:
-            item.on_trait_change(self._component_size_hint_changed,
-                                 'layout_size_hint', remove=True)
+            item.on_trait_change(
+                self._component_size_hint_changed,
+                "layout_size_hint",
+                remove=True,
+            )
             del self._component_map[item.id]
 
         # Check the added components
@@ -245,9 +266,12 @@ class ConstraintsContainer(Container):
         """ Make sure components that are added can be used with constraints.
         """
         # Clear the component maps
-        for key, item in six.iteritems(self._component_map):
-            item.on_trait_change(self._component_size_hint_changed,
-                                 'layout_size_hint', remove=True)
+        for key, item in self._component_map.items():
+            item.on_trait_change(
+                self._component_size_hint_changed,
+                "layout_size_hint",
+                remove=True,
+            )
         self._component_map = {}
 
         # Check the new components
@@ -258,9 +282,9 @@ class ConstraintsContainer(Container):
         """
         self.relayout()
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Protected methods
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def _build_layout_table(self):
         """ Build the layout and offset tables for this container.
@@ -295,7 +319,7 @@ class ConstraintsContainer(Container):
         zero_offset = (0, 0)
         offset_table = [zero_offset]
         layout_table = []
-        queue = deque((0, child) for child in six.itervalues(self._component_map))
+        queue = deque((0, child) for child in self._component_map.values())
 
         # Micro-optimization: pre-fetch bound methods and store globals
         # as locals. This method is not on the code path of a resize
@@ -323,7 +347,7 @@ class ConstraintsContainer(Container):
                 running_index += 1
                 if isinst(item, Container_):
                     if item.transfer_layout_ownership(self):
-                        for child in six.itervalues(item._component_map):
+                        for child in item._component_map.values():
                             push((running_index, child))
 
         return offset_table, layout_table
@@ -345,8 +369,9 @@ class ConstraintsContainer(Container):
                 raise ValueError(msg)
 
             self._component_map[key] = item
-            item.on_trait_change(self._component_size_hint_changed,
-                                 'layout_size_hint')
+            item.on_trait_change(
+                self._component_size_hint_changed, "layout_size_hint"
+            )
 
         # Update the layout
         self.relayout()

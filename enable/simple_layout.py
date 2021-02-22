@@ -1,6 +1,16 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 """Helper functions for a simple layout algorithm -- the same one used by
    OverlayPlotContainer.  Designed to be called from a container, but
    separated out because they are useful from ViewPort and Container"""
+
 
 def simple_container_get_preferred_size(container, components=None):
     """ Returns the size (width,height) that is preferred for this component.
@@ -52,8 +62,12 @@ def simple_container_get_preferred_size(container, components=None):
         max_height = container.default_size[1]
 
     # Add in our padding and border
-    container._cached_preferred_size = (max_width + container.hpadding, max_height + container.vpadding)
+    container._cached_preferred_size = (
+        max_width + container.hpadding,
+        max_height + container.vpadding,
+    )
     return container._cached_preferred_size
+
 
 def simple_container_do_layout(container, components=None):
     """ Actually performs a layout (called by do_layout()).
@@ -68,7 +82,7 @@ def simple_container_do_layout(container, components=None):
     height = container.height
 
     for component in components:
-        if hasattr(container, '_should_layout'):
+        if hasattr(container, "_should_layout"):
             if not container._should_layout(component):
                 continue
 
@@ -90,4 +104,3 @@ def simple_container_do_layout(container, components=None):
     # Tell all of our components to do a layout
     for component in components:
         component.do_layout()
-    return

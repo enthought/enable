@@ -1,6 +1,12 @@
-
-from __future__ import with_statement
-
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 from numpy import array, pi
 
 # Enthought library imports
@@ -22,9 +28,9 @@ class Compass(Component):
     # Whether or not to allow clicks on the center
     enable_center = Bool(False)
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Shape and layout
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     # The length of the triangle from tip to base
     triangle_length = Int(11)
@@ -40,9 +46,9 @@ class Compass(Component):
     # (halfway along its length, not the orthocenter).
     spacing = Int(12)
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Appearance Traits
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     # The line color of the triangles
     color = ColorTrait("black")
@@ -59,9 +65,9 @@ class Compass(Component):
     # Override the inherited **event_state** attribute
     event_state = Enum("normal", "clicked")
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Stub methods for subclasses
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def mouse_down(self, arrow):
         """ Called when the mouse is first pressed inside one of the
@@ -80,9 +86,9 @@ class Compass(Component):
         """
         pass
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Event handling methods
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def normal_left_down(self, event):
         # Determine which arrow was clicked; use a rectangular approximation.
@@ -95,10 +101,12 @@ class Compass(Component):
         # Create dict mapping direction to (x, y, x2, y2)
         near = offset - half_length
         far = offset + half_length
-        rects = { "n": array((-half_width, near, half_width, far)),
-                  "e": array((near, -half_width, far, half_width)),
-                  "s": array((-half_width, -far, half_width, -near)),
-                  "w": array((-far, -half_width, -near, half_width)) }
+        rects = {
+            "n": array((-half_width, near, half_width, far)),
+            "e": array((near, -half_width, far, half_width)),
+            "s": array((-half_width, -far, half_width, -near)),
+            "w": array((-far, -half_width, -near, half_width)),
+        }
         if self.enable_center:
             rects["c"] = array((-near, -near, near, near))
         for direction, rect in rects.items():
@@ -109,7 +117,6 @@ class Compass(Component):
                 self.request_redraw()
                 break
         event.handled = True
-        return
 
     def normal_left_dclick(self, event):
         return self.normal_left_down(event)
@@ -124,9 +131,9 @@ class Compass(Component):
     def clicked_mouse_leave(self, event):
         self.clicked_left_up(event)
 
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Rendering methods
-    #------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def get_preferred_size(self):
         # Since we can compute our preferred size from the size of the
@@ -136,22 +143,24 @@ class Compass(Component):
         if self.fixed_preferred_size is not None:
             return self.fixed_preferred_size
         else:
-            extent = self.scale * 2 * (self.spacing + self.triangle_length/2)
+            extent = self.scale * 2 * (self.spacing + self.triangle_length / 2)
             return [extent + self.hpadding, extent + self.vpadding]
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="normal"):
         with gc:
             gc.set_stroke_color(self.color_)
             gc.set_line_width(self.line_width)
-            gc.translate_ctm(self.x + self.width/2, self.y + self.height/2)
+            gc.translate_ctm(self.x + self.width / 2, self.y + self.height / 2)
             s = self.spacing
-            points_and_angles = [ ("n", (0, s), 0),
-                                  ("e", (s, 0), -pi/2),
-                                  ("s", (0, -s), pi),
-                                  ("w", (-s, 0), pi/2) ]
+            points_and_angles = [
+                ("n", (0, s), 0),
+                ("e", (s, 0), -pi / 2),
+                ("s", (0, -s), pi),
+                ("w", (-s, 0), pi / 2),
+            ]
 
             gc.scale_ctm(self.scale, self.scale)
-            for dir, (dx,dy), angle in points_and_angles:
+            for dir, (dx, dy), angle in points_and_angles:
                 if self.event_state == "clicked" and self.clicked == dir:
                     gc.set_fill_color(self.clicked_color_)
                 else:
@@ -161,23 +170,31 @@ class Compass(Component):
                 half_height = self.triangle_length / 2
                 half_width = self.triangle_width / 2
                 gc.begin_path()
-                gc.lines( [(-half_width, -half_height),
-                           (0, half_height),
-                           (half_width, -half_height),
-                           (-half_width, -half_height),
-                           (0, half_height)] )
+                gc.lines(
+                    [
+                        (-half_width, -half_height),
+                        (0, half_height),
+                        (half_width, -half_height),
+                        (-half_width, -half_height),
+                        (0, half_height),
+                    ]
+                )
                 gc.draw_path()
                 gc.rotate_ctm(-angle)
                 gc.translate_ctm(-dx, -dy)
 
-            if self.event_state == "clicked" and self.clicked == 'c':
+            if self.event_state == "clicked" and self.clicked == "c":
                 # Fill in the center
                 gc.set_fill_color(self.clicked_color_)
                 half_width = self.triangle_width / 2
                 gc.begin_path()
-                gc.lines( [(-half_width, -half_width),
-                           (half_width, -half_height),
-                           (half_width, half_width),
-                           (-half_width, half_width),
-                           (-half_width, -half_width)] )
+                gc.lines(
+                    [
+                        (-half_width, -half_width),
+                        (half_width, -half_height),
+                        (half_width, half_width),
+                        (-half_width, half_width),
+                        (-half_width, -half_width),
+                    ]
+                )
                 gc.draw_path()

@@ -1,7 +1,18 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 import sys
 
+
 class AbstractGradientBrush(object):
-    """ Abstract base class for gradient brushes so they can be detected easily.
+    """ Abstract base class for gradient brushes so they can be detected
+    easily.
     """
 
     def IsOk(self):
@@ -11,31 +22,23 @@ class AbstractGradientBrush(object):
         """ Apply a transformation to make the bbox a unit square.
         """
         x0, y0, w, h = bbox
-        if sys.platform == 'darwin':
+        if sys.platform == "darwin":
             gc.concat_ctm(((w, 0, 0), (0, h, 0), (x0, y0, 1)))
         else:
-            gc.concat_ctm((w,0,0,h,x0,y0))
+            gc.concat_ctm((w, 0, 0, h, x0, y0))
 
 
 class NullRenderer(object):
-    NullBrush         = None
+    NullBrush = None
     NullGraphicsBrush = None
-    NullPen           = None
-    TransparentPen    = None
+    NullPen = None
+    TransparentPen = None
 
-    caps = {
-            'butt':None,
-            'round':None,
-            'square':None
-            }
+    caps = {"butt": None, "round": None, "square": None}
 
-    joins = {
-            'miter':None,
-            'round':None,
-            'bevel':None
-            }
+    joins = {"miter": None, "round": None, "bevel": None}
 
-    fill_rules = {'nonzero':None, 'evenodd': None}
+    fill_rules = {"nonzero": None, "evenodd": None}
 
     def __init__(self):
         pass
@@ -45,7 +48,7 @@ class NullRenderer(object):
         raise NotImplementedError()
 
     @classmethod
-    def createAffineMatrix(cls, a,b,c,d,x,y):
+    def createAffineMatrix(cls, a, b, c, d, x, y):
         raise NotImplementedError()
 
     @classmethod
@@ -61,18 +64,19 @@ class NullRenderer(object):
         raise NotImplementedError()
 
     @classmethod
-    def createLinearGradientBrush(cls, x1,y1,x2,y2, stops, spreadMethod='pad',
-                                  transforms=None, units='userSpaceOnUse'):
+    def createLinearGradientBrush(cls, x1, y1, x2, y2, stops,
+                                  spreadMethod="pad", transforms=None,
+                                  units="userSpaceOnUse"):
         raise NotImplementedError()
 
     @classmethod
-    def createRadialGradientBrush(cls, cx,cy, r, stops, fx=None,fy=None,
-                                  spreadMethod='pad', transforms=None,
-                                  units='userSpaceOnUse'):
+    def createRadialGradientBrush(cls, cx, cy, r, stops, fx=None, fy=None,
+                                  spreadMethod="pad", transforms=None,
+                                  units="userSpaceOnUse"):
         raise NotImplementedError()
 
     @classmethod
-    def getFont(cls, font_name='Arial'):
+    def getFont(cls, font_name="Arial"):
         raise NotImplementedError()
 
     @classmethod
@@ -152,7 +156,7 @@ class NullRenderer(object):
         raise NotImplementedError()
 
     @classmethod
-    def DrawText(cls, gc, text, x, y, brush, anchor='start'):
+    def DrawText(cls, gc, text, x, y, brush, anchor="start"):
         """ Draw text at the given x,y position with the color of the
             given brush.
         """

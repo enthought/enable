@@ -1,17 +1,28 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 import time
+
 import wx
 
 from enable.savage.svg.backends.wx import renderer
 from traitsui.wx.constants import WindowColor
 
-class RenderPanel(wx.PyPanel):
+
+class RenderPanel(wx.Panel):
     def __init__(self, parent, document=None):
-        wx.PyPanel.__init__(self, parent)
+        super(RenderPanel, self).__init__(parent)
         self.lastRender = None
         self.document = document
         self.zoom_x = 100
         self.zoom_y = 100
-        self.offset = wx.Point(0,0)
+        self.offset = wx.Point(0, 0)
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_MOUSEWHEEL, self.OnWheel)
@@ -43,7 +54,7 @@ class RenderPanel(wx.PyPanel):
 
     def GetBestSize(self):
         if not self.document:
-            return (-1,-1)
+            return (-1, -1)
 
         return wx.Size(*(self.document.getSize()))
 
@@ -68,12 +79,12 @@ class RenderPanel(wx.PyPanel):
     def OnMotion(self, evt):
         if not self.HasCapture():
             return
-        self.offset += (evt.GetPosition() - self.offsetFrom)
+        self.offset += evt.GetPosition() - self.offsetFrom
         self.offsetFrom = evt.GetPosition()
         self.Refresh()
 
     def OnMiddleClick(self, evt):
-        self.offset = wx.Point(0,0)
+        self.offset = wx.Point(0, 0)
         self.zoom_x = 100
         self.zoom_y = 100
         self.Refresh()

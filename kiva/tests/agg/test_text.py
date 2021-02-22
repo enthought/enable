@@ -1,9 +1,18 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 from contextlib import contextmanager
 import locale
 import unittest
 
 from kiva import agg
-from kiva.fonttools import Font
+from kiva.api import Font
 
 
 @contextmanager
@@ -25,11 +34,11 @@ class TestText(unittest.TestCase):
     def test_locale_independence(self):
         # Ensure that >ASCII Unicode text is decoded correctly regardless of
         # the locale.
-        text = u'\N{GREEK SMALL LETTER MU}'
+        text = "\N{GREEK SMALL LETTER MU}"
 
-        with locale_context(locale.LC_CTYPE, ('en', 'UTF-8')):
+        with locale_context(locale.LC_CTYPE, ("en", "UTF-8")):
             gc = agg.GraphicsContextArray((200, 200))
-            f = Font('modern')
+            f = Font("modern")
             with gc:
                 gc.set_font(f)
                 gc.translate_ctm(50, 50)
@@ -37,9 +46,9 @@ class TestText(unittest.TestCase):
                 gc.show_text(text)
                 x0, _ = gc.get_text_position()
 
-        with locale_context(locale.LC_CTYPE, ('en', 'ASCII')):
+        with locale_context(locale.LC_CTYPE, ("en", "ASCII")):
             gc = agg.GraphicsContextArray((200, 200))
-            f = Font('modern')
+            f = Font("modern")
             with gc:
                 gc.set_font(f)
                 gc.translate_ctm(50, 50)

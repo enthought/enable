@@ -1,3 +1,12 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 """ Abstract base class for overlays.
 
 This class is primarily used so that tools can easily distinguish between
@@ -29,9 +38,9 @@ class AbstractOverlay(Component):
     # Typically, an overlay does not render a background.
     bgcolor = "transparent"
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Abstract methods (to be implemented by subclasses)
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
 
     def overlay(self, other_component, gc, view_bounds=None, mode="normal"):
         """ Draws this component overlaid on another component.
@@ -45,10 +54,9 @@ class AbstractOverlay(Component):
         """
         pass
 
-
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Concrete methods / reimplementations of Component methods
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
 
     def __init__(self, component=None, *args, **kw):
         if component is not None:
@@ -71,7 +79,6 @@ class AbstractOverlay(Component):
         for overlay in self.overlays:
             if overlay.visible or overlay.invisible_layout:
                 overlay.do_layout(component)
-        return
 
     def _draw(self, gc, view_bounds=None, mode="normal"):
         """ Draws the component, paying attention to **draw_order**.
@@ -80,7 +87,6 @@ class AbstractOverlay(Component):
         """
         if self.component is not None:
             self.overlay(self.component, gc, view_bounds, mode)
-        return
 
     def _request_redraw(self):
         """ Overrides Enable Component.
@@ -88,6 +94,3 @@ class AbstractOverlay(Component):
         if self.component is not None:
             self.component.request_redraw()
         super(AbstractOverlay, self)._request_redraw()
-        return
-
-# EOF

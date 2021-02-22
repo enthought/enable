@@ -1,3 +1,13 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
+
 # Enthought library imports
 from enable.api import Container, TextField
 from traits.api import Float, Int, List
@@ -68,7 +78,6 @@ class TextFieldGrid(Container):
         if row < self.rows and column < self.columns:
             self.cells[row][column].text = text
 
-
     #########################################################################
     # AbstractComponent interface
     #########################################################################
@@ -78,7 +87,7 @@ class TextFieldGrid(Container):
         Container._dispatch_draw(self, layer, gc, view_bounds, mode)
         self._draw_grid(gc, view_bounds, mode)
 
-    #### Private drawing methods ############################################
+    # Private drawing methods ############################################
 
     def _draw_grid(self, gc, view_bounds, mode):
         gc.set_stroke_color(self.cell_border_color_)
@@ -88,7 +97,7 @@ class TextFieldGrid(Container):
         y = self.y
         for row in range(self.rows + 1):
             gc.move_to(self.x, y)
-            gc.line_to(self.x+self.width, y)
+            gc.line_to(self.x + self.width, y)
             gc.stroke_path()
             y = y + self.cell_padding + self.cell_height
 
@@ -98,14 +107,13 @@ class TextFieldGrid(Container):
             gc.line_to(x, self.y + self.height)
             gc.stroke_path()
             x = x + self.cell_padding + self.cell_width
-        return
 
     def _position_cells(self):
         y = 0
         for row in self.cells:
             x = 0
             for cell in row:
-                cell.position = [x,y]
+                cell.position = [x, y]
                 x = x + self.cell_padding + self.cell_width
             y = y + self.cell_padding + self.cell_height
         self.total_width = x
@@ -114,8 +122,12 @@ class TextFieldGrid(Container):
     def _add_row(self, index):
         row = []
         for i in range(self.columns):
-            tfield = TextField(position=[0,0], width=self.cell_width,
-                        height = self.cell_height, multiline=False)
+            tfield = TextField(
+                position=[0, 0],
+                width=self.cell_width,
+                height=self.cell_height,
+                multiline=False,
+            )
             self.add(tfield)
             row.append(tfield)
         self.cells.insert(index, row)
@@ -123,8 +135,12 @@ class TextFieldGrid(Container):
 
     def _add_column(self, index):
         for row in self.cells:
-            tfield = TextField(position=[0,0], width=self.cell_width,
-                        height = self.cell_height, multiline=False)
+            tfield = TextField(
+                position=[0, 0],
+                width=self.cell_width,
+                height=self.cell_height,
+                multiline=False,
+            )
             self.add(tfield)
             row.insert(index, tfield)
         self.bounds[0] = self.bounds[0] + self.cell_padding + self.cell_width
@@ -168,9 +184,8 @@ class TextFieldGrid(Container):
         self.request_redraw()
 
 
-
 # Test
-if __name__ == '__main__':
+if __name__ == "__main__":
     from enable.wx_backend.api import Window
     from enable.api import Container
     from enable.example_support import DemoFrame, demo_main
@@ -179,10 +194,10 @@ if __name__ == '__main__':
         def _create_window(self):
             box1 = TextFieldGrid(4, 2, position=[50, 300])
 
-            box1.set_cell(1,1,"apple")
-            box1.set_cell(0,3,"pear")
+            box1.set_cell(1, 1, "apple")
+            box1.set_cell(0, 3, "pear")
 
-            container = Container(bounds=[800,600], use_backbuffer=False)
+            container = Container(bounds=[800, 600], use_backbuffer=False)
             container.add(box1)
             return Window(self, -1, size=[800, 600], component=container)
 

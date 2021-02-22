@@ -1,10 +1,18 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 # Enthought library imports
 from traits.api import HasTraits
 
 
 class AbstractRenderController(HasTraits):
-
     def draw(self, component, gc, view_bounds=None, mode="normal"):
         raise NotImplementedError
 
@@ -13,7 +21,14 @@ class RenderController(AbstractRenderController):
     """ The default Enable render controller for components """
 
     # The default list of available layers.
-    LAYERS = ["background", "image", "underlay", "component", "overlay", "border"]
+    LAYERS = [
+        "background",
+        "image",
+        "underlay",
+        "component",
+        "overlay",
+        "border",
+    ]
 
     def draw(self, component, gc, view_bounds=None, mode="normal"):
         if component.visible:
@@ -21,7 +36,6 @@ class RenderController(AbstractRenderController):
                 func = getattr(component, "_draw_" + layer, None)
                 if func:
                     func(gc, view_bounds, mode)
-        return
 
 
 class OldEnableRenderController(AbstractRenderController):
@@ -38,7 +52,6 @@ class OldEnableRenderController(AbstractRenderController):
         component._draw_background(gc, view_bounds, mode)
         component._draw(gc, view_bounds, mode)
         component._draw_border(gc, view_bounds, mode)
-        return
 
 
 class OldChacoRenderController(AbstractRenderController):
@@ -68,18 +81,22 @@ class OldChacoRenderController(AbstractRenderController):
                         component.invalidate_draw()
                     if not self.draw_valid:
                         from .kiva_graphics_context import GraphicsContext
+
                         bb = GraphicsContext(tuple(map(int, component.bounds)))
                         bb.translate_ctm(-component.x, -component.y)
-                        self._do_draw(component, bb, view_bounds=None, mode=mode)
+                        self._do_draw(
+                            component, bb, view_bounds=None, mode=mode
+                        )
                         component._backbufer = bb
                         component.draw_valid = True
 
-                    gc.draw_imge(component._backbuffer, component.position + component.bounds)
+                    gc.draw_imge(
+                        component._backbuffer,
+                        component.position + component.bounds,
+                    )
 
                 else:
                     self._do_draw(component, gc, view_bounds, mode)
-        return
 
     def _do_draw(self, component, gc, view_bounds=None, mode="normal"):
         pass
-

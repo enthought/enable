@@ -1,3 +1,13 @@
+// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// All rights reserved.
+//
+// This software is provided without warranty under the terms of the BSD
+// license included in LICENSE.txt and may be redistributed only under
+// the conditions described in the aforementioned license. The license
+// is also available online at http://www.enthought.com/licenses/BSD.txt
+//
+// Thanks for using Enthought open source!
+
 //---------------------------------------------------------------------------
 //
 //  Wrapper for graphics_context_base->GraphicsContextArray
@@ -209,9 +219,8 @@ namespace kiva {
 
     %pythoncode
     %{
-        import six
         # used in GraphicsContextArray constructors
-        from numpy import array, zeros, uint8, frombuffer, shape, ndarray, resize, dtype
+        from numpy import array, asarray, zeros, uint8, frombuffer, shape, ndarray, resize, dtype
         import numpy
 
         # Define paths for the two markers that Agg renders incorrectly
@@ -296,7 +305,8 @@ namespace kiva {
             %{
             # We define our own constructor AND destructor.
             def __init__(self, ary_or_size, pix_format="bgra32",
-                         interpolation="nearest", bottom_up=1):
+                         interpolation="nearest", base_pixel_scale=1.0,
+                         bottom_up=1):
                 """ When specifying size, it must be a two element tuple.
                     Array input is always treated as an image.
 
@@ -348,6 +358,9 @@ namespace kiva {
 
                 obj = graphics_context_from_array(ary,pix_format_id,interpolation_id,
                                                   bottom_up)
+
+                # Apply base scale for a HiDPI context
+                _agg.GraphicsContextArray_scale_ctm(obj, base_pixel_scale, base_pixel_scale)
 
                 _swig_setattr(self, GraphicsContextArray, 'this', obj)
                 # swig 1.3.28 does not have real thisown, thisown is mapped
@@ -858,6 +871,8 @@ namespace kiva {
                     file format does not support alpha, the image is saved in
                     rgb24 format.
                 """
+                from PIL import Image
+
                 FmtsWithoutAlpha = ('jpg', 'bmp', 'eps', "jpeg")
                 size = (self.width(), self.height())
                 fmt = self.format()
@@ -866,7 +881,7 @@ namespace kiva {
                 if fmt.endswith("32"):
                     pilformat = "RGBA"
                     pixelformat = "rgba32"
-                    if (isinstance(filename, six.string_types) and filename[-3:].lower() in FmtsWithoutAlpha) or \
+                    if (isinstance(filename, str) and filename[-3:].lower() in FmtsWithoutAlpha) or \
                        (file_format is not None and file_format.lower() in FmtsWithoutAlpha):
                         pilformat = "RGB"
                         pixelformat = "rgb24"
@@ -883,8 +898,7 @@ namespace kiva {
                 else:
                     bmp = self.bmp_array
 
-                from kiva import compat
-                img = compat.pilfromstring(pilformat, size, bmp.tostring())
+                img = Image.fromarray(bmp, pilformat)
                 img.save(filename, format=file_format, options=pil_options)
 
 
@@ -965,17 +979,17 @@ class Image(GraphicsContextArray):
         """
         # read the file using PIL
         from PIL import Image as PilImage
-        from kiva.compat import piltostring
+
         pil_img = PilImage.open(file)
 
-        # Convert image to a numeric array
+        # Convert image to a numpy array
         if (pil_img.mode not in ["RGB","RGBA"] or
             (cvar.ALWAYS_32BIT_WORKAROUND_FLAG and pil_img.mode != "RGBA")):
             pil_img = pil_img.convert(mode="RGBA")
+
         depth = pil_depth_map[pil_img.mode]
-        img = frombuffer(piltostring(pil_img),uint8)
-        img = resize(img, (pil_img.size[1],pil_img.size[0],depth))
         format = pil_format_map[pil_img.mode]
+        img = asarray(pil_img)
 
         GraphicsContextArray.__init__(self, img, pix_format=format,
                                       interpolation=interpolation,
@@ -1005,102 +1019,3 @@ class Image(GraphicsContextArray):
 
 
 %}
-
-
-
-%{
-#include "gl_graphics_context.h"
-%}
-
-namespace kiva {
-
-    %rename(GraphicsContextGL) gl_graphics_context;
-
-    class gl_graphics_context : public graphics_context_base
-    {
-    public:
-        gl_graphics_context(int width, int height,
-                           kiva::pix_format_e format=kiva::pix_format_rgb24);
-
-        ~gl_graphics_context();
-
-        //---------------------------------------------------------------
-        // GL-specific methods
-        //---------------------------------------------------------------
-        void gl_init();
-        void gl_cleanup();
-        void begin_page();
-        void gl_render_path(kiva::compiled_path *path, bool polygon=false, bool fill=false);
-        void gl_render_points(double** points, bool polygon, bool fill,
-            kiva::draw_mode_e mode = FILL);
-
-        //---------------------------------------------------------------
-        // GraphicsContextBase interface
-        //---------------------------------------------------------------
-
-        kiva::pix_format_e format();
-        void save_state();
-        void restore_state();
-
-        //---------------------------------------------------------------
-        // Clipping path manipulation
-        //---------------------------------------------------------------
-        void clip();
-        void even_odd_clip();
-        void clip_to_rect(double x, double y, double sx, double sy);
-        void clip_to_rect(kiva::rect_type &rect);
-        void clip_to_rects(double* new_rects, int Nrects);
-        void clip_to_rects(kiva::rect_list_type &rects);
-        kiva::rect_type transform_clip_rectangle(const kiva::rect_type &rect);
-        void clear_clip_path();
-
-        int get_num_clip_regions();
-        kiva::rect_type get_clip_region(unsigned int i);
-
-        //---------------------------------------------------------------
-        // Painting paths (drawing and filling contours)
-        //---------------------------------------------------------------
-
-        // Declare clear() to pass by reference so that the typemap applies,
-        // even though it is pass by value in the actual C++ class
-        void clear(agg24::rgba& value=_clear_color);
-
-        void fill_path();
-        void eof_fill_path();
-        void stroke_path();
-        // empty function; for some reason this is abstract in the base class
-        inline void _stroke_path() { }
-
-        void draw_path(draw_mode_e mode=FILL_STROKE);
-        void draw_rect(double rect[4],
-                       draw_mode_e mode=FILL_STROKE);
-
-        %feature("shadow") draw_marker_at_points(double* pts,int Npts, int size,
-                                   agg24::marker_e type = agg24::marker_square)
-        %{
-        def draw_marker_at_points(self,pts,size,kiva_marker_type):
-            marker = kiva_marker_to_agg.get(kiva_marker_type, None)
-            if marker is None:
-                success = 0
-            else:
-                args = (self,pts,int(size),marker)
-                success = _agg.GraphicsContextGL_draw_marker_at_points(self, pts,
-                                int(size), marker)
-            return success
-        %}
-        int draw_marker_at_points(double* pts,int Npts,int size,
-                                   agg24::marker_e type=agg24::marker_square);
-
-        void draw_path_at_points(double* pts,int Npts,
-                                  kiva::compiled_path& marker,
-                                  draw_mode_e mode);
-
-        bool show_text(char *text);
-
-        void draw_glyphs(kiva::graphics_context_base* img, double tx, double ty);
-        int draw_image(kiva::graphics_context_base* img, double rect[4], bool force_copy=false);
-        int draw_image(kiva::graphics_context_base* img);
-
-    };
-
-}

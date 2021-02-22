@@ -1,6 +1,12 @@
-# :Author:    Robert Kern
-# :Copyright: 2004, 2007, Enthought, Inc.
-# :License:   BSD Style
+# (C) Copyright 2004-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 from __future__ import print_function
 
 include "Python.pxi"
@@ -172,7 +178,6 @@ cdef class CGImage
 cdef class CGPDFDocument
 cdef class Rect
 cdef class CGLayerContext(CGContextInABox)
-cdef class CGGLContext(CGContextInABox)
 cdef class CGBitmapContext(CGContext)
 cdef class CGPDFContext(CGContext)
 cdef class CGImageMask(CGImage)
@@ -727,10 +732,14 @@ cdef class CGContext:
     def draw_image(self, object image, object rect=None):
         """ Draw an image or another CGContext onto a region.
         """
+        from PIL import Image
+
         if rect is None:
             rect = (0, 0, self.width(), self.height())
         if isinstance(image, numpy.ndarray):
             self._draw_cgimage(CGImage(image), rect)
+        elif isinstance(image, Image.Image):
+            self._draw_cgimage(CGImage(numpy.array(image)), rect)
         elif isinstance(image, CGImage):
             self._draw_cgimage(image, rect)
         elif hasattr(image, 'bmp_array'):
@@ -1343,37 +1352,6 @@ cdef class CGContextFromSWIG(CGContext):
         CGContext.__init__(self, ptr)
 
 
-cdef class CGGLContext(CGContextInABox):
-    cdef readonly size_t glcontext
-
-    def __init__(self, size_t glcontext, int width, int height):
-        if glcontext == 0:
-            raise ValueError("Need a valid pointer")
-
-        self.glcontext = glcontext
-
-        self.context = CGGLContextCreate(<void*>glcontext,
-            CGSizeMake(width, height), NULL)
-        if self.context == NULL:
-            raise RuntimeError("could not create CGGLContext")
-        self.can_release = 1
-
-        self._width = width
-        self._height = height
-        self.size = (self._width, self._height)
-
-        self._setup_color_space()
-        self._setup_fonts()
-
-
-    def resize(self, int width, int height):
-        CGGLContextUpdateViewportSize(self.context, CGSizeMake(width, height))
-        self._width = width
-        self._height = height
-        self.size = (width, height)
-
-
-
 cdef class CGPDFContext(CGContext):
     cdef readonly char* filename
     cdef CGRect media_box
@@ -1604,9 +1582,9 @@ cdef class CGBitmapContext(CGContext):
         """
 
         try:
-            from kiva.compat import pilfromstring
+            from PIL import Image as PilImage
         except ImportError:
-            raise ImportError("need PIL (or Pillow) to save images")
+            raise ImportError("need Pillow to save images")
 
         if self.bits_per_pixel == 32:
             if self.alpha_info == kCGImageAlphaPremultipliedLast:
@@ -1623,7 +1601,7 @@ cdef class CGBitmapContext(CGContext):
         if file_format is None:
             file_format = ''
 
-        img = pilfromstring(mode, (self.width(), self.height()), self)
+        img = PilImage.frombytes(mode, (self.width(), self.height()), self)
         if 'A' in mode:
             # Check the output format to see if it can handle an alpha channel.
             no_alpha_formats = ('jpg', 'bmp', 'eps', 'jpeg')
@@ -1781,7 +1759,6 @@ cdef class CGImageFile(CGImage):
         cdef CGImageAlphaInfo alpha_info
 
         from PIL import Image
-        from kiva.compat import piltostring
         import types
 
         if type(image_or_filename) is str:
@@ -1823,10 +1800,10 @@ cdef class CGImageFile(CGImage):
         self.bmp_array = c_numpy.PyArray_SimpleNew(3, &(dims[0]), c_numpy.NPY_UBYTE)
 
         data = self.bmp_array.data
-        s = piltostring(img)
-        py_data = PyBytes_AsString(s)
+        bs = img.tobytes()
+        py_data = PyBytes_AsString(bs)
 
-        memcpy(<void*>data, <void*>py_data, len(s))
+        memcpy(<void*>data, <void*>py_data, len(bs))
 
         self.data = data
 
@@ -2789,6 +2766,3 @@ cdef CTLineRef _create_ct_line(object the_string, CTFontRef font, object stroke_
     CFRelease(cf_attr_string)
 
     return ct_line
-
-
-#### EOF #######################################################################
