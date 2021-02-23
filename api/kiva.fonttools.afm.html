@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>kiva.fonttools.afm module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="kiva.fonttools package" href="kiva.fonttools.html" >
+    <link rel="next" title="kiva.fonttools.font module" href="kiva.fonttools.font.html" >
+    <link rel="prev" title="kiva.fonttools package" href="kiva.fonttools.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="kiva.html" >kiva package</a></li>
+          <li class="active"><a href="kiva.fonttools.html" accesskey="U">kiva.fonttools package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="kiva.fonttools.font.html" title="kiva.fonttools.font module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="kiva.fonttools.html" title="kiva.fonttools package"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-kiva.fonttools.afm">
+<span id="kiva-fonttools-afm-module"></span><h1>kiva.fonttools.afm module<a class="headerlink" href="#module-kiva.fonttools.afm" title="Permalink to this headline">¶</a></h1>
+<p>This is a python interface to Adobe Font Metrics Files.  Although a
+number of other python implementations exist (and may be more complete
+than mine) I decided not to go with them because either they were
+either</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>copyighted or used a non-BSD compatible license</p></li>
+<li><p>had too many dependencies and I wanted a free standing lib</p></li>
+<li><p>Did more than I needed and it was easier to write my own than
+figure out how to just get what I needed from theirs</p></li>
+</ol>
+</div></blockquote>
+<p>It is pretty easy to use, and requires only built-in python libs</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">afm</span> <span class="k">import</span> <span class="n">AFM</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fh</span> <span class="o">=</span> <span class="n">file</span><span class="p">(</span><span class="s1">&#39;ptmr8a.afm&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">afm</span> <span class="o">=</span> <span class="n">AFM</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">afm</span><span class="o">.</span><span class="n">string_width_height</span><span class="p">(</span><span class="s1">&#39;What the heck?&#39;</span><span class="p">)</span>
+<span class="go">(6220.0, 683)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">afm</span><span class="o">.</span><span class="n">get_fontname</span><span class="p">()</span>
+<span class="go">&#39;Times-Roman&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">afm</span><span class="o">.</span><span class="n">get_kern_dist</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">)</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">afm</span><span class="o">.</span><span class="n">get_kern_dist</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">)</span>
+<span class="go">-92.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">afm</span><span class="o">.</span><span class="n">get_bbox_char</span><span class="p">(</span><span class="s1">&#39;!&#39;</span><span class="p">)</span>
+<span class="go">[130, -9, 238, 676]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">afm</span><span class="o">.</span><span class="n">get_bbox_font</span><span class="p">()</span>
+<span class="go">[-168, -218, 1000, 898]</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>AUTHOR:</dt><dd><p>John D. Hunter &lt;<a class="reference external" href="mailto:jdhunter&#37;&#52;&#48;ace&#46;bsd&#46;uchicago&#46;edu">jdhunter<span>&#64;</span>ace<span>&#46;</span>bsd<span>&#46;</span>uchicago<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+</dl>
+<dl class="class">
+<dt id="kiva.fonttools.afm.AFM">
+<em class="property">class </em><code class="sig-prename descclassname">kiva.fonttools.afm.</code><code class="sig-name descname">AFM</code><span class="sig-paren">(</span><em class="sig-param">fh</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/fonttools/afm.html#AFM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.fonttools.afm.AFM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="kiva.fonttools.afm.AFM.get_angle">
+<code class="sig-name descname">get_angle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/fonttools/afm.html#AFM.get_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.fonttools.afm.AFM.get_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the fontangle as float</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.fonttools.afm.AFM.get_bbox_char">
+<code class="sig-name descname">get_bbox_char</code><span class="sig-paren">(</span><em class="sig-param">c</em>, <em class="sig-param">isord=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/fonttools/afm.html#AFM.get_bbox_char"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.fonttools.afm.AFM.get_bbox_char" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kiva.fonttools.afm.AFM.get_familyname">
+<code class="sig-name descname">get_familyname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/fonttools/afm.html#AFM.get_familyname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.fonttools.afm.AFM.get_familyname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the font family name, eg, Times</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.fonttools.afm.AFM.get_fontname">
+<code class="sig-name descname">get_fontname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/fonttools/afm.html#AFM.get_fontname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.fonttools.afm.AFM.get_fontname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the font name, eg, Times-Roman</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.fonttools.afm.AFM.get_fullname">
+<code class="sig-name descname">get_fullname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/fonttools/afm.html#AFM.get_fullname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.fonttools.afm.AFM.get_fullname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the font full name, eg, Times-Roman</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.fonttools.afm.AFM.get_height_char">
+<code class="sig-name descname">get_height_char</code><span class="sig-paren">(</span><em class="sig-param">c</em>, <em class="sig-param">isord=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/fonttools/afm.html#AFM.get_height_char"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.fonttools.afm.AFM.get_height_char" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the height of character c from the bounding box.  This is
+the ink height (space is 0)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.fonttools.afm.AFM.get_kern_dist">
+<code class="sig-name descname">get_kern_dist</code><span class="sig-paren">(</span><em class="sig-param">c1</em>, <em class="sig-param">c2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/fonttools/afm.html#AFM.get_kern_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.fonttools.afm.AFM.get_kern_dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the kerning pair distance (possibly 0) for chars c1 and
+c2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.fonttools.afm.AFM.get_name_char">
+<code class="sig-name descname">get_name_char</code><span class="sig-paren">(</span><em class="sig-param">c</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/fonttools/afm.html#AFM.get_name_char"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.fonttools.afm.AFM.get_name_char" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the name of the character, ie, ‘;’ is ‘semicolon’</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.fonttools.afm.AFM.get_str_bbox">
+<code class="sig-name descname">get_str_bbox</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/fonttools/afm.html#AFM.get_str_bbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.fonttools.afm.AFM.get_str_bbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the string bounding box</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.fonttools.afm.AFM.get_weight">
+<code class="sig-name descname">get_weight</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/fonttools/afm.html#AFM.get_weight"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.fonttools.afm.AFM.get_weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the font weight, eg, ‘Bold’ or ‘Roman’</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.fonttools.afm.AFM.get_width_char">
+<code class="sig-name descname">get_width_char</code><span class="sig-paren">(</span><em class="sig-param">c</em>, <em class="sig-param">isord=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/fonttools/afm.html#AFM.get_width_char"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.fonttools.afm.AFM.get_width_char" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the width of the character from the character metric WX
+field</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.fonttools.afm.AFM.string_width_height">
+<code class="sig-name descname">string_width_height</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/fonttools/afm.html#AFM.string_width_height"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.fonttools.afm.AFM.string_width_height" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the string width (including kerning) and string height
+as a w,h tuple</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.fonttools.afm.parse_afm">
+<code class="sig-prename descclassname">kiva.fonttools.afm.</code><code class="sig-name descname">parse_afm</code><span class="sig-paren">(</span><em class="sig-param">fh</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/fonttools/afm.html#parse_afm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.fonttools.afm.parse_afm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the Adobe Font Metics file in file handle fh
+Return value is a (dhead, dcmetrics, dkernpairs, dcomposite) tuple where</p>
+<p>dhead : a parse_header dict
+dcmetrics :  a parse_composites dict
+dkernpairs : a parse_kern_pairs dict, possibly {}
+dcomposite : a parse_composites dict , possibly {}</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="kiva.fonttools.html"
+                        title="previous chapter">kiva.fonttools package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="kiva.fonttools.font.html"
+                        title="next chapter">kiva.fonttools.font module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/kiva.fonttools.afm.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>kiva.line_state module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="kiva package" href="kiva.html" >
+    <link rel="next" title="kiva.pdf module" href="kiva.pdf.html" >
+    <link rel="prev" title="kiva.image module" href="kiva.image.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="kiva.html" accesskey="U">kiva package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="kiva.pdf.html" title="kiva.pdf module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="kiva.image.html" title="kiva.image module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-kiva.line_state">
+<span id="kiva-line-state-module"></span><h1>kiva.line_state module<a class="headerlink" href="#module-kiva.line_state" title="Permalink to this headline">¶</a></h1>
+<p>LineState Class</p>
+<p>The LineState class is used by the GraphicsState for Kiva backends which need
+to have their state tracked by Python, rather than by an internal graphics
+state (eg. Wx, SVG and PDF backends, but not Agg or QPainter).</p>
+<dl class="class">
+<dt id="kiva.line_state.LineState">
+<em class="property">class </em><code class="sig-prename descclassname">kiva.line_state.</code><code class="sig-name descname">LineState</code><span class="sig-paren">(</span><em class="sig-param">color</em>, <em class="sig-param">width</em>, <em class="sig-param">cap</em>, <em class="sig-param">join</em>, <em class="sig-param">dash</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/line_state.html#LineState"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.line_state.LineState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Stores information about the current line drawing settings.</p>
+<p>This is split off from <cite>GraphicsState</cite> to make it easier to
+track line state changes.  All the methods for setting
+these variables are left in the GraphicsStateBase class.</p>
+<dl class="method">
+<dt id="kiva.line_state.LineState.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/line_state.html#LineState.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.line_state.LineState.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a copy of the current line state</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.line_state.LineState.is_dashed">
+<code class="sig-name descname">is_dashed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/line_state.html#LineState.is_dashed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.line_state.LineState.is_dashed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.line_state.exactly_equal">
+<code class="sig-prename descclassname">kiva.line_state.</code><code class="sig-name descname">exactly_equal</code><span class="sig-paren">(</span><em class="sig-param">arr1</em>, <em class="sig-param">arr2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/line_state.html#exactly_equal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.line_state.exactly_equal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kiva.line_state.is_dashed">
+<code class="sig-prename descclassname">kiva.line_state.</code><code class="sig-name descname">is_dashed</code><span class="sig-paren">(</span><em class="sig-param">dash</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/line_state.html#is_dashed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.line_state.is_dashed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kiva.line_state.line_state_equal">
+<code class="sig-prename descclassname">kiva.line_state.</code><code class="sig-name descname">line_state_equal</code><span class="sig-paren">(</span><em class="sig-param">line1</em>, <em class="sig-param">line2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/line_state.html#line_state_equal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.line_state.line_state_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compares two <cite>LineState</cite> objects to see if they are equivalent.</p>
+<p>This is generally called by device-specific drawing routines
+before they stroke a path. It determines whether previously set
+line settings are equivalent to desired line settings for this
+drawing command.  If true, the routine can bypass all the
+work needed to set all the line settings of the graphics device.</p>
+<p>With the current Python implementation, this may not provide any
+time savings over just setting all the graphics state values.
+However, in C this could be a very fast memcmp if the C structure
+is set up correctly.</p>
+<p>While this could be the __cmp__ method for <cite>LineState</cite>, I have
+left it as a function because I think it will move to C and be
+used to compare structures.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="kiva.image.html"
+                        title="previous chapter">kiva.image module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="kiva.pdf.html"
+                        title="next chapter">kiva.pdf module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/kiva.line_state.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

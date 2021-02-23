@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.slider &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.slider</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">linspace</span><span class="p">,</span> <span class="n">zeros</span>
+
+<span class="c1"># Enthought library imports</span>
+<span class="kn">from</span> <span class="nn">kiva.api</span> <span class="k">import</span> <span class="n">STROKE</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">Property</span><span class="p">,</span> <span class="n">Trait</span><span class="p">,</span> <span class="n">on_trait_change</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="k">import</span> <span class="n">EnumEditor</span>
+
+<span class="c1"># Local, relative imports</span>
+<span class="kn">from</span> <span class="nn">.colors</span> <span class="k">import</span> <span class="n">ColorTrait</span>
+<span class="kn">from</span> <span class="nn">.component</span> <span class="k">import</span> <span class="n">Component</span>
+<span class="kn">from</span> <span class="nn">.markers</span> <span class="k">import</span> <span class="n">CustomMarker</span><span class="p">,</span> <span class="n">MarkerNameDict</span><span class="p">,</span> <span class="n">marker_names</span>
+
+<span class="n">slider_marker_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">marker_names</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;rect&quot;</span><span class="p">]</span>
+<span class="n">SliderMarkerTrait</span> <span class="o">=</span> <span class="n">Trait</span><span class="p">(</span>
+    <span class="s2">&quot;rect&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;rect&quot;</span><span class="p">,</span>
+    <span class="n">MarkerNameDict</span><span class="p">,</span>
+    <span class="n">editor</span><span class="o">=</span><span class="n">EnumEditor</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">slider_marker_names</span><span class="p">),</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="Slider"><a class="viewcode-back" href="../../api/enable.slider.html#enable.slider.Slider">[docs]</a><span class="k">class</span> <span class="nc">Slider</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A horizontal or vertical slider bar &quot;&quot;&quot;</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Model traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="nb">min</span> <span class="o">=</span> <span class="n">Float</span><span class="p">()</span>
+
+    <span class="nb">max</span> <span class="o">=</span> <span class="n">Float</span><span class="p">()</span>
+
+    <span class="n">value</span> <span class="o">=</span> <span class="n">Float</span><span class="p">()</span>
+
+    <span class="c1"># The number of ticks to show on the slider.</span>
+    <span class="n">num_ticks</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Bar and endcap appearance</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># Whether this is a horizontal or vertical slider</span>
+    <span class="n">orientation</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;v&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The thickness, in pixels, of the lines used to render the ticks,</span>
+    <span class="c1"># endcaps, and main slider bar.</span>
+    <span class="n">bar_width</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+    <span class="n">bar_color</span> <span class="o">=</span> <span class="n">ColorTrait</span><span class="p">(</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Whether or not to render endcaps on the slider bar</span>
+    <span class="n">endcaps</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># The extent of the endcaps, in pixels.  This is a read-only property,</span>
+    <span class="c1"># since the endcap size can be set as either a fixed number of pixels or</span>
+    <span class="c1"># a percentage of the widget&#39;s size in the transverse direction.</span>
+    <span class="n">endcap_size</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="c1"># The extent of the tickmarks, in pixels.  This is a read-only property,</span>
+    <span class="c1"># since the endcap size can be set as either a fixed number of pixels or</span>
+    <span class="c1"># a percentage of the widget&#39;s size in the transverse direction.</span>
+    <span class="n">tick_size</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Slider appearance</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># The kind of marker to use for the slider.</span>
+    <span class="n">slider</span> <span class="o">=</span> <span class="n">SliderMarkerTrait</span><span class="p">(</span><span class="s2">&quot;rect&quot;</span><span class="p">)</span>
+
+    <span class="c1"># If the slider marker is &quot;rect&quot;, this is the thickness of the slider,</span>
+    <span class="c1"># i.e. its extent in the dimension parallel to the long axis of the widget.</span>
+    <span class="c1"># For other slider markers, this has no effect.</span>
+    <span class="n">slider_thickness</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
+
+    <span class="c1"># The size of the slider, in pixels.  This is a read-only property, since</span>
+    <span class="c1"># the slider size can be set as either a fixed number of pixels or a</span>
+    <span class="c1"># percentage of the widget&#39;s size in the transverse direction.</span>
+    <span class="n">slider_size</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="c1"># For slider markers with a filled area, this is the color of the filled</span>
+    <span class="c1"># area.  For slider markers that are just lines/strokes (e.g. cross, plus),</span>
+    <span class="c1"># this is the color of the stroke.</span>
+    <span class="n">slider_color</span> <span class="o">=</span> <span class="n">ColorTrait</span><span class="p">(</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+
+    <span class="c1"># For slider markers with a filled area, this is the color of the outline</span>
+    <span class="c1"># border drawn around the filled area.  For slider markers that have just</span>
+    <span class="c1"># lines/strokes, this has no effect.</span>
+    <span class="n">slider_border</span> <span class="o">=</span> <span class="n">ColorTrait</span><span class="p">(</span><span class="s2">&quot;none&quot;</span><span class="p">)</span>
+
+    <span class="c1"># For slider markers with a filled area, this is the width, in pixels,</span>
+    <span class="c1"># of the outline around the area.  For slider markers that are just lines/</span>
+    <span class="c1"># strokes, this is the thickness of the stroke.</span>
+    <span class="n">slider_outline_width</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># The kiva.CompiledPath representing the custom path to render for the</span>
+    <span class="c1"># slider, if the **slider** trait is set to &quot;custom&quot;.</span>
+    <span class="n">custom_slider</span> <span class="o">=</span> <span class="n">Any</span><span class="p">()</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Interaction traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># Can this slider be interacted with, or is it just a display</span>
+    <span class="n">interactive</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">mouse_button</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">)</span>
+
+    <span class="n">event_state</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="s2">&quot;dragging&quot;</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Private traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># Returns the coordinate index (0 or 1) corresponding to our orientation.</span>
+    <span class="c1"># Used internally; read-only property.</span>
+    <span class="n">axis_ndx</span> <span class="o">=</span> <span class="n">Property</span><span class="p">()</span>
+
+    <span class="n">_slider_size_mode</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;fixed&quot;</span><span class="p">,</span> <span class="s2">&quot;percent&quot;</span><span class="p">)</span>
+    <span class="n">_slider_percent</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">_cached_slider_size</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="n">_endcap_size_mode</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;fixed&quot;</span><span class="p">,</span> <span class="s2">&quot;percent&quot;</span><span class="p">)</span>
+    <span class="n">_endcap_percent</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">_cached_endcap_size</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+
+    <span class="n">_tick_size_mode</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;fixed&quot;</span><span class="p">,</span> <span class="s2">&quot;percent&quot;</span><span class="p">)</span>
+    <span class="n">_tick_size_percent</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">_cached_tick_size</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+
+    <span class="c1"># A tuple of (dx, dy) of the difference between the mouse position and</span>
+    <span class="c1"># center of the slider.</span>
+    <span class="n">_offset</span> <span class="o">=</span> <span class="n">Any</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Slider.set_range"><a class="viewcode-back" href="../../api/enable.slider.html#enable.slider.Slider.set_range">[docs]</a>    <span class="k">def</span> <span class="nf">set_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">min</span><span class="p">,</span> <span class="nb">max</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="o">=</span> <span class="nb">min</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="nb">max</span></div>
+
+<div class="viewcode-block" id="Slider.map_screen"><a class="viewcode-back" href="../../api/enable.slider.html#enable.slider.Slider.map_screen">[docs]</a>    <span class="k">def</span> <span class="nf">map_screen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns an (x,y) coordinate corresponding to the location of</span>
+<span class="sd">        **val** on the slider.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Some local variables to handle orientation dependence</span>
+        <span class="n">axis_ndx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_ndx</span>
+        <span class="n">other_ndx</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">axis_ndx</span>
+        <span class="n">screen_low</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="n">axis_ndx</span><span class="p">]</span>
+        <span class="n">screen_high</span> <span class="o">=</span> <span class="n">screen_low</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="n">axis_ndx</span><span class="p">]</span>
+
+        <span class="c1"># The return coordinate.  The return value along the non-primary</span>
+        <span class="c1"># axis will be the same in all cases.</span>
+        <span class="n">coord</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">coord</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Handle exceptional/boundary cases</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">:</span>
+            <span class="n">coord</span><span class="p">[</span><span class="n">axis_ndx</span><span class="p">]</span> <span class="o">=</span> <span class="n">screen_low</span>
+            <span class="k">return</span> <span class="n">coord</span>
+        <span class="k">elif</span> <span class="n">val</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="p">:</span>
+            <span class="n">coord</span><span class="p">[</span><span class="n">axis_ndx</span><span class="p">]</span> <span class="o">=</span> <span class="n">screen_high</span>
+            <span class="k">return</span> <span class="n">coord</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="p">:</span>
+            <span class="n">coord</span><span class="p">[</span><span class="n">axis_ndx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">screen_low</span> <span class="o">+</span> <span class="n">screen_high</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="k">return</span> <span class="n">coord</span>
+
+        <span class="c1"># Handle normal cases</span>
+        <span class="n">coord</span><span class="p">[</span><span class="n">axis_ndx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span>
+        <span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="n">axis_ndx</span><span class="p">]</span> <span class="o">+</span> <span class="n">screen_low</span>
+        <span class="k">return</span> <span class="n">coord</span></div>
+
+<div class="viewcode-block" id="Slider.map_data"><a class="viewcode-back" href="../../api/enable.slider.html#enable.slider.Slider.map_data">[docs]</a>    <span class="k">def</span> <span class="nf">map_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a value between min and max that corresponds to the given</span>
+<span class="sd">        x and y values.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ==========</span>
+<span class="sd">        x, y : Float</span>
+<span class="sd">            The screen coordinates to map</span>
+<span class="sd">        clip : Bool (default=True)</span>
+<span class="sd">            Whether points outside the range should be clipped to the max</span>
+<span class="sd">            or min value of the slider (depending on which it&#39;s closer to)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        =======</span>
+<span class="sd">        value : Float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Some local variables to handle orientation dependence</span>
+        <span class="n">axis_ndx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_ndx</span>
+        <span class="n">screen_low</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="n">axis_ndx</span><span class="p">]</span>
+        <span class="n">screen_high</span> <span class="o">=</span> <span class="n">screen_low</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="n">axis_ndx</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="s2">&quot;h&quot;</span><span class="p">:</span>
+            <span class="n">coord</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">coord</span> <span class="o">=</span> <span class="n">y</span>
+
+        <span class="c1"># Handle exceptional/boundary cases</span>
+        <span class="k">if</span> <span class="n">coord</span> <span class="o">&gt;=</span> <span class="n">screen_high</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span>
+        <span class="k">elif</span> <span class="n">coord</span> <span class="o">&lt;=</span> <span class="n">screen_low</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span>
+        <span class="k">elif</span> <span class="n">screen_high</span> <span class="o">==</span> <span class="n">screen_low</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="c1"># Handle normal cases</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">coord</span> <span class="o">-</span> <span class="n">screen_low</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="n">axis_ndx</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span>
+        <span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span></div>
+
+<div class="viewcode-block" id="Slider.set_slider_pixels"><a class="viewcode-back" href="../../api/enable.slider.html#enable.slider.Slider.set_slider_pixels">[docs]</a>    <span class="k">def</span> <span class="nf">set_slider_pixels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pixels</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets the width of the slider to be a fixed number of pixels</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ==========</span>
+<span class="sd">        pixels : int</span>
+<span class="sd">            The number of pixels wide that the slider should be</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_slider_size_mode</span> <span class="o">=</span> <span class="s2">&quot;fixed&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cached_slider_size</span> <span class="o">=</span> <span class="n">pixels</span></div>
+
+<div class="viewcode-block" id="Slider.set_slider_percent"><a class="viewcode-back" href="../../api/enable.slider.html#enable.slider.Slider.set_slider_percent">[docs]</a>    <span class="k">def</span> <span class="nf">set_slider_percent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">percent</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets the width of the slider to be a percentage of the width</span>
+<span class="sd">        of the slider widget.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ==========</span>
+<span class="sd">        percent : float</span>
+<span class="sd">            The percentage, between 0.0 and 1.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_slider_size_mode</span> <span class="o">=</span> <span class="s2">&quot;percent&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_slider_percent</span> <span class="o">=</span> <span class="n">percent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_sizes</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Slider.set_endcap_pixels"><a class="viewcode-back" href="../../api/enable.slider.html#enable.slider.Slider.set_endcap_pixels">[docs]</a>    <span class="k">def</span> <span class="nf">set_endcap_pixels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pixels</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets the width of the endcap to be a fixed number of pixels</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ==========</span>
+<span class="sd">        pixels : int</span>
+<span class="sd">            The number of pixels wide that the endcap should be</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_endcap_size_mode</span> <span class="o">=</span> <span class="s2">&quot;fixed&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cached_endcap_size</span> <span class="o">=</span> <span class="n">pixels</span></div>
+
+<div class="viewcode-block" id="Slider.set_endcap_percent"><a class="viewcode-back" href="../../api/enable.slider.html#enable.slider.Slider.set_endcap_percent">[docs]</a>    <span class="k">def</span> <span class="nf">set_endcap_percent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">percent</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets the width of the endcap to be a percentage of the width</span>
+<span class="sd">        of the endcap widget.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ==========</span>
+<span class="sd">        percent : float</span>
+<span class="sd">            The percentage, between 0.0 and 1.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_endcap_size_mode</span> <span class="o">=</span> <span class="s2">&quot;percent&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_endcap_percent</span> <span class="o">=</span> <span class="n">percent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_sizes</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Slider.set_tick_pixels"><a class="viewcode-back" href="../../api/enable.slider.html#enable.slider.Slider.set_tick_pixels">[docs]</a>    <span class="k">def</span> <span class="nf">set_tick_pixels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pixels</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets the width of the tick marks to be a fixed number of pixels</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ==========</span>
+<span class="sd">        pixels : int</span>
+<span class="sd">            The number of pixels wide that the endcap should be</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tick_size_mode</span> <span class="o">=</span> <span class="s2">&quot;fixed&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cached_tick_size</span> <span class="o">=</span> <span class="n">pixels</span></div>
+
+<div class="viewcode-block" id="Slider.set_tick_percent"><a class="viewcode-back" href="../../api/enable.slider.html#enable.slider.Slider.set_tick_percent">[docs]</a>    <span class="k">def</span> <span class="nf">set_tick_percent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">percent</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets the width of the tick marks to be a percentage of the width</span>
+<span class="sd">        of the endcap widget.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ==========</span>
+<span class="sd">        percent : float</span>
+<span class="sd">            The percentage, between 0.0 and 1.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tick_size_mode</span> <span class="o">=</span> <span class="s2">&quot;percent&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tick_percent</span> <span class="o">=</span> <span class="n">percent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_sizes</span><span class="p">()</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Rendering methods</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_draw_mainlayer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">):</span>
+        <span class="n">bar_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">bar_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="c1"># Draw the bar and endcaps</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bar_color_</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bar_width</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="s2">&quot;h&quot;</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">bar_y</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x2</span><span class="p">,</span> <span class="n">bar_y</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">endcaps</span><span class="p">:</span>
+                <span class="n">start_y</span> <span class="o">=</span> <span class="n">bar_y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_endcap_size</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">end_y</span> <span class="o">=</span> <span class="n">bar_y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_endcap_size</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">start_y</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">end_y</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x2</span><span class="p">,</span> <span class="n">start_y</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x2</span><span class="p">,</span> <span class="n">end_y</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_ticks</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">x_pts</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_ticks</span> <span class="o">+</span> <span class="mi">2</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+                <span class="n">starts</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">x_pts</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+                <span class="n">starts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_pts</span>
+                <span class="n">starts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">bar_y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_tick_size</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">ends</span> <span class="o">=</span> <span class="n">starts</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">ends</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">bar_y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_tick_size</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">line_set</span><span class="p">(</span><span class="n">starts</span><span class="p">,</span> <span class="n">ends</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">bar_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">bar_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">endcaps</span><span class="p">:</span>
+                <span class="n">start_x</span> <span class="o">=</span> <span class="n">bar_x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_endcap_size</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">end_x</span> <span class="o">=</span> <span class="n">bar_x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_endcap_size</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">start_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">end_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">start_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y2</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">end_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_ticks</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">y_pts</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_ticks</span> <span class="o">+</span> <span class="mi">2</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+                <span class="n">starts</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">y_pts</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+                <span class="n">starts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_pts</span>
+                <span class="n">starts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">bar_x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_tick_size</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">ends</span> <span class="o">=</span> <span class="n">starts</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">ends</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">bar_x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_tick_size</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">line_set</span><span class="p">(</span><span class="n">starts</span><span class="p">,</span> <span class="n">ends</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+        <span class="c1"># Draw the slider</span>
+        <span class="n">pt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_screen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">slider</span> <span class="o">==</span> <span class="s2">&quot;rect&quot;</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slider_color_</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slider_border_</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slider_outline_width</span><span class="p">)</span>
+            <span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_rect_slider_bounds</span><span class="p">()</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="o">*</span><span class="n">rect</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">draw_path</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_marker</span><span class="p">(</span>
+                <span class="n">gc</span><span class="p">,</span>
+                <span class="n">pt</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cached_slider_size</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">slider_</span><span class="p">(),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">custom_slider</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_rect_slider_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the (x, y, w, h) bounds of the rectangle representing the</span>
+<span class="sd">        slider.</span>
+
+<span class="sd">        Used for rendering and hit detection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bar_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">bar_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">pt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_screen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="s2">&quot;h&quot;</span><span class="p">:</span>
+            <span class="n">slider_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_slider_size</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">pt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">slider_thickness</span><span class="p">,</span>
+                <span class="n">bar_y</span> <span class="o">-</span> <span class="n">slider_height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">slider_thickness</span><span class="p">,</span>
+                <span class="n">slider_height</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">slider_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_slider_size</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">bar_x</span> <span class="o">-</span> <span class="n">slider_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="n">pt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">slider_thickness</span><span class="p">,</span>
+                <span class="n">slider_width</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">slider_thickness</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_render_marker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">marker</span><span class="p">,</span> <span class="n">custom_path</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">begin_path</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">marker</span><span class="o">.</span><span class="n">draw_mode</span> <span class="o">==</span> <span class="n">STROKE</span><span class="p">:</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slider_color_</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slider_thickness</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slider_color_</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slider_border_</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slider_outline_width</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="s2">&quot;draw_marker_at_points&quot;</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="p">(</span><span class="n">marker</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">!=</span> <span class="n">CustomMarker</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="n">gc</span><span class="o">.</span><span class="n">draw_marker_at_points</span><span class="p">(</span>
+                        <span class="p">[</span><span class="n">point</span><span class="p">],</span> <span class="n">size</span><span class="p">,</span> <span class="n">marker</span><span class="o">.</span><span class="n">kiva_marker</span>
+                    <span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="s2">&quot;draw_path_at_points&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">marker</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">!=</span> <span class="n">CustomMarker</span><span class="p">:</span>
+                    <span class="n">path</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_empty_path</span><span class="p">()</span>
+                    <span class="n">marker</span><span class="o">.</span><span class="n">add_to_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+                    <span class="n">mode</span> <span class="o">=</span> <span class="n">marker</span><span class="o">.</span><span class="n">draw_mode</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">path</span> <span class="o">=</span> <span class="n">custom_path</span>
+                    <span class="n">mode</span> <span class="o">=</span> <span class="n">STROKE</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">marker</span><span class="o">.</span><span class="n">antialias</span><span class="p">:</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">set_antialias</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">draw_path_at_points</span><span class="p">([</span><span class="n">point</span><span class="p">],</span> <span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">marker</span><span class="o">.</span><span class="n">antialias</span><span class="p">:</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">set_antialias</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">marker</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">!=</span> <span class="n">CustomMarker</span><span class="p">:</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="o">*</span><span class="n">point</span><span class="p">)</span>
+                    <span class="c1"># Kiva GCs have a path-drawing interface</span>
+                    <span class="n">marker</span><span class="o">.</span><span class="n">add_to_path</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">draw_path</span><span class="p">(</span><span class="n">marker</span><span class="o">.</span><span class="n">draw_mode</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">path</span> <span class="o">=</span> <span class="n">custom_path</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="o">*</span><span class="n">point</span><span class="p">)</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">add_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">draw_path</span><span class="p">(</span><span class="n">STROKE</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Interaction event handlers</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Slider.normal_left_down"><a class="viewcode-back" href="../../api/enable.slider.html#enable.slider.Slider.normal_left_down">[docs]</a>    <span class="k">def</span> <span class="nf">normal_left_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse_button</span> <span class="o">==</span> <span class="s2">&quot;left&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mouse_pressed</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Slider.dragging_left_up"><a class="viewcode-back" href="../../api/enable.slider.html#enable.slider.Slider.dragging_left_up">[docs]</a>    <span class="k">def</span> <span class="nf">dragging_left_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse_button</span> <span class="o">==</span> <span class="s2">&quot;left&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mouse_released</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Slider.normal_right_down"><a class="viewcode-back" href="../../api/enable.slider.html#enable.slider.Slider.normal_right_down">[docs]</a>    <span class="k">def</span> <span class="nf">normal_right_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse_button</span> <span class="o">==</span> <span class="s2">&quot;right&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mouse_pressed</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Slider.dragging_right_up"><a class="viewcode-back" href="../../api/enable.slider.html#enable.slider.Slider.dragging_right_up">[docs]</a>    <span class="k">def</span> <span class="nf">dragging_right_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse_button</span> <span class="o">==</span> <span class="s2">&quot;right&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mouse_released</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Slider.dragging_mouse_move"><a class="viewcode-back" href="../../api/enable.slider.html#enable.slider.Slider.dragging_mouse_move">[docs]</a>    <span class="k">def</span> <span class="nf">dragging_mouse_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_data</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">dx</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">dy</span><span class="p">)</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Slider.dragging_mouse_leave"><a class="viewcode-back" href="../../api/enable.slider.html#enable.slider.Slider.dragging_mouse_leave">[docs]</a>    <span class="k">def</span> <span class="nf">dragging_mouse_leave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_state</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span></div>
+
+    <span class="k">def</span> <span class="nf">_mouse_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="c1"># Determine the slider bounds so we can hit test it</span>
+        <span class="n">pt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_screen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">slider</span> <span class="o">==</span> <span class="s2">&quot;rect&quot;</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_rect_slider_bounds</span><span class="p">()</span>
+            <span class="n">x2</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">w</span>
+            <span class="n">y2</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">pt</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_slider_size</span>
+            <span class="n">x</span> <span class="o">-=</span> <span class="n">size</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">y</span> <span class="o">-=</span> <span class="n">size</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">x2</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">size</span>
+            <span class="n">y2</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">size</span>
+
+        <span class="c1"># Hit test both the slider and against the bar.  If the user has</span>
+        <span class="c1"># clicked on the bar but outside of the slider, we set the _offset</span>
+        <span class="c1"># and call dragging_mouse_move() to teleport the slider to the</span>
+        <span class="c1"># mouse click position.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="s2">&quot;v&quot;</span> <span class="ow">and</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">event</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">x2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;=</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;=</span> <span class="n">y2</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span> <span class="o">=</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">pt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dragging_mouse_move</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span> <span class="o">=</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">pt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">pt</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="s2">&quot;h&quot;</span> <span class="ow">and</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;=</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;=</span> <span class="n">y2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">event</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">x2</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">pt</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dragging_mouse_move</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span> <span class="o">=</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">pt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">pt</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># The mouse click missed the bar and the slider.</span>
+            <span class="k">return</span>
+
+        <span class="n">event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_state</span> <span class="o">=</span> <span class="s2">&quot;dragging&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_mouse_released</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_state</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Private trait event handlers and property getters/setters</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_get_axis_ndx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="s2">&quot;h&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_get_slider_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_slider_size</span>
+
+    <span class="k">def</span> <span class="nf">_get_endcap_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_endcap_size</span>
+
+    <span class="k">def</span> <span class="nf">_get_tick_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_tick_size</span>
+
+    <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s2">&quot;bounds,bounds_items&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_update_sizes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slider_size_mode</span> <span class="o">==</span> <span class="s2">&quot;percent&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="s2">&quot;h&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cached_slider_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slider_percent</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cached_slider_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slider_percent</span>
+                <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_endcap_size_mode</span> <span class="o">==</span> <span class="s2">&quot;percent&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="s2">&quot;h&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cached_endcap_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_endcap_percent</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cached_endcap_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_endcap_percent</span>
+                <span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

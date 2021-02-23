@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.testing module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable package" href="enable.html" >
+    <link rel="next" title="enable.text_field module" href="enable.text_field.html" >
+    <link rel="prev" title="enable.stacked_layout module" href="enable.stacked_layout.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" accesskey="U">enable package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.text_field.html" title="enable.text_field module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.stacked_layout.html" title="enable.stacked_layout module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.testing">
+<span id="enable-testing-module"></span><h1>enable.testing module<a class="headerlink" href="#module-enable.testing" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="enable.testing.EnableTestAssistant">
+<em class="property">class </em><code class="sig-prename descclassname">enable.testing.</code><code class="sig-name descname">EnableTestAssistant</code><a class="reference internal" href="../_modules/enable/testing.html#EnableTestAssistant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.testing.EnableTestAssistant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="kiva.testing.html#kiva.testing.KivaTestAssistant" title="kiva.testing.KivaTestAssistant"><code class="xref py py-class docutils literal notranslate"><span class="pre">kiva.testing.KivaTestAssistant</span></code></a></p>
+<p>Mixin helper for enable/chaco components.</p>
+<dl class="method">
+<dt id="enable.testing.EnableTestAssistant.create_drag_event">
+<code class="sig-name descname">create_drag_event</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/testing.html#EnableTestAssistant.create_drag_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.testing.EnableTestAssistant.create_drag_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a DragEvent() with the specified attributes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.testing.EnableTestAssistant.create_key_press">
+<code class="sig-name descname">create_key_press</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">window=None</em>, <em class="sig-param">alt_down=False</em>, <em class="sig-param">control_down=False</em>, <em class="sig-param">shift_down=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/testing.html#EnableTestAssistant.create_key_press"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.testing.EnableTestAssistant.create_key_press" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a KeyEvent for the given Key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>string</em>) – The key of the event</p></li>
+<li><p><strong>window</strong> (<a class="reference internal" href="enable.abstract_window.html#enable.abstract_window.AbstractWindow" title="enable.abstract_window.AbstractWindow"><em>AbstractWindow</em></a><em>, </em><em>optional</em>) – The enable AbstractWindow to associate with the event. Default
+is to create a mock class instance.</p></li>
+<li><p><strong>alt_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The key is pressed while <cite>alt</cite> is down. Default value is False.</p></li>
+<li><p><strong>control_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The key is pressed while <cite>control</cite> is down. Default value is
+False.</p></li>
+<li><p><strong>shift_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The key is pressed while <cite>shift</cite> is down. Default value is
+False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>key_event</strong> – The enable KEyEvent instance of the desired event ready to be
+passed to an enable Interactor.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="enable.events.html#enable.events.KeyEvent" title="enable.events.KeyEvent">KeyEvent</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.testing.EnableTestAssistant.create_mock_window">
+<code class="sig-name descname">create_mock_window</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/testing.html#EnableTestAssistant.create_mock_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.testing.EnableTestAssistant.create_mock_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a Mock class that behaves as an enable Abstract Window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>window</strong> – A mock class instance of an abstract window.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Mock</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.testing.EnableTestAssistant.create_mouse_event">
+<code class="sig-name descname">create_mouse_event</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/testing.html#EnableTestAssistant.create_mouse_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.testing.EnableTestAssistant.create_mouse_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a MouseEvent() with the specified attributes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.testing.EnableTestAssistant.mouse_dclick">
+<code class="sig-name descname">mouse_dclick</code><span class="sig-paren">(</span><em class="sig-param">interactor</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">button='left'</em>, <em class="sig-param">window=None</em>, <em class="sig-param">alt_down=False</em>, <em class="sig-param">control_down=False</em>, <em class="sig-param">shift_down=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/testing.html#EnableTestAssistant.mouse_dclick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.testing.EnableTestAssistant.mouse_dclick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse double-click event to the interactor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interactor</strong> (<a class="reference internal" href="enable.interactor.html#enable.interactor.Interactor" title="enable.interactor.Interactor"><em>Interactor</em></a>) – The interactor (or subclass) where to dispatch the event.</p></li>
+<li><p><strong>x</strong> (<em>float</em>) – The x coordinates of the mouse position</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – The y coordinates of the mouse position</p></li>
+<li><p><strong>button</strong> (<em>{'left'</em><em>, </em><em>'right'}</em><em>, </em><em>optional</em>) – The mouse button for which to simulate a press (down) action.</p></li>
+<li><p><strong>window</strong> (<a class="reference internal" href="enable.abstract_window.html#enable.abstract_window.AbstractWindow" title="enable.abstract_window.AbstractWindow"><em>AbstractWindow</em></a><em>, </em><em>optional</em>) – The enable AbstractWindow to associate with the event. Default
+is to create a mock class instance. If the window has a mouse
+owner then that interactor is used.</p></li>
+<li><p><strong>alt_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>alt</cite> is down. Default value is False.</p></li>
+<li><p><strong>control_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>control</cite> is down. Default value is
+False.</p></li>
+<li><p><strong>shift_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>shift</cite> is down. Default value is
+False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>event</strong> – The event instance after it has be processed by the <cite>interactor</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="enable.events.html#enable.events.MouseEvent" title="enable.events.MouseEvent">MouseEvent</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.testing.EnableTestAssistant.mouse_down">
+<code class="sig-name descname">mouse_down</code><span class="sig-paren">(</span><em class="sig-param">interactor</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">button='left'</em>, <em class="sig-param">window=None</em>, <em class="sig-param">alt_down=False</em>, <em class="sig-param">control_down=False</em>, <em class="sig-param">shift_down=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/testing.html#EnableTestAssistant.mouse_down"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.testing.EnableTestAssistant.mouse_down" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse button down event to the interactor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interactor</strong> (<a class="reference internal" href="enable.interactor.html#enable.interactor.Interactor" title="enable.interactor.Interactor"><em>Interactor</em></a>) – The interactor (or subclass) where to dispatch the event.</p></li>
+<li><p><strong>x</strong> (<em>float</em>) – The x coordinates of the mouse position</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – The y coordinates of the mouse position</p></li>
+<li><p><strong>button</strong> (<em>{'left'</em><em>, </em><em>'right'}</em><em>, </em><em>optional</em>) – The mouse button for which to simulate a press (down) action.</p></li>
+<li><p><strong>window</strong> (<a class="reference internal" href="enable.abstract_window.html#enable.abstract_window.AbstractWindow" title="enable.abstract_window.AbstractWindow"><em>AbstractWindow</em></a><em>, </em><em>optional</em>) – The enable AbstractWindow to associate with the event. Default
+is to create a mock class instance. If the window has a mouse
+owner then that interactor is used.</p></li>
+<li><p><strong>alt_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>alt</cite> is down. Default value is False.</p></li>
+<li><p><strong>control_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>control</cite> is down. Default value is
+False.</p></li>
+<li><p><strong>shift_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>shift</cite> is down. Default value is
+False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>event</strong> – The event instance after it has be processed by the <cite>interactor</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="enable.events.html#enable.events.MouseEvent" title="enable.events.MouseEvent">MouseEvent</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.testing.EnableTestAssistant.mouse_enter">
+<code class="sig-name descname">mouse_enter</code><span class="sig-paren">(</span><em class="sig-param">interactor</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">window=None</em>, <em class="sig-param">alt_down=False</em>, <em class="sig-param">control_down=False</em>, <em class="sig-param">shift_down=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/testing.html#EnableTestAssistant.mouse_enter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.testing.EnableTestAssistant.mouse_enter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse enter event to the interactor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interactor</strong> (<a class="reference internal" href="enable.interactor.html#enable.interactor.Interactor" title="enable.interactor.Interactor"><em>Interactor</em></a>) – The interactor (or subclass) where to dispatch the event.</p></li>
+<li><p><strong>x</strong> (<em>float</em>) – The x coordinates of the mouse position</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – The y coordinates of the mouse position</p></li>
+<li><p><strong>window</strong> (<a class="reference internal" href="enable.abstract_window.html#enable.abstract_window.AbstractWindow" title="enable.abstract_window.AbstractWindow"><em>AbstractWindow</em></a><em>, </em><em>optional</em>) – The enable AbstractWindow to associate with the event. Default
+is to create a mock class instance. If the window has a mouse
+owner then that interactor is used.</p></li>
+<li><p><strong>alt_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>alt</cite> is down. Default value is False.</p></li>
+<li><p><strong>control_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>control</cite> is down. Default value is
+False.</p></li>
+<li><p><strong>shift_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>shift</cite> is down. Default value is
+False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>event</strong> – The event instance after it has be processed by the <cite>interactor</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="enable.events.html#enable.events.MouseEvent" title="enable.events.MouseEvent">MouseEvent</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.testing.EnableTestAssistant.mouse_leave">
+<code class="sig-name descname">mouse_leave</code><span class="sig-paren">(</span><em class="sig-param">interactor</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">window=None</em>, <em class="sig-param">alt_down=False</em>, <em class="sig-param">control_down=False</em>, <em class="sig-param">shift_down=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/testing.html#EnableTestAssistant.mouse_leave"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.testing.EnableTestAssistant.mouse_leave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse leave event to the interactor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interactor</strong> (<a class="reference internal" href="enable.interactor.html#enable.interactor.Interactor" title="enable.interactor.Interactor"><em>Interactor</em></a>) – The interactor (or subclass) where to dispatch the event.</p></li>
+<li><p><strong>x</strong> (<em>float</em>) – The x coordinates of the mouse position</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – The y coordinates of the mouse position</p></li>
+<li><p><strong>window</strong> (<a class="reference internal" href="enable.abstract_window.html#enable.abstract_window.AbstractWindow" title="enable.abstract_window.AbstractWindow"><em>AbstractWindow</em></a><em>, </em><em>optional</em>) – The enable AbstractWindow to associate with the event. Default
+is to create a mock class instance. If the window has a mouse
+owner then that interactor is used.</p></li>
+<li><p><strong>alt_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>alt</cite> is down. Default value is False.</p></li>
+<li><p><strong>control_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>control</cite> is down. Default value is
+False.</p></li>
+<li><p><strong>shift_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>shift</cite> is down. Default value is
+False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>event</strong> – The event instance after it has be processed by the <cite>interactor</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="enable.events.html#enable.events.MouseEvent" title="enable.events.MouseEvent">MouseEvent</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.testing.EnableTestAssistant.mouse_move">
+<code class="sig-name descname">mouse_move</code><span class="sig-paren">(</span><em class="sig-param">interactor</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">window=None</em>, <em class="sig-param">alt_down=False</em>, <em class="sig-param">control_down=False</em>, <em class="sig-param">shift_down=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/testing.html#EnableTestAssistant.mouse_move"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.testing.EnableTestAssistant.mouse_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse move event to the interactor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interactor</strong> (<a class="reference internal" href="enable.interactor.html#enable.interactor.Interactor" title="enable.interactor.Interactor"><em>Interactor</em></a>) – The interactor (or subclass) where to dispatch the event.</p></li>
+<li><p><strong>x</strong> (<em>float</em>) – The x coordinates of the mouse position</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – The y coordinates of the mouse position</p></li>
+<li><p><strong>window</strong> (<a class="reference internal" href="enable.abstract_window.html#enable.abstract_window.AbstractWindow" title="enable.abstract_window.AbstractWindow"><em>AbstractWindow</em></a><em>, </em><em>optional</em>) – The enable AbstractWindow to associate with the event. Default
+is to create a mock class instance. If the window has a mouse
+owner then that interactor is used.  If a non-Mocked window is
+used, then either the test should not require the use of
+get_pointer_position() or should use a mock for the method.</p></li>
+<li><p><strong>alt_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>alt</cite> is down. Default value is False.</p></li>
+<li><p><strong>control_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>control</cite> is down. Default value is
+False.</p></li>
+<li><p><strong>shift_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>shift</cite> is down. Default value is
+False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>event</strong> – The event instance after it has be processed by the <cite>interactor</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="enable.events.html#enable.events.MouseEvent" title="enable.events.MouseEvent">MouseEvent</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.testing.EnableTestAssistant.mouse_up">
+<code class="sig-name descname">mouse_up</code><span class="sig-paren">(</span><em class="sig-param">interactor</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">button='left'</em>, <em class="sig-param">window=None</em>, <em class="sig-param">alt_down=False</em>, <em class="sig-param">control_down=False</em>, <em class="sig-param">shift_down=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/testing.html#EnableTestAssistant.mouse_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.testing.EnableTestAssistant.mouse_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse button up event to the interactor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interactor</strong> (<a class="reference internal" href="enable.interactor.html#enable.interactor.Interactor" title="enable.interactor.Interactor"><em>Interactor</em></a>) – The interactor (or subclass) where to dispatch the event.</p></li>
+<li><p><strong>x</strong> (<em>float</em>) – The x coordinates of the mouse position</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – The y coordinates of the mouse position</p></li>
+<li><p><strong>button</strong> (<em>{'left'</em><em>, </em><em>'right'}</em><em>, </em><em>optional</em>) – The mouse button for which to simulate a release (up) action.</p></li>
+<li><p><strong>window</strong> (<a class="reference internal" href="enable.abstract_window.html#enable.abstract_window.AbstractWindow" title="enable.abstract_window.AbstractWindow"><em>AbstractWindow</em></a><em>, </em><em>optional</em>) – The enable AbstractWindow to associate with the event. Default
+is to create a mock class instance. If the window has a mouse
+owner then that interactor is used.</p></li>
+<li><p><strong>alt_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>alt</cite> is down. Default value is False.</p></li>
+<li><p><strong>control_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>control</cite> is down. Default value is
+False.</p></li>
+<li><p><strong>shift_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>shift</cite> is down. Default value is
+False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>event</strong> – The event instance after it has be processed by the <cite>interactor</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="enable.events.html#enable.events.MouseEvent" title="enable.events.MouseEvent">MouseEvent</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.testing.EnableTestAssistant.press_move_release">
+<code class="sig-name descname">press_move_release</code><span class="sig-paren">(</span><em class="sig-param">interactor</em>, <em class="sig-param">points</em>, <em class="sig-param">window=None</em>, <em class="sig-param">alt_down=False</em>, <em class="sig-param">control_down=False</em>, <em class="sig-param">shift_down=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/testing.html#EnableTestAssistant.press_move_release"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.testing.EnableTestAssistant.press_move_release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulate the action of left click pressing, dragging and releasing
+the mouse.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interactor</strong> (<em>enable interactor object</em>) – This is object where the mouse events will be dispatched to.</p></li>
+<li><p><strong>points</strong> (<em>A list of x</em><em>,</em><em>y tuple</em>) – The x,y positions of the three event sections. The first tuple
+will be sent with a left-down event and the last will be sent
+with a left-up. All the other events in the list will be sent
+using a mouse-move event.</p></li>
+<li><p><strong>window</strong> (<a class="reference internal" href="enable.abstract_window.html#enable.abstract_window.AbstractWindow" title="enable.abstract_window.AbstractWindow"><em>AbstractWindow</em></a><em>, </em><em>optional</em>) – The enable AbstractWindow to associate with the event. Default
+is to create a mock class instance. If the window has a mouse
+owner then that interactor is used.  If a non-Mocked window is
+used, then either the test should not require the use of
+get_pointer_position() or should use a mock for the method.</p></li>
+<li><p><strong>alt_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>alt</cite> is down. Default value is False.</p></li>
+<li><p><strong>control_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>control</cite> is down. Default value is
+False.</p></li>
+<li><p><strong>shift_down</strong> (<em>boolean</em><em>, </em><em>optional</em>) – The button is pressed while <cite>shift</cite> is down. Default value is
+False.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.testing.EnableTestAssistant.send_drag_leave">
+<code class="sig-name descname">send_drag_leave</code><span class="sig-paren">(</span><em class="sig-param">interactor</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">window=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/testing.html#EnableTestAssistant.send_drag_leave"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.testing.EnableTestAssistant.send_drag_leave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sent a drag_leave event to the interactor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interactor</strong> (<a class="reference internal" href="enable.interactor.html#enable.interactor.Interactor" title="enable.interactor.Interactor"><em>Interactor</em></a>) – The interactor (or subclass) where to dispatch the event.</p></li>
+<li><p><strong>x</strong> (<em>float</em>) – The x coordinates of the mouse position</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – The y coordinates of the mouse position</p></li>
+<li><p><strong>window</strong> (<a class="reference internal" href="enable.abstract_window.html#enable.abstract_window.AbstractWindow" title="enable.abstract_window.AbstractWindow"><em>AbstractWindow</em></a><em>, </em><em>optional</em>) – The enable AbstractWindow to associate with the event. Default
+is to create a mock class instance. If the window has a mouse
+owner then that interactor is used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>event</strong> – The event instance after it has be processed by the <cite>interactor</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="enable.events.html#enable.events.KeyEvent" title="enable.events.KeyEvent">KeyEvent</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.testing.EnableTestAssistant.send_drag_over">
+<code class="sig-name descname">send_drag_over</code><span class="sig-paren">(</span><em class="sig-param">interactor</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">obj</em>, <em class="sig-param">window=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/testing.html#EnableTestAssistant.send_drag_over"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.testing.EnableTestAssistant.send_drag_over" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sent a drag_over event to the interactor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interactor</strong> (<a class="reference internal" href="enable.interactor.html#enable.interactor.Interactor" title="enable.interactor.Interactor"><em>Interactor</em></a>) – The interactor (or subclass) where to dispatch the event.</p></li>
+<li><p><strong>x</strong> (<em>float</em>) – The x coordinates of the mouse position</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – The y coordinates of the mouse position</p></li>
+<li><p><strong>obj</strong> (<em>object</em>) – The object(s) being dragged or dropped</p></li>
+<li><p><strong>window</strong> (<a class="reference internal" href="enable.abstract_window.html#enable.abstract_window.AbstractWindow" title="enable.abstract_window.AbstractWindow"><em>AbstractWindow</em></a><em>, </em><em>optional</em>) – The enable AbstractWindow to associate with the event. Default
+is to create a mock class instance. If the window has a mouse
+owner then that interactor is used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>event</strong> – The event instance after it has be processed by the <cite>interactor</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="enable.events.html#enable.events.KeyEvent" title="enable.events.KeyEvent">KeyEvent</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.testing.EnableTestAssistant.send_dropped_on">
+<code class="sig-name descname">send_dropped_on</code><span class="sig-paren">(</span><em class="sig-param">interactor</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">obj</em>, <em class="sig-param">window=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/testing.html#EnableTestAssistant.send_dropped_on"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.testing.EnableTestAssistant.send_dropped_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sent a dropped_on event to the interactor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interactor</strong> (<a class="reference internal" href="enable.interactor.html#enable.interactor.Interactor" title="enable.interactor.Interactor"><em>Interactor</em></a>) – The interactor (or subclass) where to dispatch the event.</p></li>
+<li><p><strong>x</strong> (<em>float</em>) – The x coordinates of the mouse position</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – The y coordinates of the mouse position</p></li>
+<li><p><strong>obj</strong> (<em>object</em>) – The object(s) being dragged or dropped</p></li>
+<li><p><strong>window</strong> (<a class="reference internal" href="enable.abstract_window.html#enable.abstract_window.AbstractWindow" title="enable.abstract_window.AbstractWindow"><em>AbstractWindow</em></a><em>, </em><em>optional</em>) – The enable AbstractWindow to associate with the event. Default
+is to create a mock class instance. If the window has a mouse
+owner then that interactor is used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>event</strong> – The event instance after it has be processed by the <cite>interactor</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="enable.events.html#enable.events.KeyEvent" title="enable.events.KeyEvent">KeyEvent</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.testing.EnableTestAssistant.send_key">
+<code class="sig-name descname">send_key</code><span class="sig-paren">(</span><em class="sig-param">interactor</em>, <em class="sig-param">key</em>, <em class="sig-param">window=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/testing.html#EnableTestAssistant.send_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.testing.EnableTestAssistant.send_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sent a key press event to the interactor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interactor</strong> (<a class="reference internal" href="enable.interactor.html#enable.interactor.Interactor" title="enable.interactor.Interactor"><em>Interactor</em></a>) – The interactor (or subclass) where to dispatch the event.</p></li>
+<li><p><strong>key</strong> (<em>string</em>) – The key press to simulate.</p></li>
+<li><p><strong>window</strong> (<a class="reference internal" href="enable.abstract_window.html#enable.abstract_window.AbstractWindow" title="enable.abstract_window.AbstractWindow"><em>AbstractWindow</em></a><em>, </em><em>optional</em>) – The enable AbstractWindow to associate with the event. Default
+is to create a mock class instance. If the window has a focus
+owner then that interactor is used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>event</strong> – The event instance after it has be processed by the <cite>interactor</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="enable.events.html#enable.events.KeyEvent" title="enable.events.KeyEvent">KeyEvent</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.stacked_layout.html"
+                        title="previous chapter">enable.stacked_layout module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.text_field.html"
+                        title="next chapter">enable.text_field module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.testing.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

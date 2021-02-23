@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.savage.svg.svg_regex module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable.savage.svg package" href="enable.savage.svg.html" >
+    <link rel="next" title="enable.savage.svg.backends package" href="enable.savage.svg.backends.html" >
+    <link rel="prev" title="enable.savage.svg.svg_extras module" href="enable.savage.svg.svg_extras.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" >enable package</a></li>
+          <li class="active"><a href="enable.savage.html" >enable.savage package</a></li>
+          <li class="active"><a href="enable.savage.svg.html" accesskey="U">enable.savage.svg package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.savage.svg.backends.html" title="enable.savage.svg.backends package"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.savage.svg.svg_extras.html" title="enable.savage.svg.svg_extras module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.savage.svg.svg_regex">
+<span id="enable-savage-svg-svg-regex-module"></span><h1>enable.savage.svg.svg_regex module<a class="headerlink" href="#module-enable.savage.svg.svg_regex" title="Permalink to this headline">¶</a></h1>
+<p>Small hand-written recursive descent parser for SVG &lt;path&gt; data.</p>
+<p>In [1]: from svg_regex import svg_parser</p>
+<p>In [3]: svg_parser.parse(‘M 10,20 30,40V50 60 70’)
+Out[3]: [(‘M’, [(10.0, 20.0), (30.0, 40.0)]), (‘V’, [50.0, 60.0, 70.0])]</p>
+<p>In [4]: svg_parser.parse(‘M 0.6051.5’)  # An edge case
+Out[4]: [(‘M’, [(0.60509999999999997, 0.5)])]</p>
+<p>In [5]: svg_parser.parse(‘M 100-200’)  # Another edge case
+Out[5]: [(‘M’, [(100.0, -200.0)])]</p>
+<dl class="class">
+<dt id="enable.savage.svg.svg_regex.Lexer">
+<em class="property">class </em><code class="sig-prename descclassname">enable.savage.svg.svg_regex.</code><code class="sig-name descname">Lexer</code><span class="sig-paren">(</span><em class="sig-param">lexicon</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/svg_regex.html#Lexer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.svg_regex.Lexer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Break SVG path data into tokens.</p>
+<p>The SVG spec requires that tokens are greedy. This lexer relies on Python’s
+regexes defaulting to greediness.</p>
+<p>This style of implementation was inspired by this article:</p>
+<blockquote>
+<div><p><a class="reference external" href="http://www.gooli.org/blog/a-simple-lexer-in-python/">http://www.gooli.org/blog/a-simple-lexer-in-python/</a></p>
+</div></blockquote>
+<dl class="method">
+<dt id="enable.savage.svg.svg_regex.Lexer.lex">
+<code class="sig-name descname">lex</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/svg_regex.html#Lexer.lex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.svg_regex.Lexer.lex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yield (token_type, str_data) tokens.</p>
+<p>The last token will be (EOF, None) where EOF is the singleton object
+defined in this module.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.savage.svg.svg_regex.SVGPathParser">
+<em class="property">class </em><code class="sig-prename descclassname">enable.savage.svg.svg_regex.</code><code class="sig-name descname">SVGPathParser</code><span class="sig-paren">(</span><em class="sig-param">lexer=&lt;enable.savage.svg.svg_regex.Lexer object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/svg_regex.html#SVGPathParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.svg_regex.SVGPathParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Parse SVG &lt;path&gt; data into a list of commands.</p>
+<p>Each distinct command will take the form of a tuple (command, data). The
+<cite>command</cite> is just the character string that starts the command group in the
+&lt;path&gt; data, so ‘M’ for absolute moveto, ‘m’ for relative moveto, ‘Z’ for
+closepath, etc. The kind of data it carries with it depends on the command.
+For ‘Z’ (closepath), it’s just None. The others are lists of individual
+argument groups. Multiple elements in these lists usually mean to repeat
+the command. The notable exception is ‘M’ (moveto) where only the first
+element is truly a moveto. The remainder are implicit linetos.</p>
+<p>See the SVG documentation for the interpretation of the individual elements
+for each command.</p>
+<p>The main method is <cite>parse(text)</cite>. It can only consume actual strings, not
+filelike objects or iterators.</p>
+<dl class="method">
+<dt id="enable.savage.svg.svg_regex.SVGPathParser.parse">
+<code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/svg_regex.html#SVGPathParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.svg_regex.SVGPathParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a string of SVG &lt;path&gt; data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.svg_regex.SVGPathParser.rule_closepath">
+<code class="sig-name descname">rule_closepath</code><span class="sig-paren">(</span><em class="sig-param">next</em>, <em class="sig-param">token</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/svg_regex.html#SVGPathParser.rule_closepath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.svg_regex.SVGPathParser.rule_closepath" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.svg_regex.SVGPathParser.rule_coordinate">
+<code class="sig-name descname">rule_coordinate</code><span class="sig-paren">(</span><em class="sig-param">next</em>, <em class="sig-param">token</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/svg_regex.html#SVGPathParser.rule_coordinate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.svg_regex.SVGPathParser.rule_coordinate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.svg_regex.SVGPathParser.rule_coordinate_pair">
+<code class="sig-name descname">rule_coordinate_pair</code><span class="sig-paren">(</span><em class="sig-param">next</em>, <em class="sig-param">token</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/svg_regex.html#SVGPathParser.rule_coordinate_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.svg_regex.SVGPathParser.rule_coordinate_pair" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.svg_regex.SVGPathParser.rule_curveto1">
+<code class="sig-name descname">rule_curveto1</code><span class="sig-paren">(</span><em class="sig-param">next</em>, <em class="sig-param">token</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/svg_regex.html#SVGPathParser.rule_curveto1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.svg_regex.SVGPathParser.rule_curveto1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.svg_regex.SVGPathParser.rule_curveto2">
+<code class="sig-name descname">rule_curveto2</code><span class="sig-paren">(</span><em class="sig-param">next</em>, <em class="sig-param">token</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/svg_regex.html#SVGPathParser.rule_curveto2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.svg_regex.SVGPathParser.rule_curveto2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.svg_regex.SVGPathParser.rule_curveto3">
+<code class="sig-name descname">rule_curveto3</code><span class="sig-paren">(</span><em class="sig-param">next</em>, <em class="sig-param">token</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/svg_regex.html#SVGPathParser.rule_curveto3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.svg_regex.SVGPathParser.rule_curveto3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.svg_regex.SVGPathParser.rule_elliptical_arc">
+<code class="sig-name descname">rule_elliptical_arc</code><span class="sig-paren">(</span><em class="sig-param">next</em>, <em class="sig-param">token</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/svg_regex.html#SVGPathParser.rule_elliptical_arc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.svg_regex.SVGPathParser.rule_elliptical_arc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.svg_regex.SVGPathParser.rule_moveto_or_lineto">
+<code class="sig-name descname">rule_moveto_or_lineto</code><span class="sig-paren">(</span><em class="sig-param">next</em>, <em class="sig-param">token</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/svg_regex.html#SVGPathParser.rule_moveto_or_lineto"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.svg_regex.SVGPathParser.rule_moveto_or_lineto" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.svg_regex.SVGPathParser.rule_orthogonal_lineto">
+<code class="sig-name descname">rule_orthogonal_lineto</code><span class="sig-paren">(</span><em class="sig-param">next</em>, <em class="sig-param">token</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/svg_regex.html#SVGPathParser.rule_orthogonal_lineto"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.svg_regex.SVGPathParser.rule_orthogonal_lineto" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.svg_regex.SVGPathParser.rule_svg_path">
+<code class="sig-name descname">rule_svg_path</code><span class="sig-paren">(</span><em class="sig-param">next</em>, <em class="sig-param">token</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/svg_regex.html#SVGPathParser.rule_svg_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.svg_regex.SVGPathParser.rule_svg_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.savage.svg.svg_extras.html"
+                        title="previous chapter">enable.savage.svg.svg_extras module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.savage.svg.backends.html"
+                        title="next chapter">enable.savage.svg.backends package</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.savage.svg.svg_regex.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

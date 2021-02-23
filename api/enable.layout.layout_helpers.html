@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.layout.layout_helpers module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable.layout package" href="enable.layout.html" >
+    <link rel="next" title="enable.layout.layout_manager module" href="enable.layout.layout_manager.html" >
+    <link rel="prev" title="enable.layout.geometry module" href="enable.layout.geometry.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" >enable package</a></li>
+          <li class="active"><a href="enable.layout.html" accesskey="U">enable.layout package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.layout.layout_manager.html" title="enable.layout.layout_manager module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.layout.geometry.html" title="enable.layout.geometry module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.layout.layout_helpers">
+<span id="enable-layout-layout-helpers-module"></span><h1>enable.layout.layout_helpers module<a class="headerlink" href="#module-enable.layout.layout_helpers" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="enable.layout.layout_helpers.AbstractConstraintFactory">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">AbstractConstraintFactory</code><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#AbstractConstraintFactory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.AbstractConstraintFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An abstract constraint factory class. Subclasses must implement
+the ‘constraints’ method implement which returns a LinearConstraint
+instance.</p>
+<dl class="method">
+<dt id="enable.layout.layout_helpers.AbstractConstraintFactory.constraints">
+<em class="property">abstract </em><code class="sig-name descname">constraints</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#AbstractConstraintFactory.constraints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.AbstractConstraintFactory.constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>An abstract method which must be implemented by subclasses.
+It should return a list of LinearConstraint instances.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.layout_helpers.AbstractConstraintFactory.validate">
+<em class="property">static </em><code class="sig-name descname">validate</code><span class="sig-paren">(</span><em class="sig-param">items</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#AbstractConstraintFactory.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.AbstractConstraintFactory.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>A validator staticmethod that insures a sequence of items is
+appropriate for generating a sequence of linear constraints. The
+following conditions are verified of the sequence of given items:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The number of items in the sequence is 0 or &gt;= 2.</p></li>
+<li><p>The first and last items are instances of either
+LinearSymbolic or Constrainable.</p></li>
+<li><p>All of the items in the sequence are instances of
+LinearSymbolic, Constrainable, Spacer, or int.</p></li>
+</ul>
+</div></blockquote>
+<p>If any of the above conditions do not hold, an exception is
+raised with a (hopefully) useful error message.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.layout_helpers.AbutmentConstraintFactory">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">AbutmentConstraintFactory</code><span class="sig-paren">(</span><em class="sig-param">first_anchor</em>, <em class="sig-param">spacer</em>, <em class="sig-param">second_anchor</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#AbutmentConstraintFactory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.AbutmentConstraintFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.layout_helpers.SequenceConstraintFactory" title="enable.layout.layout_helpers.SequenceConstraintFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.layout_helpers.SequenceConstraintFactory</span></code></a></p>
+<p>A SequenceConstraintFactory subclass that represents an abutment
+constraint, which is a constraint between two anchors of different
+components separated by some amount of space. It has a ‘from_items’
+classmethod which will create a sequence of abutment constraints
+from a sequence of items, a direction, and default spacing.</p>
+<dl class="method">
+<dt id="enable.layout.layout_helpers.AbutmentConstraintFactory.from_items">
+<em class="property">classmethod </em><code class="sig-name descname">from_items</code><span class="sig-paren">(</span><em class="sig-param">items</em>, <em class="sig-param">orientation</em>, <em class="sig-param">spacing</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#AbutmentConstraintFactory.from_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.AbutmentConstraintFactory.from_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>A classmethod that generates a list of abutment constraints
+given a sequence of items, an orientation, and default spacing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>items</strong> (<em>sequence</em>) – A valid sequence of constrainable objects. These inclue
+instances of Constrainable, LinearSymbolic, Spacer,
+and int.</p></li>
+<li><p><strong>orientation</strong> (<em>string</em>) – Either ‘vertical’ or ‘horizontal’, which represents the
+orientation in which to abut the items.</p></li>
+<li><p><strong>spacing</strong> (<em>int</em>) – The spacing to use between items if no spacing is explicitly
+provided by in the sequence of items.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong> – A list of AbutmentConstraint instances.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The order of abutment is left-to-right for horizontal direction
+and top-to-bottom for vertical direction.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="enable.layout.layout_helpers.AbutmentConstraintFactory.orientation_map">
+<code class="sig-name descname">orientation_map</code><em class="property"> = {'horizontal': ('right', 'left'), 'vertical': ('top', 'bottom')}</em><a class="headerlink" href="#enable.layout.layout_helpers.AbutmentConstraintFactory.orientation_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>A mapping from orientation to the order of anchor names to
+lookup for a pair of items in order to make the constraint.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.layout_helpers.AbutmentHelper">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">AbutmentHelper</code><span class="sig-paren">(</span><em class="sig-param">orientation</em>, <em class="sig-param">*items</em>, <em class="sig-param">**config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#AbutmentHelper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.AbutmentHelper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.layout_helpers.DeferredConstraints" title="enable.layout.layout_helpers.DeferredConstraints"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.layout_helpers.DeferredConstraints</span></code></a></p>
+<p>A concrete implementation of DeferredConstraints which will
+lay out its components by abutting them in a given orientation.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.layout_helpers.AlignmentConstraintFactory">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">AlignmentConstraintFactory</code><span class="sig-paren">(</span><em class="sig-param">first_anchor</em>, <em class="sig-param">spacer</em>, <em class="sig-param">second_anchor</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#AlignmentConstraintFactory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.AlignmentConstraintFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.layout_helpers.SequenceConstraintFactory" title="enable.layout.layout_helpers.SequenceConstraintFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.layout_helpers.SequenceConstraintFactory</span></code></a></p>
+<p>A SequenceConstraintFactory subclass which represents an
+alignmnent constraint, which is a constraint between two anchors of
+different components which are aligned but may be separated by some
+amount of space. It provides a ‘from_items’ classmethod which will
+create a  list of alignment constraints from a sequence of items an
+anchor name, and a default spacing.</p>
+<dl class="method">
+<dt id="enable.layout.layout_helpers.AlignmentConstraintFactory.from_items">
+<em class="property">classmethod </em><code class="sig-name descname">from_items</code><span class="sig-paren">(</span><em class="sig-param">items</em>, <em class="sig-param">anchor_name</em>, <em class="sig-param">spacing</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#AlignmentConstraintFactory.from_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.AlignmentConstraintFactory.from_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>A classmethod that will create a seqence of alignment
+constraints given a sequence of items, an anchor name, and
+a default spacing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>items</strong> (<em>sequence</em>) – A valid sequence of constrainable objects. These inclue
+instances of Constrainable, LinearSymbolic, Spacer,
+and int.</p></li>
+<li><p><strong>anchor_name</strong> (<em>string</em>) – The name of the anchor on the components which should be
+aligned. Either ‘left’, ‘right’, ‘top’, ‘bottom’, ‘v_center’,
+or ‘h_center’.</p></li>
+<li><p><strong>spacing</strong> (<em>int</em>) – The spacing to use between items if no spacing is explicitly
+provided by in the sequence of items.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong> – A list of AbutmentConstraint instances.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>For every item in the sequence, if the item is a component, then
+anchor for the given anchor_name on that component will be used.
+If a LinearSymbolic is given, then that symbolic will be used and
+the anchor_name will be ignored. Specifying space between items
+via integers or spacers is allowed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.layout_helpers.AlignmentHelper">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">AlignmentHelper</code><span class="sig-paren">(</span><em class="sig-param">anchor</em>, <em class="sig-param">*items</em>, <em class="sig-param">**config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#AlignmentHelper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.AlignmentHelper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.layout_helpers.DeferredConstraints" title="enable.layout.layout_helpers.DeferredConstraints"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.layout_helpers.DeferredConstraints</span></code></a></p>
+<p>A deferred constraints helper class that lays out with a given
+anchor to align.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.layout_helpers.BaseConstraintFactory">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">BaseConstraintFactory</code><span class="sig-paren">(</span><em class="sig-param">first_anchor</em>, <em class="sig-param">spacer</em>, <em class="sig-param">second_anchor</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#BaseConstraintFactory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.BaseConstraintFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.layout_helpers.AbstractConstraintFactory" title="enable.layout.layout_helpers.AbstractConstraintFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.layout_helpers.AbstractConstraintFactory</span></code></a></p>
+<p>A base constraint factory class that implements basic common
+logic. It is not meant to be used directly but should rather be
+subclassed to be useful.</p>
+<dl class="method">
+<dt id="enable.layout.layout_helpers.BaseConstraintFactory.constraints">
+<code class="sig-name descname">constraints</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#BaseConstraintFactory.constraints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.BaseConstraintFactory.constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns LinearConstraint instance which is formed through
+an appropriate linear expression for the given space between
+the anchors.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.layout_helpers.BoxHelper">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">BoxHelper</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#BoxHelper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.BoxHelper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.layout_helpers.DeferredConstraints" title="enable.layout.layout_helpers.DeferredConstraints"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.layout_helpers.DeferredConstraints</span></code></a></p>
+<p>A DeferredConstraints helper class which adds a box model to
+the helper.</p>
+<p>The addition of the box model allows the helper to be registered
+as ABConstrainable which has the effect of allowing box helper
+instances to be nested.</p>
+<dl class="method">
+<dt id="enable.layout.layout_helpers.BoxHelper.bottom">
+<em class="property">property </em><code class="sig-name descname">bottom</code><a class="headerlink" href="#enable.layout.layout_helpers.BoxHelper.bottom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.layout_helpers.BoxHelper.h_center">
+<em class="property">property </em><code class="sig-name descname">h_center</code><a class="headerlink" href="#enable.layout.layout_helpers.BoxHelper.h_center" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.layout_helpers.BoxHelper.layout_height">
+<em class="property">property </em><code class="sig-name descname">layout_height</code><a class="headerlink" href="#enable.layout.layout_helpers.BoxHelper.layout_height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.layout_helpers.BoxHelper.layout_width">
+<em class="property">property </em><code class="sig-name descname">layout_width</code><a class="headerlink" href="#enable.layout.layout_helpers.BoxHelper.layout_width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.layout_helpers.BoxHelper.left">
+<em class="property">property </em><code class="sig-name descname">left</code><a class="headerlink" href="#enable.layout.layout_helpers.BoxHelper.left" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.layout_helpers.BoxHelper.right">
+<em class="property">property </em><code class="sig-name descname">right</code><a class="headerlink" href="#enable.layout.layout_helpers.BoxHelper.right" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.layout_helpers.BoxHelper.top">
+<em class="property">property </em><code class="sig-name descname">top</code><a class="headerlink" href="#enable.layout.layout_helpers.BoxHelper.top" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.layout_helpers.BoxHelper.v_center">
+<em class="property">property </em><code class="sig-name descname">v_center</code><a class="headerlink" href="#enable.layout.layout_helpers.BoxHelper.v_center" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.layout_helpers.DeferredConstraints">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">DeferredConstraints</code><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#DeferredConstraints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.DeferredConstraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Abstract base class for objects that will yield lists of
+constraints upon request.</p>
+<dl class="method">
+<dt id="enable.layout.layout_helpers.DeferredConstraints.get_constraints">
+<code class="sig-name descname">get_constraints</code><span class="sig-paren">(</span><em class="sig-param">component</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#DeferredConstraints.get_constraints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.DeferredConstraints.get_constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>component</strong> (<a class="reference internal" href="enable.component.html#enable.component.Component" title="enable.component.Component"><em>Component</em></a><em> or </em><em>None</em>) – The component that owns this DeferredConstraints. It can
+be None for contexts in which there is not a containing
+component, such as in certain nested DeferredConstraints.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong> – The list of Constraint objects which have been
+weighted by any provided strengths.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of Constraints</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.layout_helpers.DeferredConstraints.when">
+<code class="sig-name descname">when</code><span class="sig-paren">(</span><em class="sig-param">switch</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#DeferredConstraints.when"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.DeferredConstraints.when" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simple method that can be used to switch off the generated
+constraints depending on a boolean value.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.layout_helpers.DeferredConstraintsFunction">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">DeferredConstraintsFunction</code><span class="sig-paren">(</span><em class="sig-param">func</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwds</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#DeferredConstraintsFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.DeferredConstraintsFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.layout_helpers.DeferredConstraints" title="enable.layout.layout_helpers.DeferredConstraints"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.layout_helpers.DeferredConstraints</span></code></a></p>
+<p>A concrete implementation of DeferredConstraints which will
+call a function to get the constraint list upon request.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.layout_helpers.EqSpacer">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">EqSpacer</code><span class="sig-paren">(</span><em class="sig-param">amt</em>, <em class="sig-param">strength=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#EqSpacer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.EqSpacer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.layout_helpers.Spacer" title="enable.layout.layout_helpers.Spacer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.layout_helpers.Spacer</span></code></a></p>
+<p>A spacer which represents a fixed amount of space.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.layout_helpers.FlexSpacer">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">FlexSpacer</code><span class="sig-paren">(</span><em class="sig-param">amt</em>, <em class="sig-param">min_strength='required'</em>, <em class="sig-param">eq_strength='medium'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#FlexSpacer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.FlexSpacer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.layout_helpers.Spacer" title="enable.layout.layout_helpers.Spacer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.layout_helpers.Spacer</span></code></a></p>
+<p>A spacer which represents a space with a hard minimum, but also
+a weaker preference for being that minimum.</p>
+<dl class="method">
+<dt id="enable.layout.layout_helpers.FlexSpacer.constrain">
+<code class="sig-name descname">constrain</code><span class="sig-paren">(</span><em class="sig-param">first_anchor</em>, <em class="sig-param">second_anchor</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#FlexSpacer.constrain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.FlexSpacer.constrain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return list of LinearConstraint objects that are appropriate to
+separate the two anchors according to the amount of space represented
+by the spacer.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.layout_helpers.GeSpacer">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">GeSpacer</code><span class="sig-paren">(</span><em class="sig-param">amt</em>, <em class="sig-param">strength=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#GeSpacer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.GeSpacer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.layout_helpers.Spacer" title="enable.layout.layout_helpers.Spacer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.layout_helpers.Spacer</span></code></a></p>
+<p>A spacer which represents a flexible space with a minimum value.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.layout_helpers.GridHelper">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">GridHelper</code><span class="sig-paren">(</span><em class="sig-param">*rows</em>, <em class="sig-param">**config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#GridHelper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.GridHelper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.layout_helpers.BoxHelper" title="enable.layout.layout_helpers.BoxHelper"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.layout_helpers.BoxHelper</span></code></a></p>
+<p>A layout helper which arranges items in a grid.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.layout_helpers.LayoutSpacer">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">LayoutSpacer</code><span class="sig-paren">(</span><em class="sig-param">amt</em>, <em class="sig-param">strength=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#LayoutSpacer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.LayoutSpacer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.layout_helpers.Spacer" title="enable.layout.layout_helpers.Spacer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.layout_helpers.Spacer</span></code></a></p>
+<p>A Spacer instance which supplies convenience symbolic and normal
+methods to facilitate specifying spacers in layouts.</p>
+<dl class="method">
+<dt id="enable.layout.layout_helpers.LayoutSpacer.flex">
+<code class="sig-name descname">flex</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#LayoutSpacer.flex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.LayoutSpacer.flex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a flex spacer for the current amount.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.layout_helpers.LeSpacer">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">LeSpacer</code><span class="sig-paren">(</span><em class="sig-param">amt</em>, <em class="sig-param">strength=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#LeSpacer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.LeSpacer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.layout_helpers.Spacer" title="enable.layout.layout_helpers.Spacer"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.layout_helpers.Spacer</span></code></a></p>
+<p>A spacer which represents a flexible space with a maximum value.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.layout_helpers.LinearBoxHelper">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">LinearBoxHelper</code><span class="sig-paren">(</span><em class="sig-param">orientation</em>, <em class="sig-param">*items</em>, <em class="sig-param">**config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#LinearBoxHelper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.LinearBoxHelper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.layout_helpers.BoxHelper" title="enable.layout.layout_helpers.BoxHelper"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.layout_helpers.BoxHelper</span></code></a></p>
+<p>A layout helper which arranges items in a linear box.</p>
+<dl class="attribute">
+<dt id="enable.layout.layout_helpers.LinearBoxHelper.orientation_map">
+<code class="sig-name descname">orientation_map</code><em class="property"> = {'horizontal': ('left', 'right'), 'vertical': ('top', 'bottom')}</em><a class="headerlink" href="#enable.layout.layout_helpers.LinearBoxHelper.orientation_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>A mapping orientation to the anchor names needed to make the
+constraints on the containing component.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="enable.layout.layout_helpers.LinearBoxHelper.ortho_map">
+<code class="sig-name descname">ortho_map</code><em class="property"> = {'horizontal': 'vertical', 'vertical': 'horizontal'}</em><a class="headerlink" href="#enable.layout.layout_helpers.LinearBoxHelper.ortho_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>A mapping of ortho orientations</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.layout_helpers.SequenceConstraintFactory">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">SequenceConstraintFactory</code><span class="sig-paren">(</span><em class="sig-param">first_anchor</em>, <em class="sig-param">spacer</em>, <em class="sig-param">second_anchor</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#SequenceConstraintFactory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.SequenceConstraintFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.layout_helpers.BaseConstraintFactory" title="enable.layout.layout_helpers.BaseConstraintFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.layout_helpers.BaseConstraintFactory</span></code></a></p>
+<p>A BaseConstraintFactory subclass that represents a constraint
+between two anchors of different components separated by some amount
+of space. It has a ‘_make_cns’ classmethod which will create a list
+of constraint factory instances from a sequence of items, the two
+anchor names, and a default spacing.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.layout_helpers.Spacer">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">Spacer</code><span class="sig-paren">(</span><em class="sig-param">amt</em>, <em class="sig-param">strength=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#Spacer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.Spacer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An abstract base class for spacers. Subclasses must implement
+the ‘constrain’ method.</p>
+<dl class="method">
+<dt id="enable.layout.layout_helpers.Spacer.constrain">
+<code class="sig-name descname">constrain</code><span class="sig-paren">(</span><em class="sig-param">first_anchor</em>, <em class="sig-param">second_anchor</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#Spacer.constrain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.Spacer.constrain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of generated constraints appropriately
+weighted by the default strength, if provided.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.layout_helpers.Spacer.when">
+<code class="sig-name descname">when</code><span class="sig-paren">(</span><em class="sig-param">switch</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#Spacer.when"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.Spacer.when" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simple method that can be used to switch off the generated
+space depending on a boolean value.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.layout.layout_helpers.align">
+<code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">align</code><span class="sig-paren">(</span><em class="sig-param">anchor</em>, <em class="sig-param">*items</em>, <em class="sig-param">**config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#align"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.align" title="Permalink to this definition">¶</a></dt>
+<dd><p>Align the given anchors of the given components. Inter-component
+spacing is allowed.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.layout.layout_helpers.expand_constraints">
+<code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">expand_constraints</code><span class="sig-paren">(</span><em class="sig-param">component</em>, <em class="sig-param">constraints</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#expand_constraints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.expand_constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function which expands any DeferredConstraints in the provided
+list. This is a generator function which yields the flattened stream
+of constraints.</p>
+<dl class="simple">
+<dt>component<span class="classifier">Constrainable</span></dt><dd><p>The constrainable component with which the constraints are
+associated. This will be passed to the .get_constraints()
+method of any DeferredConstraint instance.</p>
+</dd>
+<dt>constraints<span class="classifier">list</span></dt><dd><p>The list of constraints.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Yields</dt>
+<dd class="field-odd"><p><em>constraints</em> – The stream of expanded constraints.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.layout.layout_helpers.grid">
+<code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">grid</code><span class="sig-paren">(</span><em class="sig-param">*rows</em>, <em class="sig-param">**config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a DeferredConstraints object which lays out items in a
+grid.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.layout.layout_helpers.hbox">
+<code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">hbox</code><span class="sig-paren">(</span><em class="sig-param">*items</em>, <em class="sig-param">**config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#hbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.hbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a DeferredConstraints object composed of horizontal
+abutments for a given sequence of items.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.layout.layout_helpers.horizontal">
+<code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">horizontal</code><span class="sig-paren">(</span><em class="sig-param">*items</em>, <em class="sig-param">**config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#horizontal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.horizontal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a DeferredConstraints object composed of horizontal
+abutments for the given sequence of items.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.layout.layout_helpers.is_spacer">
+<code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">is_spacer</code><span class="sig-paren">(</span><em class="sig-param">item</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#is_spacer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.is_spacer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if the given item can be considered a spacer, False
+other otherwise.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.layout.layout_helpers.vbox">
+<code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">vbox</code><span class="sig-paren">(</span><em class="sig-param">*items</em>, <em class="sig-param">**config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#vbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.vbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a DeferredConstraints object composed of vertical abutments
+for a given sequence of items.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.layout.layout_helpers.vertical">
+<code class="sig-prename descclassname">enable.layout.layout_helpers.</code><code class="sig-name descname">vertical</code><span class="sig-paren">(</span><em class="sig-param">*items</em>, <em class="sig-param">**config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_helpers.html#vertical"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_helpers.vertical" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a DeferredConstraints object composed of vertical
+abutments for the given sequence of items.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.layout.geometry.html"
+                        title="previous chapter">enable.layout.geometry module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.layout.layout_manager.html"
+                        title="next chapter">enable.layout.layout_manager module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.layout.layout_helpers.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

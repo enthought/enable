@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.stacked_container &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.stacked_container</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot; Containers which lay out their components horizontally or vertically</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">Float</span>
+
+<span class="kn">from</span> <span class="nn">.container</span> <span class="k">import</span> <span class="n">Container</span>
+<span class="kn">from</span> <span class="nn">.stacked_layout</span> <span class="k">import</span> <span class="n">stacked_preferred_size</span><span class="p">,</span> <span class="n">stack_layout</span>
+
+
+<div class="viewcode-block" id="StackedContainer"><a class="viewcode-back" href="../../api/enable.stacked_container.html#enable.stacked_container.StackedContainer">[docs]</a><span class="k">class</span> <span class="nc">StackedContainer</span><span class="p">(</span><span class="n">Container</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Base class for stacked containers</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># The dimension along which to stack components that are added to</span>
+    <span class="c1"># this container.</span>
+    <span class="n">stack_dimension</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;v&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The &quot;other&quot; dimension, i.e., the dual of the stack dimension.</span>
+    <span class="n">other_dimension</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The index into obj.position and obj.bounds that corresponds to</span>
+    <span class="c1"># **stack_dimension**.  This is a class-level and not an instance-level</span>
+    <span class="c1"># attribute. It must be 0 or 1.</span>
+    <span class="n">stack_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># The amount of space to put between components.</span>
+    <span class="n">spacing</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+
+<div class="viewcode-block" id="StackedContainer.get_preferred_size"><a class="viewcode-back" href="../../api/enable.stacked_container.html#enable.stacked_container.StackedContainer.get_preferred_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_preferred_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">components</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">stacked_preferred_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">components</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="HStackedContainer"><a class="viewcode-back" href="../../api/enable.stacked_container.html#enable.stacked_container.HStackedContainer">[docs]</a><span class="k">class</span> <span class="nc">HStackedContainer</span><span class="p">(</span><span class="n">StackedContainer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A container that stacks components horizontally.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Overrides StackedPlotContainer.</span>
+    <span class="n">stack_dimension</span> <span class="o">=</span> <span class="s2">&quot;h&quot;</span>
+    <span class="c1"># Overrides StackedPlotContainer.</span>
+    <span class="n">other_dimension</span> <span class="o">=</span> <span class="s2">&quot;v&quot;</span>
+    <span class="c1"># Overrides StackedPlotContainer.</span>
+    <span class="n">stack_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># VPlotContainer attributes</span>
+
+    <span class="c1"># The horizontal alignment of objects that don&#39;t span the full width.</span>
+    <span class="n">halign</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;bottom&quot;</span><span class="p">,</span> <span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="s2">&quot;center&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The order in which components in the plot container are laid out.</span>
+    <span class="n">stack_order</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;left_to_right&quot;</span><span class="p">,</span> <span class="s2">&quot;right_to_left&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Actually performs a layout (called by do_layout()).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_order</span> <span class="o">==</span> <span class="s2">&quot;left_to_right&quot;</span><span class="p">:</span>
+            <span class="n">components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">halign</span> <span class="o">==</span> <span class="s2">&quot;bottom&quot;</span><span class="p">:</span>
+            <span class="n">align</span> <span class="o">=</span> <span class="s2">&quot;min&quot;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">halign</span> <span class="o">==</span> <span class="s2">&quot;center&quot;</span><span class="p">:</span>
+            <span class="n">align</span> <span class="o">=</span> <span class="s2">&quot;center&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">align</span> <span class="o">=</span> <span class="s2">&quot;max&quot;</span>
+
+        <span class="k">return</span> <span class="n">stack_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">components</span><span class="p">,</span> <span class="n">align</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VStackedContainer"><a class="viewcode-back" href="../../api/enable.stacked_container.html#enable.stacked_container.VStackedContainer">[docs]</a><span class="k">class</span> <span class="nc">VStackedContainer</span><span class="p">(</span><span class="n">StackedContainer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A container that stacks components vertically.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Overrides StackedPlotContainer.</span>
+    <span class="n">stack_dimension</span> <span class="o">=</span> <span class="s2">&quot;v&quot;</span>
+    <span class="c1"># Overrides StackedPlotContainer.</span>
+    <span class="n">other_dimension</span> <span class="o">=</span> <span class="s2">&quot;h&quot;</span>
+    <span class="c1"># Overrides StackedPlotContainer.</span>
+    <span class="n">stack_index</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="c1"># VPlotContainer attributes</span>
+
+    <span class="c1"># The horizontal alignment of objects that don&#39;t span the full width.</span>
+    <span class="n">halign</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="s2">&quot;center&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The order in which components in the plot container are laid out.</span>
+    <span class="n">stack_order</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;bottom_to_top&quot;</span><span class="p">,</span> <span class="s2">&quot;top_to_bottom&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Actually performs a layout (called by do_layout()).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_order</span> <span class="o">==</span> <span class="s2">&quot;bottom_to_top&quot;</span><span class="p">:</span>
+            <span class="n">components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">halign</span> <span class="o">==</span> <span class="s2">&quot;left&quot;</span><span class="p">:</span>
+            <span class="n">align</span> <span class="o">=</span> <span class="s2">&quot;min&quot;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">halign</span> <span class="o">==</span> <span class="s2">&quot;center&quot;</span><span class="p">:</span>
+            <span class="n">align</span> <span class="o">=</span> <span class="s2">&quot;center&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">align</span> <span class="o">=</span> <span class="s2">&quot;max&quot;</span>
+
+        <span class="k">return</span> <span class="n">stack_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">components</span><span class="p">,</span> <span class="n">align</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

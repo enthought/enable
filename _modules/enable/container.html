@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.container &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.container</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot; Defines the basic Container class &quot;&quot;&quot;</span>
+
+<span class="c1"># Major library imports</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="c1"># Enthought library imports</span>
+<span class="kn">from</span> <span class="nn">kiva</span> <span class="k">import</span> <span class="n">affine</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Property</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="c1"># Local, relative imports</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">empty_rectangle</span><span class="p">,</span> <span class="n">intersect_bounds</span>
+<span class="kn">from</span> <span class="nn">.component</span> <span class="k">import</span> <span class="n">Component</span>
+<span class="kn">from</span> <span class="nn">.events</span> <span class="k">import</span> <span class="n">BlobEvent</span><span class="p">,</span> <span class="n">BlobFrameEvent</span><span class="p">,</span> <span class="n">DragEvent</span><span class="p">,</span> <span class="n">MouseEvent</span>
+
+
+<div class="viewcode-block" id="Container"><a class="viewcode-back" href="../../api/enable.container.html#enable.container.Container">[docs]</a><span class="k">class</span> <span class="nc">Container</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A Container is a logical container that holds other Components within</span>
+<span class="sd">    it and provides an origin for Components to position themselves. Containers</span>
+<span class="sd">    can be &quot;nested&quot; (although &quot;overlayed&quot; is probably a better term).</span>
+
+<span class="sd">    If auto_size is True, the container will automatically update its bounds to</span>
+<span class="sd">    enclose all of the components handed to it, so that a container&#39;s bounds</span>
+<span class="sd">    serve as abounding box (although not necessarily a minimal bounding box) of</span>
+<span class="sd">    its contained components.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># The list of components within this frame</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="n">Property</span>  <span class="c1"># List(Component)</span>
+
+    <span class="c1"># Whether or not the container should automatically maximize itself to</span>
+    <span class="c1"># fit inside the Window, if this is a top-level container.</span>
+    <span class="c1">#</span>
+    <span class="c1"># NOTE: the way that a Container determines that it&#39;s a top-level window is</span>
+    <span class="c1"># that someone has explicitly set its .window attribute. If you need to do</span>
+    <span class="c1"># this for some other reason, you may want to turn fit_window off.</span>
+    <span class="n">fit_window</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># If true, the container get events before its children.  Otherwise, it</span>
+    <span class="c1"># gets them afterwards.</span>
+    <span class="n">intercept_events</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Dimensions in which this container can resize to fit its components.</span>
+    <span class="c1"># This trait only applies to dimensions that are also resizable; if the</span>
+    <span class="c1"># container is not resizable in a certain dimension, then fit_components</span>
+    <span class="c1"># has no effect.</span>
+    <span class="c1">#</span>
+    <span class="c1"># Also, note that the container does not *automatically* resize itself</span>
+    <span class="c1"># based on the value of this trait.  Rather, this trait determines</span>
+    <span class="c1"># what value is reported in get_preferred_size(); it is up to the parent</span>
+    <span class="c1"># of this container to make sure that it is allocated the size that it</span>
+    <span class="c1"># needs by setting its bounds appropriately.</span>
+    <span class="c1">#</span>
+    <span class="c1"># TODO: Merge resizable and this into a single trait?  Or have a separate</span>
+    <span class="c1"># &quot;fit&quot; flag for each dimension in the **resizable** trait?</span>
+    <span class="c1"># TODO: This trait is used in layout methods of various Container</span>
+    <span class="c1"># subclasses in Chaco.  We need to move those containers into</span>
+    <span class="c1"># Enable.</span>
+    <span class="n">fit_components</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="s2">&quot;hv&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Whether or not the container should auto-size itself to fit all of its</span>
+    <span class="c1"># components.</span>
+    <span class="c1"># Note: This trait is still used, but will be eventually removed in favor</span>
+    <span class="c1"># of **fit_components**.</span>
+    <span class="n">auto_size</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># The default size of this container if it is empty.</span>
+    <span class="n">default_size</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># The layers that the container will draw first, so that they appear</span>
+    <span class="c1"># under the component layers of the same name.</span>
+    <span class="n">container_under_layers</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">(</span>
+        <span class="s2">&quot;background&quot;</span><span class="p">,</span> <span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="s2">&quot;underlay&quot;</span><span class="p">,</span> <span class="s2">&quot;mainlayer&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Private traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># Shadow trait for self.components</span>
+    <span class="n">_components</span> <span class="o">=</span> <span class="n">List</span>  <span class="c1"># List(Component)</span>
+
+    <span class="c1"># Set of components that last handled a mouse event.  We keep track of</span>
+    <span class="c1"># this so that we can generate mouse_enter and mouse_leave events of</span>
+    <span class="c1"># our own.</span>
+    <span class="n">_prev_event_handlers</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="nb">set</span><span class="p">,</span> <span class="p">())</span>
+
+    <span class="c1"># This container can render itself in a different mode than what it asks of</span>
+    <span class="c1"># its contained components.  This attribute stores the rendering mode that</span>
+    <span class="c1"># this container requests of its children when it does a _draw(). If the</span>
+    <span class="c1"># attribute is set to &quot;default&quot;, then whatever mode is handed in to _draw()</span>
+    <span class="c1"># is used.</span>
+    <span class="n">_children_draw_mode</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="s2">&quot;overlay&quot;</span><span class="p">,</span> <span class="s2">&quot;interactive&quot;</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Public methods</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">components</span><span class="p">,</span> <span class="o">**</span><span class="n">traits</span><span class="p">):</span>
+        <span class="n">Component</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">traits</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;bounds&quot;</span> <span class="ow">in</span> <span class="n">traits</span> <span class="ow">and</span> <span class="s2">&quot;auto_size&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">traits</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">auto_size</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="s2">&quot;intercept_events&quot;</span> <span class="ow">in</span> <span class="n">traits</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;intercept_events&#39; is a deprecated trait&quot;</span><span class="p">,</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">DeprecationWarning</span><span class="p">,</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="Container.add"><a class="viewcode-back" href="../../api/enable.container.html#enable.container.Container.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">components</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Adds components to this container &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">container</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">component</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+            <span class="n">component</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+
+        <span class="c1"># Expand our bounds if necessary</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_compact</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compact</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_draw</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Container.remove"><a class="viewcode-back" href="../../api/enable.container.html#enable.container.Container.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">components</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Removes components from this container &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">:</span>
+                <span class="n">component</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Unable to remove component from container.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Check to see if we need to compact.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_size</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">((</span><span class="n">component</span><span class="o">.</span><span class="n">outer_x2</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+                        <span class="ow">or</span> <span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">outer_y2</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+                        <span class="ow">or</span> <span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+                        <span class="ow">or</span> <span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">compact</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_draw</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Container.insert"><a class="viewcode-back" href="../../api/enable.container.html#enable.container.Container.insert">[docs]</a>    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">component</span><span class="p">):</span>
+        <span class="s2">&quot;Inserts a component into a specific position in the components list&quot;</span>
+        <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">container</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">component</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+        <span class="n">component</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">component</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_draw</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Container.components_at"><a class="viewcode-back" href="../../api/enable.container.html#enable.container.Container.components_at">[docs]</a>    <span class="k">def</span> <span class="nf">components_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of the components underneath the given point (given in</span>
+<span class="sd">        the parent coordinate frame of this container).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+            <span class="n">xprime</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">yprime</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span><span class="n">xprime</span><span class="p">,</span> <span class="n">yprime</span><span class="p">):</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="Container.raise_component"><a class="viewcode-back" href="../../api/enable.container.html#enable.container.Container.raise_component">[docs]</a>    <span class="k">def</span> <span class="nf">raise_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Raises the indicated component to the top of the Z-order &quot;&quot;&quot;</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span>
+        <span class="n">ndx</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">ndx</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_components</span> <span class="o">=</span> <span class="n">c</span><span class="p">[:</span><span class="n">ndx</span><span class="p">]</span> <span class="o">+</span> <span class="n">c</span><span class="p">[</span><span class="n">ndx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="p">[</span><span class="n">component</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Container.lower_component"><a class="viewcode-back" href="../../api/enable.container.html#enable.container.Container.lower_component">[docs]</a>    <span class="k">def</span> <span class="nf">lower_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Puts the indicated component to the very bottom of the Z-order &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="Container.cleanup"><a class="viewcode-back" href="../../api/enable.container.html#enable.container.Container.cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;When a window viewing or containing a component is destroyed,</span>
+<span class="sd">        cleanup is called on the component to give it the opportunity to</span>
+<span class="sd">        delete any transient state it may have (such as backbuffers).&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">:</span>
+                <span class="n">component</span><span class="o">.</span><span class="n">cleanup</span><span class="p">(</span><span class="n">window</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.compact"><a class="viewcode-back" href="../../api/enable.container.html#enable.container.Container.compact">[docs]</a>    <span class="k">def</span> <span class="nf">compact</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Causes this container to update its bounds to be a compact bounding</span>
+<span class="sd">        box of its components.  This may cause the container to recalculate</span>
+<span class="sd">        and adjust its position relative to its parent container (and adjust</span>
+<span class="sd">        the positions of all of its contained components accordingly).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Loop over our components and determine the bounding box of all of</span>
+        <span class="c1"># the components.</span>
+        <span class="n">ll_x</span><span class="p">,</span> <span class="n">ll_y</span><span class="p">,</span> <span class="n">ur_x</span><span class="p">,</span> <span class="n">ur_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_bounding_box</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Update our position and the positions of all of our components,</span>
+            <span class="c1"># but do it quietly</span>
+            <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">:</span>
+                <span class="n">component</span><span class="o">.</span><span class="n">trait_setq</span><span class="p">(</span>
+                    <span class="n">position</span><span class="o">=</span><span class="p">[</span><span class="n">component</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">ll_x</span><span class="p">,</span> <span class="n">component</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">ll_y</span><span class="p">]</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Change our position (in our parent&#39;s coordinate frame) and</span>
+            <span class="c1"># update our bounds</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">ll_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">ll_y</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[</span><span class="n">ur_x</span> <span class="o">-</span> <span class="n">ll_x</span><span class="p">,</span> <span class="n">ur_y</span> <span class="o">-</span> <span class="n">ll_y</span><span class="p">]</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Protected methods</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_calc_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a 4-tuple (x,y,x2,y2) of the bounding box of all our contained</span>
+<span class="sd">        components.  Expressed as coordinates in our local coordinate frame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">comp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">ll_x</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">outer_x</span>
+            <span class="n">ll_y</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">outer_y</span>
+            <span class="n">ur_x</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">outer_x2</span>
+            <span class="n">ur_y</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">outer_y2</span>
+
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">ll_x</span><span class="p">:</span>
+                <span class="n">ll_x</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">x</span>
+            <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">x2</span> <span class="o">&gt;</span> <span class="n">ur_x</span><span class="p">:</span>
+                <span class="n">ur_x</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">x2</span>
+            <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">ll_y</span><span class="p">:</span>
+                <span class="n">ll_y</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">y</span>
+            <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">y2</span> <span class="o">&gt;</span> <span class="n">ur_y</span><span class="p">:</span>
+                <span class="n">ur_y</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">y2</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">ll_x</span><span class="p">,</span> <span class="n">ll_y</span><span class="p">,</span> <span class="n">ur_x</span><span class="p">,</span> <span class="n">ur_y</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_dispatch_draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Renders the named *layer* of this component.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform_view_bounds</span><span class="p">(</span><span class="n">view_bounds</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">new_bounds</span> <span class="o">==</span> <span class="n">empty_rectangle</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_needed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">do_layout</span><span class="p">()</span>
+
+        <span class="c1"># Give the container a chance to draw first for the layers that are</span>
+        <span class="c1"># considered &quot;under&quot; or &quot;at&quot; the main layer level</span>
+        <span class="k">if</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">container_under_layers</span><span class="p">:</span>
+            <span class="n">my_handler</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_draw_container_&quot;</span> <span class="o">+</span> <span class="n">layer</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">my_handler</span><span class="p">:</span>
+                <span class="n">my_handler</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+        <span class="c1"># Now transform coordinates and draw the children</span>
+        <span class="n">visible_components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_visible_components</span><span class="p">(</span><span class="n">new_bounds</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">visible_components</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">visible_components</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">unified_draw</span><span class="p">:</span>
+                        <span class="c1"># Plot containers that want unified_draw only get</span>
+                        <span class="c1"># called if their draw_layer matches the current layer</span>
+                        <span class="c1"># we&#39;re rendering</span>
+                        <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">draw_layer</span> <span class="o">==</span> <span class="n">layer</span><span class="p">:</span>
+                            <span class="n">component</span><span class="o">.</span><span class="n">_draw</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">new_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">component</span><span class="o">.</span><span class="n">_dispatch_draw</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">new_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+        <span class="c1"># The container&#39;s annotation and overlay layers draw over those of</span>
+        <span class="c1"># its components.</span>
+        <span class="c1"># FIXME: This needs to be abstracted so that when subclasses override</span>
+        <span class="c1"># the draw_order list, these are pulled from the subclass list instead</span>
+        <span class="c1"># of hardcoded here.</span>
+        <span class="k">if</span> <span class="n">layer</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;annotation&quot;</span><span class="p">,</span> <span class="s2">&quot;overlay&quot;</span><span class="p">,</span> <span class="s2">&quot;border&quot;</span><span class="p">):</span>
+            <span class="n">my_handler</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_draw_container_&quot;</span> <span class="o">+</span> <span class="n">layer</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">my_handler</span><span class="p">:</span>
+                <span class="n">my_handler</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_draw_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">):</span>
+        <span class="s2">&quot;Draw the container background in a specified graphics context&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_draw_container_background</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_draw_background</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_draw_container_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_draw_overlay</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_draw_container_underlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_draw_underlay</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_draw_container_border</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_draw_border</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_visible_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a list of this plot&#39;s children that are in the bounds. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">visible</span><span class="p">]</span>
+
+        <span class="n">visible_components</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">component</span><span class="o">.</span><span class="n">visible</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">intersect_bounds</span><span class="p">(</span>
+                <span class="n">component</span><span class="o">.</span><span class="n">outer_position</span> <span class="o">+</span> <span class="n">component</span><span class="o">.</span><span class="n">outer_bounds</span><span class="p">,</span> <span class="n">bounds</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">tmp</span> <span class="o">!=</span> <span class="n">empty_rectangle</span><span class="p">:</span>
+                <span class="n">visible_components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">visible_components</span>
+
+    <span class="k">def</span> <span class="nf">_should_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns True if it is appropriate for the container to lay out</span>
+<span class="sd">        the component; False if not.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">component</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">component</span><span class="o">.</span><span class="n">visible</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">component</span><span class="o">.</span><span class="n">invisible_layout</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_should_compact</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns True if the container needs to call compact().  Subclasses</span>
+<span class="sd">        can overload this method as needed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_size</span><span class="p">:</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span>
+            <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">outer_position</span>
+                <span class="n">x2</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">outer_x2</span>
+                <span class="n">y2</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">outer_y2</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">x2</span> <span class="o">&gt;=</span> <span class="n">width</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">y2</span> <span class="o">&gt;=</span> <span class="n">height</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_transform_view_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Transforms the given view bounds into our local space and computes a</span>
+<span class="sd">        new region that can be handed off to our children.  Returns a 4-tuple</span>
+<span class="sd">        of the new position+bounds, or None (if None was passed in), or the</span>
+<span class="sd">        value of empty_rectangle (from enable.base) if the intersection</span>
+<span class="sd">        resulted in a null region.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">view_bounds</span><span class="p">:</span>
+            <span class="c1"># Check if we are visible</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">intersect_bounds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tmp</span> <span class="o">==</span> <span class="n">empty_rectangle</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">empty_rectangle</span>
+            <span class="c1"># Compute new_bounds, which is the view_bounds transformed into</span>
+            <span class="c1"># our coordinate space</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">view_bounds</span>
+            <span class="n">new_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_bounds</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">new_bounds</span>
+
+    <span class="k">def</span> <span class="nf">_component_bounds_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">):</span>
+        <span class="s2">&quot;Called by contained objects when their bounds change&quot;</span>
+        <span class="c1"># For now, just punt and call compact()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_size</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compact</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_component_position_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">):</span>
+        <span class="s2">&quot;Called by contained objects when their position changes&quot;</span>
+        <span class="c1"># For now, just punt and call compact()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_size</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compact</span><span class="p">()</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Deprecated interface</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_draw_overlays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Method for backward compatability with old drawing scheme.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Containter._draw_overlays is deprecated.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">overlays</span><span class="p">:</span>
+            <span class="n">component</span><span class="o">.</span><span class="n">overlay</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Property setters &amp; getters</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_get_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span>
+
+    <span class="k">def</span> <span class="nf">_set_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_components</span> <span class="o">=</span> <span class="n">new</span>
+
+    <span class="k">def</span> <span class="nf">_get_layout_needed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Override the parent implementation to take into account whether any</span>
+        <span class="c1"># of our contained components need layout.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout_needed</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">layout_needed</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Interactor interface</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Container.normal_mouse_leave"><a class="viewcode-back" href="../../api/enable.container.html#enable.container.Container.normal_mouse_leave">[docs]</a>    <span class="k">def</span> <span class="nf">normal_mouse_leave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">push_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_event_transform</span><span class="p">(</span><span class="n">event</span><span class="p">),</span> <span class="n">caller</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handlers</span><span class="p">:</span>
+            <span class="n">component</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="s2">&quot;mouse_leave&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handlers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">caller</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_container_handle_mouse_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method allows the container to handle a mouse event before its</span>
+<span class="sd">        children get to see it.  Once the event gets handled, its .handled</span>
+<span class="sd">        should be set to True, and contained components will not be called</span>
+<span class="sd">        with the event.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># super(Container, self)._dispatch_stateful_event(event, suffix)</span>
+        <span class="n">Component</span><span class="o">.</span><span class="n">_dispatch_stateful_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Container.get_event_transform"><a class="viewcode-back" href="../../api/enable.container.html#enable.container.Container.get_event_transform">[docs]</a>    <span class="k">def</span> <span class="nf">get_event_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">affine</span><span class="o">.</span><span class="n">affine_from_translation</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_dispatch_stateful_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dispatches a mouse event based on the current event_state.  Overrides</span>
+<span class="sd">        the default Interactor._dispatch_stateful_event by adding some default</span>
+<span class="sd">        behavior to send all events to our contained children.</span>
+
+<span class="sd">        &quot;suffix&quot; is the name of the mouse event as a suffix to the event state</span>
+<span class="sd">        name, e.g. &quot;_left_down&quot; or &quot;_window_enter&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">event</span><span class="o">.</span><span class="n">handled</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">BlobFrameEvent</span><span class="p">):</span>
+                <span class="c1"># This kind of event does not have a meaningful location. Just</span>
+                <span class="c1"># let all of the child components see it.</span>
+                <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">component</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="n">components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components_at</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+            <span class="c1"># Translate the event&#39;s location to be relative to this container</span>
+            <span class="n">event</span><span class="o">.</span><span class="n">push_transform</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_event_transform</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">),</span> <span class="n">caller</span><span class="o">=</span><span class="bp">self</span>
+            <span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">new_component_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+
+                <span class="c1"># For &quot;real&quot; mouse events (i.e., not pre_mouse_* events),</span>
+                <span class="c1"># notify the previous listening components of a mouse or</span>
+                <span class="c1"># drag leave</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">suffix</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;pre_&quot;</span><span class="p">):</span>
+                    <span class="n">components_left</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handlers</span> <span class="o">-</span> <span class="n">new_component_set</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">components_left</span><span class="p">:</span>
+                        <span class="n">leave_event</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">MouseEvent</span><span class="p">):</span>
+                            <span class="n">leave_event</span> <span class="o">=</span> <span class="n">event</span>
+                            <span class="n">leave_suffix</span> <span class="o">=</span> <span class="s2">&quot;mouse_leave&quot;</span>
+                        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">DragEvent</span><span class="p">):</span>
+                            <span class="n">leave_event</span> <span class="o">=</span> <span class="n">event</span>
+                            <span class="n">leave_suffix</span> <span class="o">=</span> <span class="s2">&quot;drag_leave&quot;</span>
+                        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="p">(</span><span class="n">BlobEvent</span><span class="p">,</span> <span class="n">BlobFrameEvent</span><span class="p">)):</span>
+                            <span class="c1"># Do not generate a &#39;leave&#39; event.</span>
+                            <span class="k">pass</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># TODO: think of a better way to handle this rare</span>
+                            <span class="c1"># case?</span>
+                            <span class="n">leave_event</span> <span class="o">=</span> <span class="n">MouseEvent</span><span class="p">(</span>
+                                <span class="n">x</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">window</span>
+                            <span class="p">)</span>
+                            <span class="n">leave_suffix</span> <span class="o">=</span> <span class="s2">&quot;mouse_leave&quot;</span>
+
+                        <span class="k">if</span> <span class="n">leave_event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components_left</span><span class="p">:</span>
+                                <span class="n">component</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span>
+                                    <span class="n">leave_event</span><span class="p">,</span> <span class="s2">&quot;pre_&quot;</span> <span class="o">+</span> <span class="n">leave_suffix</span>
+                                <span class="p">)</span>
+                                <span class="n">component</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">leave_event</span><span class="p">,</span> <span class="n">leave_suffix</span><span class="p">)</span>
+                                <span class="n">event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">False</span>
+
+                    <span class="c1"># Notify new components of a mouse enter, if the event is</span>
+                    <span class="c1"># not a mouse_leave or a drag_leave</span>
+                    <span class="k">if</span> <span class="n">suffix</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;mouse_leave&quot;</span><span class="p">,</span> <span class="s2">&quot;drag_leave&quot;</span><span class="p">):</span>
+                        <span class="n">components_entered</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">new_component_set</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handlers</span>
+                        <span class="p">)</span>
+                        <span class="k">if</span> <span class="n">components_entered</span><span class="p">:</span>
+                            <span class="n">enter_event</span> <span class="o">=</span> <span class="kc">None</span>
+                            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">MouseEvent</span><span class="p">):</span>
+                                <span class="n">enter_event</span> <span class="o">=</span> <span class="n">event</span>
+                                <span class="n">enter_suffix</span> <span class="o">=</span> <span class="s2">&quot;mouse_enter&quot;</span>
+                            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">DragEvent</span><span class="p">):</span>
+                                <span class="n">enter_event</span> <span class="o">=</span> <span class="n">event</span>
+                                <span class="n">enter_suffix</span> <span class="o">=</span> <span class="s2">&quot;drag_enter&quot;</span>
+                            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="p">(</span><span class="n">BlobEvent</span><span class="p">,</span> <span class="n">BlobFrameEvent</span><span class="p">)):</span>  <span class="c1"># noqa: E501</span>
+                                <span class="c1"># Do not generate an &#39;enter&#39; event.</span>
+                                <span class="k">pass</span>
+                            <span class="k">if</span> <span class="n">enter_event</span><span class="p">:</span>
+                                <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components_entered</span><span class="p">:</span>
+                                    <span class="n">component</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span>
+                                        <span class="n">enter_event</span><span class="p">,</span> <span class="s2">&quot;pre_&quot;</span> <span class="o">+</span> <span class="n">enter_suffix</span>
+                                    <span class="p">)</span>
+                                    <span class="n">component</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span>
+                                        <span class="n">enter_event</span><span class="p">,</span> <span class="n">enter_suffix</span>
+                                    <span class="p">)</span>
+                                    <span class="n">event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="c1"># Handle the actual event</span>
+                <span class="c1"># Only add event handlers to the list of previous event</span>
+                <span class="c1"># handlers if they actually receive the event (and the event</span>
+                <span class="c1"># is not a pre_* event).</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">suffix</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;pre_&quot;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handlers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="p">:</span>
+                    <span class="n">component</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">suffix</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;pre_&quot;</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handlers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">handled</span><span class="p">:</span>
+                        <span class="k">break</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">event</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">caller</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">event</span><span class="o">.</span><span class="n">handled</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_container_handle_mouse_event</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Event handlers</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_auto_size_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="c1"># For safety, re-compute our bounds</span>
+        <span class="k">if</span> <span class="n">new</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compact</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_window_resized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newsize</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">newsize</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[</span><span class="n">newsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">newsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">]</span>
+
+    <span class="c1"># FIXME: Need a _window_changed to remove this handler if the window</span>
+    <span class="c1"># changes</span>
+
+    <span class="k">def</span> <span class="nf">_fit_window_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_window</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_window</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_window</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_window_resized</span><span class="p">,</span> <span class="s2">&quot;resized&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_window</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_window_resized</span><span class="p">,</span> <span class="s2">&quot;resized&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_bounds_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="c1"># crappy... calling our parent&#39;s handler seems like a common traits</span>
+        <span class="c1"># event handling problem</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Container</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_bounds_changed</span><span class="p">(</span><span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layout_needed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_draw</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_bounds_items_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Container</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_bounds_items_changed</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layout_needed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_draw</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_bgcolor_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_draw</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__components_items_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layout_needed</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">__components_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layout_needed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_draw</span><span class="p">()</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Old / deprecated draw methods; here for backwards compatibility</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_draw_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draws the component.</span>
+
+<span class="sd">        This method is preserved for backwards compatibility. Overrides</span>
+<span class="sd">        the implementation in Component.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_antialias</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_draw_container</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_draw_background</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_draw_underlay</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_draw_children</span><span class="p">(</span>
+                <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span>
+            <span class="p">)</span>  <span class="c1"># This was children_draw_mode</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_draw_overlays</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_draw_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">):</span>
+
+        <span class="n">new_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform_view_bounds</span><span class="p">(</span><span class="n">view_bounds</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">new_bounds</span> <span class="o">==</span> <span class="n">empty_rectangle</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_antialias</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">new_bounds</span><span class="p">:</span>
+                    <span class="n">tmp</span> <span class="o">=</span> <span class="n">intersect_bounds</span><span class="p">(</span>
+                        <span class="n">component</span><span class="o">.</span><span class="n">outer_position</span> <span class="o">+</span> <span class="n">component</span><span class="o">.</span><span class="n">outer_bounds</span><span class="p">,</span>
+                        <span class="n">new_bounds</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">tmp</span> <span class="o">==</span> <span class="n">empty_rectangle</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+                    <span class="n">component</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">new_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

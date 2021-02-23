@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.events &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.events</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Define the event objects and traits used by Enable components.</span>
+
+<span class="sd">For a list of all the possible event suffixes, see interactor.py.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">reduce</span>
+
+<span class="c1"># Major library imports</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">array</span><span class="p">,</span> <span class="n">dot</span>
+
+<span class="c1"># Enthought imports</span>
+<span class="kn">from</span> <span class="nn">kiva</span> <span class="k">import</span> <span class="n">affine</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">ReadOnly</span>
+
+
+<div class="viewcode-block" id="BasicEvent"><a class="viewcode-back" href="../../api/enable.events.html#enable.events.BasicEvent">[docs]</a><span class="k">class</span> <span class="nc">BasicEvent</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">Float</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">Float</span>
+
+    <span class="c1"># True if the event has been handled.</span>
+    <span class="n">handled</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># The AbstractWindow instance through/from which this event was fired.</span>
+    <span class="c1"># Can be None.</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="n">Any</span>
+
+    <span class="c1"># (x,y) position stack; initialized to an empty list</span>
+    <span class="n">_pos_stack</span> <span class="o">=</span> <span class="n">List</span><span class="p">(())</span>
+
+    <span class="c1"># Affine transform stack; initialized to an empty list</span>
+    <span class="n">_transform_stack</span> <span class="o">=</span> <span class="n">List</span><span class="p">(())</span>
+
+    <span class="c1"># This is a list of objects that have transformed the event&#39;s</span>
+    <span class="c1"># coordinates.  This can be used to recreate the dispatch path</span>
+    <span class="c1"># that the event took.</span>
+    <span class="n">dispatch_history</span> <span class="o">=</span> <span class="n">List</span><span class="p">()</span>
+
+<div class="viewcode-block" id="BasicEvent.push_transform"><a class="viewcode-back" href="../../api/enable.events.html#enable.events.BasicEvent.push_transform">[docs]</a>    <span class="k">def</span> <span class="nf">push_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">caller</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves the current transform in a stack and sets the given transform</span>
+<span class="sd">        to be the active one.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">array</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">transform</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pos_stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transform_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="k">if</span> <span class="n">caller</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dispatch_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">caller</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BasicEvent.pop"><a class="viewcode-back" href="../../api/enable.events.html#enable.events.BasicEvent.pop">[docs]</a>    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">caller</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Restores a previous position of the event.  If **count** is provided,</span>
+<span class="sd">        then pops **count** elements off of the event stack.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pos_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_transform_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transform_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">caller</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">caller</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">dispatch_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dispatch_history</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="BasicEvent.offset_xy"><a class="viewcode-back" href="../../api/enable.events.html#enable.events.BasicEvent.offset_xy">[docs]</a>    <span class="k">def</span> <span class="nf">offset_xy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin_x</span><span class="p">,</span> <span class="n">origin_y</span><span class="p">,</span> <span class="n">caller</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Shifts this event to be in the coordinate frame whose origin, specified</span>
+<span class="sd">        in the event&#39;s coordinate frame, is (origin_x, origin_y).</span>
+
+<span class="sd">        Basically, a component calls event.offset_xy(\*self.position) to shift</span>
+<span class="sd">        the event into its own coordinate frame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">push_transform</span><span class="p">(</span>
+            <span class="n">affine</span><span class="o">.</span><span class="n">affine_from_translation</span><span class="p">(</span><span class="o">-</span><span class="n">origin_x</span><span class="p">,</span> <span class="o">-</span><span class="n">origin_y</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">caller</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dispatch_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">caller</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BasicEvent.scale_xy"><a class="viewcode-back" href="../../api/enable.events.html#enable.events.BasicEvent.scale_xy">[docs]</a>    <span class="k">def</span> <span class="nf">scale_xy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale_x</span><span class="p">,</span> <span class="n">scale_y</span><span class="p">,</span> <span class="n">caller</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Scales the event to be in the scale specified.</span>
+
+<span class="sd">        A component calls event.scale_xy(scale) to scale the event into its own</span>
+<span class="sd">        coordinate frame when the ctm has been scaled.  This operation is used</span>
+<span class="sd">        for zooming.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Note that the meaning of scale_x and scale_y for Enable</span>
+        <span class="c1"># is the inverted from the meaning for Kiva.affine.</span>
+        <span class="c1"># TODO: Fix this discrepancy.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">push_transform</span><span class="p">(</span><span class="n">affine</span><span class="o">.</span><span class="n">affine_from_scale</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">scale_x</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">scale_y</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">caller</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dispatch_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">caller</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BasicEvent.net_transform"><a class="viewcode-back" href="../../api/enable.events.html#enable.events.BasicEvent.net_transform">[docs]</a>    <span class="k">def</span> <span class="nf">net_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a single transformation (currently only (dx,dy)) that reflects</span>
+<span class="sd">        the total amount of change from the original coordinates to the current</span>
+<span class="sd">        offset coordinates stored in self.x and self.y.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transform_stack</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">affine</span><span class="o">.</span><span class="n">affine_identity</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="n">dot</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform_stack</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="BasicEvent.current_pointer_position"><a class="viewcode-back" href="../../api/enable.events.html#enable.events.BasicEvent.current_pointer_position">[docs]</a>    <span class="k">def</span> <span class="nf">current_pointer_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the current pointer position in the transformed coordinates</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">window_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">get_pointer_position</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">array</span><span class="p">(</span><span class="n">window_pos</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">net_transform</span><span class="p">())[:</span><span class="mi">2</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">(x=</span><span class="si">%r</span><span class="s2">, y=</span><span class="si">%r</span><span class="s2">, handled=</span><span class="si">%r</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handled</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+
+<div class="viewcode-block" id="MouseEvent"><a class="viewcode-back" href="../../api/enable.events.html#enable.events.MouseEvent">[docs]</a><span class="k">class</span> <span class="nc">MouseEvent</span><span class="p">(</span><span class="n">BasicEvent</span><span class="p">):</span>
+    <span class="n">alt_down</span> <span class="o">=</span> <span class="n">ReadOnly</span>
+    <span class="n">control_down</span> <span class="o">=</span> <span class="n">ReadOnly</span>
+    <span class="n">shift_down</span> <span class="o">=</span> <span class="n">ReadOnly</span>
+    <span class="n">left_down</span> <span class="o">=</span> <span class="n">ReadOnly</span>
+    <span class="n">middle_down</span> <span class="o">=</span> <span class="n">ReadOnly</span>
+    <span class="n">right_down</span> <span class="o">=</span> <span class="n">ReadOnly</span>
+    <span class="n">mouse_wheel</span> <span class="o">=</span> <span class="n">ReadOnly</span>
+    <span class="n">mouse_wheel_axis</span> <span class="o">=</span> <span class="n">ReadOnly</span>
+    <span class="n">mouse_wheel_delta</span> <span class="o">=</span> <span class="n">ReadOnly</span></div>
+
+
+<span class="n">mouse_event_trait</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="n">MouseEvent</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DragEvent"><a class="viewcode-back" href="../../api/enable.events.html#enable.events.DragEvent">[docs]</a><span class="k">class</span> <span class="nc">DragEvent</span><span class="p">(</span><span class="n">BasicEvent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A system UI drag-and-drop operation.  This is not the same as a</span>
+<span class="sd">    DragTool event.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">Float</span>
+    <span class="n">y0</span> <span class="o">=</span> <span class="n">Float</span>
+    <span class="n">copy</span> <span class="o">=</span> <span class="n">ReadOnly</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">ReadOnly</span>
+    <span class="n">start_event</span> <span class="o">=</span> <span class="n">ReadOnly</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">(x=</span><span class="si">%r</span><span class="s2">, y=</span><span class="si">%r</span><span class="s2">, x0=</span><span class="si">%r</span><span class="s2">, y0=</span><span class="si">%r</span><span class="s2">, handled=</span><span class="si">%r</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x0</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y0</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handled</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+
+<span class="n">drag_event_trait</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="n">DragEvent</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="KeyEvent"><a class="viewcode-back" href="../../api/enable.events.html#enable.events.KeyEvent">[docs]</a><span class="k">class</span> <span class="nc">KeyEvent</span><span class="p">(</span><span class="n">BasicEvent</span><span class="p">):</span>
+    <span class="n">event_type</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">ReadOnly</span>
+    <span class="p">)</span>  <span class="c1"># one of &#39;key_pressed&#39;, &#39;key_released&#39; or &#39;character&#39;</span>
+
+    <span class="c1"># &#39;character&#39; is a single unicode character or is a string describing the</span>
+    <span class="c1"># high-bit and control characters.  (See module enable.toolkit_constants)</span>
+    <span class="c1"># depending on the event type, it may represent the physical key pressed,</span>
+    <span class="c1"># or the text that was generated by a keystroke</span>
+    <span class="n">character</span> <span class="o">=</span> <span class="n">ReadOnly</span>
+
+    <span class="n">alt_down</span> <span class="o">=</span> <span class="n">ReadOnly</span>
+    <span class="n">control_down</span> <span class="o">=</span> <span class="n">ReadOnly</span>
+    <span class="n">shift_down</span> <span class="o">=</span> <span class="n">ReadOnly</span>
+
+    <span class="n">event</span> <span class="o">=</span> <span class="n">ReadOnly</span>  <span class="c1"># XXX the underlying toolkit&#39;s event object, remove?</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">(event_type=</span><span class="si">%r</span><span class="s2">, character=</span><span class="si">%r</span><span class="s2">, alt_down=</span><span class="si">%r</span><span class="s2">, control_down=</span><span class="si">%r</span><span class="s2">, &quot;</span>
+             <span class="s2">&quot;shift_down=</span><span class="si">%r</span><span class="s2">, handled=</span><span class="si">%r</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">event_type</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">alt_down</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">control_down</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">shift_down</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">handled</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+
+<span class="n">key_event_trait</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="n">KeyEvent</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="BlobEvent"><a class="viewcode-back" href="../../api/enable.events.html#enable.events.BlobEvent">[docs]</a><span class="k">class</span> <span class="nc">BlobEvent</span><span class="p">(</span><span class="n">BasicEvent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Represent a single pointer event from a multi-pointer event system.</span>
+
+<span class="sd">    Will be used with events:</span>
+<span class="sd">        blob_down</span>
+<span class="sd">        blob_move</span>
+<span class="sd">        blob_up</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># The ID of the pointer.</span>
+    <span class="n">bid</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># If a blob_move event, then these will be the coordinates of the blob at</span>
+    <span class="c1"># the previous frame.</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">y0</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BlobEvent.push_transform"><a class="viewcode-back" href="../../api/enable.events.html#enable.events.BlobEvent.push_transform">[docs]</a>    <span class="k">def</span> <span class="nf">push_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">caller</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Saves the current transform in a stack and sets the given transform</span>
+<span class="sd">        to be the active one.</span>
+
+<span class="sd">        This will also adjust x0 and y0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">array</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">transform</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pos_stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transform_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">array</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">x0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">transform</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x0</span> <span class="o">=</span> <span class="n">x0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y0</span> <span class="o">=</span> <span class="n">y0</span>
+        <span class="k">if</span> <span class="n">caller</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dispatch_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">caller</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">(bid=</span><span class="si">%r</span><span class="s2">, x=</span><span class="si">%r</span><span class="s2">, y=</span><span class="si">%r</span><span class="s2">, x0=</span><span class="si">%r</span><span class="s2">, y0=</span><span class="si">%r</span><span class="s2">, handled=</span><span class="si">%r</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bid</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x0</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y0</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handled</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+
+<span class="n">blob_event_trait</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="n">BlobEvent</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="BlobFrameEvent"><a class="viewcode-back" href="../../api/enable.events.html#enable.events.BlobFrameEvent">[docs]</a><span class="k">class</span> <span class="nc">BlobFrameEvent</span><span class="p">(</span><span class="n">BasicEvent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Represent the framing events for a multi-pointer event system.</span>
+
+<span class="sd">    Will be used with events:</span>
+<span class="sd">        blob_frame_begin</span>
+<span class="sd">        blob_frame_end</span>
+
+<span class="sd">    These can be used to synchronize the effects of multiple pointers.</span>
+
+<span class="sd">    The position traits are meaningless. These events will get passed down</span>
+<span class="sd">    through all components. Also, no component should mark it as handled. The</span>
+<span class="sd">    event must be dispatched through whether the component takes action based</span>
+<span class="sd">    on it or not.</span>
+
+<span class="sd">    NOTE: Frames without any blob events may or may not generate</span>
+<span class="sd">    BlobFrameEvents.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># The ID number of the frame. This is generally implemented as a counter.</span>
+    <span class="c1"># Adjacent frames should have different frame IDs, but it is permitted for</span>
+    <span class="c1"># the counter to wrap around eventually or for the Enable application to</span>
+    <span class="c1"># disconnect and reconnect to a multi-pointer system and have the counter</span>
+    <span class="c1"># reset to 0.</span>
+    <span class="n">fid</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># The timestamp of the frame in seconds from an unspecified origin.</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+
+    <span class="c1"># Never mark this event as handled. Let every component respond to it.</span>
+    <span class="c1"># handled = ReadOnly(False)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">(fid=</span><span class="si">%r</span><span class="s2">, t=</span><span class="si">%r</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+
+<span class="n">blob_frame_event_trait</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="n">BlobFrameEvent</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
