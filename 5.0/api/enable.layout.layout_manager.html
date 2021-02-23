@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.layout.layout_manager module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable.layout package" href="enable.layout.html" >
+    <link rel="next" title="enable.layout.linear_symbolic module" href="enable.layout.linear_symbolic.html" >
+    <link rel="prev" title="enable.layout.layout_helpers module" href="enable.layout.layout_helpers.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" >enable package</a></li>
+          <li class="active"><a href="enable.layout.html" accesskey="U">enable.layout package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.layout.linear_symbolic.html" title="enable.layout.linear_symbolic module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.layout.layout_helpers.html" title="enable.layout.layout_helpers module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.layout.layout_manager">
+<span id="enable-layout-layout-manager-module"></span><h1>enable.layout.layout_manager module<a class="headerlink" href="#module-enable.layout.layout_manager" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="enable.layout.layout_manager.LayoutManager">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.layout_manager.</code><code class="sig-name descname">LayoutManager</code><a class="reference internal" href="../_modules/enable/layout/layout_manager.html#LayoutManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_manager.LayoutManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class which uses a kiwi solver to manage a system
+of constraints.</p>
+<dl class="method">
+<dt id="enable.layout.layout_manager.LayoutManager.get_max_size">
+<code class="sig-name descname">get_max_size</code><span class="sig-paren">(</span><em class="sig-param">width</em>, <em class="sig-param">height</em>, <em class="sig-param">strength=1000.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_manager.html#LayoutManager.get_max_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_manager.LayoutManager.get_max_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run an iteration of the solver with the suggested size of
+the component set to a very large value. This will cause the
+solver to effectively compute the maximum size that the window
+can be to solve the system. The return value is a tuple numbers.
+If one of the numbers is -1, it indicates there is no maximum in
+that direction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>width</strong> (<em>Constraint Variable</em>) – The constraint variable representing the width of the
+main layout container.</p></li>
+<li><p><strong>height</strong> (<em>Constraint Variable</em>) – The constraint variable representing the height of the
+main layout container.</p></li>
+<li><p><strong>strength</strong> (<em>kiwisolver strength</em><em>, </em><em>optional</em>) – The strength with which to perform the layout using the
+current size of the container. i.e. the strength of the
+resize. The default is kiwisolver.strength.medium.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong> – The floating point (max_width, max_height) size of the
+container which would best satisfy the set of constraints.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(float or -1, float or -1)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.layout_manager.LayoutManager.get_min_size">
+<code class="sig-name descname">get_min_size</code><span class="sig-paren">(</span><em class="sig-param">width</em>, <em class="sig-param">height</em>, <em class="sig-param">strength=1000.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_manager.html#LayoutManager.get_min_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_manager.LayoutManager.get_min_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run an iteration of the solver with the suggested size of the
+component set to (0, 0). This will cause the solver to effectively
+compute the minimum size that the window can be to solve the
+system.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>width</strong> (<em>Constraint Variable</em>) – The constraint variable representing the width of the
+main layout container.</p></li>
+<li><p><strong>height</strong> (<em>Constraint Variable</em>) – The constraint variable representing the height of the
+main layout container.</p></li>
+<li><p><strong>strength</strong> (<em>kiwisolver strength</em><em>, </em><em>optional</em>) – The strength with which to perform the layout using the
+current size of the container. i.e. the strength of the
+resize. The default is kiwisolver.strength.medium.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong> – The floating point (min_width, min_height) size of the
+container which would best satisfy the set of constraints.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.layout_manager.LayoutManager.initialize">
+<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><em class="sig-param">constraints</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_manager.html#LayoutManager.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_manager.LayoutManager.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the solver with the given constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>constraints</strong> (<em>Iterable</em>) – An iterable that yields the constraints to add to the
+solvers.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.layout_manager.LayoutManager.layout">
+<code class="sig-name descname">layout</code><span class="sig-paren">(</span><em class="sig-param">cb</em>, <em class="sig-param">width</em>, <em class="sig-param">height</em>, <em class="sig-param">size</em>, <em class="sig-param">strength=1000.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_manager.html#LayoutManager.layout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_manager.LayoutManager.layout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform an iteration of the solver for the new width and
+height constraint variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cb</strong> (<em>callable</em>) – A callback which will be called when new values from the
+solver are available. This will be called from within a
+solver context while the solved values are valid. Thus
+the new values should be consumed before the callback
+returns.</p></li>
+<li><p><strong>width</strong> (<em>Constraint Variable</em>) – The constraint variable representing the width of the
+main layout container.</p></li>
+<li><p><strong>height</strong> (<em>Constraint Variable</em>) – The constraint variable representing the height of the
+main layout container.</p></li>
+<li><p><strong>size</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>)</em>) – The (width, height) size tuple which is the current size
+of the main layout container.</p></li>
+<li><p><strong>strength</strong> (<em>kiwisolver strength</em><em>, </em><em>optional</em>) – The strength with which to perform the layout using the
+current size of the container. i.e. the strength of the
+resize. The default is kiwisolver.strength.medium.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.layout_manager.LayoutManager.replace_constraints">
+<code class="sig-name descname">replace_constraints</code><span class="sig-paren">(</span><em class="sig-param">old_cns</em>, <em class="sig-param">new_cns</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/layout_manager.html#LayoutManager.replace_constraints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.layout_manager.LayoutManager.replace_constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace constraints in the solver.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>old_cns</strong> (<em>list</em>) – The list of kiwi constraints to remove from the
+solver.</p></li>
+<li><p><strong>new_cns</strong> (<em>list</em>) – The list of kiwi constraints to add to the solver.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.layout.layout_helpers.html"
+                        title="previous chapter">enable.layout.layout_helpers module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.layout.linear_symbolic.html"
+                        title="next chapter">enable.layout.linear_symbolic module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.layout.layout_manager.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

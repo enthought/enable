@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.scrolled &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.scrolled</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="c1"># Enthought library imports</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">DelegatesTo</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Int</span>
+
+<span class="c1"># Local, relative imports</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">intersect_bounds</span><span class="p">,</span> <span class="n">empty_rectangle</span>
+<span class="kn">from</span> <span class="nn">.colors</span> <span class="k">import</span> <span class="n">ColorTrait</span>
+<span class="kn">from</span> <span class="nn">.component</span> <span class="k">import</span> <span class="n">Component</span>
+<span class="kn">from</span> <span class="nn">.container</span> <span class="k">import</span> <span class="n">Container</span>
+<span class="kn">from</span> <span class="nn">.viewport</span> <span class="k">import</span> <span class="n">Viewport</span>
+<span class="kn">from</span> <span class="nn">.native_scrollbar</span> <span class="k">import</span> <span class="n">NativeScrollBar</span>
+
+
+<div class="viewcode-block" id="Scrolled"><a class="viewcode-back" href="../../api/enable.scrolled.html#enable.scrolled.Scrolled">[docs]</a><span class="k">class</span> <span class="nc">Scrolled</span><span class="p">(</span><span class="n">Container</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A Scrolled acts like a viewport with scrollbars for positioning the view</span>
+<span class="sd">    position.  Rather than subclassing from viewport, it delegates to one.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># The component that we are viewing</span>
+    <span class="n">component</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Component</span><span class="p">)</span>
+
+    <span class="c1"># The viewport onto our component</span>
+    <span class="n">viewport_component</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Viewport</span><span class="p">,</span> <span class="p">())</span>
+
+    <span class="c1"># Whether or not the viewport should stay constrained to the bounds</span>
+    <span class="c1"># of the viewed component</span>
+    <span class="n">stay_inside</span> <span class="o">=</span> <span class="n">DelegatesTo</span><span class="p">(</span><span class="s2">&quot;viewport_component&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Where to anchor vertically on resizes</span>
+    <span class="n">vertical_anchor</span> <span class="o">=</span> <span class="n">DelegatesTo</span><span class="p">(</span><span class="s2">&quot;viewport_component&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Where to anchor vertically on resizes</span>
+    <span class="n">horizontal_anchor</span> <span class="o">=</span> <span class="n">DelegatesTo</span><span class="p">(</span><span class="s2">&quot;viewport_component&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Inside padding is a background drawn area between the edges or scrollbars</span>
+    <span class="c1"># and the scrolled area/left component.</span>
+    <span class="n">inside_padding_width</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="c1"># The inside border is a border drawn on the inner edge of the inside</span>
+    <span class="c1"># padding area to highlight the viewport.</span>
+    <span class="n">inside_border_color</span> <span class="o">=</span> <span class="n">ColorTrait</span><span class="p">(</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+    <span class="n">inside_border_width</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># The background color to use for filling in the padding area.</span>
+    <span class="n">bgcolor</span> <span class="o">=</span> <span class="n">ColorTrait</span><span class="p">(</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Should the horizontal scrollbar be shown?</span>
+    <span class="n">horiz_scrollbar</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Should the vertical scrollbar be shown?</span>
+    <span class="n">vert_scrollbar</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Should the scrollbars always be shown?</span>
+    <span class="n">always_show_sb</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Should the mouse wheel scroll the viewport?</span>
+    <span class="n">mousewheel_scroll</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Should the viewport update continuously as the scrollbar is dragged,</span>
+    <span class="c1"># or only when drag terminates (i.e. the user releases the mouse button)</span>
+    <span class="n">continuous_drag_update</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Override the default value of this inherited trait</span>
+    <span class="n">auto_size</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Traits for support of geophysics plotting</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="c1"># An alternate vertical scroll bar to control this Scrolled, instead of the</span>
+    <span class="c1"># default one that lives outside the scrolled region.</span>
+    <span class="n">alternate_vsb</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Component</span><span class="p">)</span>
+
+    <span class="c1"># The size of the left border space</span>
+    <span class="n">leftborder</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># A component to lay out to the left of the viewport area (e.g. a depth</span>
+    <span class="c1"># scale track)</span>
+    <span class="n">leftcomponent</span> <span class="o">=</span> <span class="n">Any</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Private traits</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="n">_vsb</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">NativeScrollBar</span><span class="p">)</span>
+    <span class="n">_hsb</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">NativeScrollBar</span><span class="p">)</span>
+
+    <span class="c1"># Stores the last horizontal and vertical scroll positions to avoid</span>
+    <span class="c1"># multiple updates in update_from_viewport()</span>
+    <span class="n">_last_hsb_pos</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">_last_vsb_pos</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+
+    <span class="c1"># Whether or not the viewport region is &quot;locked&quot; from updating via</span>
+    <span class="c1"># freeze_scroll_bounds()</span>
+    <span class="n">_sb_bounds_frozen</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Records if the horizontal scroll position has been updated while the</span>
+    <span class="c1"># Scrolled has been frozen</span>
+    <span class="n">_hscroll_position_updated</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Records if the vertical scroll position has been updated while the</span>
+    <span class="c1"># Scrolled has been frozen</span>
+    <span class="n">_vscroll_position_updated</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Whether or not to the scroll bars should cause an event</span>
+    <span class="c1"># update to fire on the viewport&#39;s view_position.  This is used to</span>
+    <span class="c1"># prevent redundant events when update_from_viewport() updates the</span>
+    <span class="c1"># scrollbar position.</span>
+    <span class="n">_hsb_generates_events</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">_vsb_generates_events</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Scrolled interface</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">,</span> <span class="o">**</span><span class="n">traits</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">component</span>
+        <span class="n">Container</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">traits</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_viewport_component_changed</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Scrolled.update_bounds"><a class="viewcode-back" href="../../api/enable.scrolled.html#enable.scrolled.Scrolled.update_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">update_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layout_needed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span><span class="o">.</span><span class="n">_widget_moved</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span><span class="o">.</span><span class="n">_widget_moved</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Scrolled.sb_height"><a class="viewcode-back" href="../../api/enable.scrolled.html#enable.scrolled.Scrolled.sb_height">[docs]</a>    <span class="k">def</span> <span class="nf">sb_height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the standard scroll bar height</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Perhaps a placeholder -- not sure if there&#39;s a way to get the</span>
+        <span class="c1"># standard width or height of a wx scrollbar -- you can set them to</span>
+        <span class="c1"># whatever you want.</span>
+        <span class="k">return</span> <span class="mi">15</span></div>
+
+<div class="viewcode-block" id="Scrolled.sb_width"><a class="viewcode-back" href="../../api/enable.scrolled.html#enable.scrolled.Scrolled.sb_width">[docs]</a>    <span class="k">def</span> <span class="nf">sb_width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the standard scroll bar width</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">15</span></div>
+
+<div class="viewcode-block" id="Scrolled.freeze_scroll_bounds"><a class="viewcode-back" href="../../api/enable.scrolled.html#enable.scrolled.Scrolled.freeze_scroll_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">freeze_scroll_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Prevents the scroll bounds on the scrollbar from updating until</span>
+<span class="sd">        unfreeze_scroll_bounds() is called.  This is useful on components with</span>
+<span class="sd">        view-dependent bounds; when the user is interacting with the scrollbar</span>
+<span class="sd">        or the viewport, this prevents the scrollbar from resizing underneath</span>
+<span class="sd">        them.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">continuous_drag_update</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sb_bounds_frozen</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Scrolled.unfreeze_scroll_bounds"><a class="viewcode-back" href="../../api/enable.scrolled.html#enable.scrolled.Scrolled.unfreeze_scroll_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">unfreeze_scroll_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Allows the scroll bounds to be updated by various trait changes.</span>
+<span class="sd">        See freeze_scroll_bounds().</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sb_bounds_frozen</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hscroll_position_updated</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_horizontal_scroll</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span><span class="o">.</span><span class="n">scroll_position</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hscroll_position_updated</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vscroll_position_updated</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_vertical_scroll</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span><span class="o">.</span><span class="n">scroll_position</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vscroll_position_updated</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_from_viewport</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Trait event handlers</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_compute_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the range_x and range_y tuples based on our component</span>
+<span class="sd">        and our viewport_component&#39;s bounds.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">comp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span>
+        <span class="n">viewport</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span>
+
+        <span class="n">offset</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">comp</span><span class="p">,</span> <span class="s2">&quot;bounds_offset&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+        <span class="n">ranges</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ndx</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">scrollrange</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">comp</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span> <span class="o">-</span> <span class="n">viewport</span><span class="o">.</span><span class="n">view_bounds</span><span class="p">[</span><span class="n">ndx</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">round</span><span class="p">(</span><span class="n">scrollrange</span> <span class="o">/</span> <span class="mf">20.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">ticksize</span> <span class="o">=</span> <span class="n">scrollrange</span> <span class="o">/</span> <span class="nb">round</span><span class="p">(</span><span class="n">scrollrange</span> <span class="o">/</span> <span class="mf">20.0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ticksize</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">ranges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="n">offset</span><span class="p">[</span><span class="n">ndx</span><span class="p">],</span>
+                    <span class="n">offset</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span> <span class="o">+</span> <span class="n">comp</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="n">ndx</span><span class="p">],</span>
+                    <span class="n">viewport</span><span class="o">.</span><span class="n">view_bounds</span><span class="p">[</span><span class="n">ndx</span><span class="p">],</span>
+                    <span class="n">ticksize</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ranges</span>
+
+<div class="viewcode-block" id="Scrolled.update_from_viewport"><a class="viewcode-back" href="../../api/enable.scrolled.html#enable.scrolled.Scrolled.update_from_viewport">[docs]</a>    <span class="k">def</span> <span class="nf">update_from_viewport</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Repositions the scrollbars based on the current position/bounds of</span>
+<span class="sd">            viewport_component.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sb_bounds_frozen</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span><span class="o">.</span><span class="n">view_position</span>
+        <span class="n">range_x</span><span class="p">,</span> <span class="n">range_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_ranges</span><span class="p">()</span>
+
+        <span class="n">modify_hsb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_hsb_pos</span>
+        <span class="n">modify_vsb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_vsb_pos</span>
+
+        <span class="k">if</span> <span class="n">modify_hsb</span> <span class="ow">and</span> <span class="n">modify_vsb</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hsb_generates_events</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hsb_generates_events</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">modify_hsb</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="n">range_x</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span><span class="o">.</span><span class="n">scroll_position</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_hsb_pos</span> <span class="o">=</span> <span class="n">x</span>
+
+        <span class="k">if</span> <span class="n">modify_vsb</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="n">range_y</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span><span class="o">.</span><span class="n">scroll_position</span> <span class="o">=</span> <span class="n">y</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_vsb_pos</span> <span class="o">=</span> <span class="n">y</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hsb_generates_events</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hsb_generates_events</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+    <span class="k">def</span> <span class="nf">_layout_and_draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layout_needed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_component_position_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layout_needed</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_bounds_changed_for_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layout_needed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_from_viewport</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_bounds_items_changed_for_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_from_viewport</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_position_changed_for_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_from_viewport</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_position_items_changed_for_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_from_viewport</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_view_bounds_changed_for_viewport_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_from_viewport</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_view_bounds_items_changed_for_viewport_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_from_viewport</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_view_position_changed_for_viewport_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_from_viewport</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_view_position_items_changed_for_viewport_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_from_viewport</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_component_bounds_items_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">added</span> <span class="o">!=</span> <span class="n">event</span><span class="o">.</span><span class="n">removed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_bounds</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_component_bounds_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">old</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">new</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">old</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">new</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">old</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">new</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_bounds</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_component_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">old</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">old</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_component_bounds_handler</span><span class="p">,</span> <span class="s2">&quot;bounds&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+            <span class="n">old</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_component_bounds_items_handler</span><span class="p">,</span>
+                <span class="s2">&quot;bounds_items&quot;</span><span class="p">,</span>
+                <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">new</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">Container</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">new</span>
+            <span class="n">new</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="n">new</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_component_bounds_handler</span><span class="p">,</span> <span class="s2">&quot;bounds&quot;</span><span class="p">)</span>
+        <span class="n">new</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_component_bounds_items_handler</span><span class="p">,</span> <span class="s2">&quot;bounds_items&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layout_needed</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_bgcolor_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layout_and_draw</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_inside_border_color_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layout_and_draw</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_inside_border_width_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layout_and_draw</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_inside_padding_width_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layout_needed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_viewport_component_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span> <span class="o">=</span> <span class="n">Viewport</span><span class="p">(</span>
+                <span class="n">stay_inside</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stay_inside</span><span class="p">,</span>
+                <span class="n">vertical_anchor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vertical_anchor</span><span class="p">,</span>
+                <span class="n">horizontal_anchor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">horizontal_anchor</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span><span class="o">.</span><span class="n">view_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span><span class="o">.</span><span class="n">_initialize_position</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_alternate_vsb_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_component_update</span><span class="p">(</span><span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_leftcomponent_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_component_update</span><span class="p">(</span><span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_component_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Generic function to manage adding and removing components &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">old</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">old</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">new</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_bounds_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="n">Component</span><span class="o">.</span><span class="n">_bounds_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_bounds</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_bounds_items_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">Component</span><span class="o">.</span><span class="n">_bounds_items_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_bounds</span><span class="p">()</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Protected methods</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_do_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; This is explicitly called by _draw().</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span><span class="o">.</span><span class="n">do_layout</span><span class="p">()</span>
+
+        <span class="c1"># Window is composed of border + scrollbar + canvas in each direction.</span>
+        <span class="c1"># To compute the overall geometry, first calculate whether component.x</span>
+        <span class="c1"># + the border fits in the x size of the window.</span>
+        <span class="c1"># If not, add sb, and decrease the y size of the window by the height</span>
+        <span class="c1"># of the scrollbar.</span>
+        <span class="c1"># Now, check whether component.y + the border is greater than the</span>
+        <span class="c1"># remaining y size of the window.  If it is not, add a scrollbar and</span>
+        <span class="c1"># decrease the x size of the window by the scrollbar width, and perform</span>
+        <span class="c1"># the first check again.</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout_needed</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">padding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inside_padding_width</span>
+        <span class="n">scrl_x_size</span><span class="p">,</span> <span class="n">scrl_y_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span>
+        <span class="n">cont_x_size</span><span class="p">,</span> <span class="n">cont_y_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">bounds</span>
+
+        <span class="c1"># available_x and available_y are the currently available size for the</span>
+        <span class="c1"># viewport</span>
+        <span class="n">available_x</span> <span class="o">=</span> <span class="n">scrl_x_size</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">padding</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">leftborder</span>
+        <span class="n">available_y</span> <span class="o">=</span> <span class="n">scrl_y_size</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">padding</span>
+
+        <span class="c1"># Figure out which scrollbars we will need</span>
+
+        <span class="n">need_x_scrollbar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">horiz_scrollbar</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">available_x</span> <span class="o">&lt;</span> <span class="n">cont_x_size</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">always_show_sb</span>
+        <span class="p">)</span>
+        <span class="n">need_y_scrollbar</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vert_scrollbar</span>
+            <span class="ow">and</span> <span class="p">((</span><span class="n">available_y</span> <span class="o">&lt;</span> <span class="n">cont_y_size</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">always_show_sb</span><span class="p">)</span>
+        <span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">alternate_vsb</span>
+
+        <span class="k">if</span> <span class="n">need_x_scrollbar</span><span class="p">:</span>
+            <span class="n">available_y</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sb_height</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">need_y_scrollbar</span><span class="p">:</span>
+            <span class="n">available_x</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sb_width</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">available_x</span> <span class="o">&lt;</span> <span class="n">cont_x_size</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">need_x_scrollbar</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">horiz_scrollbar</span><span class="p">):</span>
+            <span class="n">available_y</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sb_height</span><span class="p">()</span>
+            <span class="n">need_x_scrollbar</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Put the viewport in the right position</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span><span class="o">.</span><span class="n">outer_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="n">available_x</span><span class="p">,</span> <span class="n">available_y</span><span class="p">]</span>
+        <span class="n">container_y_pos</span> <span class="o">=</span> <span class="n">padding</span>
+
+        <span class="k">if</span> <span class="n">need_x_scrollbar</span><span class="p">:</span>
+            <span class="n">container_y_pos</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sb_height</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span><span class="o">.</span><span class="n">outer_position</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">padding</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">leftborder</span><span class="p">,</span>
+            <span class="n">container_y_pos</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="n">range_x</span><span class="p">,</span> <span class="n">range_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_ranges</span><span class="p">()</span>
+
+        <span class="c1"># Create, destroy, or set the attributes of the horizontal scrollbar</span>
+        <span class="k">if</span> <span class="n">need_x_scrollbar</span><span class="p">:</span>
+            <span class="n">bounds</span> <span class="o">=</span> <span class="p">[</span><span class="n">available_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sb_height</span><span class="p">()]</span>
+            <span class="n">hsb_position</span> <span class="o">=</span> <span class="p">[</span><span class="n">padding</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">leftborder</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span> <span class="o">=</span> <span class="n">NativeScrollBar</span><span class="p">(</span>
+                    <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">,</span>
+                    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+                    <span class="n">position</span><span class="o">=</span><span class="n">hsb_position</span><span class="p">,</span>
+                    <span class="nb">range</span><span class="o">=</span><span class="n">range_x</span><span class="p">,</span>
+                    <span class="n">enabled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">v_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span><span class="o">.</span><span class="n">view_position</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span><span class="o">.</span><span class="n">scroll_position</span> <span class="o">=</span> <span class="n">v_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_horizontal_scroll</span><span class="p">,</span> <span class="s2">&quot;scroll_position&quot;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_mouse_thumb_changed</span><span class="p">,</span> <span class="s2">&quot;mouse_thumb&quot;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="n">range_x</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">hsb_position</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_release_sb</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># We don&#39;t need to render the horizontal scrollbar, and we don&#39;t</span>
+            <span class="c1"># have one to update, either.</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># Create, destroy, or set the attributes of the vertical scrollbar</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alternate_vsb</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alternate_vsb</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sb_width</span><span class="p">(),</span> <span class="n">available_y</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alternate_vsb</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="mi">2</span> <span class="o">*</span> <span class="n">padding</span> <span class="o">+</span> <span class="n">available_x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">leftborder</span><span class="p">,</span>
+                <span class="n">container_y_pos</span><span class="p">,</span>
+            <span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">need_y_scrollbar</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">alternate_vsb</span><span class="p">):</span>
+            <span class="n">bounds</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sb_width</span><span class="p">(),</span> <span class="n">available_y</span><span class="p">]</span>
+            <span class="n">vsb_position</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="mi">2</span> <span class="o">*</span> <span class="n">padding</span> <span class="o">+</span> <span class="n">available_x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">leftborder</span><span class="p">,</span>
+                <span class="n">container_y_pos</span><span class="p">,</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span> <span class="o">=</span> <span class="n">NativeScrollBar</span><span class="p">(</span>
+                    <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">,</span>
+                    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+                    <span class="n">position</span><span class="o">=</span><span class="n">vsb_position</span><span class="p">,</span>
+                    <span class="nb">range</span><span class="o">=</span><span class="n">range_y</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">v_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span><span class="o">.</span><span class="n">view_position</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span><span class="o">.</span><span class="n">scroll_position</span> <span class="o">=</span> <span class="n">v_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_vertical_scroll</span><span class="p">,</span> <span class="s2">&quot;scroll_position&quot;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_mouse_thumb_changed</span><span class="p">,</span> <span class="s2">&quot;mouse_thumb&quot;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">vsb_position</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="n">range_y</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_release_sb</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># We don&#39;t need to render the vertical scrollbar, and we don&#39;t</span>
+            <span class="c1"># have one to update, either.</span>
+            <span class="k">pass</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layout_needed</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_release_sb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sb</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sb</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span><span class="p">:</span>
+                <span class="n">sb</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_vertical_scroll</span><span class="p">,</span>
+                    <span class="s2">&quot;scroll_position&quot;</span><span class="p">,</span>
+                    <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">sb</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hsb</span><span class="p">:</span>
+                <span class="n">sb</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_horizontal_scroll</span><span class="p">,</span>
+                    <span class="s2">&quot;scroll_position&quot;</span><span class="p">,</span>
+                    <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">sb</span><span class="p">)</span>
+            <span class="c1"># We shouldn&#39;t have to do this, but I&#39;m not sure why the object</span>
+            <span class="c1"># isn&#39;t getting garbage collected.</span>
+            <span class="c1"># It must be held by another object, but which one?</span>
+            <span class="n">sb</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_handle_horizontal_scroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sb_bounds_frozen</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hscroll_position_updated</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span>
+        <span class="n">viewport</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span>
+        <span class="n">offsetx</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;bounds_offset&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">position</span> <span class="o">+</span> <span class="n">viewport</span><span class="o">.</span><span class="n">view_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">c</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">offsetx</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hsb_generates_events</span><span class="p">:</span>
+                <span class="n">viewport</span><span class="o">.</span><span class="n">view_position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">position</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">viewport</span><span class="o">.</span><span class="n">trait_setq</span><span class="p">(</span>
+                    <span class="n">view_position</span><span class="o">=</span><span class="p">[</span><span class="n">position</span><span class="p">,</span> <span class="n">viewport</span><span class="o">.</span><span class="n">view_position</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_handle_vertical_scroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sb_bounds_frozen</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vscroll_position_updated</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span>
+        <span class="n">viewport</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span>
+        <span class="n">offsety</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;bounds_offset&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">position</span> <span class="o">+</span> <span class="n">viewport</span><span class="o">.</span><span class="n">view_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">c</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">offsety</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vsb_generates_events</span><span class="p">:</span>
+                <span class="n">viewport</span><span class="o">.</span><span class="n">view_position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">position</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">viewport</span><span class="o">.</span><span class="n">trait_setq</span><span class="p">(</span>
+                    <span class="n">view_position</span><span class="o">=</span><span class="p">[</span><span class="n">viewport</span><span class="o">.</span><span class="n">view_position</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">position</span><span class="p">]</span>
+                <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_mouse_thumb_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">attrname</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="s2">&quot;down&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">continuous_drag_update</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">freeze_scroll_bounds</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unfreeze_scroll_bounds</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_needed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_layout</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_draw_container</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_draw_inside_border</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+            <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span>
+            <span class="k">if</span> <span class="n">view_bounds</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">intersect_bounds</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">),</span> <span class="n">view_bounds</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">tmp</span> <span class="ow">is</span> <span class="n">empty_rectangle</span><span class="p">:</span>
+                    <span class="n">new_bounds</span> <span class="o">=</span> <span class="n">tmp</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">,</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">,</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_bounds</span> <span class="o">=</span> <span class="n">view_bounds</span>
+
+            <span class="k">if</span> <span class="n">new_bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">empty_rectangle</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">component</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+                            <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+                            <span class="n">component</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">new_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_draw_inside_border</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">):</span>
+        <span class="n">width_adjustment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inside_border_width</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">left_edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">inside_padding_width</span> <span class="o">-</span> <span class="n">width_adjustment</span>
+        <span class="n">right_edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span><span class="o">.</span><span class="n">x2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">width_adjustment</span>
+        <span class="n">bottom_edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">width_adjustment</span>
+        <span class="n">top_edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewport_component</span><span class="o">.</span><span class="n">y2</span> <span class="o">+</span> <span class="n">width_adjustment</span>
+
+        <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inside_border_color_</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inside_border_width</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span>
+                <span class="n">left_edge</span><span class="p">,</span>
+                <span class="n">bottom_edge</span><span class="p">,</span>
+                <span class="n">right_edge</span> <span class="o">-</span> <span class="n">left_edge</span><span class="p">,</span>
+                <span class="n">top_edge</span> <span class="o">-</span> <span class="n">bottom_edge</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Mouse event handlers</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_container_handle_mouse_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implement a container-level dispatch hook that intercepts mousewheel</span>
+<span class="sd">        events.  (Without this, our components would automatically get handed</span>
+<span class="sd">        the event.)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mousewheel_scroll</span> <span class="ow">and</span> <span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;mouse_wheel&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alternate_vsb</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">alternate_vsb</span><span class="o">.</span><span class="n">_mouse_wheel_changed</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_vsb</span><span class="o">.</span><span class="n">_mouse_wheel_changed</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="n">event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Persistence</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Scrolled</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;alternate_vsb&quot;</span><span class="p">,</span> <span class="s2">&quot;_vsb&quot;</span><span class="p">,</span> <span class="s2">&quot;_hsb&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">state</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">state</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">state</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

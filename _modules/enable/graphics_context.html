@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.graphics_context &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.graphics_context</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="kn">from</span> <span class="nn">kiva.api</span> <span class="k">import</span> <span class="n">FILL</span>
+
+<span class="c1"># Relative imports</span>
+<span class="kn">from</span> <span class="nn">.abstract_window</span> <span class="k">import</span> <span class="n">AbstractWindow</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">bounding_coordinates</span><span class="p">,</span> <span class="n">coordinates_to_bounds</span>
+<span class="kn">from</span> <span class="nn">.kiva_graphics_context</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+
+
+<div class="viewcode-block" id="EnableGCMixin"><a class="viewcode-back" href="../../api/enable.graphics_context.html#enable.graphics_context.EnableGCMixin">[docs]</a><span class="k">class</span> <span class="nc">EnableGCMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Subclass of Kiva GraphicsContext that provides a few more utility methods.</span>
+<span class="sd">    Most importantly, it provides a pointer back to the window that this</span>
+<span class="sd">    GC is being drawn to.</span>
+
+<span class="sd">    This will eventually be deprecated as the follow methods are folded into</span>
+<span class="sd">    Kiva or their use is discontinuted in Enable.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># The window that this GraphicsContext is being drawn to.  It is OK to</span>
+    <span class="c1"># leave this as None if the graphics context is used as a backbuffer;</span>
+    <span class="c1"># however, in such cases, it is more appropriate to use a GC from Kiva</span>
+    <span class="c1"># directly as opposed to using the Enable one, as some draw methods may</span>
+    <span class="c1"># need to parent controls or dialogs from the Window.</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Instance(AbstractWindow)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;window&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;window&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">EnableGCMixin</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="EnableGCMixin.clip_to_rect"><a class="viewcode-back" href="../../api/enable.graphics_context.html#enable.graphics_context.EnableGCMixin.clip_to_rect">[docs]</a>    <span class="k">def</span> <span class="nf">clip_to_rect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;corner_pixel_origin&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">EnableGCMixin</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">clip_to_rect</span><span class="p">(</span>
+                <span class="n">x</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">width</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">height</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">EnableGCMixin</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">clip_to_rect</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EnableGCMixin.clear_clip"><a class="viewcode-back" href="../../api/enable.graphics_context.html#enable.graphics_context.EnableGCMixin.clear_clip">[docs]</a>    <span class="k">def</span> <span class="nf">clear_clip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Clip and clear a Kiva graphics context to a specified area and</span>
+<span class="sd">        color</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bounds</span> <span class="o">=</span> <span class="n">coordinates_to_bounds</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clip_to_rect</span><span class="p">(</span><span class="o">*</span><span class="n">bounds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draw_rect</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">FILL</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EnableGCMixin.clear_clip_region"><a class="viewcode-back" href="../../api/enable.graphics_context.html#enable.graphics_context.EnableGCMixin.clear_clip_region">[docs]</a>    <span class="k">def</span> <span class="nf">clear_clip_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">update_region</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Clip and clear a Kiva graphics context to a specified region and</span>
+<span class="sd">        color</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bounds</span> <span class="o">=</span> <span class="n">coordinates_to_bounds</span><span class="p">(</span><span class="n">bounding_coordinates</span><span class="p">(</span><span class="n">update_region</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clip_to_rect</span><span class="p">(</span><span class="o">*</span><span class="n">bounds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">coordinates</span> <span class="ow">in</span> <span class="n">update_region</span><span class="p">:</span>
+            <span class="n">bounds</span> <span class="o">=</span> <span class="n">coordinates_to_bounds</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">begin_path</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="o">*</span><span class="n">bounds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fill_path</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="EnableGCMixin.alpha"><a class="viewcode-back" href="../../api/enable.graphics_context.html#enable.graphics_context.EnableGCMixin.alpha">[docs]</a>    <span class="k">def</span> <span class="nf">alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;The alpha() method is not compatible with &quot;</span>
+                                  <span class="s2">&quot;DisplayPDF; use clear() instead.&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EnableGCMixin.stretch_draw"><a class="viewcode-back" href="../../api/enable.graphics_context.html#enable.graphics_context.EnableGCMixin.stretch_draw">[docs]</a>    <span class="k">def</span> <span class="nf">stretch_draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draws an image &#39;stretched&#39; to fit a specified area</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+        <span class="n">idy</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clip_to_rect</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+            <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">cdx</span><span class="p">,</span> <span class="n">cdy</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span>
+            <span class="n">yt</span> <span class="o">=</span> <span class="n">cy</span> <span class="o">+</span> <span class="n">cdy</span>
+            <span class="n">xr</span> <span class="o">=</span> <span class="n">cx</span> <span class="o">+</span> <span class="n">cdx</span>
+            <span class="n">x</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">cx</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">idx</span><span class="p">)</span> <span class="o">*</span> <span class="n">idx</span>
+            <span class="n">y</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">cy</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">idy</span><span class="p">)</span> <span class="o">*</span> <span class="n">idy</span>
+            <span class="k">while</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">yt</span><span class="p">:</span>
+                <span class="n">x0</span> <span class="o">=</span> <span class="n">x</span>
+                <span class="k">while</span> <span class="n">x0</span> <span class="o">&lt;</span> <span class="n">xr</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">draw_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">idy</span><span class="p">))</span>
+                    <span class="n">x0</span> <span class="o">+=</span> <span class="n">idx</span>
+                <span class="n">y</span> <span class="o">+=</span> <span class="n">idy</span></div></div>
+
+
+<span class="c1"># Define a GraphicsContextEnable that subclasses whatever the Kiva backend&#39;s</span>
+<span class="c1"># GraphicsContext is.</span>
+<div class="viewcode-block" id="GraphicsContextEnable"><a class="viewcode-back" href="../../api/enable.graphics_context.html#enable.graphics_context.GraphicsContextEnable">[docs]</a><span class="k">class</span> <span class="nc">GraphicsContextEnable</span><span class="p">(</span><span class="n">EnableGCMixin</span><span class="p">,</span> <span class="n">GraphicsContext</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<span class="c1"># Define an ImageGraphicsContextEnable that is guaranteed to be a subclass of</span>
+<span class="c1"># an ImageGraphicsContext, regardless of the actual Kiva backend.  If the kiva</span>
+<span class="c1"># backend is already the GraphicsContextImage, then just create an alias.</span>
+<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span> <span class="k">as</span> <span class="n">GraphicsContextImage</span>
+
+<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">GraphicsContext</span><span class="p">,</span> <span class="n">GraphicsContextImage</span><span class="p">):</span>
+    <span class="n">ImageGraphicsContextEnable</span> <span class="o">=</span> <span class="n">GraphicsContextEnable</span>
+<span class="k">else</span><span class="p">:</span>
+
+<div class="viewcode-block" id="ImageGraphicsContextEnable"><a class="viewcode-back" href="../../api/enable.graphics_context.html#enable.graphics_context.ImageGraphicsContextEnable">[docs]</a>    <span class="k">class</span> <span class="nc">ImageGraphicsContextEnable</span><span class="p">(</span><span class="n">EnableGCMixin</span><span class="p">,</span> <span class="n">GraphicsContextImage</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

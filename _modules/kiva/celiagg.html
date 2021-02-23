@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>kiva.celiagg &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for kiva.celiagg</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">fabs</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">celiagg</span> <span class="k">as</span> <span class="nn">agg</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.abstract_graphics_context</span> <span class="k">import</span> <span class="n">AbstractGraphicsContext</span>
+<span class="kn">from</span> <span class="nn">.fonttools</span> <span class="k">import</span> <span class="n">Font</span>
+<span class="kn">import</span> <span class="nn">kiva.constants</span> <span class="k">as</span> <span class="nn">constants</span>
+
+<span class="c1"># These are the symbols that a backend has to define.</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CompiledPath&quot;</span><span class="p">,</span> <span class="s2">&quot;Font&quot;</span><span class="p">,</span> <span class="s2">&quot;font_metrics_provider&quot;</span><span class="p">,</span> <span class="s2">&quot;GraphicsContext&quot;</span><span class="p">]</span>
+
+<span class="n">cap_style</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">CAP_ROUND</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">LineCap</span><span class="o">.</span><span class="n">CapRound</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">CAP_SQUARE</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">LineCap</span><span class="o">.</span><span class="n">CapSquare</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">CAP_BUTT</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">LineCap</span><span class="o">.</span><span class="n">CapButt</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">join_style</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">JOIN_ROUND</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">LineJoin</span><span class="o">.</span><span class="n">JoinRound</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">JOIN_BEVEL</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">LineJoin</span><span class="o">.</span><span class="n">JoinBevel</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">JOIN_MITER</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">LineJoin</span><span class="o">.</span><span class="n">JoinMiter</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">draw_modes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">FILL</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">DrawingMode</span><span class="o">.</span><span class="n">DrawFill</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">EOF_FILL</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">DrawingMode</span><span class="o">.</span><span class="n">DrawEofFill</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">STROKE</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">DrawingMode</span><span class="o">.</span><span class="n">DrawStroke</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">FILL_STROKE</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">DrawingMode</span><span class="o">.</span><span class="n">DrawFillStroke</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">EOF_FILL_STROKE</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">DrawingMode</span><span class="o">.</span><span class="n">DrawEofFillStroke</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">text_modes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">TEXT_FILL</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">TextDrawingMode</span><span class="o">.</span><span class="n">TextDrawFill</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">TEXT_STROKE</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">TextDrawingMode</span><span class="o">.</span><span class="n">TextDrawStroke</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">TEXT_FILL_STROKE</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">TextDrawingMode</span><span class="o">.</span><span class="n">TextDrawFillStroke</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">TEXT_INVISIBLE</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">TextDrawingMode</span><span class="o">.</span><span class="n">TextDrawInvisible</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">TEXT_FILL_CLIP</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">TextDrawingMode</span><span class="o">.</span><span class="n">TextDrawFillClip</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">TEXT_STROKE_CLIP</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">TextDrawingMode</span><span class="o">.</span><span class="n">TextDrawStrokeClip</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">TEXT_FILL_STROKE_CLIP</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">TextDrawingMode</span><span class="o">.</span><span class="n">TextDrawFillStrokeClip</span><span class="p">,</span>  <span class="c1"># noqa</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">TEXT_CLIP</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">TextDrawingMode</span><span class="o">.</span><span class="n">TextDrawClip</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">TEXT_OUTLINE</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">TextDrawingMode</span><span class="o">.</span><span class="n">TextDrawStroke</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">gradient_coord_modes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;userSpaceOnUse&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">GradientUnits</span><span class="o">.</span><span class="n">UserSpace</span><span class="p">,</span>
+    <span class="s1">&#39;objectBoundingBox&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">GradientUnits</span><span class="o">.</span><span class="n">ObjectBoundingBox</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">gradient_spread_modes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;pad&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">GradientSpread</span><span class="o">.</span><span class="n">SpreadPad</span><span class="p">,</span>
+    <span class="s1">&#39;repeat&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">GradientSpread</span><span class="o">.</span><span class="n">SpreadRepeat</span><span class="p">,</span>
+    <span class="s1">&#39;reflect&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">GradientSpread</span><span class="o">.</span><span class="n">SpreadReflect</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">pix_formats</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;gray8&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">PixelFormat</span><span class="o">.</span><span class="n">Gray8</span><span class="p">,</span>
+    <span class="s1">&#39;rgb24&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">PixelFormat</span><span class="o">.</span><span class="n">RGB24</span><span class="p">,</span>
+    <span class="s1">&#39;bgr24&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">PixelFormat</span><span class="o">.</span><span class="n">BGR24</span><span class="p">,</span>
+    <span class="s1">&#39;rgba32&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">PixelFormat</span><span class="o">.</span><span class="n">RGBA32</span><span class="p">,</span>
+    <span class="s1">&#39;argb32&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">PixelFormat</span><span class="o">.</span><span class="n">ARGB32</span><span class="p">,</span>
+    <span class="s1">&#39;abgr32&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">PixelFormat</span><span class="o">.</span><span class="n">ABGR32</span><span class="p">,</span>
+    <span class="s1">&#39;bgra32&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">PixelFormat</span><span class="o">.</span><span class="n">BGRA32</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">pix_format_canvases</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;rgba32&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">CanvasRGBA32</span><span class="p">,</span>
+    <span class="s1">&#39;bgra32&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">CanvasBGRA32</span><span class="p">,</span>
+    <span class="s1">&#39;rgb24&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">CanvasRGB24</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">StateBundle</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s1">&#39;StateBundle&#39;</span><span class="p">,</span>
+    <span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">,</span> <span class="s1">&#39;path&#39;</span><span class="p">,</span> <span class="s1">&#39;stroke&#39;</span><span class="p">,</span> <span class="s1">&#39;fill&#39;</span><span class="p">,</span> <span class="s1">&#39;transform&#39;</span><span class="p">,</span> <span class="s1">&#39;text_transform&#39;</span><span class="p">,</span> <span class="s1">&#39;font&#39;</span><span class="p">],</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="GraphicsContext"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext">[docs]</a><span class="k">class</span> <span class="nc">GraphicsContext</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GraphicsContext</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_width</span> <span class="o">=</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_height</span> <span class="o">=</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pix_format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pix_format&#39;</span><span class="p">,</span> <span class="s1">&#39;rgba32&#39;</span><span class="p">)</span>
+
+        <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">canvas_klass</span> <span class="o">=</span> <span class="n">pix_format_canvases</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pix_format</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gc</span> <span class="o">=</span> <span class="n">canvas_klass</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span> <span class="n">bottom_up</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># init the state variables</span>
+        <span class="n">clip</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">GraphicsState</span><span class="p">(</span><span class="n">clip_box</span><span class="o">=</span><span class="n">clip</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stroke_paint</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">SolidPaint</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fill_paint</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">SolidPaint</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">CompiledPath</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_transform</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">Transform</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_pos</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">Transform</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__state_stack</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># For HiDPI support</span>
+        <span class="n">base_scale</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;base_pixel_scale&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">base_scale</span><span class="p">,</span> <span class="n">base_scale</span><span class="p">)</span>
+
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Size info</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="GraphicsContext.height"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.height">[docs]</a>    <span class="k">def</span> <span class="nf">height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the height of the context.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.width"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.width">[docs]</a>    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the width of the context.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span></div>
+
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Coordinate Transform Matrix Manipulation</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="GraphicsContext.scale_ctm"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.scale_ctm">[docs]</a>    <span class="k">def</span> <span class="nf">scale_ctm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the coordinate system scale to the given values, (sx, sy).</span>
+
+<span class="sd">            sx:float -- The new scale factor for the x axis</span>
+<span class="sd">            sy:float -- The new scale factor for the y axis</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.translate_ctm"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.translate_ctm">[docs]</a>    <span class="k">def</span> <span class="nf">translate_ctm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Translate the coordinate system by the given value by (tx, ty)</span>
+
+<span class="sd">            tx:float --  The distance to move in the x direction</span>
+<span class="sd">            ty:float --   The distance to move in the y direction</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.rotate_ctm"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.rotate_ctm">[docs]</a>    <span class="k">def</span> <span class="nf">rotate_ctm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Rotates the coordinate space for drawing by the given angle.</span>
+
+<span class="sd">            angle:float -- the angle, in radians, to rotate the coordinate</span>
+<span class="sd">                           system</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.concat_ctm"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.concat_ctm">[docs]</a>    <span class="k">def</span> <span class="nf">concat_ctm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transform</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Concatenate the transform to current coordinate transform matrix.</span>
+
+<span class="sd">            transform:affine_matrix -- the transform matrix to concatenate with</span>
+<span class="sd">                                       the current coordinate matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">premultiply</span><span class="p">(</span><span class="n">agg</span><span class="o">.</span><span class="n">Transform</span><span class="p">(</span><span class="o">*</span><span class="n">transform</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.get_ctm"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.get_ctm">[docs]</a>    <span class="k">def</span> <span class="nf">get_ctm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the current coordinate transform matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">sx</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">shy</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">shx</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">sy</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">tx</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">ty</span><span class="p">)</span></div>
+
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Save/Restore graphics state.</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="GraphicsContext.save_state"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.save_state">[docs]</a>    <span class="k">def</span> <span class="nf">save_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Save the current graphic&#39;s context state.</span>
+
+<span class="sd">            This should always be paired with a restore_state</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">StateBundle</span><span class="p">(</span>
+            <span class="n">state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">stroke</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stroke_paint</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">fill</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fill_paint</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">text_transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">text_transform</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">copy</span><span class="p">()),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__state_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.restore_state"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.restore_state">[docs]</a>    <span class="k">def</span> <span class="nf">restore_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Restore the previous graphics state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__state_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stroke_paint</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">stroke</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fill_paint</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">fill</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">transform</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_transform</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">text_transform</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">font</span></div>
+
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># context manager interface</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_state</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">restore_state</span><span class="p">()</span>
+
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Manipulate graphics state attributes.</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="GraphicsContext.set_antialias"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_antialias">[docs]</a>    <span class="k">def</span> <span class="nf">set_antialias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set/Unset antialiasing for bitmap graphics context.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">anti_aliased</span> <span class="o">=</span> <span class="n">value</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.set_line_width"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_line_width">[docs]</a>    <span class="k">def</span> <span class="nf">set_line_width</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the line width for drawing</span>
+
+<span class="sd">            width:float -- The new width for lines in user space units.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">line_width</span> <span class="o">=</span> <span class="n">width</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.set_line_join"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_line_join">[docs]</a>    <span class="k">def</span> <span class="nf">set_line_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">style</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set style for joining lines in a drawing.</span>
+
+<span class="sd">            style:join_style -- The line joining style.  The available</span>
+<span class="sd">                                styles are JOIN_ROUND, JOIN_BEVEL, JOIN_MITER.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sjoin</span> <span class="o">=</span> <span class="n">join_style</span><span class="p">[</span><span class="n">style</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">line_join</span> <span class="o">=</span> <span class="n">sjoin</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Invalid line join style. See documentation for valid styles&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.set_miter_limit"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_miter_limit">[docs]</a>    <span class="k">def</span> <span class="nf">set_miter_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Specifies limits on line lengths for mitering line joins.</span>
+
+<span class="sd">            If line_join is set to miter joins, the limit specifies which</span>
+<span class="sd">            line joins should actually be mitered.  If lines aren&#39;t mitered,</span>
+<span class="sd">            they are joined with a bevel.  The line width is divided by</span>
+<span class="sd">            the length of the miter.  If the result is greater than the</span>
+<span class="sd">            limit, the bevel style is used.</span>
+
+<span class="sd">            limit:float -- limit for mitering joins.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">miter_limit</span> <span class="o">=</span> <span class="n">limit</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.set_line_cap"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_line_cap">[docs]</a>    <span class="k">def</span> <span class="nf">set_line_cap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">style</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Specify the style of endings to put on line ends.</span>
+
+<span class="sd">            style:cap_style -- the line cap style to use. Available styles</span>
+<span class="sd">                               are CAP_ROUND, CAP_BUTT, CAP_SQUARE</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">scap</span> <span class="o">=</span> <span class="n">cap_style</span><span class="p">[</span><span class="n">style</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">line_cap</span> <span class="o">=</span> <span class="n">scap</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Invalid line cap style.  See documentation for valid styles&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.set_line_dash"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_line_dash">[docs]</a>    <span class="k">def</span> <span class="nf">set_line_dash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lengths</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">            lengths:float array -- An array of floating point values</span>
+<span class="sd">                                   specifing the lengths of on/off painting</span>
+<span class="sd">                                   pattern for lines.</span>
+<span class="sd">            phase:float -- Specifies how many units into dash pattern</span>
+<span class="sd">                           to start.  phase defaults to 0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">lengths</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span>
+            <span class="n">lengths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">count</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lengths</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">line_dash_pattern</span> <span class="o">=</span> <span class="n">lengths</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">line_dash_phase</span> <span class="o">=</span> <span class="n">phase</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.set_flatness"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_flatness">[docs]</a>    <span class="k">def</span> <span class="nf">set_flatness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flatness</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Not implemented</span>
+
+<span class="sd">            It is device dependent and therefore not recommended by</span>
+<span class="sd">            the PDF documentation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;set_flatness not implemented for celiagg&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Sending drawing data to a device</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="GraphicsContext.flush"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.flush">[docs]</a>    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Send all drawing data to the destination device.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.synchronize"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.synchronize">[docs]</a>    <span class="k">def</span> <span class="nf">synchronize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Prepares drawing data to be updated on a destination device.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Page Definitions</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="GraphicsContext.begin_page"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.begin_page">[docs]</a>    <span class="k">def</span> <span class="nf">begin_page</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Create a new page within the graphics context.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.end_page"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.end_page">[docs]</a>    <span class="k">def</span> <span class="nf">end_page</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; End drawing in the current page of the graphics context.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Path creation</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="GraphicsContext.begin_path"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.begin_path">[docs]</a>    <span class="k">def</span> <span class="nf">begin_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Clear the current drawing path and begin a new one.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.move_to"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.move_to">[docs]</a>    <span class="k">def</span> <span class="nf">move_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Start a new drawing subpath at place the current point at (x, y).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.line_to"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.line_to">[docs]</a>    <span class="k">def</span> <span class="nf">line_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add a line from the current point to the given point (x, y).</span>
+
+<span class="sd">            The current point is moved to (x, y).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.lines"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.lines">[docs]</a>    <span class="k">def</span> <span class="nf">lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add a series of lines as a new subpath.</span>
+
+<span class="sd">            Currently implemented by calling line_to a zillion times.</span>
+
+<span class="sd">            Points is an Nx2 array of x, y pairs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span><span class="n">points</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.line_set"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.line_set">[docs]</a>    <span class="k">def</span> <span class="nf">line_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">starts</span><span class="p">,</span> <span class="n">ends</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draw multiple disjoint line segments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">line_set</span><span class="p">(</span><span class="n">starts</span><span class="p">,</span> <span class="n">ends</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.rect"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.rect">[docs]</a>    <span class="k">def</span> <span class="nf">rect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add a rectangle as a new subpath.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.rects"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.rects">[docs]</a>    <span class="k">def</span> <span class="nf">rects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rects</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add multiple rectangles as separate subpaths to the path.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">rects</span><span class="p">(</span><span class="n">rects</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.draw_rect"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.draw_rect">[docs]</a>    <span class="k">def</span> <span class="nf">draw_rect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rect</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">constants</span><span class="o">.</span><span class="n">FILL_STROKE</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draw a rect.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># XXX: kiva::graphics_context&lt;&gt;::_draw_rect_simple() does a VERY</span>
+        <span class="c1"># specific optimization for drawing rectangles in certain circumstances</span>
+        <span class="c1"># which results in chaco plot borders which are sharp.</span>
+        <span class="c1"># This implements that same special case.  - JW 2018/09/01</span>
+        <span class="n">transform</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">anti_aliased</span> <span class="ow">and</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">line_width</span> <span class="ow">in</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="n">fabs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">shx</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-3</span> <span class="ow">and</span>
+                <span class="n">fabs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">shy</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-3</span><span class="p">):</span>
+            <span class="n">scale_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">sx</span>
+            <span class="n">scale_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">sy</span>
+            <span class="n">tx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">tx</span>
+            <span class="n">ty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">ty</span>
+            <span class="n">x1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rect</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">scale_x</span> <span class="o">+</span> <span class="n">tx</span><span class="p">)</span>
+            <span class="n">y1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rect</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">scale_y</span> <span class="o">+</span> <span class="n">ty</span><span class="p">)</span>
+            <span class="n">x2</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">rect</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">rect</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">*</span> <span class="n">scale_x</span> <span class="o">+</span> <span class="n">tx</span><span class="p">)</span>
+            <span class="n">y2</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">rect</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">rect</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">*</span> <span class="n">scale_y</span> <span class="o">+</span> <span class="n">ty</span><span class="p">)</span>
+            <span class="n">rect</span> <span class="o">=</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">y2</span> <span class="o">-</span> <span class="n">y1</span><span class="p">))</span>
+            <span class="c1"># XXX: The base transform is a half-pixel translate</span>
+            <span class="n">transform</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">Transform</span><span class="p">(</span><span class="n">tx</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">ty</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+        <span class="n">path</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">Path</span><span class="p">()</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="o">*</span><span class="n">rect</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">drawing_mode</span> <span class="o">=</span> <span class="n">draw_modes</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">draw_shape</span><span class="p">(</span>
+            <span class="n">path</span><span class="p">,</span>
+            <span class="n">transform</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="p">,</span>
+            <span class="n">stroke</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stroke_paint</span><span class="p">,</span>
+            <span class="n">fill</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fill_paint</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.add_path"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.add_path">[docs]</a>    <span class="k">def</span> <span class="nf">add_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add a subpath to the current path.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">add_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.close_path"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.close_path">[docs]</a>    <span class="k">def</span> <span class="nf">close_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Close the path of the current subpath.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">close_path</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.curve_to"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.curve_to">[docs]</a>    <span class="k">def</span> <span class="nf">curve_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cp1x</span><span class="p">,</span> <span class="n">cp1y</span><span class="p">,</span> <span class="n">cp2x</span><span class="p">,</span> <span class="n">cp2y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">curve_to</span><span class="p">(</span><span class="n">cp1x</span><span class="p">,</span> <span class="n">cp1y</span><span class="p">,</span> <span class="n">cp2x</span><span class="p">,</span> <span class="n">cp2y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.quad_curve_to"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.quad_curve_to">[docs]</a>    <span class="k">def</span> <span class="nf">quad_curve_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cpx</span><span class="p">,</span> <span class="n">cpy</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">quad_curve_to</span><span class="p">(</span><span class="n">cpx</span><span class="p">,</span> <span class="n">cpy</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.arc"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.arc">[docs]</a>    <span class="k">def</span> <span class="nf">arc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">start_angle</span><span class="p">,</span> <span class="n">end_angle</span><span class="p">,</span> <span class="n">clockwise</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">arc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">start_angle</span><span class="p">,</span> <span class="n">end_angle</span><span class="p">,</span> <span class="n">clockwise</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.arc_to"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.arc_to">[docs]</a>    <span class="k">def</span> <span class="nf">arc_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">arc_to</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span></div>
+
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Getting infomration on paths</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="GraphicsContext.is_path_empty"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.is_path_empty">[docs]</a>    <span class="k">def</span> <span class="nf">is_path_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Test to see if the current drawing path is empty</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.get_path_current_point"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.get_path_current_point">[docs]</a>    <span class="k">def</span> <span class="nf">get_path_current_point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the current point from the graphics context.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">get_current_point</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.get_path_bounding_box"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.get_path_bounding_box">[docs]</a>    <span class="k">def</span> <span class="nf">get_path_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the bounding box for the current path object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">get_bounding_box</span><span class="p">()</span></div>
+
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Clipping path manipulation</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="GraphicsContext.clip"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.clip">[docs]</a>    <span class="k">def</span> <span class="nf">clip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Clip context to a filled version of the current path.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_clip_impl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">agg</span><span class="o">.</span><span class="n">DrawingMode</span><span class="o">.</span><span class="n">DrawFill</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">begin_path</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.even_odd_clip"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.even_odd_clip">[docs]</a>    <span class="k">def</span> <span class="nf">even_odd_clip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Clip context to a even-odd filled version of the current path.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_clip_impl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">agg</span><span class="o">.</span><span class="n">DrawingMode</span><span class="o">.</span><span class="n">DrawEofFill</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">begin_path</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.clip_to_rect"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.clip_to_rect">[docs]</a>    <span class="k">def</span> <span class="nf">clip_to_rect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Clip context to the given rectangular region.</span>
+
+<span class="sd">            Region should be a 4-tuple or a sequence.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># The passed in rect should be transformed.</span>
+        <span class="c1"># NOTE: Rotations will have an undefined result</span>
+        <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">worldToScreen</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">worldToScreen</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span><span class="p">)</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">y1</span> <span class="o">-</span> <span class="n">y0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">clip_box</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.clip_to_rects"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.clip_to_rects">[docs]</a>    <span class="k">def</span> <span class="nf">clip_to_rects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rects</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Clip context to a collection of rectangles</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">Path</span><span class="p">()</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">rects</span><span class="p">(</span><span class="n">rects</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clip_impl</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">agg</span><span class="o">.</span><span class="n">DrawingMode</span><span class="o">.</span><span class="n">DrawFill</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_clip_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">drawing_mode</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Internal implementation for the complex clipping methods.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">)</span>
+        <span class="n">stencil</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">CanvasG8</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span> <span class="n">bottom_up</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">stencil</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">clip_box</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">)</span>
+        <span class="n">gs</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">GraphicsState</span><span class="p">(</span><span class="n">drawing_mode</span><span class="o">=</span><span class="n">drawing_mode</span><span class="p">,</span> <span class="n">clip_box</span><span class="o">=</span><span class="n">clip_box</span><span class="p">)</span>
+        <span class="n">paint</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">SolidPaint</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">stencil</span><span class="o">.</span><span class="n">draw_shape</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span> <span class="n">gs</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="n">paint</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">paint</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">stencil</span> <span class="o">=</span> <span class="n">stencil</span><span class="o">.</span><span class="n">image</span>
+
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Color space manipulation</span>
+    <span class="c1">#</span>
+    <span class="c1"># I&#39;m not sure we&#39;ll mess with these at all.  They seem to</span>
+    <span class="c1"># be for setting the color system.  Hard coding to RGB or</span>
+    <span class="c1"># RGBA for now sounds like a reasonable solution.</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="GraphicsContext.set_fill_color_space"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_fill_color_space">[docs]</a>    <span class="k">def</span> <span class="nf">set_fill_color_space</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;set_fill_color_space not implemented for celiagg yet.&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.set_stroke_color_space"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_stroke_color_space">[docs]</a>    <span class="k">def</span> <span class="nf">set_stroke_color_space</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;set_stroke_color_space not implemented for celiagg yet.&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.set_rendering_intent"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_rendering_intent">[docs]</a>    <span class="k">def</span> <span class="nf">set_rendering_intent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;set_rendering_intent not implemented for celiagg yet.&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Color manipulation</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="GraphicsContext.set_fill_color"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_fill_color">[docs]</a>    <span class="k">def</span> <span class="nf">set_fill_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fill_paint</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">SolidPaint</span><span class="p">(</span><span class="o">*</span><span class="n">color</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.set_stroke_color"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_stroke_color">[docs]</a>    <span class="k">def</span> <span class="nf">set_stroke_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stroke_paint</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">SolidPaint</span><span class="p">(</span><span class="o">*</span><span class="n">color</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.set_alpha"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_alpha">[docs]</a>    <span class="k">def</span> <span class="nf">set_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">master_alpha</span> <span class="o">=</span> <span class="n">alpha</span></div>
+
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Gradients</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_get_gradient_enums</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spread</span><span class="p">,</span> <span class="n">units</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Configures a gradient object and sets it as the current brush.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">spread</span> <span class="o">=</span> <span class="n">gradient_spread_modes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">spread</span><span class="p">,</span> <span class="n">agg</span><span class="o">.</span><span class="n">GradientSpread</span><span class="o">.</span><span class="n">SpreadPad</span>
+        <span class="p">)</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="n">gradient_coord_modes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">agg</span><span class="o">.</span><span class="n">GradientUnits</span><span class="o">.</span><span class="n">UserSpace</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">spread</span><span class="p">,</span> <span class="n">units</span>
+
+<div class="viewcode-block" id="GraphicsContext.linear_gradient"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.linear_gradient">[docs]</a>    <span class="k">def</span> <span class="nf">linear_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">stops</span><span class="p">,</span> <span class="n">spread_method</span><span class="p">,</span>
+                        <span class="n">units</span><span class="o">=</span><span class="s1">&#39;userSpaceOnUse&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets a linear gradient as the current brush.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">spread</span><span class="p">,</span> <span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_gradient_enums</span><span class="p">(</span><span class="n">spread_method</span><span class="p">,</span> <span class="n">units</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fill_paint</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">LinearGradientPaint</span><span class="p">(</span>
+            <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">stops</span><span class="p">,</span> <span class="n">spread</span><span class="p">,</span> <span class="n">units</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.radial_gradient"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.radial_gradient">[docs]</a>    <span class="k">def</span> <span class="nf">radial_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">fx</span><span class="p">,</span> <span class="n">fy</span><span class="p">,</span> <span class="n">stops</span><span class="p">,</span> <span class="n">spread_method</span><span class="p">,</span>
+                        <span class="n">units</span><span class="o">=</span><span class="s1">&#39;userSpaceOnUse&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets a radial gradient as the current brush.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">spread</span><span class="p">,</span> <span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_gradient_enums</span><span class="p">(</span><span class="n">spread_method</span><span class="p">,</span> <span class="n">units</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fill_paint</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">RadialGradientPaint</span><span class="p">(</span>
+            <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">fx</span><span class="p">,</span> <span class="n">fy</span><span class="p">,</span> <span class="n">stops</span><span class="p">,</span> <span class="n">spread</span><span class="p">,</span> <span class="n">units</span>
+        <span class="p">)</span></div>
+
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Drawing Images</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="GraphicsContext.draw_image"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.draw_image">[docs]</a>    <span class="k">def</span> <span class="nf">draw_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">rect</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        img is either a N*M*3 or N*M*4 numpy array, or a PIL Image</span>
+
+<span class="sd">        rect - a tuple (x, y, w, h)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span>
+
+        <span class="k">def</span> <span class="nf">normalize_image</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">img</span><span class="o">.</span><span class="n">mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;RGB&#39;</span><span class="p">):</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;RGB&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;RGB&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">agg</span><span class="o">.</span><span class="n">PixelFormat</span><span class="o">.</span><span class="n">RGB24</span>
+            <span class="k">elif</span> <span class="n">img</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;RGBA&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">agg</span><span class="o">.</span><span class="n">PixelFormat</span><span class="o">.</span><span class="n">RGBA32</span>
+
+        <span class="n">img_format</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">PixelFormat</span><span class="o">.</span><span class="n">RGB24</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="c1"># Numeric array</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+            <span class="n">img</span><span class="p">,</span> <span class="n">img_format</span> <span class="o">=</span> <span class="n">normalize_image</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+            <span class="n">img_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">):</span>
+            <span class="n">img</span><span class="p">,</span> <span class="n">img_format</span> <span class="o">=</span> <span class="n">normalize_image</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+            <span class="n">img_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="s1">&#39;bmp_array&#39;</span><span class="p">):</span>
+            <span class="c1"># An offscreen kiva context</span>
+            <span class="c1"># XXX: Use a copy to kill the read-only flag which plays havoc</span>
+            <span class="c1"># with the Cython memoryviews used by celiagg</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">bmp_array</span><span class="p">)</span>
+            <span class="n">img</span><span class="p">,</span> <span class="n">img_format</span> <span class="o">=</span> <span class="n">normalize_image</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+            <span class="n">img_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">GraphicsContext</span><span class="p">):</span>
+            <span class="n">img_array</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">array</span>
+            <span class="n">img_format</span> <span class="o">=</span> <span class="n">pix_formats</span><span class="p">[</span><span class="n">img</span><span class="o">.</span><span class="n">pix_format</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Cannot render image of type &#39;</span><span class="si">{}</span><span class="s2">&#39; into celiagg context.&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">img</span><span class="p">)))</span>
+            <span class="k">return</span>
+
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">rect</span>
+        <span class="n">img_height</span><span class="p">,</span> <span class="n">img_width</span> <span class="o">=</span> <span class="n">img_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span> <span class="o">=</span> <span class="n">w</span> <span class="o">/</span> <span class="n">img_width</span><span class="p">,</span> <span class="n">h</span> <span class="o">/</span> <span class="n">img_height</span>
+        <span class="n">transform</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">Transform</span><span class="p">()</span>
+        <span class="n">transform</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
+        <span class="n">transform</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">draw_image</span><span class="p">(</span>
+            <span class="n">img_array</span><span class="p">,</span> <span class="n">img_format</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="p">,</span> <span class="n">bottom_up</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span></div>
+
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Drawing Text</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="GraphicsContext.select_font"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.select_font">[docs]</a>    <span class="k">def</span> <span class="nf">select_font</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">textEncoding</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the font for the current graphics context.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">agg</span><span class="o">.</span><span class="n">FontCacheType</span><span class="o">.</span><span class="n">RasterFontCache</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.set_font"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_font">[docs]</a>    <span class="k">def</span> <span class="nf">set_font</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">font</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the font for the current graphics context.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_font</span><span class="p">(</span><span class="n">font</span><span class="o">.</span><span class="n">findfont</span><span class="p">(),</span> <span class="n">font</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.set_font_size"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_font_size">[docs]</a>    <span class="k">def</span> <span class="nf">set_font_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the font size for the current graphics context.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">font</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_font</span><span class="p">(</span><span class="n">font</span><span class="o">.</span><span class="n">filepath</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">font</span><span class="o">.</span><span class="n">cache_type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.set_character_spacing"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_character_spacing">[docs]</a>    <span class="k">def</span> <span class="nf">set_character_spacing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacing</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;set_character_spacing not implemented on celiagg yet.&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.set_text_drawing_mode"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_text_drawing_mode">[docs]</a>    <span class="k">def</span> <span class="nf">set_text_drawing_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tmode</span> <span class="o">=</span> <span class="n">text_modes</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Invalid text drawing mode&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">text_drawing_mode</span> <span class="o">=</span> <span class="n">tmode</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.set_text_position"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_text_position">[docs]</a>    <span class="k">def</span> <span class="nf">set_text_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.get_text_position"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.get_text_position">[docs]</a>    <span class="k">def</span> <span class="nf">get_text_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_pos</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.set_text_matrix"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.set_text_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">set_text_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ttm</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_transform</span> <span class="o">=</span> <span class="n">ttm</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.get_text_matrix"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.get_text_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">get_text_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_transform</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.show_text"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.show_text">[docs]</a>    <span class="k">def</span> <span class="nf">show_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draw text on the device at current text position.</span>
+
+<span class="sd">            This is also used for showing text at a particular point</span>
+<span class="sd">            specified by x and y.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;show_text called before setting a font!&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">point</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text_pos</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+
+        <span class="n">transform</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">Transform</span><span class="p">()</span>
+        <span class="n">transform</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
+        <span class="n">transform</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">*</span><span class="n">pos</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">draw_text</span><span class="p">(</span>
+            <span class="n">text</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="p">,</span>
+            <span class="n">transform</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="p">,</span>
+            <span class="n">stroke</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stroke_paint</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.show_text_at_point"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.show_text_at_point">[docs]</a>    <span class="k">def</span> <span class="nf">show_text_at_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draw text at some point (x, y).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.show_glyphs"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.show_glyphs">[docs]</a>    <span class="k">def</span> <span class="nf">show_glyphs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;show_glyphs not implemented on celiagg&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.get_text_extent"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.get_text_extent">[docs]</a>    <span class="k">def</span> <span class="nf">get_text_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the bounding rect of the rendered text</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;get_text_extent called before setting a font!&quot;</span><span class="p">)</span>
+
+        <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">width</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">height</span>
+        <span class="k">return</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.get_full_text_extent"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.get_full_text_extent">[docs]</a>    <span class="k">def</span> <span class="nf">get_full_text_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Backwards compatibility API over .get_text_extent() for Enable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_text_extent</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x1</span></div>
+
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Painting paths (drawing and filling contours)</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="GraphicsContext.stroke_path"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.stroke_path">[docs]</a>    <span class="k">def</span> <span class="nf">stroke_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">drawing_mode</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">DrawingMode</span><span class="o">.</span><span class="n">DrawStroke</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">draw_shape</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="p">,</span>
+            <span class="n">stroke</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stroke_paint</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">begin_path</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.fill_path"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.fill_path">[docs]</a>    <span class="k">def</span> <span class="nf">fill_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">drawing_mode</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">DrawingMode</span><span class="o">.</span><span class="n">DrawFill</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">draw_shape</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="p">,</span>
+            <span class="n">fill</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fill_paint</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">begin_path</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.eof_fill_path"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.eof_fill_path">[docs]</a>    <span class="k">def</span> <span class="nf">eof_fill_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">drawing_mode</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">DrawingMode</span><span class="o">.</span><span class="n">DrawEofFill</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">draw_shape</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="p">,</span>
+            <span class="n">fill</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fill_paint</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">begin_path</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.stroke_rect"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.stroke_rect">[docs]</a>    <span class="k">def</span> <span class="nf">stroke_rect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rect</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stroke_rect_with_width</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.stroke_rect_with_width"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.stroke_rect_with_width">[docs]</a>    <span class="k">def</span> <span class="nf">stroke_rect_with_width</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rect</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">Path</span><span class="p">()</span>
+        <span class="n">shape</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="o">*</span><span class="n">rect</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">line_width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">drawing_mode</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">DrawingMode</span><span class="o">.</span><span class="n">DrawStroke</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">draw_shape</span><span class="p">(</span>
+            <span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stroke_paint</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.fill_rect"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.fill_rect">[docs]</a>    <span class="k">def</span> <span class="nf">fill_rect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rect</span><span class="p">):</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">Path</span><span class="p">()</span>
+        <span class="n">shape</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="o">*</span><span class="n">rect</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">drawing_mode</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">DrawingMode</span><span class="o">.</span><span class="n">DrawFill</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">draw_shape</span><span class="p">(</span>
+            <span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fill_paint</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.fill_rects"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.fill_rects">[docs]</a>    <span class="k">def</span> <span class="nf">fill_rects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rects</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">Path</span><span class="p">()</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">rects</span><span class="p">(</span><span class="n">rects</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">drawing_mode</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">DrawingMode</span><span class="o">.</span><span class="n">DrawFill</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">draw_shape</span><span class="p">(</span>
+            <span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fill_paint</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.clear_rect"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.clear_rect">[docs]</a>    <span class="k">def</span> <span class="nf">clear_rect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rect</span><span class="p">):</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">Path</span><span class="p">()</span>
+        <span class="n">shape</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="o">*</span><span class="n">rect</span><span class="p">)</span>
+        <span class="n">paint</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">SolidPaint</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">drawing_mode</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">DrawingMode</span><span class="o">.</span><span class="n">DrawFill</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">draw_shape</span><span class="p">(</span>
+            <span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">paint</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.clear"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clear_color</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="o">*</span><span class="n">clear_color</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.draw_path"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.draw_path">[docs]</a>    <span class="k">def</span> <span class="nf">draw_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">constants</span><span class="o">.</span><span class="n">FILL_STROKE</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Walk through all the drawing subpaths and draw each element.</span>
+
+<span class="sd">            Each subpath is drawn separately.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">drawing_mode</span> <span class="o">=</span> <span class="n">draw_modes</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">draw_shape</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="p">,</span>
+            <span class="n">stroke</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stroke_paint</span><span class="p">,</span>
+            <span class="n">fill</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fill_paint</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">begin_path</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.get_empty_path"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.get_empty_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_empty_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return a path object that can be built up and then reused.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">CompiledPath</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.draw_path_at_points"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.draw_path_at_points">[docs]</a>    <span class="k">def</span> <span class="nf">draw_path_at_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">constants</span><span class="o">.</span><span class="n">FILL_STROKE</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draw a path object at many different points.</span>
+
+<span class="sd">        XXX: This is currently broken for some reason</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">ShapeAtPoints</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="o">.</span><span class="n">drawing_mode</span> <span class="o">=</span> <span class="n">draw_modes</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">draw_shape</span><span class="p">(</span>
+            <span class="n">shape</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas_state</span><span class="p">,</span>
+            <span class="n">stroke</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stroke_paint</span><span class="p">,</span>
+            <span class="n">fill</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fill_paint</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.save"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.GraphicsContext.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Save the contents of the context to a file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;need Pillow to save images&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">file_format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">file_format</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="n">pixels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">array</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pix_format</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;bgra&#39;</span><span class="p">):</span>
+            <span class="c1"># Data is BGRA; Convert to RGBA</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">pixels</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+            <span class="n">data</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">pixels</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">pixels</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">pixels</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">pixels</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">pixels</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;RGBA&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Check the output format to see if it can handle an alpha channel.</span>
+        <span class="n">no_alpha_formats</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;jpg&#39;</span><span class="p">,</span> <span class="s1">&#39;bmp&#39;</span><span class="p">,</span> <span class="s1">&#39;eps&#39;</span><span class="p">,</span> <span class="s1">&#39;jpeg&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">((</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span> <span class="ow">in</span> <span class="n">no_alpha_formats</span><span class="p">)</span> <span class="ow">or</span>
+                <span class="p">(</span><span class="n">file_format</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">no_alpha_formats</span><span class="p">)):</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;RGB&#39;</span><span class="p">)</span>
+
+        <span class="n">img</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">file_format</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="CompiledPath"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.CompiledPath">[docs]</a><span class="k">class</span> <span class="nc">CompiledPath</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">agg</span><span class="o">.</span><span class="n">Path</span><span class="p">()</span>
+
+<div class="viewcode-block" id="CompiledPath.copy"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.CompiledPath.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cpy</span> <span class="o">=</span> <span class="n">CompiledPath</span><span class="p">()</span>
+        <span class="n">cpy</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">cpy</span></div>
+
+<div class="viewcode-block" id="CompiledPath.begin_path"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.CompiledPath.begin_path">[docs]</a>    <span class="k">def</span> <span class="nf">begin_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CompiledPath.move_to"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.CompiledPath.move_to">[docs]</a>    <span class="k">def</span> <span class="nf">move_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CompiledPath.arc"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.CompiledPath.arc">[docs]</a>    <span class="k">def</span> <span class="nf">arc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">start_angle</span><span class="p">,</span> <span class="n">end_angle</span><span class="p">,</span> <span class="n">clockwise</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">arc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">start_angle</span><span class="p">,</span> <span class="n">end_angle</span><span class="p">,</span> <span class="n">clockwise</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CompiledPath.arc_to"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.CompiledPath.arc_to">[docs]</a>    <span class="k">def</span> <span class="nf">arc_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">arc_to</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CompiledPath.line_to"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.CompiledPath.line_to">[docs]</a>    <span class="k">def</span> <span class="nf">line_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CompiledPath.lines"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.CompiledPath.lines">[docs]</a>    <span class="k">def</span> <span class="nf">lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span><span class="n">points</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CompiledPath.line_set"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.CompiledPath.line_set">[docs]</a>    <span class="k">def</span> <span class="nf">line_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">starts</span><span class="p">,</span> <span class="n">ends</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">lines_set</span><span class="p">(</span><span class="n">starts</span><span class="p">,</span> <span class="n">ends</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CompiledPath.curve_to"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.CompiledPath.curve_to">[docs]</a>    <span class="k">def</span> <span class="nf">curve_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cx1</span><span class="p">,</span> <span class="n">cy1</span><span class="p">,</span> <span class="n">cx2</span><span class="p">,</span> <span class="n">cy2</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">cubic_to</span><span class="p">(</span><span class="n">cx1</span><span class="p">,</span> <span class="n">cy1</span><span class="p">,</span> <span class="n">cx2</span><span class="p">,</span> <span class="n">cy2</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CompiledPath.quad_curve_to"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.CompiledPath.quad_curve_to">[docs]</a>    <span class="k">def</span> <span class="nf">quad_curve_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">quadric_to</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CompiledPath.rect"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.CompiledPath.rect">[docs]</a>    <span class="k">def</span> <span class="nf">rect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CompiledPath.rects"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.CompiledPath.rects">[docs]</a>    <span class="k">def</span> <span class="nf">rects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rects</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">rects</span><span class="p">(</span><span class="n">rects</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CompiledPath.add_path"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.CompiledPath.add_path">[docs]</a>    <span class="k">def</span> <span class="nf">add_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other_path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other_path</span><span class="p">,</span> <span class="n">CompiledPath</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">add_path</span><span class="p">(</span><span class="n">other_path</span><span class="o">.</span><span class="n">path</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CompiledPath.close_path"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.CompiledPath.close_path">[docs]</a>    <span class="k">def</span> <span class="nf">close_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CompiledPath.is_empty"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.CompiledPath.is_empty">[docs]</a>    <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="CompiledPath.get_current_point"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.CompiledPath.get_current_point">[docs]</a>    <span class="k">def</span> <span class="nf">get_current_point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">final_point</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CompiledPath.get_bounding_box"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.CompiledPath.get_bounding_box">[docs]</a>    <span class="k">def</span> <span class="nf">get_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">bounding_rect</span><span class="p">()</span></div></div>
+
+
+<span class="c1"># GraphicsContext should implement AbstractGraphicsContext</span>
+<span class="n">AbstractGraphicsContext</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">GraphicsContext</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="font_metrics_provider"><a class="viewcode-back" href="../../api/kiva.celiagg.html#kiva.celiagg.font_metrics_provider">[docs]</a><span class="k">def</span> <span class="nf">font_metrics_provider</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Creates an object to be used for querying font metrics.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

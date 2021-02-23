@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>kiva.fonttools.font &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../../index.html" >
+    <link rel="up" title="Module code" href="../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for kiva.fonttools.font</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Defines the Kiva Font class and a utility method to parse free-form font</span>
+<span class="sd">specification strings into Font instances.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+
+<span class="kn">from</span> <span class="nn">kiva.constants</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">BOLD_ITALIC</span><span class="p">,</span> <span class="n">BOLD</span><span class="p">,</span> <span class="n">DECORATIVE</span><span class="p">,</span> <span class="n">DEFAULT</span><span class="p">,</span> <span class="n">ITALIC</span><span class="p">,</span> <span class="n">MODERN</span><span class="p">,</span> <span class="n">NORMAL</span><span class="p">,</span> <span class="n">ROMAN</span><span class="p">,</span>
+    <span class="n">SCRIPT</span><span class="p">,</span> <span class="n">SWISS</span><span class="p">,</span> <span class="n">TELETYPE</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.font_manager</span> <span class="k">import</span> <span class="n">default_font_manager</span><span class="p">,</span> <span class="n">FontProperties</span>
+
+<span class="c1"># Various maps used by str_to_font</span>
+<span class="n">font_families</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="n">DEFAULT</span><span class="p">,</span>
+    <span class="s2">&quot;decorative&quot;</span><span class="p">:</span> <span class="n">DECORATIVE</span><span class="p">,</span>
+    <span class="s2">&quot;roman&quot;</span><span class="p">:</span> <span class="n">ROMAN</span><span class="p">,</span>
+    <span class="s2">&quot;script&quot;</span><span class="p">:</span> <span class="n">SCRIPT</span><span class="p">,</span>
+    <span class="s2">&quot;swiss&quot;</span><span class="p">:</span> <span class="n">SWISS</span><span class="p">,</span>
+    <span class="s2">&quot;modern&quot;</span><span class="p">:</span> <span class="n">MODERN</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">font_styles</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;italic&quot;</span><span class="p">:</span> <span class="n">ITALIC</span><span class="p">}</span>
+<span class="n">font_weights</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;bold&quot;</span><span class="p">:</span> <span class="n">BOLD</span><span class="p">}</span>
+<span class="n">font_noise</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span> <span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="s2">&quot;family&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="str_to_font"><a class="viewcode-back" href="../../../api/kiva.fonttools.font.html#kiva.celiagg.str_to_font">[docs]</a><span class="k">def</span> <span class="nf">str_to_font</span><span class="p">(</span><span class="n">fontspec</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a string specification of a font into a Font instance.</span>
+<span class="sd">    string specifications are of the form: &quot;modern 12&quot;, &quot;9 roman italic&quot;,</span>
+<span class="sd">    and so on.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">point_size</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">family</span> <span class="o">=</span> <span class="n">DEFAULT</span>
+    <span class="n">style</span> <span class="o">=</span> <span class="n">NORMAL</span>
+    <span class="n">weight</span> <span class="o">=</span> <span class="n">NORMAL</span>
+    <span class="n">underline</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">facename</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">fontspec</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+        <span class="n">lword</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">lword</span> <span class="ow">in</span> <span class="n">font_families</span><span class="p">:</span>
+            <span class="n">family</span> <span class="o">=</span> <span class="n">font_families</span><span class="p">[</span><span class="n">lword</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">lword</span> <span class="ow">in</span> <span class="n">font_styles</span><span class="p">:</span>
+            <span class="n">style</span> <span class="o">=</span> <span class="n">font_styles</span><span class="p">[</span><span class="n">lword</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">lword</span> <span class="ow">in</span> <span class="n">font_weights</span><span class="p">:</span>
+            <span class="n">weight</span> <span class="o">=</span> <span class="n">font_weights</span><span class="p">[</span><span class="n">lword</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">lword</span> <span class="o">==</span> <span class="s2">&quot;underline&quot;</span><span class="p">:</span>
+            <span class="n">underline</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">lword</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">font_noise</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">point_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lword</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">facename</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Font</span><span class="p">(</span>
+        <span class="n">size</span><span class="o">=</span><span class="n">point_size</span><span class="p">,</span>
+        <span class="n">family</span><span class="o">=</span><span class="n">family</span><span class="p">,</span>
+        <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span>
+        <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
+        <span class="n">underline</span><span class="o">=</span><span class="n">underline</span><span class="p">,</span>
+        <span class="n">face_name</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">facename</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Font"><a class="viewcode-back" href="../../../api/kiva.fonttools.font.html#kiva.celiagg.Font">[docs]</a><span class="k">class</span> <span class="nc">Font</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Font class for device independent font specification.</span>
+
+<span class="sd">        It is primarily based on wxPython, but looks to be similar to</span>
+<span class="sd">        the needs of Mac OS X, etc.</span>
+
+<span class="sd">        The family defaults to SWISS so that font rotation will work</span>
+<span class="sd">        correctly under wxPython.    Revisit as we get more platforms</span>
+<span class="sd">        defined.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Maps the constants for font families to names to use when searching for</span>
+    <span class="c1"># fonts.</span>
+    <span class="n">familymap</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">DEFAULT</span><span class="p">:</span> <span class="s2">&quot;serif&quot;</span><span class="p">,</span>
+        <span class="n">SWISS</span><span class="p">:</span> <span class="s2">&quot;sans-serif&quot;</span><span class="p">,</span>
+        <span class="n">ROMAN</span><span class="p">:</span> <span class="s2">&quot;serif&quot;</span><span class="p">,</span>
+        <span class="n">MODERN</span><span class="p">:</span> <span class="s2">&quot;sans-serif&quot;</span><span class="p">,</span>
+        <span class="n">DECORATIVE</span><span class="p">:</span> <span class="s2">&quot;fantasy&quot;</span><span class="p">,</span>
+        <span class="n">SCRIPT</span><span class="p">:</span> <span class="s2">&quot;script&quot;</span><span class="p">,</span>
+        <span class="n">TELETYPE</span><span class="p">:</span> <span class="s2">&quot;monospace&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="n">SWISS</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">NORMAL</span><span class="p">,</span>
+                 <span class="n">style</span><span class="o">=</span><span class="n">NORMAL</span><span class="p">,</span> <span class="n">underline</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">DEFAULT</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">((</span><span class="nb">type</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">family</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">SWISS</span><span class="p">))</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">NORMAL</span><span class="p">))</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">style</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">NORMAL</span><span class="p">))</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">underline</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">face_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">encoding</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">DEFAULT</span><span class="p">))):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Bad value in Font() constructor.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">family</span> <span class="o">=</span> <span class="n">family</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="n">style</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">underline</span> <span class="o">=</span> <span class="n">underline</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face_name</span> <span class="o">=</span> <span class="n">face_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span> <span class="o">=</span> <span class="n">encoding</span>
+
+<div class="viewcode-block" id="Font.findfont"><a class="viewcode-back" href="../../../api/kiva.fonttools.font.html#kiva.celiagg.Font.findfont">[docs]</a>    <span class="k">def</span> <span class="nf">findfont</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the file name containing the font that most closely matches</span>
+<span class="sd">        our font properties.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_font_props</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_font_manager</span><span class="p">()</span><span class="o">.</span><span class="n">findfont</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Font.findfontname"><a class="viewcode-back" href="../../../api/kiva.fonttools.font.html#kiva.celiagg.Font.findfontname">[docs]</a>    <span class="k">def</span> <span class="nf">findfontname</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the name of the font that most closely matches our font</span>
+<span class="sd">        properties</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_font_props</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">fp</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_make_font_props</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a font_manager.FontProperties object that encapsulates our</span>
+<span class="sd">        font properties</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># XXX: change the weight to a numerical value</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="n">BOLD</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="n">BOLD_ITALIC</span><span class="p">:</span>
+            <span class="n">weight</span> <span class="o">=</span> <span class="s2">&quot;bold&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">weight</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="n">ITALIC</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="n">BOLD_ITALIC</span><span class="p">:</span>
+            <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;italic&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>
+        <span class="n">fp</span> <span class="o">=</span> <span class="n">FontProperties</span><span class="p">(</span>
+            <span class="n">family</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">familymap</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">family</span><span class="p">],</span>
+            <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
+            <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span>
+            <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_name</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">fp</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fp</span>
+
+    <span class="k">def</span> <span class="nf">_get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_name</span>
+
+    <span class="k">def</span> <span class="nf">_set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face_name</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_name</span><span class="p">,</span> <span class="n">_set_name</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Font.copy"><a class="viewcode-back" href="../../../api/kiva.fonttools.font.html#kiva.celiagg.Font.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a copy of the font object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">family</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">family</span>
+                    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">size</span>
+                    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">weight</span>
+                    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">style</span>
+                    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">underline</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">underline</span>
+                    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_name</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">face_name</span>
+                    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">encoding</span><span class="p">):</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Font(size=</span><span class="si">%d</span><span class="s2">,family=</span><span class="si">%d</span><span class="s2">,weight=</span><span class="si">%d</span><span class="s2">, style=</span><span class="si">%d</span><span class="s2">, face_name=&#39;</span><span class="si">%s</span><span class="s2">&#39;, &quot;</span>
+            <span class="o">+</span> <span class="s2">&quot;encoding=</span><span class="si">%d</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">fmt</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">family</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">face_name</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

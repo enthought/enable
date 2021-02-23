@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.component module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable package" href="enable.html" >
+    <link rel="next" title="enable.component_editor module" href="enable.component_editor.html" >
+    <link rel="prev" title="enable.compiled_path module" href="enable.compiled_path.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" accesskey="U">enable package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.component_editor.html" title="enable.component_editor module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.compiled_path.html" title="enable.compiled_path module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.component">
+<span id="enable-component-module"></span><h1>enable.component module<a class="headerlink" href="#module-enable.component" title="Permalink to this headline">¶</a></h1>
+<p>Defines the Component class</p>
+<dl class="class">
+<dt id="enable.component.Component">
+<em class="property">class </em><code class="sig-prename descclassname">enable.component.</code><code class="sig-name descname">Component</code><span class="sig-paren">(</span><em class="sig-param">**traits</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/component.html#Component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.component.Component" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="enable.coordinate_box.html#enable.coordinate_box.CoordinateBox" title="enable.coordinate_box.CoordinateBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.coordinate_box.CoordinateBox</span></code></a>, <a class="reference internal" href="enable.interactor.html#enable.interactor.Interactor" title="enable.interactor.Interactor"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.interactor.Interactor</span></code></a></p>
+<p>Component is the base class for most Enable objects.  In addition to
+the basic position and container features of Component, it also supports
+Viewports and has finite bounds.</p>
+<p>Since Components can have a border and padding, there is an additional set
+of bounds and position attributes that define the “outer box” of the
+components. These cannot be set, since they are secondary attributes
+(computed from the component’s “inner” size and margin-area attributes).</p>
+<dl class="method">
+<dt id="enable.component.Component.cleanup">
+<code class="sig-name descname">cleanup</code><span class="sig-paren">(</span><em class="sig-param">window</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/component.html#Component.cleanup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.component.Component.cleanup" title="Permalink to this definition">¶</a></dt>
+<dd><p>When a window viewing or containing a component is destroyed,
+cleanup is called on the component to give it the opportunity to
+delete any transient state it may have (such as backbuffers).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.component.Component.dispatch">
+<code class="sig-name descname">dispatch</code><span class="sig-paren">(</span><em class="sig-param">event</em>, <em class="sig-param">suffix</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/component.html#Component.dispatch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.component.Component.dispatch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dispatches a mouse event based on the current event state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event</strong> (<em>an Enable MouseEvent</em>) – A mouse event.</p></li>
+<li><p><strong>suffix</strong> (<em>string</em>) – The name of the mouse event as a suffix to the event state name,
+e.g. “_left_down” or “_window_enter”.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.component.Component.do_layout">
+<code class="sig-name descname">do_layout</code><span class="sig-paren">(</span><em class="sig-param">size=None</em>, <em class="sig-param">force=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/component.html#Component.do_layout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.component.Component.do_layout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tells this component to do layout at a given size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> (<em>(</em><em>width</em><em>, </em><em>height</em><em>)</em>) – Size at which to lay out the component; either or both values can
+be 0. If it is None, then the component lays itself out using
+<strong>bounds</strong>.</p></li>
+<li><p><strong>force</strong> (<em>Boolean</em>) – Whether to force a layout operation. If False, the component does
+a layout on itself only if <strong>_layout_needed</strong> is True.
+The method always does layout on any underlays or overlays it has,
+even if <em>force</em> is False.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.component.Component.draw">
+<code class="sig-name descname">draw</code><span class="sig-paren">(</span><em class="sig-param">gc</em>, <em class="sig-param">view_bounds=None</em>, <em class="sig-param">mode='default'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/component.html#Component.draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.component.Component.draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws the plot component.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gc</strong> (<em>Kiva GraphicsContext</em>) – The graphics context to draw the component on</p></li>
+<li><p><strong>view_bounds</strong> (<em>4-tuple of integers</em>) – (x, y, width, height) of the area to draw</p></li>
+<li><p><strong>mode</strong> (<em>string</em>) – <p>The drawing mode to use; can be one of:</p>
+<dl class="simple">
+<dt>’normal’</dt><dd><p>Normal, antialiased, high-quality rendering</p>
+</dd>
+<dt>’overlay’</dt><dd><p>The plot component is being rendered over something else,
+so it renders more quickly, and possibly omits rendering
+its background and certain tools</p>
+</dd>
+<dt>’interactive’</dt><dd><p>The plot component is being asked to render in
+direct response to realtime user interaction, and needs to make
+its best effort to render as fast as possible, even if there is
+an aesthetic cost.</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.component.Component.draw_select_box">
+<code class="sig-name descname">draw_select_box</code><span class="sig-paren">(</span><em class="sig-param">gc</em>, <em class="sig-param">position</em>, <em class="sig-param">bounds</em>, <em class="sig-param">width</em>, <em class="sig-param">dash</em>, <em class="sig-param">inset</em>, <em class="sig-param">color</em>, <em class="sig-param">bgcolor</em>, <em class="sig-param">marker_size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/component.html#Component.draw_select_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.component.Component.draw_select_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renders a selection box around the component.</p>
+<p>Subclasses can implement this utility method to render a selection box
+around themselves. To avoid burdening subclasses with various
+selection-box related traits that they might never use, this method
+takes all of its required data as input parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gc</strong> (<em>Kiva GraphicsContext</em>) – The graphics context to draw on.</p></li>
+<li><p><strong>position</strong> (<em>(</em><em>x</em><em>, </em><em>y</em><em>)</em>) – The position of the selection region.</p></li>
+<li><p><strong>bounds</strong> (<em>(</em><em>width</em><em>, </em><em>height</em><em>)</em>) – The size of the selection region.</p></li>
+<li><p><strong>width</strong> (<em>integer</em>) – The width of the selection box border</p></li>
+<li><p><strong>dash</strong> (<em>float array</em>) – An array of floating point values specifying the lengths of on and
+off painting pattern for dashed lines.</p></li>
+<li><p><strong>inset</strong> (<em>integer</em>) – Amount by which the selection box is inset on each side within the
+selection region.</p></li>
+<li><p><strong>color</strong> (<em>3-tuple of floats between 0.0 and 1.0</em>) – The R, G, and B values of the selection border color.</p></li>
+<li><p><strong>bgcolor</strong> (<em>3-tuple of floats between 0.0 and 1.0</em>) – The R, G, and B values of the selection background.</p></li>
+<li><p><strong>marker_size</strong> (<em>integer</em>) – Size, in pixels, of “handle” markers on the selection box</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.component.Component.get_absolute_coords">
+<code class="sig-name descname">get_absolute_coords</code><span class="sig-paren">(</span><em class="sig-param">*coords</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/component.html#Component.get_absolute_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.component.Component.get_absolute_coords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given coordinates relative to this component’s origin, returns
+the “absolute” coordinates in the frame of the top-level parent
+Window enclosing this component’s ancestor containers.</p>
+<dl class="simple">
+<dt>Can be called in two ways:</dt><dd><p>get_absolute_coords(x, y)
+get_absolute_coords( (x,y) )</p>
+</dd>
+</dl>
+<p>Returns a tuple (x,y) representing the new coordinates.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.component.Component.get_preferred_size">
+<code class="sig-name descname">get_preferred_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/component.html#Component.get_preferred_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.component.Component.get_preferred_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the size (width,height) that is preferred for this
+component.</p>
+<p>When called on a component that does not contain other components,
+this method just returns the component bounds.  If the component is
+resizable and can draw into any size, the method returns a size that
+is visually appropriate.  (The component’s actual bounds are
+determined by its container’s do_layout() method.)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.component.Component.get_relative_coords">
+<code class="sig-name descname">get_relative_coords</code><span class="sig-paren">(</span><em class="sig-param">*coords</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/component.html#Component.get_relative_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.component.Component.get_relative_coords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given absolute coordinates (where the origin is the top-left corner
+of the frame in the top-level parent Window) return coordinates
+relative to this component’s origin.</p>
+<dl class="simple">
+<dt>Can be called in two ways:</dt><dd><p>get_relative_coords(x, y)
+get_relative_coords( (x,y) )</p>
+</dd>
+</dl>
+<p>Returns a tuple (x,y) representing the new coordinates.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.component.Component.invalidate_and_redraw">
+<code class="sig-name descname">invalidate_and_redraw</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/component.html#Component.invalidate_and_redraw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.component.Component.invalidate_and_redraw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience method to invalidate our contents and request redraw</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.component.Component.invalidate_draw">
+<code class="sig-name descname">invalidate_draw</code><span class="sig-paren">(</span><em class="sig-param">damaged_regions=None</em>, <em class="sig-param">self_relative=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/component.html#Component.invalidate_draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.component.Component.invalidate_draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invalidates any backbuffer that may exist, and notifies our parents
+and viewports of any damaged regions.</p>
+<p>Call this method whenever a component’s internal state
+changes such that it must be redrawn on the next draw() call.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.component.Component.is_in">
+<code class="sig-name descname">is_in</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/component.html#Component.is_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.component.Component.is_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if the point x,y is in the box</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.component.Component.request_redraw">
+<code class="sig-name descname">request_redraw</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/component.html#Component.request_redraw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.component.Component.request_redraw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Requests that the component redraw itself.  Usually this means asking
+its parent for a repaint.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.component.Component.set_outer_bounds">
+<code class="sig-name descname">set_outer_bounds</code><span class="sig-paren">(</span><em class="sig-param">ndx</em>, <em class="sig-param">val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/component.html#Component.set_outer_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.component.Component.set_outer_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Since self.outer_bounds is a property whose value is determined
+by other (primary) attributes, it cannot return a mutable type.
+This method allows generic (i.e. orientation-independent) code
+to set the value of self.outer_bounds[0] or self.outer_bounds[1].</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.component.Component.set_outer_position">
+<code class="sig-name descname">set_outer_position</code><span class="sig-paren">(</span><em class="sig-param">ndx</em>, <em class="sig-param">val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/component.html#Component.set_outer_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.component.Component.set_outer_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Since self.outer_position is a property whose value is determined
+by other (primary) attributes, it cannot return a mutable type.
+This method allows generic (i.e. orientation-independent) code
+to set the value of self.outer_position[0] or self.outer_position[1].</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.compiled_path.html"
+                        title="previous chapter">enable.compiled_path module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.component_editor.html"
+                        title="next chapter">enable.component_editor module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.component.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

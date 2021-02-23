@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>kiva.graphics_state &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for kiva.graphics_state</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot; GraphicsState Class</span>
+
+<span class="sd">The GraphicsState class is used Kiva backends which need to have their state</span>
+<span class="sd">tracked by Python, rather than by an internal graphics state (eg. Wx, SVG and</span>
+<span class="sd">PDF backends, but not Agg or QPainter).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">array</span><span class="p">,</span> <span class="n">float64</span>
+
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="k">import</span> <span class="n">CAP_ROUND</span><span class="p">,</span> <span class="n">JOIN_MITER</span><span class="p">,</span> <span class="n">TEXT_FILL</span>
+<span class="kn">from</span> <span class="nn">.fonttools</span> <span class="k">import</span> <span class="n">Font</span>
+<span class="kn">from</span> <span class="nn">.line_state</span> <span class="k">import</span> <span class="n">LineState</span>
+<span class="kn">import</span> <span class="nn">kiva.affine</span> <span class="k">as</span> <span class="nn">affine</span>
+
+
+<div class="viewcode-block" id="GraphicsState"><a class="viewcode-back" href="../../api/kiva.graphics_state.html#kiva.graphics_state.GraphicsState">[docs]</a><span class="k">class</span> <span class="nc">GraphicsState</span><span class="p">(</span><span class="n">LineState</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Holds information used by a graphics context when drawing.</span>
+
+<span class="sd">    I&#39;m not sure if these should be a separate class, a dictionary,</span>
+<span class="sd">    or part of the GraphicsContext object.  Making them a dictionary</span>
+<span class="sd">    or object simplifies save_state and restore_state a little bit.</span>
+
+<span class="sd">    Also, this is a pretty good candidate for using slots.  I&#39;m not</span>
+<span class="sd">    going to use them right now, but, if we standardize on 2.2, slots might</span>
+<span class="sd">    speed things up some.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    ctm</span>
+<span class="sd">        context transform matrix</span>
+<span class="sd">    fill_color</span>
+<span class="sd">        RGBA array(4) of values 0.0 to 1.0</span>
+<span class="sd">    alpha</span>
+<span class="sd">        transparency value of drawn objects</span>
+<span class="sd">    font</span>
+<span class="sd">        either a special device independent font</span>
+<span class="sd">        object (what does anygui use?) or a</span>
+<span class="sd">        device dependent font object.</span>
+<span class="sd">    text_matrix</span>
+<span class="sd">        coordinate transformation matrix for text</span>
+<span class="sd">    clipping_path</span>
+<span class="sd">        defines the path of the clipping region.</span>
+<span class="sd">        For now, this can only be a rectangle.</span>
+<span class="sd">    current_point</span>
+<span class="sd">        location where next object is drawn.</span>
+<span class="sd">    should_antialias</span>
+<span class="sd">        whether anti-aliasing should be used when</span>
+<span class="sd">        drawing lines and fonts</span>
+<span class="sd">    miter_limit</span>
+<span class="sd">        specifies when and when not to miter line joins.</span>
+<span class="sd">    flatness</span>
+<span class="sd">        specifies tolerance for bumpiness of curves</span>
+<span class="sd">    character_spacing</span>
+<span class="sd">        spacing between drawing text characters</span>
+<span class="sd">    text_drawing_mode</span>
+<span class="sd">        style for drawing text: outline, fill, etc.</span>
+
+<span class="sd">    These are inherited from LineState:</span>
+
+<span class="sd">    line_color</span>
+<span class="sd">        RGBA array(4) of values 0.0 to 1.0</span>
+<span class="sd">    line_width</span>
+<span class="sd">        width of drawn lines</span>
+<span class="sd">    line_join</span>
+<span class="sd">        style of how lines are joined.  The choices</span>
+<span class="sd">        are: JOIN_ROUND, JOIN_BEVEL, JOIN_MITER</span>
+<span class="sd">    line_cap</span>
+<span class="sd">        style of the end cap on lines.  The choices</span>
+<span class="sd">        are: CAP_ROUND, CAP_SQUARE, CAP_BUTT</span>
+<span class="sd">    line_dash</span>
+<span class="sd">        (phase,pattern) dash pattern for lines.</span>
+<span class="sd">        phase is a single value specifying how many</span>
+<span class="sd">        units into the pattern to start.  dash is</span>
+<span class="sd">        a 1-D array of floats that alternate between</span>
+<span class="sd">        specifying the number of units on and off</span>
+<span class="sd">        in the pattern.  When the end of the array</span>
+<span class="sd">        is reached, the pattern repeats.</span>
+
+<span class="sd">    Not yet supported:</span>
+
+<span class="sd">    rendering_intent</span>
+<span class="sd">        deals with colors and color correction in</span>
+<span class="sd">        a sophisticated way.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Line state default values.</span>
+        <span class="n">line_color</span> <span class="o">=</span> <span class="n">array</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+        <span class="n">line_width</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">line_cap</span> <span class="o">=</span> <span class="n">CAP_ROUND</span>
+        <span class="n">line_join</span> <span class="o">=</span> <span class="n">JOIN_MITER</span>
+        <span class="n">line_dash</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]))</span>  <span class="c1"># This will draw a solid line</span>
+
+        <span class="c1"># FIXME: This is a very wierd class. The following code is here to</span>
+        <span class="c1"># make the basecore2d and the PS, SVG context managers happy</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GraphicsState</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">line_color</span><span class="p">,</span> <span class="n">line_width</span><span class="p">,</span> <span class="n">line_cap</span><span class="p">,</span> <span class="n">line_join</span><span class="p">,</span> <span class="n">line_dash</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_state</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="c1"># All other default values.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctm</span> <span class="o">=</span> <span class="n">affine</span><span class="o">.</span><span class="n">affine_identity</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fill_color</span> <span class="o">=</span> <span class="n">array</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="n">Font</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_matrix</span> <span class="o">=</span> <span class="n">affine</span><span class="o">.</span><span class="n">affine_identity</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clipping_path</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Not sure what the default should be?</span>
+        <span class="c1"># Technically uninitialized in the PDF spec, but 0,0 seems fine to me:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_point</span> <span class="o">=</span> <span class="n">array</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">antialias</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">miter_limit</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flatness</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">character_spacing</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_drawing_mode</span> <span class="o">=</span> <span class="n">TEXT_FILL</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<div class="viewcode-block" id="GraphicsState.copy"><a class="viewcode-back" href="../../api/kiva.graphics_state.html#kiva.graphics_state.GraphicsState.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

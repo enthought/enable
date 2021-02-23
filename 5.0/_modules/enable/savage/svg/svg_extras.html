@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.savage.svg.svg_extras &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../../../index.html" >
+    <link rel="up" title="Module code" href="../../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.savage.svg.svg_extras</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot; Extra math for implementing SVG on top of Kiva.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">acos</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">hypot</span><span class="p">,</span> <span class="n">ceil</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">radians</span><span class="p">,</span> <span class="n">degrees</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+
+<div class="viewcode-block" id="bezier_arc"><a class="viewcode-back" href="../../../../api/enable.savage.svg.svg_extras.html#enable.savage.svg.svg_extras.bezier_arc">[docs]</a><span class="k">def</span> <span class="nf">bezier_arc</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">start_angle</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="mi">90</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Compute a cubic Bezier approximation of an elliptical arc.</span>
+
+<span class="sd">    (x1, y1) and (x2, y2) are the corners of the enclosing rectangle.  The</span>
+<span class="sd">    coordinate system has coordinates that increase to the right and down.</span>
+<span class="sd">    Angles, measured in degress, start with 0 to the right (the positive</span>
+<span class="sd">    X axis) and increase counter-clockwise.  The arc extends from start_angle</span>
+<span class="sd">    to start_angle+extent.  I.e. start_angle=0 and extent=180 yields an</span>
+<span class="sd">    openside-down semi-circle.</span>
+
+<span class="sd">    The resulting coordinates are of the form (x1,y1, x2,y2, x3,y3, x4,y4)</span>
+<span class="sd">    such that the curve goes from (x1, y1) to (x4, y4) with (x2, y2) and</span>
+<span class="sd">    (x3, y3) as their respective Bezier control points.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">extent</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">90</span><span class="p">:</span>
+        <span class="n">frag_angle</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">extent</span><span class="p">)</span>
+        <span class="n">nfrag</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">nfrag</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ceil</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">extent</span><span class="p">)</span> <span class="o">/</span> <span class="mf">90.0</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">nfrag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Invalid value for extent: </span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">extent</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="n">frag_angle</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">extent</span><span class="p">)</span> <span class="o">/</span> <span class="n">nfrag</span>
+
+    <span class="n">x_cen</span> <span class="o">=</span> <span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">x2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">y_cen</span> <span class="o">=</span> <span class="p">(</span><span class="n">y1</span> <span class="o">+</span> <span class="n">y2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">rx</span> <span class="o">=</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">ry</span> <span class="o">=</span> <span class="p">(</span><span class="n">y2</span> <span class="o">-</span> <span class="n">y1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">half_angle</span> <span class="o">=</span> <span class="n">radians</span><span class="p">(</span><span class="n">frag_angle</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">kappa</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="mf">4.0</span> <span class="o">/</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">cos</span><span class="p">(</span><span class="n">half_angle</span><span class="p">))</span> <span class="o">/</span> <span class="n">sin</span><span class="p">(</span><span class="n">half_angle</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">frag_angle</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">sign</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sign</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">point_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nfrag</span><span class="p">):</span>
+        <span class="n">theta0</span> <span class="o">=</span> <span class="n">radians</span><span class="p">(</span><span class="n">start_angle</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">frag_angle</span><span class="p">)</span>
+        <span class="n">theta1</span> <span class="o">=</span> <span class="n">radians</span><span class="p">(</span><span class="n">start_angle</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">frag_angle</span><span class="p">)</span>
+        <span class="n">c0</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">theta0</span><span class="p">)</span>
+        <span class="n">c1</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">theta1</span><span class="p">)</span>
+        <span class="n">s0</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">theta0</span><span class="p">)</span>
+        <span class="n">s1</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">theta1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">frag_angle</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">signed_kappa</span> <span class="o">=</span> <span class="o">-</span><span class="n">kappa</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">signed_kappa</span> <span class="o">=</span> <span class="n">kappa</span>
+        <span class="n">point_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="n">x_cen</span> <span class="o">+</span> <span class="n">rx</span> <span class="o">*</span> <span class="n">c0</span><span class="p">,</span>
+                <span class="n">y_cen</span> <span class="o">-</span> <span class="n">ry</span> <span class="o">*</span> <span class="n">s0</span><span class="p">,</span>
+                <span class="n">x_cen</span> <span class="o">+</span> <span class="n">rx</span> <span class="o">*</span> <span class="p">(</span><span class="n">c0</span> <span class="o">+</span> <span class="n">signed_kappa</span> <span class="o">*</span> <span class="n">s0</span><span class="p">),</span>
+                <span class="n">y_cen</span> <span class="o">-</span> <span class="n">ry</span> <span class="o">*</span> <span class="p">(</span><span class="n">s0</span> <span class="o">-</span> <span class="n">signed_kappa</span> <span class="o">*</span> <span class="n">c0</span><span class="p">),</span>
+                <span class="n">x_cen</span> <span class="o">+</span> <span class="n">rx</span> <span class="o">*</span> <span class="p">(</span><span class="n">c1</span> <span class="o">-</span> <span class="n">signed_kappa</span> <span class="o">*</span> <span class="n">s1</span><span class="p">),</span>
+                <span class="n">y_cen</span> <span class="o">-</span> <span class="n">ry</span> <span class="o">*</span> <span class="p">(</span><span class="n">s1</span> <span class="o">+</span> <span class="n">signed_kappa</span> <span class="o">*</span> <span class="n">c1</span><span class="p">),</span>
+                <span class="n">x_cen</span> <span class="o">+</span> <span class="n">rx</span> <span class="o">*</span> <span class="n">c1</span><span class="p">,</span>
+                <span class="n">y_cen</span> <span class="o">-</span> <span class="n">ry</span> <span class="o">*</span> <span class="n">s1</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">point_list</span></div>
+
+
+<div class="viewcode-block" id="angle"><a class="viewcode-back" href="../../../../api/enable.savage.svg.svg_extras.html#enable.savage.svg.svg_extras.angle">[docs]</a><span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; The angle in degrees between two vectors.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sign</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">usign</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">*</span> <span class="n">y2</span> <span class="o">-</span> <span class="n">y1</span> <span class="o">*</span> <span class="n">x2</span>
+    <span class="k">if</span> <span class="n">usign</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">sign</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">*</span> <span class="n">x2</span> <span class="o">+</span> <span class="n">y1</span> <span class="o">*</span> <span class="n">y2</span>
+    <span class="n">den</span> <span class="o">=</span> <span class="n">hypot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span> <span class="o">*</span> <span class="n">hypot</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
+    <span class="n">ratio</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">num</span> <span class="o">/</span> <span class="n">den</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sign</span> <span class="o">*</span> <span class="n">degrees</span><span class="p">(</span><span class="n">acos</span><span class="p">(</span><span class="n">ratio</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="transform_from_local"><a class="viewcode-back" href="../../../../api/enable.savage.svg.svg_extras.html#enable.savage.svg.svg_extras.transform_from_local">[docs]</a><span class="k">def</span> <span class="nf">transform_from_local</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">yp</span><span class="p">,</span> <span class="n">cphi</span><span class="p">,</span> <span class="n">sphi</span><span class="p">,</span> <span class="n">mx</span><span class="p">,</span> <span class="n">my</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Transform from the local frame to absolute space.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">xp</span> <span class="o">*</span> <span class="n">cphi</span> <span class="o">-</span> <span class="n">yp</span> <span class="o">*</span> <span class="n">sphi</span> <span class="o">+</span> <span class="n">mx</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">xp</span> <span class="o">*</span> <span class="n">sphi</span> <span class="o">+</span> <span class="n">yp</span> <span class="o">*</span> <span class="n">cphi</span> <span class="o">+</span> <span class="n">my</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="elliptical_arc_to"><a class="viewcode-back" href="../../../../api/enable.savage.svg.svg_extras.html#enable.savage.svg.svg_extras.elliptical_arc_to">[docs]</a><span class="k">def</span> <span class="nf">elliptical_arc_to</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">ry</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">large_arc_flag</span><span class="p">,</span> <span class="n">sweep_flag</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span>
+                      <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Add an elliptical arc to the kiva CompiledPath by approximating it with</span>
+<span class="sd">    Bezier curves or a line segment.</span>
+
+<span class="sd">    Algorithm taken from the SVG 1.1 Implementation Notes:</span>
+<span class="sd">        http://www.w3.org/TR/SVG/implnote.html#ArcImplementationNotes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Basic normalization.</span>
+    <span class="n">rx</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">rx</span><span class="p">)</span>
+    <span class="n">ry</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ry</span><span class="p">)</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">phi</span> <span class="o">%</span> <span class="mi">360</span>
+
+    <span class="c1"># Check for certain special cases.</span>
+    <span class="k">if</span> <span class="n">x1</span> <span class="o">==</span> <span class="n">x2</span> <span class="ow">and</span> <span class="n">y1</span> <span class="o">==</span> <span class="n">y2</span><span class="p">:</span>
+        <span class="c1"># Omit the arc.</span>
+        <span class="c1"># x1 and y1 can obviously remain the same for the next segment.</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">rx</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">ry</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># Line segment.</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">rphi</span> <span class="o">=</span> <span class="n">radians</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+    <span class="n">cphi</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">rphi</span><span class="p">)</span>
+    <span class="n">sphi</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">rphi</span><span class="p">)</span>
+
+    <span class="c1"># Step 1: Rotate to the local coordinates.</span>
+    <span class="n">dx</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x2</span><span class="p">)</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">y1</span> <span class="o">-</span> <span class="n">y2</span><span class="p">)</span>
+    <span class="n">x1p</span> <span class="o">=</span> <span class="n">cphi</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">+</span> <span class="n">sphi</span> <span class="o">*</span> <span class="n">dy</span>
+    <span class="n">y1p</span> <span class="o">=</span> <span class="o">-</span><span class="n">sphi</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">+</span> <span class="n">cphi</span> <span class="o">*</span> <span class="n">dy</span>
+    <span class="c1"># Ensure that rx and ry are large enough to have a unique solution.</span>
+    <span class="n">lam</span> <span class="o">=</span> <span class="p">(</span><span class="n">x1p</span> <span class="o">/</span> <span class="n">rx</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y1p</span> <span class="o">/</span> <span class="n">ry</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="k">if</span> <span class="n">lam</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span>
+        <span class="n">rx</span> <span class="o">*=</span> <span class="n">scale</span>
+        <span class="n">ry</span> <span class="o">*=</span> <span class="n">scale</span>
+
+    <span class="c1"># Step 2: Solve for the center in the local coordinates.</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="nb">max</span><span class="p">((</span><span class="n">rx</span> <span class="o">*</span> <span class="n">ry</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">rx</span> <span class="o">*</span> <span class="n">y1p</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">ry</span> <span class="o">*</span> <span class="n">x1p</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">den</span> <span class="o">=</span> <span class="p">(</span><span class="n">rx</span> <span class="o">*</span> <span class="n">y1p</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">ry</span> <span class="o">*</span> <span class="n">x1p</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">num</span> <span class="o">/</span> <span class="n">den</span><span class="p">)</span>
+    <span class="n">cxp</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">rx</span> <span class="o">*</span> <span class="n">y1p</span> <span class="o">/</span> <span class="n">ry</span>
+    <span class="n">cyp</span> <span class="o">=</span> <span class="o">-</span><span class="n">a</span> <span class="o">*</span> <span class="n">ry</span> <span class="o">*</span> <span class="n">x1p</span> <span class="o">/</span> <span class="n">rx</span>
+    <span class="k">if</span> <span class="n">large_arc_flag</span> <span class="o">==</span> <span class="n">sweep_flag</span><span class="p">:</span>
+        <span class="n">cxp</span> <span class="o">=</span> <span class="o">-</span><span class="n">cxp</span>
+        <span class="n">cyp</span> <span class="o">=</span> <span class="o">-</span><span class="n">cyp</span>
+
+    <span class="c1"># Step 3: Transform back.</span>
+    <span class="n">mx</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">x2</span><span class="p">)</span>
+    <span class="n">my</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">y1</span> <span class="o">+</span> <span class="n">y2</span><span class="p">)</span>
+
+    <span class="c1"># Step 4: Compute the start angle and the angular extent of the arc.</span>
+    <span class="c1"># Note that theta1 is local to the phi-rotated coordinate space.</span>
+    <span class="n">dx</span> <span class="o">=</span> <span class="p">(</span><span class="n">x1p</span> <span class="o">-</span> <span class="n">cxp</span><span class="p">)</span> <span class="o">/</span> <span class="n">rx</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="p">(</span><span class="n">y1p</span> <span class="o">-</span> <span class="n">cyp</span><span class="p">)</span> <span class="o">/</span> <span class="n">ry</span>
+    <span class="n">dx2</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">x1p</span> <span class="o">-</span> <span class="n">cxp</span><span class="p">)</span> <span class="o">/</span> <span class="n">rx</span>
+    <span class="n">dy2</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">y1p</span> <span class="o">-</span> <span class="n">cyp</span><span class="p">)</span> <span class="o">/</span> <span class="n">ry</span>
+    <span class="n">theta1</span> <span class="o">=</span> <span class="n">angle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+    <span class="n">dtheta</span> <span class="o">=</span> <span class="n">angle</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">dx2</span><span class="p">,</span> <span class="n">dy2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sweep_flag</span> <span class="ow">and</span> <span class="n">dtheta</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">dtheta</span> <span class="o">-=</span> <span class="mi">360</span>
+    <span class="k">elif</span> <span class="n">sweep_flag</span> <span class="ow">and</span> <span class="n">dtheta</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">dtheta</span> <span class="o">+=</span> <span class="mi">360</span>
+
+    <span class="c1"># Step 5: Break it apart into Bezier arcs.</span>
+    <span class="n">arcs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">control_points</span> <span class="o">=</span> <span class="n">bezier_arc</span><span class="p">(</span>
+        <span class="n">cxp</span> <span class="o">-</span> <span class="n">rx</span><span class="p">,</span> <span class="n">cyp</span> <span class="o">-</span> <span class="n">ry</span><span class="p">,</span> <span class="n">cxp</span> <span class="o">+</span> <span class="n">rx</span><span class="p">,</span> <span class="n">cyp</span> <span class="o">+</span> <span class="n">ry</span><span class="p">,</span> <span class="n">theta1</span><span class="p">,</span> <span class="n">dtheta</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">x1p</span><span class="p">,</span> <span class="n">y1p</span><span class="p">,</span> <span class="n">x2p</span><span class="p">,</span> <span class="n">y2p</span><span class="p">,</span> <span class="n">x3p</span><span class="p">,</span> <span class="n">y3p</span><span class="p">,</span> <span class="n">x4p</span><span class="p">,</span> <span class="n">y4p</span> <span class="ow">in</span> <span class="n">control_points</span><span class="p">:</span>
+        <span class="c1"># Transform them back to asbolute space.</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">transform_from_local</span><span class="p">(</span><span class="n">x2p</span><span class="p">,</span> <span class="n">y2p</span><span class="p">,</span> <span class="n">cphi</span><span class="p">,</span> <span class="n">sphi</span><span class="p">,</span> <span class="n">mx</span><span class="p">,</span> <span class="n">my</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">transform_from_local</span><span class="p">(</span><span class="n">x3p</span><span class="p">,</span> <span class="n">y3p</span><span class="p">,</span> <span class="n">cphi</span><span class="p">,</span> <span class="n">sphi</span><span class="p">,</span> <span class="n">mx</span><span class="p">,</span> <span class="n">my</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">transform_from_local</span><span class="p">(</span><span class="n">x4p</span><span class="p">,</span> <span class="n">y4p</span><span class="p">,</span> <span class="n">cphi</span><span class="p">,</span> <span class="n">sphi</span><span class="p">,</span> <span class="n">mx</span><span class="p">,</span> <span class="n">my</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">arcs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">arcs</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

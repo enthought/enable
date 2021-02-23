@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.tools.hover_tool module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable.tools package" href="enable.tools.html" >
+    <link rel="next" title="enable.tools.move_tool module" href="enable.tools.move_tool.html" >
+    <link rel="prev" title="enable.tools.drag_tool module" href="enable.tools.drag_tool.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" >enable package</a></li>
+          <li class="active"><a href="enable.tools.html" accesskey="U">enable.tools package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.tools.move_tool.html" title="enable.tools.move_tool module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.tools.drag_tool.html" title="enable.tools.drag_tool module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.tools.hover_tool">
+<span id="enable-tools-hover-tool-module"></span><h1>enable.tools.hover_tool module<a class="headerlink" href="#module-enable.tools.hover_tool" title="Permalink to this headline">¶</a></h1>
+<p>Tool to detect when the user hovers over a specific part of an underlying
+components.</p>
+<dl class="function">
+<dt id="enable.tools.hover_tool.GetGlobalMousePosition">
+<code class="sig-prename descclassname">enable.tools.hover_tool.</code><code class="sig-name descname">GetGlobalMousePosition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/hover_tool.html#GetGlobalMousePosition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.hover_tool.GetGlobalMousePosition" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="enable.tools.hover_tool.HoverTool">
+<em class="property">class </em><code class="sig-prename descclassname">enable.tools.hover_tool.</code><code class="sig-name descname">HoverTool</code><span class="sig-paren">(</span><em class="sig-param">component=None</em>, <em class="sig-param">**kwtraits</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/hover_tool.html#HoverTool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.hover_tool.HoverTool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="enable.base_tool.html#enable.base_tool.BaseTool" title="enable.base_tool.BaseTool"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.base_tool.BaseTool</span></code></a></p>
+<p>Tool to detect when the user hovers over a certain area on a component.
+The type of area to detect can be configured by the ‘area_type’ and
+‘bounds’ traits.</p>
+<p>Users of the class should either set the ‘callback’ attribute, or
+subclass and override on_hover().</p>
+<dl class="method">
+<dt id="enable.tools.hover_tool.HoverTool.normal_mouse_move">
+<code class="sig-name descname">normal_mouse_move</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/hover_tool.html#HoverTool.normal_mouse_move"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.hover_tool.HoverTool.normal_mouse_move" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.tools.hover_tool.HoverTool.on_hover">
+<code class="sig-name descname">on_hover</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/hover_tool.html#HoverTool.on_hover"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.hover_tool.HoverTool.on_hover" title="Permalink to this definition">¶</a></dt>
+<dd><p>This gets called when all the conditions of the hover action have
+been met, and the tool determines that the mouse is, in fact, hovering
+over a target region on the component.</p>
+<p>By default, this method call self.callback (if one is configured).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.tools.hover_tool.HoverTool.on_timer">
+<code class="sig-name descname">on_timer</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/hover_tool.html#HoverTool.on_timer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.hover_tool.HoverTool.on_timer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.tools.hover_tool.HoverTool.restart_hover_timer">
+<code class="sig-name descname">restart_hover_timer</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/hover_tool.html#HoverTool.restart_hover_timer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.hover_tool.HoverTool.restart_hover_timer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.tools.drag_tool.html"
+                        title="previous chapter">enable.tools.drag_tool module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.tools.move_tool.html"
+                        title="next chapter">enable.tools.move_tool module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.tools.hover_tool.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

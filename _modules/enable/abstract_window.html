@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.abstract_window &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.abstract_window</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">reduce</span>
+
+<span class="c1"># Major library imports</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">dot</span>
+
+<span class="c1"># Enthought library imports</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Property</span><span class="p">,</span> <span class="n">Trait</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="c1"># Local relative imports</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">bounds_to_coordinates</span><span class="p">,</span> <span class="n">does_disjoint_intersect_coordinates</span><span class="p">,</span> <span class="n">union_bounds</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.colors</span> <span class="k">import</span> <span class="n">ColorTrait</span>
+<span class="kn">from</span> <span class="nn">.component</span> <span class="k">import</span> <span class="n">Component</span>
+<span class="kn">from</span> <span class="nn">.container</span> <span class="k">import</span> <span class="n">Container</span>
+<span class="kn">from</span> <span class="nn">.interactor</span> <span class="k">import</span> <span class="n">Interactor</span>
+
+
+<div class="viewcode-block" id="Alias"><a class="viewcode-back" href="../../api/enable.abstract_window.html#enable.abstract_window.Alias">[docs]</a><span class="k">def</span> <span class="nf">Alias</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Property</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">),</span>
+        <span class="k">lambda</span> <span class="n">obj</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AbstractWindow"><a class="viewcode-back" href="../../api/enable.abstract_window.html#enable.abstract_window.AbstractWindow">[docs]</a><span class="k">class</span> <span class="nc">AbstractWindow</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+
+    <span class="c1"># The top-level component that this window houses</span>
+    <span class="n">component</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Component</span><span class="p">)</span>
+
+    <span class="c1"># A reference to the nested component that has focus.  This is part of the</span>
+    <span class="c1"># manual mechanism for determining keyboard focus.</span>
+    <span class="n">focus_owner</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Interactor</span><span class="p">)</span>
+
+    <span class="c1"># If set, this is the component to which all mouse events are passed,</span>
+    <span class="c1"># bypassing the normal event propagation mechanism.</span>
+    <span class="n">mouse_owner</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Interactor</span><span class="p">)</span>
+
+    <span class="c1"># The transform to apply to mouse event positions to put them into the</span>
+    <span class="c1"># relative coordinates of the mouse_owner component.</span>
+    <span class="n">mouse_owner_transform</span> <span class="o">=</span> <span class="n">Any</span><span class="p">()</span>
+
+    <span class="c1"># When a component captures the mouse, it can optionally store a</span>
+    <span class="c1"># dispatch order for events (until it releases the mouse).</span>
+    <span class="n">mouse_owner_dispatch_history</span> <span class="o">=</span> <span class="n">Trait</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">List</span><span class="p">)</span>
+
+    <span class="c1"># A scaling constant applied to any GraphicsContext used for drawing the</span>
+    <span class="c1"># window&#39;s component.</span>
+    <span class="n">base_pixel_scale</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="c1"># When True, allow `base_pixel_scale` to be greater than 1 if the</span>
+    <span class="c1"># underlying toolkit supports it.</span>
+    <span class="n">high_resolution</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># The background window of the window.  The entire window first gets</span>
+    <span class="c1"># painted with this color before the component gets to draw.</span>
+    <span class="n">bgcolor</span> <span class="o">=</span> <span class="n">ColorTrait</span><span class="p">(</span><span class="s2">&quot;sys_window&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Unfortunately, for a while, there was a naming inconsistency and the</span>
+    <span class="c1"># background color trait named &quot;bg_color&quot;.  This is still provided for</span>
+    <span class="c1"># backwards compatibility but should not be used in new code.</span>
+    <span class="n">bg_color</span> <span class="o">=</span> <span class="n">Alias</span><span class="p">(</span><span class="s2">&quot;bgcolor&quot;</span><span class="p">)</span>
+
+    <span class="n">alt_pressed</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">ctrl_pressed</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">shift_pressed</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># A container that gets drawn after &amp; on top of the main component, and</span>
+    <span class="c1"># which receives events first.</span>
+    <span class="n">overlay</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Container</span><span class="p">)</span>
+
+    <span class="c1"># When the underlying toolkit control gets resized, this event gets set</span>
+    <span class="c1"># to the new size of the window, expressed as a tuple (dx, dy).</span>
+    <span class="n">resized</span> <span class="o">=</span> <span class="n">Event</span>
+
+    <span class="c1"># Whether to enable damaged region handling</span>
+    <span class="n">use_damaged_region</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># The previous component that handled an event.  Used to generate</span>
+    <span class="c1"># mouse_enter and mouse_leave events.  Right now this can only be</span>
+    <span class="c1"># None, self.component, or self.overlay.</span>
+    <span class="n">_prev_event_handler</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Component</span><span class="p">)</span>
+
+    <span class="c1"># (dx, dy) integer size of the Window.</span>
+    <span class="n">_size</span> <span class="o">=</span> <span class="n">Trait</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">)</span>
+
+    <span class="c1"># The regions to update upon redraw</span>
+    <span class="n">_update_region</span> <span class="o">=</span> <span class="n">Any</span>
+
+    <span class="c1"># When exceeding this, the entire window is marked damaged to save memory</span>
+    <span class="n">MAX_DAMAGED_REGIONS</span> <span class="o">=</span> <span class="mi">100</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1">#  Abstract methods that must be implemented by concrete subclasses</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="AbstractWindow.set_drag_result"><a class="viewcode-back" href="../../api/enable.abstract_window.html#enable.abstract_window.AbstractWindow.set_drag_result">[docs]</a>    <span class="k">def</span> <span class="nf">set_drag_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets the result that should be returned to the system from the</span>
+<span class="sd">        handling of the current drag operation.  Valid result values are:</span>
+<span class="sd">        &quot;error&quot;, &quot;none&quot;, &quot;copy&quot;, &quot;move&quot;, &quot;link&quot;, &quot;cancel&quot;.  These have the</span>
+<span class="sd">        meanings associated with their WX equivalents.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="k">def</span> <span class="nf">_capture_mouse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Capture all future mouse events&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_release_mouse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Release the mouse capture&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_create_key_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="s2">&quot;Convert a GUI toolkit key event into a KeyEvent&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_create_mouse_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="s2">&quot;Convert a GUI toolkit mouse event into a MouseEvent&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_redraw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Request a redraw of the window, within just the (x,y,w,h)</span>
+<span class="sd">        coordinates (if provided), or over the entire window if coordinates is</span>
+<span class="sd">        None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_get_control_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Get the size of the underlying toolkit control&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_create_gc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">pix_format</span><span class="o">=</span><span class="s2">&quot;bgr24&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Create a Kiva graphics context of a specified size.  This method</span>
+<span class="sd">        only gets called when the size of the window itself has changed.  To</span>
+<span class="sd">        perform pre-draw initialization every time in the paint loop, use</span>
+<span class="sd">        _init_gc().</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_init_gc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Gives a GC a chance to initialize itself before components perform</span>
+<span class="sd">        layout and draw.  This is called every time through the paint loop.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">gc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_region</span> <span class="o">==</span> <span class="p">[]</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_damaged_region</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_region</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_region</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bgcolor_</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Fixme: should use clip_to_rects</span>
+            <span class="n">update_union</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">union_bounds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_region</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">clip_to_rect</span><span class="p">(</span><span class="o">*</span><span class="n">update_union</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_window_paint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="s2">&quot;Do a GUI toolkit specific screen update&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="AbstractWindow.set_pointer"><a class="viewcode-back" href="../../api/enable.abstract_window.html#enable.abstract_window.AbstractWindow.set_pointer">[docs]</a>    <span class="k">def</span> <span class="nf">set_pointer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pointer</span><span class="p">):</span>
+        <span class="s2">&quot;Sets the current cursor shape&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="AbstractWindow.set_timer_interval"><a class="viewcode-back" href="../../api/enable.abstract_window.html#enable.abstract_window.AbstractWindow.set_timer_interval">[docs]</a>    <span class="k">def</span> <span class="nf">set_timer_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
+        <span class="s2">&quot;Set up or cancel a timer for a specified component&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Sets this window to have keyboard focus&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="AbstractWindow.screen_to_window"><a class="viewcode-back" href="../../api/enable.abstract_window.html#enable.abstract_window.AbstractWindow.screen_to_window">[docs]</a>    <span class="k">def</span> <span class="nf">screen_to_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="s2">&quot;Returns local window coordinates for given global screen coordinates&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="AbstractWindow.get_pointer_position"><a class="viewcode-back" href="../../api/enable.abstract_window.html#enable.abstract_window.AbstractWindow.get_pointer_position">[docs]</a>    <span class="k">def</span> <span class="nf">get_pointer_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Returns the current pointer position in local window coordinates&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Public methods</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">traits</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scroll_origin</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_region</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pointer_owner</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">HasTraits</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">traits</span><span class="p">)</span>
+
+        <span class="c1"># Create a default component (if necessary):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">Container</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_component_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">old</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">old</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">component_bounds_changed</span><span class="p">,</span> <span class="s2">&quot;bounds&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+            <span class="n">old</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">new</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">Container</span><span class="p">()</span>
+            <span class="k">return</span>
+
+        <span class="n">new</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="c1"># If possible, size the new component according to the size of the</span>
+        <span class="c1"># toolkit control</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_control_size</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;bounds&quot;</span><span class="p">):</span>
+            <span class="n">new</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">component_bounds_changed</span><span class="p">,</span> <span class="s2">&quot;bounds&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;fit_window&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">outer_position</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">outer_bounds</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;resizable&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="s2">&quot;h&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">resizable</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">outer_x</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">outer_width</span> <span class="o">=</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s2">&quot;v&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">resizable</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">outer_y</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">outer_height</span> <span class="o">=</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_region</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
+
+<div class="viewcode-block" id="AbstractWindow.component_bounds_changed"><a class="viewcode-back" href="../../api/enable.abstract_window.html#enable.abstract_window.AbstractWindow.component_bounds_changed">[docs]</a>    <span class="k">def</span> <span class="nf">component_bounds_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dynamic trait listener that handles our component changing its size;</span>
+<span class="sd">        bounds is a length-2 list of [width, height].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_draw</span><span class="p">()</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AbstractWindow.set_mouse_owner"><a class="viewcode-back" href="../../api/enable.abstract_window.html#enable.abstract_window.AbstractWindow.set_mouse_owner">[docs]</a>    <span class="k">def</span> <span class="nf">set_mouse_owner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mouse_owner</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">history</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="s2">&quot;Handle the &#39;mouse_owner&#39; being changed&quot;</span>
+        <span class="k">if</span> <span class="n">mouse_owner</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_release_mouse</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mouse_owner</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mouse_owner_transform</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mouse_owner_dispatch_history</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_capture_mouse</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mouse_owner</span> <span class="o">=</span> <span class="n">mouse_owner</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mouse_owner_transform</span> <span class="o">=</span> <span class="n">transform</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mouse_owner_dispatch_history</span> <span class="o">=</span> <span class="n">history</span></div>
+
+<div class="viewcode-block" id="AbstractWindow.invalidate_draw"><a class="viewcode-back" href="../../api/enable.abstract_window.html#enable.abstract_window.AbstractWindow.invalidate_draw">[docs]</a>    <span class="k">def</span> <span class="nf">invalidate_draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">damaged_regions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">self_relative</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">damaged_regions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_region</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update_region</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_DAMAGED_REGIONS</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_region</span> <span class="o">+=</span> <span class="n">damaged_regions</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_region</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1">#  Generic keyboard event handler:</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">_handle_key_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_type</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; **event** should be a toolkit-specific opaque object that will</span>
+<span class="sd">        be passed in to the backend&#39;s _create_key_event() method. It can</span>
+<span class="sd">        be None if the the toolkit lacks a native &quot;key event&quot; object.</span>
+
+<span class="sd">        Returns True if the event has been handled within the Enable object</span>
+<span class="sd">        hierarchy, or False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Generate the Enable event</span>
+        <span class="n">key_event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_key_event</span><span class="p">(</span><span class="n">event_type</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key_event</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">shift_pressed</span> <span class="o">=</span> <span class="n">key_event</span><span class="o">.</span><span class="n">shift_down</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alt_pressed</span> <span class="o">=</span> <span class="n">key_event</span><span class="o">.</span><span class="n">alt_down</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_pressed</span> <span class="o">=</span> <span class="n">key_event</span><span class="o">.</span><span class="n">control_down</span>
+
+        <span class="c1"># Dispatch the event to the correct component</span>
+        <span class="n">mouse_owner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse_owner</span>
+        <span class="k">if</span> <span class="n">mouse_owner</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">history</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse_owner_dispatch_history</span>
+            <span class="k">if</span> <span class="n">history</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># Assemble all the transforms</span>
+                <span class="n">transforms</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">get_event_transform</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">history</span><span class="p">]</span>
+                <span class="n">total_transform</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">dot</span><span class="p">,</span> <span class="n">transforms</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">key_event</span><span class="o">.</span><span class="n">push_transform</span><span class="p">(</span><span class="n">total_transform</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse_owner_transform</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">key_event</span><span class="o">.</span><span class="n">push_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse_owner_transform</span><span class="p">)</span>
+
+            <span class="n">mouse_owner</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">key_event</span><span class="p">,</span> <span class="n">event_type</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Normal event handling loop</span>
+            <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">key_event</span><span class="o">.</span><span class="n">handled</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span><span class="n">key_event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">key_event</span><span class="o">.</span><span class="n">y</span><span class="p">):</span>
+                    <span class="c1"># Fire the actual event</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">key_event</span><span class="p">,</span> <span class="n">event_type</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">key_event</span><span class="o">.</span><span class="n">handled</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1">#  Generic mouse event handler:</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">_handle_mouse_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">set_focus</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; **event** should be a toolkit-specific opaque object that will</span>
+<span class="sd">        be passed in to the backend&#39;s _create_mouse_event() method.  It can</span>
+<span class="sd">        be None if the the toolkit lacks a native &quot;mouse event&quot; object.</span>
+
+<span class="sd">        Returns True if the event has been handled within the Enable object</span>
+<span class="sd">        hierarchy, or False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># PZW: Hack!</span>
+            <span class="c1"># We need to handle the cases when the window hasn&#39;t been painted</span>
+            <span class="c1"># yet, but it&#39;s gotten a mouse event.  In such a case, we just</span>
+            <span class="c1"># ignore the mouse event. If the window has been painted, then</span>
+            <span class="c1"># _size will have some sensible value.</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">mouse_event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_mouse_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+        <span class="c1"># if no mouse event generated for some reason, return</span>
+        <span class="k">if</span> <span class="n">mouse_event</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">mouse_owner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse_owner</span>
+
+        <span class="k">if</span> <span class="n">mouse_owner</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># A mouse_owner has grabbed the mouse.  Check to see if we need to</span>
+            <span class="c1"># compose a net transform by querying each of the objects in the</span>
+            <span class="c1"># dispatch history in turn, or if we can just apply a saved</span>
+            <span class="c1"># top-level transform.</span>
+            <span class="n">history</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse_owner_dispatch_history</span>
+            <span class="k">if</span> <span class="n">history</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># Assemble all the transforms</span>
+                <span class="n">transforms</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">get_event_transform</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">history</span><span class="p">]</span>
+                <span class="n">total_transform</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">dot</span><span class="p">,</span> <span class="n">transforms</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">mouse_event</span><span class="o">.</span><span class="n">push_transform</span><span class="p">(</span><span class="n">total_transform</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse_owner_transform</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">mouse_event</span><span class="o">.</span><span class="n">push_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mouse_owner_transform</span><span class="p">)</span>
+
+            <span class="n">mouse_owner</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">mouse_event</span><span class="p">,</span> <span class="n">event_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pointer_owner</span> <span class="o">=</span> <span class="n">mouse_owner</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Normal event handling loop</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">overlay</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># TODO: implement this...</span>
+                <span class="k">pass</span>
+            <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">mouse_event</span><span class="o">.</span><span class="n">handled</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="c1"># Test to see if we need to generate a mouse_leave event</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handler</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handler</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span>
+                            <span class="n">mouse_event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">mouse_event</span><span class="o">.</span><span class="n">y</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handler</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span>
+                            <span class="n">mouse_event</span><span class="p">,</span> <span class="s2">&quot;pre_mouse_leave&quot;</span>
+                        <span class="p">)</span>
+                        <span class="n">mouse_event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handler</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span>
+                            <span class="n">mouse_event</span><span class="p">,</span> <span class="s2">&quot;mouse_leave&quot;</span>
+                        <span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handler</span> <span class="o">=</span> <span class="kc">None</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span><span class="n">mouse_event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">mouse_event</span><span class="o">.</span><span class="n">y</span><span class="p">):</span>
+                    <span class="c1"># Test to see if we need to generate a mouse_enter event</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handler</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">mouse_event</span><span class="p">,</span> <span class="s2">&quot;pre_mouse_enter&quot;</span><span class="p">)</span>
+                        <span class="n">mouse_event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">mouse_event</span><span class="p">,</span> <span class="s2">&quot;mouse_enter&quot;</span><span class="p">)</span>
+
+                    <span class="c1"># Fire the actual event</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">mouse_event</span><span class="p">,</span> <span class="s2">&quot;pre_&quot;</span> <span class="o">+</span> <span class="n">event_name</span><span class="p">)</span>
+                    <span class="n">mouse_event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">mouse_event</span><span class="p">,</span> <span class="n">event_name</span><span class="p">)</span>
+
+        <span class="c1"># If this event requires setting the keyboard focus, set the first</span>
+        <span class="c1"># component under the mouse pointer that accepts focus as the new focus</span>
+        <span class="c1"># owner (otherwise, nobody owns the focus):</span>
+        <span class="k">if</span> <span class="n">set_focus</span><span class="p">:</span>
+            <span class="c1"># If the mouse event was a click, then we set the toolkit&#39;s</span>
+            <span class="c1"># focus to ourselves</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">mouse_event</span><span class="o">.</span><span class="n">left_down</span>
+                    <span class="ow">or</span> <span class="n">mouse_event</span><span class="o">.</span><span class="n">middle_down</span>
+                    <span class="ow">or</span> <span class="n">mouse_event</span><span class="o">.</span><span class="n">right_down</span>
+                    <span class="ow">or</span> <span class="n">mouse_event</span><span class="o">.</span><span class="n">mouse_wheel</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_set_focus</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">accepts_focus</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focus_owner</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">focus_owner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">mouse_event</span><span class="o">.</span><span class="n">handled</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1">#  Generic drag event handler:</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">_handle_drag_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">set_focus</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; **event** should be a toolkit-specific opaque object that will</span>
+<span class="sd">        be passed in to the backend&#39;s _create_drag_event() method.  It can</span>
+<span class="sd">        be None if the the toolkit lacks a native &quot;drag event&quot; object.</span>
+
+<span class="sd">        Returns True if the event has been handled within the Enable object</span>
+<span class="sd">        hierarchy, or False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># PZW: Hack!</span>
+            <span class="c1"># We need to handle the cases when the window hasn&#39;t been painted</span>
+            <span class="c1"># yet, but it&#39;s gotten a mouse event.  In such a case, we just</span>
+            <span class="c1"># ignore the mouse event. If the window has been painted, then</span>
+            <span class="c1"># _size will have some sensible value.</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">drag_event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_drag_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+        <span class="c1"># if no mouse event generated for some reason, return</span>
+        <span class="k">if</span> <span class="n">drag_event</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Test to see if we need to generate a drag_leave event</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handler</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handler</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span>
+                        <span class="n">drag_event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">drag_event</span><span class="o">.</span><span class="n">y</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handler</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span>
+                        <span class="n">drag_event</span><span class="p">,</span> <span class="s2">&quot;pre_drag_leave&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">drag_event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handler</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">drag_event</span><span class="p">,</span> <span class="s2">&quot;drag_leave&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handler</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span><span class="n">drag_event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">drag_event</span><span class="o">.</span><span class="n">y</span><span class="p">):</span>
+                <span class="c1"># Test to see if we need to generate a mouse_enter event</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handler</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">drag_event</span><span class="p">,</span> <span class="s2">&quot;pre_drag_enter&quot;</span><span class="p">)</span>
+                    <span class="n">drag_event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">drag_event</span><span class="p">,</span> <span class="s2">&quot;drag_enter&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Fire the actual event</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">drag_event</span><span class="p">,</span> <span class="s2">&quot;pre_&quot;</span> <span class="o">+</span> <span class="n">event_name</span><span class="p">)</span>
+                <span class="n">drag_event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">drag_event</span><span class="p">,</span> <span class="n">event_name</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">drag_event</span><span class="o">.</span><span class="n">handled</span>
+
+<div class="viewcode-block" id="AbstractWindow.set_tooltip"><a class="viewcode-back" href="../../api/enable.abstract_window.html#enable.abstract_window.AbstractWindow.set_tooltip">[docs]</a>    <span class="k">def</span> <span class="nf">set_tooltip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">components</span><span class="p">):</span>
+        <span class="s2">&quot;Set the window&#39;s tooltip (if necessary)&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="AbstractWindow.redraw"><a class="viewcode-back" href="../../api/enable.abstract_window.html#enable.abstract_window.AbstractWindow.redraw">[docs]</a>    <span class="k">def</span> <span class="nf">redraw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Requests that the window be redrawn. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_redraw</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AbstractWindow.cleanup"><a class="viewcode-back" href="../../api/enable.abstract_window.html#enable.abstract_window.AbstractWindow.cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Clean up after ourselves.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">control</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+    <span class="k">def</span> <span class="nf">_needs_redraw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
+        <span class="s2">&quot;Determine if a specified region intersects the update region&quot;</span>
+        <span class="k">return</span> <span class="n">does_disjoint_intersect_coordinates</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_region</span><span class="p">,</span> <span class="n">bounds_to_coordinates</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_paint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; This method is called directly by the UI toolkit&#39;s callback</span>
+<span class="sd">        mechanism on the paint event.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">control</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># the window has gone away, but let the window implementation</span>
+            <span class="c1"># handle the event as needed</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_window_paint</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Create a new GC if necessary</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_control_size</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">!=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">size</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_gc</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+
+        <span class="c1"># Always give the GC a chance to initialize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_gc</span><span class="p">()</span>
+
+        <span class="c1"># Layout components and draw</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;do_layout&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">do_layout</span><span class="p">()</span>
+        <span class="n">gc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="c1"># damaged_regions = draw_result[&#39;damaged_regions&#39;]</span>
+        <span class="c1"># FIXME: consolidate damaged regions if necessary</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_damaged_region</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_region</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Perform a paint of the GC to the window (only necessary on backends</span>
+        <span class="c1"># that render to an off-screen buffer)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_window_paint</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_region</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">attribs</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;component&quot;</span><span class="p">,</span> <span class="s2">&quot;bgcolor&quot;</span><span class="p">,</span> <span class="s2">&quot;overlay&quot;</span><span class="p">,</span> <span class="s2">&quot;_scroll_origin&quot;</span><span class="p">)</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">attrib</span> <span class="ow">in</span> <span class="n">attribs</span><span class="p">:</span>
+            <span class="n">state</span><span class="p">[</span><span class="n">attrib</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrib</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">state</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Wire up the mouse event handlers</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_on_left_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_mouse_event</span><span class="p">(</span><span class="s2">&quot;left_down&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">set_focus</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_left_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_mouse_event</span><span class="p">(</span><span class="s2">&quot;left_up&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_left_dclick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_mouse_event</span><span class="p">(</span><span class="s2">&quot;left_dclick&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_right_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_mouse_event</span><span class="p">(</span><span class="s2">&quot;right_down&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">set_focus</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_right_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_mouse_event</span><span class="p">(</span><span class="s2">&quot;right_up&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_right_dclick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_mouse_event</span><span class="p">(</span><span class="s2">&quot;right_dclick&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_middle_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_mouse_event</span><span class="p">(</span><span class="s2">&quot;middle_down&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_middle_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_mouse_event</span><span class="p">(</span><span class="s2">&quot;middle_up&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_middle_dclick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_mouse_event</span><span class="p">(</span><span class="s2">&quot;middle_dclick&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_mouse_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_mouse_event</span><span class="p">(</span><span class="s2">&quot;mouse_move&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_mouse_wheel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_mouse_event</span><span class="p">(</span><span class="s2">&quot;mouse_wheel&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_mouse_enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_mouse_event</span><span class="p">(</span><span class="s2">&quot;mouse_enter&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_mouse_leave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_mouse_event</span><span class="p">(</span><span class="s2">&quot;mouse_leave&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Additional event handlers that are not part of normal Interactors</span>
+    <span class="k">def</span> <span class="nf">_on_window_enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="c1"># TODO: implement this to generate a mouse_leave on self.component</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_on_window_leave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># PZW: Hack!</span>
+            <span class="c1"># We need to handle the cases when the window hasn&#39;t been painted</span>
+            <span class="c1"># yet, but it&#39;s gotten a mouse event.  In such a case, we just</span>
+            <span class="c1"># ignore the mouse event. If the window has been painted, then</span>
+            <span class="c1"># _size will have some sensible value.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handler</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handler</span><span class="p">:</span>
+            <span class="n">mouse_event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_mouse_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handler</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">mouse_event</span><span class="p">,</span> <span class="s2">&quot;mouse_leave&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prev_event_handler</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Wire up the keyboard event handlers</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_on_key_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_key_event</span><span class="p">(</span><span class="s2">&quot;key_pressed&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_key_released</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_key_event</span><span class="p">(</span><span class="s2">&quot;key_released&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_character</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_key_event</span><span class="p">(</span><span class="s2">&quot;character&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

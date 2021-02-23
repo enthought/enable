@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.savage.svg.attributes &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../../../index.html" >
+    <link rel="up" title="Module code" href="../../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.savage.svg.attributes</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parsers for specific attributes</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">urllib.parse</span> <span class="k">as</span> <span class="nn">urlparse</span>
+
+<span class="kn">from</span> <span class="nn">pyparsing</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">CaselessLiteral</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">SkipTo</span><span class="p">,</span> <span class="n">StringEnd</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">.css.colour</span> <span class="k">import</span> <span class="n">colourValue</span>
+
+<span class="c1"># Paint values</span>
+<span class="n">none</span> <span class="o">=</span> <span class="n">CaselessLiteral</span><span class="p">(</span><span class="s2">&quot;none&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;NONE&quot;</span><span class="p">,</span> <span class="p">()])</span>
+<span class="n">currentColor</span> <span class="o">=</span> <span class="n">CaselessLiteral</span><span class="p">(</span><span class="s2">&quot;currentColor&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;CURRENTCOLOR&quot;</span><span class="p">,</span> <span class="p">()]</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="parsePossibleURL"><a class="viewcode-back" href="../../../../api/enable.savage.svg.attributes.html#enable.savage.svg.attributes.parsePossibleURL">[docs]</a><span class="k">def</span> <span class="nf">parsePossibleURL</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="c1"># Workaround for PyParsing versions &lt; 2.1.0, for which t is wrapped in an</span>
+    <span class="c1"># extra level of nesting. See enthought/enable#224.</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">possibleURL</span><span class="p">,</span> <span class="n">fallback</span> <span class="o">=</span> <span class="n">t</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">urlparse</span><span class="o">.</span><span class="n">urlsplit</span><span class="p">(</span><span class="n">possibleURL</span><span class="p">),</span> <span class="n">fallback</span><span class="p">]</span></div>
+
+
+<span class="c1"># Normal color declaration</span>
+<span class="n">colorDeclaration</span> <span class="o">=</span> <span class="n">none</span> <span class="o">|</span> <span class="n">currentColor</span> <span class="o">|</span> <span class="n">colourValue</span>
+
+<span class="n">urlEnd</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">suppress</span><span class="p">()</span>
+    <span class="o">+</span> <span class="n">Optional</span><span class="p">(</span><span class="n">Group</span><span class="p">(</span><span class="n">colorDeclaration</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="p">())</span>
+    <span class="o">+</span> <span class="n">StringEnd</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">CaselessLiteral</span><span class="p">(</span><span class="s2">&quot;URL&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;(&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">suppress</span><span class="p">()</span>
+    <span class="o">+</span> <span class="n">Group</span><span class="p">(</span><span class="n">SkipTo</span><span class="p">(</span><span class="n">urlEnd</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span><span class="n">parsePossibleURL</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="c1"># paint value will parse into a (type, details) tuple.</span>
+<span class="c1"># For none and currentColor, the details tuple will be the empty tuple</span>
+<span class="c1"># for CSS color declarations, it will be (type, (R,G,B))</span>
+<span class="c1"># for URLs, it will be (&quot;URL&quot;, ((url tuple), fallback))</span>
+<span class="c1"># The url tuple will be as returned by urlparse.urlsplit, and can be</span>
+<span class="c1"># an empty tuple if the parser has an error</span>
+<span class="c1"># The fallback will be another (type, details) tuple as a parsed</span>
+<span class="c1"># colorDeclaration, but may be the empty tuple if it is not present</span>
+<span class="n">paintValue</span> <span class="o">=</span> <span class="n">url</span> <span class="o">|</span> <span class="n">colorDeclaration</span>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

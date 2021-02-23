@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.markers &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.markers</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Defines markers classes, used by a variety of renderers.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Major library imports</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">array</span><span class="p">,</span> <span class="n">pi</span>
+
+<span class="c1"># Enthought library imports</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Trait</span>
+<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="k">import</span> <span class="n">EnumEditor</span>
+<span class="kn">from</span> <span class="nn">kiva.api</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">CIRCLE_MARKER</span><span class="p">,</span> <span class="n">CROSS_MARKER</span><span class="p">,</span> <span class="n">DIAMOND_MARKER</span><span class="p">,</span> <span class="n">DOT_MARKER</span><span class="p">,</span> <span class="n">FILL_STROKE</span><span class="p">,</span>
+    <span class="n">INVERTED_TRIANGLE_MARKER</span><span class="p">,</span> <span class="n">NO_MARKER</span><span class="p">,</span> <span class="n">PIXEL_MARKER</span><span class="p">,</span> <span class="n">PLUS_MARKER</span><span class="p">,</span>
+    <span class="n">SQUARE_MARKER</span><span class="p">,</span> <span class="n">STROKE</span><span class="p">,</span> <span class="n">TRIANGLE_MARKER</span>
+<span class="p">)</span>
+
+<span class="c1"># Local imports</span>
+<span class="kn">from</span> <span class="nn">.compiled_path</span> <span class="k">import</span> <span class="n">CompiledPath</span>
+
+
+<div class="viewcode-block" id="AbstractMarker"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.AbstractMarker">[docs]</a><span class="k">class</span> <span class="nc">AbstractMarker</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Abstract class for markers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># How this marker is to be stroked (from kiva.api).</span>
+    <span class="c1"># Since this needs to be a class variable, it can&#39;t be a trait.</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">STROKE</span>
+    <span class="c1"># draw_mode = Enum(FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE)</span>
+
+    <span class="c1"># The kiva marker type (from kiva.api).</span>
+    <span class="n">kiva_marker</span> <span class="o">=</span> <span class="n">NO_MARKER</span>
+
+    <span class="c1"># Close the path object after drawing this marker?</span>
+    <span class="n">close_path</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Render the marker antialiased?  Some</span>
+    <span class="c1"># markers render faster and look better if they are not anti-aliased..</span>
+    <span class="n">antialias</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AbstractMarker.add_to_path"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.AbstractMarker.add_to_path">[docs]</a>    <span class="k">def</span> <span class="nf">add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Adds this marker&#39;s representation to *path*, scaled appropriately</span>
+<span class="sd">        for *size*.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : GraphicsContext</span>
+<span class="sd">            The target for drawing the marker.</span>
+<span class="sd">        size : number</span>
+<span class="sd">            Size of the marker, in pixels</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">close_path</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_to_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">close_path</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_to_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AbstractMarker.get_compiled_path"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.AbstractMarker.get_compiled_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_compiled_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a compiled path object that represents this marker, scaled</span>
+<span class="sd">        appropriately for *size*.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="k">def</span> <span class="nf">_add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="c1"># subclasses must implement this method</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="SquareMarker"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.SquareMarker">[docs]</a><span class="k">class</span> <span class="nc">SquareMarker</span><span class="p">(</span><span class="n">AbstractMarker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A marker that is a square.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># How this marker is to be stroked. (Overrides AbstractMarker.)</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">FILL_STROKE</span>
+    <span class="c1"># The Kiva marker type. (Overrides AbstractMarker.)</span>
+    <span class="n">kiva_marker</span> <span class="o">=</span> <span class="n">SQUARE_MARKER</span>
+    <span class="c1"># Do not render anti-aliased. (Overrides AbstractMarker.)</span>
+    <span class="n">antialias</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="o">-</span><span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">size</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DiamondMarker"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.DiamondMarker">[docs]</a><span class="k">class</span> <span class="nc">DiamondMarker</span><span class="p">(</span><span class="n">AbstractMarker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A marker that is a diamond.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># How this marker is to be stroked. (Overrides AbstractMarker.)</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">FILL_STROKE</span>
+    <span class="c1"># The Kiva marker type. (Overrides AbstractMarker.)</span>
+    <span class="n">kiva_marker</span> <span class="o">=</span> <span class="n">DIAMOND_MARKER</span>
+    <span class="c1"># Do not render anti-aliased. (Overrides AbstractMarker.)</span>
+    <span class="n">antialias</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span><span class="n">array</span><span class="p">(((</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">size</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span> <span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">))))</span></div>
+
+
+<div class="viewcode-block" id="CircleMarker"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.CircleMarker">[docs]</a><span class="k">class</span> <span class="nc">CircleMarker</span><span class="p">(</span><span class="n">AbstractMarker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A marker that is a circle.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># How this marker is to be stroked. (Overrides AbstractMarker.)</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">FILL_STROKE</span>
+    <span class="c1"># The Kiva marker type. (Overrides AbstractMarker.)</span>
+    <span class="n">kiva_marker</span> <span class="o">=</span> <span class="n">CIRCLE_MARKER</span>
+    <span class="c1"># Array of points in a circle</span>
+    <span class="n">circle_points</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.966</span><span class="p">,</span> <span class="mf">0.259</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.866</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.707</span><span class="p">,</span> <span class="mf">0.707</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.866</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.259</span><span class="p">,</span> <span class="mf">0.966</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">0.259</span><span class="p">,</span> <span class="mf">0.966</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.866</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">0.707</span><span class="p">,</span> <span class="mf">0.707</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">0.866</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">0.966</span><span class="p">,</span> <span class="mf">0.259</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">0.966</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.259</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">0.866</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">0.707</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.707</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.866</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">0.259</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.966</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.259</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.966</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.866</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.707</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.707</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.866</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.966</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.259</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="n">pts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">circle_points</span><span class="p">[::</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">size</span>
+        <span class="k">elif</span> <span class="n">size</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="n">pts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">circle_points</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">size</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">circle_points</span> <span class="o">*</span> <span class="n">size</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TriangleMarker"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.TriangleMarker">[docs]</a><span class="k">class</span> <span class="nc">TriangleMarker</span><span class="p">(</span><span class="n">AbstractMarker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A marker that is a triangle with one apex pointing up.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># How this marker is to be stroked. (Overrides AbstractMarker.)</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">FILL_STROKE</span>
+    <span class="c1"># The Kiva marker type. (Overrides AbstractMarker.)</span>
+    <span class="n">kiva_marker</span> <span class="o">=</span> <span class="n">TRIANGLE_MARKER</span>
+    <span class="c1"># Do not render anti-aliased. (Overrides AbstractMarker.)</span>
+    <span class="n">antialias</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span><span class="n">array</span><span class="p">(((</span><span class="o">-</span><span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="n">size</span><span class="p">),</span> <span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="n">size</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.732</span> <span class="o">*</span> <span class="n">size</span><span class="p">))))</span></div>
+
+
+<div class="viewcode-block" id="Inverted_TriangleMarker"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.Inverted_TriangleMarker">[docs]</a><span class="k">class</span> <span class="nc">Inverted_TriangleMarker</span><span class="p">(</span><span class="n">AbstractMarker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A marker that is a triangle with one apex pointing down.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># How this marker is to be stroked. (Overrides AbstractMarker.)</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">FILL_STROKE</span>
+    <span class="c1"># The Kiva marker type. (Overrides AbstractMarker.)</span>
+    <span class="n">kiva_marker</span> <span class="o">=</span> <span class="n">INVERTED_TRIANGLE_MARKER</span>
+    <span class="c1"># Do not render anti-aliased. (Overrides AbstractMarker.)</span>
+    <span class="n">antialias</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span><span class="n">array</span><span class="p">(((</span><span class="o">-</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span> <span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.732</span> <span class="o">*</span> <span class="n">size</span><span class="p">))))</span></div>
+
+
+<div class="viewcode-block" id="LeftTriangleMarker"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.LeftTriangleMarker">[docs]</a><span class="k">class</span> <span class="nc">LeftTriangleMarker</span><span class="p">(</span><span class="n">AbstractMarker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A marker that is a triangle with one apex pointing left.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># How this marker is to be stroked. (Overrides AbstractMarker.)</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">FILL_STROKE</span>
+    <span class="c1"># Do not render anti-aliased. (Overrides AbstractMarker.)</span>
+    <span class="n">antialias</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span><span class="n">array</span><span class="p">([(</span><span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="n">size</span><span class="p">),</span> <span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.732</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]))</span></div>
+
+
+<div class="viewcode-block" id="RightTriangleMarker"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.RightTriangleMarker">[docs]</a><span class="k">class</span> <span class="nc">RightTriangleMarker</span><span class="p">(</span><span class="n">AbstractMarker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A marker that is a triangle with one apex pointing right.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># How this marker is to be stroked. (Overrides AbstractMarker.)</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">FILL_STROKE</span>
+    <span class="c1"># Do not render anti-aliased. (Overrides AbstractMarker.)</span>
+    <span class="n">antialias</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span><span class="n">array</span><span class="p">([(</span><span class="o">-</span><span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="n">size</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.732</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]))</span></div>
+
+
+<div class="viewcode-block" id="PentagonMarker"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.PentagonMarker">[docs]</a><span class="k">class</span> <span class="nc">PentagonMarker</span><span class="p">(</span><span class="n">AbstractMarker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A marker that is a pentagon.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># How this marker is to be stroked. (Overrides AbstractMarker.)</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">FILL_STROKE</span>
+    <span class="c1"># Do not render anti-aliased. (Overrides AbstractMarker.)</span>
+    <span class="n">antialias</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="c1"># xi = size * cos(2*pi*i/5. + pi/2), yi = size * sin(2*pi*i/5. + pi/2)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span>
+            <span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="mf">0.951</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="mf">0.309</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="mf">0.588</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.809</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="o">-</span><span class="mf">0.588</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.809</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="o">-</span><span class="mf">0.951</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="mf">0.309</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Hexagon1Marker"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.Hexagon1Marker">[docs]</a><span class="k">class</span> <span class="nc">Hexagon1Marker</span><span class="p">(</span><span class="n">AbstractMarker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A marker that is a hexagon, with the flat sides on the sides.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># How this marker is to be stroked. (Overrides AbstractMarker.)</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">FILL_STROKE</span>
+    <span class="c1"># Do not render anti-aliased. (Overrides AbstractMarker.)</span>
+    <span class="n">antialias</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="c1"># xi = size * cos(2*pi*i/6.), yi = size * sin(2*pi*i/6.)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span>
+            <span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                    <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="mf">0.866</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="mf">0.866</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="o">-</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                    <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.866</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.866</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Hexagon2Marker"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.Hexagon2Marker">[docs]</a><span class="k">class</span> <span class="nc">Hexagon2Marker</span><span class="p">(</span><span class="n">AbstractMarker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A marker that is a hexagon, with the flat sides on the top and bottom.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># How this marker is to be stroked. (Overrides AbstractMarker.)</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">FILL_STROKE</span>
+    <span class="c1"># Do not render anti-aliased. (Overrides AbstractMarker.)</span>
+    <span class="n">antialias</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="c1"># Like Hexagon1Marker but with an offset of 30 deg.</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span>
+            <span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="p">(</span><span class="mf">0.866</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="o">-</span><span class="mf">0.866</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="o">-</span><span class="mf">0.866</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="mf">0.866</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PlusMarker"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.PlusMarker">[docs]</a><span class="k">class</span> <span class="nc">PlusMarker</span><span class="p">(</span><span class="n">AbstractMarker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A marker that is a plus-sign.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># How this marker is to be stroked. (Overrides AbstractMarker.)</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">STROKE</span>
+    <span class="c1"># The Kiva marker type. (Overrides AbstractMarker.)</span>
+    <span class="n">kiva_marker</span> <span class="o">=</span> <span class="n">PLUS_MARKER</span>
+    <span class="c1"># Do not render anti-aliased. (Overrides AbstractMarker.)</span>
+    <span class="n">antialias</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="o">-</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CrossMarker"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.CrossMarker">[docs]</a><span class="k">class</span> <span class="nc">CrossMarker</span><span class="p">(</span><span class="n">AbstractMarker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A marker that is an X.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># How this marker is to be stroked. (Overrides AbstractMarker.)</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">STROKE</span>
+    <span class="c1"># The Kiva marker type. (Overrides AbstractMarker.)</span>
+    <span class="n">kiva_marker</span> <span class="o">=</span> <span class="n">CROSS_MARKER</span>
+    <span class="c1"># Do not render anti-aliased. (Overrides AbstractMarker.)</span>
+    <span class="n">antialias</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="o">-</span><span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="o">-</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StarMarker"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.StarMarker">[docs]</a><span class="k">class</span> <span class="nc">StarMarker</span><span class="p">(</span><span class="n">AbstractMarker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A marker that is a (filled) star.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># How this marker is to be stroked. (Overrides AbstractMarker.)</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">FILL_STROKE</span>
+    <span class="c1"># Do not render anti-aliased. (Overrides AbstractMarker.)</span>
+    <span class="n">antialias</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="c1"># Generated from</span>
+        <span class="c1"># i = arange(10), thetai = 2*pi * i/10., ri = 0.75 + (-1)**i * 0.25</span>
+        <span class="c1"># xi = ri * sin(thetai), yi = ri * cos(thetai)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span>
+            <span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="mf">0.294</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="mf">0.405</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="mf">0.951</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="mf">0.309</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="mf">0.476</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.155</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="mf">0.588</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.809</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="o">-</span><span class="mf">0.588</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.809</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="o">-</span><span class="mf">0.476</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.155</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="o">-</span><span class="mf">0.951</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="mf">0.309</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="o">-</span><span class="mf">0.294</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="mf">0.405</span> <span class="o">*</span> <span class="n">size</span><span class="p">),</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CrossPlusMarker"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.CrossPlusMarker">[docs]</a><span class="k">class</span> <span class="nc">CrossPlusMarker</span><span class="p">(</span><span class="n">AbstractMarker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A marker that is an X and a + superimposed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># How this marker is to be stroked. (Overrides AbstractMarker.)</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">STROKE</span>
+    <span class="c1"># Do not render anti-aliased. (Overrides AbstractMarker.)</span>
+    <span class="n">antialias</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="c1"># Darw an X</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="o">-</span><span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="o">-</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="o">-</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+        <span class="c1"># Draw a +</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="o">-</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DotMarker"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.DotMarker">[docs]</a><span class="k">class</span> <span class="nc">DotMarker</span><span class="p">(</span><span class="n">AbstractMarker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A marker that is a dot.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># How this marker is to be stroked. (Overrides AbstractMarker.)</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">FILL_STROKE</span>
+    <span class="c1"># The Kiva marker type. (Overrides AbstractMarker.)</span>
+    <span class="n">kiva_marker</span> <span class="o">=</span> <span class="n">DOT_MARKER</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">arc</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PixelMarker"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.PixelMarker">[docs]</a><span class="k">class</span> <span class="nc">PixelMarker</span><span class="p">(</span><span class="n">AbstractMarker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A marker that is a pixel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># How this marker is to be stroked. (Overrides AbstractMarker.)</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">STROKE</span>
+    <span class="c1"># The Kiva marker type. (Overrides AbstractMarker.)</span>
+    <span class="n">kiva_marker</span> <span class="o">=</span> <span class="n">PIXEL_MARKER</span>
+    <span class="c1"># Do not render anti-aliased. (Overrides AbstractMarker.)</span>
+    <span class="n">antialias</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="c1"># It&#39;s impossible to emulate a true Pixel Marker in a vector</span>
+        <span class="c1"># system, so we just draw a sub-pixel square 1.0 unit across.</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CustomMarker"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.CustomMarker">[docs]</a><span class="k">class</span> <span class="nc">CustomMarker</span><span class="p">(</span><span class="n">AbstractMarker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A marker that is a custom shape.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># How this marker is to be stroked. (Overrides AbstractMarker.)</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">STROKE</span>
+    <span class="c1"># The Kiva marker type. (Overrides AbstractMarker.)</span>
+    <span class="n">kiva_marker</span> <span class="o">=</span> <span class="n">NO_MARKER</span>
+
+    <span class="c1"># The custom path that represents this marker.</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">CompiledPath</span><span class="p">)</span>
+
+    <span class="c1"># Automatically scale **path** based on the input size parameter?</span>
+    <span class="c1"># If False, then the path does not respond to the &#39;size&#39; parameter!</span>
+    <span class="n">scale_path</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_path</span><span class="p">:</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">save_ctm</span><span class="p">()</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">scale_ctm</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">add_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_path</span><span class="p">:</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">restore_ctm</span><span class="p">()</span>
+
+<div class="viewcode-block" id="CustomMarker.get_compiled_path"><a class="viewcode-back" href="../../api/enable.markers.html#enable.markers.CustomMarker.get_compiled_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_compiled_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a path instance.</span>
+
+<span class="sd">        If **scale_path** is True, then the returned path is a new compiled</span>
+<span class="sd">        path that is scaled based on *size*. If **scaled_path** is False,</span>
+<span class="sd">        then this method just returns the current **path**.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_path</span><span class="p">:</span>
+            <span class="n">newpath</span> <span class="o">=</span> <span class="n">CompiledPath</span><span class="p">()</span>
+            <span class="n">newpath</span><span class="o">.</span><span class="n">scale_ctm</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+            <span class="n">newpath</span><span class="o">.</span><span class="n">add_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">newpath</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span></div></div>
+
+
+<span class="c1"># String names for marker types.</span>
+<span class="n">marker_names</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;square&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;circle&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;triangle&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;inverted_triangle&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;left_triangle&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;right_triangle&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pentagon&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hexagon&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hexagon2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;plus&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cross&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;star&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cross_plus&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;diamond&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dot&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pixel&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Mapping of marker string names to classes.</span>
+<span class="n">MarkerNameDict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;square&quot;</span><span class="p">:</span> <span class="n">SquareMarker</span><span class="p">,</span>
+    <span class="s2">&quot;circle&quot;</span><span class="p">:</span> <span class="n">CircleMarker</span><span class="p">,</span>
+    <span class="s2">&quot;triangle&quot;</span><span class="p">:</span> <span class="n">TriangleMarker</span><span class="p">,</span>
+    <span class="s2">&quot;inverted_triangle&quot;</span><span class="p">:</span> <span class="n">Inverted_TriangleMarker</span><span class="p">,</span>
+    <span class="s2">&quot;left_triangle&quot;</span><span class="p">:</span> <span class="n">LeftTriangleMarker</span><span class="p">,</span>
+    <span class="s2">&quot;right_triangle&quot;</span><span class="p">:</span> <span class="n">RightTriangleMarker</span><span class="p">,</span>
+    <span class="s2">&quot;pentagon&quot;</span><span class="p">:</span> <span class="n">PentagonMarker</span><span class="p">,</span>
+    <span class="s2">&quot;hexagon&quot;</span><span class="p">:</span> <span class="n">Hexagon1Marker</span><span class="p">,</span>
+    <span class="s2">&quot;hexagon2&quot;</span><span class="p">:</span> <span class="n">Hexagon2Marker</span><span class="p">,</span>
+    <span class="s2">&quot;plus&quot;</span><span class="p">:</span> <span class="n">PlusMarker</span><span class="p">,</span>
+    <span class="s2">&quot;cross&quot;</span><span class="p">:</span> <span class="n">CrossMarker</span><span class="p">,</span>
+    <span class="s2">&quot;star&quot;</span><span class="p">:</span> <span class="n">StarMarker</span><span class="p">,</span>
+    <span class="s2">&quot;cross_plus&quot;</span><span class="p">:</span> <span class="n">CrossPlusMarker</span><span class="p">,</span>
+    <span class="s2">&quot;diamond&quot;</span><span class="p">:</span> <span class="n">DiamondMarker</span><span class="p">,</span>
+    <span class="s2">&quot;dot&quot;</span><span class="p">:</span> <span class="n">DotMarker</span><span class="p">,</span>
+    <span class="s2">&quot;pixel&quot;</span><span class="p">:</span> <span class="n">PixelMarker</span><span class="p">,</span>
+    <span class="s2">&quot;custom&quot;</span><span class="p">:</span> <span class="n">CustomMarker</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># A mapped trait that allows string naming of marker classes.</span>
+<span class="n">MarkerTrait</span> <span class="o">=</span> <span class="n">Trait</span><span class="p">(</span>
+    <span class="s2">&quot;square&quot;</span><span class="p">,</span> <span class="n">MarkerNameDict</span><span class="p">,</span> <span class="n">editor</span><span class="o">=</span><span class="n">EnumEditor</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">marker_names</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">marker_trait</span> <span class="o">=</span> <span class="n">MarkerTrait</span>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>kiva.agg &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for kiva.agg</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="kn">from</span> <span class="nn">.agg</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">pix_format_string_map</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">pix_format_string_map</span><span class="p">[</span><span class="s2">&quot;gray8&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pix_format_gray8</span>
+<span class="n">pix_format_string_map</span><span class="p">[</span><span class="s2">&quot;rgb555&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pix_format_rgb555</span>
+<span class="n">pix_format_string_map</span><span class="p">[</span><span class="s2">&quot;rgb565&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pix_format_rgb565</span>
+<span class="n">pix_format_string_map</span><span class="p">[</span><span class="s2">&quot;rgb24&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pix_format_rgb24</span>
+<span class="n">pix_format_string_map</span><span class="p">[</span><span class="s2">&quot;bgr24&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pix_format_bgr24</span>
+<span class="n">pix_format_string_map</span><span class="p">[</span><span class="s2">&quot;rgba32&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pix_format_rgba32</span>
+<span class="n">pix_format_string_map</span><span class="p">[</span><span class="s2">&quot;argb32&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pix_format_argb32</span>
+<span class="n">pix_format_string_map</span><span class="p">[</span><span class="s2">&quot;abgr32&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pix_format_abgr32</span>
+<span class="n">pix_format_string_map</span><span class="p">[</span><span class="s2">&quot;bgra32&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pix_format_bgra32</span>
+
+<span class="n">default_pix_format</span> <span class="o">=</span> <span class="s2">&quot;bgra32&quot;</span>
+
+<span class="kn">import</span> <span class="nn">types</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Define a system-dependent GraphicsContext if there is a PixelMap</span>
+    <span class="c1"># class defined for the system (i.e. if plat_support was built)</span>
+    <span class="kn">from</span> <span class="nn">.plat_support</span> <span class="k">import</span> <span class="n">PixelMap</span>
+
+<div class="viewcode-block" id="GraphicsContextSystem"><a class="viewcode-back" href="../../api/kiva.agg.html#kiva.agg.GraphicsContextSystem">[docs]</a>    <span class="k">class</span> <span class="nc">GraphicsContextSystem</span><span class="p">(</span><span class="n">GraphicsContextArray</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">pix_format</span><span class="o">=</span><span class="n">default_pix_format</span><span class="p">,</span>
+                     <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">,</span> <span class="n">base_pixel_scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                     <span class="n">bottom_up</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">),</span> <span class="nb">repr</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">size</span>
+            <span class="n">pixel_map</span> <span class="o">=</span> <span class="n">PixelMap</span><span class="p">(</span>
+                <span class="n">width</span><span class="p">,</span>
+                <span class="n">height</span><span class="p">,</span>
+                <span class="n">pix_format_string_map</span><span class="p">[</span><span class="n">pix_format</span><span class="p">],</span>
+                <span class="mi">255</span><span class="p">,</span>
+                <span class="nb">bool</span><span class="p">(</span><span class="n">bottom_up</span><span class="p">),</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">set_bmp_array</span><span class="p">()</span>
+            <span class="n">GraphicsContextArray</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">pixel_map</span><span class="o">.</span><span class="n">bmp_array</span><span class="p">,</span> <span class="n">pix_format</span><span class="p">,</span> <span class="n">interpolation</span><span class="p">,</span>
+                <span class="n">base_pixel_scale</span><span class="p">,</span> <span class="n">bottom_up</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pixel_map</span> <span class="o">=</span> <span class="n">pixel_map</span></div>
+
+
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+    <span class="c1"># warn to stderr containing the exception. The warning should</span>
+    <span class="c1"># be an ImportWarning, but that is python 2.5+ specific</span>
+    <span class="kn">import</span> <span class="nn">warnings</span>
+
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Error initializing Agg: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ex</span><span class="p">,</span> <span class="ne">Warning</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">GraphicsContextSystem</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="points_in_polygon"><a class="viewcode-back" href="../../api/kiva.agg.html#kiva.agg.points_in_polygon">[docs]</a><span class="k">def</span> <span class="nf">points_in_polygon</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">poly_pts</span><span class="p">,</span> <span class="n">use_winding</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Keep this function around for old code, but warn anyone who calls it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">inspect</span>
+    <span class="kn">import</span> <span class="nn">warnings</span>
+    <span class="kn">from</span> <span class="nn">kiva.api</span> <span class="k">import</span> <span class="n">points_in_polygon</span> <span class="k">as</span> <span class="n">new_points_in_polygon</span>
+
+    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;points_in_polygon() has moved to kiva.api&quot;</span>
+    <span class="n">frame</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">currentframe</span><span class="p">()</span><span class="o">.</span><span class="n">f_back</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn_explicit</span><span class="p">(</span>
+        <span class="n">msg</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span>
+        <span class="n">filename</span><span class="o">=</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">f_code</span><span class="p">),</span>
+        <span class="n">lineno</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">f_lineno</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">new_points_in_polygon</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">poly_pts</span><span class="p">,</span> <span class="n">use_winding</span><span class="o">=</span><span class="n">use_winding</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

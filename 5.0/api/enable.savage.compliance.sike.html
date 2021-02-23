@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.savage.compliance.sike module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable.savage.compliance package" href="enable.savage.compliance.html" >
+    <link rel="next" title="enable.savage.compliance.svg_component module" href="enable.savage.compliance.svg_component.html" >
+    <link rel="prev" title="enable.savage.compliance.profile_this module" href="enable.savage.compliance.profile_this.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" >enable package</a></li>
+          <li class="active"><a href="enable.savage.html" >enable.savage package</a></li>
+          <li class="active"><a href="enable.savage.compliance.html" accesskey="U">enable.savage.compliance package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.savage.compliance.svg_component.html" title="enable.savage.compliance.svg_component module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.savage.compliance.profile_this.html" title="enable.savage.compliance.profile_this module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.savage.compliance.sike">
+<span id="enable-savage-compliance-sike-module"></span><h1>enable.savage.compliance.sike module<a class="headerlink" href="#module-enable.savage.compliance.sike" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="enable.savage.compliance.sike.ProfileAdapter">
+<em class="property">class </em><code class="sig-prename descclassname">enable.savage.compliance.sike.</code><code class="sig-name descname">ProfileAdapter</code><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#ProfileAdapter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.ProfileAdapter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">traitsui.tabular_adapter.TabularAdapter</span></code></p>
+<p>Display profiling records in a TabularEditor.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.savage.compliance.sike.ProfileResults">
+<em class="property">class </em><code class="sig-prename descclassname">enable.savage.compliance.sike.</code><code class="sig-name descname">ProfileResults</code><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#ProfileResults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.ProfileResults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasTraits</span></code></a></p>
+<p>Display profiling results.</p>
+<dl class="method">
+<dt id="enable.savage.compliance.sike.ProfileResults.sort_records">
+<code class="sig-name descname">sort_records</code><span class="sig-paren">(</span><em class="sig-param">records</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#ProfileResults.sort_records"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.ProfileResults.sort_records" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resort the records according to the current settings.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.compliance.sike.ProfileResults.sorter">
+<code class="sig-name descname">sorter</code><span class="sig-paren">(</span><em class="sig-param">record</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#ProfileResults.sorter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.ProfileResults.sorter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the appropriate sort key for sorting the records.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.compliance.sike.ProfileResults.trait_view">
+<code class="sig-name descname">trait_view</code><span class="sig-paren">(</span><em class="sig-param">name=None</em>, <em class="sig-param">view_element=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#ProfileResults.trait_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.ProfileResults.trait_view" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets or sets a ViewElement associated with an object’s class.</p>
+<p>If both <em>name</em> and <em>view_element</em> are specified, the view element is
+associated with <em>name</em> for the current object’s class. (That is,
+<em>view_element</em> is added to the ViewElements object associated with
+the current object’s class, indexed by <em>name</em>.)</p>
+<p>If only <em>name</em> is specified, the function returns the view element
+object associated with <em>name</em>, or None if <em>name</em> has no associated
+view element. View elements retrieved by this function are those that
+are bound to a class attribute in the class definition, or that are
+associated with a name by a previous call to this method.</p>
+<p>If neither <em>name</em> nor <em>view_element</em> is specified, the method returns a
+View object, based on the following order of preference:</p>
+<ol class="arabic simple">
+<li><p>If there is a View object named <code class="docutils literal notranslate"><span class="pre">traits_view</span></code> associated with the
+current object, it is returned.</p></li>
+<li><p>If there is exactly one View object associated the current
+object, it is returned.</p></li>
+<li><p>Otherwise, it returns a View object containing items for all the
+non-event trait attributes on the current object.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of a view element</p></li>
+<li><p><strong>view_element</strong> (<em>ViewElement</em>) – View element to associate</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>A view element.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.savage.compliance.sike.Record">
+<em class="property">class </em><code class="sig-prename descclassname">enable.savage.compliance.sike.</code><code class="sig-name descname">Record</code><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#Record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.Record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.savage.compliance.sike.Subrecord" title="enable.savage.compliance.sike.Subrecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.savage.compliance.sike.Subrecord</span></code></a></p>
+<p>The top-level profiling record of a function.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.savage.compliance.sike.Sike">
+<em class="property">class </em><code class="sig-prename descclassname">enable.savage.compliance.sike.</code><code class="sig-name descname">Sike</code><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#Sike"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.Sike" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasTraits</span></code></a></p>
+<p>Tie several profile-related widgets together.</p>
+<p>Sike is like Gotcha, only less mature.</p>
+<dl class="method">
+<dt id="enable.savage.compliance.sike.Sike.add_stats">
+<code class="sig-name descname">add_stats</code><span class="sig-paren">(</span><em class="sig-param">stats</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#Sike.add_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.Sike.add_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add new statistics.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.compliance.sike.Sike.fromstats">
+<em class="property">classmethod </em><code class="sig-name descname">fromstats</code><span class="sig-paren">(</span><em class="sig-param">stats</em>, <em class="sig-param">**traits</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#Sike.fromstats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.Sike.fromstats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiate an Sike from a Stats object, Stats.stats dictionary, or
+Profile object, or a filename of the saved Stats data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.compliance.sike.Sike.get_callee_map">
+<code class="sig-name descname">get_callee_map</code><span class="sig-paren">(</span><em class="sig-param">records</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#Sike.get_callee_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.Sike.get_callee_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a callee map.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.compliance.sike.Sike.goto_record">
+<code class="sig-name descname">goto_record</code><span class="sig-paren">(</span><em class="sig-param">new</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#Sike.goto_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.Sike.goto_record" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.compliance.sike.Sike.records_from_stats">
+<code class="sig-name descname">records_from_stats</code><span class="sig-paren">(</span><em class="sig-param">stats</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#Sike.records_from_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.Sike.records_from_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a list of records from a stats dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.compliance.sike.Sike.update_sub_results">
+<code class="sig-name descname">update_sub_results</code><span class="sig-paren">(</span><em class="sig-param">new</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#Sike.update_sub_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.Sike.update_sub_results" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.savage.compliance.sike.SillyStatsWrapper">
+<em class="property">class </em><code class="sig-prename descclassname">enable.savage.compliance.sike.</code><code class="sig-name descname">SillyStatsWrapper</code><span class="sig-paren">(</span><em class="sig-param">obj=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#SillyStatsWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.SillyStatsWrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Wrap any object with a .stats attribute or a .stats dictionary such
+that it can be passed to a Stats() constructor.</p>
+<dl class="method">
+<dt id="enable.savage.compliance.sike.SillyStatsWrapper.create_stats">
+<code class="sig-name descname">create_stats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#SillyStatsWrapper.create_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.SillyStatsWrapper.create_stats" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.compliance.sike.SillyStatsWrapper.getstats">
+<em class="property">classmethod </em><code class="sig-name descname">getstats</code><span class="sig-paren">(</span><em class="sig-param">obj=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#SillyStatsWrapper.getstats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.SillyStatsWrapper.getstats" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.savage.compliance.sike.Subrecord">
+<em class="property">class </em><code class="sig-prename descclassname">enable.savage.compliance.sike.</code><code class="sig-name descname">Subrecord</code><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#Subrecord"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.Subrecord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.savage.compliance.sike.SuperTuple" title="enable.savage.compliance.sike.SuperTuple"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.savage.compliance.sike.SuperTuple</span></code></a></p>
+<p>The records referring to the calls a function makes.</p>
+<dl class="method">
+<dt id="enable.savage.compliance.sike.Subrecord.file">
+<em class="property">property </em><code class="sig-name descname">file</code><a class="headerlink" href="#enable.savage.compliance.sike.Subrecord.file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.compliance.sike.Subrecord.func_name">
+<em class="property">property </em><code class="sig-name descname">func_name</code><a class="headerlink" href="#enable.savage.compliance.sike.Subrecord.func_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.compliance.sike.Subrecord.line">
+<em class="property">property </em><code class="sig-name descname">line</code><a class="headerlink" href="#enable.savage.compliance.sike.Subrecord.line" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.savage.compliance.sike.SuperTuple">
+<em class="property">class </em><code class="sig-prename descclassname">enable.savage.compliance.sike.</code><code class="sig-name descname">SuperTuple</code><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#SuperTuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.SuperTuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>Generic super-tuple using pre-defined attribute names.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.savage.compliance.sike.get_profile_editor">
+<code class="sig-prename descclassname">enable.savage.compliance.sike.</code><code class="sig-name descname">get_profile_editor</code><span class="sig-paren">(</span><em class="sig-param">adapter</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#get_profile_editor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.get_profile_editor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="enable.savage.compliance.sike.main">
+<code class="sig-prename descclassname">enable.savage.compliance.sike.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/compliance/sike.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.compliance.sike.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.savage.compliance.profile_this.html"
+                        title="previous chapter">enable.savage.compliance.profile_this module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.savage.compliance.svg_component.html"
+                        title="next chapter">enable.savage.compliance.svg_component module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.savage.compliance.sike.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

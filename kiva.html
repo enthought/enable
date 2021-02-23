@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>Kiva &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="_static/css/spc-extend.css">
+    <link rel="stylesheet" href="_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="_static/img/favicon.ico">
+    <link rel="index" title="Index" href="genindex.html" >
+    <link rel="search" title="Search" href="search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="index.html" >
+    <link rel="next" title="Credits" href="credits.html" >
+    <link rel="prev" title="Enable Toolkit Selection" href="enable_toolkit_selection.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="index.html">enable 5.0.0 documentation</a></li>
+	 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="credits.html" title="Credits"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable_toolkit_selection.html" title="Enable Toolkit Selection"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="kiva">
+<h1>Kiva<a class="headerlink" href="#kiva" title="Permalink to this headline">¶</a></h1>
+<p>Kiva is a 2D vector drawing interface providing functionality similar to
+<a class="reference external" href="http://en.wikipedia.org/wiki/Quartz_2D">Quartz</a>,
+<a class="reference external" href="http://cairographics.org/">Cairo</a>, the
+<a class="reference external" href="http://qt-project.org/doc/qt-4.8/qpainter.html">Qt QPainter interface</a>,
+the 2D drawing routines of <a class="reference external" href="http://www.opengl.org/">OpenGL</a> , the HTML5
+Canvas element and many other similar 2D vector drawing APIs.  Rather than
+re-implementing everything, Kiva is a Python interface layer that sits on top
+of many different back-ends which are in fact provided by some of these
+libraries, depending on the platform, GUI toolkit, and capabilities of the
+system.</p>
+<p>This approach permits code to be written to the Kiva API, but produce output
+that could be rendered to a GUI window, an image file, a PDF file, or a number
+of other possible output formats without any (or at least minimal) changes to
+the image generation code.</p>
+<p>Kiva is the base layer of the Chaco plotting library, and is what is
+responsible for actually drawing pixels on the screen.  Developers interested
+in writing code that renders new plots or other graphical features for Chaco
+will need to be at least passingly familiar with the Kiva drawing API.</p>
+<p>The most important Kiva backend is the Agg or “Image” backend, which is a
+Python extension module which wraps the C++
+<a class="reference external" href="http://www.antigrain.com/">Anti-grain geometry</a> drawing library into a
+Python extension and exposes the Kiva API.  The Agg renders the vector drawing
+commands into a raster image which can then be saved as a standard image format
+(such as PNG or JPEG) or copied into a GUI window.  The Agg backend should be
+available on any platform, and should work even if there is no GUI or windowing
+system available.</p>
+<div class="section" id="kiva-concepts">
+<h2>Kiva Concepts<a class="headerlink" href="#kiva-concepts" title="Permalink to this headline">¶</a></h2>
+<p>This section gives a whirlwind tour of the concepts involved with drawing with
+Kiva.</p>
+<div class="section" id="the-graphics-context">
+<h3>The Graphics Context<a class="headerlink" href="#the-graphics-context" title="Permalink to this headline">¶</a></h3>
+<p>The heart of the Kiva drawing API is the “graphics context”, frequently
+abbreviated as <code class="docutils literal notranslate"><span class="pre">gc</span></code> in code.  The graphics context holds the current drawing
+state (such as pen and fill colors, font state, and affine transformations to
+be applied to points) and provides methods for changing the state and
+performing drawing actions.</p>
+<p>In many common use-cases (such as writing renderers for Chaco), you will be
+provided a graphics context by other code, but it is straight-forward to create
+your own graphics context:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>This is an graphics context for the Agg or “image” backend which has a size of
+400x400 pixels.  If instead we wanted to draw into a Qt <code class="docutils literal notranslate"><span class="pre">QPainter</span></code> drawing
+context in a <cite>QWidget</cite> called <cite>my_qwidget</cite> we would use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kiva.qpainter</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">),</span> <span class="n">parent</span><span class="o">=</span><span class="n">my_qwidget</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Other Kiva backends have similar methods of creating a graphics context, and
+each may take somewhat different arguments to the constructor, depending on the
+requirements of the backend.</p>
+<p>Once you have a graphics context, you can use it to draw vector graphics.
+For example, the following code will draw a translucent gray line from
+(100, 100) to (100, 200):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>For many of the backends, you can save the rendered image out as an image file
+using the <code class="docutils literal notranslate"><span class="pre">save()</span></code> method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;my_line.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Kiva is numpy-aware, and has a number of methods that allow you to pass numpy
+arrays of points to draw many things in one operation, with loops being
+performed in C where possible:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">empty</span><span class="p">,</span> <span class="n">linspace</span><span class="p">,</span> <span class="n">random</span>
+
+<span class="c1"># Nx2 array of points</span>
+<span class="n">pts</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">pts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">pts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span> <span class="o">+</span> <span class="mi">100</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="coordinate-model">
+<h3>Coordinate Model<a class="headerlink" href="#coordinate-model" title="Permalink to this headline">¶</a></h3>
+<p>Kiva uses mathematical axes direction conventions as opposed to framebuffer
+axes conventions.  In other words, the origin is always at the <em>bottom</em>
+left of the screen, and the positive y axis goes <em>up</em> from bottom to top; as
+opposed to screen coordinates which typically have the origin at the <em>top</em> left
+and the positive y axis goes <em>down</em> from top to bottom.</p>
+<p>Additionally, for backends that produce raster images, the coordinates
+represent the <em>corner</em> of pixels, rather than the center of pixels.  This has
+consequences when rendering thin lines.  Compare the two lines in this example,
+for instance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">35</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="mi">35</span><span class="p">)</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mf">65.5</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="mf">65.5</span><span class="p">)</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;pixel_coordinates.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Notice that the line on the bottom (the first of the two lines) is fuzzier
+because it is drawn along the boundary of the pixels, while the other line
+is drawn through the center of the pixels:</p>
+<img alt="_images/pixel_coordinates.png" src="_images/pixel_coordinates.png" />
+</div>
+<div class="section" id="the-coordinate-transform-matrix">
+<h3>The Coordinate Transform Matrix<a class="headerlink" href="#the-coordinate-transform-matrix" title="Permalink to this headline">¶</a></h3>
+<p>The Kiva API allows arbitrary affine transforms to be applied to the graphics
+context during drawing.  The API provides convenience methods for common
+transformations, such as rotation and scaling:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">empty</span><span class="p">,</span> <span class="n">linspace</span><span class="p">,</span> <span class="n">random</span><span class="p">,</span> <span class="n">pi</span>
+<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+
+<span class="c1"># Nx2 array of points</span>
+<span class="n">pts</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">pts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">pts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span> <span class="o">+</span> <span class="mi">100</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
+
+<span class="c1"># draw a simple graph</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="c1"># translate by 100 pixels in the x direction</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># rotate by 45 degrees</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">rotate_ctm</span><span class="p">(</span><span class="n">pi</span><span class="o">/</span><span class="mf">4.0</span><span class="p">)</span>
+
+<span class="c1"># scale by 1.5 in the x direction</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">scale_ctm</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+<span class="c1"># now draw in the transformed coordinates</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;transformed_lines.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/transformed_lines.png" src="_images/transformed_lines.png" />
+<p>If desired, the user can also supply their own transformations directly.</p>
+</div>
+</div>
+<div class="section" id="paths">
+<h2>Paths<a class="headerlink" href="#paths" title="Permalink to this headline">¶</a></h2>
+<p>The basic drawing operations are performed by building a path out of primitive
+operations, and then performing stroking and/or filling operations with it.</p>
+<p>The simplest path operations are <code class="docutils literal notranslate"><span class="pre">move_to()</span></code> and <code class="docutils literal notranslate"><span class="pre">line_to()</span></code> which
+respectively move the current point in the path to the specified point, and
+add a line to the path from the current point to the specified point.</p>
+<p>In addition to the straight line commands, there are 4 arc commands for adding
+curves to a path: <code class="docutils literal notranslate"><span class="pre">curve_to()</span></code> which draws a cubic bezier curve,
+<code class="docutils literal notranslate"><span class="pre">quad_curve_to()</span></code> which draws a quadratic bezier curve, <code class="docutils literal notranslate"><span class="pre">arc()</span></code> which
+draws a circular arc based on a center and radius, and <code class="docutils literal notranslate"><span class="pre">arc_to()</span></code> which
+draws a circular arc from one point to another.</p>
+<p>Finally, the <code class="docutils literal notranslate"><span class="pre">rect()</span></code> method adds a rectangle to the path.</p>
+<p>In addition there are convenience methods <code class="docutils literal notranslate"><span class="pre">lines()</span></code>, <code class="docutils literal notranslate"><span class="pre">rects()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">line_set()</span></code> which add multiple lines or rectangles to a path, reading from
+appropriately shaped numpy arrays.</p>
+<p>None of these methods make any change to the visible image until the path is
+either stroked with <code class="docutils literal notranslate"><span class="pre">stroke_path()</span></code> or filled with <code class="docutils literal notranslate"><span class="pre">fill_path()</span></code>.  The way
+these actions are performed depends upon certain state of the graphics context.</p>
+<p>For stroking, the graphics context keeps track of the color to use with
+<code class="docutils literal notranslate"><span class="pre">set_stroke_color()</span></code>, the thickness of the line with <code class="docutils literal notranslate"><span class="pre">set_line_width()</span></code>,
+the way that lines are joined with <code class="docutils literal notranslate"><span class="pre">set_line_join()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">set_miter_limit()</span></code>, and the way that they are ended with <code class="docutils literal notranslate"><span class="pre">set_line_cap()</span></code>.
+Lines can also be dashed using the <code class="docutils literal notranslate"><span class="pre">set_line_dash()</span></code> method which takes a
+pattern of numbers to use for lengths of on and off, and an optional <code class="docutils literal notranslate"><span class="pre">phase</span></code>
+for where to start in the pattern.</p>
+<p>Thicknesses:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mf">30.5</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="mi">10</span>
+    <span class="n">thickness</span> <span class="o">=</span> <span class="mf">2.0</span><span class="o">**</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="n">thickness</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;thicknesses.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/thicknesses.png" src="_images/thicknesses.png" />
+<p>Joins:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kiva.api</span> <span class="k">import</span> <span class="n">JOIN_ROUND</span><span class="p">,</span> <span class="n">JOIN_BEVEL</span><span class="p">,</span> <span class="n">JOIN_MITER</span>
+<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">join</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">JOIN_ROUND</span><span class="p">,</span> <span class="n">JOIN_BEVEL</span><span class="p">,</span> <span class="n">JOIN_MITER</span><span class="p">]):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="mi">20</span>
+
+    <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_line_join</span><span class="p">(</span><span class="n">join</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;joins.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/joins.png" src="_images/joins.png" />
+<p>Caps:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kiva.api</span> <span class="k">import</span> <span class="n">CAP_ROUND</span><span class="p">,</span> <span class="n">CAP_BUTT</span><span class="p">,</span> <span class="n">CAP_SQUARE</span>
+<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cap</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">CAP_ROUND</span><span class="p">,</span> <span class="n">CAP_BUTT</span><span class="p">,</span> <span class="n">CAP_SQUARE</span><span class="p">]):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mi">30</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="mi">20</span>
+
+    <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_line_cap</span><span class="p">(</span><span class="n">cap</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;caps.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/caps.png" src="_images/caps.png" />
+<p>Dashes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="n">dashes</span> <span class="o">=</span> <span class="p">([</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">9.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">])</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">dash</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dashes</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mf">30.5</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="mi">20</span>
+
+    <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_line_dash</span><span class="p">(</span><span class="n">dash</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;dashes.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/dashes.png" src="_images/dashes.png" />
+<p>Before filling a path, the colour of the fill is via the <code class="docutils literal notranslate"><span class="pre">set_fill_color()</span></code>
+method, and gradient fills can be done via the <code class="docutils literal notranslate"><span class="pre">set_linear_gradient()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">set_radial_gradient()</span></code> methods.  Finally, there are two different fill modes
+available:
+<a class="reference external" href="http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule">even-odd fill</a> and
+<a class="reference external" href="http://en.wikipedia.org/wiki/Nonzero-rule">non-zero winding fill</a></p>
+<p>Winding vs. Even-Odd Fill:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">pi</span>
+<span class="kn">from</span> <span class="nn">kiva.api</span> <span class="k">import</span> <span class="n">FILL</span><span class="p">,</span> <span class="n">EOF_FILL</span>
+<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="mi">5</span><span class="o">*</span><span class="n">i</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mi">50</span><span class="o">+</span><span class="mi">40</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mi">50</span><span class="o">+</span><span class="mi">40</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">fill_path</span><span class="p">()</span>
+
+
+<span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="mi">5</span><span class="o">*</span><span class="n">i</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mi">150</span><span class="o">+</span><span class="mi">40</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mi">50</span><span class="o">+</span><span class="mi">40</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">eof_fill_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;fill.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/fill.png" src="_images/fill.png" />
+<div class="section" id="text">
+<h3>Text<a class="headerlink" href="#text" title="Permalink to this headline">¶</a></h3>
+<p>Text can be rendered at a point by first setting the font to use, then setting
+the text location using <code class="docutils literal notranslate"><span class="pre">set_text_position()</span></code> and then <code class="docutils literal notranslate"><span class="pre">show_text()</span></code> to
+render the text:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kiva.api</span> <span class="k">import</span> <span class="n">Font</span>
+<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">set_font</span><span class="p">(</span><span class="n">Font</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">24</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_text_position</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">show_text</span><span class="p">(</span><span class="s2">&quot;Hello World&quot;</span><span class="p">)</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;text.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/text.png" src="_images/text.png" />
+<p>Text defaults to being rendered filled, but can be rendered with an outline.</p>
+</div>
+</div>
+</div>
+<div class="section" id="kiva-interface-quick-reference">
+<h1>Kiva Interface Quick Reference<a class="headerlink" href="#kiva-interface-quick-reference" title="Permalink to this headline">¶</a></h1>
+<p>This document is a summary of the classes and functions available in
+Kiva.  More specifically, it describes some of the details of the
+kiva.agg backend, including enumerated types and helper classes.</p>
+<div class="section" id="types">
+<h2>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="primitive-types">
+<h3>Primitive types<a class="headerlink" href="#primitive-types" title="Permalink to this headline">¶</a></h3>
+<p>The following conventions are used to describe input and output types:</p>
+<dl class="simple">
+<dt>color:</dt><dd><p>Either a 3-tuple or 4-tuple. The represented color depends on the
+graphics context’s pixel format.</p>
+</dd>
+<dt>rect:</dt><dd><p>(origin_x, origin_y, width, height)</p>
+</dd>
+<dt>bool:</dt><dd><p>an int that is 1 or 0</p>
+</dd>
+<dt>point_array:</dt><dd><p>an array/sequence of length-2 arrays, e.g. ((x,y), (x2,y2),…)</p>
+</dd>
+<dt>rect_array:</dt><dd><p>an array/sequence of rects ((x,y,w,h), (x2,y2,w2,h2), …)</p>
+</dd>
+<dt>color_stop_array:</dt><dd><p>an array/sequence of color stops ((offset,r,g,b,a),
+(offset2,r2,g2,b2,a2), …) where offset is some number between 0 and 1
+inclusive and the entries are sorted from lowest offset to highest.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="affinematrix">
+<h3>AffineMatrix<a class="headerlink" href="#affinematrix" title="Permalink to this headline">¶</a></h3>
+<p>All of the following member functions modify the instance on which they
+are called:</p>
+<dl class="simple">
+<dt>__init__(v0, v1, v2, v3, v4, v5):</dt><dd><p>also __init__()</p>
+</dd>
+<dt>reset():</dt><dd><p>Sets this matrix to the identity</p>
+</dd>
+<dt>multiply(<cite>AffineMatrix</cite>):</dt><dd><p>multiples this matrix by another</p>
+</dd>
+<dt>invert():</dt><dd><p>sets this matrix to the inverse of itself</p>
+</dd>
+<dt>flip_x():</dt><dd><p>mirrors around X</p>
+</dd>
+<dt>flip_y():</dt><dd><p>mirrors around Y</p>
+</dd>
+</dl>
+<p>The rest of the member functions return information about the matrix.</p>
+<dl class="simple">
+<dt>scale() -&gt; float:</dt><dd><p>returns the average scale of this matrix</p>
+</dd>
+<dt>determinant() -&gt; float:</dt><dd><p>returns the determinant</p>
+</dd>
+</dl>
+<p>The following factory methods are available in the top-level “agg” namespace
+to create specific kinds of <code class="xref py py-class docutils literal notranslate"><span class="pre">AffineMatrix</span></code> instances:</p>
+<p><strong>translation_matrix(float x, float x)</strong></p>
+<p><strong>rotation_matrix(float angle_in_radians)</strong></p>
+<p><strong>scaling_matrix(float x_scale, float y_scale)</strong></p>
+<p><strong>skewing_matrix(float x_shear, float y_shear)</strong></p>
+</div>
+<div class="section" id="fonttype">
+<h3>FontType<a class="headerlink" href="#fonttype" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>__init__(name, size=12, family=0, style=0):</dt><dd><p>constructs a <code class="xref py py-class docutils literal notranslate"><span class="pre">FontType</span></code> instance</p>
+</dd>
+<dt>is_loaded() -&gt; bool:</dt><dd><p>returns True if a font was actually loaded</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="compiledpath">
+<h3>CompiledPath<a class="headerlink" href="#compiledpath" title="Permalink to this headline">¶</a></h3>
+<p>Interface is the same as the <a class="reference internal" href="#path-functions">Path functions</a> in Graphics Context.</p>
+</div>
+<div class="section" id="enumerations">
+<h3>Enumerations<a class="headerlink" href="#enumerations" title="Permalink to this headline">¶</a></h3>
+<p>The following enumerations are represented by top-level constants in the “agg”
+namespace.  They are fundamentally integers.  Some of them also have dicts that
+map between their names and integer values</p>
+<dl>
+<dt>line_cap:</dt><dd><p>CAP_BUTT, CAP_ROUND, CAP_SQUARE</p>
+</dd>
+<dt>line_join:</dt><dd><p>JOIN_ROUND, JOIN_BEVEL, JOIN_MITER</p>
+</dd>
+<dt>draw_mode:</dt><dd><p>FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE</p>
+</dd>
+<dt>text_style:</dt><dd><p>NORMAL, BOLD, ITALIC</p>
+</dd>
+<dt>text_draw_mode:</dt><dd><p>TEXT_FILL, TEXT_INVISIBLE (currently unused)</p>
+</dd>
+<dt>pix_format:</dt><dd><p>(NOTE: the strings in the dicts omit the <code class="docutils literal notranslate"><span class="pre">pix_format_</span></code> prefix)</p>
+<dl class="simple">
+<dt>dicts:</dt><dd><p>pix_format_string_map, pix_format_enum_map</p>
+</dd>
+<dt>values:</dt><dd><p>pix_format_gray8, pix_format_rgb555, pix_format_rgb565,
+pix_format_rgb24, pix_format_bgr24, pix_format_rgba32, pix_format_argb32,
+pix_format_abgr32, pix_format_bgra32</p>
+</dd>
+</dl>
+</dd>
+<dt>interpolation:</dt><dd><dl class="simple">
+<dt>dicts:</dt><dd><p>interp_enum_map, interp_string_map</p>
+</dd>
+<dt>values:</dt><dd><p>nearest, bilinear, bicubic, spline16, spline36, sinc64, sinc144,
+sinc256, blackman64, blackman100, blackman256</p>
+</dd>
+</dl>
+</dd>
+<dt>marker:</dt><dd><p>(NOTE: the strings in the dicts omit the <code class="docutils literal notranslate"><span class="pre">marker_</span></code> prefix)</p>
+<dl class="simple">
+<dt>dicts:</dt><dd><p>marker_string_map, marker_enum_map</p>
+</dd>
+<dt>values:</dt><dd><p>marker_circle, marker_cross, marker_crossed_circle, marker_dash,
+marker_diamond, marker_dot, marker_four_rays, marker_pixel,
+marker_semiellipse_down, marker_semiellipse_left, marker_x,
+marker_semiellipse_right, marker_semiellipse_up, marker_square,
+marker_triangle_down, marker_triangle_left, marker_triangle_right,
+marker_triangle_up</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>path_cmd and path_flags are low-level Agg path attributes.  See the Agg
+documentation for more information about them.  We just pass them through in Kiva.</p>
+<dl class="simple">
+<dt>path_cmd:</dt><dd><p>path_cmd_curve3, path_cmd_curve4, path_cmd_end_poly,
+path_cmd_line_to, path_cmd_mask, path_cmd_move_to, path_cmd_stop</p>
+</dd>
+<dt>path_flags:</dt><dd><p>path_flags, path_flags_ccw, path_flags_close, path_flags_cw,
+path_flags_mask, path_flags_none</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="graphics-context">
+<h2>Graphics Context<a class="headerlink" href="#graphics-context" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="construction">
+<h3>Construction<a class="headerlink" href="#construction" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>__init__(size, pix_format):</dt><dd><p>Size is a tuple (width, height), pix_format is a string.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="state-functions">
+<h3>State functions<a class="headerlink" href="#state-functions" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">save_state()</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">restore_state()</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">set_stroke_color(color)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">get_stroke_color() -&gt; color</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">set_line_width(float)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">set_line_join(line_join)</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">set_line_cap(line_cap)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">set_line_dash(array)</dt>
+<dd class="field-even"><p>array is an even-length tuple of floats that represents
+the width of each dash and gap in the dash pattern.</p>
+</dd>
+<dt class="field-odd">set_fill_color(color)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">get_fill_color() -&gt; color</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">linear_gradient(x1, y1, x2, y2, color_stop_array, spread_method, units)</dt>
+<dd class="field-odd"><p>spread_method
+is one of the following strings: pad, reflect, repeat. units is one of the
+following strings: userSpaceOnUse, objectBoundingBox. This method modifies
+the current fill pattern.</p>
+</dd>
+<dt class="field-even">radial_gradient(cx, cy, r, fx, fy, color_stop_array, spread_method, units)</dt>
+<dd class="field-even"><p>same
+arguments as linear gradient. The direction of the gradient is from the focus
+point to the center point.</p>
+</dd>
+<dt class="field-odd">set_alpha(float)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">get_alpha() -&gt; float</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">set_antialias(bool)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">get_antialias() -&gt; bool</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">set_miter_limit(float)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">set_flatness(float)</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">get_image_interpolation() -&gt; interpolation</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">set_image_interpolation(interpolation)</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">translate_ctm(float x, float y)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">rotate_ctm(float angle_in_radians)</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">concat_ctm(<a class="reference internal" href="#affinematrix">AffineMatrix</a>)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">scale_ctm(float x_scale, float y_scale)</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">set_ctm(<a class="reference internal" href="#affinematrix">AffineMatrix</a>)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">get_ctm() -&gt; <a class="reference internal" href="#affinematrix">AffineMatrix</a></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</div>
+<div class="section" id="clipping-functions">
+<h3>Clipping functions<a class="headerlink" href="#clipping-functions" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">clip_to_rect(rect)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">clip_to_rects(rect_array)</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">clip()</dt>
+<dd class="field-odd"><p>clips using the current path</p>
+</dd>
+<dt class="field-even">even_odd_clip()</dt>
+<dd class="field-even"><p>modifies the current clipping path using the even-odd rule to
+calculate the intersection of the current path and the current clipping path.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="path-functions">
+<h3>Path functions<a class="headerlink" href="#path-functions" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list">
+<dt class="field-odd">begin_path()</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">close_path()</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">get_empty_path() -&gt; <a class="reference internal" href="#compiledpath">CompiledPath</a></dt>
+<dd class="field-odd"><p>returns a blank <code class="xref py py-class docutils literal notranslate"><span class="pre">CompiledPath</span></code> instance</p>
+</dd>
+<dt class="field-even">add_path(<a class="reference internal" href="#compiledpath">CompiledPath</a>)</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">move_to(x, y)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">line_to(x, y)</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">lines(point_array)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">rect(x, y, w, h)</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">rects(rect_array)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">curve_to(x1, y1, x2, y2, end_x, end_y)</dt>
+<dd class="field-even"><p>draws a cubic bezier curve with
+control points (x1,y1) and (x2,y2) that ends at point (end_x, end_y)</p>
+</dd>
+<dt class="field-odd">quad_curve_to(cp_x, cp_y, end_x, end_y)</dt>
+<dd class="field-odd"><p>draws a quadratic bezier curve from
+the current point using control point (cp_x, cp_y) and ending at
+(end_x, end_y)</p>
+</dd>
+<dt class="field-even">arc(x, y, radius, start_angle, end_angle, bool cw=false)</dt>
+<dd class="field-even"><p>draws a circular arc
+of the given radius, centered at (x,y) with angular span as indicated.
+Angles are measured counter-clockwise from the positive X axis. If “cw” is
+true, then the arc is swept from the end_angle back to the start_angle
+(it does not change the sense in which the angles are measured).</p>
+</dd>
+<dt class="field-odd">arc_to(x1, y1, x2, y2, radius)</dt>
+<dd class="field-odd"><p>Sweeps a circular arc from the pen position to
+a point on the line from (x1,y1) to (x2,y2).</p>
+<p>The arc is tangent to the line from the current pen position
+to (x1,y1), and it is also tangent to the line from (x1,y1)
+to (x2,y2).  (x1,y1) is the imaginary intersection point of
+the two lines tangent to the arc at the current point and
+at (x2,y2).</p>
+<p>If the tangent point on the line from the current pen position
+to (x1,y1) is not equal to the current pen position, a line is
+drawn to it.  Depending on the supplied radius, the tangent
+point on the line fron (x1,y1) to (x2,y2) may or may not be
+(x2,y2).  In either case, the arc is drawn to the point of
+tangency, which is also the new pen position.</p>
+<p>Consider the common case of rounding a rectangle’s upper left
+corner.  Let “r” be the radius of rounding.  Let the current
+pen position be (x_left + r, y_top).  Then (x2,y2) would be
+(x_left, y_top - radius), and (x1,y1) would be (x_left, y_top).</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="drawing-functions">
+<h3>Drawing functions<a class="headerlink" href="#drawing-functions" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">stroke_path()</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">fill_path()</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">eof_fill_path()</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">draw_path(draw_mode=FILL_STROKE)</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">draw_rect(rect, draw_mode=FILL_STROKE)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">draw_marker_at_points(point_array, int size, marker=marker_square)</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">draw_path_at_points(point_array, <a class="reference internal" href="#compiledpath">CompiledPath</a>, draw_mode)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">draw_image(graphics_context img, rect=None)</dt>
+<dd class="field-even"><p>if rect is defined, then img is
+scaled and drawn into it. Otherwise, img is overlaid exactly on top of this
+graphics context</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="text-functions">
+<h3>Text functions<a class="headerlink" href="#text-functions" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">set_text_drawing_mode(text_draw_mode)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">set_text_matrix(<a class="reference internal" href="#affinematrix">AffineMatrix</a>)</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">get_text_matrix() -&gt; <a class="reference internal" href="#affinematrix">AffineMatrix</a></dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">set_text_position(float x, float x)</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">get_text_position() -&gt; (x, y)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">show_text(string)</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">show_text_translate(string, float y, float y)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">get_text_extent(string) -&gt; (x,y,w,h)</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">get_full_text_extent(string) -&gt; (w,h,x,y)</dt>
+<dd class="field-odd"><p>deprecated. Order has been changed
+for backwards-compatibility with existing Enable.</p>
+</dd>
+<dt class="field-even">select_font(name, size, style)</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">set_font(<a class="reference internal" href="#fonttype">FontType</a>)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">get_font() -&gt; <a class="reference internal" href="#fonttype">FontType</a></dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">set_font_size(int)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">set_character_spacing()</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">get_character_spacing()</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">set_text_drawing_mode()</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">show_text_at_point()</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</div>
+<div class="section" id="misc-functions">
+<h3>Misc functions<a class="headerlink" href="#misc-functions" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list">
+<dt class="field-odd">width() -&gt; int</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">height() -&gt; int</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">stride() -&gt; int</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">bottom_up() -&gt; bool</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">format() -&gt; pix_format</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">flush()</dt>
+<dd class="field-even"><p>Force all pending drawing operations to be rendered immediately. This
+only makes sense in window contexts, ie- the Mac Quartz backend.</p>
+</dd>
+<dt class="field-odd">synchronize()</dt>
+<dd class="field-odd"><p>A deferred version of flush(). Also only relevant in window contexts.</p>
+</dd>
+<dt class="field-even">begin_page()</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">end_page()</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">clear_rect(rect)</dt>
+<dd class="field-even"><p>Clears a rect. Not available in PDF context.</p>
+</dd>
+<dt class="field-odd">convert_pixel_format(pix_format, bool inplace=0)</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">save(filename, file_format=None, pil_options=None)</dt>
+<dd class="field-even"><p>Save the GraphicsContext
+to a file.  Output files are always saved in RGB or RGBA format; if this GC is
+not in one of these formats, it is automatically converted.</p>
+<p>If filename includes an extension, the image format is
+inferred from it.  file_format is only required if the
+format can’t be inferred from the filename (e.g. if you
+wanted to save a PNG file as a .dat or .bin).</p>
+<p>pil_options is a dict of format-specific options that
+are passed down to the PIL image file writer.  If a writer
+doesn’t recognize an option, it is silently ignored.</p>
+<p>If the image has an alpha channel and the specified output
+file format does not support alpha, the image is saved in
+rgb24 format.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="functions-that-are-currently-stubbed-out-or-not-implemented">
+<h3>Functions that are currently stubbed out or not implemented<a class="headerlink" href="#functions-that-are-currently-stubbed-out-or-not-implemented" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">show_glyphs_at_point()</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Kiva</a><ul>
+<li><a class="reference internal" href="#kiva-concepts">Kiva Concepts</a><ul>
+<li><a class="reference internal" href="#the-graphics-context">The Graphics Context</a></li>
+<li><a class="reference internal" href="#coordinate-model">Coordinate Model</a></li>
+<li><a class="reference internal" href="#the-coordinate-transform-matrix">The Coordinate Transform Matrix</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#paths">Paths</a><ul>
+<li><a class="reference internal" href="#text">Text</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#kiva-interface-quick-reference">Kiva Interface Quick Reference</a><ul>
+<li><a class="reference internal" href="#types">Types</a><ul>
+<li><a class="reference internal" href="#primitive-types">Primitive types</a></li>
+<li><a class="reference internal" href="#affinematrix">AffineMatrix</a></li>
+<li><a class="reference internal" href="#fonttype">FontType</a></li>
+<li><a class="reference internal" href="#compiledpath">CompiledPath</a></li>
+<li><a class="reference internal" href="#enumerations">Enumerations</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#graphics-context">Graphics Context</a><ul>
+<li><a class="reference internal" href="#construction">Construction</a></li>
+<li><a class="reference internal" href="#state-functions">State functions</a></li>
+<li><a class="reference internal" href="#clipping-functions">Clipping functions</a></li>
+<li><a class="reference internal" href="#path-functions">Path functions</a></li>
+<li><a class="reference internal" href="#drawing-functions">Drawing functions</a></li>
+<li><a class="reference internal" href="#text-functions">Text functions</a></li>
+<li><a class="reference internal" href="#misc-functions">Misc functions</a></li>
+<li><a class="reference internal" href="#functions-that-are-currently-stubbed-out-or-not-implemented">Functions that are currently stubbed out or not implemented</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable_toolkit_selection.html"
+                        title="previous chapter">Enable Toolkit Selection</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="credits.html"
+                        title="next chapter">Credits</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="_sources/kiva.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

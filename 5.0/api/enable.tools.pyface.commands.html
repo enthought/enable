@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.tools.pyface.commands module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable.tools.pyface package" href="enable.tools.pyface.html" >
+    <link rel="next" title="enable.tools.pyface.context_menu_tool module" href="enable.tools.pyface.context_menu_tool.html" >
+    <link rel="prev" title="enable.tools.pyface.command_tool module" href="enable.tools.pyface.command_tool.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" >enable package</a></li>
+          <li class="active"><a href="enable.tools.html" >enable.tools package</a></li>
+          <li class="active"><a href="enable.tools.pyface.html" accesskey="U">enable.tools.pyface package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.tools.pyface.context_menu_tool.html" title="enable.tools.pyface.context_menu_tool module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.tools.pyface.command_tool.html" title="enable.tools.pyface.command_tool module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.tools.pyface.commands">
+<span id="enable-tools-pyface-commands-module"></span><h1>enable.tools.pyface.commands module<a class="headerlink" href="#module-enable.tools.pyface.commands" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="enable-commands">
+<h2>Enable Commands<a class="headerlink" href="#enable-commands" title="Permalink to this headline">¶</a></h2>
+<p>This module provides <a class="reference external" href="https://docs.enthought.com/pyface/api/pyface.undo.abstract_command.html#pyface.undo.abstract_command.AbstractCommand" title="(in pyface v7.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyface.undo.abstract_command.AbstractCommand</span></code></a>
+subclasses for common component manipulations, such as moving, resizing and
+setting attribute values.</p>
+<dl class="class">
+<dt id="enable.tools.pyface.commands.ComponentCommand">
+<em class="property">class </em><code class="sig-prename descclassname">enable.tools.pyface.commands.</code><code class="sig-name descname">ComponentCommand</code><span class="sig-paren">(</span><em class="sig-param">component</em>, <em class="sig-param">**traits</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/pyface/commands.html#ComponentCommand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.pyface.commands.ComponentCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/pyface/api/pyface.undo.abstract_command.html#pyface.undo.abstract_command.AbstractCommand" title="(in pyface v7.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyface.undo.abstract_command.AbstractCommand</span></code></a></p>
+<p>Abstract command which operates on a Component</p>
+<dl class="attribute">
+<dt id="enable.tools.pyface.commands.ComponentCommand.component">
+<code class="sig-name descname">component</code><em class="property"> = Instance(Component)</em><a class="headerlink" href="#enable.tools.pyface.commands.ComponentCommand.component" title="Permalink to this definition">¶</a></dt>
+<dd><p>The component the command is being performed on.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="enable.tools.pyface.commands.ComponentCommand.component_name">
+<code class="sig-name descname">component_name</code><em class="property"> = Unicode</em><a class="headerlink" href="#enable.tools.pyface.commands.ComponentCommand.component_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>An appropriate name for the component that can be used by the command.
+The default is the class name, split into words.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.tools.pyface.commands.MoveCommand">
+<em class="property">class </em><code class="sig-prename descclassname">enable.tools.pyface.commands.</code><code class="sig-name descname">MoveCommand</code><span class="sig-paren">(</span><em class="sig-param">component</em>, <em class="sig-param">new_position=None</em>, <em class="sig-param">previous_position=None</em>, <em class="sig-param">**traits</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/pyface/commands.html#MoveCommand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.pyface.commands.MoveCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.tools.pyface.commands.ComponentCommand" title="enable.tools.pyface.commands.ComponentCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.tools.pyface.commands.ComponentCommand</span></code></a></p>
+<p>A command that moves a component</p>
+<p>This handles the logic of moving a component and merging successive moves.
+This class provides  <code class="docutils literal notranslate"><span class="pre">_change_position</span></code> and <code class="docutils literal notranslate"><span class="pre">_merge_data</span></code> methods that
+subclasses can override to change the move behaviour in a uniform way for
+undo and redo operations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>component</strong> (<em>Component instance</em>) – The component being moved.</p></li>
+<li><p><strong>new_position</strong> (<em>tuple of</em><em> (</em><em>x</em><em>, </em><em>y</em><em>)</em>) – The tuple representing the new position.</p></li>
+<li><p><strong>previous_position</strong> (<em>tuple of</em><em> (</em><em>x</em><em>, </em><em>y</em><em>)</em>) – The tuple representing the previous position.</p></li>
+<li><p><strong>**traits</strong> – Any other trait values that need to be passed in at creation time.</p></li>
+<li><p><strong>new_position argument is the same as the data trait on the</strong> (<em>The</em>) – </p></li>
+<li><p><strong>If both are provided</strong><strong>, </strong><strong>the new_position value is used.</strong> (<em>class.</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="enable.tools.pyface.commands.MoveCommand.data">
+<code class="sig-name descname">data</code><em class="property"> = Tuple</em><a class="headerlink" href="#enable.tools.pyface.commands.MoveCommand.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>The new position of the component as a tuple (x, y).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.tools.pyface.commands.MoveCommand.do">
+<code class="sig-name descname">do</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/pyface/commands.html#MoveCommand.do"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.pyface.commands.MoveCommand.do" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is called by the command stack to do the command and to return
+any value.  The command must save any state necessary for the ‘redo()’
+and ‘undo()’ methods to work.  The class’s __init__() must also ensure
+that deep copies of any arguments are made if appropriate.  It is
+guaranteed that this will only ever be called once and that it will be
+called before any call to ‘redo()’ or ‘undo()’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.tools.pyface.commands.MoveCommand.merge">
+<code class="sig-name descname">merge</code><span class="sig-paren">(</span><em class="sig-param">other</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/pyface/commands.html#MoveCommand.merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.pyface.commands.MoveCommand.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is called by the command stack to try and merge another
+command with this one.  True is returned if the commands were merged.
+‘other’ is the command that is about to be executed.  If the commands
+are merged then ‘other’ will discarded and not placed on the command
+stack.  A subsequent undo or redo of this modified command must have
+the same effect as the two original commands.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="enable.tools.pyface.commands.MoveCommand.mergeable">
+<code class="sig-name descname">mergeable</code><em class="property"> = Bool</em><a class="headerlink" href="#enable.tools.pyface.commands.MoveCommand.mergeable" title="Permalink to this definition">¶</a></dt>
+<dd><p>whether additional moves can be merged or if the move is finished.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="enable.tools.pyface.commands.MoveCommand.previous_position">
+<code class="sig-name descname">previous_position</code><em class="property"> = Tuple</em><a class="headerlink" href="#enable.tools.pyface.commands.MoveCommand.previous_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>The old position of the component as a tuple (x, y).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.tools.pyface.commands.MoveCommand.redo">
+<code class="sig-name descname">redo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/pyface/commands.html#MoveCommand.redo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.pyface.commands.MoveCommand.redo" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is called by the command stack to redo the command.  Any
+returned value will replace the value that the command stack references
+from the original call to ‘do()’ or previous call to ‘redo()’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.tools.pyface.commands.MoveCommand.undo">
+<code class="sig-name descname">undo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/pyface/commands.html#MoveCommand.undo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.pyface.commands.MoveCommand.undo" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is called by the command stack to undo the command.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.tools.pyface.commands.ResizeCommand">
+<em class="property">class </em><code class="sig-prename descclassname">enable.tools.pyface.commands.</code><code class="sig-name descname">ResizeCommand</code><span class="sig-paren">(</span><em class="sig-param">component</em>, <em class="sig-param">new_rectangle=None</em>, <em class="sig-param">previous_rectangle=None</em>, <em class="sig-param">**traits</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/pyface/commands.html#ResizeCommand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.pyface.commands.ResizeCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.tools.pyface.commands.ComponentCommand" title="enable.tools.pyface.commands.ComponentCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.tools.pyface.commands.ComponentCommand</span></code></a></p>
+<p>Command for resizing a component</p>
+<p>This handles the logic of moving a component and merging successive moves.
+This class provides  <code class="docutils literal notranslate"><span class="pre">_change_rectangle</span></code> and <code class="docutils literal notranslate"><span class="pre">_merge_data</span></code> methods that
+subclasses can override to change the reszie behaviour in a uniform way for
+undo and redo operations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>component</strong> (<em>Component instance</em>) – The component being moved.</p></li>
+<li><p><strong>new_rectangle</strong> (<em>tuple of</em><em> (</em><em>x</em><em>, </em><em>y</em><em>, </em><em>w</em><em>, </em><em>h</em><em>)</em>) – The rectangle representing the new position and bounds.</p></li>
+<li><p><strong>previous_rectangle</strong> (<em>tuple of</em><em> (</em><em>x</em><em>, </em><em>y</em><em>, </em><em>w</em><em>, </em><em>h</em><em>)</em>) – The rectangle representing the previous position and bounds.</p></li>
+<li><p><strong>**traits</strong> – Any other trait values that need to be passed in at creation time.</p></li>
+<li><p><strong>new_rectangle argument is the same as the data trait on the</strong> (<em>The</em>) – </p></li>
+<li><p><strong>If both are provided</strong><strong>, </strong><strong>the new_rectangle value is used.</strong> (<em>class.</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="enable.tools.pyface.commands.ResizeCommand.data">
+<code class="sig-name descname">data</code><em class="property"> = Tuple</em><a class="headerlink" href="#enable.tools.pyface.commands.ResizeCommand.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>The new rectangle of the component as a tuple (x, y, width, height).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.tools.pyface.commands.ResizeCommand.do">
+<code class="sig-name descname">do</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/pyface/commands.html#ResizeCommand.do"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.pyface.commands.ResizeCommand.do" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is called by the command stack to do the command and to return
+any value.  The command must save any state necessary for the ‘redo()’
+and ‘undo()’ methods to work.  The class’s __init__() must also ensure
+that deep copies of any arguments are made if appropriate.  It is
+guaranteed that this will only ever be called once and that it will be
+called before any call to ‘redo()’ or ‘undo()’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.tools.pyface.commands.ResizeCommand.merge">
+<code class="sig-name descname">merge</code><span class="sig-paren">(</span><em class="sig-param">other</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/pyface/commands.html#ResizeCommand.merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.pyface.commands.ResizeCommand.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is called by the command stack to try and merge another
+command with this one.  True is returned if the commands were merged.
+‘other’ is the command that is about to be executed.  If the commands
+are merged then ‘other’ will discarded and not placed on the command
+stack.  A subsequent undo or redo of this modified command must have
+the same effect as the two original commands.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="enable.tools.pyface.commands.ResizeCommand.mergeable">
+<code class="sig-name descname">mergeable</code><em class="property"> = Bool</em><a class="headerlink" href="#enable.tools.pyface.commands.ResizeCommand.mergeable" title="Permalink to this definition">¶</a></dt>
+<dd><p>whether additional resizes can be merged or if the resize is finished.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.tools.pyface.commands.ResizeCommand.move_command">
+<em class="property">classmethod </em><code class="sig-name descname">move_command</code><span class="sig-paren">(</span><em class="sig-param">component</em>, <em class="sig-param">new_position</em>, <em class="sig-param">previous_position=None</em>, <em class="sig-param">**traits</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/pyface/commands.html#ResizeCommand.move_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.pyface.commands.ResizeCommand.move_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory that creates a ResizeCommand implementing a move operation</p>
+<p>This allows a MoveTool to create move commands that can be easily
+merged with resize commands.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="enable.tools.pyface.commands.ResizeCommand.previous_rectangle">
+<code class="sig-name descname">previous_rectangle</code><em class="property"> = Tuple</em><a class="headerlink" href="#enable.tools.pyface.commands.ResizeCommand.previous_rectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>The old rectangle of the component as a tuple (x, y, width, height).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.tools.pyface.commands.ResizeCommand.redo">
+<code class="sig-name descname">redo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/pyface/commands.html#ResizeCommand.redo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.pyface.commands.ResizeCommand.redo" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is called by the command stack to redo the command.  Any
+returned value will replace the value that the command stack references
+from the original call to ‘do()’ or previous call to ‘redo()’.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.tools.pyface.commands.ResizeCommand.undo">
+<code class="sig-name descname">undo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/pyface/commands.html#ResizeCommand.undo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.pyface.commands.ResizeCommand.undo" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is called by the command stack to undo the command.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">enable.tools.pyface.commands module</a><ul>
+<li><a class="reference internal" href="#enable-commands">Enable Commands</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.tools.pyface.command_tool.html"
+                        title="previous chapter">enable.tools.pyface.command_tool module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.tools.pyface.context_menu_tool.html"
+                        title="next chapter">enable.tools.pyface.context_menu_tool module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.tools.pyface.commands.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

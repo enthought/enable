@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.trait_defs.rgba_color_trait module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable.trait_defs package" href="enable.trait_defs.html" >
+    <link rel="next" title="enable.trait_defs.ui package" href="enable.trait_defs.ui.html" >
+    <link rel="prev" title="enable.trait_defs.api module" href="enable.trait_defs.api.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" >enable package</a></li>
+          <li class="active"><a href="enable.trait_defs.html" accesskey="U">enable.trait_defs package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.trait_defs.ui.html" title="enable.trait_defs.ui package"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.trait_defs.api.html" title="enable.trait_defs.api module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.trait_defs.rgba_color_trait">
+<span id="enable-trait-defs-rgba-color-trait-module"></span><h1>enable.trait_defs.rgba_color_trait module<a class="headerlink" href="#module-enable.trait_defs.rgba_color_trait" title="Permalink to this headline">¶</a></h1>
+<p>Trait definition for an RGBA-based color, which is either:</p>
+<ul class="simple">
+<li><p>A tuple of the form (<em>red</em>,*green*,*blue*,*alpha*), where each component is
+in the range from 0.0 to 1.0</p></li>
+<li><p>An integer which in hexadecimal is of the form 0xAARRGGBB, where AA is alpha,
+RR is red, GG is green, and BB is blue.</p></li>
+</ul>
+<dl class="function">
+<dt id="enable.trait_defs.rgba_color_trait.RGBAColorFunc">
+<code class="sig-prename descclassname">enable.trait_defs.rgba_color_trait.</code><code class="sig-name descname">RGBAColorFunc</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**metadata</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/trait_defs/rgba_color_trait.html#RGBAColorFunc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.trait_defs.rgba_color_trait.RGBAColorFunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a trait whose value must be a GUI toolkit-specific RGBA-based
+color.</p>
+<p>For wxPython, the returned trait accepts any of the following values:</p>
+<ul class="simple">
+<li><p>A tuple of the form (<em>r</em>, <em>g</em>, <em>b</em>, <em>a</em>), in which <em>r</em>, <em>g</em>, <em>b</em>, and <em>a</em>
+represent red, green, blue, and alpha values, respectively, and are
+floats in the range from 0.0 to 1.0</p></li>
+<li><p>An integer whose hexadecimal form is 0x*AARRGGBB*, where <em>AA</em> is the
+alpha (transparency) value, <em>RR</em> is the red value, <em>GG</em> is the green
+value, and <em>BB</em> is the blue value</p></li>
+</ul>
+<p>For wxPython, (1.0, 1.0, 1.0, 1.0) (that is, opaque white)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.trait_defs.rgba_color_trait.convert_to_color">
+<code class="sig-prename descclassname">enable.trait_defs.rgba_color_trait.</code><code class="sig-name descname">convert_to_color</code><span class="sig-paren">(</span><em class="sig-param">object</em>, <em class="sig-param">name</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/trait_defs/rgba_color_trait.html#convert_to_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.trait_defs.rgba_color_trait.convert_to_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a value to an Enable or Kiva color.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.trait_defs.rgba_color_trait.rgba_color">
+<code class="sig-prename descclassname">enable.trait_defs.rgba_color_trait.</code><code class="sig-name descname">rgba_color</code><span class="sig-paren">(</span><em class="sig-param">color</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/trait_defs/rgba_color_trait.html#rgba_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.trait_defs.rgba_color_trait.rgba_color" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.trait_defs.api.html"
+                        title="previous chapter">enable.trait_defs.api module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.trait_defs.ui.html"
+                        title="next chapter">enable.trait_defs.ui package</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.trait_defs.rgba_color_trait.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.savage.svg.document module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable.savage.svg package" href="enable.savage.svg.html" >
+    <link rel="next" title="enable.savage.svg.pathdata module" href="enable.savage.svg.pathdata.html" >
+    <link rel="prev" title="enable.savage.svg.attributes module" href="enable.savage.svg.attributes.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" >enable package</a></li>
+          <li class="active"><a href="enable.savage.html" >enable.savage package</a></li>
+          <li class="active"><a href="enable.savage.svg.html" accesskey="U">enable.savage.svg package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.savage.svg.pathdata.html" title="enable.savage.svg.pathdata module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.savage.svg.attributes.html" title="enable.savage.svg.attributes module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.savage.svg.document">
+<span id="enable-savage-svg-document-module"></span><h1>enable.savage.svg.document module<a class="headerlink" href="#module-enable.savage.svg.document" title="Permalink to this headline">¶</a></h1>
+<p>SVGDocument</p>
+<dl class="class">
+<dt id="enable.savage.svg.document.ResourceGetter">
+<em class="property">class </em><code class="sig-prename descclassname">enable.savage.svg.document.</code><code class="sig-name descname">ResourceGetter</code><span class="sig-paren">(</span><em class="sig-param">dirname=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#ResourceGetter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.ResourceGetter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Simple context for getting relative-pathed resources.</p>
+<dl class="method">
+<dt id="enable.savage.svg.document.ResourceGetter.fromfilename">
+<em class="property">classmethod </em><code class="sig-name descname">fromfilename</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#ResourceGetter.fromfilename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.ResourceGetter.fromfilename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use the directory containing this file as the base directory.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.ResourceGetter.newbase">
+<code class="sig-name descname">newbase</code><span class="sig-paren">(</span><em class="sig-param">dirname</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#ResourceGetter.newbase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.ResourceGetter.newbase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new ResourceGetter using a new base directory found
+relative to this one.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.ResourceGetter.open_image">
+<code class="sig-name descname">open_image</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#ResourceGetter.open_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.ResourceGetter.open_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolve and read an image into an appropriate object for the
+renderer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.ResourceGetter.open_svg">
+<code class="sig-name descname">open_svg</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#ResourceGetter.open_svg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.ResourceGetter.open_svg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolve and read an SVG file into an Element.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.ResourceGetter.resolve">
+<code class="sig-name descname">resolve</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#ResourceGetter.resolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.ResourceGetter.resolve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolve a path and the associated opener function against this
+context.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.savage.svg.document.SVGDocument">
+<em class="property">class </em><code class="sig-prename descclassname">enable.savage.svg.document.</code><code class="sig-name descname">SVGDocument</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">resources=None</em>, <em class="sig-param">renderer=&lt;class 'enable.savage.svg.backends.null.null_renderer.NullRenderer'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.addCircleToDocument">
+<code class="sig-name descname">addCircleToDocument</code><span class="sig-paren">(</span><em class="sig-param">node</em>, <em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.addCircleToDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.addCircleToDocument" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.addEllipseToDocument">
+<code class="sig-name descname">addEllipseToDocument</code><span class="sig-paren">(</span><em class="sig-param">node</em>, <em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.addEllipseToDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.addEllipseToDocument" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.addGroupToDocument">
+<code class="sig-name descname">addGroupToDocument</code><span class="sig-paren">(</span><em class="sig-param">node</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.addGroupToDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.addGroupToDocument" title="Permalink to this definition">¶</a></dt>
+<dd><p>For parent elements: push on a state,
+then process all child elements</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.addImageToDocument">
+<code class="sig-name descname">addImageToDocument</code><span class="sig-paren">(</span><em class="sig-param">node</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.addImageToDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.addImageToDocument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an &lt;image&gt; tag to the document.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.addLineToDocument">
+<code class="sig-name descname">addLineToDocument</code><span class="sig-paren">(</span><em class="sig-param">node</em>, <em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.addLineToDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.addLineToDocument" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.addPathDataToDocument">
+<code class="sig-name descname">addPathDataToDocument</code><span class="sig-paren">(</span><em class="sig-param">node</em>, <em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.addPathDataToDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.addPathDataToDocument" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.addPathDataToPath">
+<code class="sig-name descname">addPathDataToPath</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.addPathDataToPath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.addPathDataToPath" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.addPolyLineToDocument">
+<code class="sig-name descname">addPolyLineToDocument</code><span class="sig-paren">(</span><em class="sig-param">node</em>, <em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.addPolyLineToDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.addPolyLineToDocument" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.addPolygonToDocument">
+<code class="sig-name descname">addPolygonToDocument</code><span class="sig-paren">(</span><em class="sig-param">node</em>, <em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.addPolygonToDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.addPolygonToDocument" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.addRectToDocument">
+<code class="sig-name descname">addRectToDocument</code><span class="sig-paren">(</span><em class="sig-param">node</em>, <em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.addRectToDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.addRectToDocument" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.addStrokeToPath">
+<code class="sig-name descname">addStrokeToPath</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">stroke</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.addStrokeToPath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.addStrokeToPath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a stroke from a path command
+(in the form (command, arguments)) create the path
+commands that represent it.</p>
+<p>TODO: break out into (yet another) class/module,
+especially so we can get O(1) dispatch on type?</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.addSwitchToDocument">
+<code class="sig-name descname">addSwitchToDocument</code><span class="sig-paren">(</span><em class="sig-param">node</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.addSwitchToDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.addSwitchToDocument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process a &lt;switch&gt; tag.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.addTextToDocument">
+<code class="sig-name descname">addTextToDocument</code><span class="sig-paren">(</span><em class="sig-param">node</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.addTextToDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.addTextToDocument" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.addUseToDocument">
+<code class="sig-name descname">addUseToDocument</code><span class="sig-paren">(</span><em class="sig-param">node</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.addUseToDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.addUseToDocument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a &lt;use&gt; tag to the document.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.createFromFile">
+<em class="property">classmethod </em><code class="sig-name descname">createFromFile</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">renderer</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.createFromFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.createFromFile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.createTransformOpsFromNode">
+<code class="sig-name descname">createTransformOpsFromNode</code><span class="sig-paren">(</span><em class="sig-param">node</em>, <em class="sig-param">attribute='transform'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.createTransformOpsFromNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.createTransformOpsFromNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an oplist for transformations.
+This applies to a node, not the current state because
+the transform stack is saved in the graphics context.</p>
+<p>This oplist does <em>not</em> include the push/pop state commands</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.createTransformOpsFromXY">
+<code class="sig-name descname">createTransformOpsFromXY</code><span class="sig-paren">(</span><em class="sig-param">node</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.createTransformOpsFromXY"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.createTransformOpsFromXY" title="Permalink to this definition">¶</a></dt>
+<dd><p>On some nodes, x and y attributes cause a translation of the
+coordinate system.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.dereference">
+<code class="sig-name descname">dereference</code><span class="sig-paren">(</span><em class="sig-param">href</em>, <em class="sig-param">resources=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.dereference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.dereference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the element specified by the give href.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>href</strong> (<em>str</em>) – The reference pointing to the desired element. Forms like
+‘url(uri#theid)’ and ‘uri#xpointer(id(theid))’ will be normalized
+to pull out just the uri and the id.</p></li>
+<li><p><strong>resources</strong> (<a class="reference internal" href="#enable.savage.svg.document.ResourceGetter" title="enable.savage.svg.document.ResourceGetter"><em>ResourceGetter</em></a><em>, </em><em>optional</em>) – The ResourceGetter to use. If not provided, the one attached to the
+SVGDocument is used. This is useful when silly test suites like to
+test annoying XLink features.
+FIXME: &lt;sigh&gt; xml:base is inheritable.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>element</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="enable.savage.compliance.xml_view.html#enable.savage.compliance.xml_view.Element" title="enable.savage.compliance.xml_view.Element">Element</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>KeyError :</strong> – If the element is not found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.findIDs">
+<code class="sig-name descname">findIDs</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">uri=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.findIDs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.findIDs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate through the tree under an element and record all elements
+which specify an id attribute.</p>
+<p>The root element is given the ID ‘’ in addition to whatever id=
+attribute it may be given.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.generatePathOps">
+<code class="sig-name descname">generatePathOps</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.generatePathOps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.generatePathOps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Look at the current state and generate the
+draw operations (fill, stroke, neither) for the path.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.getBrushFromState">
+<code class="sig-name descname">getBrushFromState</code><span class="sig-paren">(</span><em class="sig-param">path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.getBrushFromState"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.getBrushFromState" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.getFontFromState">
+<code class="sig-name descname">getFontFromState</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.getFontFromState"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.getFontFromState" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.getLocalState">
+<code class="sig-name descname">getLocalState</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">state=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.getLocalState"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.getLocalState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the state local to an element.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.getPenFromState">
+<code class="sig-name descname">getPenFromState</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.getPenFromState"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.getPenFromState" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.getSize">
+<code class="sig-name descname">getSize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.getSize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.getSize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.parseStops">
+<code class="sig-name descname">parseStops</code><span class="sig-paren">(</span><em class="sig-param">element</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.parseStops"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.parseStops" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the color stops from a gradient definition.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.processElement">
+<code class="sig-name descname">processElement</code><span class="sig-paren">(</span><em class="sig-param">element</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.processElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.processElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process one element of the XML tree.
+Returns the path representing the node,
+and an operation list for drawing the node.</p>
+<p>Parent nodes should return a path (for hittesting), but
+no draw operations</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.render">
+<code class="sig-name descname">render</code><span class="sig-paren">(</span><em class="sig-param">context</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#SVGDocument.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.render" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.savage.svg.document.SVGDocument.state">
+<em class="property">property </em><code class="sig-name descname">state</code><a class="headerlink" href="#enable.savage.svg.document.SVGDocument.state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the current state, without popping</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.savage.svg.document.XMLNS">
+<em class="property">class </em><code class="sig-prename descclassname">enable.savage.svg.document.</code><code class="sig-name descname">XMLNS</code><span class="sig-paren">(</span><em class="sig-param">url</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#XMLNS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.XMLNS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Utility object for dealing the namespaced names quoted the way
+ElementTree requires.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.savage.svg.document.attrAsFloat">
+<code class="sig-prename descclassname">enable.savage.svg.document.</code><code class="sig-name descname">attrAsFloat</code><span class="sig-paren">(</span><em class="sig-param">node</em>, <em class="sig-param">attr</em>, <em class="sig-param">defaultValue='0'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#attrAsFloat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.attrAsFloat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="enable.savage.svg.document.fractionalValue">
+<code class="sig-prename descclassname">enable.savage.svg.document.</code><code class="sig-name descname">fractionalValue</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#fractionalValue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.fractionalValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a string consisting of a float in the range [0..1] or a
+percentage as a float number in the range [0..1].</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.savage.svg.document.normalize_href">
+<code class="sig-prename descclassname">enable.savage.svg.document.</code><code class="sig-name descname">normalize_href</code><span class="sig-paren">(</span><em class="sig-param">href</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#normalize_href"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.normalize_href" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize an href to remove url(…) and xpointer(id(…)) extraneous
+bits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>href</strong> (<em>str</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>uri</strong> (<em>str</em>) – A URI (or maybe a file system path) to the resource.</p></li>
+<li><p><strong>fragment</strong> (<em>str</em>) – The normalized #fragment, if any</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.savage.svg.document.pathHandler">
+<code class="sig-prename descclassname">enable.savage.svg.document.</code><code class="sig-name descname">pathHandler</code><span class="sig-paren">(</span><em class="sig-param">func</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#pathHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.pathHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>decorator for methods which return a path operation
+Creates the path they will fill,
+and generates the path operations for the node</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.savage.svg.document.valueToPixels">
+<code class="sig-prename descclassname">enable.savage.svg.document.</code><code class="sig-name descname">valueToPixels</code><span class="sig-paren">(</span><em class="sig-param">val</em>, <em class="sig-param">defaultUnits='px'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/document.html#valueToPixels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.document.valueToPixels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.savage.svg.attributes.html"
+                        title="previous chapter">enable.savage.svg.attributes module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.savage.svg.pathdata.html"
+                        title="next chapter">enable.savage.svg.pathdata module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.savage.svg.document.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

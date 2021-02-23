@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.abstract_window module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable package" href="enable.html" >
+    <link rel="next" title="enable.api module" href="enable.api.html" >
+    <link rel="prev" title="enable.abstract_overlay module" href="enable.abstract_overlay.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" accesskey="U">enable package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.api.html" title="enable.api module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.abstract_overlay.html" title="enable.abstract_overlay module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.abstract_window">
+<span id="enable-abstract-window-module"></span><h1>enable.abstract_window module<a class="headerlink" href="#module-enable.abstract_window" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="enable.abstract_window.AbstractWindow">
+<em class="property">class </em><code class="sig-prename descclassname">enable.abstract_window.</code><code class="sig-name descname">AbstractWindow</code><span class="sig-paren">(</span><em class="sig-param">**traits</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/abstract_window.html#AbstractWindow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.abstract_window.AbstractWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasTraits</span></code></a></p>
+<dl class="attribute">
+<dt id="enable.abstract_window.AbstractWindow.MAX_DAMAGED_REGIONS">
+<code class="sig-name descname">MAX_DAMAGED_REGIONS</code><em class="property"> = 100</em><a class="headerlink" href="#enable.abstract_window.AbstractWindow.MAX_DAMAGED_REGIONS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.abstract_window.AbstractWindow.cleanup">
+<code class="sig-name descname">cleanup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/abstract_window.html#AbstractWindow.cleanup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.abstract_window.AbstractWindow.cleanup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean up after ourselves.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.abstract_window.AbstractWindow.component_bounds_changed">
+<code class="sig-name descname">component_bounds_changed</code><span class="sig-paren">(</span><em class="sig-param">bounds</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/abstract_window.html#AbstractWindow.component_bounds_changed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.abstract_window.AbstractWindow.component_bounds_changed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dynamic trait listener that handles our component changing its size;
+bounds is a length-2 list of [width, height].</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.abstract_window.AbstractWindow.get_pointer_position">
+<code class="sig-name descname">get_pointer_position</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/abstract_window.html#AbstractWindow.get_pointer_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.abstract_window.AbstractWindow.get_pointer_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current pointer position in local window coordinates</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.abstract_window.AbstractWindow.invalidate_draw">
+<code class="sig-name descname">invalidate_draw</code><span class="sig-paren">(</span><em class="sig-param">damaged_regions=None</em>, <em class="sig-param">self_relative=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/abstract_window.html#AbstractWindow.invalidate_draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.abstract_window.AbstractWindow.invalidate_draw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.abstract_window.AbstractWindow.redraw">
+<code class="sig-name descname">redraw</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/abstract_window.html#AbstractWindow.redraw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.abstract_window.AbstractWindow.redraw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Requests that the window be redrawn.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.abstract_window.AbstractWindow.screen_to_window">
+<code class="sig-name descname">screen_to_window</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/abstract_window.html#AbstractWindow.screen_to_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.abstract_window.AbstractWindow.screen_to_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns local window coordinates for given global screen coordinates</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.abstract_window.AbstractWindow.set_drag_result">
+<code class="sig-name descname">set_drag_result</code><span class="sig-paren">(</span><em class="sig-param">result</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/abstract_window.html#AbstractWindow.set_drag_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.abstract_window.AbstractWindow.set_drag_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the result that should be returned to the system from the
+handling of the current drag operation.  Valid result values are:
+“error”, “none”, “copy”, “move”, “link”, “cancel”.  These have the
+meanings associated with their WX equivalents.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.abstract_window.AbstractWindow.set_mouse_owner">
+<code class="sig-name descname">set_mouse_owner</code><span class="sig-paren">(</span><em class="sig-param">mouse_owner</em>, <em class="sig-param">transform=None</em>, <em class="sig-param">history=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/abstract_window.html#AbstractWindow.set_mouse_owner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.abstract_window.AbstractWindow.set_mouse_owner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle the ‘mouse_owner’ being changed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.abstract_window.AbstractWindow.set_pointer">
+<code class="sig-name descname">set_pointer</code><span class="sig-paren">(</span><em class="sig-param">pointer</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/abstract_window.html#AbstractWindow.set_pointer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.abstract_window.AbstractWindow.set_pointer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the current cursor shape</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.abstract_window.AbstractWindow.set_timer_interval">
+<code class="sig-name descname">set_timer_interval</code><span class="sig-paren">(</span><em class="sig-param">component</em>, <em class="sig-param">interval</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/abstract_window.html#AbstractWindow.set_timer_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.abstract_window.AbstractWindow.set_timer_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up or cancel a timer for a specified component</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.abstract_window.AbstractWindow.set_tooltip">
+<code class="sig-name descname">set_tooltip</code><span class="sig-paren">(</span><em class="sig-param">components</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/abstract_window.html#AbstractWindow.set_tooltip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.abstract_window.AbstractWindow.set_tooltip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the window’s tooltip (if necessary)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.abstract_window.Alias">
+<code class="sig-prename descclassname">enable.abstract_window.</code><code class="sig-name descname">Alias</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/abstract_window.html#Alias"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.abstract_window.Alias" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.abstract_overlay.html"
+                        title="previous chapter">enable.abstract_overlay module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.api.html"
+                        title="next chapter">enable.api module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.abstract_window.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.savage.svg.svg_extras module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable.savage.svg package" href="enable.savage.svg.html" >
+    <link rel="next" title="enable.savage.svg.svg_regex module" href="enable.savage.svg.svg_regex.html" >
+    <link rel="prev" title="enable.savage.svg.pathdata module" href="enable.savage.svg.pathdata.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" >enable package</a></li>
+          <li class="active"><a href="enable.savage.html" >enable.savage package</a></li>
+          <li class="active"><a href="enable.savage.svg.html" accesskey="U">enable.savage.svg package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.savage.svg.svg_regex.html" title="enable.savage.svg.svg_regex module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.savage.svg.pathdata.html" title="enable.savage.svg.pathdata module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.savage.svg.svg_extras">
+<span id="enable-savage-svg-svg-extras-module"></span><h1>enable.savage.svg.svg_extras module<a class="headerlink" href="#module-enable.savage.svg.svg_extras" title="Permalink to this headline">¶</a></h1>
+<p>Extra math for implementing SVG on top of Kiva.</p>
+<dl class="function">
+<dt id="enable.savage.svg.svg_extras.angle">
+<code class="sig-prename descclassname">enable.savage.svg.svg_extras.</code><code class="sig-name descname">angle</code><span class="sig-paren">(</span><em class="sig-param">x1</em>, <em class="sig-param">y1</em>, <em class="sig-param">x2</em>, <em class="sig-param">y2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/svg_extras.html#angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.svg_extras.angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>The angle in degrees between two vectors.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.savage.svg.svg_extras.bezier_arc">
+<code class="sig-prename descclassname">enable.savage.svg.svg_extras.</code><code class="sig-name descname">bezier_arc</code><span class="sig-paren">(</span><em class="sig-param">x1</em>, <em class="sig-param">y1</em>, <em class="sig-param">x2</em>, <em class="sig-param">y2</em>, <em class="sig-param">start_angle=0</em>, <em class="sig-param">extent=90</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/svg_extras.html#bezier_arc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.svg_extras.bezier_arc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute a cubic Bezier approximation of an elliptical arc.</p>
+<p>(x1, y1) and (x2, y2) are the corners of the enclosing rectangle.  The
+coordinate system has coordinates that increase to the right and down.
+Angles, measured in degress, start with 0 to the right (the positive
+X axis) and increase counter-clockwise.  The arc extends from start_angle
+to start_angle+extent.  I.e. start_angle=0 and extent=180 yields an
+openside-down semi-circle.</p>
+<p>The resulting coordinates are of the form (x1,y1, x2,y2, x3,y3, x4,y4)
+such that the curve goes from (x1, y1) to (x4, y4) with (x2, y2) and
+(x3, y3) as their respective Bezier control points.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.savage.svg.svg_extras.elliptical_arc_to">
+<code class="sig-prename descclassname">enable.savage.svg.svg_extras.</code><code class="sig-name descname">elliptical_arc_to</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">rx</em>, <em class="sig-param">ry</em>, <em class="sig-param">phi</em>, <em class="sig-param">large_arc_flag</em>, <em class="sig-param">sweep_flag</em>, <em class="sig-param">x1</em>, <em class="sig-param">y1</em>, <em class="sig-param">x2</em>, <em class="sig-param">y2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/svg_extras.html#elliptical_arc_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.svg_extras.elliptical_arc_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an elliptical arc to the kiva CompiledPath by approximating it with
+Bezier curves or a line segment.</p>
+<dl class="simple">
+<dt>Algorithm taken from the SVG 1.1 Implementation Notes:</dt><dd><p><a class="reference external" href="http://www.w3.org/TR/SVG/implnote.html#ArcImplementationNotes">http://www.w3.org/TR/SVG/implnote.html#ArcImplementationNotes</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.savage.svg.svg_extras.transform_from_local">
+<code class="sig-prename descclassname">enable.savage.svg.svg_extras.</code><code class="sig-name descname">transform_from_local</code><span class="sig-paren">(</span><em class="sig-param">xp</em>, <em class="sig-param">yp</em>, <em class="sig-param">cphi</em>, <em class="sig-param">sphi</em>, <em class="sig-param">mx</em>, <em class="sig-param">my</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/savage/svg/svg_extras.html#transform_from_local"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.savage.svg.svg_extras.transform_from_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform from the local frame to absolute space.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.savage.svg.pathdata.html"
+                        title="previous chapter">enable.savage.svg.pathdata module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.savage.svg.svg_regex.html"
+                        title="next chapter">enable.savage.svg.svg_regex module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.savage.svg.svg_extras.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

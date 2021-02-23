@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.drag_resize &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.drag_resize</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Any</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">BOTTOM</span><span class="p">,</span> <span class="n">LEFT</span><span class="p">,</span> <span class="n">RIGHT</span><span class="p">,</span> <span class="n">TOP</span><span class="p">,</span> <span class="n">bounds_to_coordinates</span>
+<span class="kn">from</span> <span class="nn">.interactor</span> <span class="k">import</span> <span class="n">Interactor</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1">#  &#39;DragResizeHandler&#39; class:</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="DragResizeHandler"><a class="viewcode-back" href="../../api/enable.drag_resize.html#enable.drag_resize.DragResizeHandler">[docs]</a><span class="k">class</span> <span class="nc">DragResizeHandler</span><span class="p">(</span><span class="n">Interactor</span><span class="p">):</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1">#  Trait definitions:</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="c1"># User-supplied drag event validation function:</span>
+    <span class="n">drag_validate</span> <span class="o">=</span> <span class="n">Any</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1">#  Initialize the object:</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="DragResizeHandler.init"><a class="viewcode-back" href="../../api/enable.drag_resize.html#enable.drag_resize.DragResizeHandler.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">,</span> <span class="n">bounds_rect</span><span class="p">,</span> <span class="n">anchor</span><span class="p">,</span> <span class="n">unconstrain</span><span class="p">,</span> <span class="n">drag_event</span><span class="p">,</span>
+             <span class="n">start_event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">component</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds_rect</span> <span class="o">=</span> <span class="n">bounds_rect</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">anchor</span> <span class="o">=</span> <span class="n">anchor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unconstrain</span> <span class="o">=</span> <span class="n">unconstrain</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drag_event</span> <span class="o">=</span> <span class="n">drag_event</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_event</span> <span class="o">=</span> <span class="n">start_event</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drag_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_x</span> <span class="o">=</span> <span class="n">start_event</span><span class="o">.</span><span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drag_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_y</span> <span class="o">=</span> <span class="n">start_event</span><span class="o">.</span><span class="n">y</span>
+
+        <span class="c1"># Get the coordinates of the anchor point:</span>
+        <span class="n">xl</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">xr</span><span class="p">,</span> <span class="n">yt</span> <span class="o">=</span> <span class="n">bounds_to_coordinates</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">anchor</span> <span class="o">&amp;</span> <span class="n">LEFT</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">anchor_x</span> <span class="o">=</span> <span class="n">xl</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">float_x</span> <span class="o">=</span> <span class="n">xr</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">anchor_x</span> <span class="o">=</span> <span class="n">xr</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">float_x</span> <span class="o">=</span> <span class="n">xl</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">anchor</span> <span class="o">&amp;</span> <span class="n">BOTTOM</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">anchor_y</span> <span class="o">=</span> <span class="n">yb</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">float_y</span> <span class="o">=</span> <span class="n">yt</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">anchor_y</span> <span class="o">=</span> <span class="n">yt</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">float_y</span> <span class="o">=</span> <span class="n">yb</span>
+
+        <span class="c1"># Set up the drag termination handler:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drag_done</span><span class="p">,</span> <span class="n">drag_event</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1">#  Handle the mouse moving while resizing:</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_mouse_move_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="c1"># Get the current drag location:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span>
+
+        <span class="c1"># If the mouse did not actually move, then ignore the event:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">drag_x</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">drag_y</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Save the new position:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drag_x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drag_y</span> <span class="o">=</span> <span class="n">y</span>
+
+        <span class="c1"># Calculate the new &#39;floating&#39; point:</span>
+        <span class="n">unconstrain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unconstrain</span>
+        <span class="n">ax</span><span class="p">,</span> <span class="n">ay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchor_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchor_y</span>
+        <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">float_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">float_y</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">unconstrain</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">LEFT</span> <span class="o">|</span> <span class="n">RIGHT</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">nx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">float_x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_x</span>
+            <span class="k">if</span> <span class="n">nx</span> <span class="o">&gt;</span> <span class="n">ax</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">unconstrain</span> <span class="o">&amp;</span> <span class="n">RIGHT</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">nx</span> <span class="o">=</span> <span class="n">ax</span>
+            <span class="k">elif</span> <span class="n">nx</span> <span class="o">&lt;</span> <span class="n">ax</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">unconstrain</span> <span class="o">&amp;</span> <span class="n">LEFT</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">nx</span> <span class="o">=</span> <span class="n">ax</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">unconstrain</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">TOP</span> <span class="o">|</span> <span class="n">BOTTOM</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ny</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">float_y</span> <span class="o">+</span> <span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_y</span>
+            <span class="k">if</span> <span class="n">ny</span> <span class="o">&gt;</span> <span class="n">ay</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">unconstrain</span> <span class="o">&amp;</span> <span class="n">TOP</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">ny</span> <span class="o">=</span> <span class="n">ay</span>
+            <span class="k">elif</span> <span class="n">ny</span> <span class="o">&lt;</span> <span class="n">ay</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">unconstrain</span> <span class="o">&amp;</span> <span class="n">BOTTOM</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">ny</span> <span class="o">=</span> <span class="n">ay</span>
+
+        <span class="c1"># Make sure the new point is inside the drag bounds (if required):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds_rect</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bxl</span><span class="p">,</span> <span class="n">byb</span><span class="p">,</span> <span class="n">bxr</span><span class="p">,</span> <span class="n">byt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds_rect</span>
+            <span class="n">nx</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">bxr</span><span class="p">),</span> <span class="n">bxl</span><span class="p">)</span>
+            <span class="n">ny</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">byt</span><span class="p">),</span> <span class="n">byb</span><span class="p">)</span>
+
+        <span class="c1"># Calculate the new size of the component and make sure that it meets</span>
+        <span class="c1"># the min and max size requirements for the component:</span>
+        <span class="n">component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span>
+        <span class="n">mindx</span><span class="p">,</span> <span class="n">maxdx</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">min_width</span><span class="p">,</span> <span class="n">component</span><span class="o">.</span><span class="n">max_width</span>
+        <span class="n">mindy</span><span class="p">,</span> <span class="n">maxdy</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">min_height</span><span class="p">,</span> <span class="n">component</span><span class="o">.</span><span class="n">max_height</span>
+        <span class="n">ndx</span><span class="p">,</span> <span class="n">ndy</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">nx</span> <span class="o">-</span> <span class="n">ax</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ny</span> <span class="o">-</span> <span class="n">ay</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">ndx</span> <span class="o">&gt;</span> <span class="n">maxdx</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">nx</span> <span class="o">&gt;</span> <span class="n">ax</span><span class="p">:</span>
+                <span class="n">nx</span> <span class="o">=</span> <span class="n">ax</span> <span class="o">+</span> <span class="n">maxdx</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nx</span> <span class="o">=</span> <span class="n">ax</span> <span class="o">-</span> <span class="n">maxdx</span>
+        <span class="k">elif</span> <span class="n">ndx</span> <span class="o">&lt;</span> <span class="n">mindx</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">nx</span> <span class="o">&lt;</span> <span class="n">ax</span><span class="p">:</span>
+                <span class="n">nx</span> <span class="o">=</span> <span class="n">ax</span> <span class="o">-</span> <span class="n">mindx</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">nx</span> <span class="o">&gt;</span> <span class="n">ax</span><span class="p">)</span> <span class="ow">or</span> <span class="p">((</span><span class="n">unconstrain</span> <span class="o">&amp;</span> <span class="n">RIGHT</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">nx</span> <span class="o">=</span> <span class="n">ax</span> <span class="o">+</span> <span class="n">mindx</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nx</span> <span class="o">=</span> <span class="n">ax</span> <span class="o">-</span> <span class="n">mindx</span>
+        <span class="k">if</span> <span class="n">ndy</span> <span class="o">&gt;</span> <span class="n">maxdy</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ny</span> <span class="o">&gt;</span> <span class="n">ay</span><span class="p">:</span>
+                <span class="n">ny</span> <span class="o">=</span> <span class="n">ay</span> <span class="o">+</span> <span class="n">maxdy</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ny</span> <span class="o">=</span> <span class="n">ay</span> <span class="o">-</span> <span class="n">maxdy</span>
+        <span class="k">elif</span> <span class="n">ndy</span> <span class="o">&lt;</span> <span class="n">mindy</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ny</span> <span class="o">&lt;</span> <span class="n">ay</span><span class="p">:</span>
+                <span class="n">ny</span> <span class="o">=</span> <span class="n">ay</span> <span class="o">-</span> <span class="n">mindy</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">ny</span> <span class="o">&gt;</span> <span class="n">ay</span><span class="p">)</span> <span class="ow">or</span> <span class="p">((</span><span class="n">unconstrain</span> <span class="o">&amp;</span> <span class="n">TOP</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">ny</span> <span class="o">=</span> <span class="n">ay</span> <span class="o">+</span> <span class="n">mindy</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ny</span> <span class="o">=</span> <span class="n">ay</span> <span class="o">-</span> <span class="n">mindy</span>
+
+        <span class="c1"># Update the bounds of the component:</span>
+        <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ax</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">ay</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">nx</span> <span class="o">-</span> <span class="n">ax</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ny</span> <span class="o">-</span> <span class="n">ay</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">drag_validate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">drag_validate</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">bounds</span> <span class="o">!=</span> <span class="n">component</span><span class="o">.</span><span class="n">bounds</span><span class="p">:</span>
+            <span class="n">component</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span>
+
+            <span class="c1"># Tell the &#39;paint&#39; routine we are doing a drag resize operation:</span>
+            <span class="n">event</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">drag_resize_update</span><span class="p">()</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1">#  Handle the user releasing the original drag button:</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="DragResizeHandler.drag_done"><a class="viewcode-back" href="../../api/enable.drag_resize.html#enable.drag_resize.DragResizeHandler.drag_done">[docs]</a>    <span class="k">def</span> <span class="nf">drag_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="c1"># &#39;Unhook&#39; the drag done notification handler:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drag_done</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">drag_event</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Inform the component that the resize operation is complete:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">resized</span> <span class="o">=</span> <span class="kc">True</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

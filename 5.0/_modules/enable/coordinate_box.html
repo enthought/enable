@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.coordinate_box &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.coordinate_box</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="c1"># Enthought library imports</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Property</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="c1"># Local, relative imports</span>
+<span class="kn">from</span> <span class="nn">.enable_traits</span> <span class="k">import</span> <span class="n">bounds_trait</span><span class="p">,</span> <span class="n">coordinate_trait</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">kiwisolver</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">ENABLE_CONSTRAINTS</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">ENABLE_CONSTRAINTS</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="kn">from</span> <span class="nn">.layout.constraints_namespace</span> <span class="k">import</span> <span class="n">ConstraintsNamespace</span>
+    <span class="kn">from</span> <span class="nn">.layout.ab_constrainable</span> <span class="k">import</span> <span class="n">ABConstrainable</span>
+    <span class="kn">from</span> <span class="nn">.layout.utils</span> <span class="k">import</span> <span class="p">(</span>
+        <span class="n">add_symbolic_constraints</span><span class="p">,</span>
+        <span class="n">STRENGTHS</span><span class="p">,</span>
+        <span class="n">get_from_constraints_namespace</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">ConstraintPolicyEnum</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">STRENGTHS</span><span class="p">)</span>
+
+    <span class="k">del</span> <span class="n">kiwisolver</span>
+
+
+<div class="viewcode-block" id="CoordinateBox"><a class="viewcode-back" href="../../api/enable.coordinate_box.html#enable.coordinate_box.CoordinateBox">[docs]</a><span class="k">class</span> <span class="nc">CoordinateBox</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a box in screen space, and provides convenience properties to</span>
+<span class="sd">    access bounds and coordinates in a variety of ways.</span>
+
+<span class="sd">    Primary attributes (not properties):</span>
+<span class="sd">        position : [x, y]</span>
+<span class="sd">        bounds : [width, height]</span>
+
+<span class="sd">    Secondary attributes (properties):</span>
+<span class="sd">        x, y   : coordinates of the lower-left pixel of the box</span>
+<span class="sd">        x2, y2 : coordinates of the upper-right pixel of the box</span>
+<span class="sd">        width  : the number of horizontal pixels in the box; equal to x2-x+1</span>
+<span class="sd">        height : the number of vertical pixels in the box; equal to y2-y+1</span>
+
+<span class="sd">    Note that setting x and y will modify the position, but setting any of the</span>
+<span class="sd">    other secondary attributes will modify the bounds of the box.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds_trait</span>
+
+    <span class="c1"># The position relative to the container.  If container is None, then</span>
+    <span class="c1"># position will be set to (0,0).</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="n">coordinate_trait</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="n">y</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="n">y2</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="n">width</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="n">height</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Constraints-based layout</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">if</span> <span class="n">ENABLE_CONSTRAINTS</span><span class="p">:</span>
+
+        <span class="c1"># A read-only symbolic object that represents the left boundary of</span>
+        <span class="c1"># the component</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_from_constraints_namespace</span><span class="p">)</span>
+
+        <span class="c1"># A read-only symbolic object that represents the right boundary</span>
+        <span class="c1"># of the component</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_from_constraints_namespace</span><span class="p">)</span>
+
+        <span class="c1"># A read-only symbolic object that represents the bottom boundary</span>
+        <span class="c1"># of the component</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_from_constraints_namespace</span><span class="p">)</span>
+
+        <span class="c1"># A read-only symbolic object that represents the top boundary of</span>
+        <span class="c1"># the component</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_from_constraints_namespace</span><span class="p">)</span>
+
+        <span class="c1"># A read-only symbolic object that represents the width of the</span>
+        <span class="c1"># component</span>
+        <span class="n">layout_width</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_from_constraints_namespace</span><span class="p">)</span>
+
+        <span class="c1"># A read-only symbolic object that represents the height of the</span>
+        <span class="c1"># component</span>
+        <span class="n">layout_height</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_from_constraints_namespace</span><span class="p">)</span>
+
+        <span class="c1"># A read-only symbolic object that represents the vertical center</span>
+        <span class="c1"># of the component</span>
+        <span class="n">v_center</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_from_constraints_namespace</span><span class="p">)</span>
+
+        <span class="c1"># A read-only symbolic object that represents the horizontal</span>
+        <span class="c1"># center of the component</span>
+        <span class="n">h_center</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_from_constraints_namespace</span><span class="p">)</span>
+
+        <span class="c1"># A size hint for the layout</span>
+        <span class="n">layout_size_hint</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="c1"># How strongly a layout box hugs it&#39;s width hint.</span>
+        <span class="n">hug_width</span> <span class="o">=</span> <span class="n">ConstraintPolicyEnum</span><span class="p">(</span><span class="s2">&quot;weak&quot;</span><span class="p">)</span>
+
+        <span class="c1"># How strongly a layout box hugs it&#39;s height hint.</span>
+        <span class="n">hug_height</span> <span class="o">=</span> <span class="n">ConstraintPolicyEnum</span><span class="p">(</span><span class="s2">&quot;weak&quot;</span><span class="p">)</span>
+
+        <span class="c1"># How strongly a layout box resists clipping its contents.</span>
+        <span class="n">resist_width</span> <span class="o">=</span> <span class="n">ConstraintPolicyEnum</span><span class="p">(</span><span class="s2">&quot;strong&quot;</span><span class="p">)</span>
+
+        <span class="c1"># How strongly a layout box resists clipping its contents.</span>
+        <span class="n">resist_height</span> <span class="o">=</span> <span class="n">ConstraintPolicyEnum</span><span class="p">(</span><span class="s2">&quot;strong&quot;</span><span class="p">)</span>
+
+        <span class="c1"># A namespace containing the constraints for this CoordinateBox</span>
+        <span class="n">_constraints_vars</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">ConstraintsNamespace</span><span class="p">)</span>
+
+        <span class="c1"># The list of hard constraints which must be applied to the object.</span>
+        <span class="n">_hard_constraints</span> <span class="o">=</span> <span class="n">Property</span>
+
+        <span class="c1"># The list of size constraints to apply to the object.</span>
+        <span class="n">_size_constraints</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Public methods</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="CoordinateBox.is_in"><a class="viewcode-back" href="../../api/enable.coordinate_box.html#enable.coordinate_box.CoordinateBox.is_in">[docs]</a>    <span class="k">def</span> <span class="nf">is_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="s2">&quot;Returns if the point x,y is in the box&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">dx</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dx</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dy</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dy</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="CoordinateBox.as_coordinates"><a class="viewcode-back" href="../../api/enable.coordinate_box.html#enable.coordinate_box.CoordinateBox.as_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">as_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Returns a 4-tuple (x, y, x2, y2)&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Property setters and getters</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_get_x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_set_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="k">def</span> <span class="nf">_get_y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_set_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="k">def</span> <span class="nf">_get_width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_set_width</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="n">old_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trait_property_changed</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="n">old_value</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_set_height</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="n">old_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trait_property_changed</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="n">old_value</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_x2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_set_x2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_old_set_x2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="n">new_width</span> <span class="o">=</span> <span class="n">val</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">new_width</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Attempted to set negative component width.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_width</span>
+
+    <span class="k">def</span> <span class="nf">_get_y2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_set_y2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_old_set_y2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="n">new_height</span> <span class="o">=</span> <span class="n">val</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">new_height</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Attempted to set negative component height.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_height</span>
+
+    <span class="k">if</span> <span class="n">ENABLE_CONSTRAINTS</span><span class="p">:</span>
+
+        <span class="k">def</span> <span class="nf">__constraints_vars_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">cns_names</span> <span class="o">=</span> <span class="n">ConstraintsNamespace</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">obj_name</span><span class="p">)</span>
+            <span class="n">add_symbolic_constraints</span><span class="p">(</span><span class="n">cns_names</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">cns_names</span>
+
+        <span class="k">def</span> <span class="nf">_get__hard_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot; Generate the constraints which must always be applied.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">left</span>
+            <span class="n">bottom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bottom</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_width</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_height</span>
+            <span class="n">cns</span> <span class="o">=</span> <span class="p">[</span><span class="n">left</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">bottom</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">width</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">height</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">cns</span>
+
+        <span class="k">def</span> <span class="nf">_get__size_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot; Creates the list of size hint constraints for this box.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">cns</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">push</span> <span class="o">=</span> <span class="n">cns</span><span class="o">.</span><span class="n">append</span>
+            <span class="n">width_hint</span><span class="p">,</span> <span class="n">height_hint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_size_hint</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_width</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_height</span>
+            <span class="n">hug_width</span><span class="p">,</span> <span class="n">hug_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hug_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hug_height</span>
+            <span class="n">resist_width</span><span class="p">,</span> <span class="n">resist_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resist_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">resist_height</span>
+            <span class="k">if</span> <span class="n">width_hint</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">hug_width</span> <span class="o">!=</span> <span class="s2">&quot;ignore&quot;</span><span class="p">:</span>
+                    <span class="n">cn</span> <span class="o">=</span> <span class="p">(</span><span class="n">width</span> <span class="o">==</span> <span class="n">width_hint</span><span class="p">)</span> <span class="o">|</span> <span class="n">hug_width</span>
+                    <span class="n">push</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">resist_width</span> <span class="o">!=</span> <span class="s2">&quot;ignore&quot;</span><span class="p">:</span>
+                    <span class="n">cn</span> <span class="o">=</span> <span class="p">(</span><span class="n">width</span> <span class="o">&gt;=</span> <span class="n">width_hint</span><span class="p">)</span> <span class="o">|</span> <span class="n">resist_width</span>
+                    <span class="n">push</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">height_hint</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">hug_height</span> <span class="o">!=</span> <span class="s2">&quot;ignore&quot;</span><span class="p">:</span>
+                    <span class="n">cn</span> <span class="o">=</span> <span class="p">(</span><span class="n">height</span> <span class="o">==</span> <span class="n">height_hint</span><span class="p">)</span> <span class="o">|</span> <span class="n">hug_height</span>
+                    <span class="n">push</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">resist_height</span> <span class="o">!=</span> <span class="s2">&quot;ignore&quot;</span><span class="p">:</span>
+                    <span class="n">cn</span> <span class="o">=</span> <span class="p">(</span><span class="n">height</span> <span class="o">&gt;=</span> <span class="n">height_hint</span><span class="p">)</span> <span class="o">|</span> <span class="n">resist_height</span>
+                    <span class="n">push</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">cns</span></div>
+
+
+<span class="k">if</span> <span class="n">ENABLE_CONSTRAINTS</span><span class="p">:</span>
+    <span class="c1"># Register with ABConstrainable so that layout helpers will recognize</span>
+    <span class="c1"># CoordinateBox instances.</span>
+    <span class="n">ABConstrainable</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">CoordinateBox</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.label &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.label</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot; Defines the Label class.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Major library imports</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">pi</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">asarray</span>
+
+<span class="c1"># Enthought library imports</span>
+<span class="kn">from</span> <span class="nn">kiva.api</span> <span class="k">import</span> <span class="n">FILL</span><span class="p">,</span> <span class="n">STROKE</span>
+<span class="kn">from</span> <span class="nn">kiva.trait_defs.api</span> <span class="k">import</span> <span class="n">KivaFont</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Str</span>
+
+<span class="c1"># Local, relative imports</span>
+<span class="kn">from</span> <span class="nn">.colors</span> <span class="k">import</span> <span class="n">black_color_trait</span><span class="p">,</span> <span class="n">transparent_color_trait</span>
+<span class="kn">from</span> <span class="nn">.component</span> <span class="k">import</span> <span class="n">Component</span>
+
+
+<div class="viewcode-block" id="Label"><a class="viewcode-back" href="../../api/enable.label.html#enable.label.Label">[docs]</a><span class="k">class</span> <span class="nc">Label</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A text label &quot;&quot;&quot;</span>
+
+    <span class="c1"># The label text.  Carriage returns (\n) are always connverted into</span>
+    <span class="c1"># line breaks.</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">Str</span>
+
+    <span class="c1"># The angle of rotation of the label.  Only multiples of 90 are supported.</span>
+    <span class="n">rotate_angle</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># The color of the label text.</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="n">black_color_trait</span>
+
+    <span class="c1"># The background color of the label.</span>
+    <span class="n">bgcolor</span> <span class="o">=</span> <span class="n">transparent_color_trait</span>
+
+    <span class="c1"># The width of the label border. If it is 0, then it is not shown.</span>
+    <span class="n">border_width</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># The color of the border.</span>
+    <span class="n">border_color</span> <span class="o">=</span> <span class="n">black_color_trait</span>
+
+    <span class="c1"># The font of the label text.</span>
+    <span class="n">font</span> <span class="o">=</span> <span class="n">KivaFont</span><span class="p">(</span><span class="s2">&quot;modern 10&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Number of pixels of margin around the label, for both X and Y dimensions.</span>
+    <span class="n">margin</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Number of pixels of spacing between lines of text.</span>
+    <span class="n">line_spacing</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="c1"># The horizontal placement of text within the bounds of the label</span>
+    <span class="n">hjustify</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The vertical placement of text within the bounds of the label</span>
+    <span class="n">vjustify</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;bottom&quot;</span><span class="p">,</span> <span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="s2">&quot;top&quot;</span><span class="p">)</span>
+
+    <span class="c1"># By default, labels are not resizable</span>
+    <span class="n">resizable</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Private traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="n">_bounding_box</span> <span class="o">=</span> <span class="n">List</span><span class="p">()</span>
+    <span class="n">_position_cache_valid</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwtraits</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;text&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwtraits</span><span class="p">:</span>
+            <span class="n">kwtraits</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="n">HasTraits</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwtraits</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bounding_box</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_calc_line_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position_cache_valid</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_font</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="p">)</span>
+                <span class="c1"># The bottommost line starts at postion (0,0).</span>
+                <span class="n">x_pos</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">y_pos</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_bounding_box</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="n">margin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span>
+                <span class="n">prev_y_pos</span> <span class="o">=</span> <span class="n">margin</span>
+                <span class="n">prev_y_height</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">line_spacing</span>
+                <span class="n">max_width</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">line</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                        <span class="p">(</span>
+                            <span class="n">width</span><span class="p">,</span>
+                            <span class="n">height</span><span class="p">,</span>
+                            <span class="n">descent</span><span class="p">,</span>
+                            <span class="n">leading</span><span class="p">,</span>
+                        <span class="p">)</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_full_text_extent</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">width</span> <span class="o">&gt;</span> <span class="n">max_width</span><span class="p">:</span>
+                            <span class="n">max_width</span> <span class="o">=</span> <span class="n">width</span>
+                        <span class="n">new_y_pos</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">prev_y_pos</span>
+                            <span class="o">+</span> <span class="n">prev_y_height</span>
+                            <span class="o">-</span> <span class="n">descent</span>
+                            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_spacing</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># For blank lines, we use the height of the previous</span>
+                        <span class="c1"># line, if there is one.  The width is 0.</span>
+                        <span class="n">leading</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">if</span> <span class="n">prev_y_height</span> <span class="o">!=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">line_spacing</span><span class="p">:</span>
+                            <span class="n">new_y_pos</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="n">prev_y_pos</span> <span class="o">+</span> <span class="n">prev_y_height</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_spacing</span>
+                            <span class="p">)</span>
+                            <span class="n">height</span> <span class="o">=</span> <span class="n">prev_y_height</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">new_y_pos</span> <span class="o">=</span> <span class="n">prev_y_pos</span>
+                            <span class="n">height</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">x_pos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="n">leading</span> <span class="o">+</span> <span class="n">margin</span><span class="p">)</span>
+                    <span class="n">y_pos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_y_pos</span><span class="p">)</span>
+                    <span class="n">prev_y_pos</span> <span class="o">=</span> <span class="n">new_y_pos</span>
+                    <span class="n">prev_y_height</span> <span class="o">=</span> <span class="n">height</span>
+
+            <span class="n">width</span> <span class="o">=</span> <span class="n">max_width</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">margin</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">border_width</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">prev_y_pos</span> <span class="o">+</span> <span class="n">prev_y_height</span> <span class="o">+</span> <span class="n">margin</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">border_width</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bounding_box</span> <span class="o">=</span> <span class="p">[</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hjustify</span> <span class="o">==</span> <span class="s2">&quot;left&quot;</span><span class="p">:</span>
+                <span class="n">x_pos</span> <span class="o">=</span> <span class="n">x_pos</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x_pos</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">x_pos</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hjustify</span> <span class="o">==</span> <span class="s2">&quot;center&quot;</span><span class="p">:</span>
+                    <span class="n">x_pos</span> <span class="o">+=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">width</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">hjustify</span> <span class="o">==</span> <span class="s2">&quot;right&quot;</span><span class="p">:</span>
+                    <span class="n">x_pos</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">width</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_line_xpos</span> <span class="o">=</span> <span class="n">x_pos</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vjustify</span> <span class="o">==</span> <span class="s2">&quot;bottom&quot;</span><span class="p">:</span>
+                <span class="n">y_pos</span> <span class="o">=</span> <span class="n">y_pos</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">y_pos</span> <span class="o">=</span> <span class="n">asarray</span><span class="p">(</span><span class="n">y_pos</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vjustify</span> <span class="o">==</span> <span class="s2">&quot;center&quot;</span><span class="p">:</span>
+                    <span class="n">y_pos</span> <span class="o">+=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">height</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">vjustify</span> <span class="o">==</span> <span class="s2">&quot;top&quot;</span><span class="p">:</span>
+                    <span class="n">y_pos</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">height</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_line_ypos</span> <span class="o">=</span> <span class="n">y_pos</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_position_cache_valid</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="Label.get_width_height"><a class="viewcode-back" href="../../api/enable.label.html#enable.label.Label.get_width_height">[docs]</a>    <span class="k">def</span> <span class="nf">get_width_height</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the width and height of the label, in the rotated frame of</span>
+<span class="sd">        reference.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calc_line_positions</span><span class="p">(</span><span class="n">gc</span><span class="p">)</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bounding_box</span>
+        <span class="k">return</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span></div>
+
+<div class="viewcode-block" id="Label.get_bounding_box"><a class="viewcode-back" href="../../api/enable.label.html#enable.label.Label.get_bounding_box">[docs]</a>    <span class="k">def</span> <span class="nf">get_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a rectangular bounding box for the Label as (width,height).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># FIXME: Need to deal with non 90 deg rotations</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_width_height</span><span class="p">(</span><span class="n">gc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotate_angle</span> <span class="ow">in</span> <span class="p">(</span><span class="mf">90.0</span><span class="p">,</span> <span class="mf">270.0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotate_angle</span> <span class="ow">in</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">180.0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="Label.get_bounding_poly"><a class="viewcode-back" href="../../api/enable.label.html#enable.label.Label.get_bounding_poly">[docs]</a>    <span class="k">def</span> <span class="nf">get_bounding_poly</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list [(x0,y0), (x1,y1),...] of tuples representing a polygon</span>
+<span class="sd">        that bounds the label.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="k">def</span> <span class="nf">_draw_mainlayer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draws the label.</span>
+
+<span class="sd">        This method assumes the graphics context has been translated to the</span>
+<span class="sd">        correct position such that the origin is at the lower left-hand corner</span>
+<span class="sd">        of this text label&#39;s box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># For this version we&#39;re not supporting rotated text.</span>
+        <span class="c1"># temp modified for only one line</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calc_line_positions</span><span class="p">(</span><span class="n">gc</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+
+            <span class="c1"># Draw border and fill background</span>
+            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bounding_box</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bgcolor</span> <span class="o">!=</span> <span class="s2">&quot;transparent&quot;</span><span class="p">:</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bgcolor_</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">draw_rect</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="n">FILL</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">border_width</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">border_color_</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">border_width</span><span class="p">)</span>
+                <span class="n">border_offset</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">border_width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">draw_rect</span><span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="n">border_offset</span><span class="p">,</span>
+                        <span class="n">border_offset</span><span class="p">,</span>
+                        <span class="n">width</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">border_offset</span><span class="p">,</span>
+                        <span class="n">height</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">border_offset</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">STROKE</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color_</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color_</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_font</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;=</span> <span class="mf">8.0</span><span class="p">:</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_antialias</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_antialias</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">gc</span><span class="o">.</span><span class="n">rotate_ctm</span><span class="p">(</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotate_angle</span><span class="p">)</span>
+
+            <span class="c1"># margin = self.margin</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">border_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">border_width</span><span class="p">)</span>
+            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_width_height</span><span class="p">(</span><span class="n">gc</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotate_angle</span> <span class="o">==</span> <span class="mf">90.0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotate_angle</span> <span class="o">==</span> <span class="mf">270.0</span><span class="p">:</span>
+                    <span class="n">x_offset</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_line_ypos</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="c1"># this should really be &quot;... - height/2&quot; but</span>
+                    <span class="c1"># that looks wrong</span>
+                    <span class="n">y_offset</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_line_xpos</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">height</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">x_offset</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_line_xpos</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="n">y_offset</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_line_ypos</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_text_position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="n">x_offset</span><span class="p">,</span> <span class="n">y_offset</span><span class="p">)</span>
+
+                <span class="n">gc</span><span class="o">.</span><span class="n">show_text</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="o">-</span><span class="n">x_offset</span><span class="p">,</span> <span class="o">-</span><span class="n">y_offset</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_font_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_position_cache_valid</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_margin_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_position_cache_valid</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_text_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_position_cache_valid</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_rotate_angle_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_position_cache_valid</span> <span class="o">=</span> <span class="kc">False</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

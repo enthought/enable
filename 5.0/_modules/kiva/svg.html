@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>kiva.svg &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for kiva.svg</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot; Chaco&#39;s SVG backend</span>
+
+<span class="sd">    :Copyright:   ActiveState</span>
+<span class="sd">    :License:     BSD Style</span>
+<span class="sd">    :Author:      David Ascher (davida@activestate.com)</span>
+<span class="sd">    :Version:     $Revision: 1.5 $</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1">####</span>
+<span class="c1">#</span>
+<span class="c1"># Known limitations</span>
+<span class="c1">#</span>
+<span class="c1"># * BUG: Weird behavior with compound plots</span>
+<span class="c1"># * Limitation: text widths are lousy if reportlab is not installed</span>
+<span class="c1"># * Missing feature: rotated text</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Miscellaneous notes:</span>
+
+<span class="sd">* the way to do links:</span>
+<span class="sd">  &lt;a xlink:href=&quot;http://www.w3.org&quot;&gt;</span>
+<span class="sd">    &lt;ellipse cx=&quot;2.5&quot; cy=&quot;1.5&quot; rx=&quot;2&quot; ry=&quot;1&quot; fill=&quot;red&quot; /&gt;</span>
+<span class="sd">  &lt;/a&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">base64</span> <span class="k">import</span> <span class="n">b64encode</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">BytesIO</span><span class="p">,</span> <span class="n">StringIO</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">arange</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">ravel</span>
+
+<span class="c1"># Local, relative Kiva imports</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">affine</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">basecore2d</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">constants</span>
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="k">import</span> <span class="n">FILL</span><span class="p">,</span> <span class="n">FILL_STROKE</span><span class="p">,</span> <span class="n">EOF_FILL_STROKE</span><span class="p">,</span> <span class="n">EOF_FILL</span><span class="p">,</span> <span class="n">STROKE</span>
+
+
+<span class="k">def</span> <span class="nf">_strpoints</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%3.2f</span><span class="s2">,</span><span class="si">%3.2f</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">c</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">_mkstyle</span><span class="p">(</span><span class="n">kw</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s2">&quot;; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kw</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+
+
+<div class="viewcode-block" id="default_filter"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.default_filter">[docs]</a><span class="k">def</span> <span class="nf">default_filter</span><span class="p">(</span><span class="n">kw1</span><span class="p">):</span>
+    <span class="n">kw</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">kw1</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">kw</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kw</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+    <span class="k">return</span> <span class="n">kw</span></div>
+
+
+<span class="n">line_cap_map</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">CAP_ROUND</span><span class="p">:</span> <span class="s2">&quot;round&quot;</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">CAP_SQUARE</span><span class="p">:</span> <span class="s2">&quot;square&quot;</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">CAP_BUTT</span><span class="p">:</span> <span class="s2">&quot;butt&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">line_join_map</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">JOIN_ROUND</span><span class="p">:</span> <span class="s2">&quot;round&quot;</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">JOIN_BEVEL</span><span class="p">:</span> <span class="s2">&quot;bevel&quot;</span><span class="p">,</span>
+    <span class="n">constants</span><span class="o">.</span><span class="n">JOIN_MITER</span><span class="p">:</span> <span class="s2">&quot;miter&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">xmltemplate</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="s2">&lt;!DOCTYPE svg PUBLIC &quot;-//W3C//DTD SVG 1.0//EN&quot;</span>
+<span class="s2">&quot;http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd&quot;&gt;</span>
+<span class="s2">&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot;</span>
+<span class="s2">        xmlns:text=&quot;http://xmlns.graougraou.com/svg/text/&quot;</span>
+<span class="s2">        xmlns:a3=&quot;http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/&quot;</span>
+<span class="s2">        xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;</span>
+<span class="s2">        a3:scriptImplementation=&quot;Adobe&quot;</span>
+<span class="s2">        width=&quot;</span><span class="si">%(width)f</span><span class="s2">&quot;</span>
+<span class="s2">        height=&quot;</span><span class="si">%(height)f</span><span class="s2">&quot;</span>
+<span class="s2">        viewBox=&quot;0 0 </span><span class="si">%(width)f</span><span class="s2"> </span><span class="si">%(height)f</span><span class="s2">&quot;</span>
+<span class="s2">        &gt;</span>
+<span class="s2">&lt;g transform=&quot;translate(0,</span><span class="si">%(height)f</span><span class="s2">)&quot;&gt;</span>
+<span class="s2">&lt;g transform=&quot;scale(1,-1)&quot;&gt;</span>
+<span class="si">%(contents)s</span><span class="s2"></span>
+<span class="s2">&lt;/g&gt;</span>
+<span class="s2">&lt;/g&gt;</span>
+<span class="s2">&lt;/svg&gt;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">htmltemplate</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;&lt;html xmlns:svg=&quot;http://www.w3.org/2000/svg&quot;</span>
+<span class="s2">      xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;</span>
+<span class="s2">&lt;object id=&quot;AdobeSVG&quot; CLASSID=&quot;clsid:78156a80-c6a1-4bbf-8e6a-3cd390eeb4e2&quot;&gt;</span>
+<span class="s2">&lt;/object&gt;</span>
+<span class="s2">&lt;?import namespace=&quot;svg&quot; implementation=&quot;#AdobeSVG&quot;?&gt;</span>
+<span class="s2">&lt;body&gt;</span>
+<span class="s2">&lt;svg:svg width=&quot;100</span><span class="si">%%</span><span class="s2">&quot; height=&quot;100</span><span class="si">%%</span><span class="s2">&quot; viewBox=&quot;0 0 </span><span class="si">%(width)f</span><span class="s2"> </span><span class="si">%(height)f</span><span class="s2">&quot;&gt;</span>
+<span class="si">%(contents)s</span><span class="s2"></span>
+<span class="s2">&lt;/svg:svg&gt;</span>
+<span class="s2">&lt;/body&gt;</span>
+<span class="s2">&lt;/html&gt;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">font_map</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Arial&quot;</span><span class="p">:</span> <span class="s2">&quot;Helvetica&quot;</span><span class="p">}</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># expensive way of computing string widths</span>
+    <span class="kn">import</span> <span class="nn">reportlab.pdfbase.pdfmetrics</span> <span class="k">as</span> <span class="nn">pdfmetrics</span>
+    <span class="kn">import</span> <span class="nn">reportlab.pdfbase._fontdata</span> <span class="k">as</span> <span class="nn">_fontdata</span>
+
+    <span class="n">_reportlab_loaded</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">pdfmetrics</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">_fontdata</span>
+
+    <span class="n">_reportlab_loaded</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">font_face_map</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Arial&quot;</span><span class="p">:</span> <span class="s2">&quot;Helvetica&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="s2">&quot;Helvetica&quot;</span><span class="p">}</span>
+
+
+<span class="c1"># This backend has no compiled path object, yet.</span>
+<div class="viewcode-block" id="CompiledPath"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.CompiledPath">[docs]</a><span class="k">class</span> <span class="nc">CompiledPath</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<span class="n">_clip_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+<div class="viewcode-block" id="GraphicsContext"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.GraphicsContext">[docs]</a><span class="k">class</span> <span class="nc">GraphicsContext</span><span class="p">(</span><span class="n">basecore2d</span><span class="o">.</span><span class="n">GraphicsContextBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GraphicsContext</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_height</span> <span class="o">=</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contents</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clipmap</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="GraphicsContext.render"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.GraphicsContext.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">format</span> <span class="o">==</span> <span class="s2">&quot;svg&quot;</span>
+        <span class="n">height</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;svg:&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;/svg:&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;/&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">xmltemplate</span> <span class="o">%</span> <span class="nb">locals</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.clear"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.GraphicsContext.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contents</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.width"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.GraphicsContext.width">[docs]</a>    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.height"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.GraphicsContext.height">[docs]</a>    <span class="k">def</span> <span class="nf">height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.save"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.GraphicsContext.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s2">&quot;.svg&quot;</span><span class="p">:</span>
+                <span class="n">template</span> <span class="o">=</span> <span class="n">xmltemplate</span>
+                <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
+                <span class="n">contents</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;svg:&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;&quot;</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;/svg:&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;/&quot;</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">ext</span> <span class="o">==</span> <span class="s2">&quot;.html&quot;</span><span class="p">:</span>
+                <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span>
+                <span class="n">contents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+                <span class="n">template</span> <span class="o">=</span> <span class="n">htmltemplate</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;don&#39;t know how to write a </span><span class="si">%s</span><span class="s2"> file&quot;</span> <span class="o">%</span> <span class="n">ext</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span> <span class="o">%</span> <span class="nb">locals</span><span class="p">())</span></div>
+
+    <span class="c1"># Text handling code</span>
+
+<div class="viewcode-block" id="GraphicsContext.set_font"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.GraphicsContext.set_font">[docs]</a>    <span class="k">def</span> <span class="nf">set_font</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">font</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face_name</span> <span class="o">=</span> <span class="n">font_face_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">font</span><span class="o">.</span><span class="n">face_name</span><span class="p">,</span> <span class="n">font</span><span class="o">.</span><span class="n">face_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="n">pdfmetrics</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">face_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_name</span><span class="p">,</span> <span class="n">pdfmetrics</span><span class="o">.</span><span class="n">defaultEncoding</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font_size</span> <span class="o">=</span> <span class="n">font</span><span class="o">.</span><span class="n">size</span></div>
+
+    <span class="c1"># actual implementation =)</span>
+
+<div class="viewcode-block" id="GraphicsContext.device_show_text"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.GraphicsContext.device_show_text">[docs]</a>    <span class="k">def</span> <span class="nf">device_show_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="n">ttm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_text_matrix</span><span class="p">()</span>
+        <span class="n">ctm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ctm</span><span class="p">()</span>  <span class="c1"># not device_ctm!!</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">affine</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">ctm</span><span class="p">,</span> <span class="n">ttm</span><span class="p">)</span>
+        <span class="c1"># height = self.get_full_text_extent(text)[1]</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">tx</span><span class="p">,</span> <span class="n">ty</span> <span class="o">=</span> <span class="n">affine</span><span class="o">.</span><span class="n">affine_params</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="n">transform</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;matrix(</span><span class="si">%(a)f</span><span class="s2">,</span><span class="si">%(b)f</span><span class="s2">,</span><span class="si">%(c)f</span><span class="s2">,</span><span class="si">%(d)f</span><span class="s2">,</span><span class="si">%(tx)f</span><span class="s2">,</span><span class="si">%(ty)f</span><span class="s2">) scale(1,-1)&quot;</span>
+            <span class="o">%</span> <span class="nb">locals</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_emit</span><span class="p">(</span>
+            <span class="s2">&quot;text&quot;</span><span class="p">,</span>
+            <span class="n">contents</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
+            <span class="n">kw</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;font-family&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_name</span><span class="p">,</span>
+                <span class="s2">&quot;font-size&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">font_size</span><span class="p">),</span>
+                <span class="s2">&quot;xml:space&quot;</span><span class="p">:</span> <span class="s2">&quot;preserve&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="n">transform</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.get_full_text_extent"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.GraphicsContext.get_full_text_extent">[docs]</a>    <span class="k">def</span> <span class="nf">get_full_text_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="n">ascent</span><span class="p">,</span> <span class="n">descent</span> <span class="o">=</span> <span class="n">_fontdata</span><span class="o">.</span><span class="n">ascent_descent</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_name</span><span class="p">]</span>
+        <span class="n">descent</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">descent</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">font_size</span> <span class="o">/</span> <span class="mf">1000.0</span>
+        <span class="n">ascent</span> <span class="o">=</span> <span class="n">ascent</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">font_size</span> <span class="o">/</span> <span class="mf">1000.0</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">ascent</span> <span class="o">+</span> <span class="n">descent</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="n">pdfmetrics</span><span class="o">.</span><span class="n">stringWidth</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">font_size</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">width</span><span class="p">,</span>
+            <span class="n">height</span><span class="p">,</span>
+            <span class="n">descent</span><span class="p">,</span>
+            <span class="n">height</span> <span class="o">*</span> <span class="mf">1.2</span><span class="p">,</span>
+        <span class="p">)</span>  <span class="c1"># assume leading of 1.2*height</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.device_draw_image"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.GraphicsContext.device_draw_image">[docs]</a>    <span class="k">def</span> <span class="nf">device_draw_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">rect</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        draw_image(img_gc, rect=(x,y,w,h))</span>
+
+<span class="sd">        Draws another gc into this one.  If &#39;rect&#39; is not provided, then</span>
+<span class="sd">        the image gc is drawn into this one, rooted at (0,0) and at full</span>
+<span class="sd">        pixel size.  If &#39;rect&#39; is provided, then the image is resized</span>
+<span class="sd">        into the (w,h) given and drawn into this GC at point (x,y).</span>
+
+<span class="sd">        img_gc is either a Numeric array (WxHx3 or WxHx4) or a PIL Image.</span>
+
+<span class="sd">        Requires the Python Imaging Library (PIL).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span>
+
+        <span class="c1"># We turn img into a PIL object, since that is what ReportLab</span>
+        <span class="c1"># requires.</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">):</span>
+            <span class="c1"># From numpy array</span>
+            <span class="n">pil_img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">):</span>
+            <span class="n">pil_img</span> <span class="o">=</span> <span class="n">img</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="s2">&quot;bmp_array&quot;</span><span class="p">):</span>
+            <span class="c1"># An offscreen kiva agg context</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="s2">&quot;convert_pixel_format&quot;</span><span class="p">):</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">convert_pixel_format</span><span class="p">(</span><span class="s2">&quot;rgba32&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">pil_img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">bmp_array</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot render image of type </span><span class="si">%r</span><span class="s2"> into SVG context.&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">rect</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rect</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pil_img</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">pil_img</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+
+        <span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">rect</span>
+        <span class="k">if</span> <span class="n">width</span> <span class="o">!=</span> <span class="n">pil_img</span><span class="o">.</span><span class="n">width</span> <span class="ow">or</span> <span class="n">height</span> <span class="o">!=</span> <span class="n">pil_img</span><span class="o">.</span><span class="n">height</span><span class="p">:</span>
+            <span class="c1"># This is not strictly required.</span>
+            <span class="n">pil_img</span> <span class="o">=</span> <span class="n">pil_img</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">width</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">height</span><span class="p">)),</span> <span class="n">Image</span><span class="o">.</span><span class="n">NEAREST</span><span class="p">)</span>
+
+        <span class="n">png_buffer</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
+        <span class="n">pil_img</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">png_buffer</span><span class="p">,</span> <span class="s2">&quot;png&quot;</span><span class="p">)</span>
+        <span class="n">b64_img_data</span> <span class="o">=</span> <span class="n">b64encode</span><span class="p">(</span><span class="n">png_buffer</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span>
+        <span class="n">png_buffer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="c1"># Draw the actual image.</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ctm</span><span class="p">()</span>
+        <span class="c1"># Place the image on the page.</span>
+        <span class="c1"># Using bottom instead of top here to account for the y-flip.</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">affine</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">height</span> <span class="o">+</span> <span class="n">top</span><span class="p">)</span>
+        <span class="n">transform</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;matrix(</span><span class="si">%f</span><span class="s2">,</span><span class="si">%f</span><span class="s2">,</span><span class="si">%f</span><span class="s2">,</span><span class="si">%f</span><span class="s2">,</span><span class="si">%f</span><span class="s2">,</span><span class="si">%f</span><span class="s2">) scale(1,-1)&quot;</span> <span class="o">%</span> <span class="n">affine</span><span class="o">.</span><span class="n">affine_params</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="c1"># Flip y to reverse the flip at the start of the document.</span>
+        <span class="n">image_data</span> <span class="o">=</span> <span class="s2">&quot;data:image/png;base64,&quot;</span> <span class="o">+</span> <span class="n">b64_img_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_emit</span><span class="p">(</span>
+            <span class="s2">&quot;image&quot;</span><span class="p">,</span>
+            <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span>
+            <span class="n">width</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">width</span><span class="p">),</span>
+            <span class="n">height</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">height</span><span class="p">),</span>
+            <span class="n">preserveAspectRatio</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span>
+            <span class="n">kw</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;xlink:href&quot;</span><span class="p">:</span> <span class="n">image_data</span><span class="p">},</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.device_fill_points"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.GraphicsContext.device_fill_points">[docs]</a>    <span class="k">def</span> <span class="nf">device_fill_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixpoints</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="n">FILL</span><span class="p">,</span> <span class="n">FILL_STROKE</span><span class="p">,</span> <span class="n">EOF_FILL_STROKE</span><span class="p">):</span>
+            <span class="n">fill</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">fill_color</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fill</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="n">STROKE</span><span class="p">,</span> <span class="n">FILL_STROKE</span><span class="p">,</span> <span class="n">EOF_FILL_STROKE</span><span class="p">):</span>
+            <span class="n">stroke</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">line_color</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stroke</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="n">EOF_FILL_STROKE</span><span class="p">,</span> <span class="n">EOF_FILL</span><span class="p">):</span>
+            <span class="n">rule</span> <span class="o">=</span> <span class="s2">&quot;evenodd&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rule</span> <span class="o">=</span> <span class="s2">&quot;nonzero&quot;</span>
+        <span class="n">linecap</span> <span class="o">=</span> <span class="n">line_cap_map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">line_cap</span><span class="p">]</span>
+        <span class="n">linejoin</span> <span class="o">=</span> <span class="n">line_join_map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">line_join</span><span class="p">]</span>
+        <span class="n">dasharray</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dasharray</span><span class="p">()</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%3.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">line_width</span>
+        <span class="n">clip_id</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="s2">&quot;_clip_id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">clip_id</span><span class="p">:</span>
+            <span class="n">clip</span> <span class="o">=</span> <span class="s2">&quot;url(#&quot;</span> <span class="o">+</span> <span class="n">clip_id</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">clip</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">tx</span><span class="p">,</span> <span class="n">ty</span> <span class="o">=</span> <span class="n">affine</span><span class="o">.</span><span class="n">affine_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_ctm</span><span class="p">())</span>
+        <span class="n">transform</span> <span class="o">=</span> <span class="s2">&quot;matrix(</span><span class="si">%(a)f</span><span class="s2">,</span><span class="si">%(b)f</span><span class="s2">,</span><span class="si">%(c)f</span><span class="s2">,</span><span class="si">%(d)f</span><span class="s2">,</span><span class="si">%(tx)f</span><span class="s2">,</span><span class="si">%(ty)f</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">locals</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">STROKE</span><span class="p">:</span>
+            <span class="n">opacity</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%1.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">line_color</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_emit</span><span class="p">(</span>
+                <span class="s2">&quot;polyline&quot;</span><span class="p">,</span>
+                <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span>
+                <span class="n">points</span><span class="o">=</span><span class="n">_strpoints</span><span class="p">(</span><span class="n">points</span><span class="p">),</span>
+                <span class="n">kw</span><span class="o">=</span><span class="n">default_filter</span><span class="p">({</span><span class="s2">&quot;clip-path&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">clip</span><span class="p">,</span> <span class="kc">None</span><span class="p">)}),</span>
+                <span class="n">style</span><span class="o">=</span><span class="n">_mkstyle</span><span class="p">(</span>
+                    <span class="n">default_filter</span><span class="p">(</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;opacity&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">opacity</span><span class="p">,</span> <span class="s2">&quot;1.000&quot;</span><span class="p">),</span>
+                            <span class="s2">&quot;stroke&quot;</span><span class="p">:</span> <span class="n">stroke</span><span class="p">,</span>
+                            <span class="s2">&quot;fill&quot;</span><span class="p">:</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;stroke-width&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="s2">&quot;1.000&quot;</span><span class="p">),</span>
+                            <span class="s2">&quot;stroke-linejoin&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">linejoin</span><span class="p">,</span> <span class="s2">&quot;miter&quot;</span><span class="p">),</span>
+                            <span class="s2">&quot;stroke-linecap&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">linecap</span><span class="p">,</span> <span class="s2">&quot;butt&quot;</span><span class="p">),</span>
+                            <span class="s2">&quot;stroke-dasharray&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">dasharray</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">),</span>
+                        <span class="p">}</span>
+                    <span class="p">)</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">opacity</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%1.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">fill_color</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_emit</span><span class="p">(</span>
+                <span class="s2">&quot;polygon&quot;</span><span class="p">,</span>
+                <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span>
+                <span class="n">points</span><span class="o">=</span><span class="n">_strpoints</span><span class="p">(</span><span class="n">points</span><span class="p">),</span>
+                <span class="n">kw</span><span class="o">=</span><span class="n">default_filter</span><span class="p">({</span><span class="s2">&quot;clip-path&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">clip</span><span class="p">,</span> <span class="kc">None</span><span class="p">)}),</span>
+                <span class="n">style</span><span class="o">=</span><span class="n">_mkstyle</span><span class="p">(</span>
+                    <span class="n">default_filter</span><span class="p">(</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;opacity&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">opacity</span><span class="p">,</span> <span class="s2">&quot;1.000&quot;</span><span class="p">),</span>
+                            <span class="s2">&quot;stroke-width&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="s2">&quot;1.000&quot;</span><span class="p">),</span>
+                            <span class="s2">&quot;fill&quot;</span><span class="p">:</span> <span class="n">fill</span><span class="p">,</span>
+                            <span class="s2">&quot;fill-rule&quot;</span><span class="p">:</span> <span class="n">rule</span><span class="p">,</span>
+                            <span class="s2">&quot;stroke&quot;</span><span class="p">:</span> <span class="n">stroke</span><span class="p">,</span>
+                            <span class="s2">&quot;stroke-linejoin&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">linejoin</span><span class="p">,</span> <span class="s2">&quot;miter&quot;</span><span class="p">),</span>
+                            <span class="s2">&quot;stroke-linecap&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">linecap</span><span class="p">,</span> <span class="s2">&quot;butt&quot;</span><span class="p">),</span>
+                            <span class="s2">&quot;stroke-dasharray&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">dasharray</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">),</span>
+                        <span class="p">}</span>
+                    <span class="p">)</span>
+                <span class="p">),</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.device_stroke_points"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.GraphicsContext.device_stroke_points">[docs]</a>    <span class="k">def</span> <span class="nf">device_stroke_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+        <span class="c1"># handled by device_fill_points</span>
+        <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="nf">_build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elname</span><span class="p">,</span> <span class="n">contents</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="s2">&quot;&lt;&quot;</span> <span class="o">+</span> <span class="n">elname</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kw</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%3.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">v</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">v</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">+=</span> <span class="n">k</span> <span class="o">+</span> <span class="s1">&#39;=&quot;&#39;</span> <span class="o">+</span> <span class="n">v</span> <span class="o">+</span> <span class="s1">&#39;&quot; &#39;</span>
+        <span class="k">if</span> <span class="n">contents</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">+=</span> <span class="s2">&quot;/&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">+=</span> <span class="s2">&quot;&gt;&quot;</span>
+            <span class="k">if</span> <span class="n">elname</span> <span class="o">!=</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">x</span> <span class="o">+=</span> <span class="n">contents</span>
+            <span class="n">x</span> <span class="o">+=</span> <span class="s2">&quot;&lt;/&quot;</span> <span class="o">+</span> <span class="n">elname</span> <span class="o">+</span> <span class="s2">&quot;&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+    <span class="k">def</span> <span class="nf">_debug_draw_clipping_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">tx</span><span class="p">,</span> <span class="n">ty</span> <span class="o">=</span> <span class="n">affine</span><span class="o">.</span><span class="n">affine_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_ctm</span><span class="p">())</span>
+        <span class="n">transform</span> <span class="o">=</span> <span class="s2">&quot;matrix(</span><span class="si">%(a)f</span><span class="s2">,</span><span class="si">%(b)f</span><span class="s2">,</span><span class="si">%(c)f</span><span class="s2">,</span><span class="si">%(d)f</span><span class="s2">,</span><span class="si">%(tx)f</span><span class="s2">,</span><span class="si">%(ty)f</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">locals</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_emit</span><span class="p">(</span>
+            <span class="s2">&quot;rect&quot;</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+            <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
+            <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span>
+            <span class="n">style</span><span class="o">=</span><span class="n">_mkstyle</span><span class="p">(</span>
+                <span class="p">{</span><span class="s2">&quot;stroke-width&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;fill&quot;</span><span class="p">:</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="s2">&quot;stroke&quot;</span><span class="p">:</span> <span class="s2">&quot;green&quot;</span><span class="p">}</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="GraphicsContext.device_set_clipping_path"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.GraphicsContext.device_set_clipping_path">[docs]</a>    <span class="k">def</span> <span class="nf">device_set_clipping_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+        <span class="c1"># self._debug_draw_clipping_path(x, y, width, height)</span>
+        <span class="c1"># return</span>
+        <span class="k">global</span> <span class="n">_clip_counter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">_clip_id</span> <span class="o">=</span> <span class="s2">&quot;clip_</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">_clip_counter</span>
+        <span class="n">_clip_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixpoints</span><span class="p">([[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">tx</span><span class="p">,</span> <span class="n">ty</span> <span class="o">=</span> <span class="n">affine</span><span class="o">.</span><span class="n">affine_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_ctm</span><span class="p">())</span>
+        <span class="n">transform</span> <span class="o">=</span> <span class="s2">&quot;matrix(</span><span class="si">%(a)f</span><span class="s2">,</span><span class="si">%(b)f</span><span class="s2">,</span><span class="si">%(c)f</span><span class="s2">,</span><span class="si">%(d)f</span><span class="s2">,</span><span class="si">%(tx)f</span><span class="s2">,</span><span class="si">%(ty)f</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">locals</span><span class="p">()</span>
+        <span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build</span><span class="p">(</span><span class="s2">&quot;rect&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
+        <span class="n">clippath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build</span><span class="p">(</span>
+            <span class="s2">&quot;clipPath&quot;</span><span class="p">,</span> <span class="n">contents</span><span class="o">=</span><span class="n">rect</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">_clip_id</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_emit</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span> <span class="n">contents</span><span class="o">=</span><span class="n">clippath</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.device_destroy_clipping_path"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.GraphicsContext.device_destroy_clipping_path">[docs]</a>    <span class="k">def</span> <span class="nf">device_destroy_clipping_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">_clip_id</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+    <span class="c1"># utility routines</span>
+
+    <span class="k">def</span> <span class="nf">_fixpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">points</span>
+        <span class="c1"># convert lines from Kiva coordinate space to PIL coordinate space</span>
+        <span class="c1"># XXX I suspect this is the location of the bug w.r.t. compound graphs</span>
+        <span class="c1"># and &quot;global&quot; sizing.</span>
+        <span class="c1"># XXX this should be made more efficient for NumPy arrays</span>
+        <span class="n">np</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span> <span class="o">-</span> <span class="n">y</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">np</span>
+
+    <span class="k">def</span> <span class="nf">_emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">contents</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kw</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">otherkw</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&lt;svg:</span><span class="si">%(name)s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="nb">locals</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kw</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%(k)s</span><span class="s1">=&quot;</span><span class="si">%(v)s</span><span class="s1">&quot; &#39;</span> <span class="o">%</span> <span class="nb">locals</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">otherkw</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%(k)s</span><span class="s1">=&quot;</span><span class="si">%(v)s</span><span class="s1">&quot; &#39;</span> <span class="o">%</span> <span class="nb">locals</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">contents</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;/&gt;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&lt;/svg:&quot;</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;&gt;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="k">return</span> <span class="s2">&quot;#</span><span class="si">%02x%02x%02x</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="mi">255</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">g</span> <span class="o">*</span> <span class="mi">255</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="mi">255</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_dasharray</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dasharray</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">line_dash</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="p">)):</span>  <span class="c1"># why is this so hard?</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">ravel</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">dasharray</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%3.2f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">x</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dasharray</span> <span class="ow">or</span> <span class="n">dasharray</span> <span class="o">==</span> <span class="s2">&quot; 0.00 0.00&quot;</span><span class="p">:</span>
+            <span class="n">dasharray</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
+        <span class="k">return</span> <span class="n">dasharray</span>
+
+    <span class="c1"># noops which seem to be needed</span>
+
+<div class="viewcode-block" id="GraphicsContext.device_update_line_state"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.GraphicsContext.device_update_line_state">[docs]</a>    <span class="k">def</span> <span class="nf">device_update_line_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.device_update_fill_state"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.GraphicsContext.device_update_fill_state">[docs]</a>    <span class="k">def</span> <span class="nf">device_update_fill_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="font_metrics_provider"><a class="viewcode-back" href="../../api/kiva.svg.html#kiva.svg.font_metrics_provider">[docs]</a><span class="k">def</span> <span class="nf">font_metrics_provider</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span></div>
+
+
+<span class="n">SVGGC</span> <span class="o">=</span> <span class="n">GraphicsContext</span>  <span class="c1"># for b/w compatibility</span>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

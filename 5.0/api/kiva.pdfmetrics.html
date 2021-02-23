@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>kiva.pdfmetrics module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="kiva package" href="kiva.html" >
+    <link rel="next" title="kiva.ps module" href="kiva.ps.html" >
+    <link rel="prev" title="kiva.pdf module" href="kiva.pdf.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="kiva.html" accesskey="U">kiva package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="kiva.ps.html" title="kiva.ps module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="kiva.pdf.html" title="kiva.pdf module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-kiva.pdfmetrics">
+<span id="kiva-pdfmetrics-module"></span><h1>kiva.pdfmetrics module<a class="headerlink" href="#module-kiva.pdfmetrics" title="Permalink to this headline">¶</a></h1>
+<p>This provides a database of font metric information and
+efines Font, Encoding and TypeFace classes aimed at end users.</p>
+<p>There are counterparts to some of these in pdfbase/pdfdoc.py, but
+the latter focus on constructing the right PDF objects.  These
+classes are declarative and focus on letting the user construct
+and query font objects.</p>
+<p>The module maintains a registry of font objects at run time.</p>
+<p>It is independent of the canvas or any particular context.  It keeps
+a registry of Font, TypeFace and Encoding objects.  Ideally these
+would be pre-loaded, but due to a nasty circularity problem we
+trap attempts to access them and do it on first access.</p>
+<dl class="class">
+<dt id="kiva.pdfmetrics.EmbeddedType1Face">
+<em class="property">class </em><code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">EmbeddedType1Face</code><span class="sig-paren">(</span><em class="sig-param">afmFileName</em>, <em class="sig-param">pfbFileName</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#EmbeddedType1Face"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.EmbeddedType1Face" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kiva.pdfmetrics.TypeFace" title="kiva.pdfmetrics.TypeFace"><code class="xref py py-class docutils literal notranslate"><span class="pre">kiva.pdfmetrics.TypeFace</span></code></a></p>
+<p>A Type 1 font other than one of the basic 14.</p>
+<p>Its glyph data will be embedded in the PDF file.</p>
+<dl class="method">
+<dt id="kiva.pdfmetrics.EmbeddedType1Face.addObjects">
+<code class="sig-name descname">addObjects</code><span class="sig-paren">(</span><em class="sig-param">doc</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#EmbeddedType1Face.addObjects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.EmbeddedType1Face.addObjects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="kiva.pdfmetrics.Encoding">
+<em class="property">class </em><code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">Encoding</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">base=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#Encoding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.Encoding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Object to help you create and refer to encodings.</p>
+<dl class="method">
+<dt id="kiva.pdfmetrics.Encoding.freeze">
+<code class="sig-name descname">freeze</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#Encoding.freeze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.Encoding.freeze" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kiva.pdfmetrics.Encoding.getDifferences">
+<code class="sig-name descname">getDifferences</code><span class="sig-paren">(</span><em class="sig-param">otherEnc</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#Encoding.getDifferences"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.Encoding.getDifferences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a compact list of the code points differing between two encodings</p>
+<p>This is in the Adobe format, a list of:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="n">b1</span><span class="p">,</span> <span class="n">name1</span><span class="p">,</span> <span class="n">name2</span><span class="p">,</span> <span class="n">name3</span><span class="p">],</span>
+<span class="p">[</span><span class="n">b2</span><span class="p">,</span> <span class="n">name4</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>where b1…bn is the starting code point, and the glyph names following
+are assigned consecutive code points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.pdfmetrics.Encoding.isEqual">
+<code class="sig-name descname">isEqual</code><span class="sig-paren">(</span><em class="sig-param">other</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#Encoding.isEqual"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.Encoding.isEqual" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kiva.pdfmetrics.Encoding.makePDFObject">
+<code class="sig-name descname">makePDFObject</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#Encoding.makePDFObject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.Encoding.makePDFObject" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kiva.pdfmetrics.Encoding.modifyRange">
+<code class="sig-name descname">modifyRange</code><span class="sig-paren">(</span><em class="sig-param">base</em>, <em class="sig-param">newNames</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#Encoding.modifyRange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.Encoding.modifyRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a group of character names starting at the code point ‘base’.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="kiva.pdfmetrics.Font">
+<em class="property">class </em><code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">Font</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">faceName</em>, <em class="sig-param">encName</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#Font"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.Font" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a font (i.e., combination of face and encoding).</p>
+<p>Defines suitable machinery for single byte fonts.  This is
+a concrete class which can handle the basic built-in fonts;
+not clear yet if embedded ones need a new font class or
+just a new typeface class (which would do the job through
+composition)</p>
+<dl class="method">
+<dt id="kiva.pdfmetrics.Font.addObjects">
+<code class="sig-name descname">addObjects</code><span class="sig-paren">(</span><em class="sig-param">doc</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#Font.addObjects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.Font.addObjects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kiva.pdfmetrics.Font.stringWidth">
+<code class="sig-name descname">stringWidth</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#Font.stringWidth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.Font.stringWidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the “purist” approach to width.  The practical one
+is to use the stringWidth one which may be optimized
+in C.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="kiva.pdfmetrics.FontError">
+<em class="property">exception </em><code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">FontError</code><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#FontError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.FontError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="kiva.pdfmetrics.FontNotFoundError">
+<em class="property">exception </em><code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">FontNotFoundError</code><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#FontNotFoundError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.FontNotFoundError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="kiva.pdfmetrics.TypeFace">
+<em class="property">class </em><code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">TypeFace</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#TypeFace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.TypeFace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="kiva.pdfmetrics.TypeFace.findT1File">
+<code class="sig-name descname">findT1File</code><span class="sig-paren">(</span><em class="sig-param">ext='.pfb'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#TypeFace.findT1File"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.TypeFace.findT1File" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.pdfmetrics.bruteForceSearchForAFM">
+<code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">bruteForceSearchForAFM</code><span class="sig-paren">(</span><em class="sig-param">faceName</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#bruteForceSearchForAFM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.bruteForceSearchForAFM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Looks in all AFM files on path for face with given name.</p>
+<p>Returns AFM file name or None.  Ouch!</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.pdfmetrics.dumpFontData">
+<code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">dumpFontData</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#dumpFontData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.dumpFontData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kiva.pdfmetrics.getEncoding">
+<code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">getEncoding</code><span class="sig-paren">(</span><em class="sig-param">encName</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#getEncoding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.getEncoding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lazily constructs known encodings if not found.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.pdfmetrics.getFont">
+<code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">getFont</code><span class="sig-paren">(</span><em class="sig-param">fontName</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#getFont"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.getFont" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lazily constructs known fonts if not found.</p>
+<p>Names of the form ‘face-encoding’ will be built if
+face and encoding are known.  Also if the name is
+just one of the standard 14, it will make up a font
+in the default encoding.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.pdfmetrics.getTypeFace">
+<code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">getTypeFace</code><span class="sig-paren">(</span><em class="sig-param">faceName</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#getTypeFace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.getTypeFace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lazily constructs known typefaces if not found.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.pdfmetrics.parseAFMFile">
+<code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">parseAFMFile</code><span class="sig-paren">(</span><em class="sig-param">afmFileName</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#parseAFMFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.parseAFMFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quick and dirty - gives back a top-level dictionary
+with top-level items, and a ‘widths’ key containing
+a dictionary of glyph names and widths.  Just enough
+needed for embedding.  A better parser would accept
+options for what data you wwanted, and preserve the
+order.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.pdfmetrics.registerEncoding">
+<code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">registerEncoding</code><span class="sig-paren">(</span><em class="sig-param">enc</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#registerEncoding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.registerEncoding" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kiva.pdfmetrics.registerFont">
+<code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">registerFont</code><span class="sig-paren">(</span><em class="sig-param">font</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#registerFont"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.registerFont" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a font, including setting up info for accelerated stringWidth</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.pdfmetrics.registerTypeFace">
+<code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">registerTypeFace</code><span class="sig-paren">(</span><em class="sig-param">face</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#registerTypeFace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.registerTypeFace" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kiva.pdfmetrics.stringWidth">
+<code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">stringWidth</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">fontName</em>, <em class="sig-param">fontSize</em><span class="sig-paren">)</span><a class="headerlink" href="#kiva.pdfmetrics.stringWidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define this anyway so it can be tested, but whether it is used or not depends on _rl_accel</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.pdfmetrics.test">
+<code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.test" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kiva.pdfmetrics.test3widths">
+<code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">test3widths</code><span class="sig-paren">(</span><em class="sig-param">texts</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#test3widths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.test3widths" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kiva.pdfmetrics.testStringWidthAlgorithms">
+<code class="sig-prename descclassname">kiva.pdfmetrics.</code><code class="sig-name descname">testStringWidthAlgorithms</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/pdfmetrics.html#testStringWidthAlgorithms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.pdfmetrics.testStringWidthAlgorithms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="kiva.pdf.html"
+                        title="previous chapter">kiva.pdf module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="kiva.ps.html"
+                        title="next chapter">kiva.ps module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/kiva.pdfmetrics.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

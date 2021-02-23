@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.primitives.shape &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../../index.html" >
+    <link rel="up" title="Module code" href="../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.primitives.shape</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot; The base class for moveable shapes. &quot;&quot;&quot;</span>
+
+<span class="c1"># Standard library imports.</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="c1"># Enthought library imports.</span>
+<span class="kn">from</span> <span class="nn">enable.colors</span> <span class="k">import</span> <span class="n">ColorTrait</span>
+<span class="kn">from</span> <span class="nn">enable.component</span> <span class="k">import</span> <span class="n">Component</span>
+<span class="kn">from</span> <span class="nn">enable.enable_traits</span> <span class="k">import</span> <span class="n">Pointer</span>
+<span class="kn">from</span> <span class="nn">kiva.api</span> <span class="k">import</span> <span class="n">MODERN</span><span class="p">,</span> <span class="n">Font</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Property</span><span class="p">,</span> <span class="n">Str</span><span class="p">,</span> <span class="n">Tuple</span>
+
+
+<div class="viewcode-block" id="Shape"><a class="viewcode-back" href="../../../api/enable.primitives.shape.html#enable.primitives.shape.Shape">[docs]</a><span class="k">class</span> <span class="nc">Shape</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; The base class for moveable shapes. &quot;&quot;&quot;</span>
+
+    <span class="c1"># &#39;Component&#39; interface ################################################</span>
+
+    <span class="c1"># The background color of this component.</span>
+    <span class="n">bgcolor</span> <span class="o">=</span> <span class="s2">&quot;transparent&quot;</span>
+
+    <span class="c1"># &#39;Shape&#39; interface ####################################################</span>
+
+    <span class="c1"># The coordinates of the center of the shape.</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Tuple</span><span class="p">)</span>
+
+    <span class="c1"># The fill color.</span>
+    <span class="n">fill_color</span> <span class="o">=</span> <span class="n">ColorTrait</span>
+
+    <span class="c1"># The pointer for the &#39;normal&#39; event state.</span>
+    <span class="n">normal_pointer</span> <span class="o">=</span> <span class="n">Pointer</span><span class="p">(</span><span class="s2">&quot;arrow&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The pointer for the &#39;moving&#39; event state.</span>
+    <span class="n">moving_pointer</span> <span class="o">=</span> <span class="n">Pointer</span><span class="p">(</span><span class="s2">&quot;hand&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The text color.</span>
+    <span class="n">text_color</span> <span class="o">=</span> <span class="n">ColorTrait</span>
+
+    <span class="c1"># The text displayed in the shape.</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">Str</span>
+
+    <span class="c1"># &#39;Private&#39; interface ##################################################</span>
+
+    <span class="c1"># The difference between the location of a mouse-click and the component&#39;s</span>
+    <span class="c1"># origin.</span>
+    <span class="n">_offset_x</span> <span class="o">=</span> <span class="n">Float</span>
+    <span class="n">_offset_y</span> <span class="o">=</span> <span class="n">Float</span>
+
+    <span class="c1">###########################################################################</span>
+    <span class="c1"># &#39;Interactor&#39; interface</span>
+    <span class="c1">###########################################################################</span>
+
+<div class="viewcode-block" id="Shape.normal_key_pressed"><a class="viewcode-back" href="../../../api/enable.primitives.shape.html#enable.primitives.shape.Shape.normal_key_pressed">[docs]</a>    <span class="k">def</span> <span class="nf">normal_key_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Event handler. &quot;&quot;&quot;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;normal_key_pressed&quot;</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">character</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Shape.normal_left_down"><a class="viewcode-back" href="../../../api/enable.primitives.shape.html#enable.primitives.shape.Shape.normal_left_down">[docs]</a>    <span class="k">def</span> <span class="nf">normal_left_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Event handler. &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_state</span> <span class="o">=</span> <span class="s2">&quot;moving&quot;</span>
+
+            <span class="n">event</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">mouse_owner</span> <span class="o">=</span> <span class="bp">self</span>
+            <span class="n">event</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">set_pointer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">moving_pointer</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_offset_x</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_offset_y</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+
+            <span class="c1"># move this shape to the top of the z order. The components are</span>
+            <span class="c1"># drawn in order, so the last one will be drawn on top</span>
+            <span class="n">siblings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">components</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">siblings</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">siblings</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                <span class="n">siblings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Shape.moving_mouse_move"><a class="viewcode-back" href="../../../api/enable.primitives.shape.html#enable.primitives.shape.Shape.moving_mouse_move">[docs]</a>    <span class="k">def</span> <span class="nf">moving_mouse_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Event handler. &quot;&quot;&quot;</span>
+
+        <span class="n">top</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset_y</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset_y</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset_x</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset_x</span>
+
+        <span class="c1"># Keep the shape fully in the container</span>
+
+        <span class="k">if</span> <span class="n">bottom</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">bottom</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">top</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">height</span><span class="p">:</span>
+            <span class="n">bottom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span>
+
+        <span class="k">if</span> <span class="n">left</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">right</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">width</span><span class="p">:</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="n">left</span><span class="p">,</span> <span class="n">bottom</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Shape.moving_left_up"><a class="viewcode-back" href="../../../api/enable.primitives.shape.html#enable.primitives.shape.Shape.moving_left_up">[docs]</a>    <span class="k">def</span> <span class="nf">moving_left_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Event handler. &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_state</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>
+
+        <span class="n">event</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">set_pointer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normal_pointer</span><span class="p">)</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">mouse_owner</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Shape.moving_mouse_leave"><a class="viewcode-back" href="../../../api/enable.primitives.shape.html#enable.primitives.shape.Shape.moving_mouse_leave">[docs]</a>    <span class="k">def</span> <span class="nf">moving_mouse_leave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Event handler. &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">moving_left_up</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
+    <span class="c1">###########################################################################</span>
+    <span class="c1"># &#39;Shape&#39; interface</span>
+    <span class="c1">###########################################################################</span>
+
+    <span class="k">def</span> <span class="nf">_get_center</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Property getter. &quot;&quot;&quot;</span>
+
+        <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span>
+        <span class="n">ox</span><span class="p">,</span> <span class="n">oy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span>
+
+        <span class="n">cx</span> <span class="o">=</span> <span class="n">ox</span> <span class="o">+</span> <span class="n">dx</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">cy</span> <span class="o">=</span> <span class="n">oy</span> <span class="o">+</span> <span class="n">dy</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="k">return</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span>
+
+    <span class="k">def</span> <span class="nf">_text_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Trait initializer. &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+
+    <span class="c1">###########################################################################</span>
+    <span class="c1"># Protected &#39;Shape&#39; interface</span>
+    <span class="c1">###########################################################################</span>
+
+    <span class="k">def</span> <span class="nf">_distance_between</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point_1</span><span class="p">,</span> <span class="n">point_2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the distance between two points. &quot;&quot;&quot;</span>
+        <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span> <span class="o">=</span> <span class="n">point_1</span>
+        <span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span> <span class="o">=</span> <span class="n">point_2</span>
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">pow</span><span class="p">(</span><span class="n">y1</span> <span class="o">-</span> <span class="n">y2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_draw_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draw the shape&#39;s text. &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_text_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_state</span><span class="p">))</span>
+
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_font</span><span class="p">(</span><span class="n">Font</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="n">MODERN</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">16</span><span class="p">))</span>
+            <span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">tw</span><span class="p">,</span> <span class="n">th</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_text_extent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+            <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_text_position</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="n">dx</span> <span class="o">-</span> <span class="n">tw</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="p">(</span><span class="n">dy</span> <span class="o">-</span> <span class="n">th</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="n">gc</span><span class="o">.</span><span class="n">show_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_fill_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the fill color based on the event state. &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">event_state</span> <span class="o">==</span> <span class="s2">&quot;normal&quot;</span><span class="p">:</span>
+            <span class="n">fill_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill_color_</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill_color_</span>
+            <span class="n">fill_color</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fill_color</span>
+
+    <span class="k">def</span> <span class="nf">_get_text_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the text color based on the event state. &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">event_state</span> <span class="o">==</span> <span class="s2">&quot;normal&quot;</span><span class="p">:</span>
+            <span class="n">text_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_color_</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_color_</span>
+            <span class="n">text_color</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">text_color</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
