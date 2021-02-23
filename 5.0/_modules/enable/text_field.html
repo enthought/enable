@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.text_field &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.text_field</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="c1"># Standard library imports</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">floor</span><span class="p">,</span> <span class="n">sqrt</span>
+
+<span class="c1"># Enthought library imports</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">DelegatesTo</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Property</span>
+<span class="p">)</span>
+
+<span class="c1"># Local, relative imports</span>
+<span class="kn">from</span> <span class="nn">.component</span> <span class="k">import</span> <span class="n">Component</span>
+<span class="kn">from</span> <span class="nn">.font_metrics_provider</span> <span class="k">import</span> <span class="n">font_metrics_provider</span>
+<span class="kn">from</span> <span class="nn">.text_field_style</span> <span class="k">import</span> <span class="n">TextFieldStyle</span>
+
+<span class="n">StyleDelegate</span> <span class="o">=</span> <span class="n">DelegatesTo</span><span class="p">(</span><span class="s2">&quot;_style&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TextField"><a class="viewcode-back" href="../../api/enable.text_field.html#enable.text_field.TextField">[docs]</a><span class="k">class</span> <span class="nc">TextField</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A basic text entry field for Enable.</span>
+<span class="sd">        fixme: Requires monospaced fonts.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Public traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># The text to be edited</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">depends_on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;_text_changed&quot;</span><span class="p">])</span>
+
+    <span class="c1"># Events that get fired on certain keypresses</span>
+    <span class="n">accept</span> <span class="o">=</span> <span class="n">Event</span>
+    <span class="n">cancel</span> <span class="o">=</span> <span class="n">Event</span>
+
+    <span class="c1"># Are multiple lines of text allowed?</span>
+    <span class="n">multiline</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># The object to use to measure text extents</span>
+    <span class="n">metrics</span> <span class="o">=</span> <span class="n">Any</span>
+    <span class="n">char_w</span> <span class="o">=</span> <span class="n">Any</span>
+    <span class="n">char_h</span> <span class="o">=</span> <span class="n">Any</span>
+
+    <span class="c1"># Is this text field editable?</span>
+    <span class="n">can_edit</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Delegates for style</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="n">text_color</span> <span class="o">=</span> <span class="n">StyleDelegate</span>
+    <span class="n">font</span> <span class="o">=</span> <span class="n">StyleDelegate</span>
+    <span class="n">line_spacing</span> <span class="o">=</span> <span class="n">StyleDelegate</span>
+    <span class="n">text_offset</span> <span class="o">=</span> <span class="n">StyleDelegate</span>
+    <span class="n">cursor_color</span> <span class="o">=</span> <span class="n">StyleDelegate</span>
+    <span class="n">cursor_width</span> <span class="o">=</span> <span class="n">StyleDelegate</span>
+    <span class="n">border_visible</span> <span class="o">=</span> <span class="n">StyleDelegate</span>
+    <span class="n">border_color</span> <span class="o">=</span> <span class="n">StyleDelegate</span>
+    <span class="n">bgcolor</span> <span class="o">=</span> <span class="n">StyleDelegate</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Protected traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># The style information used in drawing</span>
+    <span class="n">_style</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TextFieldStyle</span><span class="p">,</span> <span class="p">())</span>
+
+    <span class="c1"># The max width/height of the displayed text in characters</span>
+    <span class="n">_text_width</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span>
+        <span class="n">depends_on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;_style&quot;</span><span class="p">,</span> <span class="s2">&quot;height&quot;</span><span class="p">],</span> <span class="n">cached</span><span class="o">=</span><span class="s2">&quot;_height_cache&quot;</span>
+    <span class="p">)</span>
+    <span class="n">_text_height</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span>
+        <span class="n">depends_on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;_style&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">],</span> <span class="n">cached</span><span class="o">=</span><span class="s2">&quot;_width_cache&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># The x-y position of the cursor in the text</span>
+    <span class="n">_cursor_pos</span> <span class="o">=</span> <span class="n">List</span><span class="p">(</span><span class="n">Int</span><span class="p">)</span>
+    <span class="n">_old_cursor_pos</span> <span class="o">=</span> <span class="n">List</span><span class="p">(</span><span class="n">Int</span><span class="p">)</span>
+    <span class="n">_desired_cursor_x</span> <span class="o">=</span> <span class="n">Int</span>
+
+    <span class="c1"># The text as an x-y grid, the shadow property for &#39;text&#39;</span>
+    <span class="n">_text</span> <span class="o">=</span> <span class="n">List</span><span class="p">(</span><span class="n">List</span><span class="p">)</span>
+    <span class="n">_text_changed</span> <span class="o">=</span> <span class="n">Event</span>
+
+    <span class="c1"># The text that is actually displayed in the editor, and its shadow values</span>
+    <span class="n">_draw_text</span> <span class="o">=</span> <span class="n">Property</span>
+    <span class="n">__draw_text</span> <span class="o">=</span> <span class="n">List</span><span class="p">(</span><span class="n">List</span><span class="p">)</span>
+    <span class="n">_draw_text_xstart</span> <span class="o">=</span> <span class="n">Int</span>
+    <span class="n">_draw_text_ystart</span> <span class="o">=</span> <span class="n">Int</span>
+
+    <span class="c1"># Whether or not to draw the cursor (is mouse over box?)</span>
+    <span class="n">_draw_cursor</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># fixme: Shouldn&#39;t traits initialize these on its own?</span>
+    <span class="c1"># fixme again: I moved these out of __init__ because they weren&#39;t</span>
+    <span class="c1"># accessible from the _get__text_height and _get__text_width methods.</span>
+    <span class="c1"># Not sure if this is the right fix (dmartin)</span>
+    <span class="n">_width_cache</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">_height_cache</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Public methods</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">traits</span><span class="p">):</span>
+        <span class="c1"># This will be overriden if &#39;text&#39; is provided as a trait, but it</span>
+        <span class="c1"># must be initialized if not</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="p">[[]]</span>
+
+        <span class="c1"># Initialize internal tracking variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">TextField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">traits</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">font_metrics_provider</span><span class="p">()</span>
+
+        <span class="c1"># Initialize border/bg colors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__style_changed</span><span class="p">()</span>
+
+        <span class="c1"># If this can&#39;t be editted and no width has been set, make sure</span>
+        <span class="c1"># that is wide enough to display the text.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_edit</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get_text_extent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">text_offset</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span> <span class="o">+</span> <span class="n">offset</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Interactor interface</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="TextField.normal_mouse_enter"><a class="viewcode-back" href="../../api/enable.text_field.html#enable.text_field.TextField.normal_mouse_enter">[docs]</a>    <span class="k">def</span> <span class="nf">normal_mouse_enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_edit</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">event</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">set_pointer</span><span class="p">(</span><span class="s2">&quot;ibeam&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="TextField.normal_mouse_leave"><a class="viewcode-back" href="../../api/enable.text_field.html#enable.text_field.TextField.normal_mouse_leave">[docs]</a>    <span class="k">def</span> <span class="nf">normal_mouse_leave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_edit</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">event</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">set_pointer</span><span class="p">(</span><span class="s2">&quot;arrow&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="TextField.normal_left_down"><a class="viewcode-back" href="../../api/enable.text_field.html#enable.text_field.TextField.normal_left_down">[docs]</a>    <span class="k">def</span> <span class="nf">normal_left_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_edit</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_state</span> <span class="o">=</span> <span class="s2">&quot;cursor&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_acquire_focus</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">window</span><span class="p">)</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Transform pixel coordinates to text coordinates</span>
+        <span class="n">char_width</span><span class="p">,</span> <span class="n">char_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get_text_extent</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span>
+        <span class="n">char_height</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">line_spacing</span>
+        <span class="n">event_x</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">text_offset</span>
+        <span class="n">event_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y2</span> <span class="o">-</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">text_offset</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiline</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">event_y</span> <span class="o">/</span> <span class="n">char_height</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">event_x</span> <span class="o">/</span> <span class="n">char_width</span><span class="p">))</span>
+
+        <span class="c1"># Clip x and y so that they are with text bounds, then place the cursor</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span><span class="p">[</span><span class="n">y</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_old_cursor_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_ystart</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_xstart</span> <span class="o">+</span> <span class="n">x</span><span class="p">,</span>
+        <span class="p">]</span></div>
+
+<div class="viewcode-block" id="TextField.cursor_left_up"><a class="viewcode-back" href="../../api/enable.text_field.html#enable.text_field.TextField.cursor_left_up">[docs]</a>    <span class="k">def</span> <span class="nf">cursor_left_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_edit</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Reset event state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_state</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TextField.normal_character"><a class="viewcode-back" href="../../api/enable.text_field.html#enable.text_field.TextField.normal_character">[docs]</a>    <span class="k">def</span> <span class="nf">normal_character</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="s2">&quot;Actual text that we want to add to the buffer as-is.&quot;</span>
+        <span class="c1"># XXX need to filter unprintables that are not handled in key_pressed</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_edit</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Save for bookkeeping purposes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_old_cursor_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span>
+
+        <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">y</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">character</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_desired_cursor_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_text_changed</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_draw</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TextField.normal_key_pressed"><a class="viewcode-back" href="../../api/enable.text_field.html#enable.text_field.TextField.normal_key_pressed">[docs]</a>    <span class="k">def</span> <span class="nf">normal_key_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="s2">&quot;Special character handling&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_edit</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Save for bookkeeping purposes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_old_cursor_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span>
+
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">character</span> <span class="o">==</span> <span class="s2">&quot;Backspace&quot;</span><span class="p">:</span>
+            <span class="c1"># Normal delete</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_desired_cursor_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_text_changed</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="c1"># Delete at the beginning of a line</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="n">old_line_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_xstart</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">old_line_len</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_desired_cursor_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_text_changed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">character</span> <span class="o">==</span> <span class="s2">&quot;Delete&quot;</span><span class="p">:</span>
+            <span class="c1"># Normal delete</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]]):</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_desired_cursor_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_text_changed</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="c1"># Delete at the end of a line</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">):</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">old_line_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_xstart</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_desired_cursor_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_text_changed</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Cursor movement</span>
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">character</span> <span class="o">==</span> <span class="s2">&quot;Left&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_desired_cursor_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">character</span> <span class="o">==</span> <span class="s2">&quot;Right&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_desired_cursor_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">character</span> <span class="o">==</span> <span class="s2">&quot;Up&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]]),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_desired_cursor_x</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">character</span> <span class="o">==</span> <span class="s2">&quot;Down&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]]),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_desired_cursor_x</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">character</span> <span class="o">==</span> <span class="s2">&quot;Home&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_desired_cursor_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">character</span> <span class="o">==</span> <span class="s2">&quot;End&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_desired_cursor_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Special characters</span>
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">character</span> <span class="o">==</span> <span class="s2">&quot;Tab&quot;</span><span class="p">:</span>
+            <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">y</span><span class="p">][:</span><span class="n">x</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot; &quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">:]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">4</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_desired_cursor_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_text_changed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">character</span> <span class="o">==</span> <span class="s2">&quot;Enter&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiline</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+                    <span class="n">line</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">line</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]:]</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">line</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">line</span><span class="p">][:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_desired_cursor_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_text_changed</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">accept</span> <span class="o">=</span> <span class="n">event</span>
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">character</span> <span class="o">==</span> <span class="s2">&quot;Escape&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cancel</span> <span class="o">=</span> <span class="n">event</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">character</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># XXX normal keypress, so let it go through</span>
+            <span class="k">return</span>
+
+        <span class="n">event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_draw</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Component interface</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_draw_mainlayer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+            <span class="c1"># Draw the text</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_font</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">font</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">text_color</span><span class="p">)</span>
+            <span class="n">char_w</span><span class="p">,</span> <span class="n">char_h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get_text_extent</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+            <span class="n">char_h</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">line_spacing</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ln</span><span class="p">)</span> <span class="k">for</span> <span class="n">ln</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">text_offset</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">y_offset</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">char_h</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">line_spacing</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">y_offset</span> <span class="o">=</span> <span class="n">char_h</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">line_spacing</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y2</span> <span class="o">-</span> <span class="n">y_offset</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">text_offset</span>
+
+                <span class="c1"># Show text at the same scale as the graphics context</span>
+                <span class="n">ctm</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_ctm</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ctm</span><span class="p">,</span> <span class="s2">&quot;__len__&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ctm</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+                    <span class="n">scale</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span>
+                        <span class="p">(</span><span class="n">ctm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ctm</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">ctm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ctm</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mf">2.0</span>
+                        <span class="o">+</span> <span class="p">(</span><span class="n">ctm</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">ctm</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">ctm</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">ctm</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="mf">2.0</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="s2">&quot;get_ctm_scale&quot;</span><span class="p">):</span>
+                    <span class="n">scale</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_ctm_scale</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Unable to get scale from GC.&quot;</span><span class="p">)</span>
+                <span class="n">x</span> <span class="o">*=</span> <span class="n">scale</span>
+                <span class="n">y</span> <span class="o">*=</span> <span class="n">scale</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">show_text_at_point</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_cursor</span><span class="p">:</span>
+                <span class="n">j</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span>
+                <span class="n">j</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_ystart</span>
+                <span class="n">i</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_xstart</span>
+                <span class="n">x_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get_text_extent</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">][:</span><span class="n">i</span><span class="p">])[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">y_offset</span> <span class="o">=</span> <span class="n">char_h</span> <span class="o">*</span> <span class="n">j</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y2</span> <span class="o">-</span> <span class="n">y_offset</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">text_offset</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiline</span><span class="p">:</span>
+                    <span class="n">char_h</span> <span class="o">-=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">line_spacing</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">cursor_width</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">cursor_color</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">begin_path</span><span class="p">()</span>
+                <span class="n">x_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">x_offset</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">text_offset</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">x_position</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">x_position</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">char_h</span><span class="p">)</span>
+
+                <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># TextField interface</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="TextField.reset"><a class="viewcode-back" href="../../api/enable.text_field.html#enable.text_field.TextField.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Resets the text field. This involes reseting cursor position, text</span>
+<span class="sd">        position, etc.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_old_cursor_pos</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span> <span class="o">=</span> <span class="p">[[]]</span></div>
+
+    <span class="k">def</span> <span class="nf">_scroll_horz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Horizontally scrolls all the text that is being drawn by &#39;num&#39;</span>
+<span class="sd">        characters. If num is negative, scrolls left. If num is positive,</span>
+<span class="sd">        scrolls right.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_xstart</span> <span class="o">+=</span> <span class="n">num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_realign_horz</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_realign_horz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Realign all the text being drawn such that the first character</span>
+<span class="sd">        being drawn in each line is the one at index &#39;_draw_text_xstart.&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span><span class="p">)):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_ystart</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clip_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_xstart</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_scroll_vert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Vertically scrolls all the text that is being drawn by &#39;num&#39; lines.</span>
+<span class="sd">        If num is negative, scrolls up. If num is positive, scrolls down.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_xstart</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_ystart</span>
+        <span class="k">if</span> <span class="n">num</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span><span class="p">[:</span><span class="n">num</span><span class="p">]</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_clip_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">y</span> <span class="o">+</span> <span class="n">num</span><span class="p">:</span><span class="n">y</span><span class="p">]</span>
+            <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span> <span class="o">=</span> <span class="n">lines</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span>
+        <span class="k">elif</span> <span class="n">num</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span><span class="p">[</span><span class="n">num</span><span class="p">:]</span>
+            <span class="n">y</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_height</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_clip_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">y</span><span class="p">:</span><span class="n">y</span> <span class="o">+</span> <span class="n">num</span><span class="p">]</span>
+            <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_ystart</span> <span class="o">+=</span> <span class="n">num</span>
+
+    <span class="k">def</span> <span class="nf">_clip_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return &#39;text&#39; clipped beginning at &#39;index&#39; if &#39;start&#39; is True or</span>
+<span class="sd">        ending at &#39;index&#39; if &#39;start&#39; is False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">box_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">text_offset</span>
+        <span class="n">total_width</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">end_index</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+            <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get_text_extent</span><span class="p">(</span><span class="n">t</span><span class="p">)[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+            <span class="n">total_width</span> <span class="o">=</span> <span class="n">total_width</span> <span class="o">+</span> <span class="n">w</span>
+            <span class="k">if</span> <span class="n">total_width</span> <span class="o">&lt;=</span> <span class="n">box_width</span><span class="p">:</span>
+                <span class="n">end_index</span> <span class="o">=</span> <span class="n">end_index</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="k">if</span> <span class="n">start</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">text</span><span class="p">[</span><span class="n">index</span><span class="p">:</span><span class="nb">min</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="n">end_index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">))]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">text</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">index</span> <span class="o">-</span> <span class="n">end_index</span><span class="p">):</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_refresh_viewed_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Updates the appropriate line in __draw_text with the text at &#39;line&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clip_line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">line</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_xstart</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">line</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_ystart</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_text</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_text</span>
+
+    <span class="k">def</span> <span class="nf">_acquire_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_draw_cursor</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">window</span><span class="o">.</span><span class="n">focus_owner</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="n">window</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_focus_owner_changed</span><span class="p">,</span> <span class="s2">&quot;focus_owner&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_focus_owner_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">old</span> <span class="o">==</span> <span class="bp">self</span> <span class="ow">and</span> <span class="n">new</span> <span class="o">!=</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_focus_owner_changed</span><span class="p">,</span> <span class="s2">&quot;focus_owner&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_draw_cursor</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Property getters/setters and trait event handlers</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_get_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_set_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="p">[[]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get__draw_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Rebuilding from scratch</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span> <span class="o">==</span> <span class="p">[[]]:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiline</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_xstart</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_ystart</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_height</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_ystart</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clip_line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_clip_line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)]</span>
+
+        <span class="c1"># Updating only the things that need updating</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Scroll if necessary depending on where cursor moved</span>
+            <span class="c1"># Adjust up</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_ystart</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_scroll_vert</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># Adjust down</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_ystart</span>
+                    <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_height</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_scroll_vert</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># Adjust left</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="n">chars_before_start</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_xstart</span><span class="p">])</span>
+            <span class="n">chars_after_start</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_xstart</span><span class="p">:])</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_xstart</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">chars_before_start</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_width</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_xstart</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_realign_horz</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_scroll_horz</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_text_width</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_xstart</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                    <span class="ow">and</span> <span class="n">chars_after_start</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_width</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_scroll_horz</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># Adjust right</span>
+            <span class="n">num_chars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_text_xstart</span>
+            <span class="k">if</span> <span class="n">num_chars</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_width</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_scroll_horz</span><span class="p">(</span><span class="n">num_chars</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_width</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># Replace text at cursor location</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_old_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="c1"># A line has been created by an enter event</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_viewed_line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_old_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_viewed_line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursor_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__draw_text</span>
+
+    <span class="k">def</span> <span class="nf">_get__text_width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width_cache</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">char_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get_text_extent</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">text_offset</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_width_cache</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">floor</span><span class="p">(</span><span class="n">width</span> <span class="o">/</span> <span class="n">char_width</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width_cache</span>
+
+    <span class="k">def</span> <span class="nf">_get__text_height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiline</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height_cache</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">char_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">get_text_extent</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span>
+                    <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">text_offset</span>
+                    <span class="n">line_height</span> <span class="o">=</span> <span class="n">char_height</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">line_spacing</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_height_cache</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">floor</span><span class="p">(</span><span class="n">height</span> <span class="o">/</span> <span class="n">line_height</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height_cache</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">__style_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Bg/border color is inherited from the style, so update it when the</span>
+<span class="sd">        style changes. The height of a line also depends on style.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bgcolor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">bgcolor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">border_visible</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">border_visible</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">border_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">border_color</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">set_font</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">font</span><span class="p">)</span>
+        <span class="c1"># FIXME!!  The height being passed in gets over-written here</span>
+        <span class="c1"># if not self.multiline:</span>
+        <span class="c1">#    self.height = (self.metrics.get_text_extent(&quot;T&quot;)[3] +</span>
+        <span class="c1">#                   self._style.text_offset*2)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.viewport module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable package" href="enable.html" >
+    <link rel="next" title="enable.window module" href="enable.window.html" >
+    <link rel="prev" title="enable.viewable module" href="enable.viewable.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" accesskey="U">enable package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.window.html" title="enable.window module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.viewable.html" title="enable.viewable module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.viewport">
+<span id="enable-viewport-module"></span><h1>enable.viewport module<a class="headerlink" href="#module-enable.viewport" title="Permalink to this headline">¶</a></h1>
+<p>Defines a Viewport which renders sub-areas of components</p>
+<dl class="class">
+<dt id="enable.viewport.Viewport">
+<em class="property">class </em><code class="sig-prename descclassname">enable.viewport.</code><code class="sig-name descname">Viewport</code><span class="sig-paren">(</span><em class="sig-param">**traits</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/viewport.html#Viewport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.viewport.Viewport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="enable.component.html#enable.component.Component" title="enable.component.Component"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.component.Component</span></code></a></p>
+<p>A “window” or “view” into a sub-region of another component.</p>
+<dl class="method">
+<dt id="enable.viewport.Viewport.cleanup">
+<code class="sig-name descname">cleanup</code><span class="sig-paren">(</span><em class="sig-param">window</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/viewport.html#Viewport.cleanup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.viewport.Viewport.cleanup" title="Permalink to this definition">¶</a></dt>
+<dd><p>When a window viewing or containing a component is destroyed,
+cleanup is called on the component to give it the opportunity to
+delete any transient state it may have (such as backbuffers).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.viewport.Viewport.component_to_viewport">
+<code class="sig-name descname">component_to_viewport</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/viewport.html#Viewport.component_to_viewport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.viewport.Viewport.component_to_viewport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a coordinate X and Y in the viewed component’s coordinate
+system, returns a coordinate in the coordinate system of the
+Viewport.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.viewport.Viewport.components_at">
+<code class="sig-name descname">components_at</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">add_containers=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/viewport.html#Viewport.components_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.viewport.Viewport.components_at" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of components inside the viewport at the given (x,y)
+in the viewport’s native coordinate space (not in the space of the
+component it is viewing).</p>
+<p>Although Viewports are not containers, they support this method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.viewport.Viewport.get_event_transform">
+<code class="sig-name descname">get_event_transform</code><span class="sig-paren">(</span><em class="sig-param">event=None</em>, <em class="sig-param">suffix=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/viewport.html#Viewport.get_event_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.viewport.Viewport.get_event_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the 3x3 transformation matrix that this interactor will
+apply to the event (if any).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.viewport.Viewport.get_preferred_size">
+<code class="sig-name descname">get_preferred_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/viewport.html#Viewport.get_preferred_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.viewport.Viewport.get_preferred_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>If we’re initiating layout, act like an OverlayPlotContainer,
+otherwise do the normal component action</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.viewport.Viewport.invalidate_draw">
+<code class="sig-name descname">invalidate_draw</code><span class="sig-paren">(</span><em class="sig-param">damaged_regions=None</em>, <em class="sig-param">self_relative=False</em>, <em class="sig-param">view_relative=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/viewport.html#Viewport.invalidate_draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.viewport.Viewport.invalidate_draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invalidates any backbuffer that may exist, and notifies our parents
+and viewports of any damaged regions.</p>
+<p>Call this method whenever a component’s internal state
+changes such that it must be redrawn on the next draw() call.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.viewport.Viewport.viewport_to_component">
+<code class="sig-name descname">viewport_to_component</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/viewport.html#Viewport.viewport_to_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.viewport.Viewport.viewport_to_component" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a coordinate X and Y in the viewport’s coordinate system,
+returns and X and Y in the coordinate system of the viewed
+component.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.viewable.html"
+                        title="previous chapter">enable.viewable module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.window.html"
+                        title="next chapter">enable.window module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.viewport.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

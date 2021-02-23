@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>Enable Drag and Drop Events &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="_static/css/spc-extend.css">
+    <link rel="stylesheet" href="_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="_static/img/favicon.ico">
+    <link rel="index" title="Index" href="genindex.html" >
+    <link rel="search" title="Search" href="search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="index.html" >
+    <link rel="next" title="Undo/Redo Support" href="enable_undo_redo.html" >
+    <link rel="prev" title="Enable Tools" href="enable_basic_tools.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="index.html">enable 5.0.0 documentation</a></li>
+	 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable_undo_redo.html" title="Undo/Redo Support"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable_basic_tools.html" title="Enable Tools"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="enable-drag-and-drop-events">
+<h1>Enable Drag and Drop Events<a class="headerlink" href="#enable-drag-and-drop-events" title="Permalink to this headline">¶</a></h1>
+<p>Enable has support for objects being dropped onto components built on top of
+the backend’s (and, in practice, PyFace’s) support for drag and drop.</p>
+<p>All drag-and-drop related events have type <code class="docutils literal notranslate"><span class="pre">DragEvent</span></code> and provide the
+<code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> coordinates of the event, and the object being dragged or
+dropped (if it is available from the backend, otherwise this will be <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p>
+<p>The system generates 3 types of drag and drop events:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">drag_over</span></code></dt><dd><p>These events are generated when the user is moving a dragged object over
+the Enable window. Tools or other Interactors which want to indicate that
+they can accept the drag should indicate this by calling the
+<code class="docutils literal notranslate"><span class="pre">set_drag_result()</span></code> method of the Enable window indicating the type of
+operation that will be performed on the object (the default is a “copy”,
+but other possibilties include “move” or “link”, the full list of
+possibilites is found in the appropriate <code class="docutils literal notranslate"><span class="pre">constants</span></code> module).  The value
+of the drag result influences the way that the operating system displays
+the dragged objects and cursor whil dragging.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">drag_leave</span></code></dt><dd><p>This event is generated when the user drags objects out of the window.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">dropped_on</span></code></dt><dd><p>This event is generated when the user releases the mouse button over the
+Enable window while dragging.  Tools or other Interactors should handle
+this event to perform whatever operations need to be performed with the
+dropped objects.</p>
+</dd>
+</dl>
+<div class="section" id="basedroptool">
+<h2>BaseDropTool<a class="headerlink" href="#basedroptool" title="Permalink to this headline">¶</a></h2>
+<p>As a convenience, there is a <code class="docutils literal notranslate"><span class="pre">BaseDropTool</span></code> class which handles most of the
+drag and drop interactions for you correctly.  To use this, you need to
+subclass and override at least the <code class="docutils literal notranslate"><span class="pre">accept_drop</span></code> and <code class="docutils literal notranslate"><span class="pre">handle_drop</span></code> methods.</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">accept_drop</span></code></dt><dd><p>This method is given the position and object instance and should return
+<code class="docutils literal notranslate"><span class="pre">True</span></code> if the drop is accepted or <code class="docutils literal notranslate"><span class="pre">False</span></code> if it is not.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">handle_drop</span></code></dt><dd><p>If the drop is accepted, this method is called with the position and the
+objects, and should perform whatever actions are required with the dropped
+objects.</p>
+</dd>
+</dl>
+<p>The behaviour is slightly different between the Wx and Qt backends: Qt provides
+a reference to the dragged objects during <code class="docutils literal notranslate"><span class="pre">drag_over</span></code> events, and so the
+<code class="docutils literal notranslate"><span class="pre">BaseDropTool</span></code> will call <code class="docutils literal notranslate"><span class="pre">accept_drop</span></code> during <code class="docutils literal notranslate"><span class="pre">drag_over</span></code> events to give
+better feedback about the state of the drag and drop operation; whereas Wx does
+not provide that information, so will always indicate to the operating system
+that a drop is possible.</p>
+<p>The type of drag result returned during <code class="docutils literal notranslate"><span class="pre">drag_over</span></code> events is controlled by
+the <code class="docutils literal notranslate"><span class="pre">default_drag_result</span></code> attribute.</p>
+<p>If you want more control over the response to <code class="docutils literal notranslate"><span class="pre">drag_over</span></code> events, then you
+can additionally override the <code class="docutils literal notranslate"><span class="pre">get_drag_result</span></code> method to return one of the
+drag result constants dependin on the position and (possibly) the objects
+being dragged.  If you want cross-toolkit compatibility, you must handle the
+case where the <code class="docutils literal notranslate"><span class="pre">get_drag_result</span></code> method is called with the object being
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, which indicates that the object is not known yet.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Enable Drag and Drop Events</a><ul>
+<li><a class="reference internal" href="#basedroptool">BaseDropTool</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable_basic_tools.html"
+                        title="previous chapter">Enable Tools</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable_undo_redo.html"
+                        title="next chapter">Undo/Redo Support</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="_sources/enable_drag_and_drop.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

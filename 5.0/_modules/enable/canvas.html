@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.canvas &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.canvas</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot; Defines the enable Canvas class &quot;&quot;&quot;</span>
+
+<span class="c1"># Enthought library imports</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Trait</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">kiva.api</span> <span class="k">import</span> <span class="n">FILL</span>
+
+
+<span class="c1"># Local relative imports</span>
+<span class="kn">from</span> <span class="nn">.component</span> <span class="k">import</span> <span class="n">Component</span>
+<span class="kn">from</span> <span class="nn">.container</span> <span class="k">import</span> <span class="n">Container</span>
+
+
+<div class="viewcode-block" id="Canvas"><a class="viewcode-back" href="../../api/enable.canvas.html#enable.canvas.Canvas">[docs]</a><span class="k">class</span> <span class="nc">Canvas</span><span class="p">(</span><span class="n">Container</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An infinite canvas with components on it.  It can optionally be given</span>
+<span class="sd">    a &quot;view region&quot; which will be used as the notional bounds of the</span>
+<span class="sd">    canvas in all operations that require bounds.</span>
+
+<span class="sd">    A Canvas can be nested inside another container, but usually a</span>
+<span class="sd">    viewport is more appropriate.</span>
+
+<span class="sd">    Note: A Canvas has infinite bounds, but its .bounds attribute is</span>
+<span class="sd">    overloaded to be something more meaningful, namely, the bounding</span>
+<span class="sd">    box of its child components and the optional view area of the</span>
+<span class="sd">    viewport that is looking at it.  (TODO: add support for multiple</span>
+<span class="sd">    viewports.)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># This optional tuple of (x,y,x2,y2) allows viewports to inform the canvas</span>
+    <span class="c1"># of the &quot;region of interest&quot; that it should use when computing its</span>
+    <span class="c1"># notional bounds for clipping and event handling purposes.  If this trait</span>
+    <span class="c1"># is None, then the canvas really does behave as if it has no bounds.</span>
+    <span class="n">view_bounds</span> <span class="o">=</span> <span class="n">Trait</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">)</span>
+
+    <span class="c1"># The (x,y) position of the lower-left corner of the rectangle</span>
+    <span class="c1"># corresponding to the dimensions in self.bounds.  Unlike self.position,</span>
+    <span class="c1"># this position is in the canvas&#39;s space, and not in the coordinate space</span>
+    <span class="c1"># of the parent.</span>
+    <span class="n">bounds_offset</span> <span class="o">=</span> <span class="n">List</span>
+
+    <span class="n">draw_axes</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Inherited traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># Use the auto-size/fit_components mechanism to ensure that the bounding</span>
+    <span class="c1"># box around our inner components gets updated properly.</span>
+    <span class="n">auto_size</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">fit_components</span> <span class="o">=</span> <span class="s2">&quot;hv&quot;</span>
+
+    <span class="c1"># The following traits are ignored, but we set them to sensible values.</span>
+    <span class="n">fit_window</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">resizable</span> <span class="o">=</span> <span class="s2">&quot;hv&quot;</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Protected traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># The (x, y, x2, y2) coordinates of the bounding box of the components</span>
+    <span class="c1"># in our inner coordinate space</span>
+    <span class="n">_bounding_box</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Canvas.compact"><a class="viewcode-back" href="../../api/enable.canvas.html#enable.canvas.Canvas.compact">[docs]</a>    <span class="k">def</span> <span class="nf">compact</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wraps the superclass method to also take into account the view</span>
+<span class="sd">        bounds (if they are present</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bounding_box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_bounding_box</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_view_bounds_changed</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Canvas.is_in"><a class="viewcode-back" href="../../api/enable.canvas.html#enable.canvas.Canvas.is_in">[docs]</a>    <span class="k">def</span> <span class="nf">is_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Canvas.remove"><a class="viewcode-back" href="../../api/enable.canvas.html#enable.canvas.Canvas.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">components</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Removes components from this container &quot;&quot;&quot;</span>
+        <span class="n">needs_compact</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">:</span>
+                <span class="n">component</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Unable to remove component from container.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Check to see if we need to compact.</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bounding_box</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">component</span><span class="o">.</span><span class="n">outer_x2</span> <span class="o">==</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span>
+                    <span class="ow">or</span> <span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">outer_y2</span> <span class="o">==</span> <span class="n">y2</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span>
+                    <span class="ow">or</span> <span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="ow">or</span> <span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)):</span>
+                <span class="n">needs_compact</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">needs_compact</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compact</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_draw</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Canvas.draw"><a class="viewcode-back" href="../../api/enable.canvas.html#enable.canvas.Canvas.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view_bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view_bounds</span> <span class="o">=</span> <span class="n">view_bounds</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Canvas</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Protected methods</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_should_compact</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_size</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view_bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">llx</span><span class="p">,</span> <span class="n">lly</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view_bounds</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">llx</span> <span class="o">=</span> <span class="n">lly</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">outer_x2</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span>
+                        <span class="ow">or</span> <span class="n">component</span><span class="o">.</span><span class="n">outer_y2</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span>
+                        <span class="ow">or</span> <span class="n">component</span><span class="o">.</span><span class="n">outer_x</span> <span class="o">&lt;</span> <span class="n">llx</span>
+                        <span class="ow">or</span> <span class="n">component</span><span class="o">.</span><span class="n">outer_y</span> <span class="o">&lt;</span> <span class="n">lly</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_draw_background</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bgcolor</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;clear&quot;</span><span class="p">,</span> <span class="s2">&quot;transparent&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view_bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view_bounds</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bounding_box</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y2</span> <span class="o">-</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_antialias</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bgcolor_</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">draw_rect</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">FILL</span><span class="p">)</span>
+
+        <span class="c1"># Call the enable _draw_border routine</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">overlay_border</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">border_visible</span><span class="p">:</span>
+            <span class="c1"># Tell _draw_border to ignore the self.overlay_border</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_draw_border</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">force_draw</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_draw_underlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">draw_axes</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view_bounds</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">x2</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">y2</span><span class="p">):</span>
+                <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Container</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_draw_underlay</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_transform_view_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">):</span>
+        <span class="c1"># Overload the parent class&#39;s implementation to skip visibility test</span>
+        <span class="k">if</span> <span class="n">view_bounds</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">view_bounds</span>
+            <span class="n">new_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_bounds</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">new_bounds</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Event handlers</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_bounds_offset_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_view_bounds_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">llx</span><span class="p">,</span> <span class="n">lly</span><span class="p">,</span> <span class="n">urx</span><span class="p">,</span> <span class="n">ury</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bounding_box</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view_bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view_bounds</span>
+            <span class="n">llx</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">llx</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">lly</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">lly</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="n">urx</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">urx</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+            <span class="n">ury</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ury</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds_offset</span> <span class="o">=</span> <span class="p">[</span><span class="n">llx</span><span class="p">,</span> <span class="n">lly</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[</span><span class="n">urx</span> <span class="o">-</span> <span class="n">llx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ury</span> <span class="o">-</span> <span class="n">lly</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Override Container.bounds_changed so that _layout_needed is not</span>
+    <span class="c1"># set.  Containers need to invalidate layout because they act as</span>
+    <span class="c1"># sizers, but the Canvas is unbounded and thus does not need to</span>
+    <span class="c1"># invalidate layout.</span>
+    <span class="k">def</span> <span class="nf">_bounds_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="n">Component</span><span class="o">.</span><span class="n">_bounds_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_draw</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_bounds_items_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">Component</span><span class="o">.</span><span class="n">_bounds_items_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_draw</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

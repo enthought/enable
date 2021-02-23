@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.markers module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable package" href="enable.html" >
+    <link rel="next" title="enable.native_scrollbar module" href="enable.native_scrollbar.html" >
+    <link rel="prev" title="enable.label module" href="enable.label.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" accesskey="U">enable package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.native_scrollbar.html" title="enable.native_scrollbar module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.label.html" title="enable.label module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.markers">
+<span id="enable-markers-module"></span><h1>enable.markers module<a class="headerlink" href="#module-enable.markers" title="Permalink to this headline">¶</a></h1>
+<p>Defines markers classes, used by a variety of renderers.</p>
+<dl class="class">
+<dt id="enable.markers.AbstractMarker">
+<em class="property">class </em><code class="sig-prename descclassname">enable.markers.</code><code class="sig-name descname">AbstractMarker</code><a class="reference internal" href="../_modules/enable/markers.html#AbstractMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.AbstractMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasTraits</span></code></a></p>
+<p>Abstract class for markers.</p>
+<dl class="method">
+<dt id="enable.markers.AbstractMarker.add_to_path">
+<code class="sig-name descname">add_to_path</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/markers.html#AbstractMarker.add_to_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.AbstractMarker.add_to_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds this marker’s representation to <em>path</em>, scaled appropriately
+for <em>size</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<a class="reference internal" href="kiva.celiagg.html#kiva.celiagg.GraphicsContext" title="kiva.celiagg.GraphicsContext"><em>GraphicsContext</em></a>) – The target for drawing the marker.</p></li>
+<li><p><strong>size</strong> (<em>number</em>) – Size of the marker, in pixels</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="enable.markers.AbstractMarker.draw_mode">
+<code class="sig-name descname">draw_mode</code><em class="property"> = 4</em><a class="headerlink" href="#enable.markers.AbstractMarker.draw_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.markers.AbstractMarker.get_compiled_path">
+<code class="sig-name descname">get_compiled_path</code><span class="sig-paren">(</span><em class="sig-param">size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/markers.html#AbstractMarker.get_compiled_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.AbstractMarker.get_compiled_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a compiled path object that represents this marker, scaled
+appropriately for <em>size</em>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="enable.markers.AbstractMarker.kiva_marker">
+<code class="sig-name descname">kiva_marker</code><em class="property"> = 0</em><a class="headerlink" href="#enable.markers.AbstractMarker.kiva_marker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.markers.CircleMarker">
+<em class="property">class </em><code class="sig-prename descclassname">enable.markers.</code><code class="sig-name descname">CircleMarker</code><a class="reference internal" href="../_modules/enable/markers.html#CircleMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.CircleMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.markers.AbstractMarker" title="enable.markers.AbstractMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.markers.AbstractMarker</span></code></a></p>
+<p>A marker that is a circle.</p>
+<dl class="attribute">
+<dt id="enable.markers.CircleMarker.circle_points">
+<code class="sig-name descname">circle_points</code><em class="property"> = array([[ 1.   ,  0.   ],        [ 0.966,  0.259],        [ 0.866,  0.5  ],        [ 0.707,  0.707],        [ 0.5  ,  0.866],        [ 0.259,  0.966],        [ 0.   ,  1.   ],        [-0.259,  0.966],        [-0.5  ,  0.866],        [-0.707,  0.707],        [-0.866,  0.5  ],        [-0.966,  0.259],        [-1.   ,  0.   ],        [-0.966, -0.259],        [-0.866, -0.5  ],        [-0.707, -0.707],        [-0.5  , -0.866],        [-0.259, -0.966],        [ 0.   , -1.   ],        [ 0.259, -0.966],        [ 0.5  , -0.866],        [ 0.707, -0.707],        [ 0.866, -0.5  ],        [ 0.966, -0.259],        [ 1.   ,  0.   ]])</em><a class="headerlink" href="#enable.markers.CircleMarker.circle_points" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enable.markers.CircleMarker.draw_mode">
+<code class="sig-name descname">draw_mode</code><em class="property"> = 5</em><a class="headerlink" href="#enable.markers.CircleMarker.draw_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enable.markers.CircleMarker.kiva_marker">
+<code class="sig-name descname">kiva_marker</code><em class="property"> = 3</em><a class="headerlink" href="#enable.markers.CircleMarker.kiva_marker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.markers.CrossMarker">
+<em class="property">class </em><code class="sig-prename descclassname">enable.markers.</code><code class="sig-name descname">CrossMarker</code><a class="reference internal" href="../_modules/enable/markers.html#CrossMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.CrossMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.markers.AbstractMarker" title="enable.markers.AbstractMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.markers.AbstractMarker</span></code></a></p>
+<p>A marker that is an X.</p>
+<dl class="attribute">
+<dt id="enable.markers.CrossMarker.draw_mode">
+<code class="sig-name descname">draw_mode</code><em class="property"> = 4</em><a class="headerlink" href="#enable.markers.CrossMarker.draw_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enable.markers.CrossMarker.kiva_marker">
+<code class="sig-name descname">kiva_marker</code><em class="property"> = 5</em><a class="headerlink" href="#enable.markers.CrossMarker.kiva_marker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.markers.CrossPlusMarker">
+<em class="property">class </em><code class="sig-prename descclassname">enable.markers.</code><code class="sig-name descname">CrossPlusMarker</code><a class="reference internal" href="../_modules/enable/markers.html#CrossPlusMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.CrossPlusMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.markers.AbstractMarker" title="enable.markers.AbstractMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.markers.AbstractMarker</span></code></a></p>
+<p>A marker that is an X and a + superimposed.</p>
+<dl class="attribute">
+<dt id="enable.markers.CrossPlusMarker.draw_mode">
+<code class="sig-name descname">draw_mode</code><em class="property"> = 4</em><a class="headerlink" href="#enable.markers.CrossPlusMarker.draw_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.markers.CustomMarker">
+<em class="property">class </em><code class="sig-prename descclassname">enable.markers.</code><code class="sig-name descname">CustomMarker</code><a class="reference internal" href="../_modules/enable/markers.html#CustomMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.CustomMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.markers.AbstractMarker" title="enable.markers.AbstractMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.markers.AbstractMarker</span></code></a></p>
+<p>A marker that is a custom shape.</p>
+<dl class="attribute">
+<dt id="enable.markers.CustomMarker.draw_mode">
+<code class="sig-name descname">draw_mode</code><em class="property"> = 4</em><a class="headerlink" href="#enable.markers.CustomMarker.draw_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.markers.CustomMarker.get_compiled_path">
+<code class="sig-name descname">get_compiled_path</code><span class="sig-paren">(</span><em class="sig-param">size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/markers.html#CustomMarker.get_compiled_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.CustomMarker.get_compiled_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a path instance.</p>
+<p>If <strong>scale_path</strong> is True, then the returned path is a new compiled
+path that is scaled based on <em>size</em>. If <strong>scaled_path</strong> is False,
+then this method just returns the current <strong>path</strong>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="enable.markers.CustomMarker.kiva_marker">
+<code class="sig-name descname">kiva_marker</code><em class="property"> = 0</em><a class="headerlink" href="#enable.markers.CustomMarker.kiva_marker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.markers.DiamondMarker">
+<em class="property">class </em><code class="sig-prename descclassname">enable.markers.</code><code class="sig-name descname">DiamondMarker</code><a class="reference internal" href="../_modules/enable/markers.html#DiamondMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.DiamondMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.markers.AbstractMarker" title="enable.markers.AbstractMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.markers.AbstractMarker</span></code></a></p>
+<p>A marker that is a diamond.</p>
+<dl class="attribute">
+<dt id="enable.markers.DiamondMarker.draw_mode">
+<code class="sig-name descname">draw_mode</code><em class="property"> = 5</em><a class="headerlink" href="#enable.markers.DiamondMarker.draw_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enable.markers.DiamondMarker.kiva_marker">
+<code class="sig-name descname">kiva_marker</code><em class="property"> = 2</em><a class="headerlink" href="#enable.markers.DiamondMarker.kiva_marker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.markers.DotMarker">
+<em class="property">class </em><code class="sig-prename descclassname">enable.markers.</code><code class="sig-name descname">DotMarker</code><a class="reference internal" href="../_modules/enable/markers.html#DotMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.DotMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.markers.AbstractMarker" title="enable.markers.AbstractMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.markers.AbstractMarker</span></code></a></p>
+<p>A marker that is a dot.</p>
+<dl class="attribute">
+<dt id="enable.markers.DotMarker.draw_mode">
+<code class="sig-name descname">draw_mode</code><em class="property"> = 5</em><a class="headerlink" href="#enable.markers.DotMarker.draw_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enable.markers.DotMarker.kiva_marker">
+<code class="sig-name descname">kiva_marker</code><em class="property"> = 9</em><a class="headerlink" href="#enable.markers.DotMarker.kiva_marker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.markers.Hexagon1Marker">
+<em class="property">class </em><code class="sig-prename descclassname">enable.markers.</code><code class="sig-name descname">Hexagon1Marker</code><a class="reference internal" href="../_modules/enable/markers.html#Hexagon1Marker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.Hexagon1Marker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.markers.AbstractMarker" title="enable.markers.AbstractMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.markers.AbstractMarker</span></code></a></p>
+<p>A marker that is a hexagon, with the flat sides on the sides.</p>
+<dl class="attribute">
+<dt id="enable.markers.Hexagon1Marker.draw_mode">
+<code class="sig-name descname">draw_mode</code><em class="property"> = 5</em><a class="headerlink" href="#enable.markers.Hexagon1Marker.draw_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.markers.Hexagon2Marker">
+<em class="property">class </em><code class="sig-prename descclassname">enable.markers.</code><code class="sig-name descname">Hexagon2Marker</code><a class="reference internal" href="../_modules/enable/markers.html#Hexagon2Marker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.Hexagon2Marker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.markers.AbstractMarker" title="enable.markers.AbstractMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.markers.AbstractMarker</span></code></a></p>
+<p>A marker that is a hexagon, with the flat sides on the top and bottom.</p>
+<dl class="attribute">
+<dt id="enable.markers.Hexagon2Marker.draw_mode">
+<code class="sig-name descname">draw_mode</code><em class="property"> = 5</em><a class="headerlink" href="#enable.markers.Hexagon2Marker.draw_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.markers.Inverted_TriangleMarker">
+<em class="property">class </em><code class="sig-prename descclassname">enable.markers.</code><code class="sig-name descname">Inverted_TriangleMarker</code><a class="reference internal" href="../_modules/enable/markers.html#Inverted_TriangleMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.Inverted_TriangleMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.markers.AbstractMarker" title="enable.markers.AbstractMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.markers.AbstractMarker</span></code></a></p>
+<p>A marker that is a triangle with one apex pointing down.</p>
+<dl class="attribute">
+<dt id="enable.markers.Inverted_TriangleMarker.draw_mode">
+<code class="sig-name descname">draw_mode</code><em class="property"> = 5</em><a class="headerlink" href="#enable.markers.Inverted_TriangleMarker.draw_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enable.markers.Inverted_TriangleMarker.kiva_marker">
+<code class="sig-name descname">kiva_marker</code><em class="property"> = 7</em><a class="headerlink" href="#enable.markers.Inverted_TriangleMarker.kiva_marker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.markers.LeftTriangleMarker">
+<em class="property">class </em><code class="sig-prename descclassname">enable.markers.</code><code class="sig-name descname">LeftTriangleMarker</code><a class="reference internal" href="../_modules/enable/markers.html#LeftTriangleMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.LeftTriangleMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.markers.AbstractMarker" title="enable.markers.AbstractMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.markers.AbstractMarker</span></code></a></p>
+<p>A marker that is a triangle with one apex pointing left.</p>
+<dl class="attribute">
+<dt id="enable.markers.LeftTriangleMarker.draw_mode">
+<code class="sig-name descname">draw_mode</code><em class="property"> = 5</em><a class="headerlink" href="#enable.markers.LeftTriangleMarker.draw_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.markers.PentagonMarker">
+<em class="property">class </em><code class="sig-prename descclassname">enable.markers.</code><code class="sig-name descname">PentagonMarker</code><a class="reference internal" href="../_modules/enable/markers.html#PentagonMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.PentagonMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.markers.AbstractMarker" title="enable.markers.AbstractMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.markers.AbstractMarker</span></code></a></p>
+<p>A marker that is a pentagon.</p>
+<dl class="attribute">
+<dt id="enable.markers.PentagonMarker.draw_mode">
+<code class="sig-name descname">draw_mode</code><em class="property"> = 5</em><a class="headerlink" href="#enable.markers.PentagonMarker.draw_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.markers.PixelMarker">
+<em class="property">class </em><code class="sig-prename descclassname">enable.markers.</code><code class="sig-name descname">PixelMarker</code><a class="reference internal" href="../_modules/enable/markers.html#PixelMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.PixelMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.markers.AbstractMarker" title="enable.markers.AbstractMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.markers.AbstractMarker</span></code></a></p>
+<p>A marker that is a pixel.</p>
+<dl class="attribute">
+<dt id="enable.markers.PixelMarker.draw_mode">
+<code class="sig-name descname">draw_mode</code><em class="property"> = 4</em><a class="headerlink" href="#enable.markers.PixelMarker.draw_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enable.markers.PixelMarker.kiva_marker">
+<code class="sig-name descname">kiva_marker</code><em class="property"> = 10</em><a class="headerlink" href="#enable.markers.PixelMarker.kiva_marker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.markers.PlusMarker">
+<em class="property">class </em><code class="sig-prename descclassname">enable.markers.</code><code class="sig-name descname">PlusMarker</code><a class="reference internal" href="../_modules/enable/markers.html#PlusMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.PlusMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.markers.AbstractMarker" title="enable.markers.AbstractMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.markers.AbstractMarker</span></code></a></p>
+<p>A marker that is a plus-sign.</p>
+<dl class="attribute">
+<dt id="enable.markers.PlusMarker.draw_mode">
+<code class="sig-name descname">draw_mode</code><em class="property"> = 4</em><a class="headerlink" href="#enable.markers.PlusMarker.draw_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enable.markers.PlusMarker.kiva_marker">
+<code class="sig-name descname">kiva_marker</code><em class="property"> = 8</em><a class="headerlink" href="#enable.markers.PlusMarker.kiva_marker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.markers.RightTriangleMarker">
+<em class="property">class </em><code class="sig-prename descclassname">enable.markers.</code><code class="sig-name descname">RightTriangleMarker</code><a class="reference internal" href="../_modules/enable/markers.html#RightTriangleMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.RightTriangleMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.markers.AbstractMarker" title="enable.markers.AbstractMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.markers.AbstractMarker</span></code></a></p>
+<p>A marker that is a triangle with one apex pointing right.</p>
+<dl class="attribute">
+<dt id="enable.markers.RightTriangleMarker.draw_mode">
+<code class="sig-name descname">draw_mode</code><em class="property"> = 5</em><a class="headerlink" href="#enable.markers.RightTriangleMarker.draw_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.markers.SquareMarker">
+<em class="property">class </em><code class="sig-prename descclassname">enable.markers.</code><code class="sig-name descname">SquareMarker</code><a class="reference internal" href="../_modules/enable/markers.html#SquareMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.SquareMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.markers.AbstractMarker" title="enable.markers.AbstractMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.markers.AbstractMarker</span></code></a></p>
+<p>A marker that is a square.</p>
+<dl class="attribute">
+<dt id="enable.markers.SquareMarker.draw_mode">
+<code class="sig-name descname">draw_mode</code><em class="property"> = 5</em><a class="headerlink" href="#enable.markers.SquareMarker.draw_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enable.markers.SquareMarker.kiva_marker">
+<code class="sig-name descname">kiva_marker</code><em class="property"> = 1</em><a class="headerlink" href="#enable.markers.SquareMarker.kiva_marker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.markers.StarMarker">
+<em class="property">class </em><code class="sig-prename descclassname">enable.markers.</code><code class="sig-name descname">StarMarker</code><a class="reference internal" href="../_modules/enable/markers.html#StarMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.StarMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.markers.AbstractMarker" title="enable.markers.AbstractMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.markers.AbstractMarker</span></code></a></p>
+<p>A marker that is a (filled) star.</p>
+<dl class="attribute">
+<dt id="enable.markers.StarMarker.draw_mode">
+<code class="sig-name descname">draw_mode</code><em class="property"> = 5</em><a class="headerlink" href="#enable.markers.StarMarker.draw_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.markers.TriangleMarker">
+<em class="property">class </em><code class="sig-prename descclassname">enable.markers.</code><code class="sig-name descname">TriangleMarker</code><a class="reference internal" href="../_modules/enable/markers.html#TriangleMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.markers.TriangleMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.markers.AbstractMarker" title="enable.markers.AbstractMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.markers.AbstractMarker</span></code></a></p>
+<p>A marker that is a triangle with one apex pointing up.</p>
+<dl class="attribute">
+<dt id="enable.markers.TriangleMarker.draw_mode">
+<code class="sig-name descname">draw_mode</code><em class="property"> = 5</em><a class="headerlink" href="#enable.markers.TriangleMarker.draw_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enable.markers.TriangleMarker.kiva_marker">
+<code class="sig-name descname">kiva_marker</code><em class="property"> = 6</em><a class="headerlink" href="#enable.markers.TriangleMarker.kiva_marker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.label.html"
+                        title="previous chapter">enable.label module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.native_scrollbar.html"
+                        title="next chapter">enable.native_scrollbar module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.markers.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

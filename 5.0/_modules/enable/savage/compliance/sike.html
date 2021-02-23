@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.savage.compliance.sike &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../../../index.html" >
+    <link rel="up" title="Module code" href="../../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.savage.compliance.sike</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pstats</span>
+
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Constant</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span>
+    <span class="n">Property</span><span class="p">,</span> <span class="n">Str</span><span class="p">,</span> <span class="n">on_trait_change</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">CodeEditor</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="n">HGroup</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">Label</span><span class="p">,</span> <span class="n">TabularAdapter</span><span class="p">,</span> <span class="n">TabularEditor</span><span class="p">,</span>
+    <span class="n">UItem</span><span class="p">,</span> <span class="n">VGroup</span><span class="p">,</span> <span class="n">View</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="SuperTuple"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.SuperTuple">[docs]</a><span class="k">class</span> <span class="nc">SuperTuple</span><span class="p">(</span><span class="nb">tuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Generic super-tuple using pre-defined attribute names.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">__names__</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+        <span class="bp">self</span> <span class="o">=</span> <span class="nb">tuple</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">__names__</span><span class="p">):</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="Subrecord"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.Subrecord">[docs]</a><span class="k">class</span> <span class="nc">Subrecord</span><span class="p">(</span><span class="n">SuperTuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; The records referring to the calls a function makes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">__names__</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;file_line_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ncalls&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nonrec_calls&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;inline_time&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cum_time&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">line</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">func_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Record"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.Record">[docs]</a><span class="k">class</span> <span class="nc">Record</span><span class="p">(</span><span class="n">Subrecord</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; The top-level profiling record of a function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">__names__</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;file_line_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ncalls&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nonrec_calls&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;inline_time&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cum_time&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;callers&quot;</span><span class="p">,</span>
+    <span class="p">]</span></div>
+
+
+<span class="n">profile_columns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;# Calls&quot;</span><span class="p">,</span> <span class="s2">&quot;ncalls&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;# Nonrec&quot;</span><span class="p">,</span> <span class="s2">&quot;nonrec_calls&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Self Time&quot;</span><span class="p">,</span> <span class="s2">&quot;inline_time&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Cum. Time&quot;</span><span class="p">,</span> <span class="s2">&quot;cum_time&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="s2">&quot;func_name&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Line&quot;</span><span class="p">,</span> <span class="s2">&quot;line&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;File&quot;</span><span class="p">,</span> <span class="s2">&quot;file&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="ProfileAdapter"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.ProfileAdapter">[docs]</a><span class="k">class</span> <span class="nc">ProfileAdapter</span><span class="p">(</span><span class="n">TabularAdapter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Display profiling records in a TabularEditor.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">columns</span> <span class="o">=</span> <span class="n">profile_columns</span>
+
+    <span class="c1"># Whether filenames should only be displayed as basenames or not.</span>
+    <span class="n">basenames</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Whether times should be shown as percentages or not.</span>
+    <span class="n">percentages</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># The total time to use for calculating percentages.</span>
+    <span class="n">total_time</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">ncalls_width</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mi">55</span><span class="p">)</span>
+    <span class="n">nonrec_calls_width</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mi">55</span><span class="p">)</span>
+    <span class="n">inline_time_width</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mi">75</span><span class="p">)</span>
+    <span class="n">cum_time_width</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mi">75</span><span class="p">)</span>
+    <span class="n">func_name_width</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+    <span class="n">line_width</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+
+    <span class="n">ncalls_alignment</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+    <span class="n">nonrec_calls_alignment</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+    <span class="n">inline_time_alignment</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+    <span class="n">cum_time_alignment</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+    <span class="n">line_alignment</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+
+    <span class="n">file_text</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Str</span><span class="p">)</span>
+    <span class="n">inline_time_text</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Str</span><span class="p">)</span>
+    <span class="n">cum_time_text</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Str</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_file_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">file_line_name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">basenames</span> <span class="ow">and</span> <span class="n">fn</span> <span class="o">!=</span> <span class="s2">&quot;~&quot;</span><span class="p">:</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fn</span>
+
+    <span class="k">def</span> <span class="nf">_get_inline_time_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">percentages</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%2.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">inline_time</span> <span class="o">*</span> <span class="mf">100.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">inline_time</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_cum_time_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">percentages</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%2.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">cum_time</span> <span class="o">*</span> <span class="mf">100.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">cum_time</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_profile_editor"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.get_profile_editor">[docs]</a><span class="k">def</span> <span class="nf">get_profile_editor</span><span class="p">(</span><span class="n">adapter</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">TabularEditor</span><span class="p">(</span>
+        <span class="n">adapter</span><span class="o">=</span><span class="n">adapter</span><span class="p">,</span>
+        <span class="n">editable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">operations</span><span class="o">=</span><span class="p">[],</span>
+        <span class="n">selected</span><span class="o">=</span><span class="s2">&quot;selected_record&quot;</span><span class="p">,</span>
+        <span class="n">column_clicked</span><span class="o">=</span><span class="s2">&quot;column_clicked&quot;</span><span class="p">,</span>
+        <span class="n">dclicked</span><span class="o">=</span><span class="s2">&quot;dclicked&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ProfileResults"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.ProfileResults">[docs]</a><span class="k">class</span> <span class="nc">ProfileResults</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Display profiling results.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># The sorted list of Records that mirrors this dictionary.</span>
+    <span class="n">records</span> <span class="o">=</span> <span class="n">List</span><span class="p">()</span>
+    <span class="n">selected_record</span> <span class="o">=</span> <span class="n">Any</span><span class="p">()</span>
+    <span class="n">dclicked</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
+    <span class="n">column_clicked</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
+
+    <span class="c1"># The total time in seconds for the set of records.</span>
+    <span class="n">total_time</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="c1"># The column name to sort on.</span>
+    <span class="n">sort_key</span> <span class="o">=</span> <span class="n">Str</span><span class="p">(</span><span class="s2">&quot;inline_time&quot;</span><span class="p">)</span>
+    <span class="n">sort_ascending</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">adapter</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">ProfileAdapter</span><span class="p">)</span>
+    <span class="n">basenames</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">percentages</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ProfileResults.trait_view"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.ProfileResults.trait_view">[docs]</a>    <span class="k">def</span> <span class="nf">trait_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">view_element</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">view_element</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">ProfileResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">trait_view</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">view_element</span><span class="o">=</span><span class="n">view_element</span>
+            <span class="p">)</span>
+
+        <span class="n">view</span> <span class="o">=</span> <span class="n">View</span><span class="p">(</span>
+            <span class="n">Group</span><span class="p">(</span><span class="n">Item</span><span class="p">(</span><span class="s2">&quot;total_time&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">)),</span>
+            <span class="n">Item</span><span class="p">(</span>
+                <span class="s2">&quot;records&quot;</span><span class="p">,</span>
+                <span class="n">editor</span><span class="o">=</span><span class="n">get_profile_editor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="p">),</span>
+                <span class="n">show_label</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="mi">768</span><span class="p">,</span>
+            <span class="n">resizable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">view</span></div>
+
+<div class="viewcode-block" id="ProfileResults.sorter"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.ProfileResults.sorter">[docs]</a>    <span class="k">def</span> <span class="nf">sorter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the appropriate sort key for sorting the records.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_key</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ProfileResults.sort_records"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.ProfileResults.sort_records">[docs]</a>    <span class="k">def</span> <span class="nf">sort_records</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">records</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Resort the records according to the current settings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">records</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">records</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sorter</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_ascending</span><span class="p">:</span>
+            <span class="n">records</span> <span class="o">=</span> <span class="n">records</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">records</span></div>
+
+    <span class="k">def</span> <span class="nf">_adapter_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ProfileAdapter</span><span class="p">(</span>
+            <span class="n">basenames</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">basenames</span><span class="p">,</span>
+            <span class="n">percentages</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">percentages</span><span class="p">,</span>
+            <span class="n">total_time</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">total_time</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s2">&quot;total_time,percentages,basenames&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_adapter_traits_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+
+    <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s2">&quot;sort_key,sort_ascending&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_resort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">records</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_records</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">records</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_column_clicked_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">new</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new</span><span class="o">.</span><span class="n">column</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">profile_columns</span><span class="p">[</span><span class="n">new</span><span class="o">.</span><span class="n">column</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">column</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_key</span><span class="p">:</span>
+            <span class="c1"># Just flip the order.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sort_ascending</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_ascending</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trait_set</span><span class="p">(</span><span class="n">sort_ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort_key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SillyStatsWrapper"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.SillyStatsWrapper">[docs]</a><span class="k">class</span> <span class="nc">SillyStatsWrapper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Wrap any object with a .stats attribute or a .stats dictionary such</span>
+<span class="sd">    that it can be passed to a Stats() constructor.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stats</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stats</span> <span class="o">=</span> <span class="n">obj</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># Load from a file.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stats</span> <span class="o">=</span> <span class="n">pstats</span><span class="o">.</span><span class="n">Stats</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;stats&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stats</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">stats</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;create_stats&quot;</span><span class="p">):</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">create_stats</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stats</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">stats</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;don&#39;t know how to fake a Stats with </span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">obj</span><span class="p">,))</span>
+
+<div class="viewcode-block" id="SillyStatsWrapper.create_stats"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.SillyStatsWrapper.create_stats">[docs]</a>    <span class="k">def</span> <span class="nf">create_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="SillyStatsWrapper.getstats"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.SillyStatsWrapper.getstats">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">getstats</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pstats</span><span class="o">.</span><span class="n">Stats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Sike"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.Sike">[docs]</a><span class="k">class</span> <span class="nc">Sike</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Tie several profile-related widgets together.</span>
+
+<span class="sd">    Sike is like Gotcha, only less mature.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># The main pstats.Stats() object providing the data.</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="n">Any</span><span class="p">()</span>
+
+    <span class="c1"># The main results and the subcalls.</span>
+    <span class="n">main_results</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">ProfileResults</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">())</span>
+    <span class="n">caller_results</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">ProfileResults</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">())</span>
+    <span class="n">callee_results</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">ProfileResults</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">())</span>
+
+    <span class="c1"># The records have list of callers. Invert this to give a map from function</span>
+    <span class="c1"># to callee.</span>
+    <span class="n">callee_map</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">()</span>
+
+    <span class="c1"># Map from the (file, lineno, name) tuple to the record.</span>
+    <span class="n">record_map</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">()</span>
+
+    <span class="c1"># GUI traits ############################################################</span>
+
+    <span class="n">basenames</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">percentages</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">Str</span><span class="p">()</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">Str</span><span class="p">()</span>
+
+    <span class="n">traits_view</span> <span class="o">=</span> <span class="n">View</span><span class="p">(</span>
+        <span class="n">VGroup</span><span class="p">(</span>
+            <span class="n">HGroup</span><span class="p">(</span><span class="n">Item</span><span class="p">(</span><span class="s2">&quot;basenames&quot;</span><span class="p">),</span> <span class="n">Item</span><span class="p">(</span><span class="s2">&quot;percentages&quot;</span><span class="p">)),</span>
+            <span class="n">HGroup</span><span class="p">(</span>
+                <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;main_results&quot;</span><span class="p">),</span>
+                <span class="n">VGroup</span><span class="p">(</span>
+                    <span class="n">Label</span><span class="p">(</span><span class="s2">&quot;Callees&quot;</span><span class="p">),</span>
+                    <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;callee_results&quot;</span><span class="p">),</span>
+                    <span class="n">Label</span><span class="p">(</span><span class="s2">&quot;Callers&quot;</span><span class="p">),</span>
+                    <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;caller_results&quot;</span><span class="p">),</span>
+                    <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;filename&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">),</span>
+                    <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">,</span> <span class="n">editor</span><span class="o">=</span><span class="n">CodeEditor</span><span class="p">(</span><span class="n">line</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">)),</span>
+                <span class="p">),</span>
+                <span class="n">style</span><span class="o">=</span><span class="s2">&quot;custom&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">),</span>
+        <span class="n">width</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+        <span class="n">height</span><span class="o">=</span><span class="mi">768</span><span class="p">,</span>
+        <span class="n">resizable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Profiling results&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="Sike.fromstats"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.Sike.fromstats">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">fromstats</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">stats</span><span class="p">,</span> <span class="o">**</span><span class="n">traits</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Instantiate an Sike from a Stats object, Stats.stats dictionary, or</span>
+<span class="sd">        Profile object, or a filename of the saved Stats data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">SillyStatsWrapper</span><span class="o">.</span><span class="n">getstats</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+
+        <span class="bp">self</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">stats</span><span class="o">=</span><span class="n">stats</span><span class="p">,</span> <span class="o">**</span><span class="n">traits</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_stats</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="Sike.add_stats"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.Sike.add_stats">[docs]</a>    <span class="k">def</span> <span class="nf">add_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stats</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add new statistics.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">SillyStatsWrapper</span><span class="o">.</span><span class="n">getstats</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_stats</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Sike.records_from_stats"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.Sike.records_from_stats">[docs]</a>    <span class="k">def</span> <span class="nf">records_from_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stats</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Create a list of records from a stats dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">records</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="p">(</span>
+            <span class="n">file_line_name</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">ncalls</span><span class="p">,</span> <span class="n">nonrec_calls</span><span class="p">,</span> <span class="n">inline_time</span><span class="p">,</span> <span class="n">cum_time</span><span class="p">,</span> <span class="n">calls</span><span class="p">),</span>
+        <span class="p">)</span> <span class="ow">in</span> <span class="n">stats</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">newcalls</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">sub_file_line_name</span><span class="p">,</span> <span class="n">sub_call</span> <span class="ow">in</span> <span class="n">calls</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">newcalls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Subrecord</span><span class="p">((</span><span class="n">sub_file_line_name</span><span class="p">,)</span> <span class="o">+</span> <span class="n">sub_call</span><span class="p">))</span>
+            <span class="n">records</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">Record</span><span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="n">file_line_name</span><span class="p">,</span>
+                        <span class="n">ncalls</span><span class="p">,</span>
+                        <span class="n">nonrec_calls</span><span class="p">,</span>
+                        <span class="n">inline_time</span><span class="p">,</span>
+                        <span class="n">cum_time</span><span class="p">,</span>
+                        <span class="n">newcalls</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">records</span></div>
+
+<div class="viewcode-block" id="Sike.get_callee_map"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.Sike.get_callee_map">[docs]</a>    <span class="k">def</span> <span class="nf">get_callee_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">records</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Create a callee map.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">callees</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">caller</span> <span class="ow">in</span> <span class="n">record</span><span class="o">.</span><span class="n">callers</span><span class="p">:</span>
+                <span class="n">callees</span><span class="p">[</span><span class="n">caller</span><span class="o">.</span><span class="n">file_line_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">Subrecord</span><span class="p">((</span><span class="n">record</span><span class="o">.</span><span class="n">file_line_name</span><span class="p">,)</span> <span class="o">+</span> <span class="n">caller</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">callees</span></div>
+
+    <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s2">&quot;percentages,basenames&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_adapter_traits_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">main_results</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">callee_results</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">caller_results</span><span class="p">,</span>
+        <span class="p">]:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Sike.update_sub_results"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.Sike.update_sub_results">[docs]</a>    <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s2">&quot;main_results:selected_record&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">update_sub_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">new</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caller_results</span><span class="o">.</span><span class="n">total_time</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">cum_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caller_results</span><span class="o">.</span><span class="n">records</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">callers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callee_results</span><span class="o">.</span><span class="n">_resort</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caller_results</span><span class="o">.</span><span class="n">selected_record</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">caller_results</span><span class="o">.</span><span class="n">activated_record</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">callee_results</span><span class="o">.</span><span class="n">total_time</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">cum_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callee_results</span><span class="o">.</span><span class="n">records</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">callee_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">new</span><span class="o">.</span><span class="n">file_line_name</span><span class="p">,</span> <span class="p">[]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callee_results</span><span class="o">.</span><span class="n">_resort</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callee_results</span><span class="o">.</span><span class="n">selected_record</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">callee_results</span><span class="o">.</span><span class="n">activated_record</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">filename</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">file_line_name</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;ru&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">code</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="n">code</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">line</span> <span class="o">=</span> <span class="n">line</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trait_set</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Sike.goto_record"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.Sike.goto_record">[docs]</a>    <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s2">&quot;caller_results:dclicked,&quot;</span> <span class="s2">&quot;callee_results:dclicked&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">goto_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">new</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">new</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">file_line_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">record_map</span><span class="p">:</span>
+            <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">record_map</span><span class="p">[</span><span class="n">new</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">file_line_name</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">main_results</span><span class="o">.</span><span class="n">selected_record</span> <span class="o">=</span> <span class="n">record</span></div>
+
+    <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s2">&quot;stats&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_refresh_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Refresh the records from the stored Stats object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_results</span><span class="o">.</span><span class="n">records</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_results</span><span class="o">.</span><span class="n">sort_records</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">records_from_stats</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">stats</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callee_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_callee_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_results</span><span class="o">.</span><span class="n">records</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">record_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">total_time</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_results</span><span class="o">.</span><span class="n">records</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">record_map</span><span class="p">[</span><span class="n">record</span><span class="o">.</span><span class="n">file_line_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span>
+            <span class="n">total_time</span> <span class="o">+=</span> <span class="n">record</span><span class="o">.</span><span class="n">inline_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_results</span><span class="o">.</span><span class="n">total_time</span> <span class="o">=</span> <span class="n">total_time</span></div>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.sike.html#enable.savage.compliance.sike.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="kn">import</span> <span class="nn">argparse</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;file&quot;</span><span class="p">)</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="n">pstats</span><span class="o">.</span><span class="n">Stats</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">Sike</span><span class="o">.</span><span class="n">fromstats</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+
+    <span class="n">app</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

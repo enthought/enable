@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.events module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable package" href="enable.html" >
+    <link rel="next" title="enable.example_application module" href="enable.example_application.html" >
+    <link rel="prev" title="enable.enable_traits module" href="enable.enable_traits.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" accesskey="U">enable package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.example_application.html" title="enable.example_application module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.enable_traits.html" title="enable.enable_traits module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.events">
+<span id="enable-events-module"></span><h1>enable.events module<a class="headerlink" href="#module-enable.events" title="Permalink to this headline">¶</a></h1>
+<p>Define the event objects and traits used by Enable components.</p>
+<p>For a list of all the possible event suffixes, see interactor.py.</p>
+<dl class="class">
+<dt id="enable.events.BasicEvent">
+<em class="property">class </em><code class="sig-prename descclassname">enable.events.</code><code class="sig-name descname">BasicEvent</code><a class="reference internal" href="../_modules/enable/events.html#BasicEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.events.BasicEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasTraits</span></code></a></p>
+<dl class="method">
+<dt id="enable.events.BasicEvent.current_pointer_position">
+<code class="sig-name descname">current_pointer_position</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/events.html#BasicEvent.current_pointer_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.events.BasicEvent.current_pointer_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current pointer position in the transformed coordinates</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.events.BasicEvent.net_transform">
+<code class="sig-name descname">net_transform</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/events.html#BasicEvent.net_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.events.BasicEvent.net_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a single transformation (currently only (dx,dy)) that reflects
+the total amount of change from the original coordinates to the current
+offset coordinates stored in self.x and self.y.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.events.BasicEvent.offset_xy">
+<code class="sig-name descname">offset_xy</code><span class="sig-paren">(</span><em class="sig-param">origin_x</em>, <em class="sig-param">origin_y</em>, <em class="sig-param">caller=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/events.html#BasicEvent.offset_xy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.events.BasicEvent.offset_xy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shifts this event to be in the coordinate frame whose origin, specified
+in the event’s coordinate frame, is (origin_x, origin_y).</p>
+<p>Basically, a component calls event.offset_xy(*self.position) to shift
+the event into its own coordinate frame.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.events.BasicEvent.pop">
+<code class="sig-name descname">pop</code><span class="sig-paren">(</span><em class="sig-param">count=1</em>, <em class="sig-param">caller=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/events.html#BasicEvent.pop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.events.BasicEvent.pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restores a previous position of the event.  If <strong>count</strong> is provided,
+then pops <strong>count</strong> elements off of the event stack.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.events.BasicEvent.push_transform">
+<code class="sig-name descname">push_transform</code><span class="sig-paren">(</span><em class="sig-param">transform</em>, <em class="sig-param">caller=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/events.html#BasicEvent.push_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.events.BasicEvent.push_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the current transform in a stack and sets the given transform
+to be the active one.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.events.BasicEvent.scale_xy">
+<code class="sig-name descname">scale_xy</code><span class="sig-paren">(</span><em class="sig-param">scale_x</em>, <em class="sig-param">scale_y</em>, <em class="sig-param">caller=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/events.html#BasicEvent.scale_xy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.events.BasicEvent.scale_xy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scales the event to be in the scale specified.</p>
+<p>A component calls event.scale_xy(scale) to scale the event into its own
+coordinate frame when the ctm has been scaled.  This operation is used
+for zooming.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.events.BlobEvent">
+<em class="property">class </em><code class="sig-prename descclassname">enable.events.</code><code class="sig-name descname">BlobEvent</code><a class="reference internal" href="../_modules/enable/events.html#BlobEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.events.BlobEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.events.BasicEvent" title="enable.events.BasicEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.events.BasicEvent</span></code></a></p>
+<p>Represent a single pointer event from a multi-pointer event system.</p>
+<dl class="simple">
+<dt>Will be used with events:</dt><dd><p>blob_down
+blob_move
+blob_up</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="enable.events.BlobEvent.push_transform">
+<code class="sig-name descname">push_transform</code><span class="sig-paren">(</span><em class="sig-param">transform</em>, <em class="sig-param">caller=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/events.html#BlobEvent.push_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.events.BlobEvent.push_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the current transform in a stack and sets the given transform
+to be the active one.</p>
+<p>This will also adjust x0 and y0.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.events.BlobFrameEvent">
+<em class="property">class </em><code class="sig-prename descclassname">enable.events.</code><code class="sig-name descname">BlobFrameEvent</code><a class="reference internal" href="../_modules/enable/events.html#BlobFrameEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.events.BlobFrameEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.events.BasicEvent" title="enable.events.BasicEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.events.BasicEvent</span></code></a></p>
+<p>Represent the framing events for a multi-pointer event system.</p>
+<dl class="simple">
+<dt>Will be used with events:</dt><dd><p>blob_frame_begin
+blob_frame_end</p>
+</dd>
+</dl>
+<p>These can be used to synchronize the effects of multiple pointers.</p>
+<p>The position traits are meaningless. These events will get passed down
+through all components. Also, no component should mark it as handled. The
+event must be dispatched through whether the component takes action based
+on it or not.</p>
+<p>NOTE: Frames without any blob events may or may not generate
+BlobFrameEvents.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.events.DragEvent">
+<em class="property">class </em><code class="sig-prename descclassname">enable.events.</code><code class="sig-name descname">DragEvent</code><a class="reference internal" href="../_modules/enable/events.html#DragEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.events.DragEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.events.BasicEvent" title="enable.events.BasicEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.events.BasicEvent</span></code></a></p>
+<p>A system UI drag-and-drop operation.  This is not the same as a
+DragTool event.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.events.KeyEvent">
+<em class="property">class </em><code class="sig-prename descclassname">enable.events.</code><code class="sig-name descname">KeyEvent</code><a class="reference internal" href="../_modules/enable/events.html#KeyEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.events.KeyEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.events.BasicEvent" title="enable.events.BasicEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.events.BasicEvent</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.events.MouseEvent">
+<em class="property">class </em><code class="sig-prename descclassname">enable.events.</code><code class="sig-name descname">MouseEvent</code><a class="reference internal" href="../_modules/enable/events.html#MouseEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.events.MouseEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.events.BasicEvent" title="enable.events.BasicEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.events.BasicEvent</span></code></a></p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.enable_traits.html"
+                        title="previous chapter">enable.enable_traits module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.example_application.html"
+                        title="next chapter">enable.example_application module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.events.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>kiva.fonttools.font_manager &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../../index.html" >
+    <link rel="up" title="Module code" href="../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for kiva.fonttools.font_manager</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">####### NOTE #######</span>
+<span class="sd">This is based heavily on matplotlib&#39;s font_manager.py rev 8713,</span>
+<span class="sd">but has been modified to not use other matplotlib modules</span>
+<span class="sd">####################</span>
+
+<span class="sd">A module for finding, managing, and using fonts across platforms.</span>
+
+<span class="sd">This module provides a single :class:`FontManager` instance that can</span>
+<span class="sd">be shared across backends and platforms.  The :func:`findfont`</span>
+<span class="sd">function returns the best TrueType (TTF) font file in the local or</span>
+<span class="sd">system font path that matches the specified :class:`FontProperties`</span>
+<span class="sd">instance.  The :class:`FontManager` also handles Adobe Font Metrics</span>
+<span class="sd">(AFM) font files for use by the PostScript backend.</span>
+
+<span class="sd">The design is based on the `W3C Cascading Style Sheet, Level 1 (CSS1)</span>
+<span class="sd">font specification &lt;http://www.w3.org/TR/1998/REC-CSS2-19980512/&gt;`_.</span>
+<span class="sd">Future versions may implement the Level 2 or 2.1 specifications.</span>
+
+<span class="sd">KNOWN ISSUES</span>
+
+<span class="sd">  - documentation</span>
+<span class="sd">  - font variant is untested</span>
+<span class="sd">  - font stretch is incomplete</span>
+<span class="sd">  - font size is incomplete</span>
+<span class="sd">  - font size_adjust is incomplete</span>
+<span class="sd">  - default font algorithm needs improvement and testing</span>
+<span class="sd">  - setWeights function needs improvement</span>
+<span class="sd">  - &#39;light&#39; is an invalid weight value, remove it.</span>
+<span class="sd">  - update_fonts not implemented</span>
+
+<span class="sd">Authors   : John Hunter &lt;jdhunter@ace.bsd.uchicago.edu&gt;</span>
+<span class="sd">            Paul Barrett &lt;Barrett@STScI.Edu&gt;</span>
+<span class="sd">            Michael Droettboom &lt;mdroe@STScI.edu&gt;</span>
+<span class="sd">Copyright : John Hunter (2004,2005), Paul Barrett (2004,2005)</span>
+<span class="sd">License   : matplotlib license (PSF compatible)</span>
+<span class="sd">            The font directory code is from ttfquery,</span>
+<span class="sd">            see license/LICENSE_TTFQUERY.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">fontTools.ttLib</span> <span class="k">import</span> <span class="n">TTCollection</span><span class="p">,</span> <span class="n">TTFont</span><span class="p">,</span> <span class="n">TTLibError</span>
+
+<span class="kn">from</span> <span class="nn">traits.etsconfig.api</span> <span class="k">import</span> <span class="n">ETSConfig</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">afm</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">font_scalings</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;xx-small&quot;</span><span class="p">:</span> <span class="mf">0.579</span><span class="p">,</span>
+    <span class="s2">&quot;x-small&quot;</span><span class="p">:</span> <span class="mf">0.694</span><span class="p">,</span>
+    <span class="s2">&quot;small&quot;</span><span class="p">:</span> <span class="mf">0.833</span><span class="p">,</span>
+    <span class="s2">&quot;medium&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="s2">&quot;large&quot;</span><span class="p">:</span> <span class="mf">1.200</span><span class="p">,</span>
+    <span class="s2">&quot;x-large&quot;</span><span class="p">:</span> <span class="mf">1.440</span><span class="p">,</span>
+    <span class="s2">&quot;xx-large&quot;</span><span class="p">:</span> <span class="mf">1.728</span><span class="p">,</span>
+    <span class="s2">&quot;larger&quot;</span><span class="p">:</span> <span class="mf">1.2</span><span class="p">,</span>
+    <span class="s2">&quot;smaller&quot;</span><span class="p">:</span> <span class="mf">0.833</span><span class="p">,</span>
+    <span class="kc">None</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">stretch_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;ultra-condensed&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="s2">&quot;extra-condensed&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="s2">&quot;condensed&quot;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>
+    <span class="s2">&quot;semi-condensed&quot;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span>
+    <span class="s2">&quot;normal&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
+    <span class="s2">&quot;semi-expanded&quot;</span><span class="p">:</span> <span class="mi">600</span><span class="p">,</span>
+    <span class="s2">&quot;expanded&quot;</span><span class="p">:</span> <span class="mi">700</span><span class="p">,</span>
+    <span class="s2">&quot;extra-expanded&quot;</span><span class="p">:</span> <span class="mi">800</span><span class="p">,</span>
+    <span class="s2">&quot;ultra-expanded&quot;</span><span class="p">:</span> <span class="mi">900</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">weight_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;ultralight&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="s2">&quot;light&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="s2">&quot;normal&quot;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span>
+    <span class="s2">&quot;regular&quot;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span>
+    <span class="s2">&quot;book&quot;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span>
+    <span class="s2">&quot;medium&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
+    <span class="s2">&quot;roman&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
+    <span class="s2">&quot;semibold&quot;</span><span class="p">:</span> <span class="mi">600</span><span class="p">,</span>
+    <span class="s2">&quot;demibold&quot;</span><span class="p">:</span> <span class="mi">600</span><span class="p">,</span>
+    <span class="s2">&quot;demi&quot;</span><span class="p">:</span> <span class="mi">600</span><span class="p">,</span>
+    <span class="s2">&quot;bold&quot;</span><span class="p">:</span> <span class="mi">700</span><span class="p">,</span>
+    <span class="s2">&quot;heavy&quot;</span><span class="p">:</span> <span class="mi">800</span><span class="p">,</span>
+    <span class="s2">&quot;extra bold&quot;</span><span class="p">:</span> <span class="mi">800</span><span class="p">,</span>
+    <span class="s2">&quot;black&quot;</span><span class="p">:</span> <span class="mi">900</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">font_family_aliases</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;serif&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sans-serif&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sans serif&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cursive&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fantasy&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;monospace&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sans&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;modern&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1">#  OS Font paths</span>
+<span class="n">MSFolders</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders&quot;</span>
+
+<span class="n">MSFontDirectories</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts&quot;</span><span class="p">,</span>
+    <span class="sa">r</span><span class="s2">&quot;SOFTWARE\Microsoft\Windows\CurrentVersion\Fonts&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">X11FontDirectories</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># an old standard installation point</span>
+    <span class="s2">&quot;/usr/X11R6/lib/X11/fonts/TTF/&quot;</span><span class="p">,</span>
+    <span class="c1"># here is the new standard location for fonts</span>
+    <span class="s2">&quot;/usr/share/fonts/&quot;</span><span class="p">,</span>
+    <span class="c1"># documented as a good place to install new fonts</span>
+    <span class="s2">&quot;/usr/local/share/fonts/&quot;</span><span class="p">,</span>
+    <span class="c1"># common application, not really useful</span>
+    <span class="s2">&quot;/usr/lib/openoffice/share/fonts/truetype/&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">OSXFontDirectories</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;/Library/Fonts/&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;/Network/Library/Fonts/&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;/System/Library/Fonts/&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">home</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;HOME&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">home</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># user fonts on OSX</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">home</span><span class="p">,</span> <span class="s2">&quot;Library&quot;</span><span class="p">,</span> <span class="s2">&quot;Fonts&quot;</span><span class="p">)</span>
+    <span class="n">OSXFontDirectories</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">home</span><span class="p">,</span> <span class="s2">&quot;.fonts&quot;</span><span class="p">)</span>
+    <span class="n">X11FontDirectories</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+<span class="c1">###############################################################################</span>
+<span class="c1">#  functions to replace those that matplotlib ship in different modules</span>
+<span class="c1">###############################################################################</span>
+
+<span class="n">preferred_fonts</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;fantasy&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;Comic Sans MS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Chicago&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Charcoal&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ImpactWestern&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;fantasy&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;cursive&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;Apple Chancery&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Textile&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Zapf Chancery&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Sand&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cursive&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;monospace&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;Bitstream Vera Sans Mono&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;DejaVu Sans Mono&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Andale Mono&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Nimbus Mono L&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Courier New&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Courier&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Fixed&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Terminal&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;monospace&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;serif&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;Bitstream Vera Serif&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;DejaVu Serif&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;New Century Schoolbook&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Century Schoolbook L&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Utopia&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ITC Bookman&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Bookman&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Nimbus Roman No9 L&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Times New Roman&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Times&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Palatino&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Charter&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;serif&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;sans-serif&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;Bitstream Vera Sans&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;DejaVu Sans&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Lucida Grande&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Verdana&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Geneva&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Lucid&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Arial&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Helvetica&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Avant Garde&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sans-serif&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">_is_writable_dir</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    p is a string pointing to a putative writable dir -- return True p</span>
+<span class="sd">    is such a string, else False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryFile</span><span class="p">(</span><span class="nb">dir</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;kiva.test&quot;</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+
+<div class="viewcode-block" id="get_configdir"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.get_configdir">[docs]</a><span class="k">def</span> <span class="nf">get_configdir</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the string representing the configuration dir.  If s is the</span>
+<span class="sd">    special string _default_, use HOME/.kiva.  s must be writable</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ETSConfig</span><span class="o">.</span><span class="n">application_data</span><span class="p">,</span> <span class="s2">&quot;kiva&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">errno</span> <span class="o">!=</span> <span class="n">errno</span><span class="o">.</span><span class="n">EEXIST</span><span class="p">:</span>
+            <span class="k">raise</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_writable_dir</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Configuration directory </span><span class="si">%s</span><span class="s2"> must be writable&quot;</span> <span class="o">%</span> <span class="n">p</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">p</span></div>
+
+
+<div class="viewcode-block" id="decode_prop"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.decode_prop">[docs]</a><span class="k">def</span> <span class="nf">decode_prop</span><span class="p">(</span><span class="n">prop</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Decode a prop string.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    prop : bytestring</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Adapted from: https://gist.github.com/pklaus/dce37521579513c574d0</span>
+    <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;utf-16-be&quot;</span> <span class="k">if</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x00</span><span class="s2">&quot;</span> <span class="ow">in</span> <span class="n">prop</span> <span class="k">else</span> <span class="s2">&quot;utf-8&quot;</span>
+
+    <span class="k">return</span> <span class="n">prop</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="getPropDict"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.getPropDict">[docs]</a><span class="k">def</span> <span class="nf">getPropDict</span><span class="p">(</span><span class="n">font</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">font</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+    <span class="n">propdict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">n</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;name&quot;</span> <span class="ow">in</span> <span class="n">propdict</span> <span class="ow">and</span> <span class="s2">&quot;sfnt4&quot;</span> <span class="ow">in</span> <span class="n">propdict</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">nameID</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="s2">&quot;name&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">propdict</span><span class="p">:</span>
+                <span class="n">propdict</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">decode_prop</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">string</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">nameID</span> <span class="o">==</span> <span class="mi">4</span> <span class="ow">and</span> <span class="s2">&quot;sfnt4&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">propdict</span><span class="p">:</span>
+                <span class="n">propdict</span><span class="p">[</span><span class="s2">&quot;sfnt4&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">decode_prop</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">string</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">UnicodeDecodeError</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+    <span class="k">return</span> <span class="n">propdict</span></div>
+
+
+<span class="c1">###############################################################################</span>
+<span class="c1">#  matplotlib code below</span>
+<span class="c1">###############################################################################</span>
+
+<span class="n">synonyms</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;ttf&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;ttf&quot;</span><span class="p">,</span> <span class="s2">&quot;otf&quot;</span><span class="p">,</span> <span class="s2">&quot;ttc&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;otf&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;ttf&quot;</span><span class="p">,</span> <span class="s2">&quot;otf&quot;</span><span class="p">,</span> <span class="s2">&quot;ttc&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;ttc&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;ttf&quot;</span><span class="p">,</span> <span class="s2">&quot;otf&quot;</span><span class="p">,</span> <span class="s2">&quot;ttc&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;afm&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;afm&quot;</span><span class="p">,),</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="get_fontext_synonyms"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.get_fontext_synonyms">[docs]</a><span class="k">def</span> <span class="nf">get_fontext_synonyms</span><span class="p">(</span><span class="n">fontext</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a list of file extensions extensions that are synonyms for</span>
+<span class="sd">    the given file extension *fileext*.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">synonyms</span><span class="p">[</span><span class="n">fontext</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="win32FontDirectory"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.win32FontDirectory">[docs]</a><span class="k">def</span> <span class="nf">win32FontDirectory</span><span class="p">():</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the user-specified font directory for Win32.  This is</span>
+<span class="sd">    looked up from the registry key::</span>
+
+<span class="sd">      \\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders\Fonts       # noqa</span>
+
+<span class="sd">    If the key is not found, $WINDIR/Fonts will be returned.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">winreg</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">pass</span>  <span class="c1"># Fall through to default</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">winreg</span><span class="o">.</span><span class="n">OpenKey</span><span class="p">(</span><span class="n">winreg</span><span class="o">.</span><span class="n">HKEY_CURRENT_USER</span><span class="p">,</span> <span class="n">MSFolders</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">winreg</span><span class="o">.</span><span class="n">QueryValueEx</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;Fonts&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                    <span class="k">pass</span>  <span class="c1"># Fall through to default</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">winreg</span><span class="o">.</span><span class="n">CloseKey</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c1"># Fall through to default</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;WINDIR&quot;</span><span class="p">],</span> <span class="s2">&quot;Fonts&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="win32InstalledFonts"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.win32InstalledFonts">[docs]</a><span class="k">def</span> <span class="nf">win32InstalledFonts</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fontext</span><span class="o">=</span><span class="s2">&quot;ttf&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Search for fonts in the specified font directory, or use the</span>
+<span class="sd">    system directories if none given.  A list of TrueType font</span>
+<span class="sd">    filenames are returned by default, or AFM fonts if *fontext* ==</span>
+<span class="sd">    &#39;afm&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">import</span> <span class="nn">winreg</span>
+
+    <span class="k">if</span> <span class="n">directory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="n">win32FontDirectory</span><span class="p">()</span>
+
+    <span class="n">fontext</span> <span class="o">=</span> <span class="n">get_fontext_synonyms</span><span class="p">(</span><span class="n">fontext</span><span class="p">)</span>
+
+    <span class="n">key</span><span class="p">,</span> <span class="n">items</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">fontdir</span> <span class="ow">in</span> <span class="n">MSFontDirectories</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">local</span> <span class="o">=</span> <span class="n">winreg</span><span class="o">.</span><span class="n">OpenKey</span><span class="p">(</span><span class="n">winreg</span><span class="o">.</span><span class="n">HKEY_LOCAL_MACHINE</span><span class="p">,</span> <span class="n">fontdir</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">local</span><span class="p">:</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">fontext</span><span class="p">:</span>
+                <span class="n">files</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="s2">&quot;*.&quot;</span> <span class="o">+</span> <span class="n">ext</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="n">files</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">winreg</span><span class="o">.</span><span class="n">QueryInfoKey</span><span class="p">(</span><span class="n">local</span><span class="p">)[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">key</span><span class="p">,</span> <span class="n">direc</span><span class="p">,</span> <span class="nb">any</span> <span class="o">=</span> <span class="n">winreg</span><span class="o">.</span><span class="n">EnumValue</span><span class="p">(</span><span class="n">local</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">direc</span><span class="p">):</span>
+                        <span class="n">direc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">direc</span><span class="p">)</span>
+                    <span class="n">direc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">direc</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">direc</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span> <span class="ow">in</span> <span class="n">fontext</span><span class="p">:</span>
+                        <span class="n">items</span><span class="p">[</span><span class="n">direc</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">except</span> <span class="ne">EnvironmentError</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">except</span> <span class="ne">WindowsError</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">items</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">winreg</span><span class="o">.</span><span class="n">CloseKey</span><span class="p">(</span><span class="n">local</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="OSXFontDirectory"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.OSXFontDirectory">[docs]</a><span class="k">def</span> <span class="nf">OSXFontDirectory</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the system font directories for OS X.  This is done by</span>
+<span class="sd">    starting at the list of hardcoded paths in</span>
+<span class="sd">    :attr:`OSXFontDirectories` and returning all nested directories</span>
+<span class="sd">    within them.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fontpaths</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">fontdir</span> <span class="ow">in</span> <span class="n">OSXFontDirectories</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">fontdir</span><span class="p">):</span>
+                <span class="n">fontpaths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fontdir</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">dirpath</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">_files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">fontdir</span><span class="p">):</span>
+                    <span class="n">fontpaths</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">])</span>
+
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">fontpaths</span></div>
+
+
+<div class="viewcode-block" id="OSXInstalledFonts"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.OSXInstalledFonts">[docs]</a><span class="k">def</span> <span class="nf">OSXInstalledFonts</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fontext</span><span class="o">=</span><span class="s2">&quot;ttf&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get list of font files on OS X - ignores font suffix by default.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">directory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="n">OSXFontDirectory</span><span class="p">()</span>
+
+    <span class="n">fontext</span> <span class="o">=</span> <span class="n">get_fontext_synonyms</span><span class="p">(</span><span class="n">fontext</span><span class="p">)</span>
+
+    <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">directory</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fontext</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">files</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">fontext</span><span class="p">:</span>
+                <span class="n">files</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;*.&quot;</span> <span class="o">+</span> <span class="n">ext</span><span class="p">)))</span>
+                <span class="n">files</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;*.&quot;</span> <span class="o">+</span> <span class="n">ext</span><span class="o">.</span><span class="n">upper</span><span class="p">())))</span>
+    <span class="k">return</span> <span class="n">files</span></div>
+
+
+<div class="viewcode-block" id="x11FontDirectory"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.x11FontDirectory">[docs]</a><span class="k">def</span> <span class="nf">x11FontDirectory</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the system font directories for X11.  This is done by</span>
+<span class="sd">    starting at the list of hardcoded paths in</span>
+<span class="sd">    :attr:`X11FontDirectories` and returning all nested directories</span>
+<span class="sd">    within them.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fontpaths</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">fontdir</span> <span class="ow">in</span> <span class="n">X11FontDirectories</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">fontdir</span><span class="p">):</span>
+                <span class="n">fontpaths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fontdir</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">dirpath</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">_files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">fontdir</span><span class="p">):</span>
+                    <span class="n">fontpaths</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">])</span>
+
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">fontpaths</span></div>
+
+
+<div class="viewcode-block" id="get_fontconfig_fonts"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.get_fontconfig_fonts">[docs]</a><span class="k">def</span> <span class="nf">get_fontconfig_fonts</span><span class="p">(</span><span class="n">fontext</span><span class="o">=</span><span class="s2">&quot;ttf&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Grab a list of all the fonts that are being tracked by fontconfig</span>
+<span class="sd">    by making a system call to ``fc-list``.  This is an easy way to</span>
+<span class="sd">    grab all of the fonts the user wants to be made available to</span>
+<span class="sd">    applications, without needing knowing where all of them reside.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fontext</span> <span class="o">=</span> <span class="n">get_fontext_synonyms</span><span class="p">(</span><span class="n">fontext</span><span class="p">)</span>
+
+    <span class="n">fontfiles</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;fc-list&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;file&quot;</span><span class="p">]</span>
+        <span class="n">pipe</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">pipe</span><span class="o">.</span><span class="n">communicate</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="c1"># Calling fc-list did not work, so we&#39;ll just return nothing</span>
+        <span class="k">return</span> <span class="n">fontfiles</span>
+
+    <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pipe</span><span class="o">.</span><span class="n">returncode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">output</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">fname</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span> <span class="ow">in</span> <span class="n">fontext</span>
+                    <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fname</span><span class="p">)):</span>
+                <span class="n">fontfiles</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">fontfiles</span></div>
+
+
+<div class="viewcode-block" id="findSystemFonts"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.findSystemFonts">[docs]</a><span class="k">def</span> <span class="nf">findSystemFonts</span><span class="p">(</span><span class="n">fontpaths</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fontext</span><span class="o">=</span><span class="s2">&quot;ttf&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Search for fonts in the specified font paths.  If no paths are</span>
+<span class="sd">    given, will use a standard set of system paths, as well as the</span>
+<span class="sd">    list of fonts tracked by fontconfig if fontconfig is installed and</span>
+<span class="sd">    available.  A list of TrueType fonts are returned by default with</span>
+<span class="sd">    AFM fonts as an option.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fontfiles</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">fontexts</span> <span class="o">=</span> <span class="n">get_fontext_synonyms</span><span class="p">(</span><span class="n">fontext</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">fontpaths</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+            <span class="n">fontdir</span> <span class="o">=</span> <span class="n">win32FontDirectory</span><span class="p">()</span>
+
+            <span class="n">fontpaths</span> <span class="o">=</span> <span class="p">[</span><span class="n">fontdir</span><span class="p">]</span>
+            <span class="c1"># now get all installed fonts directly...</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">win32InstalledFonts</span><span class="p">(</span><span class="n">fontdir</span><span class="p">):</span>
+                <span class="n">base</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ext</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">fontexts</span><span class="p">:</span>
+                    <span class="n">fontfiles</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># check for OS X &amp; load its fonts if present</span>
+            <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">:</span>
+                <span class="n">fontpaths</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">OSXInstalledFonts</span><span class="p">(</span><span class="n">fontext</span><span class="o">=</span><span class="n">fontext</span><span class="p">):</span>
+                    <span class="n">fontfiles</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Otherwise, check X11.</span>
+                <span class="n">fontpaths</span> <span class="o">=</span> <span class="n">x11FontDirectory</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">get_fontconfig_fonts</span><span class="p">(</span><span class="n">fontext</span><span class="p">):</span>
+                <span class="n">fontfiles</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fontpaths</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">fontpaths</span> <span class="o">=</span> <span class="p">[</span><span class="n">fontpaths</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">fontpaths</span><span class="p">:</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">fontexts</span><span class="p">:</span>
+            <span class="n">files</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;*.&quot;</span> <span class="o">+</span> <span class="n">ext</span><span class="p">)))</span>
+            <span class="n">files</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;*.&quot;</span> <span class="o">+</span> <span class="n">ext</span><span class="o">.</span><span class="n">upper</span><span class="p">())))</span>
+        <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="n">abs_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+
+            <span class="c1"># Handle dirs which look like font files, but may contain font</span>
+            <span class="c1"># files</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">abs_path</span><span class="p">):</span>
+                <span class="n">fontpaths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">abs_path</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fontfiles</span><span class="p">[</span><span class="n">abs_path</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">fname</span> <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">fontfiles</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fname</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="weight_as_number"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.weight_as_number">[docs]</a><span class="k">def</span> <span class="nf">weight_as_number</span><span class="p">(</span><span class="n">weight</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the weight property as a numeric value.  String values</span>
+<span class="sd">    are converted to their corresponding numeric value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">weight</span> <span class="o">=</span> <span class="n">weight_dict</span><span class="p">[</span><span class="n">weight</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">weight</span> <span class="o">=</span> <span class="mi">400</span>
+    <span class="k">elif</span> <span class="n">weight</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">100</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;weight not a valid integer&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">weight</span></div>
+
+
+<div class="viewcode-block" id="FontEntry"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontEntry">[docs]</a><span class="k">class</span> <span class="nc">FontEntry</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class for storing Font properties.  It is used when populating</span>
+<span class="sd">    the font lookup dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="n">variant</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span>
+                 <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;medium&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="n">style</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variant</span> <span class="o">=</span> <span class="n">variant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stretch</span> <span class="o">=</span> <span class="n">stretch</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;Font &#39;</span><span class="si">%s</span><span class="s2">&#39; (</span><span class="si">%s</span><span class="s2">) </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fname</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">variant</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stretch</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ttfFontProperty"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.ttfFontProperty">[docs]</a><span class="k">def</span> <span class="nf">ttfFontProperty</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">font</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A function for populating the :class:`FontKey` by extracting</span>
+<span class="sd">    information from the TrueType font file.</span>
+
+<span class="sd">    *font* is a :class:`FT2Font` instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">props</span> <span class="o">=</span> <span class="n">getPropDict</span><span class="p">(</span><span class="n">font</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;No name could be found for: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fpath</span><span class="p">))</span>
+
+    <span class="c1">#  Styles are: italic, oblique, and normal (default)</span>
+    <span class="n">sfnt4</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sfnt4&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">sfnt4</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;oblique&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;oblique&quot;</span>
+    <span class="k">elif</span> <span class="n">sfnt4</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;italic&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;italic&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>
+
+    <span class="c1">#  Variants are: small-caps and normal (default)</span>
+
+    <span class="c1">#  !!!!  Untested</span>
+    <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;capitals&quot;</span><span class="p">,</span> <span class="s2">&quot;small-caps&quot;</span><span class="p">]:</span>
+        <span class="n">variant</span> <span class="o">=</span> <span class="s2">&quot;small-caps&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">variant</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>
+
+    <span class="c1">#  Weights are: 100, 200, 300, 400 (normal: default), 500 (medium),</span>
+    <span class="c1">#    600 (semibold, demibold), 700 (bold), 800 (heavy), 900 (black)</span>
+    <span class="c1">#    lighter and bolder are also allowed.</span>
+
+    <span class="n">weight</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">weight_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">sfnt4</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">weight</span> <span class="o">=</span> <span class="n">w</span>
+            <span class="k">break</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">weight</span><span class="p">:</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="mi">400</span>
+    <span class="n">weight</span> <span class="o">=</span> <span class="n">weight_as_number</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span>
+
+    <span class="c1">#  Stretch can be absolute and relative</span>
+    <span class="c1">#  Absolute stretches are: ultra-condensed, extra-condensed, condensed,</span>
+    <span class="c1">#    semi-condensed, normal, semi-expanded, expanded, extra-expanded,</span>
+    <span class="c1">#    and ultra-expanded.</span>
+    <span class="c1">#  Relative stretches are: wider, narrower</span>
+    <span class="c1">#  Child value is: inherit</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">sfnt4</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;narrow&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+            <span class="ow">or</span> <span class="n">sfnt4</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;condensed&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+            <span class="ow">or</span> <span class="n">sfnt4</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;cond&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">stretch</span> <span class="o">=</span> <span class="s2">&quot;condensed&quot;</span>
+    <span class="k">elif</span> <span class="n">sfnt4</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;demi cond&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">stretch</span> <span class="o">=</span> <span class="s2">&quot;semi-condensed&quot;</span>
+    <span class="k">elif</span> <span class="n">sfnt4</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;wide&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">sfnt4</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;expanded&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">stretch</span> <span class="o">=</span> <span class="s2">&quot;expanded&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">stretch</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>
+
+    <span class="c1">#  Sizes can be absolute and relative.</span>
+    <span class="c1">#  Absolute sizes are: xx-small, x-small, small, medium, large, x-large,</span>
+    <span class="c1">#    and xx-large.</span>
+    <span class="c1">#  Relative sizes are: larger, smaller</span>
+    <span class="c1">#  Length value is an absolute font size, e.g. 12pt</span>
+    <span class="c1">#  Percentage values are in &#39;em&#39;s.  Most robust specification.</span>
+
+    <span class="c1">#  !!!!  Incomplete</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="s2">&quot;scalable&quot;</span>
+
+    <span class="k">return</span> <span class="n">FontEntry</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">style</span><span class="p">,</span> <span class="n">variant</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">stretch</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="afmFontProperty"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.afmFontProperty">[docs]</a><span class="k">def</span> <span class="nf">afmFontProperty</span><span class="p">(</span><span class="n">fontpath</span><span class="p">,</span> <span class="n">font</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A function for populating a :class:`FontKey` instance by</span>
+<span class="sd">    extracting information from the AFM font file.</span>
+
+<span class="sd">    *font* is a class:`AFM` instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">font</span><span class="o">.</span><span class="n">get_familyname</span><span class="p">()</span>
+    <span class="n">fontname</span> <span class="o">=</span> <span class="n">font</span><span class="o">.</span><span class="n">get_fontname</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="c1">#  Styles are: italic, oblique, and normal (default)</span>
+
+    <span class="k">if</span> <span class="n">font</span><span class="o">.</span><span class="n">get_angle</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;italic&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;italic&quot;</span>
+    <span class="k">elif</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;oblique&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;oblique&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>
+
+    <span class="c1">#  Variants are: small-caps and normal (default)</span>
+
+    <span class="c1"># !!!!  Untested</span>
+    <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;capitals&quot;</span><span class="p">,</span> <span class="s2">&quot;small-caps&quot;</span><span class="p">]:</span>
+        <span class="n">variant</span> <span class="o">=</span> <span class="s2">&quot;small-caps&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">variant</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>
+
+    <span class="c1">#  Weights are: 100, 200, 300, 400 (normal: default), 500 (medium),</span>
+    <span class="c1">#    600 (semibold, demibold), 700 (bold), 800 (heavy), 900 (black)</span>
+    <span class="c1">#    lighter and bolder are also allowed.</span>
+
+    <span class="n">weight</span> <span class="o">=</span> <span class="n">weight_as_number</span><span class="p">(</span><span class="n">font</span><span class="o">.</span><span class="n">get_weight</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+
+    <span class="c1">#  Stretch can be absolute and relative</span>
+    <span class="c1">#  Absolute stretches are: ultra-condensed, extra-condensed, condensed,</span>
+    <span class="c1">#    semi-condensed, normal, semi-expanded, expanded, extra-expanded,</span>
+    <span class="c1">#    and ultra-expanded.</span>
+    <span class="c1">#  Relative stretches are: wider, narrower</span>
+    <span class="c1">#  Child value is: inherit</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">fontname</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;narrow&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+            <span class="ow">or</span> <span class="n">fontname</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;condensed&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+            <span class="ow">or</span> <span class="n">fontname</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;cond&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">stretch</span> <span class="o">=</span> <span class="s2">&quot;condensed&quot;</span>
+    <span class="k">elif</span> <span class="n">fontname</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;demi cond&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">stretch</span> <span class="o">=</span> <span class="s2">&quot;semi-condensed&quot;</span>
+    <span class="k">elif</span> <span class="n">fontname</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;wide&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">fontname</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;expanded&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">stretch</span> <span class="o">=</span> <span class="s2">&quot;expanded&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">stretch</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>
+
+    <span class="c1">#  Sizes can be absolute and relative.</span>
+    <span class="c1">#  Absolute sizes are: xx-small, x-small, small, medium, large, x-large,</span>
+    <span class="c1">#    and xx-large.</span>
+    <span class="c1">#  Relative sizes are: larger, smaller</span>
+    <span class="c1">#  Length value is an absolute font size, e.g. 12pt</span>
+    <span class="c1">#  Percentage values are in &#39;em&#39;s.  Most robust specification.</span>
+
+    <span class="c1">#  All AFM fonts are apparently scalable.</span>
+
+    <span class="n">size</span> <span class="o">=</span> <span class="s2">&quot;scalable&quot;</span>
+
+    <span class="k">return</span> <span class="n">FontEntry</span><span class="p">(</span><span class="n">fontpath</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">style</span><span class="p">,</span> <span class="n">variant</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">stretch</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="createFontList"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.createFontList">[docs]</a><span class="k">def</span> <span class="nf">createFontList</span><span class="p">(</span><span class="n">fontfiles</span><span class="p">,</span> <span class="n">fontext</span><span class="o">=</span><span class="s2">&quot;ttf&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A function to create a font lookup list.  The default is to create</span>
+<span class="sd">    a list of TrueType fonts.  An AFM font list can optionally be</span>
+<span class="sd">    created.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># FIXME: This function is particularly difficult to debug</span>
+    <span class="n">fontlist</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1">#  Add fonts from list of known font files.</span>
+    <span class="n">seen</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">font_entry_err_msg</span> <span class="o">=</span> <span class="s2">&quot;Could not convert font to FontEntry for file </span><span class="si">%s</span><span class="s2">&quot;</span>
+
+    <span class="k">for</span> <span class="n">fpath</span> <span class="ow">in</span> <span class="n">fontfiles</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;createFontDict </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fpath</span><span class="p">)</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">fpath</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">seen</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">fontext</span> <span class="o">==</span> <span class="s2">&quot;afm&quot;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s2">&quot;Could not open font file </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fpath</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">font</span> <span class="o">=</span> <span class="n">afm</span><span class="o">.</span><span class="n">AFM</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+                <span class="k">finally</span><span class="p">:</span>
+                    <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s2">&quot;Could not parse font file </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fpath</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">prop</span> <span class="o">=</span> <span class="n">afmFontProperty</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">font</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">font_entry_err_msg</span><span class="p">,</span> <span class="n">fpath</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ext</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;.ttc&quot;</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                        <span class="n">collection</span> <span class="o">=</span> <span class="n">TTCollection</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">props</span> <span class="o">=</span> <span class="p">[]</span>
+                            <span class="k">for</span> <span class="n">font</span> <span class="ow">in</span> <span class="n">collection</span><span class="o">.</span><span class="n">fonts</span><span class="p">:</span>
+                                <span class="n">props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ttfFontProperty</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">font</span><span class="p">))</span>
+                            <span class="n">fontlist</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">props</span><span class="p">)</span>
+                            <span class="k">continue</span>
+                        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                                <span class="n">font_entry_err_msg</span><span class="p">,</span> <span class="n">fpath</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span>
+                            <span class="p">)</span>
+                            <span class="k">continue</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">font</span> <span class="o">=</span> <span class="n">TTFont</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fpath</span><span class="p">))</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">RuntimeError</span><span class="p">,</span> <span class="n">TTLibError</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s2">&quot;Could not open font file </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fpath</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">except</span> <span class="ne">UnicodeError</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s2">&quot;Cannot handle unicode file: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fpath</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">prop</span> <span class="o">=</span> <span class="n">ttfFontProperty</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">font</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">font_entry_err_msg</span><span class="p">,</span> <span class="n">fpath</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+        <span class="n">fontlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fontlist</span></div>
+
+
+<div class="viewcode-block" id="FontProperties"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontProperties">[docs]</a><span class="k">class</span> <span class="nc">FontProperties</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class for storing and manipulating font properties.</span>
+
+<span class="sd">    The font properties are those described in the `W3C Cascading</span>
+<span class="sd">    Style Sheet, Level 1</span>
+<span class="sd">    &lt;http://www.w3.org/TR/1998/REC-CSS2-19980512/&gt;`_ font</span>
+<span class="sd">    specification.  The six properties are:</span>
+
+<span class="sd">      - family: A list of font names in decreasing order of priority.</span>
+<span class="sd">        The items may include a generic font family name, either</span>
+<span class="sd">        &#39;serif&#39;, &#39;sans-serif&#39;, &#39;cursive&#39;, &#39;fantasy&#39;, or &#39;monospace&#39;.</span>
+
+<span class="sd">      - style: Either &#39;normal&#39;, &#39;italic&#39; or &#39;oblique&#39;.</span>
+
+<span class="sd">      - variant: Either &#39;normal&#39; or &#39;small-caps&#39;.</span>
+
+<span class="sd">      - stretch: A numeric value in the range 0-1000 or one of</span>
+<span class="sd">        &#39;ultra-condensed&#39;, &#39;extra-condensed&#39;, &#39;condensed&#39;,</span>
+<span class="sd">        &#39;semi-condensed&#39;, &#39;normal&#39;, &#39;semi-expanded&#39;, &#39;expanded&#39;,</span>
+<span class="sd">        &#39;extra-expanded&#39; or &#39;ultra-expanded&#39;</span>
+
+<span class="sd">      - weight: A numeric value in the range 0-1000 or one of</span>
+<span class="sd">        &#39;ultralight&#39;, &#39;light&#39;, &#39;normal&#39;, &#39;regular&#39;, &#39;book&#39;, &#39;medium&#39;,</span>
+<span class="sd">        &#39;roman&#39;, &#39;semibold&#39;, &#39;demibold&#39;, &#39;demi&#39;, &#39;bold&#39;, &#39;heavy&#39;,</span>
+<span class="sd">        &#39;extra bold&#39;, &#39;black&#39;</span>
+
+<span class="sd">      - size: Either an relative value of &#39;xx-small&#39;, &#39;x-small&#39;,</span>
+<span class="sd">        &#39;small&#39;, &#39;medium&#39;, &#39;large&#39;, &#39;x-large&#39;, &#39;xx-large&#39; or an</span>
+<span class="sd">        absolute font size, e.g. 12</span>
+
+<span class="sd">    Alternatively, a font may be specified using an absolute path to a</span>
+<span class="sd">    .ttf file, by using the *fname* kwarg.</span>
+
+<span class="sd">    The preferred usage of font sizes is to use the relative values,</span>
+<span class="sd">    e.g.  &#39;large&#39;, instead of absolute font sizes, e.g. 12.  This</span>
+<span class="sd">    approach allows all text sizes to be made larger or smaller based</span>
+<span class="sd">    on the font manager&#39;s default font size.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">variant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">stretch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_init</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># if fname is set, it&#39;s a hardcoded filename to use</span>
+        <span class="c1"># _init is used only by copy()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_family</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_slant</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_variant</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_weight</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stretch</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># This is used only by copy()</span>
+        <span class="k">if</span> <span class="n">_init</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_init</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_family</span><span class="p">(</span><span class="n">family</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_variant</span><span class="p">(</span><span class="n">variant</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_weight</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_stretch</span><span class="p">(</span><span class="n">stretch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_file</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_size</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">lst</span> <span class="o">=</span> <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;get&quot;</span> <span class="o">+</span> <span class="n">k</span><span class="p">)())</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">lst</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_family</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stretch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FontProperties.get_family"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontProperties.get_family">[docs]</a>    <span class="k">def</span> <span class="nf">get_family</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a list of font names that comprise the font family.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_family</span></div>
+
+<div class="viewcode-block" id="FontProperties.get_name"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontProperties.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the name of the font that best matches the font</span>
+<span class="sd">        properties.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_font_manager</span><span class="p">()</span><span class="o">.</span><span class="n">findfont</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.afm&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">afm</span><span class="o">.</span><span class="n">AFM</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span><span class="o">.</span><span class="n">get_familyname</span><span class="p">()</span>
+
+        <span class="n">font</span> <span class="o">=</span> <span class="n">default_font_manager</span><span class="p">()</span><span class="o">.</span><span class="n">findfont</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">prop_dict</span> <span class="o">=</span> <span class="n">getPropDict</span><span class="p">(</span><span class="n">TTFont</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">font</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">prop_dict</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="FontProperties.get_style"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontProperties.get_style">[docs]</a>    <span class="k">def</span> <span class="nf">get_style</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the font style.  Values are: &#39;normal&#39;, &#39;italic&#39; or</span>
+<span class="sd">        &#39;oblique&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slant</span></div>
+
+    <span class="n">get_slant</span> <span class="o">=</span> <span class="n">get_style</span>
+
+<div class="viewcode-block" id="FontProperties.get_variant"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontProperties.get_variant">[docs]</a>    <span class="k">def</span> <span class="nf">get_variant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the font variant.  Values are: &#39;normal&#39; or</span>
+<span class="sd">        &#39;small-caps&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variant</span></div>
+
+<div class="viewcode-block" id="FontProperties.get_weight"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontProperties.get_weight">[docs]</a>    <span class="k">def</span> <span class="nf">get_weight</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the font weight.  Options are: A numeric value in the</span>
+<span class="sd">        range 0-1000 or one of &#39;light&#39;, &#39;normal&#39;, &#39;regular&#39;, &#39;book&#39;,</span>
+<span class="sd">        &#39;medium&#39;, &#39;roman&#39;, &#39;semibold&#39;, &#39;demibold&#39;, &#39;demi&#39;, &#39;bold&#39;,</span>
+<span class="sd">        &#39;heavy&#39;, &#39;extra bold&#39;, &#39;black&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight</span></div>
+
+<div class="viewcode-block" id="FontProperties.get_stretch"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontProperties.get_stretch">[docs]</a>    <span class="k">def</span> <span class="nf">get_stretch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the font stretch or width.  Options are: &#39;ultra-condensed&#39;,</span>
+<span class="sd">        &#39;extra-condensed&#39;, &#39;condensed&#39;, &#39;semi-condensed&#39;, &#39;normal&#39;,</span>
+<span class="sd">        &#39;semi-expanded&#39;, &#39;expanded&#39;, &#39;extra-expanded&#39;, &#39;ultra-expanded&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stretch</span></div>
+
+<div class="viewcode-block" id="FontProperties.get_size"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontProperties.get_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the font size.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span></div>
+
+<div class="viewcode-block" id="FontProperties.get_size_in_points"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontProperties.get_size_in_points">[docs]</a>    <span class="k">def</span> <span class="nf">get_size_in_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="n">default_size</span> <span class="o">=</span> <span class="n">default_font_manager</span><span class="p">()</span><span class="o">.</span><span class="n">get_default_size</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">default_size</span> <span class="o">*</span> <span class="n">font_scalings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FontProperties.get_file"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontProperties.get_file">[docs]</a>    <span class="k">def</span> <span class="nf">get_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the filename of the associated font.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span></div>
+
+<div class="viewcode-block" id="FontProperties.set_family"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontProperties.set_family">[docs]</a>    <span class="k">def</span> <span class="nf">set_family</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">family</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Change the font family.  May be either an alias (generic name</span>
+<span class="sd">        is CSS parlance), such as: &#39;serif&#39;, &#39;sans-serif&#39;, &#39;cursive&#39;,</span>
+<span class="sd">        &#39;fantasy&#39;, or &#39;monospace&#39;, or a real font name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">family</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_family</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">family</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+                <span class="n">family</span> <span class="o">=</span> <span class="p">[</span><span class="n">family</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf8&quot;</span><span class="p">)]</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">family</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">family</span> <span class="o">=</span> <span class="p">[</span><span class="n">family</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_family</span> <span class="o">=</span> <span class="n">family</span></div>
+
+    <span class="n">set_name</span> <span class="o">=</span> <span class="n">set_family</span>
+
+<div class="viewcode-block" id="FontProperties.set_style"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontProperties.set_style">[docs]</a>    <span class="k">def</span> <span class="nf">set_style</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">style</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the font style.  Values are: &#39;normal&#39;, &#39;italic&#39; or</span>
+<span class="sd">        &#39;oblique&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">style</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="s2">&quot;italic&quot;</span><span class="p">,</span> <span class="s2">&quot;oblique&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;style must be normal, italic or oblique&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_slant</span> <span class="o">=</span> <span class="n">style</span></div>
+
+    <span class="n">set_slant</span> <span class="o">=</span> <span class="n">set_style</span>
+
+<div class="viewcode-block" id="FontProperties.set_variant"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontProperties.set_variant">[docs]</a>    <span class="k">def</span> <span class="nf">set_variant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variant</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the font variant.  Values are: &#39;normal&#39; or &#39;small-caps&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">variant</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="s2">&quot;small-caps&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;variant must be normal or small-caps&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_variant</span> <span class="o">=</span> <span class="n">variant</span></div>
+
+<div class="viewcode-block" id="FontProperties.set_weight"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontProperties.set_weight">[docs]</a>    <span class="k">def</span> <span class="nf">set_weight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weight</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the font weight.  May be either a numeric value in the</span>
+<span class="sd">        range 0-1000 or one of &#39;ultralight&#39;, &#39;light&#39;, &#39;normal&#39;,</span>
+<span class="sd">        &#39;regular&#39;, &#39;book&#39;, &#39;medium&#39;, &#39;roman&#39;, &#39;semibold&#39;, &#39;demibold&#39;,</span>
+<span class="sd">        &#39;demi&#39;, &#39;bold&#39;, &#39;heavy&#39;, &#39;extra bold&#39;, &#39;black&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">weight</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">weight</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">weight</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">weight_dict</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;weight is invalid&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_weight</span> <span class="o">=</span> <span class="n">weight</span></div>
+
+<div class="viewcode-block" id="FontProperties.set_stretch"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontProperties.set_stretch">[docs]</a>    <span class="k">def</span> <span class="nf">set_stretch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stretch</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the font stretch or width.  Options are: &#39;ultra-condensed&#39;,</span>
+<span class="sd">        &#39;extra-condensed&#39;, &#39;condensed&#39;, &#39;semi-condensed&#39;, &#39;normal&#39;,</span>
+<span class="sd">        &#39;semi-expanded&#39;, &#39;expanded&#39;, &#39;extra-expanded&#39; or</span>
+<span class="sd">        &#39;ultra-expanded&#39;, or a numeric value in the range 0-1000.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">stretch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">stretch</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">stretch</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">stretch</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">stretch</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">stretch</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stretch_dict</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;stretch is invalid&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stretch</span> <span class="o">=</span> <span class="mi">500</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stretch</span> <span class="o">=</span> <span class="n">stretch</span></div>
+
+<div class="viewcode-block" id="FontProperties.set_size"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontProperties.set_size">[docs]</a>    <span class="k">def</span> <span class="nf">set_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the font size.  Either an relative value of &#39;xx-small&#39;,</span>
+<span class="sd">        &#39;x-small&#39;, &#39;small&#39;, &#39;medium&#39;, &#39;large&#39;, &#39;x-large&#39;, &#39;xx-large&#39;</span>
+<span class="sd">        or an absolute font size, e.g. 12.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">size</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">font_scalings</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;size is invalid&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">size</span></div>
+
+<div class="viewcode-block" id="FontProperties.set_file"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontProperties.set_file">[docs]</a>    <span class="k">def</span> <span class="nf">set_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the filename of the fontfile to use.  In this case, all</span>
+<span class="sd">        other properties will be ignored.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">file</span></div>
+
+<div class="viewcode-block" id="FontProperties.copy"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontProperties.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a deep copy of self&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">FontProperties</span><span class="p">(</span><span class="n">_init</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ttfdict_to_fnames"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.ttfdict_to_fnames">[docs]</a><span class="k">def</span> <span class="nf">ttfdict_to_fnames</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    flatten a ttfdict to all the filenames it contains</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fnames</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">named</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">styled</span> <span class="ow">in</span> <span class="n">named</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">variantd</span> <span class="ow">in</span> <span class="n">styled</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">weightd</span> <span class="ow">in</span> <span class="n">variantd</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                    <span class="k">for</span> <span class="n">stretchd</span> <span class="ow">in</span> <span class="n">weightd</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                        <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">stretchd</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                            <span class="n">fnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fnames</span></div>
+
+
+<div class="viewcode-block" id="pickle_dump"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.pickle_dump">[docs]</a><span class="k">def</span> <span class="nf">pickle_dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Equivalent to pickle.dump(data, open(filename, &#39;wb&#39;))</span>
+<span class="sd">    but closes the file to prevent filehandle leakage.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fh</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="pickle_load"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.pickle_load">[docs]</a><span class="k">def</span> <span class="nf">pickle_load</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Equivalent to pickle.load(open(filename, &#39;rb&#39;))</span>
+<span class="sd">    but closes the file to prevent filehandle leakage.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="FontManager"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontManager">[docs]</a><span class="k">class</span> <span class="nc">FontManager</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    On import, the :class:`FontManager` singleton instance creates a</span>
+<span class="sd">    list of TrueType fonts based on the font properties: name, style,</span>
+<span class="sd">    variant, weight, stretch, and size.  The :meth:`findfont` method</span>
+<span class="sd">    does a nearest neighbor search to find the font that most closely</span>
+<span class="sd">    matches the specification.  If no good enough match is found, a</span>
+<span class="sd">    default font is returned.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Increment this version number whenever the font cache data</span>
+    <span class="c1"># format or behavior has changed and requires a existing font</span>
+    <span class="c1"># cache files to be rebuilt.</span>
+    <span class="n">__version__</span> <span class="o">=</span> <span class="mi">7</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__version__</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__default_weight</span> <span class="o">=</span> <span class="n">weight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_size</span> <span class="o">=</span> <span class="n">size</span>
+
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1">#  Create list of font paths</span>
+        <span class="k">for</span> <span class="n">pathname</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;TTFPATH&quot;</span><span class="p">,</span> <span class="s2">&quot;AFMPATH&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">pathname</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+                <span class="n">ttfpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">pathname</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">ttfpath</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># win32 style</span>
+                    <span class="n">paths</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ttfpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">ttfpath</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># unix style</span>
+                    <span class="n">paths</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ttfpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ttfpath</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;font search path </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">paths</span><span class="p">))</span>
+        <span class="c1">#  Load TrueType fonts and create font dictionary.</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ttffiles</span> <span class="o">=</span> <span class="n">findSystemFonts</span><span class="p">(</span><span class="n">paths</span><span class="p">)</span> <span class="o">+</span> <span class="n">findSystemFonts</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">defaultFamily</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ttf&quot;</span><span class="p">:</span> <span class="s2">&quot;Bitstream Vera Sans&quot;</span><span class="p">,</span> <span class="s2">&quot;afm&quot;</span><span class="p">:</span> <span class="s2">&quot;Helvetica&quot;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">defaultFont</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ttffiles</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;trying fontname </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">fname</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;vera.ttf&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">defaultFont</span><span class="p">[</span><span class="s2">&quot;ttf&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fname</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># use anything</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">defaultFont</span><span class="p">[</span><span class="s2">&quot;ttf&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ttffiles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ttflist</span> <span class="o">=</span> <span class="n">createFontList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ttffiles</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">afmfiles</span> <span class="o">=</span> <span class="n">findSystemFonts</span><span class="p">(</span>
+            <span class="n">paths</span><span class="p">,</span> <span class="n">fontext</span><span class="o">=</span><span class="s2">&quot;afm&quot;</span>
+        <span class="p">)</span> <span class="o">+</span> <span class="n">findSystemFonts</span><span class="p">(</span><span class="n">fontext</span><span class="o">=</span><span class="s2">&quot;afm&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">afmlist</span> <span class="o">=</span> <span class="n">createFontList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">afmfiles</span><span class="p">,</span> <span class="n">fontext</span><span class="o">=</span><span class="s2">&quot;afm&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">defaultFont</span><span class="p">[</span><span class="s2">&quot;afm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ttf_lookup_cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">afm_lookup_cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="FontManager.get_default_weight"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontManager.get_default_weight">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_weight</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the default font weight.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__default_weight</span></div>
+
+<div class="viewcode-block" id="FontManager.get_default_size"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontManager.get_default_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the default font size.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_size</span></div>
+
+<div class="viewcode-block" id="FontManager.set_default_weight"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontManager.set_default_weight">[docs]</a>    <span class="k">def</span> <span class="nf">set_default_weight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weight</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the default font weight.  The initial value is &#39;normal&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__default_weight</span> <span class="o">=</span> <span class="n">weight</span></div>
+
+<div class="viewcode-block" id="FontManager.update_fonts"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontManager.update_fonts">[docs]</a>    <span class="k">def</span> <span class="nf">update_fonts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filenames</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the font dictionary with new font files.</span>
+<span class="sd">        Currently not implemented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#  !!!!  Needs implementing</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="c1"># Each of the scoring functions below should return a value between</span>
+    <span class="c1"># 0.0 (perfect match) and 1.0 (terrible match)</span>
+<div class="viewcode-block" id="FontManager.score_family"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontManager.score_family">[docs]</a>    <span class="k">def</span> <span class="nf">score_family</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">families</span><span class="p">,</span> <span class="n">family2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a match score between the list of font families in</span>
+<span class="sd">        *families* and the font family name *family2*.</span>
+
+<span class="sd">        An exact match anywhere in the list returns 0.0.</span>
+
+<span class="sd">        A match by generic font name will return 0.1.</span>
+
+<span class="sd">        No match will return 1.0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">preferred_fonts</span>
+
+        <span class="n">family2</span> <span class="o">=</span> <span class="n">family2</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">family1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">families</span><span class="p">):</span>
+            <span class="n">family1</span> <span class="o">=</span> <span class="n">family1</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">family1</span> <span class="ow">in</span> <span class="n">font_family_aliases</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">family1</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;sans&quot;</span><span class="p">,</span> <span class="s2">&quot;sans serif&quot;</span><span class="p">,</span> <span class="s2">&quot;modern&quot;</span><span class="p">):</span>
+                    <span class="n">family1</span> <span class="o">=</span> <span class="s2">&quot;sans-serif&quot;</span>
+                <span class="n">options</span> <span class="o">=</span> <span class="n">preferred_fonts</span><span class="p">[</span><span class="n">family1</span><span class="p">]</span>
+                <span class="n">options</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">options</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">family2</span> <span class="ow">in</span> <span class="n">options</span><span class="p">:</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">family2</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">options</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">family1</span> <span class="o">==</span> <span class="n">family2</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="mf">1.0</span></div>
+
+<div class="viewcode-block" id="FontManager.score_style"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontManager.score_style">[docs]</a>    <span class="k">def</span> <span class="nf">score_style</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">style1</span><span class="p">,</span> <span class="n">style2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a match score between *style1* and *style2*.</span>
+
+<span class="sd">        An exact match returns 0.0.</span>
+
+<span class="sd">        A match between &#39;italic&#39; and &#39;oblique&#39; returns 0.1.</span>
+
+<span class="sd">        No match returns 1.0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">styles</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;italic&quot;</span><span class="p">,</span> <span class="s2">&quot;oblique&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">style1</span> <span class="o">==</span> <span class="n">style2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">elif</span> <span class="n">style1</span> <span class="ow">in</span> <span class="n">styles</span> <span class="ow">and</span> <span class="n">style2</span> <span class="ow">in</span> <span class="n">styles</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.1</span>
+        <span class="k">return</span> <span class="mf">1.0</span></div>
+
+<div class="viewcode-block" id="FontManager.score_variant"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontManager.score_variant">[docs]</a>    <span class="k">def</span> <span class="nf">score_variant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variant1</span><span class="p">,</span> <span class="n">variant2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a match score between *variant1* and *variant2*.</span>
+
+<span class="sd">        An exact match returns 0.0, otherwise 1.0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">variant1</span> <span class="o">==</span> <span class="n">variant2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">1.0</span></div>
+
+<div class="viewcode-block" id="FontManager.score_stretch"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontManager.score_stretch">[docs]</a>    <span class="k">def</span> <span class="nf">score_stretch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stretch1</span><span class="p">,</span> <span class="n">stretch2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a match score between *stretch1* and *stretch2*.</span>
+
+<span class="sd">        The result is the absolute value of the difference between the</span>
+<span class="sd">        CSS numeric values of *stretch1* and *stretch2*, normalized</span>
+<span class="sd">        between 0.0 and 1.0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">stretchval1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">stretch1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">stretchval1</span> <span class="o">=</span> <span class="n">stretch_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">stretch1</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">stretchval2</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">stretch2</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">stretchval2</span> <span class="o">=</span> <span class="n">stretch_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">stretch2</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">stretchval1</span> <span class="o">-</span> <span class="n">stretchval2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000.0</span></div>
+
+<div class="viewcode-block" id="FontManager.score_weight"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontManager.score_weight">[docs]</a>    <span class="k">def</span> <span class="nf">score_weight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weight1</span><span class="p">,</span> <span class="n">weight2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a match score between *weight1* and *weight2*.</span>
+
+<span class="sd">        The result is the absolute value of the difference between the</span>
+<span class="sd">        CSS numeric values of *weight1* and *weight2*, normalized</span>
+<span class="sd">        between 0.0 and 1.0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">weightval1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">weight1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">weightval1</span> <span class="o">=</span> <span class="n">weight_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">weight1</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">weightval2</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">weight2</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">weightval2</span> <span class="o">=</span> <span class="n">weight_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">weight2</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">weightval1</span> <span class="o">-</span> <span class="n">weightval2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000.0</span></div>
+
+<div class="viewcode-block" id="FontManager.score_size"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontManager.score_size">[docs]</a>    <span class="k">def</span> <span class="nf">score_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size1</span><span class="p">,</span> <span class="n">size2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a match score between *size1* and *size2*.</span>
+
+<span class="sd">        If *size2* (the size specified in the font file) is &#39;scalable&#39;, this</span>
+<span class="sd">        function always returns 0.0, since any font size can be generated.</span>
+
+<span class="sd">        Otherwise, the result is the absolute distance between *size1* and</span>
+<span class="sd">        *size2*, normalized so that the usual range of font sizes (6pt -</span>
+<span class="sd">        72pt) will lie between 0.0 and 1.0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">size2</span> <span class="o">==</span> <span class="s2">&quot;scalable&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="c1"># Size value should have already been</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sizeval1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">size1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">sizeval1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_size</span> <span class="o">*</span> <span class="n">font_scalings</span><span class="p">(</span><span class="n">size1</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sizeval2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">size2</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">1.0</span>
+        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">sizeval1</span> <span class="o">-</span> <span class="n">sizeval2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">72.0</span></div>
+
+<div class="viewcode-block" id="FontManager.findfont"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.FontManager.findfont">[docs]</a>    <span class="k">def</span> <span class="nf">findfont</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">fontext</span><span class="o">=</span><span class="s2">&quot;ttf&quot;</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">fallback_to_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rebuild_if_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Search the font list for the font that most closely matches</span>
+<span class="sd">        the :class:`FontProperties` *prop*.</span>
+
+<span class="sd">        :meth:`findfont` performs a nearest neighbor search.  Each</span>
+<span class="sd">        font is given a similarity score to the target font</span>
+<span class="sd">        properties.  The first font with the highest score is</span>
+<span class="sd">        returned.  If no matches below a certain threshold are found,</span>
+<span class="sd">        the default font (usually Vera Sans) is returned.</span>
+
+<span class="sd">        `directory`, is specified, will only return fonts from the</span>
+<span class="sd">        given directory (or subdirectory of that directory).</span>
+
+<span class="sd">        The result is cached, so subsequent lookups don&#39;t have to</span>
+<span class="sd">        perform the O(n) nearest neighbor search.</span>
+
+<span class="sd">        If `fallback_to_default` is True, will fallback to the default</span>
+<span class="sd">        font family (usually &quot;Bitstream Vera Sans&quot; or &quot;Helvetica&quot;) if</span>
+<span class="sd">        the first lookup hard-fails.</span>
+
+<span class="sd">        See the `W3C Cascading Style Sheet, Level 1</span>
+<span class="sd">        &lt;http://www.w3.org/TR/1998/REC-CSS2-19980512/&gt;`_ documentation</span>
+<span class="sd">        for a description of the font finding algorithm.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="n">FontProperties</span><span class="p">):</span>
+            <span class="n">prop</span> <span class="o">=</span> <span class="n">FontProperties</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">fname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;findfont returning </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">fname</span>
+
+        <span class="k">if</span> <span class="n">fontext</span> <span class="o">==</span> <span class="s2">&quot;afm&quot;</span><span class="p">:</span>
+            <span class="n">font_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">afm_lookup_cache</span>
+            <span class="n">fontlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">afmlist</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">font_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ttf_lookup_cache</span>
+            <span class="n">fontlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ttflist</span>
+
+        <span class="k">if</span> <span class="n">directory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cached</span> <span class="o">=</span> <span class="n">font_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">hash</span><span class="p">(</span><span class="n">prop</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">cached</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">cached</span>
+
+        <span class="n">best_score</span> <span class="o">=</span> <span class="mf">1e64</span>
+        <span class="n">best_font</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">font</span> <span class="ow">in</span> <span class="n">fontlist</span><span class="p">:</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="n">font</span><span class="o">.</span><span class="n">fname</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">directory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                    <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">commonprefix</span><span class="p">([</span><span class="n">fname</span><span class="p">,</span> <span class="n">directory</span><span class="p">])</span> <span class="o">!=</span> <span class="n">directory</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="c1"># Matching family should have highest priority, so it is multiplied</span>
+            <span class="c1"># by 10.0</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">score_family</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">get_family</span><span class="p">(),</span> <span class="n">font</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">*</span> <span class="mf">10.0</span>
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_style</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">get_style</span><span class="p">(),</span> <span class="n">font</span><span class="o">.</span><span class="n">style</span><span class="p">)</span>
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_variant</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">get_variant</span><span class="p">(),</span> <span class="n">font</span><span class="o">.</span><span class="n">variant</span><span class="p">)</span>
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_weight</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">get_weight</span><span class="p">(),</span> <span class="n">font</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_stretch</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">get_stretch</span><span class="p">(),</span> <span class="n">font</span><span class="o">.</span><span class="n">stretch</span><span class="p">)</span>
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_size</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">get_size</span><span class="p">(),</span> <span class="n">font</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">score</span> <span class="o">&lt;</span> <span class="n">best_score</span><span class="p">:</span>
+                <span class="n">best_score</span> <span class="o">=</span> <span class="n">score</span>
+                <span class="n">best_font</span> <span class="o">=</span> <span class="n">font</span>
+            <span class="k">if</span> <span class="n">score</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="k">if</span> <span class="n">best_font</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">best_score</span> <span class="o">&gt;=</span> <span class="mf">10.0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fallback_to_default</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;findfont: Font family </span><span class="si">%s</span><span class="s2"> not found. Falling back to </span><span class="si">%s</span><span class="s2">&quot;</span>
+                    <span class="o">%</span> <span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">get_family</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaultFamily</span><span class="p">[</span><span class="n">fontext</span><span class="p">])</span>
+                <span class="p">)</span>
+                <span class="n">default_prop</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">default_prop</span><span class="o">.</span><span class="n">set_family</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">defaultFamily</span><span class="p">[</span><span class="n">fontext</span><span class="p">])</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">findfont</span><span class="p">(</span><span class="n">default_prop</span><span class="p">,</span> <span class="n">fontext</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># This is a hard fail -- we can&#39;t find anything reasonable,</span>
+                <span class="c1"># so just return the vera.ttf</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;findfont: Could not match </span><span class="si">%s</span><span class="s2">. Returning </span><span class="si">%s</span><span class="s2">&quot;</span>
+                    <span class="o">%</span> <span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaultFont</span><span class="p">[</span><span class="n">fontext</span><span class="p">]),</span>
+                    <span class="ne">UserWarning</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaultFont</span><span class="p">[</span><span class="n">fontext</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;findfont: Matching </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">) with score of </span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">prop</span><span class="p">,</span>
+                <span class="n">best_font</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">best_font</span><span class="o">.</span><span class="n">fname</span><span class="p">,</span>
+                <span class="n">best_score</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">best_font</span><span class="o">.</span><span class="n">fname</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">rebuild_if_missing</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="s2">&quot;findfont: Found a missing font file.  Rebuilding cache.&quot;</span>
+                <span class="p">)</span>
+                <span class="n">_rebuild</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">default_font_manager</span><span class="p">()</span><span class="o">.</span><span class="n">findfont</span><span class="p">(</span>
+                    <span class="n">prop</span><span class="p">,</span> <span class="n">fontext</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No valid font could be found&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">directory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">font_cache</span><span class="p">[</span><span class="nb">hash</span><span class="p">(</span><span class="n">prop</span><span class="p">)]</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">result</span></div></div>
+
+
+<span class="n">_is_opentype_cff_font_cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<div class="viewcode-block" id="is_opentype_cff_font"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.is_opentype_cff_font">[docs]</a><span class="k">def</span> <span class="nf">is_opentype_cff_font</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns True if the given font is a Postscript Compact Font Format</span>
+<span class="sd">    Font embedded in an OpenType wrapper.  Used by the PostScript and</span>
+<span class="sd">    PDF backends that can not subset these fonts.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;.otf&quot;</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_is_opentype_cff_font_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fd</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="n">fd</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+            <span class="n">fd</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">tag</span> <span class="o">==</span> <span class="s2">&quot;OTTO&quot;</span>
+            <span class="n">_is_opentype_cff_font_cache</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="c1"># Global singleton of FontManager, cached at the module level.</span>
+<span class="n">fontManager</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="k">def</span> <span class="nf">_get_font_cache_path</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Return the file path for the font cache to be saved / loaded.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    path : str</span>
+<span class="sd">        Path to the font cache file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_configdir</span><span class="p">(),</span> <span class="s2">&quot;fontList.cache&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_rebuild</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Rebuild the default font manager and cache its content.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">fontManager</span>
+    <span class="n">fontManager</span> <span class="o">=</span> <span class="n">_new_font_manager</span><span class="p">(</span><span class="n">_get_font_cache_path</span><span class="p">())</span>
+
+
+<span class="k">def</span> <span class="nf">_new_font_manager</span><span class="p">(</span><span class="n">cache_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Create a new FontManager (which will reload font files) and immediately</span>
+<span class="sd">    cache its content with the given file path.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cache_file : str</span>
+<span class="sd">        Path to the cache to be created.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    font_manager : FontManager</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fontManager</span> <span class="o">=</span> <span class="n">FontManager</span><span class="p">()</span>
+    <span class="n">pickle_dump</span><span class="p">(</span><span class="n">fontManager</span><span class="p">,</span> <span class="n">cache_file</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;generated new fontManager&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fontManager</span>
+
+
+<span class="k">def</span> <span class="nf">_load_from_cache_or_rebuild</span><span class="p">(</span><span class="n">cache_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Load the font manager from the cache and verify it is compatible.</span>
+<span class="sd">    If the cache is not compatible, rebuild the cache and return the new</span>
+<span class="sd">    font manager.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cache_file : str</span>
+<span class="sd">        Path to the cache to be created.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    font_manager : FontManager</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">fontManager</span> <span class="o">=</span> <span class="n">pickle_load</span><span class="p">(</span><span class="n">cache_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fontManager</span><span class="p">,</span> <span class="s2">&quot;_version&quot;</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">fontManager</span><span class="o">.</span><span class="n">_version</span> <span class="o">!=</span> <span class="n">FontManager</span><span class="o">.</span><span class="n">__version__</span><span class="p">):</span>
+            <span class="n">fontManager</span> <span class="o">=</span> <span class="n">_new_font_manager</span><span class="p">(</span><span class="n">cache_file</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fontManager</span><span class="o">.</span><span class="n">default_size</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using fontManager instance from </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">cache_file</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">fontManager</span> <span class="o">=</span> <span class="n">_new_font_manager</span><span class="p">(</span><span class="n">cache_file</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fontManager</span>
+
+
+<div class="viewcode-block" id="default_font_manager"><a class="viewcode-back" href="../../../api/kiva.fonttools.font_manager.html#kiva.fonttools.font_manager.default_font_manager">[docs]</a><span class="k">def</span> <span class="nf">default_font_manager</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Return the default font manager, which is a singleton FontManager</span>
+<span class="sd">    cached in the module.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    font_manager : FontManager</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">fontManager</span>
+    <span class="k">if</span> <span class="n">fontManager</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fontManager</span> <span class="o">=</span> <span class="n">_load_from_cache_or_rebuild</span><span class="p">(</span><span class="n">_get_font_cache_path</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">fontManager</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

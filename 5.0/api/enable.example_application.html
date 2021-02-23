@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.example_application module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable package" href="enable.html" >
+    <link rel="next" title="enable.example_canvas module" href="enable.example_canvas.html" >
+    <link rel="prev" title="enable.events module" href="enable.events.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" accesskey="U">enable package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.example_canvas.html" title="enable.example_canvas module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.events.html" title="enable.events module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.example_application">
+<span id="enable-example-application-module"></span><h1>enable.example_application module<a class="headerlink" href="#module-enable.example_application" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="example-application-support">
+<h2>Example Application Support<a class="headerlink" href="#example-application-support" title="Permalink to this headline">¶</a></h2>
+<p>This module provides a simple Pyface application that can be used by examples
+in places where a DemoFrame is insufficient.</p>
+<dl class="class">
+<dt id="enable.example_application.DemoApplication">
+<em class="property">class </em><code class="sig-prename descclassname">enable.example_application.</code><code class="sig-name descname">DemoApplication</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/example_application.html#DemoApplication"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.example_application.DemoApplication" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyface.base_toolkit.Unimplemented</span></code></p>
+<p>Simple Pyface application displaying a component.</p>
+<p>This application has the same interface as the DemoFrames from the
+example_support module, but the window is embedded in a full Pyface
+application.  This means that subclasses have the opportunity of
+adding Menus, Toolbars, and other similar features to the demo, where
+needed.</p>
+<dl class="method">
+<dt id="enable.example_application.DemoApplication.demo_main">
+<em class="property">classmethod </em><code class="sig-name descname">demo_main</code><span class="sig-paren">(</span><em class="sig-param">**traits</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/example_application.html#DemoApplication.demo_main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.example_application.DemoApplication.demo_main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the demo application and start the mainloop, if needed</p>
+<p>This should be called with appropriate arguments which will be passed
+to the class’ constructor.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.example_application.demo_main">
+<code class="sig-prename descclassname">enable.example_application.</code><code class="sig-name descname">demo_main</code><span class="sig-paren">(</span><em class="sig-param">cls</em>, <em class="sig-param">**traits</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/example_application.html#demo_main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.example_application.demo_main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the demo application and start the mainloop, if needed.</p>
+<p>This is a simple wrapper around <cite>cls.demo_main</cite> for compatibility with the
+<cite>DemoFrame</cite> implementation.</p>
+<p>This should be called with appropriate arguments which will be passed to
+the class’ constructor.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">enable.example_application module</a><ul>
+<li><a class="reference internal" href="#example-application-support">Example Application Support</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.events.html"
+                        title="previous chapter">enable.events module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.example_canvas.html"
+                        title="next chapter">enable.example_canvas module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.example_application.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.api module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable package" href="enable.html" >
+    <link rel="next" title="enable.base module" href="enable.base.html" >
+    <link rel="prev" title="enable.abstract_window module" href="enable.abstract_window.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" accesskey="U">enable package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.base.html" title="enable.base module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.abstract_window.html" title="enable.abstract_window module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.api">
+<span id="enable-api-module"></span><h1>enable.api module<a class="headerlink" href="#module-enable.api" title="Permalink to this headline">¶</a></h1>
+<p>Enable is an interactive graphical component framework built on top of
+Kiva.</p>
+<p>See <a class="reference external" href="https://www.enthought.com/enthought/wiki/EnableProject">https://www.enthought.com/enthought/wiki/EnableProject</a></p>
+<div class="section" id="enable-base">
+<h2>Enable Base<a class="headerlink" href="#enable-base" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="enable.base.html#enable.base.IDroppedOnHandler" title="enable.base.IDroppedOnHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">IDroppedOnHandler</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.base.html#enable.base.str_to_font" title="enable.base.str_to_font"><code class="xref py py-func docutils literal notranslate"><span class="pre">str_to_font()</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.base.html#enable.base.intersect_bounds" title="enable.base.intersect_bounds"><code class="xref py py-func docutils literal notranslate"><span class="pre">intersect_bounds()</span></code></a></p></li>
+</ul>
+<div class="section" id="constants">
+<h3>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">TOP</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">VCENTER</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">BOTTOM</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">LEFT</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">HCENTER</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">RIGHT</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">TOP_LEFT</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">TOP_RIGHT</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">BOTTOM_LEFT</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">BOTTOM_RIGHT</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">empty_rectangle</span></code></p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="enable-trait-types">
+<h2>Enable Trait Types<a class="headerlink" href="#enable-trait-types" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">border_size_editor</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">font_trait</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">bounds_trait</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">ComponentMinSize</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">ComponentMaxSize</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">Pointer</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">cursor_style_trait</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">spacing_trait</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">padding_trait</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">margin_trait</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">border_size_trait</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">TimeInterval</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">Stretch</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">NoStretch</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">LineStyle</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">LineStyleEditor</span></code></p></li>
+</ul>
+<div class="section" id="id1">
+<h3>Constants<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">basic_sequence_types</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">sequence_types</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pointer_shapes</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">CURSOR_X</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">CURSOR_Y</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">cursor_styles</span></code></p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="colors">
+<h2>Colors<a class="headerlink" href="#colors" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">color_table</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">transparent_color</span></code></p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ColorEditorFactory</span></code></p></li>
+</ul>
+<div class="section" id="color-trait-types">
+<h3>Color Trait Types<a class="headerlink" href="#color-trait-types" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ColorTrait</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">black_color_trait</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">white_color_trait</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">transparent_color_trait</span></code></p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="markers">
+<h2>Markers<a class="headerlink" href="#markers" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="enable.markers.html#enable.markers.SquareMarker" title="enable.markers.SquareMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">SquareMarker</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.markers.html#enable.markers.CircleMarker" title="enable.markers.CircleMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">CircleMarker</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.markers.html#enable.markers.TriangleMarker" title="enable.markers.TriangleMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">TriangleMarker</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.markers.html#enable.markers.Inverted_TriangleMarker" title="enable.markers.Inverted_TriangleMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Inverted_TriangleMarker</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.markers.html#enable.markers.LeftTriangleMarker" title="enable.markers.LeftTriangleMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">LeftTriangleMarker</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.markers.html#enable.markers.RightTriangleMarker" title="enable.markers.RightTriangleMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">RightTriangleMarker</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.markers.html#enable.markers.PentagonMarker" title="enable.markers.PentagonMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">PentagonMarker</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.markers.html#enable.markers.Hexagon1Marker" title="enable.markers.Hexagon1Marker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Hexagon1Marker</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.markers.html#enable.markers.Hexagon2Marker" title="enable.markers.Hexagon2Marker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Hexagon2Marker</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.markers.html#enable.markers.StarMarker" title="enable.markers.StarMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">StarMarker</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.markers.html#enable.markers.CrossPlusMarker" title="enable.markers.CrossPlusMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">CrossPlusMarker</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.markers.html#enable.markers.PlusMarker" title="enable.markers.PlusMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlusMarker</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.markers.html#enable.markers.CrossMarker" title="enable.markers.CrossMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">CrossMarker</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.markers.html#enable.markers.DiamondMarker" title="enable.markers.DiamondMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiamondMarker</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.markers.html#enable.markers.DotMarker" title="enable.markers.DotMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">DotMarker</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.markers.html#enable.markers.PixelMarker" title="enable.markers.PixelMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">PixelMarker</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.markers.html#enable.markers.CustomMarker" title="enable.markers.CustomMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">CustomMarker</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.markers.html#enable.markers.AbstractMarker" title="enable.markers.AbstractMarker"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractMarker</span></code></a></p></li>
+</ul>
+<div class="section" id="marker-trait-types">
+<h3>Marker Trait Types<a class="headerlink" href="#marker-trait-types" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">MarkerTrait</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">marker_trait</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="marker-constants">
+<h3>Marker Constants<a class="headerlink" href="#marker-constants" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">MarkerNameDict</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">marker_names</span></code></p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="events">
+<h2>Events<a class="headerlink" href="#events" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="enable.events.html#enable.events.BasicEvent" title="enable.events.BasicEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasicEvent</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.events.html#enable.events.BlobEvent" title="enable.events.BlobEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlobEvent</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.events.html#enable.events.BlobFrameEvent" title="enable.events.BlobFrameEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlobFrameEvent</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.events.html#enable.events.DragEvent" title="enable.events.DragEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">DragEvent</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.events.html#enable.events.KeyEvent" title="enable.events.KeyEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">KeyEvent</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.events.html#enable.events.MouseEvent" title="enable.events.MouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">MouseEvent</span></code></a></p></li>
+</ul>
+<div class="section" id="event-trait-types">
+<h3>Event Trait Types<a class="headerlink" href="#event-trait-types" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">drag_event_trait</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">key_event_trait</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">mouse_event_trait</span></code></p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="enable-components">
+<h2>Enable Components<a class="headerlink" href="#enable-components" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="enable.interactor.html#enable.interactor.Interactor" title="enable.interactor.Interactor"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interactor</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.base_tool.html#enable.base_tool.BaseTool" title="enable.base_tool.BaseTool"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTool</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.base_tool.html#enable.base_tool.KeySpec" title="enable.base_tool.KeySpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">KeySpec</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.abstract_overlay.html#enable.abstract_overlay.AbstractOverlay" title="enable.abstract_overlay.AbstractOverlay"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractOverlay</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.canvas.html#enable.canvas.Canvas" title="enable.canvas.Canvas"><code class="xref py py-class docutils literal notranslate"><span class="pre">Canvas</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.component.html#enable.component.Component" title="enable.component.Component"><code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.container.html#enable.container.Container" title="enable.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.coordinate_box.html#enable.coordinate_box.CoordinateBox" title="enable.coordinate_box.CoordinateBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordinateBox</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.component_editor.html#enable.component_editor.ComponentEditor" title="enable.component_editor.ComponentEditor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComponentEditor</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.overlay_container.html#enable.overlay_container.OverlayContainer" title="enable.overlay_container.OverlayContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">OverlayContainer</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.constraints_container.html#enable.constraints_container.ConstraintsContainer" title="enable.constraints_container.ConstraintsContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConstraintsContainer</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.label.html#enable.label.Label" title="enable.label.Label"><code class="xref py py-class docutils literal notranslate"><span class="pre">Label</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.graphics_context.html#enable.graphics_context.GraphicsContextEnable" title="enable.graphics_context.GraphicsContextEnable"><code class="xref py py-class docutils literal notranslate"><span class="pre">GraphicsContextEnable</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.graphics_context.html#enable.graphics_context.ImageGraphicsContextEnable" title="enable.graphics_context.ImageGraphicsContextEnable"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageGraphicsContextEnable</span></code></a></p></li>
+</ul>
+</div>
+<div class="section" id="enable-widgets">
+<h2>Enable Widgets<a class="headerlink" href="#enable-widgets" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="enable.abstract_window.html#enable.abstract_window.AbstractWindow" title="enable.abstract_window.AbstractWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractWindow</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.viewport.html#enable.viewport.Viewport" title="enable.viewport.Viewport"><code class="xref py py-class docutils literal notranslate"><span class="pre">Viewport</span></code></a></p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Window</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="drawing-primitives">
+<h2>Drawing Primitives<a class="headerlink" href="#drawing-primitives" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="enable.primitives.annotater.html#enable.primitives.annotater.Annotater" title="enable.primitives.annotater.Annotater"><code class="xref py py-class docutils literal notranslate"><span class="pre">Annotater</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.layout.geometry.html#enable.layout.geometry.Box" title="enable.layout.geometry.Box"><code class="xref py py-class docutils literal notranslate"><span class="pre">Box</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.primitives.line.html#enable.primitives.line.Line" title="enable.primitives.line.Line"><code class="xref py py-class docutils literal notranslate"><span class="pre">Line</span></code></a></p></li>
+<li><p><a class="reference internal" href="enable.primitives.polygon.html#enable.primitives.polygon.Polygon" title="enable.primitives.polygon.Polygon"><code class="xref py py-class docutils literal notranslate"><span class="pre">Polygon</span></code></a></p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">enable.api module</a><ul>
+<li><a class="reference internal" href="#enable-base">Enable Base</a><ul>
+<li><a class="reference internal" href="#constants">Constants</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#enable-trait-types">Enable Trait Types</a><ul>
+<li><a class="reference internal" href="#id1">Constants</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#colors">Colors</a><ul>
+<li><a class="reference internal" href="#color-trait-types">Color Trait Types</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#markers">Markers</a><ul>
+<li><a class="reference internal" href="#marker-trait-types">Marker Trait Types</a></li>
+<li><a class="reference internal" href="#marker-constants">Marker Constants</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#events">Events</a><ul>
+<li><a class="reference internal" href="#event-trait-types">Event Trait Types</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#enable-components">Enable Components</a></li>
+<li><a class="reference internal" href="#enable-widgets">Enable Widgets</a></li>
+<li><a class="reference internal" href="#drawing-primitives">Drawing Primitives</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.abstract_window.html"
+                        title="previous chapter">enable.abstract_window module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.base.html"
+                        title="next chapter">enable.base module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.api.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

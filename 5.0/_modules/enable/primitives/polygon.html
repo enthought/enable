@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.primitives.polygon &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../../index.html" >
+    <link rel="up" title="Module code" href="../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.primitives.polygon</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;A filled polygon component&quot;&quot;&quot;</span>
+
+<span class="c1"># Major package imports.</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">array</span>
+
+<span class="c1"># Enthought library imports.</span>
+<span class="kn">from</span> <span class="nn">kiva.api</span> <span class="k">import</span> <span class="n">EOF_FILL_STROKE</span><span class="p">,</span> <span class="n">FILL</span><span class="p">,</span> <span class="n">FILL_STROKE</span><span class="p">,</span> <span class="n">points_in_polygon</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Property</span><span class="p">,</span> <span class="n">Trait</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="k">import</span> <span class="n">Group</span><span class="p">,</span> <span class="n">View</span>
+
+<span class="c1"># Local imports.</span>
+<span class="kn">from</span> <span class="nn">enable.api</span> <span class="k">import</span> <span class="n">border_size_trait</span><span class="p">,</span> <span class="n">Component</span>
+<span class="kn">from</span> <span class="nn">enable.colors</span> <span class="k">import</span> <span class="n">ColorTrait</span>
+
+
+<div class="viewcode-block" id="PolygonModel"><a class="viewcode-back" href="../../../api/enable.primitives.polygon.html#enable.primitives.polygon.PolygonModel">[docs]</a><span class="k">class</span> <span class="nc">PolygonModel</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; The data model for a Polygon. &quot;&quot;&quot;</span>
+
+    <span class="c1"># The points that make up the vertices of this polygon.</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="n">List</span><span class="p">(</span><span class="n">Tuple</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PolygonModel.reset"><a class="viewcode-back" href="../../../api/enable.primitives.polygon.html#enable.primitives.polygon.PolygonModel.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="p">[]</span></div></div>
+
+
+<div class="viewcode-block" id="Polygon"><a class="viewcode-back" href="../../../api/enable.primitives.polygon.html#enable.primitives.polygon.Polygon">[docs]</a><span class="k">class</span> <span class="nc">Polygon</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A filled polygon component. &quot;&quot;&quot;</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Trait definitions.</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="c1"># The background color of this polygon.</span>
+    <span class="n">background_color</span> <span class="o">=</span> <span class="n">ColorTrait</span><span class="p">(</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The color of the border of this polygon.</span>
+    <span class="n">border_color</span> <span class="o">=</span> <span class="n">ColorTrait</span><span class="p">(</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The dash pattern to use for this polygon.</span>
+    <span class="n">border_dash</span> <span class="o">=</span> <span class="n">Any</span>
+
+    <span class="c1"># The thickness of the border of this polygon.</span>
+    <span class="n">border_size</span> <span class="o">=</span> <span class="n">Trait</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">border_size_trait</span><span class="p">)</span>
+
+    <span class="c1"># Event fired when the polygon is &quot;complete&quot;.</span>
+    <span class="n">complete</span> <span class="o">=</span> <span class="n">Event</span>
+
+    <span class="c1"># The rule to use to determine the inside of the polygon.</span>
+    <span class="n">inside_rule</span> <span class="o">=</span> <span class="n">Trait</span><span class="p">(</span>
+        <span class="s2">&quot;winding&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;winding&quot;</span><span class="p">:</span> <span class="n">FILL_STROKE</span><span class="p">,</span> <span class="s2">&quot;oddeven&quot;</span><span class="p">:</span> <span class="n">EOF_FILL_STROKE</span><span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="c1"># The points that make up this polygon.</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">PolygonModel</span><span class="p">,</span> <span class="p">())</span>
+
+    <span class="c1"># Convenience property to access the model&#39;s points.</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="c1"># The color of each vertex.</span>
+    <span class="n">vertex_color</span> <span class="o">=</span> <span class="n">ColorTrait</span><span class="p">(</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The size of each vertex.</span>
+    <span class="n">vertex_size</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span>
+
+    <span class="n">traits_view</span> <span class="o">=</span> <span class="n">View</span><span class="p">(</span>
+        <span class="n">Group</span><span class="p">(</span><span class="s2">&quot;&lt;component&gt;&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;component&quot;</span><span class="p">),</span>
+        <span class="n">Group</span><span class="p">(</span><span class="s2">&quot;&lt;links&gt;&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;links&quot;</span><span class="p">),</span>
+        <span class="n">Group</span><span class="p">(</span>
+            <span class="s2">&quot;background_color&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;border_color&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;border_size&quot;</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;Box&quot;</span><span class="p">,</span>
+            <span class="n">style</span><span class="o">=</span><span class="s2">&quot;custom&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">colorchip_map</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="s2">&quot;alt_color&quot;</span><span class="p">:</span> <span class="s2">&quot;border_color&quot;</span><span class="p">}</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Traits property accessors</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_get_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">points</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># &#39;Polygon&#39; interface</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Polygon.reset"><a class="viewcode-back" href="../../../api/enable.primitives.polygon.html#enable.primitives.polygon.Polygon.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Reset the polygon to the initial state&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_state</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># &#39;Component&#39; interface</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_draw_mainlayer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">):</span>
+        <span class="s2">&quot;Draw the component in the specified graphics context&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_draw_closed</span><span class="p">(</span><span class="n">gc</span><span class="p">)</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Protected interface</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_is_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Test if the point (an x, y tuple) is within this polygonal region.</span>
+
+<span class="sd">        To perform the test, we use the winding number inclusion algorithm,</span>
+<span class="sd">        referenced in the comp.graphics.algorithms FAQ</span>
+<span class="sd">        (http://www.faqs.org/faqs/graphics/algorithms-faq/) and described in</span>
+<span class="sd">        detail here:</span>
+
+<span class="sd">        http://softsurfer.com/Archive/algorithm_0103/algorithm_0103.htm</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">point_array</span> <span class="o">=</span> <span class="n">array</span><span class="p">((</span><span class="n">point</span><span class="p">,))</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+        <span class="n">winding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inside_rule</span> <span class="o">==</span> <span class="s2">&quot;winding&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">points_in_polygon</span><span class="p">(</span><span class="n">point_array</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">winding</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Private interface</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_draw_closed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">):</span>
+        <span class="s2">&quot;Draw this polygon as a closed polygon&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">points</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># Set the drawing parameters.</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">background_color_</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">border_color_</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">border_size</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_line_dash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">border_dash</span><span class="p">)</span>
+
+            <span class="c1"># Draw the path.</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">begin_path</span><span class="p">()</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">offset_points</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">points</span>
+            <span class="p">]</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span><span class="n">offset_points</span><span class="p">)</span>
+
+            <span class="n">gc</span><span class="o">.</span><span class="n">close_path</span><span class="p">()</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">draw_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inside_rule_</span><span class="p">)</span>
+
+            <span class="c1"># Draw the vertices.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_draw_vertices</span><span class="p">(</span><span class="n">gc</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_draw_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">):</span>
+        <span class="s2">&quot;Draw this polygon as an open polygon&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">points</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># Set the drawing parameters.</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">background_color_</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">border_color_</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">border_size</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_line_dash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">border_dash</span><span class="p">)</span>
+
+            <span class="c1"># Draw the path.</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">begin_path</span><span class="p">()</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">offset_points</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">points</span>
+            <span class="p">]</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span><span class="n">offset_points</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">draw_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inside_rule_</span><span class="p">)</span>
+
+            <span class="c1"># Draw the vertices.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_draw_vertices</span><span class="p">(</span><span class="n">gc</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_draw_vertices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">):</span>
+        <span class="s2">&quot;Draw the vertices of the polygon.&quot;</span>
+
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertex_color_</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_line_dash</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex_size</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="n">offset_points</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">points</span>
+        <span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="s2">&quot;draw_path_at_points&quot;</span><span class="p">):</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_empty_path</span><span class="p">()</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="o">-</span><span class="n">offset</span><span class="p">,</span> <span class="o">-</span><span class="n">offset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex_size</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">draw_path_at_points</span><span class="p">(</span><span class="n">offset_points</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">FILL_STROKE</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">offset_points</span><span class="p">:</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">draw_rect</span><span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="n">x</span> <span class="o">-</span> <span class="n">offset</span><span class="p">,</span>
+                        <span class="n">y</span> <span class="o">-</span> <span class="n">offset</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">vertex_size</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">vertex_size</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">FILL</span><span class="p">,</span>
+                <span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

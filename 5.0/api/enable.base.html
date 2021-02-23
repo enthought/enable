@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.base module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable package" href="enable.html" >
+    <link rel="next" title="enable.base_tool module" href="enable.base_tool.html" >
+    <link rel="prev" title="enable.api module" href="enable.api.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" accesskey="U">enable package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.base_tool.html" title="enable.base_tool module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.api.html" title="enable.api module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.base">
+<span id="enable-base-module"></span><h1>enable.base module<a class="headerlink" href="#module-enable.base" title="Permalink to this headline">¶</a></h1>
+<p>Define a base set of constants and functions used by the remainder of the
+Enable package.</p>
+<dl class="class">
+<dt id="enable.base.IDroppedOnHandler">
+<em class="property">class </em><code class="sig-prename descclassname">enable.base.</code><code class="sig-name descname">IDroppedOnHandler</code><a class="reference internal" href="../_modules/enable/base.html#IDroppedOnHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base.IDroppedOnHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Interface for draggable objects that handle the ‘dropped_on’ event</p>
+<dl class="method">
+<dt id="enable.base.IDroppedOnHandler.was_dropped_on">
+<code class="sig-name descname">was_dropped_on</code><span class="sig-paren">(</span><em class="sig-param">component</em>, <em class="sig-param">event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base.html#IDroppedOnHandler.was_dropped_on"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base.IDroppedOnHandler.was_dropped_on" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.base.add_rectangles">
+<code class="sig-prename descclassname">enable.base.</code><code class="sig-name descname">add_rectangles</code><span class="sig-paren">(</span><em class="sig-param">rectangle1</em>, <em class="sig-param">rectangle2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base.html#add_rectangles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base.add_rectangles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add two bounds or coordinate rectangles</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.base.bounding_box">
+<code class="sig-prename descclassname">enable.base.</code><code class="sig-name descname">bounding_box</code><span class="sig-paren">(</span><em class="sig-param">components</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base.html#bounding_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base.bounding_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the bounding box for a set of components</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.base.bounding_coordinates">
+<code class="sig-prename descclassname">enable.base.</code><code class="sig-name descname">bounding_coordinates</code><span class="sig-paren">(</span><em class="sig-param">coordinates_list</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base.html#bounding_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base.bounding_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the bounding rectangle for a list of rectangles</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.base.bounds_to_coordinates">
+<code class="sig-prename descclassname">enable.base.</code><code class="sig-name descname">bounds_to_coordinates</code><span class="sig-paren">(</span><em class="sig-param">bounds</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base.html#bounds_to_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base.bounds_to_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a bounds rectangle to a coordinate rectangle</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.base.coordinates_to_bounds">
+<code class="sig-prename descclassname">enable.base.</code><code class="sig-name descname">coordinates_to_bounds</code><span class="sig-paren">(</span><em class="sig-param">coordinates</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base.html#coordinates_to_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base.coordinates_to_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a coordinates rectangle to a bounds rectangle</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.base.coordinates_to_size">
+<code class="sig-prename descclassname">enable.base.</code><code class="sig-name descname">coordinates_to_size</code><span class="sig-paren">(</span><em class="sig-param">coordinates</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base.html#coordinates_to_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base.coordinates_to_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a coordinates rectangle to a size tuple</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.base.does_disjoint_intersect_coordinates">
+<code class="sig-prename descclassname">enable.base.</code><code class="sig-name descname">does_disjoint_intersect_coordinates</code><span class="sig-paren">(</span><em class="sig-param">coordinates_list</em>, <em class="sig-param">coordinates</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base.html#does_disjoint_intersect_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base.does_disjoint_intersect_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether a rectangle intersects a disjoint set of rectangles
+anywhere</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.base.intersect_bounds">
+<code class="sig-prename descclassname">enable.base.</code><code class="sig-name descname">intersect_bounds</code><span class="sig-paren">(</span><em class="sig-param">bounds1</em>, <em class="sig-param">bounds2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base.html#intersect_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base.intersect_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the intersection of two bounds rectangles</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.base.intersect_coordinates">
+<code class="sig-prename descclassname">enable.base.</code><code class="sig-name descname">intersect_coordinates</code><span class="sig-paren">(</span><em class="sig-param">coordinates1</em>, <em class="sig-param">coordinates2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base.html#intersect_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base.intersect_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the intersection of two coordinate based rectangles</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.base.send_event_to">
+<code class="sig-prename descclassname">enable.base.</code><code class="sig-name descname">send_event_to</code><span class="sig-paren">(</span><em class="sig-param">components</em>, <em class="sig-param">event_name</em>, <em class="sig-param">event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base.html#send_event_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base.send_event_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send an event to a specified set of components until it is ‘handled’</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.base.str_to_font">
+<code class="sig-prename descclassname">enable.base.</code><code class="sig-name descname">str_to_font</code><span class="sig-paren">(</span><em class="sig-param">object</em>, <em class="sig-param">name</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base.html#str_to_font"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base.str_to_font" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a (somewhat) free-form string into a valid Font object.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.base.subclasses_of">
+<code class="sig-prename descclassname">enable.base.</code><code class="sig-name descname">subclasses_of</code><span class="sig-paren">(</span><em class="sig-param">klass</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base.html#subclasses_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base.subclasses_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate all of the classes (and subclasses) for a specified class</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.base.union_bounds">
+<code class="sig-prename descclassname">enable.base.</code><code class="sig-name descname">union_bounds</code><span class="sig-paren">(</span><em class="sig-param">bounds1</em>, <em class="sig-param">bounds2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base.html#union_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base.union_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the union of two bounds rectangles</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.base.union_coordinates">
+<code class="sig-prename descclassname">enable.base.</code><code class="sig-name descname">union_coordinates</code><span class="sig-paren">(</span><em class="sig-param">coordinates1</em>, <em class="sig-param">coordinates2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base.html#union_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base.union_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the union of two coordinate based rectangles</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="enable.base.xy_in_bounds">
+<code class="sig-prename descclassname">enable.base.</code><code class="sig-name descname">xy_in_bounds</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">bounds</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base.html#xy_in_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base.xy_in_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test whether a specified (x,y) point is in a specified bounds</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.api.html"
+                        title="previous chapter">enable.api module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.base_tool.html"
+                        title="next chapter">enable.base_tool module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.base.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
