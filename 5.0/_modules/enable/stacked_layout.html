@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.stacked_layout &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.stacked_layout</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot; Routines for stacked layout of components in a container</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># TODO: stolen from Chaco PlotContainers, should change their classes to use</span>
+
+
+<div class="viewcode-block" id="stacked_preferred_size"><a class="viewcode-back" href="../../api/enable.stacked_layout.html#enable.stacked_layout.stacked_preferred_size">[docs]</a><span class="k">def</span> <span class="nf">stacked_preferred_size</span><span class="p">(</span><span class="n">container</span><span class="p">,</span> <span class="n">components</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns the size (width,height) that is preferred for this component.</span>
+
+<span class="sd">    Overrides Component.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">container</span><span class="o">.</span><span class="n">fixed_preferred_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">container</span><span class="o">.</span><span class="n">_cached_preferred_size</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">fixed_preferred_size</span>
+        <span class="k">return</span> <span class="n">container</span><span class="o">.</span><span class="n">fixed_preferred_size</span>
+
+    <span class="k">if</span> <span class="n">components</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">components</span>
+
+    <span class="n">ndx</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">stack_index</span>
+    <span class="n">other_ndx</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">ndx</span>
+
+    <span class="n">no_visible_components</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">total_size</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">max_other_size</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">container</span><span class="o">.</span><span class="n">_should_layout</span><span class="p">(</span><span class="n">component</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="n">no_visible_components</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">pref_size</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">get_preferred_size</span><span class="p">()</span>
+        <span class="n">total_size</span> <span class="o">+=</span> <span class="n">pref_size</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span> <span class="o">+</span> <span class="n">container</span><span class="o">.</span><span class="n">spacing</span>
+        <span class="k">if</span> <span class="n">pref_size</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">max_other_size</span><span class="p">:</span>
+            <span class="n">max_other_size</span> <span class="o">=</span> <span class="n">pref_size</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">total_size</span> <span class="o">&gt;=</span> <span class="n">container</span><span class="o">.</span><span class="n">spacing</span><span class="p">:</span>
+        <span class="n">total_size</span> <span class="o">-=</span> <span class="n">container</span><span class="o">.</span><span class="n">spacing</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">container</span><span class="o">.</span><span class="n">stack_dimension</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">container</span><span class="o">.</span><span class="n">resizable</span>
+            <span class="ow">and</span> <span class="n">container</span><span class="o">.</span><span class="n">stack_dimension</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">container</span><span class="o">.</span><span class="n">fit_components</span><span class="p">):</span>
+        <span class="n">total_size</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">no_visible_components</span> <span class="ow">or</span> <span class="p">(</span><span class="n">total_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">total_size</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">default_size</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">container</span><span class="o">.</span><span class="n">other_dimension</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">container</span><span class="o">.</span><span class="n">resizable</span>
+            <span class="ow">and</span> <span class="n">container</span><span class="o">.</span><span class="n">other_dimension</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">container</span><span class="o">.</span><span class="n">fit_components</span><span class="p">):</span>
+        <span class="n">max_other_size</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">no_visible_components</span> <span class="ow">or</span> <span class="p">(</span><span class="n">max_other_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">max_other_size</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">default_size</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">ndx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">container</span><span class="o">.</span><span class="n">_cached_preferred_size</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">total_size</span> <span class="o">+</span> <span class="n">container</span><span class="o">.</span><span class="n">hpadding</span><span class="p">,</span>
+            <span class="n">max_other_size</span> <span class="o">+</span> <span class="n">container</span><span class="o">.</span><span class="n">vpadding</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">container</span><span class="o">.</span><span class="n">_cached_preferred_size</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">max_other_size</span> <span class="o">+</span> <span class="n">container</span><span class="o">.</span><span class="n">hpadding</span><span class="p">,</span>
+            <span class="n">total_size</span> <span class="o">+</span> <span class="n">container</span><span class="o">.</span><span class="n">vpadding</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">container</span><span class="o">.</span><span class="n">_cached_preferred_size</span></div>
+
+
+<div class="viewcode-block" id="stack_layout"><a class="viewcode-back" href="../../api/enable.stacked_layout.html#enable.stacked_layout.stack_layout">[docs]</a><span class="k">def</span> <span class="nf">stack_layout</span><span class="p">(</span><span class="n">container</span><span class="p">,</span> <span class="n">components</span><span class="p">,</span> <span class="n">align</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Helper method that does the actual work of layout.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">size</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">container</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">container</span><span class="o">.</span><span class="n">fit_components</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="n">container</span><span class="o">.</span><span class="n">get_preferred_size</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;h&quot;</span> <span class="ow">in</span> <span class="n">container</span><span class="o">.</span><span class="n">fit_components</span><span class="p">:</span>
+            <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">_cached_preferred_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">container</span><span class="o">.</span><span class="n">hpadding</span>
+        <span class="k">if</span> <span class="s2">&quot;v&quot;</span> <span class="ow">in</span> <span class="n">container</span><span class="o">.</span><span class="n">fit_components</span><span class="p">:</span>
+            <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">_cached_preferred_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">container</span><span class="o">.</span><span class="n">vpadding</span>
+
+    <span class="n">ndx</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">stack_index</span>
+    <span class="n">other_ndx</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">ndx</span>
+    <span class="n">other_dim</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">other_dimension</span>
+
+    <span class="c1"># Assign sizes of non-resizable components, and compute the total size</span>
+    <span class="c1"># used by them (along the stack dimension).</span>
+    <span class="n">total_fixed_size</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">resizable_components</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">size_prefs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">total_resizable_size</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">container</span><span class="o">.</span><span class="n">_should_layout</span><span class="p">(</span><span class="n">component</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">container</span><span class="o">.</span><span class="n">stack_dimension</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">component</span><span class="o">.</span><span class="n">resizable</span><span class="p">:</span>
+            <span class="n">total_fixed_size</span> <span class="o">+=</span> <span class="n">component</span><span class="o">.</span><span class="n">outer_bounds</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">preferred_size</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">get_preferred_size</span><span class="p">()</span>
+            <span class="n">size_prefs</span><span class="p">[</span><span class="n">component</span><span class="p">]</span> <span class="o">=</span> <span class="n">preferred_size</span>
+            <span class="n">total_resizable_size</span> <span class="o">+=</span> <span class="n">preferred_size</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span>
+            <span class="n">resizable_components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+
+    <span class="n">new_bounds_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Assign sizes of all the resizable components along the stack dimension</span>
+    <span class="k">if</span> <span class="n">resizable_components</span><span class="p">:</span>
+        <span class="n">space</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">spacing</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">container</span><span class="o">.</span><span class="n">components</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">avail_size</span> <span class="o">=</span> <span class="n">size</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span> <span class="o">-</span> <span class="n">total_fixed_size</span> <span class="o">-</span> <span class="n">space</span>
+        <span class="k">if</span> <span class="n">total_resizable_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">scale</span> <span class="o">=</span> <span class="n">avail_size</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">total_resizable_size</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">resizable_components</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">outer_bounds</span><span class="p">)</span>
+                <span class="n">tmp</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">size_prefs</span><span class="p">[</span><span class="n">component</span><span class="p">][</span><span class="n">ndx</span><span class="p">]</span> <span class="o">*</span> <span class="n">scale</span><span class="p">)</span>
+                <span class="n">new_bounds_dict</span><span class="p">[</span><span class="n">component</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">each_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">avail_size</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">resizable_components</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">resizable_components</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">outer_bounds</span><span class="p">)</span>
+                <span class="n">tmp</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span> <span class="o">=</span> <span class="n">each_size</span>
+                <span class="n">new_bounds_dict</span><span class="p">[</span><span class="n">component</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+
+    <span class="c1"># Loop over all the components, assigning position and computing the</span>
+    <span class="c1"># size in the other dimension and its position.</span>
+    <span class="n">cur_pos</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">container</span><span class="o">.</span><span class="n">_should_layout</span><span class="p">(</span><span class="n">component</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="n">position</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">outer_position</span><span class="p">)</span>
+        <span class="n">position</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span> <span class="o">=</span> <span class="n">cur_pos</span>
+
+        <span class="n">bounds</span> <span class="o">=</span> <span class="n">new_bounds_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">outer_bounds</span><span class="p">))</span>
+        <span class="n">cur_pos</span> <span class="o">+=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span> <span class="o">+</span> <span class="n">container</span><span class="o">.</span><span class="n">spacing</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">size</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span>
+                <span class="ow">or</span> <span class="n">other_dim</span> <span class="ow">in</span> <span class="n">component</span><span class="o">.</span><span class="n">resizable</span><span class="p">):</span>
+            <span class="c1"># If the component is resizable in the other dimension or it</span>
+            <span class="c1"># exceeds the container bounds, set it to the maximum size of the</span>
+            <span class="c1"># container</span>
+
+            <span class="n">position</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">bounds</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span> <span class="o">=</span> <span class="n">size</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">position</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">align</span> <span class="o">==</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">align</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
+                <span class="n">position</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span> <span class="o">=</span> <span class="n">size</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">align</span> <span class="o">==</span> <span class="s2">&quot;center&quot;</span><span class="p">:</span>
+                <span class="n">position</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">size</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="n">other_ndx</span><span class="p">]</span>
+                <span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+
+        <span class="n">component</span><span class="o">.</span><span class="n">outer_position</span> <span class="o">=</span> <span class="n">position</span>
+        <span class="n">component</span><span class="o">.</span><span class="n">outer_bounds</span> <span class="o">=</span> <span class="n">bounds</span>
+        <span class="n">component</span><span class="o">.</span><span class="n">do_layout</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

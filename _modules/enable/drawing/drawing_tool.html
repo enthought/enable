@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.drawing.drawing_tool &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../../index.html" >
+    <link rel="up" title="Module code" href="../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.drawing.drawing_tool</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">enable.api</span> <span class="k">import</span> <span class="n">Component</span>
+
+
+<div class="viewcode-block" id="DrawingTool"><a class="viewcode-back" href="../../../api/enable.drawing.drawing_tool.html#enable.drawing.drawing_tool.DrawingTool">[docs]</a><span class="k">class</span> <span class="nc">DrawingTool</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A drawing tool is just a component that also defines a certain drawing mode</span>
+<span class="sd">    so that its container knows how to render it and pass control to it.</span>
+
+<span class="sd">    The DrawingTool base class also defines a draw() dispatch, so that</span>
+<span class="sd">    different draw methods are called depending on the event state of the tool.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># The mode in which this tool draws:</span>
+    <span class="c1">#</span>
+    <span class="c1"># &quot;normal&quot;</span>
+    <span class="c1">#     The tool draws like a normal component, alongside other components</span>
+    <span class="c1">#     in the container</span>
+    <span class="c1"># &quot;overlay&quot;</span>
+    <span class="c1">#     The tool draws on top of over components in the container</span>
+    <span class="c1"># &quot;exclusive&quot;</span>
+    <span class="c1">#     The tool gets total control of how the container should be rendered</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="s2">&quot;overlay&quot;</span><span class="p">,</span> <span class="s2">&quot;exclusive&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DrawingTool.reset"><a class="viewcode-back" href="../../../api/enable.drawing.drawing_tool.html#enable.drawing.drawing_tool.DrawingTool.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Causes the tool to reset any saved state and revert its event_state</span>
+<span class="sd">        back to the initial value (usually &quot;normal&quot;).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="DrawingTool.complete_left_down"><a class="viewcode-back" href="../../../api/enable.drawing.drawing_tool.html#enable.drawing.drawing_tool.DrawingTool.complete_left_down">[docs]</a>    <span class="k">def</span> <span class="nf">complete_left_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Default function that causes the tool to reset if the user starts</span>
+<span class="sd">        drawing again.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normal_left_down</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_draw_mainlayer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">):</span>
+        <span class="n">draw_func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_state</span> <span class="o">+</span> <span class="s2">&quot;_draw&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">draw_func</span><span class="p">:</span>
+            <span class="n">draw_func</span><span class="p">(</span><span class="n">gc</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DrawingTool.request_redraw"><a class="viewcode-back" href="../../../api/enable.drawing.drawing_tool.html#enable.drawing.drawing_tool.DrawingTool.request_redraw">[docs]</a>    <span class="k">def</span> <span class="nf">request_redraw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;canvas&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

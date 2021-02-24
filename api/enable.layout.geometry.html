@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.layout.geometry module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable.layout package" href="enable.layout.html" >
+    <link rel="next" title="enable.layout.layout_helpers module" href="enable.layout.layout_helpers.html" >
+    <link rel="prev" title="enable.layout.constraints_namespace module" href="enable.layout.constraints_namespace.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" >enable package</a></li>
+          <li class="active"><a href="enable.layout.html" accesskey="U">enable.layout package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.layout.layout_helpers.html" title="enable.layout.layout_helpers module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.layout.constraints_namespace.html" title="enable.layout.constraints_namespace module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.layout.geometry">
+<span id="enable-layout-geometry-module"></span><h1>enable.layout.geometry module<a class="headerlink" href="#module-enable.layout.geometry" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="enable.layout.geometry.BaseBox">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.geometry.</code><code class="sig-name descname">BaseBox</code><a class="reference internal" href="../_modules/enable/layout/geometry.html#BaseBox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.geometry.BaseBox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>A tuple subclass representing a (top, right, bottom, left) box.
+Subclasses should override the __new__ method to enforce any typing.</p>
+<dl class="method">
+<dt id="enable.layout.geometry.BaseBox.bottom">
+<em class="property">property </em><code class="sig-name descname">bottom</code><a class="headerlink" href="#enable.layout.geometry.BaseBox.bottom" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ‘bottom’ component of the box.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.BaseBox.coerce_type">
+<em class="property">static </em><code class="sig-name descname">coerce_type</code><span class="sig-paren">(</span><em class="sig-param">item</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/geometry.html#BaseBox.coerce_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.geometry.BaseBox.coerce_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.BaseBox.left">
+<em class="property">property </em><code class="sig-name descname">left</code><a class="headerlink" href="#enable.layout.geometry.BaseBox.left" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ‘left’ component of the box.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.BaseBox.right">
+<em class="property">property </em><code class="sig-name descname">right</code><a class="headerlink" href="#enable.layout.geometry.BaseBox.right" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ‘right’ component of the box.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.BaseBox.top">
+<em class="property">property </em><code class="sig-name descname">top</code><a class="headerlink" href="#enable.layout.geometry.BaseBox.top" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ‘top’ component of the box.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.geometry.BasePos">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.geometry.</code><code class="sig-name descname">BasePos</code><a class="reference internal" href="../_modules/enable/layout/geometry.html#BasePos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.geometry.BasePos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>A tuple subclass representing a (x, y) positions. Subclasses
+should override the __new__ method to enforce any necessary typing.</p>
+<dl class="method">
+<dt id="enable.layout.geometry.BasePos.x">
+<em class="property">property </em><code class="sig-name descname">x</code><a class="headerlink" href="#enable.layout.geometry.BasePos.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ‘x’ component of the size.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.BasePos.y">
+<em class="property">property </em><code class="sig-name descname">y</code><a class="headerlink" href="#enable.layout.geometry.BasePos.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ‘y’ component of the size.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.geometry.BaseRect">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.geometry.</code><code class="sig-name descname">BaseRect</code><a class="reference internal" href="../_modules/enable/layout/geometry.html#BaseRect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.geometry.BaseRect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>A tuple subclass representing an (x, y, width, height)
+bounding box. Subclasses should override the __new__ method
+to enforce any necessary typing.</p>
+<dl class="method">
+<dt id="enable.layout.geometry.BaseRect.height">
+<em class="property">property </em><code class="sig-name descname">height</code><a class="headerlink" href="#enable.layout.geometry.BaseRect.height" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ‘height’ size component of the rect.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.BaseRect.width">
+<em class="property">property </em><code class="sig-name descname">width</code><a class="headerlink" href="#enable.layout.geometry.BaseRect.width" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ‘width’ size component of the rect.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.BaseRect.x">
+<em class="property">property </em><code class="sig-name descname">x</code><a class="headerlink" href="#enable.layout.geometry.BaseRect.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ‘x’ position component of the rect.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.BaseRect.y">
+<em class="property">property </em><code class="sig-name descname">y</code><a class="headerlink" href="#enable.layout.geometry.BaseRect.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ‘y’ position component of the rect.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.geometry.BaseSize">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.geometry.</code><code class="sig-name descname">BaseSize</code><a class="reference internal" href="../_modules/enable/layout/geometry.html#BaseSize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.geometry.BaseSize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>A tuple subclass representing a (width, height) size. Subclasses
+should override the __new__ method to enforce any necessary typing.</p>
+<dl class="method">
+<dt id="enable.layout.geometry.BaseSize.coerce_type">
+<em class="property">static </em><code class="sig-name descname">coerce_type</code><span class="sig-paren">(</span><em class="sig-param">item</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/geometry.html#BaseSize.coerce_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.geometry.BaseSize.coerce_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.BaseSize.height">
+<em class="property">property </em><code class="sig-name descname">height</code><a class="headerlink" href="#enable.layout.geometry.BaseSize.height" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ‘height’ component of the size.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.BaseSize.width">
+<em class="property">property </em><code class="sig-name descname">width</code><a class="headerlink" href="#enable.layout.geometry.BaseSize.width" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ‘width’ component of the size.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.geometry.Box">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.geometry.</code><code class="sig-name descname">Box</code><a class="reference internal" href="../_modules/enable/layout/geometry.html#Box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.geometry.Box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.geometry.BaseBox" title="enable.layout.geometry.BaseBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.geometry.BaseBox</span></code></a></p>
+<p>A BaseBox implementation for integer values.</p>
+<dl class="method">
+<dt id="enable.layout.geometry.Box.coerce_type">
+<em class="property">static </em><code class="sig-name descname">coerce_type</code><span class="sig-paren">(</span><em class="sig-param">item</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/geometry.html#Box.coerce_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.geometry.Box.coerce_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.Box.pos">
+<em class="property">property </em><code class="sig-name descname">pos</code><a class="headerlink" href="#enable.layout.geometry.Box.pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Pos of this box.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.Box.rect">
+<em class="property">property </em><code class="sig-name descname">rect</code><a class="headerlink" href="#enable.layout.geometry.Box.rect" title="Permalink to this definition">¶</a></dt>
+<dd><p>The equivalent Rect for this box.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.Box.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#enable.layout.geometry.Box.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Size of this box.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.geometry.BoxF">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.geometry.</code><code class="sig-name descname">BoxF</code><a class="reference internal" href="../_modules/enable/layout/geometry.html#BoxF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.geometry.BoxF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.geometry.BaseBox" title="enable.layout.geometry.BaseBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.geometry.BaseBox</span></code></a></p>
+<p>A BaseBox implementation for floating point values.</p>
+<dl class="method">
+<dt id="enable.layout.geometry.BoxF.coerce_type">
+<em class="property">static </em><code class="sig-name descname">coerce_type</code><span class="sig-paren">(</span><em class="sig-param">item</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/geometry.html#BoxF.coerce_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.geometry.BoxF.coerce_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.BoxF.pos">
+<em class="property">property </em><code class="sig-name descname">pos</code><a class="headerlink" href="#enable.layout.geometry.BoxF.pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Pos of this box.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.BoxF.rect">
+<em class="property">property </em><code class="sig-name descname">rect</code><a class="headerlink" href="#enable.layout.geometry.BoxF.rect" title="Permalink to this definition">¶</a></dt>
+<dd><p>The equivalent Rect for this box.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.BoxF.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#enable.layout.geometry.BoxF.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Size of this box.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.geometry.Pos">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.geometry.</code><code class="sig-name descname">Pos</code><a class="reference internal" href="../_modules/enable/layout/geometry.html#Pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.geometry.Pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.geometry.BasePos" title="enable.layout.geometry.BasePos"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.geometry.BasePos</span></code></a></p>
+<p>An implementation of BasePos for integer values.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.geometry.PosF">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.geometry.</code><code class="sig-name descname">PosF</code><a class="reference internal" href="../_modules/enable/layout/geometry.html#PosF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.geometry.PosF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.geometry.BasePos" title="enable.layout.geometry.BasePos"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.geometry.BasePos</span></code></a></p>
+<p>An implementation of BasePos of floating point values.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.geometry.Rect">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.geometry.</code><code class="sig-name descname">Rect</code><a class="reference internal" href="../_modules/enable/layout/geometry.html#Rect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.geometry.Rect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.geometry.BaseRect" title="enable.layout.geometry.BaseRect"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.geometry.BaseRect</span></code></a></p>
+<p>A BaseRect implementation for integer values.</p>
+<dl class="method">
+<dt id="enable.layout.geometry.Rect.box">
+<em class="property">property </em><code class="sig-name descname">box</code><a class="headerlink" href="#enable.layout.geometry.Rect.box" title="Permalink to this definition">¶</a></dt>
+<dd><p>The equivalent Box for this rect.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.Rect.pos">
+<em class="property">property </em><code class="sig-name descname">pos</code><a class="headerlink" href="#enable.layout.geometry.Rect.pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>The position of the rect as a Pos object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.Rect.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#enable.layout.geometry.Rect.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>The size of the rect as a Size object.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.geometry.RectF">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.geometry.</code><code class="sig-name descname">RectF</code><a class="reference internal" href="../_modules/enable/layout/geometry.html#RectF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.geometry.RectF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.geometry.BaseRect" title="enable.layout.geometry.BaseRect"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.geometry.BaseRect</span></code></a></p>
+<p>A BaseRect implementation for floating point values.</p>
+<dl class="method">
+<dt id="enable.layout.geometry.RectF.box">
+<em class="property">property </em><code class="sig-name descname">box</code><a class="headerlink" href="#enable.layout.geometry.RectF.box" title="Permalink to this definition">¶</a></dt>
+<dd><p>The equivalent Box for this rect.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.RectF.pos">
+<em class="property">property </em><code class="sig-name descname">pos</code><a class="headerlink" href="#enable.layout.geometry.RectF.pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>The position of the rect as a Pos object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.layout.geometry.RectF.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#enable.layout.geometry.RectF.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>The size of the rect as a Size object.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.geometry.Size">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.geometry.</code><code class="sig-name descname">Size</code><a class="reference internal" href="../_modules/enable/layout/geometry.html#Size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.geometry.Size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.geometry.BaseSize" title="enable.layout.geometry.BaseSize"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.geometry.BaseSize</span></code></a></p>
+<p>A BaseSize implementation for integer values.</p>
+<dl class="method">
+<dt id="enable.layout.geometry.Size.coerce_type">
+<em class="property">static </em><code class="sig-name descname">coerce_type</code><span class="sig-paren">(</span><em class="sig-param">item</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/geometry.html#Size.coerce_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.geometry.Size.coerce_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.layout.geometry.SizeF">
+<em class="property">class </em><code class="sig-prename descclassname">enable.layout.geometry.</code><code class="sig-name descname">SizeF</code><a class="reference internal" href="../_modules/enable/layout/geometry.html#SizeF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.geometry.SizeF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.layout.geometry.BaseSize" title="enable.layout.geometry.BaseSize"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.layout.geometry.BaseSize</span></code></a></p>
+<p>A BaseSize implementation for floating point values.</p>
+<dl class="method">
+<dt id="enable.layout.geometry.SizeF.coerce_type">
+<em class="property">static </em><code class="sig-name descname">coerce_type</code><span class="sig-paren">(</span><em class="sig-param">item</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/layout/geometry.html#SizeF.coerce_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.layout.geometry.SizeF.coerce_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.layout.constraints_namespace.html"
+                        title="previous chapter">enable.layout.constraints_namespace module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.layout.layout_helpers.html"
+                        title="next chapter">enable.layout.layout_helpers module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.layout.geometry.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

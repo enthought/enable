@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.tools.drag_tool module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable.tools package" href="enable.tools.html" >
+    <link rel="next" title="enable.tools.hover_tool module" href="enable.tools.hover_tool.html" >
+    <link rel="prev" title="enable.tools.button_tool module" href="enable.tools.button_tool.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" >enable package</a></li>
+          <li class="active"><a href="enable.tools.html" accesskey="U">enable.tools package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.tools.hover_tool.html" title="enable.tools.hover_tool module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.tools.button_tool.html" title="enable.tools.button_tool module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.tools.drag_tool">
+<span id="enable-tools-drag-tool-module"></span><h1>enable.tools.drag_tool module<a class="headerlink" href="#module-enable.tools.drag_tool" title="Permalink to this headline">¶</a></h1>
+<p>Defines the base DragTool class.</p>
+<dl class="class">
+<dt id="enable.tools.drag_tool.DragTool">
+<em class="property">class </em><code class="sig-prename descclassname">enable.tools.drag_tool.</code><code class="sig-name descname">DragTool</code><span class="sig-paren">(</span><em class="sig-param">component=None</em>, <em class="sig-param">**kwtraits</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/drag_tool.html#DragTool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.drag_tool.DragTool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="enable.base_tool.html#enable.base_tool.BaseTool" title="enable.base_tool.BaseTool"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.base_tool.BaseTool</span></code></a></p>
+<p>Base class for tools that are activated by a drag operation.</p>
+<p>This tool insulates the drag operation from double clicks and the like, and
+gracefully manages the transition into and out of drag mode.</p>
+<dl class="method">
+<dt id="enable.tools.drag_tool.DragTool.drag_cancel">
+<code class="sig-name descname">drag_cancel</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/drag_tool.html#DragTool.drag_cancel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.drag_tool.DragTool.drag_cancel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when the drag is cancelled.</p>
+<p>A drag is usually cancelled by receiving a mouse_leave event when
+end_drag_on_leave is True, or by the user pressing any of the
+<strong>cancel_keys</strong>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.tools.drag_tool.DragTool.drag_end">
+<code class="sig-name descname">drag_end</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/drag_tool.html#DragTool.drag_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.drag_tool.DragTool.drag_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when a mouse event causes the drag operation to end.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.tools.drag_tool.DragTool.drag_start">
+<code class="sig-name descname">drag_start</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/drag_tool.html#DragTool.drag_start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.drag_tool.DragTool.drag_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when the drag operation starts.</p>
+<p>The <em>event</em> parameter is the mouse event that established the drag
+operation; its <strong>x</strong> and <strong>y</strong> attributes correspond to the current
+location of the mouse, and not to the position of the mouse when the
+initial left_down or right_down event happened.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.tools.drag_tool.DragTool.dragging">
+<code class="sig-name descname">dragging</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/drag_tool.html#DragTool.dragging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.drag_tool.DragTool.dragging" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is called for every mouse_move event that the tool
+receives while the user is dragging the mouse.</p>
+<p>It is recommended that subclasses do most of their work in this method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.tools.drag_tool.DragTool.is_draggable">
+<code class="sig-name descname">is_draggable</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/tools/drag_tool.html#DragTool.is_draggable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.tools.drag_tool.DragTool.is_draggable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether the (x,y) position is in a region that is OK to
+drag.</p>
+<p>Used by the tool to determine when to start a drag.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.tools.button_tool.html"
+                        title="previous chapter">enable.tools.button_tool module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.tools.hover_tool.html"
+                        title="next chapter">enable.tools.hover_tool module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.tools.drag_tool.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

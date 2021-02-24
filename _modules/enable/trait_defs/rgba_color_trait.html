@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.trait_defs.rgba_color_trait &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../../index.html" >
+    <link rel="up" title="Module code" href="../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.trait_defs.rgba_color_trait</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot; Trait definition for an RGBA-based color, which is either:</span>
+
+<span class="sd">* A tuple of the form (*red*,*green*,*blue*,*alpha*), where each component is</span>
+<span class="sd">  in the range from 0.0 to 1.0</span>
+<span class="sd">* An integer which in hexadecimal is of the form 0xAARRGGBB, where AA is alpha,</span>
+<span class="sd">  RR is red, GG is green, and BB is blue.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Trait</span><span class="p">,</span> <span class="n">TraitError</span><span class="p">,</span> <span class="n">TraitFactory</span>
+<span class="kn">from</span> <span class="nn">traits.etsconfig.api</span> <span class="k">import</span> <span class="n">ETSConfig</span>
+<span class="kn">from</span> <span class="nn">traits.trait_base</span> <span class="k">import</span> <span class="n">SequenceTypes</span>
+
+<span class="kn">from</span> <span class="nn">.ui.api</span> <span class="k">import</span> <span class="n">RGBAColorEditor</span>
+
+<span class="k">if</span> <span class="n">ETSConfig</span><span class="o">.</span><span class="n">toolkit</span> <span class="o">==</span> <span class="s2">&quot;wx&quot;</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">traitsui.wx.color_trait</span> <span class="k">import</span> <span class="n">standard_colors</span>
+
+    <span class="k">def</span> <span class="nf">rgba_color</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">color</span><span class="o">.</span><span class="n">Red</span><span class="p">()</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">.</span><span class="n">Green</span><span class="p">()</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">.</span><span class="n">Blue</span><span class="p">()</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">,</span>
+            <span class="mf">1.0</span><span class="p">,</span>
+        <span class="p">)</span>
+<span class="k">elif</span> <span class="n">ETSConfig</span><span class="o">.</span><span class="n">toolkit</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;qt&quot;</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">traitsui.qt4.color_trait</span> <span class="k">import</span> <span class="n">standard_colors</span>
+
+    <span class="k">def</span> <span class="nf">rgba_color</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">color</span><span class="o">.</span><span class="n">red</span><span class="p">()</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">.</span><span class="n">green</span><span class="p">()</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">.</span><span class="n">blue</span><span class="p">()</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">,</span>
+            <span class="mf">1.0</span><span class="p">,</span>
+        <span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">traitsui.null.color_trait</span> <span class="k">import</span> <span class="n">standard_colors</span>
+
+<div class="viewcode-block" id="rgba_color"><a class="viewcode-back" href="../../../api/enable.trait_defs.rgba_color_trait.html#enable.trait_defs.rgba_color_trait.rgba_color">[docs]</a>    <span class="k">def</span> <span class="nf">rgba_color</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="p">((</span><span class="n">color</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">,</span>
+            <span class="p">((</span><span class="n">color</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">color</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">,</span>
+            <span class="mf">1.0</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1">#  Convert a value into an Enable/Kiva color:</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="convert_to_color"><a class="viewcode-back" href="../../../api/enable.trait_defs.rgba_color_trait.html#enable.trait_defs.rgba_color_trait.convert_to_color">[docs]</a><span class="k">def</span> <span class="nf">convert_to_color</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Converts a value to an Enable or Kiva color.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">SequenceTypes</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="n">value</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">value</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">((</span><span class="n">value</span> <span class="o">&gt;&gt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">,</span>
+            <span class="p">((</span><span class="n">value</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">,</span>
+            <span class="p">((</span><span class="n">value</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">value</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">raise</span> <span class="n">TraitError</span></div>
+
+
+<span class="n">convert_to_color</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;a tuple of the form (red,green,blue,alpha), where &quot;</span>
+    <span class="s2">&quot;each component is in the range from 0.0 to 1.0, or &quot;</span>
+    <span class="s2">&quot;an integer which in hex is of the form 0xAARRGGBB, &quot;</span>
+    <span class="s2">&quot;where AA is alpha, RR is red, GG is green, and BB is &quot;</span>
+    <span class="s2">&quot;blue&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1">#  Standard colors:</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+<span class="c1"># RGBA versions of standard colors</span>
+<span class="n">rgba_standard_colors</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">standard_colors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">rgba_standard_colors</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">rgba_color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+<span class="n">rgba_standard_colors</span><span class="p">[</span><span class="s2">&quot;clear&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1">#  Define Enable/Kiva specific color traits:</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="RGBAColorFunc"><a class="viewcode-back" href="../../../api/enable.trait_defs.rgba_color_trait.html#enable.trait_defs.rgba_color_trait.RGBAColorFunc">[docs]</a><span class="k">def</span> <span class="nf">RGBAColorFunc</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">metadata</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns a trait whose value must be a GUI toolkit-specific RGBA-based</span>
+<span class="sd">    color.</span>
+
+<span class="sd">    Description</span>
+<span class="sd">    -----------</span>
+<span class="sd">    For wxPython, the returned trait accepts any of the following values:</span>
+
+<span class="sd">    * A tuple of the form (*r*, *g*, *b*, *a*), in which *r*, *g*, *b*, and *a*</span>
+<span class="sd">      represent red, green, blue, and alpha values, respectively, and are</span>
+<span class="sd">      floats in the range from 0.0 to 1.0</span>
+<span class="sd">    * An integer whose hexadecimal form is 0x*AARRGGBB*, where *AA* is the</span>
+<span class="sd">      alpha (transparency) value, *RR* is the red value, *GG* is the green</span>
+<span class="sd">      value, and *BB* is the blue value</span>
+
+<span class="sd">    Default Value</span>
+<span class="sd">    -------------</span>
+<span class="sd">    For wxPython, (1.0, 1.0, 1.0, 1.0) (that is, opaque white)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tmp_trait</span> <span class="o">=</span> <span class="n">Trait</span><span class="p">(</span>
+        <span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">convert_to_color</span><span class="p">,</span> <span class="n">rgba_standard_colors</span><span class="p">,</span> <span class="n">editor</span><span class="o">=</span><span class="n">RGBAColorEditor</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">tmp_trait</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">metadata</span><span class="p">)</span></div>
+
+
+<span class="n">RGBAColorTrait</span> <span class="o">=</span> <span class="n">TraitFactory</span><span class="p">(</span><span class="n">RGBAColorFunc</span><span class="p">)</span>
+<span class="n">RGBAColor</span> <span class="o">=</span> <span class="n">RGBAColorTrait</span>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

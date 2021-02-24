@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.savage.svg.pathdata &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../../../index.html" >
+    <link rel="up" title="Module code" href="../../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.savage.svg.pathdata</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot; SVG path data parser</span>
+
+<span class="sd">    Usage::</span>
+
+<span class="sd">        steps = svg.parseString(pathdata)</span>
+<span class="sd">        for command, arguments in steps:</span>
+<span class="sd">            pass</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">pyparsing</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">CaselessLiteral</span><span class="p">,</span> <span class="n">Combine</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">OneOrMore</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span>
+    <span class="n">ParseException</span><span class="p">,</span> <span class="n">Word</span><span class="p">,</span> <span class="n">ZeroOrMore</span><span class="p">,</span> <span class="n">nums</span><span class="p">,</span> <span class="n">oneOf</span>
+<span class="p">)</span>
+
+<span class="c1"># ParserElement.enablePackrat()</span>
+
+
+<div class="viewcode-block" id="Command"><a class="viewcode-back" href="../../../../api/enable.savage.svg.pathdata.html#enable.savage.svg.pathdata.Command">[docs]</a><span class="k">def</span> <span class="nf">Command</span><span class="p">(</span><span class="n">char</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Case insensitive but case preserving&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">CaselessPreservingLiteral</span><span class="p">(</span><span class="n">char</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Arguments"><a class="viewcode-back" href="../../../../api/enable.savage.svg.pathdata.html#enable.savage.svg.pathdata.Arguments">[docs]</a><span class="k">def</span> <span class="nf">Arguments</span><span class="p">(</span><span class="n">token</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Group</span><span class="p">(</span><span class="n">token</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CaselessPreservingLiteral"><a class="viewcode-back" href="../../../../api/enable.savage.svg.pathdata.html#enable.savage.svg.pathdata.CaselessPreservingLiteral">[docs]</a><span class="k">class</span> <span class="nc">CaselessPreservingLiteral</span><span class="p">(</span><span class="n">CaselessLiteral</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Like CaselessLiteral, but returns the match as found</span>
+<span class="sd">        instead of as defined.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matchString</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CaselessPreservingLiteral</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">matchString</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">matchString</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;Expected &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+<div class="viewcode-block" id="CaselessPreservingLiteral.parseImpl"><a class="viewcode-back" href="../../../../api/enable.savage.svg.pathdata.html#enable.savage.svg.pathdata.CaselessPreservingLiteral.parseImpl">[docs]</a>    <span class="k">def</span> <span class="nf">parseImpl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instring</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">doActions</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">test</span> <span class="o">=</span> <span class="n">instring</span><span class="p">[</span><span class="n">loc</span><span class="p">:</span><span class="n">loc</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">matchLen</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">test</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">match</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">loc</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">matchLen</span><span class="p">,</span> <span class="n">test</span>
+        <span class="c1"># ~ raise ParseException( instring, loc, self.errmsg )</span>
+        <span class="k">raise</span> <span class="n">ParseException</span><span class="p">(</span><span class="n">instring</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Sequence"><a class="viewcode-back" href="../../../../api/enable.savage.svg.pathdata.html#enable.savage.svg.pathdata.Sequence">[docs]</a><span class="k">def</span> <span class="nf">Sequence</span><span class="p">(</span><span class="n">token</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A sequence of the token&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">OneOrMore</span><span class="p">(</span><span class="n">token</span> <span class="o">+</span> <span class="n">maybeComma</span><span class="p">)</span></div>
+
+
+<span class="n">digit_sequence</span> <span class="o">=</span> <span class="n">Word</span><span class="p">(</span><span class="n">nums</span><span class="p">)</span>
+
+<span class="n">sign</span> <span class="o">=</span> <span class="n">oneOf</span><span class="p">(</span><span class="s2">&quot;+ -&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="convertToFloat"><a class="viewcode-back" href="../../../../api/enable.savage.svg.pathdata.html#enable.savage.svg.pathdata.convertToFloat">[docs]</a><span class="k">def</span> <span class="nf">convertToFloat</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">toks</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">toks</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ParseException</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="s2">&quot;invalid float format </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">toks</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
+
+<span class="n">exponent</span> <span class="o">=</span> <span class="n">CaselessLiteral</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">Optional</span><span class="p">(</span><span class="n">sign</span><span class="p">)</span> <span class="o">+</span> <span class="n">Word</span><span class="p">(</span><span class="n">nums</span><span class="p">)</span>
+
+<span class="c1"># note that almost all these fields are optional,</span>
+<span class="c1"># and this can match almost anything. We rely on Pythons built-in</span>
+<span class="c1"># float() function to clear out invalid values - loosely matching like this</span>
+<span class="c1"># speeds up parsing quite a lot</span>
+<span class="n">floatingPointConstant</span> <span class="o">=</span> <span class="n">Combine</span><span class="p">(</span>
+    <span class="n">Optional</span><span class="p">(</span><span class="n">sign</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">Optional</span><span class="p">(</span><span class="n">Word</span><span class="p">(</span><span class="n">nums</span><span class="p">))</span>
+    <span class="o">+</span> <span class="n">Optional</span><span class="p">(</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">Optional</span><span class="p">(</span><span class="n">Word</span><span class="p">(</span><span class="n">nums</span><span class="p">)))</span>
+    <span class="o">+</span> <span class="n">Optional</span><span class="p">(</span><span class="n">exponent</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">floatingPointConstant</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span><span class="n">convertToFloat</span><span class="p">)</span>
+
+<span class="n">number</span> <span class="o">=</span> <span class="n">floatingPointConstant</span>
+
+<span class="c1"># same as FP constant but don&#39;t allow a - sign</span>
+<span class="n">nonnegativeNumber</span> <span class="o">=</span> <span class="n">Combine</span><span class="p">(</span>
+    <span class="n">Optional</span><span class="p">(</span><span class="n">Word</span><span class="p">(</span><span class="n">nums</span><span class="p">))</span>
+    <span class="o">+</span> <span class="n">Optional</span><span class="p">(</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">Optional</span><span class="p">(</span><span class="n">Word</span><span class="p">(</span><span class="n">nums</span><span class="p">)))</span>
+    <span class="o">+</span> <span class="n">Optional</span><span class="p">(</span><span class="n">exponent</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">nonnegativeNumber</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span><span class="n">convertToFloat</span><span class="p">)</span>
+
+<span class="n">coordinate</span> <span class="o">=</span> <span class="n">number</span>
+
+<span class="c1"># comma or whitespace can seperate values all over the place in SVG</span>
+<span class="n">maybeComma</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">(</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">suppress</span><span class="p">()</span>
+
+<span class="n">coordinateSequence</span> <span class="o">=</span> <span class="n">Sequence</span><span class="p">(</span><span class="n">coordinate</span><span class="p">)</span>
+
+<span class="n">coordinatePair</span> <span class="o">=</span> <span class="p">(</span><span class="n">coordinate</span> <span class="o">+</span> <span class="n">maybeComma</span> <span class="o">+</span> <span class="n">coordinate</span><span class="p">)</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">coordinatePairSequence</span> <span class="o">=</span> <span class="n">Sequence</span><span class="p">(</span><span class="n">coordinatePair</span><span class="p">)</span>
+
+<span class="n">coordinatePairPair</span> <span class="o">=</span> <span class="n">coordinatePair</span> <span class="o">+</span> <span class="n">maybeComma</span> <span class="o">+</span> <span class="n">coordinatePair</span>
+<span class="n">coordinatePairPairSequence</span> <span class="o">=</span> <span class="n">Sequence</span><span class="p">(</span><span class="n">Group</span><span class="p">(</span><span class="n">coordinatePairPair</span><span class="p">))</span>
+
+<span class="n">coordinatePairTriple</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">coordinatePair</span> <span class="o">+</span> <span class="n">maybeComma</span> <span class="o">+</span> <span class="n">coordinatePair</span> <span class="o">+</span> <span class="n">maybeComma</span> <span class="o">+</span> <span class="n">coordinatePair</span>
+<span class="p">)</span>
+<span class="n">coordinatePairTripleSequence</span> <span class="o">=</span> <span class="n">Sequence</span><span class="p">(</span><span class="n">Group</span><span class="p">(</span><span class="n">coordinatePairTriple</span><span class="p">))</span>
+
+<span class="c1"># commands</span>
+<span class="n">lineTo</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">Arguments</span><span class="p">(</span><span class="n">coordinatePairSequence</span><span class="p">))</span>
+
+<span class="n">moveTo</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">Arguments</span><span class="p">(</span><span class="n">coordinatePairSequence</span><span class="p">))</span>
+
+<span class="n">closePath</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)))</span>
+
+<span class="n">flag</span> <span class="o">=</span> <span class="n">oneOf</span><span class="p">(</span><span class="s2">&quot;1 0&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]))))</span>
+
+<span class="n">arcRadius</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">nonnegativeNumber</span> <span class="o">+</span> <span class="n">maybeComma</span> <span class="o">+</span> <span class="n">nonnegativeNumber</span>  <span class="c1"># rx, ry</span>
+<span class="p">)</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+
+<span class="n">arcFlags</span> <span class="o">=</span> <span class="p">(</span><span class="n">flag</span> <span class="o">+</span> <span class="n">maybeComma</span> <span class="o">+</span> <span class="n">flag</span><span class="p">)</span><span class="o">.</span><span class="n">setParseAction</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+
+<span class="n">ellipticalArcArgument</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span>
+    <span class="n">arcRadius</span> <span class="o">+</span> <span class="n">maybeComma</span>  <span class="c1"># rx, ry</span>
+    <span class="o">+</span> <span class="n">number</span> <span class="o">+</span> <span class="n">maybeComma</span>  <span class="c1"># rotation</span>
+    <span class="o">+</span> <span class="n">arcFlags</span>  <span class="c1"># large-arc-flag, sweep-flag</span>
+    <span class="o">+</span> <span class="n">coordinatePair</span>  <span class="c1"># (x,y)</span>
+<span class="p">)</span>
+
+
+<span class="n">ellipticalArc</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span>
+    <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">Arguments</span><span class="p">(</span><span class="n">Sequence</span><span class="p">(</span><span class="n">ellipticalArcArgument</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="n">smoothQuadraticBezierCurveto</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span>
+    <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">Arguments</span><span class="p">(</span><span class="n">coordinatePairSequence</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">quadraticBezierCurveto</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span>
+    <span class="n">Command</span><span class="p">(</span><span class="s2">&quot;Q&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">Arguments</span><span class="p">(</span><span class="n">coordinatePairPairSequence</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">smoothCurve</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">Arguments</span><span class="p">(</span><span class="n">coordinatePairPairSequence</span><span class="p">))</span>
+
+<span class="n">curve</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">Arguments</span><span class="p">(</span><span class="n">coordinatePairTripleSequence</span><span class="p">))</span>
+
+<span class="n">horizontalLine</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">Arguments</span><span class="p">(</span><span class="n">coordinateSequence</span><span class="p">))</span>
+<span class="n">verticalLine</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">Arguments</span><span class="p">(</span><span class="n">coordinateSequence</span><span class="p">))</span>
+
+<span class="n">drawToCommand</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">lineTo</span>
+    <span class="o">|</span> <span class="n">moveTo</span>
+    <span class="o">|</span> <span class="n">closePath</span>
+    <span class="o">|</span> <span class="n">ellipticalArc</span>
+    <span class="o">|</span> <span class="n">smoothQuadraticBezierCurveto</span>
+    <span class="o">|</span> <span class="n">quadraticBezierCurveto</span>
+    <span class="o">|</span> <span class="n">smoothCurve</span>
+    <span class="o">|</span> <span class="n">curve</span>
+    <span class="o">|</span> <span class="n">horizontalLine</span>
+    <span class="o">|</span> <span class="n">verticalLine</span>
+<span class="p">)</span>
+
+<span class="c1"># ~ number.debug = True</span>
+<span class="n">moveToDrawToCommands</span> <span class="o">=</span> <span class="n">moveTo</span> <span class="o">+</span> <span class="n">ZeroOrMore</span><span class="p">(</span><span class="n">drawToCommand</span><span class="p">)</span>
+
+<span class="n">svg</span> <span class="o">=</span> <span class="n">ZeroOrMore</span><span class="p">(</span><span class="n">moveToDrawToCommands</span><span class="p">)</span>
+<span class="n">svg</span><span class="o">.</span><span class="n">keepTabs</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+<div class="viewcode-block" id="profile"><a class="viewcode-back" href="../../../../api/enable.savage.svg.pathdata.html#enable.savage.svg.pathdata.profile">[docs]</a><span class="k">def</span> <span class="nf">profile</span><span class="p">():</span>
+    <span class="kn">import</span> <span class="nn">cProfile</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="n">cProfile</span><span class="o">.</span><span class="n">Profile</span><span class="p">()</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
+    <span class="n">ptest</span><span class="p">()</span>
+    <span class="n">ptest</span><span class="p">()</span>
+    <span class="n">ptest</span><span class="p">()</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span></div>
+
+
+<span class="n">bpath</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;M204.33 139.83 C196.33 133.33 206.68 132.82 206.58 132.58 C192.33 97.08 169.35</span>
+<span class="s2">    81.41 167.58 80.58 C162.12 78.02 159.48 78.26 160.45 76.97 C161.41 75.68 167.72 79.72 168.58</span>
+<span class="s2">    80.33 C193.83 98.33 207.58 132.33 207.58 132.33 C207.58 132.33 209.33 133.33 209.58 132.58</span>
+<span class="s2">    C219.58 103.08 239.58 87.58 246.33 81.33 C253.08 75.08 256.63 74.47 247.33 81.58 C218.58 103.58</span>
+<span class="s2">    210.34 132.23 210.83 132.33 C222.33 134.83 211.33 140.33 211.83 139.83 C214.85 136.81 214.83 145.83 214.83</span>
+<span class="s2">    145.83 C214.83 145.83 231.83 110.83 298.33 66.33 C302.43 63.59 445.83 -14.67 395.83 80.83 C393.24 85.79 375.83</span>
+<span class="s2">    105.83 375.83 105.83 C375.83 105.83 377.33 114.33 371.33 121.33 C370.3 122.53 367.83 134.33 361.83 140.83 C360.14 142.67</span>
+<span class="s2">    361.81 139.25 361.83 140.83 C362.33 170.83 337.76 170.17 339.33 170.33 C348.83 171.33 350.19 183.66 350.33 183.83 C355.83</span>
+<span class="s2">    190.33 353.83 191.83 355.83 194.83 C366.63 211.02 355.24 210.05 356.83 212.83 C360.83 219.83 355.99 222.72 357.33 224.83</span>
+<span class="s2">    C360.83 230.33 354.75 233.84 354.83 235.33 C355.33 243.83 349.67 240.73 349.83 244.33 C350.33 255.33 346.33 250.83 343.83 254.83</span>
+<span class="s2">    C336.33 266.83 333.46 262.38 332.83 263.83 C329.83 270.83 325.81 269.15 324.33 270.83 C320.83 274.83 317.33 274.83 315.83 276.33</span>
+<span class="s2">    C308.83 283.33 304.86 278.39 303.83 278.83 C287.83 285.83 280.33 280.17 277.83 280.33 C270.33 280.83 271.48 279.67 269.33 277.83</span>
+<span class="s2">    C237.83 250.83 219.33 211.83 215.83 206.83 C214.4 204.79 211.35 193.12 212.33 195.83 C214.33 201.33 213.33 250.33 207.83 250.33</span>
+<span class="s2">    C202.33 250.33 201.83 204.33 205.33 195.83 C206.43 193.16 204.4 203.72 201.79 206.83 C196.33 213.33 179.5 250.83 147.59 277.83</span>
+<span class="s2">    C145.42 279.67 146.58 280.83 138.98 280.33 C136.46 280.17 128.85 285.83 112.65 278.83 C111.61 278.39 107.58 283.33 100.49 276.33</span>
+<span class="s2">    C98.97 274.83 95.43 274.83 91.88 270.83 C90.39 269.15 86.31 270.83 83.27 263.83 C82.64 262.38 79.73 266.83 72.13 254.83 C69.6 250.83</span>
+<span class="s2">    65.54 255.33 66.05 244.33 C66.22 240.73 60.48 243.83 60.99 235.33 C61.08 233.84 54.91 230.33 58.45 224.83 C59.81 222.72 54.91 219.83</span>
+<span class="s2">    58.96 212.83 C60.57 210.05 49.04 211.02 59.97 194.83 C62 191.83 59.97 190.33 65.54 183.83 C65.69 183.66 67.06 171.33 76.69 170.33</span>
+<span class="s2">    C78.28 170.17 53.39 170.83 53.9 140.83 C53.92 139.25 55.61 142.67 53.9 140.83 C47.82 134.33 45.32 122.53 44.27 121.33 C38.19 114.33</span>
+<span class="s2">    39.71 105.83 39.71 105.83 C39.71 105.83 22.08 85.79 19.46 80.83 C-31.19 -14.67 114.07 63.59 118.22 66.33 C185.58 110.83 202 145.83</span>
+<span class="s2">    202 145.83 C202 145.83 202.36 143.28 203 141.83 C203.64 140.39 204.56 140.02 204.33 139.83 z&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="ptest"><a class="viewcode-back" href="../../../../api/enable.savage.svg.pathdata.html#enable.savage.svg.pathdata.ptest">[docs]</a><span class="k">def</span> <span class="nf">ptest</span><span class="p">():</span>
+    <span class="n">svg</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="n">bpath</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">profile</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

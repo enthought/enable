@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>kiva.gl &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for kiva.gl</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">ctypes</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">floor</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">array</span><span class="p">,</span> <span class="n">ndarray</span>
+
+<span class="c1"># Local kiva imports</span>
+<span class="kn">from</span> <span class="nn">kiva.affine</span> <span class="k">import</span> <span class="n">affine_from_values</span><span class="p">,</span> <span class="n">transform_points</span>
+<span class="kn">from</span> <span class="nn">kiva.constants</span> <span class="k">import</span> <span class="n">BOLD</span><span class="p">,</span> <span class="n">BOLD_ITALIC</span><span class="p">,</span> <span class="n">ITALIC</span>
+<span class="kn">from</span> <span class="nn">kiva.fonttools</span> <span class="k">import</span> <span class="n">Font</span>
+<span class="kn">from</span> <span class="nn">kiva.gl.gl</span> <span class="k">import</span> <span class="n">CompiledPath</span><span class="p">,</span> <span class="n">GraphicsContextGL</span><span class="p">,</span> <span class="n">KivaGLFontType</span>
+
+
+<div class="viewcode-block" id="image_as_array"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.image_as_array">[docs]</a><span class="k">def</span> <span class="nf">image_as_array</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Adapt an image object into a numpy array.</span>
+
+<span class="sd">    Typically, this is used to adapt an agg GraphicsContextArray which has been</span>
+<span class="sd">    used for image storage in Kiva applications.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="s2">&quot;bmp_array&quot;</span><span class="p">):</span>
+        <span class="c1"># Yup, a GraphicsContextArray.</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">bmp_array</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;can&#39;t convert </span><span class="si">%r</span><span class="s2"> into a numpy array&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">img</span><span class="p">,)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="c1"># Ensure RGB or RGBA formats</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">img</span><span class="o">.</span><span class="n">mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">):</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">(</span><span class="n">img</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_dpi"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.get_dpi">[docs]</a><span class="k">def</span> <span class="nf">get_dpi</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Returns the appropriate DPI setting for the system&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="MRU"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.MRU">[docs]</a><span class="k">class</span> <span class="nc">MRU</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="c1"># An ordering of keys in self; the last item was the most recently used</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__order__</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__maxlength__</span> <span class="o">=</span> <span class="mi">30</span>
+        <span class="nb">dict</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="c1"># If we get here, then key was found in our dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__touch__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">val</span>
+
+    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="nb">dict</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__touch__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="nb">dict</span><span class="o">.</span><span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__order__</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__order__</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__touch__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Puts **key** as the most recently used item &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__order__</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__order__</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__order__</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">__maxlength__</span> <span class="ow">and</span>
+                <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__order__</span><span class="p">):</span>
+            <span class="c1"># The MRU is full, so pop the oldest element</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__order__</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__order__</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ndx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__order__</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__order__</span><span class="p">[</span><span class="n">ndx</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__order__</span><span class="p">[</span><span class="n">ndx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__order__</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="c1"># new key that&#39;s not already in the cache</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__order__</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">__maxlength__</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__order__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__order__</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__order__</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
+
+
+<span class="c1"># Pyglet and pyglet-related imports</span>
+<span class="c1"># Before we import anything else from pyglet, we need to set the shadow_window</span>
+<span class="c1"># option to False, so that it does not conflict with WX, in case someone is</span>
+<span class="c1"># trying to use the kiva GL GraphicsContext from within WX.</span>
+<span class="c1"># This is necessary as of pyglet 1.1.</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pyglet</span>
+
+    <span class="n">pyglet</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;shadow_window&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="kn">from</span> <span class="nn">pyglet.text</span> <span class="k">import</span> <span class="n">Label</span>
+    <span class="kn">from</span> <span class="nn">pyglet.font</span> <span class="k">import</span> <span class="n">load</span> <span class="k">as</span> <span class="n">load_font</span>
+    <span class="kn">from</span> <span class="nn">pyglet.font.base</span> <span class="k">import</span> <span class="n">Font</span> <span class="k">as</span> <span class="n">PygletFont</span>
+    <span class="kn">from</span> <span class="nn">pyglet</span> <span class="k">import</span> <span class="n">gl</span>
+    <span class="kn">from</span> <span class="nn">pygarrayimage.arrayimage</span> <span class="k">import</span> <span class="n">ArrayInterfaceImage</span>
+
+    <span class="k">class</span> <span class="nc">_ObjectSpace</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Object space mocker</span>
+
+<span class="sd">        Source: https://github.com/ColinDuquesnoy/QPygletWidget</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># Textures and buffers scheduled for deletion the next time this</span>
+            <span class="c1"># object space is active.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_doomed_textures</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_doomed_buffers</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="FakePygletContext"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.FakePygletContext">[docs]</a>    <span class="k">class</span> <span class="nc">FakePygletContext</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; pyglet.gl.Context mocker.</span>
+
+<span class="sd">        This is used to make pyglet believe that a valid context has already</span>
+<span class="sd">        been setup. (Qt takes care of creating the open gl context)</span>
+
+<span class="sd">        _Most of the methods are empty, there is just the minimum required to</span>
+<span class="sd">        make it look like a duck..._</span>
+
+<span class="sd">        Source: https://github.com/ColinDuquesnoy/QPygletWidget</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># define the same class attribute as pyglet.gl.Context</span>
+        <span class="n">CONTEXT_SHARE_NONE</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">CONTEXT_SHARE_EXISTING</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">_gl_begin</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">_info</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">_workaround_checks</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span>
+                <span class="s2">&quot;_workaround_unpack_row_length&quot;</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">info</span><span class="p">:</span> <span class="n">info</span><span class="o">.</span><span class="n">get_renderer</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;GDI Generic&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s2">&quot;_workaround_vbo&quot;</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">info</span><span class="p">:</span> <span class="n">info</span><span class="o">.</span><span class="n">get_renderer</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;ATI Radeon X&quot;</span><span class="p">),</span>
+            <span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s2">&quot;_workaround_vbo_finish&quot;</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">info</span><span class="p">:</span> <span class="p">(</span>
+                    <span class="s2">&quot;ATI&quot;</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">get_renderer</span><span class="p">()</span>
+                    <span class="ow">and</span> <span class="n">info</span><span class="o">.</span><span class="n">have_version</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span>
+                <span class="p">),</span>
+            <span class="p">),</span>
+        <span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context_share</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot; Setup workaround attr and object spaces</span>
+<span class="sd">                (again to mock what is done in pyglet context)</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">object_space</span> <span class="o">=</span> <span class="n">_ObjectSpace</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">check</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workaround_checks</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">()&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+
+<div class="viewcode-block" id="FakePygletContext.set_current"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.FakePygletContext.set_current">[docs]</a>        <span class="k">def</span> <span class="nf">set_current</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">gl</span><span class="o">.</span><span class="n">current_context</span> <span class="o">=</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="FakePygletContext.destroy"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.FakePygletContext.destroy">[docs]</a>        <span class="k">def</span> <span class="nf">destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="FakePygletContext.delete_texture"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.FakePygletContext.delete_texture">[docs]</a>        <span class="k">def</span> <span class="nf">delete_texture</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texture_id</span><span class="p">):</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="FakePygletContext.delete_buffer"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.FakePygletContext.delete_buffer">[docs]</a>        <span class="k">def</span> <span class="nf">delete_buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer_id</span><span class="p">):</span>
+            <span class="k">pass</span></div></div>
+
+<div class="viewcode-block" id="ArrayImage"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.ArrayImage">[docs]</a>    <span class="k">class</span> <span class="nc">ArrayImage</span><span class="p">(</span><span class="n">ArrayInterfaceImage</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; pyglet ImageData made from numpy arrays.</span>
+
+<span class="sd">        Customized from pygarrayimage&#39;s ArrayInterfaceImage to override the</span>
+<span class="sd">        texture creation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ArrayImage.create_texture"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.ArrayImage.create_texture">[docs]</a>        <span class="k">def</span> <span class="nf">create_texture</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">rectangle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_rectangle</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot; Create a texture containing this image.</span>
+
+<span class="sd">            If the image&#39;s dimensions are not powers of 2, a TextureRegion of</span>
+<span class="sd">            a larger Texture will be returned that matches the dimensions of</span>
+<span class="sd">            this image.</span>
+
+<span class="sd">            :Parameters:</span>
+<span class="sd">                `cls` : class (subclass of Texture)</span>
+<span class="sd">                    Class to construct.</span>
+<span class="sd">                `rectangle` : bool</span>
+<span class="sd">                    ``True`` if a rectangle can be created; see</span>
+<span class="sd">                    `AbstractImage.get_texture`.</span>
+
+<span class="sd">            :rtype: cls or cls.region_class</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="n">_is_pow2</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="p">(</span><span class="n">v</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">v</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+
+            <span class="n">target</span> <span class="o">=</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_TEXTURE_2D</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">rectangle</span>
+                    <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">_is_pow2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_is_pow2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">))):</span>
+                <span class="k">if</span> <span class="n">gl</span><span class="o">.</span><span class="n">gl_info</span><span class="o">.</span><span class="n">have_extension</span><span class="p">(</span><span class="s2">&quot;GL_ARB_texture_rectangle&quot;</span><span class="p">):</span>
+                    <span class="n">target</span> <span class="o">=</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_TEXTURE_RECTANGLE_ARB</span>
+                <span class="k">elif</span> <span class="n">gl</span><span class="o">.</span><span class="n">gl_info</span><span class="o">.</span><span class="n">have_extension</span><span class="p">(</span><span class="s2">&quot;GL_NV_texture_rectangle&quot;</span><span class="p">):</span>
+                    <span class="n">target</span> <span class="o">=</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_TEXTURE_RECTANGLE_NV</span>
+
+            <span class="n">texture</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">create_for_size</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+            <span class="n">subimage</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">texture</span><span class="o">.</span><span class="n">width</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="ow">or</span> <span class="n">texture</span><span class="o">.</span><span class="n">height</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">:</span>
+                <span class="n">texture</span> <span class="o">=</span> <span class="n">texture</span><span class="o">.</span><span class="n">get_region</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+                <span class="n">subimage</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">internalformat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_internalformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
+
+            <span class="n">gl</span><span class="o">.</span><span class="n">glBindTexture</span><span class="p">(</span><span class="n">texture</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">texture</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">gl</span><span class="o">.</span><span class="n">glTexParameteri</span><span class="p">(</span>
+                <span class="n">texture</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_TEXTURE_WRAP_S</span><span class="p">,</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_CLAMP_TO_EDGE</span>
+            <span class="p">)</span>
+            <span class="n">gl</span><span class="o">.</span><span class="n">glTexParameteri</span><span class="p">(</span>
+                <span class="n">texture</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_TEXTURE_WRAP_T</span><span class="p">,</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_CLAMP_TO_EDGE</span>
+            <span class="p">)</span>
+            <span class="n">gl</span><span class="o">.</span><span class="n">glTexParameteri</span><span class="p">(</span>
+                <span class="n">texture</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_TEXTURE_MAG_FILTER</span><span class="p">,</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_LINEAR</span>
+            <span class="p">)</span>
+            <span class="n">gl</span><span class="o">.</span><span class="n">glTexParameteri</span><span class="p">(</span>
+                <span class="n">texture</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_TEXTURE_MIN_FILTER</span><span class="p">,</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_LINEAR</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">subimage</span><span class="p">:</span>
+                <span class="n">width</span> <span class="o">=</span> <span class="n">texture</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">width</span>
+                <span class="n">height</span> <span class="o">=</span> <span class="n">texture</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">height</span>
+                <span class="n">blank</span> <span class="o">=</span> <span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_ubyte</span> <span class="o">*</span> <span class="p">(</span><span class="n">width</span> <span class="o">*</span> <span class="n">height</span> <span class="o">*</span> <span class="mi">4</span><span class="p">))()</span>
+                <span class="n">gl</span><span class="o">.</span><span class="n">glTexImage2D</span><span class="p">(</span>
+                    <span class="n">texture</span><span class="o">.</span><span class="n">target</span><span class="p">,</span>
+                    <span class="n">texture</span><span class="o">.</span><span class="n">level</span><span class="p">,</span>
+                    <span class="n">internalformat</span><span class="p">,</span>
+                    <span class="n">width</span><span class="p">,</span>
+                    <span class="n">height</span><span class="p">,</span>
+                    <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">gl</span><span class="o">.</span><span class="n">GL_RGBA</span><span class="p">,</span>
+                    <span class="n">gl</span><span class="o">.</span><span class="n">GL_UNSIGNED_BYTE</span><span class="p">,</span>
+                    <span class="n">blank</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">internalformat</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">blit_to_texture</span><span class="p">(</span>
+                <span class="n">texture</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">texture</span><span class="o">.</span><span class="n">level</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">internalformat</span>
+            <span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">texture</span></div>
+
+<div class="viewcode-block" id="ArrayImage.blit_to_texture"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.ArrayImage.blit_to_texture">[docs]</a>        <span class="k">def</span> <span class="nf">blit_to_texture</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">internalformat</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Draw this image to to the currently bound texture at `target`.</span>
+
+<span class="sd">            If `internalformat` is specified, glTexImage is used to initialise</span>
+<span class="sd">            the texture; otherwise, glTexSubImage is used to update a region.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="n">data_format</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span>
+            <span class="n">data_pitch</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_pitch</span><span class="p">)</span>
+
+            <span class="c1"># Determine pixel format from format string</span>
+            <span class="n">matrix</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="nb">format</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_gl_format_and_type</span><span class="p">(</span><span class="n">data_format</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data_format</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+                        <span class="ow">and</span> <span class="n">gl</span><span class="o">.</span><span class="n">gl_info</span><span class="o">.</span><span class="n">have_extension</span><span class="p">(</span><span class="s2">&quot;GL_ARB_imaging&quot;</span><span class="p">)):</span>
+
+                    <span class="c1"># Construct a color matrix to convert to GL_RGBA</span>
+                    <span class="k">def</span> <span class="nf">component_column</span><span class="p">(</span><span class="n">component</span><span class="p">):</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">pos</span> <span class="o">=</span> <span class="s2">&quot;RGBA&quot;</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+                            <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">pos</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">3</span> <span class="o">-</span> <span class="n">pos</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                            <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+                    <span class="c1"># pad to avoid index exceptions</span>
+                    <span class="n">lookup_format</span> <span class="o">=</span> <span class="n">data_format</span> <span class="o">+</span> <span class="s2">&quot;XXX&quot;</span>
+                    <span class="n">matrix</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">component_column</span><span class="p">(</span><span class="n">lookup_format</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="o">+</span> <span class="n">component_column</span><span class="p">(</span><span class="n">lookup_format</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="o">+</span> <span class="n">component_column</span><span class="p">(</span><span class="n">lookup_format</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                        <span class="o">+</span> <span class="n">component_column</span><span class="p">(</span><span class="n">lookup_format</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                    <span class="p">)</span>
+                    <span class="nb">format</span> <span class="o">=</span> <span class="p">{</span><span class="mi">3</span><span class="p">:</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_RGB</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_RGBA</span><span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                        <span class="nb">len</span><span class="p">(</span><span class="n">data_format</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="nb">type</span> <span class="o">=</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_UNSIGNED_BYTE</span>
+
+                    <span class="n">gl</span><span class="o">.</span><span class="n">glMatrixMode</span><span class="p">(</span><span class="n">gl</span><span class="o">.</span><span class="n">GL_COLOR</span><span class="p">)</span>
+                    <span class="n">gl</span><span class="o">.</span><span class="n">glPushMatrix</span><span class="p">()</span>
+                    <span class="n">gl</span><span class="o">.</span><span class="n">glLoadMatrixf</span><span class="p">((</span><span class="n">gl</span><span class="o">.</span><span class="n">GLfloat</span> <span class="o">*</span> <span class="mi">16</span><span class="p">)(</span><span class="o">*</span><span class="n">matrix</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Need to convert data to a standard form</span>
+                    <span class="n">data_format</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;LA&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;RGB&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;RGBA&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                        <span class="nb">len</span><span class="p">(</span><span class="n">data_format</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="nb">format</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_gl_format_and_type</span><span class="p">(</span><span class="n">data_format</span><span class="p">)</span>
+
+            <span class="c1"># Workaround: don&#39;t use GL_UNPACK_ROW_LENGTH</span>
+            <span class="k">if</span> <span class="n">gl</span><span class="o">.</span><span class="n">current_context</span><span class="o">.</span><span class="n">_workaround_unpack_row_length</span><span class="p">:</span>
+                <span class="n">data_pitch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_format</span><span class="p">)</span>
+
+            <span class="c1"># Get data in required format (hopefully will be the same format</span>
+            <span class="c1"># it&#39;s already in, unless that&#39;s an obscure format, upside-down or</span>
+            <span class="c1"># the driver is old).</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span><span class="n">data_format</span><span class="p">,</span> <span class="n">data_pitch</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">data_pitch</span> <span class="o">&amp;</span> <span class="mh">0x1</span><span class="p">:</span>
+                <span class="n">alignment</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">data_pitch</span> <span class="o">&amp;</span> <span class="mh">0x2</span><span class="p">:</span>
+                <span class="n">alignment</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">alignment</span> <span class="o">=</span> <span class="mi">4</span>
+            <span class="n">row_length</span> <span class="o">=</span> <span class="n">data_pitch</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_format</span><span class="p">)</span>
+            <span class="n">gl</span><span class="o">.</span><span class="n">glPushClientAttrib</span><span class="p">(</span><span class="n">gl</span><span class="o">.</span><span class="n">GL_CLIENT_PIXEL_STORE_BIT</span><span class="p">)</span>
+            <span class="n">gl</span><span class="o">.</span><span class="n">glPixelStorei</span><span class="p">(</span><span class="n">gl</span><span class="o">.</span><span class="n">GL_UNPACK_ALIGNMENT</span><span class="p">,</span> <span class="n">alignment</span><span class="p">)</span>
+            <span class="n">gl</span><span class="o">.</span><span class="n">glPixelStorei</span><span class="p">(</span><span class="n">gl</span><span class="o">.</span><span class="n">GL_UNPACK_ROW_LENGTH</span><span class="p">,</span> <span class="n">row_length</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_apply_region_unpack</span><span class="p">()</span>
+            <span class="n">gl</span><span class="o">.</span><span class="n">glTexParameteri</span><span class="p">(</span>
+                <span class="n">target</span><span class="p">,</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_TEXTURE_WRAP_S</span><span class="p">,</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_CLAMP_TO_EDGE</span>
+            <span class="p">)</span>
+            <span class="n">gl</span><span class="o">.</span><span class="n">glTexParameteri</span><span class="p">(</span>
+                <span class="n">target</span><span class="p">,</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_TEXTURE_WRAP_T</span><span class="p">,</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_CLAMP_TO_EDGE</span>
+            <span class="p">)</span>
+            <span class="n">gl</span><span class="o">.</span><span class="n">glTexParameteri</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_TEXTURE_MAG_FILTER</span><span class="p">,</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_LINEAR</span><span class="p">)</span>
+            <span class="n">gl</span><span class="o">.</span><span class="n">glTexParameteri</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_TEXTURE_MIN_FILTER</span><span class="p">,</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_LINEAR</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_TEXTURE_3D</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="ow">not</span> <span class="n">internalformat</span>
+                <span class="n">gl</span><span class="o">.</span><span class="n">glTexSubImage3D</span><span class="p">(</span>
+                    <span class="n">target</span><span class="p">,</span>
+                    <span class="n">level</span><span class="p">,</span>
+                    <span class="n">x</span><span class="p">,</span>
+                    <span class="n">y</span><span class="p">,</span>
+                    <span class="n">z</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
+                    <span class="mi">1</span><span class="p">,</span>
+                    <span class="nb">format</span><span class="p">,</span>
+                    <span class="nb">type</span><span class="p">,</span>
+                    <span class="n">data</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">internalformat</span><span class="p">:</span>
+                <span class="n">gl</span><span class="o">.</span><span class="n">glTexImage2D</span><span class="p">(</span>
+                    <span class="n">target</span><span class="p">,</span>
+                    <span class="n">level</span><span class="p">,</span>
+                    <span class="n">internalformat</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
+                    <span class="mi">0</span><span class="p">,</span>
+                    <span class="nb">format</span><span class="p">,</span>
+                    <span class="nb">type</span><span class="p">,</span>
+                    <span class="n">data</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">gl</span><span class="o">.</span><span class="n">glTexSubImage2D</span><span class="p">(</span>
+                    <span class="n">target</span><span class="p">,</span>
+                    <span class="n">level</span><span class="p">,</span>
+                    <span class="n">x</span><span class="p">,</span>
+                    <span class="n">y</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
+                    <span class="nb">format</span><span class="p">,</span>
+                    <span class="nb">type</span><span class="p">,</span>
+                    <span class="n">data</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">gl</span><span class="o">.</span><span class="n">glPopClientAttrib</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">matrix</span><span class="p">:</span>
+                <span class="n">gl</span><span class="o">.</span><span class="n">glPopMatrix</span><span class="p">()</span>
+                <span class="n">gl</span><span class="o">.</span><span class="n">glMatrixMode</span><span class="p">(</span><span class="n">gl</span><span class="o">.</span><span class="n">GL_MODELVIEW</span><span class="p">)</span></div></div>
+
+    <span class="c1"># Use a singleton for the font cache</span>
+    <span class="n">GlobalFontCache</span> <span class="o">=</span> <span class="n">MRU</span><span class="p">()</span>
+
+<div class="viewcode-block" id="GetFont"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.GetFont">[docs]</a>    <span class="k">def</span> <span class="nf">GetFont</span><span class="p">(</span><span class="n">font</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a Pylget Font object for the given Agg or Kiva font &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">font</span><span class="p">,</span> <span class="n">PygletFont</span><span class="p">):</span>
+            <span class="n">pyglet_font</span> <span class="o">=</span> <span class="n">font</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># KivaGLFontType</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">font</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">font</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">font</span><span class="o">.</span><span class="n">family</span><span class="p">,</span> <span class="n">font</span><span class="o">.</span><span class="n">style</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">GlobalFontCache</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">font</span><span class="p">,</span> <span class="n">KivaGLFontType</span><span class="p">):</span>
+                    <span class="n">kiva_gl_font</span> <span class="o">=</span> <span class="n">font</span>
+                    <span class="n">font</span> <span class="o">=</span> <span class="n">Font</span><span class="p">(</span>
+                        <span class="n">face_name</span><span class="o">=</span><span class="n">kiva_gl_font</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="n">size</span><span class="o">=</span><span class="n">kiva_gl_font</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+                        <span class="n">family</span><span class="o">=</span><span class="n">kiva_gl_font</span><span class="o">.</span><span class="n">family</span><span class="p">,</span>
+                        <span class="n">style</span><span class="o">=</span><span class="n">kiva_gl_font</span><span class="o">.</span><span class="n">style</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="n">bold</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">italic</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="n">font</span><span class="o">.</span><span class="n">style</span> <span class="ow">in</span> <span class="p">[</span><span class="n">BOLD</span><span class="p">,</span> <span class="n">BOLD_ITALIC</span><span class="p">]</span> <span class="ow">or</span> <span class="n">font</span><span class="o">.</span><span class="n">weight</span> <span class="o">==</span> <span class="n">BOLD</span><span class="p">:</span>
+                    <span class="n">bold</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">font</span><span class="o">.</span><span class="n">style</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ITALIC</span><span class="p">,</span> <span class="n">BOLD_ITALIC</span><span class="p">]:</span>
+                    <span class="n">italic</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">pyglet_font</span> <span class="o">=</span> <span class="n">load_font</span><span class="p">(</span>
+                    <span class="n">font</span><span class="o">.</span><span class="n">findfontname</span><span class="p">(),</span> <span class="n">font</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">bold</span><span class="p">,</span> <span class="n">italic</span>
+                <span class="p">)</span>
+                <span class="n">GlobalFontCache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">pyglet_font</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pyglet_font</span> <span class="o">=</span> <span class="n">GlobalFontCache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">pyglet_font</span></div>
+
+    <span class="c1"># Because Pyglet 1.1 uses persistent Label objects to efficiently lay</span>
+    <span class="c1"># out and render text, we cache these globally to minimize the creation</span>
+    <span class="c1"># time.  An MRU is not really the right structure to use here, though.</span>
+    <span class="c1"># (We typically expect that the same numbers of labels will be rendered.)</span>
+    <span class="n">GlobalTextCache</span> <span class="o">=</span> <span class="n">MRU</span><span class="p">()</span>
+    <span class="n">GlobalTextCache</span><span class="o">.</span><span class="n">__maxlength__</span> <span class="o">=</span> <span class="mi">100</span>
+
+<div class="viewcode-block" id="GetLabel"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.GetLabel">[docs]</a>    <span class="k">def</span> <span class="nf">GetLabel</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pyglet_font</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a Pyglet Label object for the given text and font &quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pyglet_font</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">GlobalTextCache</span><span class="p">:</span>
+            <span class="c1"># Use anchor_y=&quot;bottom&quot; because by default, pyglet sets the</span>
+            <span class="c1"># baseline to the y coordinate given.  Unfortunately, it doesn&#39;t</span>
+            <span class="c1"># expose a per-Text descent (only a per-Font descent), so it&#39;s</span>
+            <span class="c1"># impossible to know how to offset the y value properly for a</span>
+            <span class="c1"># given string.</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">Label</span><span class="p">(</span>
+                <span class="n">text</span><span class="p">,</span>
+                <span class="n">font_name</span><span class="o">=</span><span class="n">pyglet_font</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">font_size</span><span class="o">=</span><span class="n">pyglet_font</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+                <span class="n">anchor_y</span><span class="o">=</span><span class="s2">&quot;bottom&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">GlobalTextCache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">GlobalTextCache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">label</span></div>
+
+
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="c1"># Pyglet is not available, so we forgo some features</span>
+    <span class="n">ArrayImage</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">GetFont</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">GetLabel</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">gl</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="GraphicsContext"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.GraphicsContext">[docs]</a><span class="k">class</span> <span class="nc">GraphicsContext</span><span class="p">(</span><span class="n">GraphicsContextGL</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="c1"># Ignore the pix_format argument for now</span>
+        <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pix_format&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">base_scale</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;base_pixel_scale&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">GraphicsContextGL</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner_pixel_origin</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># For HiDPI support</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale_ctm</span><span class="p">(</span><span class="n">base_scale</span><span class="p">,</span> <span class="n">base_scale</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_font_stack</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_font</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_text_pos</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GraphicsContext.save_state"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.GraphicsContext.save_state">[docs]</a>    <span class="k">def</span> <span class="nf">save_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GraphicsContext</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save_state</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_font_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_font</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.restore_state"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.GraphicsContext.restore_state">[docs]</a>    <span class="k">def</span> <span class="nf">restore_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GraphicsContext</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">restore_state</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_font</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_font_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.set_font"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.GraphicsContext.set_font">[docs]</a>    <span class="k">def</span> <span class="nf">set_font</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">font</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_font</span> <span class="o">=</span> <span class="n">font</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.get_text_extent"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.GraphicsContext.get_text_extent">[docs]</a>    <span class="k">def</span> <span class="nf">get_text_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_font</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">pyglet_font</span> <span class="o">=</span> <span class="n">GetFont</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_font</span><span class="p">)</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">GetLabel</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pyglet_font</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">label</span><span class="o">.</span><span class="n">content_width</span><span class="p">,</span> <span class="n">label</span><span class="o">.</span><span class="n">content_height</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.set_text_position"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.GraphicsContext.set_text_position">[docs]</a>    <span class="k">def</span> <span class="nf">set_text_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_text_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.show_text"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.GraphicsContext.show_text">[docs]</a>    <span class="k">def</span> <span class="nf">show_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">point</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_pos</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_text_at_point</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="o">*</span><span class="n">point</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.show_text_at_point"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.GraphicsContext.show_text_at_point">[docs]</a>    <span class="k">def</span> <span class="nf">show_text_at_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_font</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">pyglet_font</span> <span class="o">=</span> <span class="n">GetFont</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_font</span><span class="p">)</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">GetLabel</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pyglet_font</span><span class="p">)</span>
+
+        <span class="n">xform</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ctm</span><span class="p">()</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="n">xform</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">y0</span> <span class="o">=</span> <span class="n">xform</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+
+        <span class="c1"># The GL backend places the center of a pixel at (0.5, 0.5); however,</span>
+        <span class="c1"># for show_text_at_point, we don&#39;t actually want to render the text</span>
+        <span class="c1"># offset by half a pixel.  There is probably a better, more uniform way</span>
+        <span class="c1"># to handle this across all of Kiva, because this is probably a common</span>
+        <span class="c1"># issue that will arise, but for now, we just round the position down.</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x0</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">y</span> <span class="o">+</span> <span class="n">y0</span><span class="p">)</span>
+
+        <span class="n">label</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">label</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fill_color</span><span class="p">()</span>
+        <span class="n">label</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">255</span><span class="p">),</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">255</span><span class="p">),</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="mi">255</span><span class="p">),</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="mi">255</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">label</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.linear_gradient"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.GraphicsContext.linear_gradient">[docs]</a>    <span class="k">def</span> <span class="nf">linear_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">stops</span><span class="p">,</span> <span class="n">spread_method</span><span class="p">,</span>
+                        <span class="n">units</span><span class="o">=</span><span class="s2">&quot;userSpaceOnUse&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Not implemented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.radial_gradient"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.GraphicsContext.radial_gradient">[docs]</a>    <span class="k">def</span> <span class="nf">radial_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">fx</span><span class="p">,</span> <span class="n">fy</span><span class="p">,</span> <span class="n">stops</span><span class="p">,</span> <span class="n">spread_method</span><span class="p">,</span>
+                        <span class="n">units</span><span class="o">=</span><span class="s2">&quot;userSpaceOnUse&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Not implemented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="GraphicsContext.draw_image"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.GraphicsContext.draw_image">[docs]</a>    <span class="k">def</span> <span class="nf">draw_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">rect</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">force_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Renders a GraphicsContextArray into this GC &quot;&quot;&quot;</span>
+        <span class="n">xform</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ctm</span><span class="p">()</span>
+
+        <span class="n">image</span> <span class="o">=</span> <span class="n">image_as_array</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;RGBA&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;RGB&quot;</span>
+        <span class="n">aii</span> <span class="o">=</span> <span class="n">ArrayImage</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">fmt</span><span class="p">)</span>
+        <span class="n">texture</span> <span class="o">=</span> <span class="n">aii</span><span class="o">.</span><span class="n">texture</span>
+
+        <span class="c1"># The texture coords consists of (u,v,r) for each corner of the</span>
+        <span class="c1"># texture rectangle.  The coordinates are stored in the order</span>
+        <span class="c1"># bottom left, bottom right, top right, top left.</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">rect</span>
+        <span class="n">texture</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="n">texture</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">h</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">texture</span><span class="o">.</span><span class="n">tex_coords</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span><span class="p">],</span> <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span><span class="p">],</span> <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]])</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">transform_points</span><span class="p">(</span><span class="n">affine_from_values</span><span class="p">(</span><span class="o">*</span><span class="n">xform</span><span class="p">),</span> <span class="n">points</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">gl</span><span class="o">.</span><span class="n">GLfloat</span><span class="o">*</span><span class="mi">32</span><span class="p">)(</span>
+            <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>    <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>    <span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>  <span class="mf">1.</span><span class="p">,</span>
+            <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span>     <span class="mf">1.</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>    <span class="n">t</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>    <span class="n">t</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span>  <span class="mf">1.</span><span class="p">,</span>
+            <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span>     <span class="mf">1.</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span>    <span class="n">t</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span>    <span class="n">t</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span>  <span class="mf">1.</span><span class="p">,</span>
+            <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span>     <span class="mf">1.</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span>    <span class="n">t</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span>   <span class="n">t</span><span class="p">[</span><span class="mi">11</span><span class="p">],</span> <span class="mf">1.</span><span class="p">,</span>
+            <span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span>     <span class="mf">1.</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">gl</span><span class="o">.</span><span class="n">glPushAttrib</span><span class="p">(</span><span class="n">gl</span><span class="o">.</span><span class="n">GL_ENABLE_BIT</span><span class="p">)</span>
+        <span class="n">gl</span><span class="o">.</span><span class="n">glEnable</span><span class="p">(</span><span class="n">texture</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+        <span class="n">gl</span><span class="o">.</span><span class="n">glBindTexture</span><span class="p">(</span><span class="n">texture</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">texture</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">gl</span><span class="o">.</span><span class="n">glPushClientAttrib</span><span class="p">(</span><span class="n">gl</span><span class="o">.</span><span class="n">GL_CLIENT_VERTEX_ARRAY_BIT</span><span class="p">)</span>
+        <span class="n">gl</span><span class="o">.</span><span class="n">glInterleavedArrays</span><span class="p">(</span><span class="n">gl</span><span class="o">.</span><span class="n">GL_T4F_V4F</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+        <span class="n">gl</span><span class="o">.</span><span class="n">glDrawArrays</span><span class="p">(</span><span class="n">gl</span><span class="o">.</span><span class="n">GL_QUADS</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">gl</span><span class="o">.</span><span class="n">glPopClientAttrib</span><span class="p">()</span>
+        <span class="n">gl</span><span class="o">.</span><span class="n">glPopAttrib</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="font_metrics_provider"><a class="viewcode-back" href="../../api/kiva.gl.html#kiva.gl.font_metrics_provider">[docs]</a><span class="k">def</span> <span class="nf">font_metrics_provider</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

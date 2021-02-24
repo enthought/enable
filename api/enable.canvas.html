@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.canvas module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable package" href="enable.html" >
+    <link rel="next" title="enable.colors module" href="enable.colors.html" >
+    <link rel="prev" title="enable.base_tool module" href="enable.base_tool.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" accesskey="U">enable package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.colors.html" title="enable.colors module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.base_tool.html" title="enable.base_tool module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.canvas">
+<span id="enable-canvas-module"></span><h1>enable.canvas module<a class="headerlink" href="#module-enable.canvas" title="Permalink to this headline">¶</a></h1>
+<p>Defines the enable Canvas class</p>
+<dl class="class">
+<dt id="enable.canvas.Canvas">
+<em class="property">class </em><code class="sig-prename descclassname">enable.canvas.</code><code class="sig-name descname">Canvas</code><span class="sig-paren">(</span><em class="sig-param">*components</em>, <em class="sig-param">**traits</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/canvas.html#Canvas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.canvas.Canvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="enable.container.html#enable.container.Container" title="enable.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.container.Container</span></code></a></p>
+<p>An infinite canvas with components on it.  It can optionally be given
+a “view region” which will be used as the notional bounds of the
+canvas in all operations that require bounds.</p>
+<p>A Canvas can be nested inside another container, but usually a
+viewport is more appropriate.</p>
+<p>Note: A Canvas has infinite bounds, but its .bounds attribute is
+overloaded to be something more meaningful, namely, the bounding
+box of its child components and the optional view area of the
+viewport that is looking at it.  (TODO: add support for multiple
+viewports.)</p>
+<dl class="method">
+<dt id="enable.canvas.Canvas.compact">
+<code class="sig-name descname">compact</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/canvas.html#Canvas.compact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.canvas.Canvas.compact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wraps the superclass method to also take into account the view
+bounds (if they are present</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.canvas.Canvas.draw">
+<code class="sig-name descname">draw</code><span class="sig-paren">(</span><em class="sig-param">gc</em>, <em class="sig-param">view_bounds=None</em>, <em class="sig-param">mode='normal'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/canvas.html#Canvas.draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.canvas.Canvas.draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws the plot component.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gc</strong> (<em>Kiva GraphicsContext</em>) – The graphics context to draw the component on</p></li>
+<li><p><strong>view_bounds</strong> (<em>4-tuple of integers</em>) – (x, y, width, height) of the area to draw</p></li>
+<li><p><strong>mode</strong> (<em>string</em>) – <p>The drawing mode to use; can be one of:</p>
+<dl class="simple">
+<dt>’normal’</dt><dd><p>Normal, antialiased, high-quality rendering</p>
+</dd>
+<dt>’overlay’</dt><dd><p>The plot component is being rendered over something else,
+so it renders more quickly, and possibly omits rendering
+its background and certain tools</p>
+</dd>
+<dt>’interactive’</dt><dd><p>The plot component is being asked to render in
+direct response to realtime user interaction, and needs to make
+its best effort to render as fast as possible, even if there is
+an aesthetic cost.</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.canvas.Canvas.is_in">
+<code class="sig-name descname">is_in</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/canvas.html#Canvas.is_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.canvas.Canvas.is_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if the point x,y is in the box</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.canvas.Canvas.remove">
+<code class="sig-name descname">remove</code><span class="sig-paren">(</span><em class="sig-param">*components</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/canvas.html#Canvas.remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.canvas.Canvas.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes components from this container</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.base_tool.html"
+                        title="previous chapter">enable.base_tool module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.colors.html"
+                        title="next chapter">enable.colors module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.canvas.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

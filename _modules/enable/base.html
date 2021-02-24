@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.base &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.base</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Define a base set of constants and functions used by the remainder of the</span>
+<span class="sd">Enable package.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1">#  Functions defined: bounding_box</span>
+<span class="c1">#                     intersect_coordinates</span>
+<span class="c1">#                     union_coordinates</span>
+<span class="c1">#                     intersect_bounds</span>
+<span class="c1">#                     union_bounds</span>
+<span class="c1">#                     disjoint_intersect_coordinates</span>
+<span class="c1">#                     does_disjoint_intersect_coordinates</span>
+<span class="c1">#                     bounding_coordinates</span>
+<span class="c1">#                     bounds_to_coordinates</span>
+<span class="c1">#                     coordinates_to_bounds</span>
+<span class="c1">#                     coordinates_to_size</span>
+<span class="c1">#                     add_rectangles</span>
+<span class="c1">#                     xy_in_bounds</span>
+<span class="c1">#                     gc_image_for</span>
+<span class="c1">#                     send_event_to</span>
+<span class="c1">#                     subclasses_of</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+<span class="c1"># Enthought library imports</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">TraitError</span>
+
+<span class="kn">from</span> <span class="nn">kiva.api</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">BOLD</span><span class="p">,</span> <span class="n">DECORATIVE</span><span class="p">,</span> <span class="n">DEFAULT</span><span class="p">,</span> <span class="n">ITALIC</span><span class="p">,</span> <span class="n">MODERN</span><span class="p">,</span> <span class="n">NORMAL</span><span class="p">,</span> <span class="n">ROMAN</span><span class="p">,</span> <span class="n">SCRIPT</span><span class="p">,</span> <span class="n">SWISS</span><span class="p">,</span>
+    <span class="n">Font</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">.colors</span> <span class="k">import</span> <span class="n">color_table</span><span class="p">,</span> <span class="n">transparent_color</span>
+
+<span class="c1"># Special &#39;empty rectangle&#39; indicator:</span>
+<span class="n">empty_rectangle</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+<span class="c1"># Used to offset positions by half a pixel and bounding width/height by 1.</span>
+<span class="c1"># TODO: Resolve this in a more intelligent manner.</span>
+<span class="n">half_pixel_bounds_inset</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="c1"># Positions:</span>
+<span class="n">TOP</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">VCENTER</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">BOTTOM</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">LEFT</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">HCENTER</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">RIGHT</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">TOP_LEFT</span> <span class="o">=</span> <span class="n">TOP</span> <span class="o">+</span> <span class="n">LEFT</span>
+<span class="n">TOP_RIGHT</span> <span class="o">=</span> <span class="n">TOP</span> <span class="o">+</span> <span class="n">RIGHT</span>
+<span class="n">BOTTOM_LEFT</span> <span class="o">=</span> <span class="n">BOTTOM</span> <span class="o">+</span> <span class="n">LEFT</span>
+<span class="n">BOTTOM_RIGHT</span> <span class="o">=</span> <span class="n">BOTTOM</span> <span class="o">+</span> <span class="n">RIGHT</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Helper font functions</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+<span class="n">font_families</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="n">DEFAULT</span><span class="p">,</span>
+    <span class="s2">&quot;decorative&quot;</span><span class="p">:</span> <span class="n">DECORATIVE</span><span class="p">,</span>
+    <span class="s2">&quot;roman&quot;</span><span class="p">:</span> <span class="n">ROMAN</span><span class="p">,</span>
+    <span class="s2">&quot;script&quot;</span><span class="p">:</span> <span class="n">SCRIPT</span><span class="p">,</span>
+    <span class="s2">&quot;swiss&quot;</span><span class="p">:</span> <span class="n">SWISS</span><span class="p">,</span>
+    <span class="s2">&quot;modern&quot;</span><span class="p">:</span> <span class="n">MODERN</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">font_styles</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;italic&quot;</span><span class="p">:</span> <span class="n">ITALIC</span><span class="p">}</span>
+<span class="n">font_weights</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;bold&quot;</span><span class="p">:</span> <span class="n">BOLD</span><span class="p">}</span>
+<span class="n">font_noise</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span> <span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="s2">&quot;family&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="str_to_font"><a class="viewcode-back" href="../../api/enable.base.html#enable.base.str_to_font">[docs]</a><span class="k">def</span> <span class="nf">str_to_font</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="s2">&quot;Converts a (somewhat) free-form string into a valid Font object.&quot;</span>
+    <span class="c1"># FIXME: Make this less free-form and more well-defined.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">point_size</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">family</span> <span class="o">=</span> <span class="n">SWISS</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="n">NORMAL</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="n">NORMAL</span>
+        <span class="n">underline</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">face_name</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+            <span class="n">lword</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">lword</span> <span class="ow">in</span> <span class="n">font_families</span><span class="p">:</span>
+                <span class="n">family</span> <span class="o">=</span> <span class="n">font_families</span><span class="p">[</span><span class="n">lword</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">lword</span> <span class="ow">in</span> <span class="n">font_styles</span><span class="p">:</span>
+                <span class="n">style</span> <span class="o">=</span> <span class="n">font_styles</span><span class="p">[</span><span class="n">lword</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">lword</span> <span class="ow">in</span> <span class="n">font_weights</span><span class="p">:</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="n">font_weights</span><span class="p">[</span><span class="n">lword</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">lword</span> <span class="o">==</span> <span class="s2">&quot;underline&quot;</span><span class="p">:</span>
+                <span class="n">underline</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">lword</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">font_noise</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">point_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lword</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="n">face_name</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Font</span><span class="p">(</span>
+            <span class="n">face_name</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">face_name</span><span class="p">),</span>
+            <span class="n">size</span><span class="o">=</span><span class="n">point_size</span><span class="p">,</span>
+            <span class="n">family</span><span class="o">=</span><span class="n">family</span><span class="p">,</span>
+            <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span>
+            <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
+            <span class="n">underline</span><span class="o">=</span><span class="n">underline</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">raise</span> <span class="n">TraitError</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;a font descriptor string&quot;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="n">str_to_font</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;a string describing a font (e.g. &#39;12 pt bold italic &quot;</span>
+    <span class="o">+</span> <span class="s2">&quot;swiss family Arial&#39; or &#39;default 12&#39;)&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Pick a default font that should work on all platforms.</span>
+<span class="n">default_font_name</span> <span class="o">=</span> <span class="s2">&quot;modern 10&quot;</span>
+<span class="n">default_font</span> <span class="o">=</span> <span class="n">str_to_font</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">default_font_name</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="bounding_box"><a class="viewcode-back" href="../../api/enable.base.html#enable.base.bounding_box">[docs]</a><span class="k">def</span> <span class="nf">bounding_box</span><span class="p">(</span><span class="n">components</span><span class="p">):</span>
+    <span class="s2">&quot;Compute the bounding box for a set of components&quot;</span>
+    <span class="n">bxl</span><span class="p">,</span> <span class="n">byb</span><span class="p">,</span> <span class="n">bxr</span><span class="p">,</span> <span class="n">byt</span> <span class="o">=</span> <span class="n">bounds_to_coordinates</span><span class="p">(</span><span class="n">components</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">xl</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">xr</span><span class="p">,</span> <span class="n">yt</span> <span class="o">=</span> <span class="n">bounds_to_coordinates</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
+        <span class="n">bxl</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">bxl</span><span class="p">,</span> <span class="n">xl</span><span class="p">)</span>
+        <span class="n">byb</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">byb</span><span class="p">,</span> <span class="n">yb</span><span class="p">)</span>
+        <span class="n">bxr</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">bxr</span><span class="p">,</span> <span class="n">xr</span><span class="p">)</span>
+        <span class="n">byt</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">byt</span><span class="p">,</span> <span class="n">yt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">bxl</span><span class="p">,</span> <span class="n">byb</span><span class="p">,</span> <span class="n">bxr</span><span class="p">,</span> <span class="n">byt</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="intersect_coordinates"><a class="viewcode-back" href="../../api/enable.base.html#enable.base.intersect_coordinates">[docs]</a><span class="k">def</span> <span class="nf">intersect_coordinates</span><span class="p">(</span><span class="n">coordinates1</span><span class="p">,</span> <span class="n">coordinates2</span><span class="p">):</span>
+    <span class="s2">&quot;Compute the intersection of two coordinate based rectangles&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">coordinates1</span> <span class="ow">is</span> <span class="n">empty_rectangle</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">coordinates2</span> <span class="ow">is</span> <span class="n">empty_rectangle</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">empty_rectangle</span>
+    <span class="n">xl1</span><span class="p">,</span> <span class="n">yb1</span><span class="p">,</span> <span class="n">xr1</span><span class="p">,</span> <span class="n">yt1</span> <span class="o">=</span> <span class="n">coordinates1</span>
+    <span class="n">xl2</span><span class="p">,</span> <span class="n">yb2</span><span class="p">,</span> <span class="n">xr2</span><span class="p">,</span> <span class="n">yt2</span> <span class="o">=</span> <span class="n">coordinates2</span>
+    <span class="n">xl</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">xl1</span><span class="p">,</span> <span class="n">xl2</span><span class="p">)</span>
+    <span class="n">yb</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">yb1</span><span class="p">,</span> <span class="n">yb2</span><span class="p">)</span>
+    <span class="n">xr</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">xr1</span><span class="p">,</span> <span class="n">xr2</span><span class="p">)</span>
+    <span class="n">yt</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">yt1</span><span class="p">,</span> <span class="n">yt2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">xr</span> <span class="o">&gt;</span> <span class="n">xl</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">yt</span> <span class="o">&gt;</span> <span class="n">yb</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">xl</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">xr</span><span class="p">,</span> <span class="n">yt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">empty_rectangle</span></div>
+
+
+<div class="viewcode-block" id="intersect_bounds"><a class="viewcode-back" href="../../api/enable.base.html#enable.base.intersect_bounds">[docs]</a><span class="k">def</span> <span class="nf">intersect_bounds</span><span class="p">(</span><span class="n">bounds1</span><span class="p">,</span> <span class="n">bounds2</span><span class="p">):</span>
+    <span class="s2">&quot;Compute the intersection of two bounds rectangles&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">bounds1</span> <span class="ow">is</span> <span class="n">empty_rectangle</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">bounds2</span> <span class="ow">is</span> <span class="n">empty_rectangle</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">empty_rectangle</span>
+
+    <span class="n">intersection</span> <span class="o">=</span> <span class="n">intersect_coordinates</span><span class="p">(</span>
+        <span class="n">bounds_to_coordinates</span><span class="p">(</span><span class="n">bounds1</span><span class="p">),</span> <span class="n">bounds_to_coordinates</span><span class="p">(</span><span class="n">bounds2</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">intersection</span> <span class="ow">is</span> <span class="n">empty_rectangle</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">empty_rectangle</span>
+    <span class="n">xl</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">xr</span><span class="p">,</span> <span class="n">yt</span> <span class="o">=</span> <span class="n">intersection</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">xl</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">xr</span> <span class="o">-</span> <span class="n">xl</span><span class="p">,</span> <span class="n">yt</span> <span class="o">-</span> <span class="n">yb</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="union_coordinates"><a class="viewcode-back" href="../../api/enable.base.html#enable.base.union_coordinates">[docs]</a><span class="k">def</span> <span class="nf">union_coordinates</span><span class="p">(</span><span class="n">coordinates1</span><span class="p">,</span> <span class="n">coordinates2</span><span class="p">):</span>
+    <span class="s2">&quot;Compute the union of two coordinate based rectangles&quot;</span>
+    <span class="k">if</span> <span class="n">coordinates1</span> <span class="ow">is</span> <span class="n">empty_rectangle</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">coordinates2</span>
+    <span class="k">elif</span> <span class="n">coordinates2</span> <span class="ow">is</span> <span class="n">empty_rectangle</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">coordinates1</span>
+    <span class="n">xl1</span><span class="p">,</span> <span class="n">yb1</span><span class="p">,</span> <span class="n">xr1</span><span class="p">,</span> <span class="n">yt1</span> <span class="o">=</span> <span class="n">coordinates1</span>
+    <span class="n">xl2</span><span class="p">,</span> <span class="n">yb2</span><span class="p">,</span> <span class="n">xr2</span><span class="p">,</span> <span class="n">yt2</span> <span class="o">=</span> <span class="n">coordinates2</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">xl1</span><span class="p">,</span> <span class="n">xl2</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">yb1</span><span class="p">,</span> <span class="n">yb2</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">xr1</span><span class="p">,</span> <span class="n">xr2</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">yt1</span><span class="p">,</span> <span class="n">yt2</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="union_bounds"><a class="viewcode-back" href="../../api/enable.base.html#enable.base.union_bounds">[docs]</a><span class="k">def</span> <span class="nf">union_bounds</span><span class="p">(</span><span class="n">bounds1</span><span class="p">,</span> <span class="n">bounds2</span><span class="p">):</span>
+    <span class="s2">&quot;Compute the union of two bounds rectangles&quot;</span>
+    <span class="n">xl</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">xr</span><span class="p">,</span> <span class="n">yt</span> <span class="o">=</span> <span class="n">union_coordinates</span><span class="p">(</span>
+        <span class="n">bounds_to_coordinates</span><span class="p">(</span><span class="n">bounds1</span><span class="p">),</span> <span class="n">bounds_to_coordinates</span><span class="p">(</span><span class="n">bounds2</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">xl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">empty_rectangle</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">xl</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">xr</span> <span class="o">-</span> <span class="n">xl</span><span class="p">,</span> <span class="n">yt</span> <span class="o">-</span> <span class="n">yb</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="does_disjoint_intersect_coordinates"><a class="viewcode-back" href="../../api/enable.base.html#enable.base.does_disjoint_intersect_coordinates">[docs]</a><span class="k">def</span> <span class="nf">does_disjoint_intersect_coordinates</span><span class="p">(</span><span class="n">coordinates_list</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Return whether a rectangle intersects a disjoint set of rectangles</span>
+<span class="sd">    anywhere</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># If new rectangle is empty, the result is empty:</span>
+    <span class="k">if</span> <span class="n">coordinates</span> <span class="ow">is</span> <span class="n">empty_rectangle</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># If we have an &#39;infinite&#39; area, then return the new rectangle:</span>
+    <span class="k">if</span> <span class="n">coordinates_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="c1"># Intersect the new rectangle against each rectangle in the list until an</span>
+    <span class="c1"># non_empty intersection is found:</span>
+    <span class="n">xl1</span><span class="p">,</span> <span class="n">yb1</span><span class="p">,</span> <span class="n">xr1</span><span class="p">,</span> <span class="n">yt1</span> <span class="o">=</span> <span class="n">coordinates</span>
+    <span class="k">for</span> <span class="n">xl2</span><span class="p">,</span> <span class="n">yb2</span><span class="p">,</span> <span class="n">xr2</span><span class="p">,</span> <span class="n">yt2</span> <span class="ow">in</span> <span class="n">coordinates_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">xr1</span><span class="p">,</span> <span class="n">xr2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">xl1</span><span class="p">,</span> <span class="n">xl2</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">yt1</span><span class="p">,</span> <span class="n">yt2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">yb1</span><span class="p">,</span> <span class="n">yb2</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="bounding_coordinates"><a class="viewcode-back" href="../../api/enable.base.html#enable.base.bounding_coordinates">[docs]</a><span class="k">def</span> <span class="nf">bounding_coordinates</span><span class="p">(</span><span class="n">coordinates_list</span><span class="p">):</span>
+    <span class="s2">&quot;Return the bounding rectangle for a list of rectangles&quot;</span>
+    <span class="k">if</span> <span class="n">coordinates_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coordinates_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">empty_rectangle</span>
+    <span class="n">xl</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">xr</span><span class="p">,</span> <span class="n">yt</span> <span class="o">=</span> <span class="mf">1.0e10</span><span class="p">,</span> <span class="mf">1.0e10</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0e10</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0e10</span>
+    <span class="k">for</span> <span class="n">xl1</span><span class="p">,</span> <span class="n">yb1</span><span class="p">,</span> <span class="n">xr1</span><span class="p">,</span> <span class="n">yt1</span> <span class="ow">in</span> <span class="n">coordinates_list</span><span class="p">:</span>
+        <span class="n">xl</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">xl</span><span class="p">,</span> <span class="n">xl1</span><span class="p">)</span>
+        <span class="n">yb</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">yb</span><span class="p">,</span> <span class="n">yb1</span><span class="p">)</span>
+        <span class="n">xr</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">xr</span><span class="p">,</span> <span class="n">xr1</span><span class="p">)</span>
+        <span class="n">yt</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">yt</span><span class="p">,</span> <span class="n">yt1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">xl</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">xr</span><span class="p">,</span> <span class="n">yt</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="bounds_to_coordinates"><a class="viewcode-back" href="../../api/enable.base.html#enable.base.bounds_to_coordinates">[docs]</a><span class="k">def</span> <span class="nf">bounds_to_coordinates</span><span class="p">(</span><span class="n">bounds</span><span class="p">):</span>
+    <span class="s2">&quot;Convert a bounds rectangle to a coordinate rectangle&quot;</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">bounds</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">dx</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">dy</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="coordinates_to_bounds"><a class="viewcode-back" href="../../api/enable.base.html#enable.base.coordinates_to_bounds">[docs]</a><span class="k">def</span> <span class="nf">coordinates_to_bounds</span><span class="p">(</span><span class="n">coordinates</span><span class="p">):</span>
+    <span class="s2">&quot;Convert a coordinates rectangle to a bounds rectangle&quot;</span>
+    <span class="n">xl</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">xr</span><span class="p">,</span> <span class="n">yt</span> <span class="o">=</span> <span class="n">coordinates</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">xl</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">xr</span> <span class="o">-</span> <span class="n">xl</span><span class="p">,</span> <span class="n">yt</span> <span class="o">-</span> <span class="n">yb</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="coordinates_to_size"><a class="viewcode-back" href="../../api/enable.base.html#enable.base.coordinates_to_size">[docs]</a><span class="k">def</span> <span class="nf">coordinates_to_size</span><span class="p">(</span><span class="n">coordinates</span><span class="p">):</span>
+    <span class="s2">&quot;Convert a coordinates rectangle to a size tuple&quot;</span>
+    <span class="n">xl</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">xr</span><span class="p">,</span> <span class="n">yt</span> <span class="o">=</span> <span class="n">coordinates</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">xr</span> <span class="o">-</span> <span class="n">xl</span><span class="p">,</span> <span class="n">yt</span> <span class="o">-</span> <span class="n">yb</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="add_rectangles"><a class="viewcode-back" href="../../api/enable.base.html#enable.base.add_rectangles">[docs]</a><span class="k">def</span> <span class="nf">add_rectangles</span><span class="p">(</span><span class="n">rectangle1</span><span class="p">,</span> <span class="n">rectangle2</span><span class="p">):</span>
+    <span class="s2">&quot;Add two bounds or coordinate rectangles&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">rectangle1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">rectangle2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">rectangle1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">rectangle2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">rectangle1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">rectangle2</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+        <span class="n">rectangle1</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">rectangle2</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="xy_in_bounds"><a class="viewcode-back" href="../../api/enable.base.html#enable.base.xy_in_bounds">[docs]</a><span class="k">def</span> <span class="nf">xy_in_bounds</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
+    <span class="s2">&quot;Test whether a specified (x,y) point is in a specified bounds&quot;</span>
+    <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">bounds</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x0</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">dx</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">y0</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">dy</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="send_event_to"><a class="viewcode-back" href="../../api/enable.base.html#enable.base.send_event_to">[docs]</a><span class="k">def</span> <span class="nf">send_event_to</span><span class="p">(</span><span class="n">components</span><span class="p">,</span> <span class="n">event_name</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="s2">&quot;Send an event to a specified set of components until it is &#39;handled&#39;&quot;</span>
+    <span class="n">pre_event_name</span> <span class="o">=</span> <span class="s2">&quot;pre_&quot;</span> <span class="o">+</span> <span class="n">event_name</span>
+    <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="p">:</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">pre_event_name</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">handled</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">components</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">components</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">event_name</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">handled</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">i</span>
+    <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="subclasses_of"><a class="viewcode-back" href="../../api/enable.base.html#enable.base.subclasses_of">[docs]</a><span class="k">def</span> <span class="nf">subclasses_of</span><span class="p">(</span><span class="n">klass</span><span class="p">):</span>
+    <span class="s2">&quot;Generate all of the classes (and subclasses) for a specified class&quot;</span>
+    <span class="k">yield</span> <span class="n">klass</span>
+    <span class="k">for</span> <span class="n">subclass</span> <span class="ow">in</span> <span class="n">klass</span><span class="o">.</span><span class="vm">__bases__</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">subclasses_of</span><span class="p">(</span><span class="n">subclass</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="IDroppedOnHandler"><a class="viewcode-back" href="../../api/enable.base.html#enable.base.IDroppedOnHandler">[docs]</a><span class="k">class</span> <span class="nc">IDroppedOnHandler</span><span class="p">:</span>
+    <span class="s2">&quot;Interface for draggable objects that handle the &#39;dropped_on&#39; event&quot;</span>
+
+<div class="viewcode-block" id="IDroppedOnHandler.was_dropped_on"><a class="viewcode-back" href="../../api/enable.base.html#enable.base.IDroppedOnHandler.was_dropped_on">[docs]</a>    <span class="k">def</span> <span class="nf">was_dropped_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

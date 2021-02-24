@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.component &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.component</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot; Defines the Component class &quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="k">import</span> <span class="n">uuid4</span>
+
+<span class="c1"># Enthought library imports</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Delegate</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Property</span><span class="p">,</span> <span class="n">Str</span><span class="p">,</span> <span class="n">Trait</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">kiva.api</span> <span class="k">import</span> <span class="n">FILL</span><span class="p">,</span> <span class="n">STROKE</span>
+
+<span class="c1"># Local relative imports</span>
+<span class="kn">from</span> <span class="nn">.colors</span> <span class="k">import</span> <span class="n">black_color_trait</span><span class="p">,</span> <span class="n">white_color_trait</span>
+<span class="kn">from</span> <span class="nn">.coordinate_box</span> <span class="k">import</span> <span class="n">CoordinateBox</span>
+<span class="kn">from</span> <span class="nn">.enable_traits</span> <span class="k">import</span> <span class="n">LineStyle</span><span class="p">,</span> <span class="n">bounds_trait</span><span class="p">,</span> <span class="n">coordinate_trait</span>
+<span class="kn">from</span> <span class="nn">.interactor</span> <span class="k">import</span> <span class="n">Interactor</span>
+
+<span class="n">coordinate_delegate</span> <span class="o">=</span> <span class="n">Delegate</span><span class="p">(</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span> <span class="n">modify</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">DEFAULT_DRAWING_ORDER</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;background&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;underlay&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mainlayer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;border&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;overlay&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="Component"><a class="viewcode-back" href="../../api/enable.component.html#enable.component.Component">[docs]</a><span class="k">class</span> <span class="nc">Component</span><span class="p">(</span><span class="n">CoordinateBox</span><span class="p">,</span> <span class="n">Interactor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Component is the base class for most Enable objects.  In addition to</span>
+<span class="sd">    the basic position and container features of Component, it also supports</span>
+<span class="sd">    Viewports and has finite bounds.</span>
+
+<span class="sd">    Since Components can have a border and padding, there is an additional set</span>
+<span class="sd">    of bounds and position attributes that define the &quot;outer box&quot; of the</span>
+<span class="sd">    components. These cannot be set, since they are secondary attributes</span>
+<span class="sd">    (computed from the component&#39;s &quot;inner&quot; size and margin-area attributes).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Basic appearance traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># Is the component visible?</span>
+    <span class="n">visible</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Does the component use space in the layout even if it is not visible?</span>
+    <span class="n">invisible_layout</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Fill the padding area with the background color?</span>
+    <span class="n">fill_padding</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Object/containment hierarchy traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># Our container object</span>
+    <span class="n">container</span> <span class="o">=</span> <span class="n">Any</span>  <span class="c1"># Instance(&quot;Container&quot;)</span>
+
+    <span class="c1"># A reference to our top-level Enable Window.  This is stored as a shadow</span>
+    <span class="c1"># attribute if this component is the direct child of the Window; otherwise,</span>
+    <span class="c1"># the getter function recurses up the containment hierarchy.</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="n">Property</span>  <span class="c1"># Instance(&quot;Window&quot;)</span>
+
+    <span class="c1"># The list of viewport that are viewing this component</span>
+    <span class="n">viewports</span> <span class="o">=</span> <span class="n">List</span><span class="p">(</span><span class="n">Instance</span><span class="p">(</span><span class="s2">&quot;enable.viewport.Viewport&quot;</span><span class="p">))</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Layout traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># The layout system to use:</span>
+    <span class="c1">#</span>
+    <span class="c1"># * &#39;chaco&#39;: Chaco-level layout (the &quot;old&quot; system)</span>
+    <span class="c1"># * &#39;enable&#39;: Enable-level layout, based on the db/resolver containment</span>
+    <span class="c1">#   model.</span>
+    <span class="c1"># NB: this is in preparation for future work</span>
+    <span class="c1"># layout_switch = Enum(&quot;chaco&quot;, &quot;enable&quot;)</span>
+
+    <span class="c1"># Dimensions that this component is resizable in.  For resizable</span>
+    <span class="c1"># components,  get_preferred_size() is called before their actual</span>
+    <span class="c1"># bounds are set.</span>
+    <span class="c1">#</span>
+    <span class="c1"># * &#39;v&#39;: resizable vertically</span>
+    <span class="c1"># * &#39;h&#39;: resizable horizontally</span>
+    <span class="c1"># * &#39;hv&#39;: resizable horizontally and vertically</span>
+    <span class="c1"># * &#39;&#39;: not resizable</span>
+    <span class="c1">#</span>
+    <span class="c1"># Note that this setting means only that the *parent* can and should resize</span>
+    <span class="c1"># this component; it does *not* mean that the component automatically</span>
+    <span class="c1"># resizes itself.</span>
+    <span class="n">resizable</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;hv&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The ratio of the component&#39;s width to its height.  This is used by</span>
+    <span class="c1"># the component itself to maintain bounds when the bounds are changed</span>
+    <span class="c1"># independently, and is also used by the layout system.</span>
+    <span class="n">aspect_ratio</span> <span class="o">=</span> <span class="n">Trait</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Float</span><span class="p">)</span>
+
+    <span class="c1"># When the component&#39;s bounds are set to a (width,height) tuple that does</span>
+    <span class="c1"># not conform to the set aspect ratio, does the component center itself</span>
+    <span class="c1"># in the free space?</span>
+    <span class="n">auto_center</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># A read-only property that returns True if this component needs layout.</span>
+    <span class="c1"># It is a reflection of both the value of the component&#39;s private</span>
+    <span class="c1"># _layout_needed attribute as well as any logical layout dependencies with</span>
+    <span class="c1"># other components.</span>
+    <span class="n">layout_needed</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="c1"># If the component is resizable, this attribute can be used to specify the</span>
+    <span class="c1"># amount of space that the component would like to get in each dimension,</span>
+    <span class="c1"># as a tuple (width, height).  This attribute can be used to establish</span>
+    <span class="c1"># relative sizes between resizable components in a container: if one</span>
+    <span class="c1"># component specifies, say, a fixed preferred width of 50 and another one</span>
+    <span class="c1"># specifies a fixed preferred width of 100, then the latter component will</span>
+    <span class="c1"># always be twice as wide as the former.</span>
+    <span class="n">fixed_preferred_size</span> <span class="o">=</span> <span class="n">Trait</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">bounds_trait</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Overlays and underlays</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># A list of underlays for this plot.  By default, underlays get a chance to</span>
+    <span class="c1"># draw onto the plot area underneath plot itself but above any images and</span>
+    <span class="c1"># backgrounds of the plot.</span>
+    <span class="n">underlays</span> <span class="o">=</span> <span class="n">List</span>  <span class="c1"># [AbstractOverlay]</span>
+
+    <span class="c1"># A list of overlays for the plot.  By default, overlays are drawn above</span>
+    <span class="c1"># the plot and its annotations.</span>
+    <span class="n">overlays</span> <span class="o">=</span> <span class="n">List</span>  <span class="c1"># [AbstractOverlay]</span>
+
+    <span class="c1"># Listen for changes to selection metadata on</span>
+    <span class="c1"># the underlying data sources, and render them specially?</span>
+    <span class="n">use_selection</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Tool and interaction handling traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># An Enable Interactor that all events are deferred to.</span>
+    <span class="n">controller</span> <span class="o">=</span> <span class="n">Any</span>
+
+    <span class="c1"># Events are *not* automatically considered &quot;handled&quot; if there is a handler</span>
+    <span class="c1"># defined. Overrides an inherited trait from Enable&#39;s Interactor class.</span>
+    <span class="n">auto_handle_event</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Padding-related traits</span>
+    <span class="c1"># Padding in each dimension is defined as the number of pixels that are</span>
+    <span class="c1"># part of the component but outside of its position and bounds.  Containers</span>
+    <span class="c1"># need to be aware of padding when doing layout, object collision/overlay</span>
+    <span class="c1"># calculations, etc.</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># The amount of space to put on the left side of the component</span>
+    <span class="n">padding_left</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># The amount of space to put on the right side of the component</span>
+    <span class="n">padding_right</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># The amount of space to put on top of the component</span>
+    <span class="n">padding_top</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># The amount of space to put below the component</span>
+    <span class="n">padding_bottom</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># This property allows a way to set the padding in bulk.  It can either be</span>
+    <span class="c1"># set to a single Int (which sets padding on all sides) or a tuple/list of</span>
+    <span class="c1"># 4 Ints representing the left, right, top, bottom padding amounts.  When</span>
+    <span class="c1"># it is read, this property always returns the padding as a list of four</span>
+    <span class="c1"># elements even if they are all the same.</span>
+    <span class="n">padding</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="c1"># Readonly property expressing the total amount of horizontal padding</span>
+    <span class="n">hpadding</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="c1"># Readonly property expressing the total amount of vertical padding</span>
+    <span class="n">vpadding</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="c1"># Does the component respond to mouse events over the padding area?</span>
+    <span class="n">padding_accepts_focus</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Position and bounds of outer box (encloses the padding and border area)</span>
+    <span class="c1"># All of these are read-only properties.  To set them directly, use</span>
+    <span class="c1"># set_outer_coordinates() or set_outer_pos_bounds().</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># The x,y point of the lower left corner of the padding outer box around</span>
+    <span class="c1"># the component.  Setting this position will move the component, but</span>
+    <span class="c1"># will not change the padding or bounds.</span>
+    <span class="c1"># This returns a tuple because modifying the returned value has no effect.</span>
+    <span class="c1"># To modify outer_position element-wise, use set_outer_position().</span>
+    <span class="n">outer_position</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="c1"># The number of horizontal and vertical pixels in the padding outer box.</span>
+    <span class="c1"># Setting these bounds will modify the bounds of the component, but</span>
+    <span class="c1"># will not change the lower-left position (self.outer_position) or</span>
+    <span class="c1"># the padding.</span>
+    <span class="c1"># This returns a tuple because modifying the returned value has no effect.</span>
+    <span class="c1"># To modify outer_bounds element-wise, use set_outer_bounds().</span>
+    <span class="n">outer_bounds</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="n">outer_x</span> <span class="o">=</span> <span class="n">Property</span>
+    <span class="n">outer_x2</span> <span class="o">=</span> <span class="n">Property</span>
+    <span class="n">outer_y</span> <span class="o">=</span> <span class="n">Property</span>
+    <span class="n">outer_y2</span> <span class="o">=</span> <span class="n">Property</span>
+    <span class="n">outer_width</span> <span class="o">=</span> <span class="n">Property</span>
+    <span class="n">outer_height</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Rendering control traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># The order in which various rendering classes on this component are drawn.</span>
+    <span class="c1"># Note that if this component is placed in a container, in most cases</span>
+    <span class="c1"># the container&#39;s draw order is used, since the container calls</span>
+    <span class="c1"># each of its contained components for each rendering pass.</span>
+    <span class="c1"># Typically, the definitions of the layers are:</span>
+    <span class="c1">#</span>
+    <span class="c1"># #. &#39;background&#39;: Background image, shading, and (possibly) borders</span>
+    <span class="c1"># #. &#39;mainlayer&#39;: The main layer that most objects should draw on</span>
+    <span class="c1"># #. &#39;border&#39;: A special layer for rendering the border on top of the</span>
+    <span class="c1">#     component instead of under its main layer (see **overlay_border**)</span>
+    <span class="c1"># #. &#39;overlay&#39;: Legends, selection regions, and other tool-drawn visual</span>
+    <span class="c1">#     elements</span>
+    <span class="n">draw_order</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">DEFAULT_DRAWING_ORDER</span><span class="p">,))</span>
+
+    <span class="c1"># If True, then this component draws as a unified whole,</span>
+    <span class="c1"># and its parent container calls this component&#39;s _draw() method when</span>
+    <span class="c1"># drawing the layer indicated  by **draw_layer**.</span>
+    <span class="c1"># If False, it tries to cooperate in its container&#39;s layer-by-layer</span>
+    <span class="c1"># drawing. Its parent container calls self._dispatch_draw() with the name</span>
+    <span class="c1"># of each layer as it goes through its list of layers.</span>
+    <span class="n">unified_draw</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># If **unified_draw** is True for this component, then this attribute</span>
+    <span class="c1"># determines what layer it will be drawn on.  This is used by containers</span>
+    <span class="c1"># and external classes, whose drawing loops call this component.</span>
+    <span class="c1"># If **unified_draw** is False, then this attribute is ignored.</span>
+    <span class="n">draw_layer</span> <span class="o">=</span> <span class="n">Str</span><span class="p">(</span><span class="s2">&quot;mainlayer&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Draw the border as part of the overlay layer? If False, draw the</span>
+    <span class="c1"># border as part of the background layer.</span>
+    <span class="n">overlay_border</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Draw the border inset (on the plot)? If False, draw the border</span>
+    <span class="c1"># outside the plot area.</span>
+    <span class="n">inset_border</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Border and background traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># The width of the border around this component.  This is taken into</span>
+    <span class="c1"># account during layout, but only if the border is visible.</span>
+    <span class="n">border_width</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Is the border visible?  If this is false, then all the other border</span>
+    <span class="c1"># properties are not used.</span>
+    <span class="n">border_visible</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># The line style (i.e. dash pattern) of the border.</span>
+    <span class="n">border_dash</span> <span class="o">=</span> <span class="n">LineStyle</span>
+
+    <span class="c1"># The color of the border.  Only used if border_visible is True.</span>
+    <span class="n">border_color</span> <span class="o">=</span> <span class="n">black_color_trait</span>
+
+    <span class="c1"># The background color of this component.  By default all components have</span>
+    <span class="c1"># a white background.  This can be set to &quot;transparent&quot; or &quot;none&quot; if the</span>
+    <span class="c1"># component should be see-through.</span>
+    <span class="n">bgcolor</span> <span class="o">=</span> <span class="n">white_color_trait</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Backbuffer traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># Should this component do a backbuffered draw, i.e. render itself to an</span>
+    <span class="c1"># offscreen buffer that is cached for later use?  If False, then</span>
+    <span class="c1"># the component will *never* render itself backbuffered, even if asked</span>
+    <span class="c1"># to do so.</span>
+    <span class="n">use_backbuffer</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Should the backbuffer extend to the pad area?</span>
+    <span class="n">backbuffer_padding</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># If a draw were to occur, whether the component would actually change.</span>
+    <span class="c1"># This is useful for determining whether a backbuffer is valid, and is</span>
+    <span class="c1"># usually set by the component itself or set on the component by calling</span>
+    <span class="c1"># _invalidate_draw().  It is exposed as a public trait for the rare cases</span>
+    <span class="c1"># when another component wants to know the validity of this component&#39;s</span>
+    <span class="c1"># backbuffer.</span>
+    <span class="n">draw_valid</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># drawn_outer_position specifies the outer position this component was</span>
+    <span class="c1"># drawn to on the last draw cycle.  This is used to determine what areas of</span>
+    <span class="c1"># the screen are damaged.</span>
+    <span class="n">drawn_outer_position</span> <span class="o">=</span> <span class="n">coordinate_trait</span>
+    <span class="c1"># drawn_outer_bounds specifies the bounds of this component on the last</span>
+    <span class="c1"># draw cycle.  Used in conjunction with outer_position_last_draw</span>
+    <span class="n">drawn_outer_bounds</span> <span class="o">=</span> <span class="n">bounds_trait</span>
+
+    <span class="c1"># The backbuffer of this component.  In most cases, this is an</span>
+    <span class="c1"># instance of GraphicsContext, but this requirement is not enforced.</span>
+    <span class="n">_backbuffer</span> <span class="o">=</span> <span class="n">Any</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># New layout/object containment hierarchy traits</span>
+    <span class="c1"># These are not used yet.</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># A list of strings defining the classes to which this component belongs.</span>
+    <span class="c1"># These classes will be used to determine how this component is styled,</span>
+    <span class="c1"># is rendered, is laid out, and receives events.  There is no automatic</span>
+    <span class="c1"># management of conflicting class names, so if a component is placed</span>
+    <span class="c1"># into more than one class and that class</span>
+    <span class="n">classes</span> <span class="o">=</span> <span class="n">List</span>
+
+    <span class="c1"># The element ID of this component.</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Str</span>
+
+    <span class="c1"># These will be used by the new layout system, but are currently unused.</span>
+    <span class="c1"># max_width = Any</span>
+    <span class="c1"># min_width = Any</span>
+    <span class="c1"># max_height = Any</span>
+    <span class="c1"># min_height = Any</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Private traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># Shadow trait for self.window.  Only gets set if this is the top-level</span>
+    <span class="c1"># enable component in a Window.</span>
+    <span class="n">_window</span> <span class="o">=</span> <span class="n">Any</span>  <span class="c1"># Instance(&quot;Window&quot;)</span>
+
+    <span class="c1"># Whether or not component itself needs to be laid out.  Some times</span>
+    <span class="c1"># components are composites of others, in which case the layout</span>
+    <span class="c1"># invalidation relationships should be implemented in layout_needed.</span>
+    <span class="n">_layout_needed</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Abstract methods</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_do_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Called by do_layout() to do an actual layout call; it bypasses some</span>
+<span class="sd">        additional logic to handle null bounds and setting **_layout_needed**.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_draw_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Renders the component.</span>
+
+<span class="sd">        Subclasses must implement this method to actually render themselves.</span>
+<span class="sd">        Note: This method is used only by the &quot;old&quot; drawing calls.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_draw_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Renders a selected subset of a component&#39;s data.</span>
+
+<span class="sd">        This method is used by some subclasses. The notion of selection doesn&#39;t</span>
+<span class="sd">        necessarily apply to all subclasses of PlotComponent, but it applies to</span>
+<span class="sd">        enough of them that it is defined as one of the default draw methods.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Public methods</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">traits</span><span class="p">):</span>
+        <span class="c1"># The &#39;padding&#39; trait sets 4 individual traits in bulk. Make sure that</span>
+        <span class="c1"># it gets set first before other explicit padding traits get set so</span>
+        <span class="c1"># they may override the bulk default.</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="n">traits</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;padding&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">padding_traits</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">padding_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;padding_top&quot;</span><span class="p">,</span> <span class="s2">&quot;padding_bottom&quot;</span><span class="p">,</span> <span class="s2">&quot;padding_left&quot;</span><span class="p">,</span> <span class="s2">&quot;padding_right&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">padding_names</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">padding_traits</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">traits</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="s2">&quot;container&quot;</span> <span class="ow">in</span> <span class="n">traits</span><span class="p">:</span>
+            <span class="c1"># After the component is otherwise configured, make sure our</span>
+            <span class="c1"># container gets notified of our being added to it.</span>
+            <span class="n">container</span> <span class="o">=</span> <span class="n">traits</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;container&quot;</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">Component</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">traits</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_padding_traits</span><span class="p">(</span><span class="n">padding</span><span class="p">,</span> <span class="n">padding_traits</span><span class="p">)</span>
+            <span class="n">container</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">Component</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">traits</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_padding_traits</span><span class="p">(</span><span class="n">padding</span><span class="p">,</span> <span class="n">padding_traits</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Component.draw"><a class="viewcode-back" href="../../api/enable.component.html#enable.component.Component.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draws the plot component.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gc : Kiva GraphicsContext</span>
+<span class="sd">            The graphics context to draw the component on</span>
+<span class="sd">        view_bounds : 4-tuple of integers</span>
+<span class="sd">            (x, y, width, height) of the area to draw</span>
+<span class="sd">        mode : string</span>
+<span class="sd">            The drawing mode to use; can be one of:</span>
+
+<span class="sd">            &#39;normal&#39;</span>
+<span class="sd">                Normal, antialiased, high-quality rendering</span>
+<span class="sd">            &#39;overlay&#39;</span>
+<span class="sd">                The plot component is being rendered over something else,</span>
+<span class="sd">                so it renders more quickly, and possibly omits rendering</span>
+<span class="sd">                its background and certain tools</span>
+<span class="sd">            &#39;interactive&#39;</span>
+<span class="sd">                The plot component is being asked to render in</span>
+<span class="sd">                direct response to realtime user interaction, and needs to make</span>
+<span class="sd">                its best effort to render as fast as possible, even if there is</span>
+<span class="sd">                an aesthetic cost.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_needed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">do_layout</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_draw</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Component.draw_select_box"><a class="viewcode-back" href="../../api/enable.component.html#enable.component.Component.draw_select_box">[docs]</a>    <span class="k">def</span> <span class="nf">draw_select_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">dash</span><span class="p">,</span>
+                        <span class="n">inset</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">bgcolor</span><span class="p">,</span> <span class="n">marker_size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Renders a selection box around the component.</span>
+
+<span class="sd">        Subclasses can implement this utility method to render a selection box</span>
+<span class="sd">        around themselves. To avoid burdening subclasses with various</span>
+<span class="sd">        selection-box related traits that they might never use, this method</span>
+<span class="sd">        takes all of its required data as input parameters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gc : Kiva GraphicsContext</span>
+<span class="sd">            The graphics context to draw on.</span>
+<span class="sd">        position : (x, y)</span>
+<span class="sd">            The position of the selection region.</span>
+<span class="sd">        bounds : (width, height)</span>
+<span class="sd">            The size of the selection region.</span>
+<span class="sd">        width : integer</span>
+<span class="sd">            The width of the selection box border</span>
+<span class="sd">        dash : float array</span>
+<span class="sd">            An array of floating point values specifying the lengths of on and</span>
+<span class="sd">            off painting pattern for dashed lines.</span>
+<span class="sd">        inset : integer</span>
+<span class="sd">            Amount by which the selection box is inset on each side within the</span>
+<span class="sd">            selection region.</span>
+<span class="sd">        color : 3-tuple of floats between 0.0 and 1.0</span>
+<span class="sd">            The R, G, and B values of the selection border color.</span>
+<span class="sd">        bgcolor : 3-tuple of floats between 0.0 and 1.0</span>
+<span class="sd">            The R, G, and B values of the selection background.</span>
+<span class="sd">        marker_size : integer</span>
+<span class="sd">            Size, in pixels, of &quot;handle&quot; markers on the selection box</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_antialias</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">position</span>
+            <span class="n">x</span> <span class="o">+=</span> <span class="n">inset</span>
+            <span class="n">y</span> <span class="o">+=</span> <span class="n">inset</span>
+            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">bounds</span>
+            <span class="n">width</span> <span class="o">-=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">inset</span>
+            <span class="n">height</span> <span class="o">-=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">inset</span>
+            <span class="n">rect</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="n">bgcolor</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_line_dash</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">draw_rect</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">STROKE</span><span class="p">)</span>
+
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_line_dash</span><span class="p">(</span><span class="n">dash</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">draw_rect</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">STROKE</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">marker_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="n">bgcolor</span><span class="p">)</span>
+                <span class="n">half_y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">height</span> <span class="o">/</span> <span class="mf">2.0</span>
+                <span class="n">y2</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">height</span>
+                <span class="n">half_x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">width</span> <span class="o">/</span> <span class="mf">2.0</span>
+                <span class="n">x2</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">width</span>
+                <span class="n">marker_positions</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">half_y</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y2</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">half_x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">half_x</span><span class="p">,</span> <span class="n">y2</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">half_y</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_line_dash</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="n">marker_positions</span><span class="p">:</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span>
+                        <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">marker_size</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
+                        <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">marker_size</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
+                        <span class="n">marker_size</span><span class="p">,</span>
+                        <span class="n">marker_size</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">draw_path</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Component.get_absolute_coords"><a class="viewcode-back" href="../../api/enable.component.html#enable.component.Component.get_absolute_coords">[docs]</a>    <span class="k">def</span> <span class="nf">get_absolute_coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">coords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Given coordinates relative to this component&#39;s origin, returns</span>
+<span class="sd">        the &quot;absolute&quot; coordinates in the frame of the top-level parent</span>
+<span class="sd">        Window enclosing this component&#39;s ancestor containers.</span>
+
+<span class="sd">        Can be called in two ways:</span>
+<span class="sd">            get_absolute_coords(x, y)</span>
+<span class="sd">            get_absolute_coords( (x,y) )</span>
+
+<span class="sd">        Returns a tuple (x,y) representing the new coordinates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">offset_x</span><span class="p">,</span> <span class="n">offset_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">get_absolute_coords</span><span class="p">(</span>
+                <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">offset_x</span><span class="p">,</span> <span class="n">offset_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">offset_x</span> <span class="o">+</span> <span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">offset_y</span> <span class="o">+</span> <span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Component.get_relative_coords"><a class="viewcode-back" href="../../api/enable.component.html#enable.component.Component.get_relative_coords">[docs]</a>    <span class="k">def</span> <span class="nf">get_relative_coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">coords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Given absolute coordinates (where the origin is the top-left corner</span>
+<span class="sd">        of the frame in the top-level parent Window) return coordinates</span>
+<span class="sd">        relative to this component&#39;s origin.</span>
+
+<span class="sd">        Can be called in two ways:</span>
+<span class="sd">            get_relative_coords(x, y)</span>
+<span class="sd">            get_relative_coords( (x,y) )</span>
+
+<span class="sd">        Returns a tuple (x,y) representing the new coordinates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">offset_x</span><span class="p">,</span> <span class="n">offset_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">get_relative_coords</span><span class="p">(</span>
+                <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">offset_x</span><span class="p">,</span> <span class="n">offset_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset_x</span><span class="p">,</span> <span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset_y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Component.request_redraw"><a class="viewcode-back" href="../../api/enable.component.html#enable.component.Component.request_redraw">[docs]</a>    <span class="k">def</span> <span class="nf">request_redraw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Requests that the component redraw itself.  Usually this means asking</span>
+<span class="sd">        its parent for a repaint.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewports</span><span class="p">:</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_redraw</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Component.invalidate_draw"><a class="viewcode-back" href="../../api/enable.component.html#enable.component.Component.invalidate_draw">[docs]</a>    <span class="k">def</span> <span class="nf">invalidate_draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">damaged_regions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">self_relative</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Invalidates any backbuffer that may exist, and notifies our parents</span>
+<span class="sd">        and viewports of any damaged regions.</span>
+
+<span class="sd">        Call this method whenever a component&#39;s internal state</span>
+<span class="sd">        changes such that it must be redrawn on the next draw() call.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draw_valid</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">damaged_regions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">damaged_regions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_damaged_regions</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">self_relative</span><span class="p">:</span>
+            <span class="n">damaged_regions</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">[</span><span class="n">region</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">region</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">region</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">region</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span>
+                <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">damaged_regions</span>
+            <span class="p">]</span>
+        <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewports</span><span class="p">:</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">invalidate_draw</span><span class="p">(</span>
+                <span class="n">damaged_regions</span><span class="o">=</span><span class="n">damaged_regions</span><span class="p">,</span>
+                <span class="n">self_relative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">view_relative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">invalidate_draw</span><span class="p">(</span>
+                <span class="n">damaged_regions</span><span class="o">=</span><span class="n">damaged_regions</span><span class="p">,</span> <span class="n">self_relative</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_window</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_window</span><span class="o">.</span><span class="n">invalidate_draw</span><span class="p">(</span>
+                <span class="n">damaged_regions</span><span class="o">=</span><span class="n">damaged_regions</span><span class="p">,</span> <span class="n">self_relative</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Component.invalidate_and_redraw"><a class="viewcode-back" href="../../api/enable.component.html#enable.component.Component.invalidate_and_redraw">[docs]</a>    <span class="k">def</span> <span class="nf">invalidate_and_redraw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Convenience method to invalidate our contents and request redraw</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_draw</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Component.is_in"><a class="viewcode-back" href="../../api/enable.component.html#enable.component.Component.is_in">[docs]</a>    <span class="k">def</span> <span class="nf">is_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="c1"># A basic implementation of is_in(); subclasses should provide their</span>
+        <span class="c1"># own if they are more accurate/faster/shinier.</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_accepts_focus</span><span class="p">:</span>
+            <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_bounds</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_position</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">y</span> <span class="o">&gt;=</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Component.cleanup"><a class="viewcode-back" href="../../api/enable.component.html#enable.component.Component.cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;When a window viewing or containing a component is destroyed,</span>
+<span class="sd">        cleanup is called on the component to give it the opportunity to</span>
+<span class="sd">        delete any transient state it may have (such as backbuffers).&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="Component.set_outer_position"><a class="viewcode-back" href="../../api/enable.component.html#enable.component.Component.set_outer_position">[docs]</a>    <span class="k">def</span> <span class="nf">set_outer_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndx</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Since self.outer_position is a property whose value is determined</span>
+<span class="sd">        by other (primary) attributes, it cannot return a mutable type.</span>
+<span class="sd">        This method allows generic (i.e. orientation-independent) code</span>
+<span class="sd">        to set the value of self.outer_position[0] or self.outer_position[1].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ndx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outer_x</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outer_y</span> <span class="o">=</span> <span class="n">val</span></div>
+
+<div class="viewcode-block" id="Component.set_outer_bounds"><a class="viewcode-back" href="../../api/enable.component.html#enable.component.Component.set_outer_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">set_outer_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndx</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Since self.outer_bounds is a property whose value is determined</span>
+<span class="sd">        by other (primary) attributes, it cannot return a mutable type.</span>
+<span class="sd">        This method allows generic (i.e. orientation-independent) code</span>
+<span class="sd">        to set the value of self.outer_bounds[0] or self.outer_bounds[1].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ndx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outer_width</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outer_height</span> <span class="o">=</span> <span class="n">val</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Layout-related concrete methods</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Component.do_layout"><a class="viewcode-back" href="../../api/enable.component.html#enable.component.Component.do_layout">[docs]</a>    <span class="k">def</span> <span class="nf">do_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Tells this component to do layout at a given size.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        size : (width, height)</span>
+<span class="sd">            Size at which to lay out the component; either or both values can</span>
+<span class="sd">            be 0. If it is None, then the component lays itself out using</span>
+<span class="sd">            **bounds**.</span>
+<span class="sd">        force : Boolean</span>
+<span class="sd">            Whether to force a layout operation. If False, the component does</span>
+<span class="sd">            a layout on itself only if **_layout_needed** is True.</span>
+<span class="sd">            The method always does layout on any underlays or overlays it has,</span>
+<span class="sd">            even if *force* is False.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_needed</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">size</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_layout</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_layout_needed</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">underlay</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">underlays</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">underlay</span><span class="o">.</span><span class="n">visible</span> <span class="ow">or</span> <span class="n">underlay</span><span class="o">.</span><span class="n">invisible_layout</span><span class="p">:</span>
+                <span class="n">underlay</span><span class="o">.</span><span class="n">do_layout</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">overlay</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">overlays</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">overlay</span><span class="o">.</span><span class="n">visible</span> <span class="ow">or</span> <span class="n">overlay</span><span class="o">.</span><span class="n">invisible_layout</span><span class="p">:</span>
+                <span class="n">overlay</span><span class="o">.</span><span class="n">do_layout</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Component.get_preferred_size"><a class="viewcode-back" href="../../api/enable.component.html#enable.component.Component.get_preferred_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_preferred_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the size (width,height) that is preferred for this</span>
+<span class="sd">        component.</span>
+
+<span class="sd">        When called on a component that does not contain other components,</span>
+<span class="sd">        this method just returns the component bounds.  If the component is</span>
+<span class="sd">        resizable and can draw into any size, the method returns a size that</span>
+<span class="sd">        is visually appropriate.  (The component&#39;s actual bounds are</span>
+<span class="sd">        determined by its container&#39;s do_layout() method.)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_preferred_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_preferred_size</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">outer_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_bounds</span>
+            <span class="k">if</span> <span class="s2">&quot;h&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">resizable</span><span class="p">:</span>
+                <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">outer_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">&quot;v&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">resizable</span><span class="p">:</span>
+                <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">outer_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">size</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Protected methods</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_set_padding_traits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">padding_traits</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the bulk padding trait and all of the others in the correct</span>
+<span class="sd">        order.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        padding : None, int or list of ints</span>
+<span class="sd">            The bulk padding.</span>
+<span class="sd">        padding_traits : dict mapping str to int</span>
+<span class="sd">            The specific padding traits.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">padding</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trait_set</span><span class="p">(</span><span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trait_set</span><span class="p">(</span><span class="o">**</span><span class="n">padding_traits</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_request_redraw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_window</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_window</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_default_damaged_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the default damaged regions for this Component.</span>
+
+<span class="sd">        This consists of the current position/bounds, and the last drawn</span>
+<span class="sd">        position/bounds</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer_position</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer_bounds</span><span class="p">),</span>
+            <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drawn_outer_position</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drawn_outer_bounds</span><span class="p">),</span>
+        <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draws the component, paying attention to **draw_order**, including</span>
+<span class="sd">        overlays, underlays, and the like.</span>
+
+<span class="sd">        This method is the main draw handling logic in plot components.</span>
+<span class="sd">        The reason for implementing _draw() instead of overriding the top-level</span>
+<span class="sd">        draw() method is that the Enable base classes may do things in draw()</span>
+<span class="sd">        that mustn&#39;t be interfered with (e.g., the Viewable mix-in).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">visible</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_needed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">do_layout</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">drawn_outer_position</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer_position</span><span class="p">[:])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drawn_outer_bounds</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer_bounds</span><span class="p">[:])</span>
+
+        <span class="c1"># OpenGL-based graphics-contexts have a `gl_init()` method. We</span>
+        <span class="c1"># test for this to avoid having to import the OpenGL</span>
+        <span class="c1"># GraphicsContext just to do an isinstance() check.</span>
+        <span class="n">is_gl</span> <span class="o">=</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="s2">&quot;gl_init&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_backbuffer</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">is_gl</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbuffer_padding</span><span class="p">:</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_position</span>
+                <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_bounds</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span>
+                <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">draw_valid</span><span class="p">:</span>
+                <span class="c1"># get a reference to the GraphicsContext class from the object</span>
+                <span class="n">GraphicsContext</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="vm">__class__</span>
+                <span class="c1"># Some pixels are bigger than others</span>
+                <span class="n">pixel_scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">base_pixel_scale</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">width</span> <span class="o">*</span> <span class="n">pixel_scale</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">height</span> <span class="o">*</span> <span class="n">pixel_scale</span><span class="p">))</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">GraphicsContext</span><span class="p">,</span> <span class="s2">&quot;create_from_gc&quot;</span><span class="p">):</span>
+                    <span class="c1"># For some backends, such as the mac, a much more efficient</span>
+                    <span class="c1"># backbuffer can be created from the window gc.</span>
+                    <span class="n">bb</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="o">.</span><span class="n">create_from_gc</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">bb</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+
+                <span class="c1"># Always scale by base_pixel_scale here</span>
+                <span class="n">bb</span><span class="o">.</span><span class="n">scale_ctm</span><span class="p">(</span><span class="n">pixel_scale</span><span class="p">,</span> <span class="n">pixel_scale</span><span class="p">)</span>
+
+                <span class="c1"># if not fill_padding, then we have to fill the backbuffer</span>
+                <span class="c1"># with the window color. This is the only way I&#39;ve found that</span>
+                <span class="c1"># it works- perhaps if we had better blend support we could set</span>
+                <span class="c1"># the alpha to 0, but for now doing so causes the backbuffer&#39;s</span>
+                <span class="c1"># background to be white</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill_padding</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">bb</span><span class="p">:</span>
+                        <span class="n">bb</span><span class="o">.</span><span class="n">set_antialias</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                        <span class="n">bb</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">bgcolor_</span><span class="p">)</span>
+                        <span class="n">bb</span><span class="o">.</span><span class="n">draw_rect</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="n">FILL</span><span class="p">)</span>
+
+                <span class="c1"># Fixme: should there be a +1 here?</span>
+                <span class="n">bb</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="n">y</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+                <span class="c1"># There are a couple of strategies we could use here, but we</span>
+                <span class="c1"># have to do something about view_bounds.  This is because</span>
+                <span class="c1"># if we only partially render the object into the backbuffer,</span>
+                <span class="c1"># we will have problems if we then render with different view</span>
+                <span class="c1"># bounds.</span>
+
+                <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">draw_order</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">layer</span> <span class="o">!=</span> <span class="s2">&quot;overlay&quot;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch_draw</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">bb</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_backbuffer</span> <span class="o">=</span> <span class="n">bb</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">draw_valid</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># Blit the backbuffer and then draw the overlay on top</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">draw_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backbuffer</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch_draw</span><span class="p">(</span><span class="s2">&quot;overlay&quot;</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">draw_order</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch_draw</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_dispatch_draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Renders the named *layer* of this component.</span>
+
+<span class="sd">        This method can be used by container classes that group many components</span>
+<span class="sd">        together and want them to draw cooperatively. The container iterates</span>
+<span class="sd">        through its components and asks them to draw only certain layers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Don&#39;t render the selection layer if use_selection is false.  This</span>
+        <span class="c1"># is mostly for backwards compatibility.</span>
+        <span class="k">if</span> <span class="n">layer</span> <span class="o">==</span> <span class="s2">&quot;selection&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_selection</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_needed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">do_layout</span><span class="p">()</span>
+
+        <span class="n">handler</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_draw_&quot;</span> <span class="o">+</span> <span class="n">layer</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">handler</span><span class="p">:</span>
+            <span class="n">handler</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_draw_border</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+                     <span class="n">force_draw</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Utility method to draw the borders around this component</span>
+
+<span class="sd">        The *force_draw* parameter forces the method to draw the border; if it</span>
+<span class="sd">        is false, the border is drawn only when **overlay_border** is True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">border_visible</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">overlay_border</span> <span class="ow">or</span> <span class="n">force_draw</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inset_border</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_draw_inset_border</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">border_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">border_width</span>
+                <span class="n">rect</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">border_width</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">border_width</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">border_width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">border_width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="n">border_width</span><span class="p">)</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">set_line_dash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">border_dash_</span><span class="p">)</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">border_color_</span><span class="p">)</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">draw_rect</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">STROKE</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_draw_inset_border</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draws the border of a component.</span>
+
+<span class="sd">        Unlike the default Enable border, this one is drawn on the inside of</span>
+<span class="sd">        the plot instead of around it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">border_visible</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">border_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">border_width</span>
+        <span class="n">rect</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">border_width</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">border_width</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">border_width</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">border_width</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="n">border_width</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_line_dash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">border_dash_</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">border_color_</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_antialias</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">draw_rect</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">STROKE</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Protected methods for subclasses to implement</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_draw_background</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draws the background layer of a component.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bgcolor</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;clear&quot;</span><span class="p">,</span> <span class="s2">&quot;transparent&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill_padding</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer_position</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">outer_width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">outer_height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_antialias</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bgcolor_</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">draw_rect</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">FILL</span><span class="p">)</span>
+
+        <span class="c1"># Call the enable _draw_border routine</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">overlay_border</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">border_visible</span><span class="p">:</span>
+            <span class="c1"># Tell _draw_border to ignore the self.overlay_border</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_draw_border</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">force_draw</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_draw_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draws the overlay layer of a component.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">overlay</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">overlays</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">overlay</span><span class="o">.</span><span class="n">visible</span><span class="p">:</span>
+                <span class="n">overlay</span><span class="o">.</span><span class="n">overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_draw_underlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draws the underlay layer of a component.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">underlay</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">underlays</span><span class="p">:</span>
+            <span class="c1"># This method call looks funny but it&#39;s correct - underlays are</span>
+            <span class="c1"># just overlays drawn at a different time in the rendering loop.</span>
+            <span class="k">if</span> <span class="n">underlay</span><span class="o">.</span><span class="n">visible</span><span class="p">:</span>
+                <span class="n">underlay</span><span class="o">.</span><span class="n">overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_visible_border</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Helper function to return the amount of border, if visible &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">border_visible</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inset_border</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">border_width</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Tool-related methods and event dispatch</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Component.dispatch"><a class="viewcode-back" href="../../api/enable.component.html#enable.component.Component.dispatch">[docs]</a>    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Dispatches a mouse event based on the current event state.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        event : an Enable MouseEvent</span>
+<span class="sd">            A mouse event.</span>
+<span class="sd">        suffix : string</span>
+<span class="sd">            The name of the mouse event as a suffix to the event state name,</span>
+<span class="sd">            e.g. &quot;_left_down&quot; or &quot;_window_enter&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># This hasattr check is necessary to ensure compatibility with Chaco</span>
+        <span class="c1"># components.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;use_draw_order&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_old_dispatch</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_new_dispatch</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_new_dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Dispatches a mouse event</span>
+
+<span class="sd">        If the component has a **controller**, the method dispatches the event</span>
+<span class="sd">        to it, and returns. Otherwise, the following objects get a chance to</span>
+<span class="sd">        handle the event:</span>
+
+<span class="sd">        1. The component&#39;s active tool, if any.</span>
+<span class="sd">        2. Any overlays, in reverse order that they were added and are drawn.</span>
+<span class="sd">        3. The component itself.</span>
+<span class="sd">        4. Any underlays, in reverse order that they were added and are drawn.</span>
+<span class="sd">        5. Any listener tools.</span>
+
+<span class="sd">        If any object in this sequence handles the event, the method returns</span>
+<span class="sd">        without proceeding any further through the sequence. If nothing</span>
+<span class="sd">        handles the event, the method simply returns.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Maintain compatibility with .controller for now</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">controller</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active_tool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_active_tool</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">handled</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Dispatch to overlays in reverse of draw/added order</span>
+        <span class="k">for</span> <span class="n">overlay</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">overlays</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">overlay</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">handled</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">event</span><span class="o">.</span><span class="n">handled</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch_stateful_event</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">event</span><span class="o">.</span><span class="n">handled</span><span class="p">:</span>
+            <span class="c1"># Dispatch to underlays in reverse of draw/added order</span>
+            <span class="k">for</span> <span class="n">underlay</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">underlays</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">underlay</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">handled</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+        <span class="c1"># Now that everyone who might veto/handle the event has had a chance</span>
+        <span class="c1"># to receive it, dispatch it to our list of listener tools.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">event</span><span class="o">.</span><span class="n">handled</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">:</span>
+                <span class="n">tool</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_old_dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Dispatches a mouse event.</span>
+
+<span class="sd">        If the component has a **controller**, the method dispatches the event</span>
+<span class="sd">        to it and returns. Otherwise, the following objects get a chance to</span>
+<span class="sd">        handle the event:</span>
+
+<span class="sd">        1. The component&#39;s active tool, if any.</span>
+<span class="sd">        2. Any listener tools.</span>
+<span class="sd">        3. The component itself.</span>
+
+<span class="sd">        If any object in this sequence handles the event, the method returns</span>
+<span class="sd">        without proceeding any further through the sequence. If nothing</span>
+<span class="sd">        handles the event, the method simply returns.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">controller</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active_tool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_active_tool</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">handled</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">:</span>
+            <span class="n">tool</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">handled</span><span class="p">:</span>
+                <span class="k">return</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">event</span><span class="o">.</span><span class="n">handled</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch_to_enable</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">_get_active_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active_tool</span>
+
+    <span class="k">def</span> <span class="nf">_set_active_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tool</span><span class="p">):</span>
+        <span class="c1"># Deactivate the existing active tool</span>
+        <span class="n">old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active_tool</span>
+        <span class="k">if</span> <span class="n">old</span> <span class="o">==</span> <span class="n">tool</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_active_tool</span> <span class="o">=</span> <span class="n">tool</span>
+
+        <span class="k">if</span> <span class="n">old</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">old</span><span class="o">.</span><span class="n">deactivate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tool</span><span class="p">,</span> <span class="s2">&quot;_activate&quot;</span><span class="p">):</span>
+            <span class="n">tool</span><span class="o">.</span><span class="n">_activate</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_and_redraw</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_layout_needed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout_needed</span>
+
+    <span class="k">def</span> <span class="nf">_tools_items_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_and_redraw</span><span class="p">()</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Event handlers</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_id_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Generate a random UUID for the ID.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># The first 32bits is plenty.</span>
+        <span class="k">return</span> <span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_aspect_ratio_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">new</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_enforce_aspect_ratio</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_enforce_aspect_ratio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notify</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; This method adjusts the width and/or height of the component so</span>
+<span class="sd">        that the new width and height match the aspect ratio.  It uses the</span>
+<span class="sd">        current width and height as a bounding box and finds the largest</span>
+<span class="sd">        rectangle of the desired aspect ratio that will fit.</span>
+
+<span class="sd">        If **notify** is True, then fires trait events for bounds and</span>
+<span class="sd">        position changing.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ratio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aspect_ratio</span>
+        <span class="n">old_w</span><span class="p">,</span> <span class="n">old_h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span>
+        <span class="k">if</span> <span class="n">ratio</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="n">ratio</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="n">old_h</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="nb">int</span><span class="p">(</span><span class="n">old_w</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">ratio</span> <span class="o">*</span> <span class="n">old_h</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="n">old_aspect</span> <span class="o">=</span> <span class="n">old_w</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">old_h</span><span class="p">)</span>
+        <span class="n">new_pos</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">ratio</span> <span class="o">&gt;</span> <span class="n">old_aspect</span><span class="p">:</span>
+            <span class="c1"># desired rectangle is wider than bounding box, so use the width</span>
+            <span class="c1"># and compute a smaller height</span>
+            <span class="n">new_w</span> <span class="o">=</span> <span class="n">old_w</span>
+            <span class="n">new_h</span> <span class="o">=</span> <span class="n">new_w</span> <span class="o">/</span> <span class="n">ratio</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_center</span><span class="p">:</span>
+                <span class="n">new_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[:]</span>
+                <span class="n">new_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">old_h</span> <span class="o">-</span> <span class="n">new_h</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># desired rectangle is taller than bounding box, so use the height</span>
+            <span class="c1"># and compute a smaller width</span>
+            <span class="n">new_h</span> <span class="o">=</span> <span class="n">old_h</span>
+            <span class="n">new_w</span> <span class="o">=</span> <span class="n">new_h</span> <span class="o">*</span> <span class="n">ratio</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_center</span><span class="p">:</span>
+                <span class="n">new_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[:]</span>
+                <span class="n">new_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">old_w</span> <span class="o">-</span> <span class="n">new_w</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">trait_set</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="p">[</span><span class="n">new_w</span><span class="p">,</span> <span class="n">new_h</span><span class="p">],</span> <span class="n">trait_change_notify</span><span class="o">=</span><span class="n">notify</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">new_pos</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trait_set</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">new_pos</span><span class="p">,</span> <span class="n">trait_change_notify</span><span class="o">=</span><span class="n">notify</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_bounds_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_enforce_aspect_ratio</span><span class="p">(</span><span class="n">notify</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">_component_bounds_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_bounds_items_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_enforce_aspect_ratio</span><span class="p">(</span><span class="n">notify</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">_component_bounds_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_container_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="c1"># We don&#39;t notify our container of this change b/c the</span>
+        <span class="c1"># caller who changed our .container should take care of that.</span>
+        <span class="k">if</span> <span class="n">new</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_position_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">_component_position_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_position_items_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">_component_position_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_visible_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">new</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_layout_needed</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_get_window</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_window</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_window</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">window</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_set_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">win</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_window</span> <span class="o">=</span> <span class="n">win</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Position and padding setters and getters</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_get_x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_set_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="k">def</span> <span class="nf">_get_y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_set_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="k">def</span> <span class="nf">_get_padding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">padding_left</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">padding_right</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">padding_top</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">padding_bottom</span><span class="p">,</span>
+        <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_set_padding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="n">old_padding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">padding_left</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">padding_right</span>
+            <span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_top</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_bottom</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trait_property_changed</span><span class="p">(</span><span class="s2">&quot;padding&quot;</span><span class="p">,</span> <span class="n">old_padding</span><span class="p">,</span> <span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># assume padding is some sort of array type</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Padding must be a 4-element sequence &quot;</span>
+                    <span class="s2">&quot;type or an int.  Instead, got&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">padding_left</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">padding_right</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">padding_top</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">padding_bottom</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trait_property_changed</span><span class="p">(</span><span class="s2">&quot;padding&quot;</span><span class="p">,</span> <span class="n">old_padding</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_hpadding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_visible_border</span><span class="p">()</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_right</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_left</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_vpadding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_visible_border</span><span class="p">()</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_bottom</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_top</span>
+        <span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Outer position setters and getters</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_get_outer_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">border</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_visible_border</span><span class="p">()</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_left</span> <span class="o">-</span> <span class="n">border</span><span class="p">,</span>
+            <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_bottom</span> <span class="o">-</span> <span class="n">border</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_outer_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_pos</span><span class="p">):</span>
+        <span class="n">border</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_visible_border</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">new_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_left</span> <span class="o">+</span> <span class="n">border</span><span class="p">,</span>
+            <span class="n">new_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_bottom</span> <span class="o">+</span> <span class="n">border</span><span class="p">,</span>
+        <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_get_outer_x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_left</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_visible_border</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_set_outer_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_left</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_visible_border</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_outer_x2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_right</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_visible_border</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_set_outer_x2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x2</span> <span class="o">=</span> <span class="n">val</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_right</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_visible_border</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_outer_y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_bottom</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_visible_border</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_set_outer_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">val</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_bottom</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_visible_border</span><span class="p">()</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_outer_y2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_top</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_visible_border</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_set_outer_y2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y2</span> <span class="o">=</span> <span class="n">val</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_top</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_visible_border</span><span class="p">()</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Outer bounds setters and getters</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_get_outer_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hpadding</span><span class="p">,</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">vpadding</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_outer_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">hpadding</span><span class="p">,</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">vpadding</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_get_outer_width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_set_outer_width</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">width</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">hpadding</span>
+
+    <span class="k">def</span> <span class="nf">_get_outer_height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_set_outer_height</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">vpadding</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

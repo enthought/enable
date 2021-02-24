@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.base_tool module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="enable package" href="enable.html" >
+    <link rel="next" title="enable.canvas module" href="enable.canvas.html" >
+    <link rel="prev" title="enable.base module" href="enable.base.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" accesskey="U">enable package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.canvas.html" title="enable.canvas module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.base.html" title="enable.base module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.base_tool">
+<span id="enable-base-tool-module"></span><h1>enable.base_tool module<a class="headerlink" href="#module-enable.base_tool" title="Permalink to this headline">¶</a></h1>
+<p>Defines the base class for all Chaco tools.  See docs/event_handling.txt for an
+overview of how event handling works in Chaco.</p>
+<dl class="class">
+<dt id="enable.base_tool.BaseTool">
+<em class="property">class </em><code class="sig-prename descclassname">enable.base_tool.</code><code class="sig-name descname">BaseTool</code><span class="sig-paren">(</span><em class="sig-param">component=None</em>, <em class="sig-param">**kwtraits</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base_tool.html#BaseTool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base_tool.BaseTool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="enable.interactor.html#enable.interactor.Interactor" title="enable.interactor.Interactor"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.interactor.Interactor</span></code></a></p>
+<p>The base class for Chaco tools.</p>
+<p>Tools are not Enable components, but they can draw.  They do not
+participate in layout, but are instead attached to a Component, which
+dispatches methods to the tool and calls the tools’ draw() method.</p>
+<p>See docs/event_handling.txt for more information on how tools are
+structured.</p>
+<dl class="method">
+<dt id="enable.base_tool.BaseTool.deactivate">
+<code class="sig-name descname">deactivate</code><span class="sig-paren">(</span><em class="sig-param">component=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base_tool.html#BaseTool.deactivate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base_tool.BaseTool.deactivate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles this component no longer being the active tool.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.base_tool.BaseTool.dispatch">
+<code class="sig-name descname">dispatch</code><span class="sig-paren">(</span><em class="sig-param">event</em>, <em class="sig-param">suffix</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base_tool.html#BaseTool.dispatch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base_tool.BaseTool.dispatch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dispatches a mouse event based on the current event state.</p>
+<p>Overrides enable.Interactor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.base_tool.BaseTool.draw">
+<code class="sig-name descname">draw</code><span class="sig-paren">(</span><em class="sig-param">gc</em>, <em class="sig-param">view_bounds=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base_tool.html#BaseTool.draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base_tool.BaseTool.draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws this tool on a graphics context.</p>
+<p>It is assumed that the graphics context has a coordinate transform that
+matches the origin of its component. (For containers, this is just the
+origin; for components, it is the origin of their containers.)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.base_tool.KeySpec">
+<em class="property">class </em><code class="sig-prename descclassname">enable.base_tool.</code><code class="sig-name descname">KeySpec</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">*modifiers</em>, <em class="sig-param">**kwmods</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base_tool.html#KeySpec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base_tool.KeySpec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Creates a key specification to facilitate tools interacting with the
+keyboard.  A tool can declare either a class attribute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">magic_key</span> <span class="o">=</span> <span class="n">KeySpec</span><span class="p">(</span><span class="s2">&quot;Right&quot;</span><span class="p">,</span> <span class="s2">&quot;control&quot;</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;shift&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>or a trait:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">magic_key</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">KeySpec</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Right&quot;</span><span class="p">,</span> <span class="s2">&quot;control&quot;</span><span class="p">),</span>
+                     <span class="n">kw</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ignore&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;shift&#39;</span><span class="p">]})</span>
+</pre></div>
+</div>
+<p>and then check to see if the key was pressed by calling:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">magic_key</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    <span class="c1"># do stuff...</span>
+</pre></div>
+</div>
+<p>The names of the keys come from Enable, so both examples above
+are specifying the user pressing Ctrl + Right_arrow with Alt not pressed
+and Shift either pressed or not.</p>
+<dl class="method">
+<dt id="enable.base_tool.KeySpec.from_string">
+<em class="property">classmethod </em><code class="sig-name descname">from_string</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base_tool.html#KeySpec.from_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base_tool.KeySpec.from_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a KeySpec from a string joined by ‘+’ characters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.base_tool.KeySpec.match">
+<code class="sig-name descname">match</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/base_tool.html#KeySpec.match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.base_tool.KeySpec.match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if the given Enable key_pressed event matches this key
+specification.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.base.html"
+                        title="previous chapter">enable.base module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.canvas.html"
+                        title="next chapter">enable.canvas module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.base_tool.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

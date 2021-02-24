@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.savage.svg.backends.kiva.renderer &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../../../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../../../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../../../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../../../../../index.html" >
+    <link rel="up" title="Module code" href="../../../../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../../../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../../../../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.savage.svg.backends.kiva.renderer</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">pi</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">enable.compiled_path</span> <span class="k">import</span> <span class="n">CompiledPath</span> <span class="k">as</span> <span class="n">KivaCompiledPath</span>
+<span class="kn">from</span> <span class="nn">kiva</span> <span class="k">import</span> <span class="n">affine</span><span class="p">,</span> <span class="n">constants</span><span class="p">,</span> <span class="n">fonttools</span>
+<span class="kn">from</span> <span class="nn">kiva.api</span> <span class="k">import</span> <span class="n">Font</span>
+
+<span class="kn">from</span> <span class="nn">enable.savage.svg</span> <span class="k">import</span> <span class="n">svg_extras</span>
+<span class="kn">from</span> <span class="nn">enable.savage.svg.backends.null.null_renderer</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">NullRenderer</span><span class="p">,</span>
+    <span class="n">AbstractGradientBrush</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Get the Canvas class for drawing on...</span>
+
+
+<span class="k">def</span> <span class="nf">_GetCurrentPoint</span><span class="p">(</span><span class="n">gc</span><span class="p">):</span>
+    <span class="n">total_vertices</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">total_vertices</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">total_vertices</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">gc</span><span class="o">.</span><span class="n">vertex</span><span class="p">(</span><span class="n">total_vertices</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="CompiledPath"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.CompiledPath">[docs]</a><span class="k">class</span> <span class="nc">CompiledPath</span><span class="p">(</span><span class="n">KivaCompiledPath</span><span class="p">):</span>
+
+    <span class="n">AddPath</span> <span class="o">=</span> <span class="n">KivaCompiledPath</span><span class="o">.</span><span class="n">add_path</span>
+    <span class="n">AddRectangle</span> <span class="o">=</span> <span class="n">KivaCompiledPath</span><span class="o">.</span><span class="n">rect</span>
+    <span class="n">MoveToPoint</span> <span class="o">=</span> <span class="n">KivaCompiledPath</span><span class="o">.</span><span class="n">move_to</span>
+    <span class="n">AddLineToPoint</span> <span class="o">=</span> <span class="n">KivaCompiledPath</span><span class="o">.</span><span class="n">line_to</span>
+    <span class="n">CloseSubpath</span> <span class="o">=</span> <span class="n">KivaCompiledPath</span><span class="o">.</span><span class="n">close_path</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">KivaCompiledPath</span><span class="p">,</span> <span class="s2">&quot;get_current_point&quot;</span><span class="p">):</span>
+        <span class="n">GetCurrentPoint</span> <span class="o">=</span> <span class="n">KivaCompiledPath</span><span class="o">.</span><span class="n">get_current_point</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">GetCurrentPoint</span> <span class="o">=</span> <span class="n">_GetCurrentPoint</span>
+    <span class="n">AddQuadCurveToPoint</span> <span class="o">=</span> <span class="n">KivaCompiledPath</span><span class="o">.</span><span class="n">quad_curve_to</span>
+
+<div class="viewcode-block" id="CompiledPath.AddCurveToPoint"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.CompiledPath.AddCurveToPoint">[docs]</a>    <span class="k">def</span> <span class="nf">AddCurveToPoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctrl1</span><span class="p">,</span> <span class="n">ctrl2</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">curve_to</span><span class="p">(</span>
+            <span class="n">ctrl1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ctrl1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">ctrl2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ctrl2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">endpoint</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">endpoint</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CompiledPath.AddEllipticalArcTo"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.CompiledPath.AddEllipticalArcTo">[docs]</a>    <span class="k">def</span> <span class="nf">AddEllipticalArcTo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">theta0</span><span class="p">,</span> <span class="n">dtheta</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">arc</span> <span class="o">=</span> <span class="n">svg_extras</span><span class="o">.</span><span class="n">bezier_arc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span><span class="p">,</span> <span class="n">theta0</span><span class="p">,</span> <span class="n">dtheta</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">,</span> <span class="n">x4</span><span class="p">,</span> <span class="n">y4</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">arc</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">curve_to</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">,</span> <span class="n">x4</span><span class="p">,</span> <span class="n">y4</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CompiledPath.elliptical_arc_to"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.CompiledPath.elliptical_arc_to">[docs]</a>    <span class="k">def</span> <span class="nf">elliptical_arc_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">ry</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">large_arc_flag</span><span class="p">,</span> <span class="n">sweep_flag</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span>
+                          <span class="n">y2</span><span class="p">):</span>
+        <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetCurrentPoint</span><span class="p">()</span>
+        <span class="n">arcs</span> <span class="o">=</span> <span class="n">svg_extras</span><span class="o">.</span><span class="n">elliptical_arc_to</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">ry</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">large_arc_flag</span><span class="p">,</span> <span class="n">sweep_flag</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">arc</span> <span class="ow">in</span> <span class="n">arcs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">curve_to</span><span class="p">(</span><span class="o">*</span><span class="n">arc</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CompiledPath.AddCircle"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.CompiledPath.AddCircle">[docs]</a>    <span class="k">def</span> <span class="nf">AddCircle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CompiledPath.AddEllipse"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.CompiledPath.AddEllipse">[docs]</a>    <span class="k">def</span> <span class="nf">AddEllipse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">ry</span><span class="p">):</span>
+        <span class="n">arc</span> <span class="o">=</span> <span class="n">svg_extras</span><span class="o">.</span><span class="n">bezier_arc</span><span class="p">(</span><span class="n">cx</span> <span class="o">-</span> <span class="n">rx</span><span class="p">,</span> <span class="n">cy</span> <span class="o">-</span> <span class="n">ry</span><span class="p">,</span> <span class="n">cx</span> <span class="o">+</span> <span class="n">rx</span><span class="p">,</span> <span class="n">cy</span> <span class="o">+</span> <span class="n">ry</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">,</span> <span class="n">x4</span><span class="p">,</span> <span class="n">y4</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">arc</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">curve_to</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">,</span> <span class="n">x4</span><span class="p">,</span> <span class="n">y4</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CompiledPath.AddRoundedRectangleEx"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.CompiledPath.AddRoundedRectangleEx">[docs]</a>    <span class="k">def</span> <span class="nf">AddRoundedRectangleEx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">ry</span><span class="p">):</span>
+        <span class="c1"># origin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">rx</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">w</span> <span class="o">-</span> <span class="n">rx</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="c1"># top right</span>
+        <span class="n">cx</span> <span class="o">=</span> <span class="n">rx</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="n">cy</span> <span class="o">=</span> <span class="n">ry</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">AddEllipticalArcTo</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">w</span> <span class="o">-</span> <span class="n">cx</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="mi">270</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">AddLineToPoint</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span> <span class="o">-</span> <span class="n">ry</span><span class="p">)</span>
+        <span class="c1"># top left</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">AddEllipticalArcTo</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">w</span> <span class="o">-</span> <span class="n">cx</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span> <span class="o">-</span> <span class="n">cy</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">rx</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span><span class="p">)</span>
+        <span class="c1"># bottom left</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">AddEllipticalArcTo</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span> <span class="o">-</span> <span class="n">cy</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">ry</span><span class="p">)</span>
+        <span class="c1"># bottom right</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">AddEllipticalArcTo</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_path</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="Pen"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Pen">[docs]</a><span class="k">class</span> <span class="nc">Pen</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="c1"># fixme: what format is the color passed in? int or float</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cap</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">CAP_BUTT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">join</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">JOIN_MITER</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dasharray</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dashoffset</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+<div class="viewcode-block" id="Pen.SetCap"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Pen.SetCap">[docs]</a>    <span class="k">def</span> <span class="nf">SetCap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cap</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cap</span> <span class="o">=</span> <span class="n">cap</span></div>
+
+<div class="viewcode-block" id="Pen.SetJoin"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Pen.SetJoin">[docs]</a>    <span class="k">def</span> <span class="nf">SetJoin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">join</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">join</span> <span class="o">=</span> <span class="n">join</span></div>
+
+<div class="viewcode-block" id="Pen.SetWidth"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Pen.SetWidth">[docs]</a>    <span class="k">def</span> <span class="nf">SetWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span></div>
+
+<div class="viewcode-block" id="Pen.SetDash"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Pen.SetDash">[docs]</a>    <span class="k">def</span> <span class="nf">SetDash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dasharray</span><span class="p">,</span> <span class="n">dashoffset</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dasharray</span> <span class="o">=</span> <span class="n">dasharray</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dashoffset</span> <span class="o">=</span> <span class="n">dashoffset</span></div>
+
+<div class="viewcode-block" id="Pen.set_on_gc"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Pen.set_on_gc">[docs]</a>    <span class="k">def</span> <span class="nf">set_on_gc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the appropriate properties on the GraphicsContext.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># fixme: Should the pen affect text as well?</span>
+        <span class="c1"># fixme: How about line style, thickness, etc.</span>
+        <span class="c1"># translate from 0-255 to 0-1 values.</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">x</span> <span class="o">/</span> <span class="mf">255.0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">])</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_line_join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">join</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_line_cap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cap</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dasharray</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_line_dash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dasharray</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dashoffset</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ColorBrush"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.ColorBrush">[docs]</a><span class="k">class</span> <span class="nc">ColorBrush</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="c1"># fixme: what format is the color passed in? int or float</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="c1"># fixme: This was needed for a font setting in document.</span>
+        <span class="c1">#        Fix this and remove.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Colour</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;ColorBrush(</span><span class="si">%r</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">,)</span>
+
+<div class="viewcode-block" id="ColorBrush.IsOk"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.ColorBrush.IsOk">[docs]</a>    <span class="k">def</span> <span class="nf">IsOk</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ColorBrush.set_on_gc"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.ColorBrush.set_on_gc">[docs]</a>    <span class="k">def</span> <span class="nf">set_on_gc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the appropriate properties on the GraphicsContext.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># translate from 0-255 to 0-1 values.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">x</span> <span class="o">/</span> <span class="mf">255.0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">)])</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="LinearGradientBrush"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.LinearGradientBrush">[docs]</a><span class="k">class</span> <span class="nc">LinearGradientBrush</span><span class="p">(</span><span class="n">AbstractGradientBrush</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A Brush representing a linear gradient.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">stops</span><span class="p">,</span> <span class="n">spreadMethod</span><span class="o">=</span><span class="s2">&quot;pad&quot;</span><span class="p">,</span>
+                 <span class="n">transforms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;userSpaceOnUse&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x1</span> <span class="o">=</span> <span class="n">x1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y1</span> <span class="o">=</span> <span class="n">y1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x2</span> <span class="o">=</span> <span class="n">x2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y2</span> <span class="o">=</span> <span class="n">y2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stops</span> <span class="o">=</span> <span class="n">stops</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spreadMethod</span> <span class="o">=</span> <span class="n">spreadMethod</span>
+        <span class="k">if</span> <span class="n">transforms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">transforms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">transforms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;LinearGradientBrush(</span><span class="si">%r</span><span class="s2">,</span><span class="si">%r</span><span class="s2">, </span><span class="si">%r</span><span class="s2">,</span><span class="si">%r</span><span class="s2">, </span><span class="si">%r</span><span class="s2">, spreadMethod=</span><span class="si">%r</span><span class="s2">, &quot;</span>
+            <span class="s2">&quot;transforms=</span><span class="si">%r</span><span class="s2">, units=</span><span class="si">%r</span><span class="s2">)&quot;</span>
+            <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">x1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">y1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">x2</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">y2</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stops</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">spreadMethod</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="LinearGradientBrush.set_on_gc"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.LinearGradientBrush.set_on_gc">[docs]</a>    <span class="k">def</span> <span class="nf">set_on_gc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="c1"># Apply transforms</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">func</span><span class="p">,</span> <span class="n">f_args</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f_args</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                    <span class="n">func</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="o">*</span><span class="n">f_args</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">func</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">f_args</span><span class="p">)</span>
+
+        <span class="n">x1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x1</span>
+        <span class="n">x2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x2</span>
+        <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y1</span>
+        <span class="n">y2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y2</span>
+
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadMethod</span> <span class="o">!=</span> <span class="s2">&quot;pad&quot;</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;spreadMethod </span><span class="si">%r</span><span class="s2"> is not supported. Using &#39;pad&#39;&quot;</span>
+                    <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadMethod</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">bbox</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">clip_to_rect</span><span class="p">(</span><span class="o">*</span><span class="n">bbox</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">==</span> <span class="s2">&quot;objectBoundingBox&quot;</span> <span class="ow">and</span> <span class="n">bbox</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">x1</span> <span class="o">=</span> <span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">x1</span>
+                <span class="n">y1</span> <span class="o">=</span> <span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">y1</span>
+                <span class="n">x2</span> <span class="o">=</span> <span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">x2</span>
+                <span class="n">y2</span> <span class="o">=</span> <span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">y2</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">bbox_transform</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">bbox</span><span class="p">)</span>
+
+        <span class="n">stops</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stops</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">linear_gradient</span><span class="p">(</span>
+            <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">stops</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadMethod</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="RadialGradientBrush"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.RadialGradientBrush">[docs]</a><span class="k">class</span> <span class="nc">RadialGradientBrush</span><span class="p">(</span><span class="n">AbstractGradientBrush</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A Brush representing a radial gradient.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">stops</span><span class="p">,</span> <span class="n">fx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spreadMethod</span><span class="o">=</span><span class="s2">&quot;pad&quot;</span><span class="p">,</span>
+                 <span class="n">transforms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;userSpaceOnUse&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cx</span> <span class="o">=</span> <span class="n">cx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cy</span> <span class="o">=</span> <span class="n">cy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stops</span> <span class="o">=</span> <span class="n">stops</span>
+        <span class="k">if</span> <span class="n">fx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fx</span> <span class="o">=</span> <span class="n">fx</span>
+        <span class="k">if</span> <span class="n">fy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fy</span> <span class="o">=</span> <span class="n">fy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spreadMethod</span> <span class="o">=</span> <span class="n">spreadMethod</span>
+        <span class="k">if</span> <span class="n">transforms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">transforms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">transforms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;RadialGradientBrush(</span><span class="si">%r</span><span class="s2">,</span><span class="si">%r</span><span class="s2">, </span><span class="si">%r</span><span class="s2">, </span><span class="si">%r</span><span class="s2">, fx=</span><span class="si">%r</span><span class="s2">,fy=</span><span class="si">%r</span><span class="s2">, &quot;</span>
+            <span class="s2">&quot;spreadMethod=</span><span class="si">%r</span><span class="s2">, transforms=</span><span class="si">%r</span><span class="s2">, units=</span><span class="si">%r</span><span class="s2">)&quot;</span>
+            <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cx</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cy</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stops</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fx</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fy</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">spreadMethod</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="RadialGradientBrush.set_on_gc"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.RadialGradientBrush.set_on_gc">[docs]</a>    <span class="k">def</span> <span class="nf">set_on_gc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">func</span><span class="p">,</span> <span class="n">f_args</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f_args</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                    <span class="n">func</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="o">*</span><span class="n">f_args</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">func</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">f_args</span><span class="p">)</span>
+
+        <span class="n">cx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cx</span>
+        <span class="n">cy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cy</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+        <span class="n">fx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fx</span>
+        <span class="n">fy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fy</span>
+
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadMethod</span> <span class="o">!=</span> <span class="s2">&quot;pad&quot;</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;spreadMethod </span><span class="si">%r</span><span class="s2"> is not supported. Using &#39;pad&#39;&quot;</span>
+                    <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadMethod</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">bbox</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">clip_to_rect</span><span class="p">(</span><span class="o">*</span><span class="n">bbox</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">==</span> <span class="s2">&quot;objectBoundingBox&quot;</span> <span class="ow">and</span> <span class="n">bbox</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cx</span> <span class="o">=</span> <span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">cx</span>
+                <span class="n">cy</span> <span class="o">=</span> <span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">cy</span>
+                <span class="n">fx</span> <span class="o">=</span> <span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">fx</span>
+                <span class="n">fy</span> <span class="o">=</span> <span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">fy</span>
+                <span class="n">r</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span>
+                <span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">bbox_transform</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">bbox</span><span class="p">)</span>
+
+        <span class="n">stops</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stops</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">radial_gradient</span><span class="p">(</span>
+            <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">fx</span><span class="p">,</span> <span class="n">fy</span><span class="p">,</span> <span class="n">stops</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadMethod</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="font_style"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.font_style">[docs]</a><span class="k">def</span> <span class="nf">font_style</span><span class="p">(</span><span class="n">font</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Return a string for the font style of a given font.</span>
+
+<span class="sd">        fixme: Shouldn&#39;t the backends handle this?</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">font</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;italic&quot;</span> <span class="ow">and</span> <span class="n">font</span><span class="o">.</span><span class="n">weight</span> <span class="o">==</span> <span class="s2">&quot;bold&quot;</span><span class="p">:</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;bold italic&quot;</span>
+    <span class="k">elif</span> <span class="n">font</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;italic&quot;</span><span class="p">:</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;italic&quot;</span>
+    <span class="k">elif</span> <span class="n">font</span><span class="o">.</span><span class="n">weight</span> <span class="o">==</span> <span class="s2">&quot;bold&quot;</span><span class="p">:</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;bold&quot;</span>
+    <span class="k">elif</span> <span class="n">font</span><span class="o">.</span><span class="n">style</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;regular&quot;</span><span class="p">,</span> <span class="s2">&quot;normal&quot;</span><span class="p">]:</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;regular&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s2">&quot;Font style &#39;</span><span class="si">%s</span><span class="s2">&#39; and weight: &#39;</span><span class="si">%s</span><span class="s2">&#39; not known.&quot;</span>
+            <span class="s2">&quot; Using style=&#39;regular&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">font</span><span class="o">.</span><span class="n">style</span><span class="p">,</span> <span class="n">font</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;regular&quot;</span>
+
+    <span class="k">return</span> <span class="n">style</span></div>
+
+
+<div class="viewcode-block" id="Renderer"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer">[docs]</a><span class="k">class</span> <span class="nc">Renderer</span><span class="p">(</span><span class="n">NullRenderer</span><span class="p">):</span>
+    <span class="c1"># fimxe: Shouldn&#39;t this just be the GraphicsContext?</span>
+
+    <span class="n">NullBrush</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">NullGraphicsBrush</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">NullPen</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">TransparentPen</span> <span class="o">=</span> <span class="n">Pen</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+
+    <span class="n">caps</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;butt&quot;</span><span class="p">:</span> <span class="n">constants</span><span class="o">.</span><span class="n">CAP_BUTT</span><span class="p">,</span>
+        <span class="s2">&quot;round&quot;</span><span class="p">:</span> <span class="n">constants</span><span class="o">.</span><span class="n">CAP_ROUND</span><span class="p">,</span>
+        <span class="s2">&quot;square&quot;</span><span class="p">:</span> <span class="n">constants</span><span class="o">.</span><span class="n">CAP_SQUARE</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">joins</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;miter&quot;</span><span class="p">:</span> <span class="n">constants</span><span class="o">.</span><span class="n">JOIN_MITER</span><span class="p">,</span>
+        <span class="s2">&quot;round&quot;</span><span class="p">:</span> <span class="n">constants</span><span class="o">.</span><span class="n">JOIN_ROUND</span><span class="p">,</span>
+        <span class="s2">&quot;bevel&quot;</span><span class="p">:</span> <span class="n">constants</span><span class="o">.</span><span class="n">JOIN_BEVEL</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">fill_rules</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;nonzero&quot;</span><span class="p">:</span> <span class="n">constants</span><span class="o">.</span><span class="n">FILL</span><span class="p">,</span> <span class="s2">&quot;evenodd&quot;</span><span class="p">:</span> <span class="n">constants</span><span class="o">.</span><span class="n">EOF_FILL</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="Renderer.concatTransform"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.concatTransform">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">concatTransform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">matrix</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">gc</span><span class="o">.</span><span class="n">concat_ctm</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Renderer.createAffineMatrix"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.createAffineMatrix">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">createAffineMatrix</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="c1"># FIXME: should we create a 6x1 or 3x3 matrix???</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Renderer.createBrush"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.createBrush">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">createBrush</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">color_tuple</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ColorBrush</span><span class="p">(</span><span class="n">color_tuple</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Renderer.createNativePen"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.createNativePen">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">createNativePen</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pen</span><span class="p">):</span>
+        <span class="c1"># fixme: Not really sure what to do here...</span>
+        <span class="k">return</span> <span class="n">pen</span></div>
+
+<div class="viewcode-block" id="Renderer.createPen"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.createPen">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">createPen</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">color_tuple</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Pen</span><span class="p">(</span><span class="n">color_tuple</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Renderer.createLinearGradientBrush"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.createLinearGradientBrush">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">createLinearGradientBrush</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">stops</span><span class="p">,</span>
+                                  <span class="n">spreadMethod</span><span class="o">=</span><span class="s2">&quot;pad&quot;</span><span class="p">,</span> <span class="n">transforms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">units</span><span class="o">=</span><span class="s2">&quot;userSpaceOnUse&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">LinearGradientBrush</span><span class="p">(</span>
+            <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">stops</span><span class="p">,</span> <span class="n">spreadMethod</span><span class="p">,</span> <span class="n">transforms</span><span class="p">,</span> <span class="n">units</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Renderer.createRadialGradientBrush"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.createRadialGradientBrush">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">createRadialGradientBrush</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">stops</span><span class="p">,</span> <span class="n">fx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">spreadMethod</span><span class="o">=</span><span class="s2">&quot;pad&quot;</span><span class="p">,</span> <span class="n">transforms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">units</span><span class="o">=</span><span class="s2">&quot;userSpaceOnUse&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">RadialGradientBrush</span><span class="p">(</span>
+            <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">stops</span><span class="p">,</span> <span class="n">fx</span><span class="p">,</span> <span class="n">fy</span><span class="p">,</span> <span class="n">spreadMethod</span><span class="p">,</span> <span class="n">transforms</span><span class="p">,</span> <span class="n">units</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Renderer.getCurrentPoint"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.getCurrentPoint">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">getCurrentPoint</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">path</span><span class="o">.</span><span class="n">GetCurrentPoint</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Renderer.getFont"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.getFont">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">getFont</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">font_name</span><span class="o">=</span><span class="s2">&quot;Arial&quot;</span><span class="p">):</span>
+        <span class="n">kiva_style</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">NORMAL</span>
+        <span class="k">if</span> <span class="s2">&quot;-&quot;</span> <span class="ow">in</span> <span class="n">font_name</span><span class="p">:</span>
+            <span class="n">font_name</span><span class="p">,</span> <span class="n">style</span> <span class="o">=</span> <span class="n">font_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">style</span> <span class="o">=</span> <span class="n">style</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s2">&quot;bold&quot;</span> <span class="ow">in</span> <span class="n">style</span><span class="p">:</span>
+                <span class="n">kiva_style</span> <span class="o">+=</span> <span class="n">constants</span><span class="o">.</span><span class="n">BOLD</span>
+            <span class="k">if</span> <span class="s2">&quot;italic&quot;</span> <span class="ow">in</span> <span class="n">style</span><span class="p">:</span>
+                <span class="n">kiva_style</span> <span class="o">+=</span> <span class="n">constants</span><span class="o">.</span><span class="n">ITALIC</span>
+        <span class="k">return</span> <span class="n">Font</span><span class="p">(</span><span class="n">font_name</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">kiva_style</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Renderer.makeMatrix"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.makeMatrix">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">makeMatrix</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Renderer.makePath"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.makePath">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">makePath</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">CompiledPath</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Renderer.popState"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.popState">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">popState</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gc</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">gc</span><span class="o">.</span><span class="n">restore_state</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Renderer.pushState"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.pushState">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">pushState</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gc</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">gc</span><span class="o">.</span><span class="n">save_state</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Renderer.setFontSize"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.setFontSize">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">setFontSize</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">font</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="c1"># Agg expects only integer fonts</span>
+        <span class="n">font</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">font</span></div>
+
+<div class="viewcode-block" id="Renderer.setFontStyle"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.setFontStyle">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">setFontStyle</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">font</span><span class="p">,</span> <span class="n">style</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">style</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">style</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fonttools</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">font_styles</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;font style &quot;</span><span class="si">%s</span><span class="s1">&quot; not supported&#39;</span> <span class="o">%</span> <span class="n">style</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">font</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="n">fonttools</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">font_styles</span><span class="p">[</span><span class="n">style</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">font</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="n">style</span></div>
+
+<div class="viewcode-block" id="Renderer.setFontWeight"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.setFontWeight">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">setFontWeight</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">font</span><span class="p">,</span> <span class="n">weight</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">weight</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fonttools</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">font_weights</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;font weight &quot;</span><span class="si">%s</span><span class="s1">&quot; not supported&#39;</span> <span class="o">%</span> <span class="n">weight</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">font</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">fonttools</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">font_weights</span><span class="p">[</span><span class="n">weight</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">font</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span></div>
+
+<div class="viewcode-block" id="Renderer.setFont"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.setFont">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">setFont</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">font</span><span class="p">,</span> <span class="n">brush</span><span class="p">):</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">c</span> <span class="o">/</span> <span class="mf">255.0</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">brush</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))])</span>
+
+        <span class="c1"># text color is controlled by stroke instead of fill color in kiva.</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># fixme: The Mac backend doesn&#39;t accept style/width as non-integers</span>
+            <span class="c1">#        in set_font, but does for select_font...</span>
+            <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">:</span>
+                <span class="n">style</span> <span class="o">=</span> <span class="n">font_style</span><span class="p">(</span><span class="n">font</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">select_font</span><span class="p">(</span><span class="n">font</span><span class="o">.</span><span class="n">face_name</span><span class="p">,</span> <span class="n">font</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_font</span><span class="p">(</span><span class="n">font</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;failed to find set &#39;</span><span class="si">%s</span><span class="s2">&#39;.  Using Arial&quot;</span> <span class="o">%</span> <span class="n">font</span><span class="o">.</span><span class="n">face_name</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">:</span>
+                <span class="n">style</span> <span class="o">=</span> <span class="n">font_style</span><span class="p">(</span><span class="n">font</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">select_font</span><span class="p">(</span><span class="s2">&quot;Arial&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">style</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_font</span><span class="p">(</span><span class="n">font</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Renderer.setBrush"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.setBrush">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">setBrush</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">brush</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">brush</span> <span class="ow">is</span> <span class="n">Renderer</span><span class="o">.</span><span class="n">NullBrush</span><span class="p">:</span>
+            <span class="c1"># fixme: What do I do in this case?  Seem</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">brush</span><span class="o">.</span><span class="n">set_on_gc</span><span class="p">(</span><span class="n">gc</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Renderer.setPen"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.setPen">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">setPen</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">pen</span><span class="p">):</span>
+        <span class="n">pen</span><span class="o">.</span><span class="n">set_on_gc</span><span class="p">(</span><span class="n">gc</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Renderer.setPenDash"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.setPenDash">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">setPenDash</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pen</span><span class="p">,</span> <span class="n">dasharray</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+        <span class="n">pen</span><span class="o">.</span><span class="n">SetDash</span><span class="p">(</span><span class="n">dasharray</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Renderer.strokePath"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.strokePath">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">strokePath</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="c1"># fixme: Do we need to clear the path first?</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">add_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Renderer.fillPath"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.fillPath">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">fillPath</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+        <span class="c1"># fixme: Do we need to clear the path first?</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">add_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gc</span><span class="o">.</span><span class="n">draw_path</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Renderer.gradientPath"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.gradientPath">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">gradientPath</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">brush</span><span class="p">):</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">save_state</span><span class="p">()</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">add_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="n">gc</span><span class="o">.</span><span class="n">clip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;get_bounding_box&quot;</span><span class="p">):</span>
+            <span class="n">bbox</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">get_bounding_box</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bbox</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">total_vertices</span><span class="p">()):</span>
+                <span class="n">vertex</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">vertex</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vertex</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">vertex</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">vertex</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">vertex</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">brush</span><span class="o">.</span><span class="n">set_on_gc</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="n">bbox</span><span class="p">)</span>
+
+        <span class="n">gc</span><span class="o">.</span><span class="n">close_path</span><span class="p">()</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">fill_path</span><span class="p">()</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">restore_state</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Renderer.clipPath"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.clipPath">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">clipPath</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">add_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gc</span><span class="o">.</span><span class="n">clip</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Renderer.translate"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.translate">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Renderer.rotate"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.rotate">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">gc</span><span class="o">.</span><span class="n">rotate_ctm</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Renderer.scale"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.scale">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">gc</span><span class="o">.</span><span class="n">scale_ctm</span><span class="p">(</span><span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Renderer.GetTextExtent"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.GetTextExtent">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">GetTextExtent</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_text_extent</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span></div>
+
+<div class="viewcode-block" id="Renderer.DrawText"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.DrawText">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">DrawText</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">brush</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s2">&quot;start&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draw text at the given x,y position with the color of the</span>
+<span class="sd">            given brush.</span>
+
+<span class="sd">            fixme: Handle gradients...?</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">save_state</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">c</span> <span class="o">/</span> <span class="mf">255.0</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">brush</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))]</span>
+            <span class="p">)</span>
+            <span class="c1"># Setting stroke instead of fill color because that is</span>
+            <span class="c1"># what kiva uses.</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+
+            <span class="c1"># PDF (our API) has the origin in the lower left.</span>
+            <span class="c1"># SVG (what we are rendering) has the origin in the upper right.</span>
+            <span class="c1"># The ctm (our API) has been set up with a scaling and translation</span>
+            <span class="c1"># to draw as if the upper right is the origin and positive is down</span>
+            <span class="c1"># so that the SVG will render correctly.  This works great accept</span>
+            <span class="c1"># for text which will render up side down.  To fix this, we set the</span>
+            <span class="c1"># text transform matrix to have y going up so the text is rendered</span>
+            <span class="c1"># upright.  But since, +y is now *up*, we need to draw at -y.</span>
+
+            <span class="k">if</span> <span class="n">anchor</span> <span class="o">!=</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span>
+                <span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">tw</span><span class="p">,</span> <span class="n">th</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_text_extent</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">anchor</span> <span class="o">==</span> <span class="s2">&quot;middle&quot;</span><span class="p">:</span>
+                    <span class="n">x</span> <span class="o">-=</span> <span class="n">tw</span> <span class="o">/</span> <span class="mf">2.0</span>
+                <span class="k">elif</span> <span class="n">anchor</span> <span class="o">==</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span>
+                    <span class="n">x</span> <span class="o">-=</span> <span class="n">tw</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">scale_ctm</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">show_text_at_point</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">restore_state</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Renderer.DrawImage"><a class="viewcode-back" href="../../../../../../api/enable.savage.svg.backends.kiva.renderer.html#enable.savage.svg.backends.kiva.renderer.Renderer.DrawImage">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">DrawImage</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">save_state</span><span class="p">()</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">height</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">scale_ctm</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">draw_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">restore_state</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../../../index.html">
+              <img class="logo" src="../../../../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

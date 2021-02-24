@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.drawing.drag_box &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../../index.html" >
+    <link rel="up" title="Module code" href="../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.drawing.drag_box</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="sd">&quot;&quot;&quot;A drag drawn box</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Standard library imports.</span>
+
+<span class="c1"># Major packages.</span>
+
+<span class="c1"># Enthought library imports</span>
+<span class="kn">from</span> <span class="nn">enable.primitives.api</span> <span class="k">import</span> <span class="n">Box</span>
+<span class="kn">from</span> <span class="nn">enable.enable_traits</span> <span class="k">import</span> <span class="n">Pointer</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Trait</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="c1"># Application specific imports.</span>
+
+<span class="c1"># Local imports.</span>
+
+<span class="c1">##############################################################################</span>
+<span class="c1"># class &#39;DragBox&#39;</span>
+<span class="c1">##############################################################################</span>
+
+
+<div class="viewcode-block" id="DragBox"><a class="viewcode-back" href="../../../api/enable.drawing.drag_box.html#enable.drawing.drag_box.DragBox">[docs]</a><span class="k">class</span> <span class="nc">DragBox</span><span class="p">(</span><span class="n">Box</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A drag drawn box</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">##########################################################################</span>
+    <span class="c1"># Traits</span>
+    <span class="c1">##########################################################################</span>
+
+    <span class="c1"># &#39;DragBox&#39; interface ############################################</span>
+
+    <span class="c1"># Event fired when complete:</span>
+    <span class="n">complete</span> <span class="o">=</span> <span class="n">Event</span>
+
+    <span class="c1"># Constraints on size:</span>
+    <span class="n">x_bounds</span> <span class="o">=</span> <span class="n">Trait</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">(</span><span class="n">Float</span><span class="p">,</span> <span class="n">Float</span><span class="p">))</span>
+    <span class="n">y_bounds</span> <span class="o">=</span> <span class="n">Trait</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">(</span><span class="n">Float</span><span class="p">,</span> <span class="n">Float</span><span class="p">))</span>
+
+    <span class="c1"># Pointers. ####</span>
+
+    <span class="c1"># Pointer for the complete state:</span>
+    <span class="n">complete_pointer</span> <span class="o">=</span> <span class="n">Pointer</span><span class="p">(</span><span class="s2">&quot;cross&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Pointer for the drawing state:</span>
+    <span class="n">drawing_pointer</span> <span class="o">=</span> <span class="n">Pointer</span><span class="p">(</span><span class="s2">&quot;cross&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Pointer for the normal state:</span>
+    <span class="n">normal_pointer</span> <span class="o">=</span> <span class="n">Pointer</span><span class="p">(</span><span class="s2">&quot;cross&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Private traits</span>
+
+    <span class="c1"># Position of the left down:</span>
+    <span class="n">start_x</span> <span class="o">=</span> <span class="n">Float</span>
+    <span class="n">start_y</span> <span class="o">=</span> <span class="n">Float</span>
+
+    <span class="c1">##########################################################################</span>
+    <span class="c1"># &#39;object&#39; interface</span>
+    <span class="c1">##########################################################################</span>
+
+    <span class="c1">##########################################################################</span>
+    <span class="c1"># &#39;Component&#39; interface</span>
+    <span class="c1">##########################################################################</span>
+
+    <span class="c1"># &#39;normal&#39; state ######################################################</span>
+
+<div class="viewcode-block" id="DragBox.normal_left_down"><a class="viewcode-back" href="../../../api/enable.drawing.drag_box.html#enable.drawing.drag_box.DragBox.normal_left_down">[docs]</a>    <span class="k">def</span> <span class="nf">normal_left_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Handle the left button down in the &#39;normal&#39; state. &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_state</span> <span class="o">=</span> <span class="s2">&quot;drawing&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pointer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">drawing_pointer</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_x</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_y</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_bounds</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DragBox.normal_mouse_move"><a class="viewcode-back" href="../../../api/enable.drawing.drag_box.html#enable.drawing.drag_box.DragBox.normal_mouse_move">[docs]</a>    <span class="k">def</span> <span class="nf">normal_mouse_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Handle the mouse moving in the &#39;normal&#39; state. &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pointer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_pointer</span></div>
+
+    <span class="c1"># &#39;drawing&#39; state #####################################################</span>
+
+<div class="viewcode-block" id="DragBox.drawing_mouse_move"><a class="viewcode-back" href="../../../api/enable.drawing.drag_box.html#enable.drawing.drag_box.DragBox.drawing_mouse_move">[docs]</a>    <span class="k">def</span> <span class="nf">drawing_mouse_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Handle the mouse moving in the &#39;drawing&#39; state. &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_bounds</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DragBox.drawing_left_up"><a class="viewcode-back" href="../../../api/enable.drawing.drag_box.html#enable.drawing.drag_box.DragBox.drawing_left_up">[docs]</a>    <span class="k">def</span> <span class="nf">drawing_left_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Handle the left mouse button coming up in the &#39;drawing&#39; state. &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_state</span> <span class="o">=</span> <span class="s2">&quot;complete&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pointer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">complete_pointer</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">complete</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_bounds</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
+    <span class="c1">##########################################################################</span>
+    <span class="c1"># Private interface</span>
+    <span class="c1">##########################################################################</span>
+
+    <span class="k">def</span> <span class="nf">_set_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the bounds based on start_x, start_y, the event position</span>
+<span class="sd">        and any constrants.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_bounds</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_x</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">dx</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">y</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_bounds</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_y</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="n">dy</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

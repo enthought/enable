@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.text_grid &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.text_grid</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">TextGrid is a text grid widget that is meant to be used with Numpy.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Major library imports</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">arange</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">dstack</span><span class="p">,</span> <span class="n">repeat</span><span class="p">,</span> <span class="n">newaxis</span>
+
+<span class="c1"># Enthought library imports</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span> <span class="n">Array</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Property</span><span class="p">,</span> <span class="n">Trait</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">on_trait_change</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">kiva.trait_defs.api</span> <span class="k">import</span> <span class="n">KivaFont</span>
+
+<span class="c1"># Relative imports</span>
+<span class="kn">from</span> <span class="nn">.component</span> <span class="k">import</span> <span class="n">Component</span>
+<span class="kn">from</span> <span class="nn">.colors</span> <span class="k">import</span> <span class="n">black_color_trait</span><span class="p">,</span> <span class="n">ColorTrait</span>
+<span class="kn">from</span> <span class="nn">.enable_traits</span> <span class="k">import</span> <span class="n">LineStyle</span>
+<span class="kn">from</span> <span class="nn">.font_metrics_provider</span> <span class="k">import</span> <span class="n">font_metrics_provider</span>
+
+
+<div class="viewcode-block" id="TextGrid"><a class="viewcode-back" href="../../api/enable.text_grid.html#enable.text_grid.TextGrid">[docs]</a><span class="k">class</span> <span class="nc">TextGrid</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A 2D grid of string values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># A 2D array of strings</span>
+    <span class="n">string_array</span> <span class="o">=</span> <span class="n">Array</span>
+
+    <span class="c1"># The cell size can be set to a tuple (w,h) or to &quot;auto&quot;.</span>
+    <span class="n">cell_size</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Appereance traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># The font to use for the text of the grid</span>
+    <span class="n">font</span> <span class="o">=</span> <span class="n">KivaFont</span><span class="p">(</span><span class="s2">&quot;modern 14&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The color of the text</span>
+    <span class="n">text_color</span> <span class="o">=</span> <span class="n">black_color_trait</span>
+
+    <span class="c1"># The padding around each cell</span>
+    <span class="n">cell_padding</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="c1"># The thickness of the border between cells</span>
+    <span class="n">cell_border_width</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># The color of the border between cells</span>
+    <span class="n">cell_border_color</span> <span class="o">=</span> <span class="n">black_color_trait</span>
+
+    <span class="c1"># The dash style of the border between cells</span>
+    <span class="n">cell_border_style</span> <span class="o">=</span> <span class="n">LineStyle</span><span class="p">(</span><span class="s2">&quot;solid&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Text color of highlighted items</span>
+    <span class="n">highlight_color</span> <span class="o">=</span> <span class="n">ColorTrait</span><span class="p">(</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Cell background color of highlighted items</span>
+    <span class="n">highlight_bgcolor</span> <span class="o">=</span> <span class="n">ColorTrait</span><span class="p">(</span><span class="s2">&quot;lightgray&quot;</span><span class="p">)</span>
+
+    <span class="c1"># A list of tuples of the (i,j) of selected cells</span>
+    <span class="n">selected_cells</span> <span class="o">=</span> <span class="n">List</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Private traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># Are our cached extent values still valid?</span>
+    <span class="n">_cache_valid</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># The maximum width and height of all cells, as a tuple (w,h)</span>
+    <span class="n">_cached_cell_size</span> <span class="o">=</span> <span class="n">Tuple</span>
+
+    <span class="c1"># The maximum (leading, descent) of all the text strings (positive value)</span>
+    <span class="n">_text_offset</span> <span class="o">=</span> <span class="n">Array</span>
+
+    <span class="c1"># An array NxMx2 of the x,y positions of the lower-left coordinates of</span>
+    <span class="c1"># each cell</span>
+    <span class="n">_cached_cell_coords</span> <span class="o">=</span> <span class="n">Array</span>
+
+    <span class="c1"># &quot;auto&quot; or a tuple</span>
+    <span class="n">_cell_size</span> <span class="o">=</span> <span class="n">Trait</span><span class="p">(</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">Any</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Public methods</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwtraits</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Component</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwtraits</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_cells</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># AbstractComponent interface</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_draw_mainlayer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">):</span>
+        <span class="n">text_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_color_</span>
+        <span class="n">highlight_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">highlight_color_</span>
+        <span class="n">highlight_bgcolor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">highlight_bgcolor_</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_padding</span>
+        <span class="n">border_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_border_width</span>
+
+        <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="n">text_color</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="n">text_color</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_font</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_text_position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_actual_cell_size</span><span class="p">()</span>
+            <span class="n">numrows</span><span class="p">,</span> <span class="n">numcols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">string_array</span><span class="o">.</span><span class="n">shape</span>
+
+            <span class="c1"># draw selected backgrounds</span>
+            <span class="c1"># XXX should this be in the background layer?</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string_array</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_cells</span><span class="p">:</span>
+                        <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="n">highlight_bgcolor</span><span class="p">)</span>
+                        <span class="n">ll_x</span><span class="p">,</span> <span class="n">ll_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_cell_coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                        <span class="c1"># render this a bit big, but covered by border</span>
+                        <span class="n">gc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span>
+                            <span class="n">ll_x</span><span class="p">,</span>
+                            <span class="n">ll_y</span><span class="p">,</span>
+                            <span class="n">width</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">padding</span> <span class="o">+</span> <span class="n">border_width</span><span class="p">,</span>
+                            <span class="n">height</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">padding</span> <span class="o">+</span> <span class="n">border_width</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">gc</span><span class="o">.</span><span class="n">fill_path</span><span class="p">()</span>
+                        <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="n">text_color</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_draw_grid_lines</span><span class="p">(</span><span class="n">gc</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string_array</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_cached_cell_coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                        <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_offset</span>
+                        <span class="o">+</span> <span class="n">padding</span>
+                        <span class="o">+</span> <span class="n">border_width</span> <span class="o">/</span> <span class="mf">2.0</span>
+                    <span class="p">)</span>
+
+                    <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_cells</span><span class="p">:</span>
+                        <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="n">highlight_color</span><span class="p">)</span>
+                        <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="n">highlight_color</span><span class="p">)</span>
+                        <span class="n">gc</span><span class="o">.</span><span class="n">set_text_position</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                        <span class="n">gc</span><span class="o">.</span><span class="n">show_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+                        <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="n">text_color</span><span class="p">)</span>
+                        <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="n">text_color</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">gc</span><span class="o">.</span><span class="n">set_text_position</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                        <span class="n">gc</span><span class="o">.</span><span class="n">show_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Private methods</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_draw_grid_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">):</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell_border_color_</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_line_dash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell_border_style_</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell_border_width</span><span class="p">)</span>
+
+        <span class="c1"># Skip the leftmost and bottommost cell coords (since Y axis is</span>
+        <span class="c1"># reversed, the bottommost coord is the last one)</span>
+        <span class="n">x_points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_cell_coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">y_points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_cell_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">x_points</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">y_points</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_compute_cell_sizes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_valid</span><span class="p">:</span>
+            <span class="n">gc</span> <span class="o">=</span> <span class="n">font_metrics_provider</span><span class="p">()</span>
+            <span class="n">max_w</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">max_h</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">min_l</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">min_d</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">string_array</span><span class="o">.</span><span class="n">ravel</span><span class="p">():</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_font</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="p">)</span>
+                <span class="n">l</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_text_extent</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+                <span class="k">if</span> <span class="o">-</span><span class="n">l</span> <span class="o">+</span> <span class="n">w</span> <span class="o">&gt;</span> <span class="n">max_w</span><span class="p">:</span>
+                    <span class="n">max_w</span> <span class="o">=</span> <span class="o">-</span><span class="n">l</span> <span class="o">+</span> <span class="n">w</span>
+                <span class="k">if</span> <span class="o">-</span><span class="n">d</span> <span class="o">+</span> <span class="n">h</span> <span class="o">&gt;</span> <span class="n">max_h</span><span class="p">:</span>
+                    <span class="n">max_h</span> <span class="o">=</span> <span class="o">-</span><span class="n">d</span> <span class="o">+</span> <span class="n">h</span>
+                <span class="k">if</span> <span class="n">l</span> <span class="o">&lt;</span> <span class="n">min_l</span><span class="p">:</span>
+                    <span class="n">min_l</span> <span class="o">=</span> <span class="n">l</span>
+                <span class="k">if</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="n">min_d</span><span class="p">:</span>
+                    <span class="n">min_d</span> <span class="o">=</span> <span class="n">d</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cached_cell_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_w</span><span class="p">,</span> <span class="n">max_h</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_text_offset</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">min_l</span><span class="p">,</span> <span class="o">-</span><span class="n">min_d</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache_valid</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_compute_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">string_array</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string_array</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_actual_cell_size</span><span class="p">()</span>
+        <span class="n">numrows</span><span class="p">,</span> <span class="n">numcols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">string_array</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="n">cell_width</span> <span class="o">=</span> <span class="n">width</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_padding</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_border_width</span>
+        <span class="n">cell_height</span> <span class="o">=</span> <span class="n">height</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_padding</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_border_width</span>
+
+        <span class="n">x_points</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">arange</span><span class="p">(</span><span class="n">numcols</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">cell_width</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_border_width</span> <span class="o">/</span> <span class="mf">2.0</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+        <span class="p">)</span>
+        <span class="n">y_points</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">arange</span><span class="p">(</span><span class="n">numrows</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">cell_height</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_border_width</span> <span class="o">/</span> <span class="mf">2.0</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+        <span class="p">)</span>
+
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">dstack</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="n">repeat</span><span class="p">(</span><span class="n">x_points</span><span class="p">[:,</span> <span class="n">newaxis</span><span class="p">],</span> <span class="n">numrows</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                <span class="n">repeat</span><span class="p">(</span><span class="n">y_points</span><span class="p">[:,</span> <span class="n">newaxis</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">numcols</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># We have to reverse the y-axis (e.g. the 0th row needs to be at the</span>
+        <span class="c1"># highest y-position).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cached_cell_coords</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_update_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">string_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string_array</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">string_array</span><span class="o">.</span><span class="n">shape</span>
+            <span class="n">margin</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_padding</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_border_width</span>
+            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_actual_cell_size</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">cols</span> <span class="o">*</span> <span class="p">(</span><span class="n">width</span> <span class="o">+</span> <span class="n">margin</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_border_width</span><span class="p">,</span>
+                <span class="n">rows</span> <span class="o">*</span> <span class="p">(</span><span class="n">height</span> <span class="o">+</span> <span class="n">margin</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_border_width</span><span class="p">,</span>
+            <span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_get_actual_cell_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_valid</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_compute_cell_sizes</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_cell_size</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_valid</span><span class="p">:</span>
+                <span class="c1"># actually computing the text offset</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_compute_cell_sizes</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Event handlers</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="TextGrid.normal_left_down"><a class="viewcode-back" href="../../api/enable.text_grid.html#enable.text_grid.TextGrid.normal_left_down">[docs]</a>    <span class="k">def</span> <span class="nf">normal_left_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_cells</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_index_for_xy</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_index_for_xy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_actual_cell_size</span><span class="p">())</span>
+            <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_padding</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_border_width</span>
+        <span class="p">)</span>
+
+        <span class="n">numrows</span><span class="p">,</span> <span class="n">numcols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">string_array</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_left</span><span class="p">)</span> <span class="o">/</span> <span class="n">width</span><span class="p">)</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">numrows</span> <span class="o">-</span> <span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_bottom</span><span class="p">)</span> <span class="o">/</span> <span class="n">height</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">string_array</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Trait events, property setters and getters</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_string_array_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache_valid</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_compute_cell_sizes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_positions</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_bounds</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TextGrid.cell_properties_changed"><a class="viewcode-back" href="../../api/enable.text_grid.html#enable.text_grid.TextGrid.cell_properties_changed">[docs]</a>    <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s2">&quot;cell_border_width,cell_padding&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">cell_properties_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_positions</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_bounds</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_cell_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newsize</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span> <span class="o">=</span> <span class="n">newsize</span>
+        <span class="k">if</span> <span class="n">newsize</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_compute_cell_sizes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_positions</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_bounds</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_cell_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

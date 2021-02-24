@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.compass &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.compass</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">array</span><span class="p">,</span> <span class="n">pi</span>
+
+<span class="c1"># Enthought library imports</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Int</span>
+
+<span class="c1"># Local, relative imports</span>
+<span class="kn">from</span> <span class="nn">.component</span> <span class="k">import</span> <span class="n">Component</span>
+<span class="kn">from</span> <span class="nn">.colors</span> <span class="k">import</span> <span class="n">ColorTrait</span>
+
+
+<div class="viewcode-block" id="Compass"><a class="viewcode-back" href="../../api/enable.compass.html#enable.compass.Compass">[docs]</a><span class="k">class</span> <span class="nc">Compass</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A compass with triangles at the 4 cardinal directions.  The center</span>
+<span class="sd">    of the compass of triangles is the center of the widget.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Which triangle was clicked</span>
+    <span class="n">clicked</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Whether or not to allow clicks on the center</span>
+    <span class="n">enable_center</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Shape and layout</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># The length of the triangle from tip to base</span>
+    <span class="n">triangle_length</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+
+    <span class="c1"># The width of the base of the triangle</span>
+    <span class="n">triangle_width</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+
+    <span class="c1"># Overall scaling factor for the triangle.  Note that this also scales</span>
+    <span class="c1"># the outline width.</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="c1"># The distance from the center of the widget to the center of each triangle</span>
+    <span class="c1"># (halfway along its length, not the orthocenter).</span>
+    <span class="n">spacing</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Appearance Traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># The line color of the triangles</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="n">ColorTrait</span><span class="p">(</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The line width of the triangles</span>
+    <span class="n">line_width</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># The triangle fill color when the mouse has not been clicked</span>
+    <span class="n">fill_color</span> <span class="o">=</span> <span class="n">ColorTrait</span><span class="p">(</span><span class="s2">&quot;none&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The fill color of the triangle that the user has clicked on</span>
+    <span class="n">clicked_color</span> <span class="o">=</span> <span class="n">ColorTrait</span><span class="p">(</span><span class="s2">&quot;lightgray&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Override the inherited **event_state** attribute</span>
+    <span class="n">event_state</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="s2">&quot;clicked&quot;</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Stub methods for subclasses</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Compass.mouse_down"><a class="viewcode-back" href="../../api/enable.compass.html#enable.compass.Compass.mouse_down">[docs]</a>    <span class="k">def</span> <span class="nf">mouse_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arrow</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Called when the mouse is first pressed inside one of the</span>
+<span class="sd">        triangles.  This gets called after self.clicked is set.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ==========</span>
+<span class="sd">        arrow: &quot;n&quot;, &quot;e&quot;, &quot;s&quot;, &quot;w&quot;</span>
+<span class="sd">            indicates which arrow was pressed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Compass.mouse_up"><a class="viewcode-back" href="../../api/enable.compass.html#enable.compass.Compass.mouse_up">[docs]</a>    <span class="k">def</span> <span class="nf">mouse_up</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Called when the mouse is released.  This gets called after</span>
+<span class="sd">        self.clicked is unset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Event handling methods</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Compass.normal_left_down"><a class="viewcode-back" href="../../api/enable.compass.html#enable.compass.Compass.normal_left_down">[docs]</a>    <span class="k">def</span> <span class="nf">normal_left_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="c1"># Determine which arrow was clicked; use a rectangular approximation.</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">half_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">triangle_length</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span>
+        <span class="n">half_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">triangle_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span>
+
+        <span class="c1"># Create dict mapping direction to (x, y, x2, y2)</span>
+        <span class="n">near</span> <span class="o">=</span> <span class="n">offset</span> <span class="o">-</span> <span class="n">half_length</span>
+        <span class="n">far</span> <span class="o">=</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">half_length</span>
+        <span class="n">rects</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;n&quot;</span><span class="p">:</span> <span class="n">array</span><span class="p">((</span><span class="o">-</span><span class="n">half_width</span><span class="p">,</span> <span class="n">near</span><span class="p">,</span> <span class="n">half_width</span><span class="p">,</span> <span class="n">far</span><span class="p">)),</span>
+            <span class="s2">&quot;e&quot;</span><span class="p">:</span> <span class="n">array</span><span class="p">((</span><span class="n">near</span><span class="p">,</span> <span class="o">-</span><span class="n">half_width</span><span class="p">,</span> <span class="n">far</span><span class="p">,</span> <span class="n">half_width</span><span class="p">)),</span>
+            <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="n">array</span><span class="p">((</span><span class="o">-</span><span class="n">half_width</span><span class="p">,</span> <span class="o">-</span><span class="n">far</span><span class="p">,</span> <span class="n">half_width</span><span class="p">,</span> <span class="o">-</span><span class="n">near</span><span class="p">)),</span>
+            <span class="s2">&quot;w&quot;</span><span class="p">:</span> <span class="n">array</span><span class="p">((</span><span class="o">-</span><span class="n">far</span><span class="p">,</span> <span class="o">-</span><span class="n">half_width</span><span class="p">,</span> <span class="o">-</span><span class="n">near</span><span class="p">,</span> <span class="n">half_width</span><span class="p">)),</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_center</span><span class="p">:</span>
+            <span class="n">rects</span><span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="p">((</span><span class="o">-</span><span class="n">near</span><span class="p">,</span> <span class="o">-</span><span class="n">near</span><span class="p">,</span> <span class="n">near</span><span class="p">,</span> <span class="n">near</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">direction</span><span class="p">,</span> <span class="n">rect</span> <span class="ow">in</span> <span class="n">rects</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">rect</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">rect</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">rect</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="n">rect</span><span class="p">[</span><span class="mi">3</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">event_state</span> <span class="o">=</span> <span class="s2">&quot;clicked&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clicked</span> <span class="o">=</span> <span class="n">direction</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mouse_down</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span>
+                <span class="k">break</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Compass.normal_left_dclick"><a class="viewcode-back" href="../../api/enable.compass.html#enable.compass.Compass.normal_left_dclick">[docs]</a>    <span class="k">def</span> <span class="nf">normal_left_dclick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_left_down</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Compass.clicked_left_up"><a class="viewcode-back" href="../../api/enable.compass.html#enable.compass.Compass.clicked_left_up">[docs]</a>    <span class="k">def</span> <span class="nf">clicked_left_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_state</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clicked</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mouse_up</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Compass.clicked_mouse_leave"><a class="viewcode-back" href="../../api/enable.compass.html#enable.compass.Compass.clicked_mouse_leave">[docs]</a>    <span class="k">def</span> <span class="nf">clicked_mouse_leave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clicked_left_up</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Rendering methods</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Compass.get_preferred_size"><a class="viewcode-back" href="../../api/enable.compass.html#enable.compass.Compass.get_preferred_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_preferred_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Since we can compute our preferred size from the size of the</span>
+        <span class="c1"># arrows and the spacing, we can return a sensible preferred</span>
+        <span class="c1"># size, so override the default implementation in Component.</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_preferred_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_preferred_size</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">extent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spacing</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">triangle_length</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">extent</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hpadding</span><span class="p">,</span> <span class="n">extent</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">vpadding</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">_draw_mainlayer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color_</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">line_width</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span>
+            <span class="n">points_and_angles</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">-</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">s</span><span class="p">),</span> <span class="n">pi</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="p">]</span>
+
+            <span class="n">gc</span><span class="o">.</span><span class="n">scale_ctm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+            <span class="k">for</span> <span class="nb">dir</span><span class="p">,</span> <span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">),</span> <span class="n">angle</span> <span class="ow">in</span> <span class="n">points_and_angles</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_state</span> <span class="o">==</span> <span class="s2">&quot;clicked&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">clicked</span> <span class="o">==</span> <span class="nb">dir</span><span class="p">:</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clicked_color_</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fill_color_</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">rotate_ctm</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+                <span class="n">half_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">triangle_length</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">half_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">triangle_width</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">begin_path</span><span class="p">()</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="p">(</span><span class="o">-</span><span class="n">half_width</span><span class="p">,</span> <span class="o">-</span><span class="n">half_height</span><span class="p">),</span>
+                        <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">half_height</span><span class="p">),</span>
+                        <span class="p">(</span><span class="n">half_width</span><span class="p">,</span> <span class="o">-</span><span class="n">half_height</span><span class="p">),</span>
+                        <span class="p">(</span><span class="o">-</span><span class="n">half_width</span><span class="p">,</span> <span class="o">-</span><span class="n">half_height</span><span class="p">),</span>
+                        <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">half_height</span><span class="p">),</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">draw_path</span><span class="p">()</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">rotate_ctm</span><span class="p">(</span><span class="o">-</span><span class="n">angle</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="o">-</span><span class="n">dx</span><span class="p">,</span> <span class="o">-</span><span class="n">dy</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_state</span> <span class="o">==</span> <span class="s2">&quot;clicked&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">clicked</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span>
+                <span class="c1"># Fill in the center</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clicked_color_</span><span class="p">)</span>
+                <span class="n">half_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">triangle_width</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">begin_path</span><span class="p">()</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">lines</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="p">(</span><span class="o">-</span><span class="n">half_width</span><span class="p">,</span> <span class="o">-</span><span class="n">half_width</span><span class="p">),</span>
+                        <span class="p">(</span><span class="n">half_width</span><span class="p">,</span> <span class="o">-</span><span class="n">half_height</span><span class="p">),</span>
+                        <span class="p">(</span><span class="n">half_width</span><span class="p">,</span> <span class="n">half_width</span><span class="p">),</span>
+                        <span class="p">(</span><span class="o">-</span><span class="n">half_width</span><span class="p">,</span> <span class="n">half_width</span><span class="p">),</span>
+                        <span class="p">(</span><span class="o">-</span><span class="n">half_width</span><span class="p">,</span> <span class="o">-</span><span class="n">half_width</span><span class="p">),</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">draw_path</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

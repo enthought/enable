@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>kiva.gl package &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="kiva package" href="kiva.html" >
+    <link rel="next" title="kiva.gl.gl module" href="kiva.gl.gl.html" >
+    <link rel="prev" title="kiva.fonttools.sstruct module" href="kiva.fonttools.sstruct.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="kiva.html" accesskey="U">kiva package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="kiva.gl.gl.html" title="kiva.gl.gl module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="kiva.fonttools.sstruct.html" title="kiva.fonttools.sstruct module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-kiva.gl">
+<span id="kiva-gl-package"></span><h1>kiva.gl package<a class="headerlink" href="#module-kiva.gl" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="kiva.gl.ArrayImage">
+<em class="property">class </em><code class="sig-prename descclassname">kiva.gl.</code><code class="sig-name descname">ArrayImage</code><span class="sig-paren">(</span><em class="sig-param">arr</em>, <em class="sig-param">format=None</em>, <em class="sig-param">allow_copy=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#ArrayImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.ArrayImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pygarrayimage.arrayimage.ArrayInterfaceImage</span></code></p>
+<p>pyglet ImageData made from numpy arrays.</p>
+<p>Customized from pygarrayimage’s ArrayInterfaceImage to override the
+texture creation.</p>
+<dl class="method">
+<dt id="kiva.gl.ArrayImage.blit_to_texture">
+<code class="sig-name descname">blit_to_texture</code><span class="sig-paren">(</span><em class="sig-param">target</em>, <em class="sig-param">level</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">z</em>, <em class="sig-param">internalformat=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#ArrayImage.blit_to_texture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.ArrayImage.blit_to_texture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw this image to to the currently bound texture at <cite>target</cite>.</p>
+<p>If <cite>internalformat</cite> is specified, glTexImage is used to initialise
+the texture; otherwise, glTexSubImage is used to update a region.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.gl.ArrayImage.create_texture">
+<code class="sig-name descname">create_texture</code><span class="sig-paren">(</span><em class="sig-param">cls</em>, <em class="sig-param">rectangle=False</em>, <em class="sig-param">force_rectangle=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#ArrayImage.create_texture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.ArrayImage.create_texture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a texture containing this image.</p>
+<p>If the image’s dimensions are not powers of 2, a TextureRegion of
+a larger Texture will be returned that matches the dimensions of
+this image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><cite>cls</cite><span class="classifier">class (subclass of Texture)</span></dt><dd><p>Class to construct.</p>
+</dd>
+<dt><cite>rectangle</cite><span class="classifier">bool</span></dt><dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if a rectangle can be created; see
+<cite>AbstractImage.get_texture</cite>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>cls or cls.region_class</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="kiva.gl.FakePygletContext">
+<em class="property">class </em><code class="sig-prename descclassname">kiva.gl.</code><code class="sig-name descname">FakePygletContext</code><span class="sig-paren">(</span><em class="sig-param">context_share=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#FakePygletContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.FakePygletContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>pyglet.gl.Context mocker.</p>
+<p>This is used to make pyglet believe that a valid context has already
+been setup. (Qt takes care of creating the open gl context)</p>
+<p>_Most of the methods are empty, there is just the minimum required to
+make it look like a duck…_</p>
+<p>Source: <a class="reference external" href="https://github.com/ColinDuquesnoy/QPygletWidget">https://github.com/ColinDuquesnoy/QPygletWidget</a></p>
+<dl class="attribute">
+<dt id="kiva.gl.FakePygletContext.CONTEXT_SHARE_EXISTING">
+<code class="sig-name descname">CONTEXT_SHARE_EXISTING</code><em class="property"> = 1</em><a class="headerlink" href="#kiva.gl.FakePygletContext.CONTEXT_SHARE_EXISTING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="kiva.gl.FakePygletContext.CONTEXT_SHARE_NONE">
+<code class="sig-name descname">CONTEXT_SHARE_NONE</code><em class="property"> = None</em><a class="headerlink" href="#kiva.gl.FakePygletContext.CONTEXT_SHARE_NONE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kiva.gl.FakePygletContext.delete_buffer">
+<code class="sig-name descname">delete_buffer</code><span class="sig-paren">(</span><em class="sig-param">buffer_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#FakePygletContext.delete_buffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.FakePygletContext.delete_buffer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kiva.gl.FakePygletContext.delete_texture">
+<code class="sig-name descname">delete_texture</code><span class="sig-paren">(</span><em class="sig-param">texture_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#FakePygletContext.delete_texture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.FakePygletContext.delete_texture" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kiva.gl.FakePygletContext.destroy">
+<code class="sig-name descname">destroy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#FakePygletContext.destroy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.FakePygletContext.destroy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kiva.gl.FakePygletContext.set_current">
+<code class="sig-name descname">set_current</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#FakePygletContext.set_current"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.FakePygletContext.set_current" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.gl.GetFont">
+<code class="sig-prename descclassname">kiva.gl.</code><code class="sig-name descname">GetFont</code><span class="sig-paren">(</span><em class="sig-param">font</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#GetFont"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.GetFont" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Pylget Font object for the given Agg or Kiva font</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.gl.GetLabel">
+<code class="sig-prename descclassname">kiva.gl.</code><code class="sig-name descname">GetLabel</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">pyglet_font</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#GetLabel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.GetLabel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Pyglet Label object for the given text and font</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="kiva.gl.GraphicsContext">
+<em class="property">class </em><code class="sig-prename descclassname">kiva.gl.</code><code class="sig-name descname">GraphicsContext</code><span class="sig-paren">(</span><em class="sig-param">size</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#GraphicsContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.GraphicsContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="kiva.gl.gl.html#kiva.gl.gl.GraphicsContextGL" title="kiva.gl.gl.GraphicsContextGL"><code class="xref py py-class docutils literal notranslate"><span class="pre">kiva.gl.gl.GraphicsContextGL</span></code></a></p>
+<dl class="method">
+<dt id="kiva.gl.GraphicsContext.draw_image">
+<code class="sig-name descname">draw_image</code><span class="sig-paren">(</span><em class="sig-param">img</em>, <em class="sig-param">rect=None</em>, <em class="sig-param">force_copy=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#GraphicsContext.draw_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.GraphicsContext.draw_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renders a GraphicsContextArray into this GC</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.gl.GraphicsContext.get_text_extent">
+<code class="sig-name descname">get_text_extent</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#GraphicsContext.get_text_extent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.GraphicsContext.get_text_extent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kiva.gl.GraphicsContext.linear_gradient">
+<code class="sig-name descname">linear_gradient</code><span class="sig-paren">(</span><em class="sig-param">x1</em>, <em class="sig-param">y1</em>, <em class="sig-param">x2</em>, <em class="sig-param">y2</em>, <em class="sig-param">stops</em>, <em class="sig-param">spread_method</em>, <em class="sig-param">units='userSpaceOnUse'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#GraphicsContext.linear_gradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.GraphicsContext.linear_gradient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not implemented.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.gl.GraphicsContext.radial_gradient">
+<code class="sig-name descname">radial_gradient</code><span class="sig-paren">(</span><em class="sig-param">cx</em>, <em class="sig-param">cy</em>, <em class="sig-param">r</em>, <em class="sig-param">fx</em>, <em class="sig-param">fy</em>, <em class="sig-param">stops</em>, <em class="sig-param">spread_method</em>, <em class="sig-param">units='userSpaceOnUse'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#GraphicsContext.radial_gradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.GraphicsContext.radial_gradient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not implemented.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.gl.GraphicsContext.restore_state">
+<code class="sig-name descname">restore_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#GraphicsContext.restore_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.GraphicsContext.restore_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kiva.gl.GraphicsContext.save_state">
+<code class="sig-name descname">save_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#GraphicsContext.save_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.GraphicsContext.save_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kiva.gl.GraphicsContext.set_font">
+<code class="sig-name descname">set_font</code><span class="sig-paren">(</span><em class="sig-param">font</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#GraphicsContext.set_font"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.GraphicsContext.set_font" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kiva.gl.GraphicsContext.set_text_position">
+<code class="sig-name descname">set_text_position</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#GraphicsContext.set_text_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.GraphicsContext.set_text_position" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kiva.gl.GraphicsContext.show_text">
+<code class="sig-name descname">show_text</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">point=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#GraphicsContext.show_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.GraphicsContext.show_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays text at point, or at the current text pen position
+if point is None.  Returns true if text displayed properly,
+false if there was a font issue or a glyph could not be
+rendered.  Will handle multi-line text separated by backslash-ns</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.gl.GraphicsContext.show_text_at_point">
+<code class="sig-name descname">show_text_at_point</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#GraphicsContext.show_text_at_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.GraphicsContext.show_text_at_point" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="kiva.gl.MRU">
+<em class="property">class </em><code class="sig-prename descclassname">kiva.gl.</code><code class="sig-name descname">MRU</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#MRU"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.MRU" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.gl.font_metrics_provider">
+<code class="sig-prename descclassname">kiva.gl.</code><code class="sig-name descname">font_metrics_provider</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#font_metrics_provider"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.font_metrics_provider" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kiva.gl.get_dpi">
+<code class="sig-prename descclassname">kiva.gl.</code><code class="sig-name descname">get_dpi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#get_dpi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.get_dpi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the appropriate DPI setting for the system</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.gl.image_as_array">
+<code class="sig-prename descclassname">kiva.gl.</code><code class="sig-name descname">image_as_array</code><span class="sig-paren">(</span><em class="sig-param">img</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/gl.html#image_as_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.gl.image_as_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adapt an image object into a numpy array.</p>
+<p>Typically, this is used to adapt an agg GraphicsContextArray which has been
+used for image storage in Kiva applications.</p>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="kiva.gl.gl.html">kiva.gl.gl module</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="kiva.fonttools.sstruct.html"
+                        title="previous chapter">kiva.fonttools.sstruct module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="kiva.gl.gl.html"
+                        title="next chapter">kiva.gl.gl module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/kiva.gl.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

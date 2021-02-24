@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.tools.viewport_zoom_tool &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../../index.html" >
+    <link rel="up" title="Module code" href="../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.tools.viewport_zoom_tool</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot; Defines the SimpleZoom class.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">inf</span>
+
+<span class="c1"># Enthought library imports</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Trait</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="c1"># Enable imports</span>
+<span class="kn">from</span> <span class="nn">enable.base_tool</span> <span class="k">import</span> <span class="n">KeySpec</span>
+<span class="kn">from</span> <span class="nn">enable.colors</span> <span class="k">import</span> <span class="n">ColorTrait</span>
+<span class="kn">from</span> <span class="nn">enable.abstract_overlay</span> <span class="k">import</span> <span class="n">AbstractOverlay</span>
+
+<span class="kn">from</span> <span class="nn">.base_zoom_tool</span> <span class="k">import</span> <span class="n">BaseZoomTool</span>
+<span class="kn">from</span> <span class="nn">.tool_history_mixin</span> <span class="k">import</span> <span class="n">ToolHistoryMixin</span>
+
+
+<div class="viewcode-block" id="ViewportZoomTool"><a class="viewcode-back" href="../../../api/enable.tools.viewport_zoom_tool.html#enable.tools.viewport_zoom_tool.ViewportZoomTool">[docs]</a><span class="k">class</span> <span class="nc">ViewportZoomTool</span><span class="p">(</span><span class="n">AbstractOverlay</span><span class="p">,</span> <span class="n">ToolHistoryMixin</span><span class="p">,</span> <span class="n">BaseZoomTool</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Selects a range along the index or value axis.</span>
+
+<span class="sd">    The user left-click-drags to select a region to zoom in.</span>
+<span class="sd">    Certain keyboard keys are mapped to performing zoom actions as well.</span>
+
+<span class="sd">    Implements a basic &quot;zoom stack&quot; so the user move go backwards and forwards</span>
+<span class="sd">    through previous zoom regions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># The selection mode:</span>
+    <span class="c1">#</span>
+    <span class="c1"># range:</span>
+    <span class="c1">#   Select a range across a single index or value axis.</span>
+    <span class="c1"># box:</span>
+    <span class="c1">#   Perform a &quot;box&quot; selection on two axes.</span>
+    <span class="n">tool_mode</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;range&quot;</span><span class="p">,</span> <span class="s2">&quot;box&quot;</span><span class="p">)</span>  <span class="c1"># Enum(&quot;box&quot;, &quot;range&quot;)</span>
+
+    <span class="c1"># Is the tool always &quot;on&quot;? If True, left-clicking always initiates</span>
+    <span class="c1"># a zoom operation; if False, the user must press a key to enter zoom mode.</span>
+    <span class="n">always_on</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Zoom control</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="c1"># The axis to which the selection made by this tool is perpendicular. This</span>
+    <span class="c1"># only applies in &#39;range&#39; mode.</span>
+    <span class="n">axis</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">)</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Interaction control</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="c1"># Enable the mousewheel for zooming?</span>
+    <span class="n">enable_wheel</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># The mouse button that initiates the drag.</span>
+    <span class="n">drag_button</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Conversion ratio from wheel steps to zoom factors.</span>
+    <span class="n">wheel_zoom_step</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
+
+    <span class="c1"># The key press to enter zoom mode, if **always_on** is False.</span>
+    <span class="c1"># Has no effect if **always_on** is True.</span>
+    <span class="n">enter_zoom_key</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">KeySpec</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">,))</span>
+
+    <span class="c1"># The key press to leave zoom mode, if **always_on** is False.</span>
+    <span class="c1"># Has no effect if **always_on** is True.</span>
+    <span class="n">exit_zoom_key</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">KeySpec</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">,))</span>
+
+    <span class="c1"># Disable the tool after the zoom is completed?</span>
+    <span class="n">disable_on_complete</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># The minimum amount of screen space the user must select in order for</span>
+    <span class="c1"># the tool to actually take effect.</span>
+    <span class="n">minimum_screen_delta</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="c1"># The most that this tool will zoom in on the target.  Since zoom is the</span>
+    <span class="c1"># ratio of the original bounds to the new bounds, a max_zoom value of 2.0</span>
+    <span class="c1"># would make the tool stop once it had zoomed into a region half the size</span>
+    <span class="c1"># of the original bounds.</span>
+    <span class="n">max_zoom</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="n">inf</span><span class="p">)</span>
+
+    <span class="c1"># The most that this tool will zoom out from the target.  For example,</span>
+    <span class="c1"># a min_zoom of 0.2 would prevent the tool from showing a view zoomed</span>
+    <span class="c1"># out more than 5 times from the original bounds.</span>
+    <span class="n">min_zoom</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="o">-</span><span class="n">inf</span><span class="p">)</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Appearance properties (for Box mode)</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="c1"># The pointer to use when drawing a zoom box.</span>
+    <span class="n">pointer</span> <span class="o">=</span> <span class="s2">&quot;magnifier&quot;</span>
+
+    <span class="c1"># The color of the selection box.</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="n">ColorTrait</span><span class="p">(</span><span class="s2">&quot;lightskyblue&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The alpha value to apply to **color** when filling in the selection</span>
+    <span class="c1"># region.  Because it is almost certainly useless to have an opaque zoom</span>
+    <span class="c1"># rectangle, but it&#39;s also extremely useful to be able to use the normal</span>
+    <span class="c1"># named colors from Enable, this attribute allows the specification of a</span>
+    <span class="c1"># separate alpha value that replaces the alpha value of **color** at draw</span>
+    <span class="c1"># time.</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">Trait</span><span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Float</span><span class="p">)</span>
+
+    <span class="c1"># The color of the outside selection rectangle.</span>
+    <span class="n">border_color</span> <span class="o">=</span> <span class="n">ColorTrait</span><span class="p">(</span><span class="s2">&quot;dodgerblue&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The thickness of selection rectangle border.</span>
+    <span class="n">border_size</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># The possible event states of this zoom tool.</span>
+    <span class="n">event_state</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="s2">&quot;selecting&quot;</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Key mappings</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># The key that cancels the zoom and resets the view to the original</span>
+    <span class="c1"># defaults.</span>
+    <span class="n">cancel_zoom_key</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">KeySpec</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Esc&quot;</span><span class="p">,))</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Private traits</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="c1"># If **always_on** is False, this attribute indicates whether the tool</span>
+    <span class="c1"># is currently enabled.</span>
+    <span class="n">_enabled</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># the original numerical screen ranges</span>
+    <span class="n">_orig_position</span> <span class="o">=</span> <span class="n">Trait</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Float</span><span class="p">)</span>
+    <span class="n">_orig_bounds</span> <span class="o">=</span> <span class="n">Trait</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Float</span><span class="p">)</span>
+
+    <span class="c1"># The (x,y) screen point where the mouse went down.</span>
+    <span class="n">_screen_start</span> <span class="o">=</span> <span class="n">Trait</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">)</span>
+
+    <span class="c1"># The (x,,y) screen point of the last seen mouse move event.</span>
+    <span class="n">_screen_end</span> <span class="o">=</span> <span class="n">Trait</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="c1"># Support AbstractController-style constructors so that this can be</span>
+        <span class="c1"># handed in the component it will be overlaying in the constructor</span>
+        <span class="c1"># without using kwargs.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">component</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ViewportZoomTool</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_state_to_current</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tool_mode</span> <span class="o">==</span> <span class="s2">&quot;range&quot;</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_range_index</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_orig_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">view_position</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_orig_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">view_bounds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_orig_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">view_position</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_orig_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">view_bounds</span>
+
+<div class="viewcode-block" id="ViewportZoomTool.enable"><a class="viewcode-back" href="../../../api/enable.tools.viewport_zoom_tool.html#enable.tools.viewport_zoom_tool.ViewportZoomTool.enable">[docs]</a>    <span class="k">def</span> <span class="nf">enable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Provides a programmatic way to enable this tool, if</span>
+<span class="sd">        **always_on** is False.</span>
+
+<span class="sd">        Calling this method has the same effect as if the user pressed the</span>
+<span class="sd">        **enter_zoom_key**.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">active_tool</span> <span class="o">!=</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">active_tool</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">event</span> <span class="ow">and</span> <span class="n">event</span><span class="o">.</span><span class="n">window</span><span class="p">:</span>
+            <span class="n">event</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">set_pointer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pointer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ViewportZoomTool.disable"><a class="viewcode-back" href="../../../api/enable.tools.viewport_zoom_tool.html#enable.tools.viewport_zoom_tool.ViewportZoomTool.disable">[docs]</a>    <span class="k">def</span> <span class="nf">disable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Provides a programmatic way to enable this tool, if **always_on**</span>
+<span class="sd">        is False.</span>
+
+<span class="sd">        Calling this method has the same effect as if the user pressed the</span>
+<span class="sd">        **exit_zoom_key**.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">active_tool</span> <span class="o">==</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">active_tool</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">event</span> <span class="ow">and</span> <span class="n">event</span><span class="o">.</span><span class="n">window</span><span class="p">:</span>
+            <span class="n">event</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">set_pointer</span><span class="p">(</span><span class="s2">&quot;arrow&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ViewportZoomTool.reset"><a class="viewcode-back" href="../../../api/enable.tools.viewport_zoom_tool.html#enable.tools.viewport_zoom_tool.ViewportZoomTool.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Resets the tool to normal state, with no start or end position.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_state</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_screen_start</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_screen_end</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="ViewportZoomTool.deactivate"><a class="viewcode-back" href="../../../api/enable.tools.viewport_zoom_tool.html#enable.tools.viewport_zoom_tool.ViewportZoomTool.deactivate">[docs]</a>    <span class="k">def</span> <span class="nf">deactivate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Called when this is no longer the active tool.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Required as part of the AbstractController interface.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ViewportZoomTool.normal_left_down"><a class="viewcode-back" href="../../../api/enable.tools.viewport_zoom_tool.html#enable.tools.viewport_zoom_tool.ViewportZoomTool.normal_left_down">[docs]</a>    <span class="k">def</span> <span class="nf">normal_left_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Handles the left mouse button being pressed while the tool is</span>
+<span class="sd">        in the &#39;normal&#39; state.</span>
+
+<span class="sd">        If the tool is enabled or always on, it starts selecting.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">always_on</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span><span class="p">:</span>
+            <span class="c1"># we need to make sure that there isn&#39;t another active tool that</span>
+            <span class="c1"># we will interfere with.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">drag_button</span> <span class="o">==</span> <span class="s2">&quot;left&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_start_select</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ViewportZoomTool.normal_right_down"><a class="viewcode-back" href="../../../api/enable.tools.viewport_zoom_tool.html#enable.tools.viewport_zoom_tool.ViewportZoomTool.normal_right_down">[docs]</a>    <span class="k">def</span> <span class="nf">normal_right_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Handles the right mouse button being pressed while the tool is</span>
+<span class="sd">        in the &#39;normal&#39; state.</span>
+
+<span class="sd">        If the tool is enabled or always on, it starts selecting.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">always_on</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">drag_button</span> <span class="o">==</span> <span class="s2">&quot;right&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_start_select</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ViewportZoomTool.normal_mouse_wheel"><a class="viewcode-back" href="../../../api/enable.tools.viewport_zoom_tool.html#enable.tools.viewport_zoom_tool.ViewportZoomTool.normal_mouse_wheel">[docs]</a>    <span class="k">def</span> <span class="nf">normal_mouse_wheel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Handles the mouse wheel being used when the tool is in the &#39;normal&#39;</span>
+<span class="sd">        state.</span>
+
+<span class="sd">        Scrolling the wheel &quot;up&quot; zooms in; scrolling it &quot;down&quot; zooms out.</span>
+<span class="sd">        self.component is the viewport</span>
+<span class="sd">        self.component.component is the canvas</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_wheel</span> <span class="ow">and</span> <span class="n">event</span><span class="o">.</span><span class="n">mouse_wheel</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+
+            <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">view_position</span>
+            <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">zoom</span>
+            <span class="n">transformed_x</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">x</span> <span class="o">/</span> <span class="n">scale</span> <span class="o">+</span> <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">transformed_y</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span> <span class="o">/</span> <span class="n">scale</span> <span class="o">+</span> <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="c1"># Calculate zoom</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">mouse_wheel</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">zoom</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">wheel_zoom_step</span><span class="p">)</span>
+                <span class="n">new_zoom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">zoom</span> <span class="o">*</span> <span class="n">zoom</span>
+            <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">mouse_wheel</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">zoom</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">wheel_zoom_step</span>
+                <span class="n">new_zoom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">zoom</span> <span class="o">*</span> <span class="n">zoom</span>
+
+            <span class="k">if</span> <span class="n">new_zoom</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_zoom</span><span class="p">:</span>
+                <span class="n">new_zoom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_zoom</span>
+                <span class="n">zoom</span> <span class="o">=</span> <span class="n">new_zoom</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">zoom</span>
+            <span class="k">elif</span> <span class="n">new_zoom</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_zoom</span><span class="p">:</span>
+                <span class="n">new_zoom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_zoom</span>
+                <span class="n">zoom</span> <span class="o">=</span> <span class="n">new_zoom</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">zoom</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">zoom</span> <span class="o">=</span> <span class="n">new_zoom</span>
+
+            <span class="n">x_pos</span> <span class="o">=</span> <span class="n">transformed_x</span> <span class="o">-</span> <span class="p">(</span><span class="n">transformed_x</span> <span class="o">-</span> <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">zoom</span>
+            <span class="n">y_pos</span> <span class="o">=</span> <span class="n">transformed_y</span> <span class="o">-</span> <span class="p">(</span><span class="n">transformed_y</span> <span class="o">-</span> <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">zoom</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">trait_setq</span><span class="p">(</span><span class="n">view_position</span><span class="o">=</span><span class="p">[</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">])</span>
+            <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">view_bounds</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">view_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">zoom</span><span class="p">,</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">zoom</span><span class="p">]</span>
+
+            <span class="n">event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">request_redraw</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_component_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_state_to_current</span><span class="p">()</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Implementation of PlotComponent interface</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">_activate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Called by PlotComponent to set this as the active tool.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># implementations of abstract methods on ToolHistoryMixin</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">_reset_state_to_current</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Clears the tool history, and sets the current state to be the</span>
+<span class="sd">        first state in the history.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tool_mode</span> <span class="o">==</span> <span class="s2">&quot;range&quot;</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_range_index</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reset_state</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">view_position</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">view_bounds</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reset_state</span><span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">view_position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">view_bounds</span><span class="p">)</span>
+            <span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

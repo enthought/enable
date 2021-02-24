@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.layout.geometry &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../../index.html" >
+    <link rel="up" title="Module code" href="../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.layout.geometry</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Rect</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="BaseRect"><a class="viewcode-back" href="../../../api/enable.layout.geometry.html#enable.layout.geometry.BaseRect">[docs]</a><span class="k">class</span> <span class="nc">BaseRect</span><span class="p">(</span><span class="nb">tuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A tuple subclass representing an (x, y, width, height)</span>
+<span class="sd">    bounding box. Subclasses should override the __new__ method</span>
+<span class="sd">    to enforce any necessary typing.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">BaseRect</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__getnewargs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">(x=</span><span class="si">%s</span><span class="s2">, y=</span><span class="si">%s</span><span class="s2">, width=</span><span class="si">%s</span><span class="s2">, height=</span><span class="si">%s</span><span class="s2">)&quot;</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,)</span> <span class="o">+</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">template</span> <span class="o">%</span> <span class="n">values</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The &#39;x&#39; position component of the rect.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The &#39;y&#39; position component of the rect.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The &#39;width&#39; size component of the rect.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The &#39;height&#39; size component of the rect.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Rect"><a class="viewcode-back" href="../../../api/enable.layout.geometry.html#enable.layout.geometry.Rect">[docs]</a><span class="k">class</span> <span class="nc">Rect</span><span class="p">(</span><span class="n">BaseRect</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A BaseRect implementation for integer values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Rect</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">i</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">i</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">i</span><span class="p">(</span><span class="n">width</span><span class="p">),</span> <span class="n">i</span><span class="p">(</span><span class="n">height</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">box</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The equivalent Box for this rect.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">Box</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">width</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">height</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The position of the rect as a Pos object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Pos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The size of the rect as a Size object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RectF"><a class="viewcode-back" href="../../../api/enable.layout.geometry.html#enable.layout.geometry.RectF">[docs]</a><span class="k">class</span> <span class="nc">RectF</span><span class="p">(</span><span class="n">BaseRect</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A BaseRect implementation for floating point values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">float</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">RectF</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">f</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">f</span><span class="p">(</span><span class="n">width</span><span class="p">),</span> <span class="n">f</span><span class="p">(</span><span class="n">height</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">box</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The equivalent Box for this rect.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">BoxF</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">width</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">height</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The position of the rect as a Pos object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PosF</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The size of the rect as a Size object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">SizeF</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span></div>
+
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Box</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="BaseBox"><a class="viewcode-back" href="../../../api/enable.layout.geometry.html#enable.layout.geometry.BaseBox">[docs]</a><span class="k">class</span> <span class="nc">BaseBox</span><span class="p">(</span><span class="nb">tuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A tuple subclass representing a (top, right, bottom, left) box.</span>
+<span class="sd">    Subclasses should override the __new__ method to enforce any typing.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+<div class="viewcode-block" id="BaseBox.coerce_type"><a class="viewcode-back" href="../../../api/enable.layout.geometry.html#enable.layout.geometry.BaseBox.coerce_type">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">coerce_type</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">item</span></div>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">BaseBox</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">top</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">coerce_type</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="n">top</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">right</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">top</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">bottom</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bottom</span> <span class="o">=</span> <span class="n">top</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bottom</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="n">bottom</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">left</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">right</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="n">left</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">BaseBox</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">left</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__getnewargs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">(top=</span><span class="si">%s</span><span class="s2">, right=</span><span class="si">%s</span><span class="s2">, bottom=</span><span class="si">%s</span><span class="s2">, left=</span><span class="si">%s</span><span class="s2">)&quot;</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,)</span> <span class="o">+</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">template</span> <span class="o">%</span> <span class="n">values</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">top</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The &#39;top&#39; component of the box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">right</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The &#39;right&#39; component of the box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">bottom</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The &#39;bottom&#39; component of the box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">left</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The &#39;left&#39; component of the box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Box"><a class="viewcode-back" href="../../../api/enable.layout.geometry.html#enable.layout.geometry.Box">[docs]</a><span class="k">class</span> <span class="nc">Box</span><span class="p">(</span><span class="n">BaseBox</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A BaseBox implementation for integer values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+<div class="viewcode-block" id="Box.coerce_type"><a class="viewcode-back" href="../../../api/enable.layout.geometry.html#enable.layout.geometry.Box.coerce_type">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">coerce_type</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">int</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The equivalent Rect for this box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">top</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">Rect</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">right</span> <span class="o">-</span> <span class="n">left</span><span class="p">,</span> <span class="n">bottom</span> <span class="o">-</span> <span class="n">top</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The Size of this box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">top</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">Size</span><span class="p">(</span><span class="n">right</span> <span class="o">-</span> <span class="n">left</span><span class="p">,</span> <span class="n">bottom</span> <span class="o">-</span> <span class="n">top</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The Pos of this box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Pos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BoxF"><a class="viewcode-back" href="../../../api/enable.layout.geometry.html#enable.layout.geometry.BoxF">[docs]</a><span class="k">class</span> <span class="nc">BoxF</span><span class="p">(</span><span class="n">BaseBox</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A BaseBox implementation for floating point values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+<div class="viewcode-block" id="BoxF.coerce_type"><a class="viewcode-back" href="../../../api/enable.layout.geometry.html#enable.layout.geometry.BoxF.coerce_type">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">coerce_type</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The equivalent Rect for this box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">top</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">RectF</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">right</span> <span class="o">-</span> <span class="n">left</span><span class="p">,</span> <span class="n">bottom</span> <span class="o">-</span> <span class="n">top</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The Size of this box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">top</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">SizeF</span><span class="p">(</span><span class="n">right</span> <span class="o">-</span> <span class="n">left</span><span class="p">,</span> <span class="n">bottom</span> <span class="o">-</span> <span class="n">top</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The Pos of this box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PosF</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="p">)</span></div>
+
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Pos</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="BasePos"><a class="viewcode-back" href="../../../api/enable.layout.geometry.html#enable.layout.geometry.BasePos">[docs]</a><span class="k">class</span> <span class="nc">BasePos</span><span class="p">(</span><span class="nb">tuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A tuple subclass representing a (x, y) positions. Subclasses</span>
+<span class="sd">    should override the __new__ method to enforce any necessary typing.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">BasePos</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__getnewargs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">(x=</span><span class="si">%s</span><span class="s2">, y=</span><span class="si">%s</span><span class="s2">)&quot;</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,)</span> <span class="o">+</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">template</span> <span class="o">%</span> <span class="n">values</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The &#39;x&#39; component of the size.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The &#39;y&#39; component of the size.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Pos"><a class="viewcode-back" href="../../../api/enable.layout.geometry.html#enable.layout.geometry.Pos">[docs]</a><span class="k">class</span> <span class="nc">Pos</span><span class="p">(</span><span class="n">BasePos</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; An implementation of BasePos for integer values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Pos</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">i</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">i</span><span class="p">(</span><span class="n">y</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="PosF"><a class="viewcode-back" href="../../../api/enable.layout.geometry.html#enable.layout.geometry.PosF">[docs]</a><span class="k">class</span> <span class="nc">PosF</span><span class="p">(</span><span class="n">BasePos</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; An implementation of BasePos of floating point values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">float</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">PosF</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">f</span><span class="p">(</span><span class="n">y</span><span class="p">))</span></div>
+
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Size</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="BaseSize"><a class="viewcode-back" href="../../../api/enable.layout.geometry.html#enable.layout.geometry.BaseSize">[docs]</a><span class="k">class</span> <span class="nc">BaseSize</span><span class="p">(</span><span class="nb">tuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A tuple subclass representing a (width, height) size. Subclasses</span>
+<span class="sd">    should override the __new__ method to enforce any necessary typing.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+<div class="viewcode-block" id="BaseSize.coerce_type"><a class="viewcode-back" href="../../../api/enable.layout.geometry.html#enable.layout.geometry.BaseSize.coerce_type">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">coerce_type</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">item</span></div>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">BaseSize</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">width</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">coerce_type</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">height</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="n">height</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">BaseSize</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__getnewargs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">(width=</span><span class="si">%s</span><span class="s2">, height=</span><span class="si">%s</span><span class="s2">)&quot;</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,)</span> <span class="o">+</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">template</span> <span class="o">%</span> <span class="n">values</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The &#39;width&#39; component of the size.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The &#39;height&#39; component of the size.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Size"><a class="viewcode-back" href="../../../api/enable.layout.geometry.html#enable.layout.geometry.Size">[docs]</a><span class="k">class</span> <span class="nc">Size</span><span class="p">(</span><span class="n">BaseSize</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A BaseSize implementation for integer values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+<div class="viewcode-block" id="Size.coerce_type"><a class="viewcode-back" href="../../../api/enable.layout.geometry.html#enable.layout.geometry.Size.coerce_type">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">coerce_type</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">int</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="SizeF"><a class="viewcode-back" href="../../../api/enable.layout.geometry.html#enable.layout.geometry.SizeF">[docs]</a><span class="k">class</span> <span class="nc">SizeF</span><span class="p">(</span><span class="n">BaseSize</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A BaseSize implementation for floating point values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+<div class="viewcode-block" id="SizeF.coerce_type"><a class="viewcode-back" href="../../../api/enable.layout.geometry.html#enable.layout.geometry.SizeF.coerce_type">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">coerce_type</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

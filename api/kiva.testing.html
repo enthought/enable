@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>kiva.testing module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="kiva package" href="kiva.html" >
+    <link rel="next" title="kiva.agg package" href="kiva.agg.html" >
+    <link rel="prev" title="kiva.svg module" href="kiva.svg.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="kiva.html" accesskey="U">kiva package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="kiva.agg.html" title="kiva.agg package"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="kiva.svg.html" title="kiva.svg module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-kiva.testing">
+<span id="kiva-testing-module"></span><h1>kiva.testing module<a class="headerlink" href="#module-kiva.testing" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="kiva.testing.KivaTestAssistant">
+<em class="property">class </em><code class="sig-prename descclassname">kiva.testing.</code><code class="sig-name descname">KivaTestAssistant</code><a class="reference internal" href="../_modules/kiva/testing.html#KivaTestAssistant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.testing.KivaTestAssistant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Mixin test helper for kiva drawing tests.</p>
+<dl class="method">
+<dt id="kiva.testing.KivaTestAssistant.assertPathsAreCreated">
+<code class="sig-name descname">assertPathsAreCreated</code><span class="sig-paren">(</span><em class="sig-param">drawable</em>, <em class="sig-param">width=200</em>, <em class="sig-param">height=200</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/testing.html#KivaTestAssistant.assertPathsAreCreated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.testing.KivaTestAssistant.assertPathsAreCreated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that drawing creates paths.</p>
+<p>When paths and lines creation methods are used from a graphics
+context the drawing paths are compiled and processed. By using
+a mock graphics context we can check if something has been drawn.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>drawable</strong> – A drawable object that has a draw method.</p></li>
+<li><p><strong>width</strong> (<em>int</em><em>, </em><em>optional</em>) – The width of the array buffer (default is 200).</p></li>
+<li><p><strong>height</strong> (<em>int</em><em>, </em><em>optional</em>) – The height of the array buffer (default is 200).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.testing.KivaTestAssistant.assertPathsAreProcessed">
+<code class="sig-name descname">assertPathsAreProcessed</code><span class="sig-paren">(</span><em class="sig-param">drawable</em>, <em class="sig-param">width=200</em>, <em class="sig-param">height=200</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/testing.html#KivaTestAssistant.assertPathsAreProcessed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.testing.KivaTestAssistant.assertPathsAreProcessed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that all the paths have been compiled and processed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>drawable</strong> – A drawable object that has a draw method.</p></li>
+<li><p><strong>width</strong> (<em>int</em><em>, </em><em>optional</em>) – The width of the array buffer (default is 200).</p></li>
+<li><p><strong>height</strong> (<em>int</em><em>, </em><em>optional</em>) – The height of the array buffer (default is 200).</p></li>
+<li><p><strong>::</strong> (<em>note</em>) – A drawable that draws nothing will pass this check.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kiva.testing.KivaTestAssistant.create_mock_gc">
+<code class="sig-name descname">create_mock_gc</code><span class="sig-paren">(</span><em class="sig-param">width</em>, <em class="sig-param">height</em>, <em class="sig-param">methods=()</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/testing.html#KivaTestAssistant.create_mock_gc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.testing.KivaTestAssistant.create_mock_gc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an image graphics context that with mocked methods.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>height</strong> (<em>width</em><em>,</em>) – The size of the graphics context canvas.</p></li>
+<li><p><strong>methods</strong> (<em>iterable</em>) – the methods which are going to be mocked with a Mock object.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="kiva.svg.html"
+                        title="previous chapter">kiva.svg module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="kiva.agg.html"
+                        title="next chapter">kiva.agg package</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/kiva.testing.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

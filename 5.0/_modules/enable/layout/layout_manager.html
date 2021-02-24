@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.layout.layout_manager &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../../index.html" >
+    <link rel="up" title="Module code" href="../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.layout.layout_manager</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="k">import</span> <span class="n">contextmanager</span>
+
+<span class="kn">import</span> <span class="nn">kiwisolver</span> <span class="k">as</span> <span class="nn">kiwi</span>
+
+
+<div class="viewcode-block" id="LayoutManager"><a class="viewcode-back" href="../../../api/enable.layout.layout_manager.html#enable.layout.layout_manager.LayoutManager">[docs]</a><span class="k">class</span> <span class="nc">LayoutManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A class which uses a kiwi solver to manage a system</span>
+<span class="sd">    of constraints.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="o">=</span> <span class="n">kiwi</span><span class="o">.</span><span class="n">Solver</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_edit_stack</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="LayoutManager.initialize"><a class="viewcode-back" href="../../../api/enable.layout.layout_manager.html#enable.layout.layout_manager.LayoutManager.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">constraints</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Initialize the solver with the given constraints.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        constraints : Iterable</span>
+<span class="sd">            An iterable that yields the constraints to add to the</span>
+<span class="sd">            solvers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Solver already initialized&quot;</span><span class="p">)</span>
+        <span class="n">solver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span>
+        <span class="k">for</span> <span class="n">cn</span> <span class="ow">in</span> <span class="n">constraints</span><span class="p">:</span>
+            <span class="n">solver</span><span class="o">.</span><span class="n">addConstraint</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="LayoutManager.replace_constraints"><a class="viewcode-back" href="../../../api/enable.layout.layout_manager.html#enable.layout.layout_manager.LayoutManager.replace_constraints">[docs]</a>    <span class="k">def</span> <span class="nf">replace_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_cns</span><span class="p">,</span> <span class="n">new_cns</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Replace constraints in the solver.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        old_cns : list</span>
+<span class="sd">            The list of kiwi constraints to remove from the</span>
+<span class="sd">            solver.</span>
+
+<span class="sd">        new_cns : list</span>
+<span class="sd">            The list of kiwi constraints to add to the solver.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Solver not yet initialized&quot;</span><span class="p">)</span>
+        <span class="n">solver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span>
+        <span class="k">for</span> <span class="n">cn</span> <span class="ow">in</span> <span class="n">old_cns</span><span class="p">:</span>
+            <span class="n">solver</span><span class="o">.</span><span class="n">removeConstraint</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">cn</span> <span class="ow">in</span> <span class="n">new_cns</span><span class="p">:</span>
+            <span class="n">solver</span><span class="o">.</span><span class="n">addConstraint</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LayoutManager.layout"><a class="viewcode-back" href="../../../api/enable.layout.layout_manager.html#enable.layout.layout_manager.LayoutManager.layout">[docs]</a>    <span class="k">def</span> <span class="nf">layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cb</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">strength</span><span class="o">=</span><span class="n">kiwi</span><span class="o">.</span><span class="n">strength</span><span class="o">.</span><span class="n">medium</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Perform an iteration of the solver for the new width and</span>
+<span class="sd">        height constraint variables.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cb : callable</span>
+<span class="sd">            A callback which will be called when new values from the</span>
+<span class="sd">            solver are available. This will be called from within a</span>
+<span class="sd">            solver context while the solved values are valid. Thus</span>
+<span class="sd">            the new values should be consumed before the callback</span>
+<span class="sd">            returns.</span>
+
+<span class="sd">        width : Constraint Variable</span>
+<span class="sd">            The constraint variable representing the width of the</span>
+<span class="sd">            main layout container.</span>
+
+<span class="sd">        height : Constraint Variable</span>
+<span class="sd">            The constraint variable representing the height of the</span>
+<span class="sd">            main layout container.</span>
+
+<span class="sd">        size : (int, int)</span>
+<span class="sd">            The (width, height) size tuple which is the current size</span>
+<span class="sd">            of the main layout container.</span>
+
+<span class="sd">        strength : kiwisolver strength, optional</span>
+<span class="sd">            The strength with which to perform the layout using the</span>
+<span class="sd">            current size of the container. i.e. the strength of the</span>
+<span class="sd">            resize. The default is kiwisolver.strength.medium.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Layout with uninitialized solver&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">size</span>
+            <span class="n">solver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span>
+            <span class="n">pairs</span> <span class="o">=</span> <span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">strength</span><span class="p">),</span> <span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">strength</span><span class="p">))</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edit_context</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
+                <span class="n">solver</span><span class="o">.</span><span class="n">suggestValue</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+                <span class="n">solver</span><span class="o">.</span><span class="n">suggestValue</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+                <span class="n">solver</span><span class="o">.</span><span class="n">updateVariables</span><span class="p">()</span>
+                <span class="n">cb</span><span class="p">()</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="LayoutManager.get_min_size"><a class="viewcode-back" href="../../../api/enable.layout.layout_manager.html#enable.layout.layout_manager.LayoutManager.get_min_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_min_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">strength</span><span class="o">=</span><span class="n">kiwi</span><span class="o">.</span><span class="n">strength</span><span class="o">.</span><span class="n">medium</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Run an iteration of the solver with the suggested size of the</span>
+<span class="sd">        component set to (0, 0). This will cause the solver to effectively</span>
+<span class="sd">        compute the minimum size that the window can be to solve the</span>
+<span class="sd">        system.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        width : Constraint Variable</span>
+<span class="sd">            The constraint variable representing the width of the</span>
+<span class="sd">            main layout container.</span>
+
+<span class="sd">        height : Constraint Variable</span>
+<span class="sd">            The constraint variable representing the height of the</span>
+<span class="sd">            main layout container.</span>
+
+<span class="sd">        strength : kiwisolver strength, optional</span>
+<span class="sd">            The strength with which to perform the layout using the</span>
+<span class="sd">            current size of the container. i.e. the strength of the</span>
+<span class="sd">            resize. The default is kiwisolver.strength.medium.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : (float, float)</span>
+<span class="sd">            The floating point (min_width, min_height) size of the</span>
+<span class="sd">            container which would best satisfy the set of constraints.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Get min size on uninitialized solver&quot;</span><span class="p">)</span>
+        <span class="n">solver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">strength</span><span class="p">),</span> <span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">strength</span><span class="p">))</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edit_context</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
+            <span class="n">solver</span><span class="o">.</span><span class="n">suggestValue</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+            <span class="n">solver</span><span class="o">.</span><span class="n">suggestValue</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+            <span class="n">solver</span><span class="o">.</span><span class="n">updateVariables</span><span class="p">()</span>
+            <span class="n">min_width</span> <span class="o">=</span> <span class="n">width</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+            <span class="n">min_height</span> <span class="o">=</span> <span class="n">height</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">min_width</span><span class="p">,</span> <span class="n">min_height</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LayoutManager.get_max_size"><a class="viewcode-back" href="../../../api/enable.layout.layout_manager.html#enable.layout.layout_manager.LayoutManager.get_max_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_max_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">strength</span><span class="o">=</span><span class="n">kiwi</span><span class="o">.</span><span class="n">strength</span><span class="o">.</span><span class="n">medium</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Run an iteration of the solver with the suggested size of</span>
+<span class="sd">        the component set to a very large value. This will cause the</span>
+<span class="sd">        solver to effectively compute the maximum size that the window</span>
+<span class="sd">        can be to solve the system. The return value is a tuple numbers.</span>
+<span class="sd">        If one of the numbers is -1, it indicates there is no maximum in</span>
+<span class="sd">        that direction.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        width : Constraint Variable</span>
+<span class="sd">            The constraint variable representing the width of the</span>
+<span class="sd">            main layout container.</span>
+
+<span class="sd">        height : Constraint Variable</span>
+<span class="sd">            The constraint variable representing the height of the</span>
+<span class="sd">            main layout container.</span>
+
+<span class="sd">        strength : kiwisolver strength, optional</span>
+<span class="sd">            The strength with which to perform the layout using the</span>
+<span class="sd">            current size of the container. i.e. the strength of the</span>
+<span class="sd">            resize. The default is kiwisolver.strength.medium.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : (float or -1, float or -1)</span>
+<span class="sd">            The floating point (max_width, max_height) size of the</span>
+<span class="sd">            container which would best satisfy the set of constraints.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Get max size on uninitialized solver&quot;</span><span class="p">)</span>
+        <span class="n">max_val</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="mi">24</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># Arbitrary, but the max allowed by Qt.</span>
+        <span class="n">solver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">strength</span><span class="p">),</span> <span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">strength</span><span class="p">))</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edit_context</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
+            <span class="n">solver</span><span class="o">.</span><span class="n">suggestValue</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">max_val</span><span class="p">)</span>
+            <span class="n">solver</span><span class="o">.</span><span class="n">suggestValue</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">max_val</span><span class="p">)</span>
+            <span class="n">solver</span><span class="o">.</span><span class="n">updateVariables</span><span class="p">()</span>
+            <span class="n">max_width</span> <span class="o">=</span> <span class="n">width</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+            <span class="n">max_height</span> <span class="o">=</span> <span class="n">width</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="n">width_diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">max_val</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">max_width</span><span class="p">)))</span>
+        <span class="n">height_diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">max_val</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">max_height</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">width_diff</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">max_width</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">height_diff</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">max_height</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">max_width</span><span class="p">,</span> <span class="n">max_height</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_push_edit_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pairs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Push edit variables into the solver.</span>
+
+<span class="sd">        The current edit variables will be removed and the new edit</span>
+<span class="sd">        variables will be added.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pairs : sequence</span>
+<span class="sd">            A sequence of 2-tuples of (var, strength) which should be</span>
+<span class="sd">            added as edit variables to the solver.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">solver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edit_stack</span>
+        <span class="k">if</span> <span class="n">stack</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">strength</span> <span class="ow">in</span> <span class="n">stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">solver</span><span class="o">.</span><span class="n">removeEditVariable</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">strength</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+            <span class="n">solver</span><span class="o">.</span><span class="n">addEditVariable</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">strength</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_pop_edit_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Restore the previous edit variables in the solver.</span>
+
+<span class="sd">        The current edit variables will be removed and the previous</span>
+<span class="sd">        edit variables will be re-added.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">solver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edit_stack</span>
+        <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">strength</span> <span class="ow">in</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">():</span>
+            <span class="n">solver</span><span class="o">.</span><span class="n">removeEditVariable</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">stack</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">strength</span> <span class="ow">in</span> <span class="n">stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">solver</span><span class="o">.</span><span class="n">addEditVariable</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">strength</span><span class="p">)</span>
+
+    <span class="nd">@contextmanager</span>
+    <span class="k">def</span> <span class="nf">_edit_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pairs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; A context manager for temporary solver edits.</span>
+
+<span class="sd">        This manager will push the edit vars into the solver and pop</span>
+<span class="sd">        them when the context exits.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pairs : list</span>
+<span class="sd">            A list of 2-tuple of (var, strength) which should be added</span>
+<span class="sd">            as temporary edit variables to the solver.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_push_edit_vars</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span>
+        <span class="k">yield</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pop_edit_vars</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

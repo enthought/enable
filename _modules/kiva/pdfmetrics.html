@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>kiva.pdfmetrics &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for kiva.pdfmetrics</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="c1">#------------------------------------------------------------------------------</span>
+<span class="c1">#copyright ReportLab Inc. 2001</span>
+<span class="c1">#see license.txt for license details</span>
+<span class="c1">#history http://cvs.sourceforge.net/cgi-bin/cvsweb.cgi/reportlab/pdfbase/pdfmetrics.py?cvsroot=reportlab</span>
+
+<span class="c1"># MODIFIED from reportlab&#39;s version for the sake of easier integration in Kiva -- David Ascher</span>
+
+<span class="c1">#$Header $</span>
+<span class="n">__version__</span><span class="o">=</span><span class="s1">&#39;&#39;&#39; $Id: pdfmetrics.py,v 1.1 2002/12/03 08:06:29 da Exp $ &#39;&#39;&#39;</span>
+<span class="vm">__doc__</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">This provides a database of font metric information and</span>
+<span class="s2">efines Font, Encoding and TypeFace classes aimed at end users.</span>
+
+<span class="s2">There are counterparts to some of these in pdfbase/pdfdoc.py, but</span>
+<span class="s2">the latter focus on constructing the right PDF objects.  These</span>
+<span class="s2">classes are declarative and focus on letting the user construct</span>
+<span class="s2">and query font objects.</span>
+
+<span class="s2">The module maintains a registry of font objects at run time.</span>
+
+<span class="s2">It is independent of the canvas or any particular context.  It keeps</span>
+<span class="s2">a registry of Font, TypeFace and Encoding objects.  Ideally these</span>
+<span class="s2">would be pre-loaded, but due to a nasty circularity problem we</span>
+<span class="s2">trap attempts to access them and do it on first access.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">string</span><span class="o">,</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="c1"># XXX Kiva specific changes</span>
+<span class="n">defaultEncoding</span> <span class="o">=</span> <span class="s1">&#39;WinAnsiEncoding&#39;</span>       <span class="c1"># &#39;WinAnsi&#39; or &#39;MacRoman&#39;</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">_fontdata</span>
+
+<span class="n">standardFonts</span> <span class="o">=</span> <span class="n">_fontdata</span><span class="o">.</span><span class="n">standardFonts</span>
+<span class="n">standardEncodings</span> <span class="o">=</span> <span class="n">_fontdata</span><span class="o">.</span><span class="n">standardEncodings</span>
+
+<span class="n">_dummyEncoding</span><span class="o">=</span><span class="s1">&#39; _not an encoding_ &#39;</span>
+
+<span class="c1"># XXX Kiva-specific changes</span>
+<span class="n">_stringWidth</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="n">_typefaces</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">_encodings</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">_fonts</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="FontError"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.FontError">[docs]</a><span class="k">class</span> <span class="nc">FontError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+<div class="viewcode-block" id="FontNotFoundError"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.FontNotFoundError">[docs]</a><span class="k">class</span> <span class="nc">FontNotFoundError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="parseAFMFile"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.parseAFMFile">[docs]</a><span class="k">def</span> <span class="nf">parseAFMFile</span><span class="p">(</span><span class="n">afmFileName</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Quick and dirty - gives back a top-level dictionary</span>
+<span class="sd">    with top-level items, and a &#39;widths&#39; key containing</span>
+<span class="sd">    a dictionary of glyph names and widths.  Just enough</span>
+<span class="sd">    needed for embedding.  A better parser would accept</span>
+<span class="sd">    options for what data you wwanted, and preserve the</span>
+<span class="sd">    order.&quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">afmFileName</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;AFM file </span><span class="si">%s</span><span class="s1"> is empty&#39;</span> <span class="o">%</span> <span class="n">afmFileName</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1">#likely to be a MAC file</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;AFM file </span><span class="si">%s</span><span class="s1"> hasn</span><span class="se">\&#39;</span><span class="s1">t enough data&#39;</span> <span class="o">%</span> <span class="n">afmFileName</span><span class="p">)</span>
+    <span class="n">topLevel</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">glyphLevel</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1">#pass 1 - get the widths</span>
+    <span class="n">inMetrics</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># os &#39;TOP&#39;, or &#39;CHARMETRICS&#39;</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">16</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;StartCharMetrics&#39;</span><span class="p">:</span>
+            <span class="n">inMetrics</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;EndCharMetrics&#39;</span><span class="p">:</span>
+            <span class="n">inMetrics</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">inMetrics</span><span class="p">:</span>
+            <span class="n">chunks</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)]</span>
+            <span class="n">cidChunk</span><span class="p">,</span> <span class="n">widthChunk</span><span class="p">,</span> <span class="n">nameChunk</span> <span class="o">=</span> <span class="n">chunks</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+
+            <span class="c1"># character ID</span>
+            <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">cidChunk</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="n">l</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;bad line in font file </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">line</span>
+            <span class="n">cid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+            <span class="c1"># width</span>
+            <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">widthChunk</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="n">l</span> <span class="o">==</span> <span class="s1">&#39;WX&#39;</span><span class="p">,</span> <span class="s1">&#39;bad line in font file </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">line</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+            <span class="c1"># name</span>
+            <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">nameChunk</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="n">l</span> <span class="o">==</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;bad line in font file </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">line</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">r</span>
+
+            <span class="n">glyphLevel</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cid</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+
+    <span class="c1"># pass 2 font info</span>
+    <span class="n">inHeader</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">16</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;StartFontMetrics&#39;</span><span class="p">:</span>
+            <span class="n">inHeader</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">16</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;StartCharMetrics&#39;</span><span class="p">:</span>
+            <span class="n">inHeader</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">inHeader</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Comment&#39;</span><span class="p">:</span> <span class="k">pass</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Header information error in afm </span><span class="si">%s</span><span class="s2">: line=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">afmFileName</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">right</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="n">topLevel</span><span class="p">[</span><span class="n">left</span><span class="p">]</span> <span class="o">=</span> <span class="n">right</span>
+
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">topLevel</span><span class="p">,</span> <span class="n">glyphLevel</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypeFace"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.TypeFace">[docs]</a><span class="k">class</span> <span class="nc">TypeFace</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">glyphNames</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">glyphWidths</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ascent</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">descent</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;ZapfDingbats&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">requiredEncoding</span> <span class="o">=</span> <span class="s1">&#39;ZapfDingbatsEncoding&#39;</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Symbol&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">requiredEncoding</span> <span class="o">=</span> <span class="s1">&#39;SymbolEncoding&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">requiredEncoding</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">standardFonts</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">builtIn</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loadBuiltInData</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">builtIn</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">_loadBuiltInData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Called for the built in 14 fonts.  Gets their glyph data.</span>
+
+<span class="sd">        We presume they never change so this can be a shared reference.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">glyphWidths</span> <span class="o">=</span> <span class="n">_fontdata</span><span class="o">.</span><span class="n">widthsByFontGlyph</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">glyphNames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">glyphWidths</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ascent</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">descent</span> <span class="o">=</span> <span class="n">_fontdata</span><span class="o">.</span><span class="n">ascent_descent</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+
+<div class="viewcode-block" id="TypeFace.findT1File"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.TypeFace.findT1File">[docs]</a>    <span class="k">def</span> <span class="nf">findT1File</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;.pfb&#39;</span><span class="p">):</span>
+        <span class="n">possible_exts</span> <span class="o">=</span> <span class="p">(</span><span class="n">ext</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">ext</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s1">&#39;pfbFileName&#39;</span><span class="p">):</span>
+            <span class="n">r_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pfbFileName</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">possible_exts</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">r_basename</span> <span class="o">+</span> <span class="n">e</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">r_basename</span> <span class="o">+</span> <span class="n">e</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">_fontdata</span><span class="o">.</span><span class="n">findT1File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">afm</span> <span class="o">=</span> <span class="n">bruteForceSearchForAFM</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">afm</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ext</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;.pfb&#39;</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">possible_exts</span><span class="p">:</span>
+                        <span class="n">pfb</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">afm</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">e</span>
+                        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pfb</span><span class="p">):</span>
+                            <span class="n">r</span> <span class="o">=</span> <span class="n">pfb</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">r</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">elif</span> <span class="n">ext</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;.afm&#39;</span><span class="p">:</span>
+                    <span class="n">r</span> <span class="o">=</span> <span class="n">afm</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Can&#39;t find </span><span class="si">%s</span><span class="s2"> for face &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">r</span></div></div>
+
+<div class="viewcode-block" id="bruteForceSearchForAFM"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.bruteForceSearchForAFM">[docs]</a><span class="k">def</span> <span class="nf">bruteForceSearchForAFM</span><span class="p">(</span><span class="n">faceName</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Looks in all AFM files on path for face with given name.</span>
+
+<span class="sd">    Returns AFM file name or None.  Ouch!&quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">glob</span>
+    <span class="c1"># XXX Kiva-specific changes</span>
+    <span class="n">T1SearchPath</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># XXX should be modified if Kiva wants to support T1 fonts</span>
+
+    <span class="k">for</span> <span class="n">dirname</span> <span class="ow">in</span> <span class="n">T1SearchPath</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dirname</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">possibles</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">dirname</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s1">&#39;*.[aA][fF][mM]&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">possible</span> <span class="ow">in</span> <span class="n">possibles</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">topDict</span><span class="p">,</span> <span class="n">glyphDict</span><span class="p">)</span> <span class="o">=</span> <span class="n">parseAFMFile</span><span class="p">(</span><span class="n">possible</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">topDict</span><span class="p">[</span><span class="s1">&#39;FontName&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">faceName</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">possible</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Encoding"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.Encoding">[docs]</a><span class="k">class</span> <span class="nc">Encoding</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Object to help you create and refer to encodings.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">standardEncodings</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">base</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Can&#39;t have a base encoding for a standard encoding&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">baseEncodingName</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vector</span> <span class="o">=</span> <span class="n">_fontdata</span><span class="o">.</span><span class="n">encodings</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">base</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># assume based on the usual one</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">baseEncodingName</span> <span class="o">=</span> <span class="n">defaultEncoding</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vector</span> <span class="o">=</span> <span class="n">_fontdata</span><span class="o">.</span><span class="n">encodings</span><span class="p">[</span><span class="n">defaultEncoding</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">baseEnc</span> <span class="o">=</span> <span class="n">getEncoding</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">baseEncodingName</span> <span class="o">=</span> <span class="n">baseEnc</span><span class="o">.</span><span class="n">name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vector</span> <span class="o">=</span> <span class="n">baseEnc</span><span class="o">.</span><span class="n">vector</span><span class="p">[:]</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">base</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">baseEncodingName</span> <span class="o">=</span> <span class="n">defaultEncoding</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vector</span> <span class="o">=</span> <span class="n">base</span><span class="p">[:]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">Encoding</span><span class="p">):</span>
+            <span class="c1"># accept a vector</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">baseEncodingName</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vector</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">vector</span><span class="p">[:]</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="s2">&quot;Return glyph name for that code point, or None&quot;</span>
+        <span class="c1"># THIS SHOULD BE INLINED FOR SPEED</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="c1"># should fail if they are frozen</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Cannot modify a frozen encoding&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">!=</span><span class="n">value</span><span class="p">:</span>
+            <span class="n">L</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">)</span>
+            <span class="n">L</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vector</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Encoding.freeze"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.Encoding.freeze">[docs]</a>    <span class="k">def</span> <span class="nf">freeze</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vector</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="Encoding.isEqual"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.Encoding.isEqual">[docs]</a>    <span class="k">def</span> <span class="nf">isEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vector</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">vector</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Encoding.modifyRange"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.Encoding.modifyRange">[docs]</a>    <span class="k">def</span> <span class="nf">modifyRange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">newNames</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets a group of character names starting at the code point &#39;base&#39;.&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Cannot modify a frozen encoding&#39;</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">base</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">newNames</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="Encoding.getDifferences"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.Encoding.getDifferences">[docs]</a>    <span class="k">def</span> <span class="nf">getDifferences</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherEnc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a compact list of the code points differing between two encodings</span>
+
+<span class="sd">        This is in the Adobe format, a list of::</span>
+
+<span class="sd">           [[b1, name1, name2, name3],</span>
+<span class="sd">           [b2, name4]]</span>
+
+<span class="sd">        where b1...bn is the starting code point, and the glyph names following</span>
+<span class="sd">        are assigned consecutive code points.&quot;&quot;&quot;</span>
+
+        <span class="n">ranges</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">curRange</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">)):</span>
+            <span class="n">glyph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">glyph</span><span class="o">==</span><span class="n">otherEnc</span><span class="o">.</span><span class="n">vector</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">curRange</span><span class="p">:</span>
+                    <span class="n">ranges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curRange</span><span class="p">)</span>
+                    <span class="n">curRange</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">curRange</span><span class="p">:</span>
+                    <span class="n">curRange</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">glyph</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">glyph</span><span class="p">:</span>
+                    <span class="n">curRange</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">glyph</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">curRange</span><span class="p">:</span>
+            <span class="n">ranges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curRange</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ranges</span></div>
+
+<div class="viewcode-block" id="Encoding.makePDFObject"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.Encoding.makePDFObject">[docs]</a>    <span class="k">def</span> <span class="nf">makePDFObject</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># XXX Kiva specific change</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+
+
+<div class="viewcode-block" id="Font"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.Font">[docs]</a><span class="k">class</span> <span class="nc">Font</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Represents a font (i.e., combination of face and encoding).</span>
+
+<span class="sd">    Defines suitable machinery for single byte fonts.  This is</span>
+<span class="sd">    a concrete class which can handle the basic built-in fonts;</span>
+<span class="sd">    not clear yet if embedded ones need a new font class or</span>
+<span class="sd">    just a new typeface class (which would do the job through</span>
+<span class="sd">    composition)&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">faceName</span><span class="p">,</span> <span class="n">encName</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fontName</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face</span> <span class="o">=</span> <span class="n">getTypeFace</span><span class="p">(</span><span class="n">faceName</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="o">=</span> <span class="n">getEncoding</span><span class="p">(</span><span class="n">encName</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calcWidths</span><span class="p">()</span>
+
+        <span class="c1"># multi byte fonts do their own stringwidth calculations.</span>
+        <span class="c1"># signal this here.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_multiByte</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">_calcWidths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Vector of widths for stringWidth function&quot;&quot;&quot;</span>
+        <span class="c1">#synthesize on first request</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">256</span>
+        <span class="n">gw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="o">.</span><span class="n">glyphWidths</span>
+        <span class="n">vec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="o">.</span><span class="n">vector</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">):</span>
+            <span class="n">glyphName</span> <span class="o">=</span> <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">glyphName</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">width</span> <span class="o">=</span> <span class="n">gw</span><span class="p">[</span><span class="n">glyphName</span><span class="p">]</span>
+                    <span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">width</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="c1"># XXX Kiva specific change</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;typeface &quot;</span><span class="si">%s</span><span class="s1">&quot; does not have a glyph &quot;</span><span class="si">%s</span><span class="s1">&quot;, bad font!&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">glyphName</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">widths</span> <span class="o">=</span> <span class="n">w</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_stringWidth</span><span class="p">:</span>
+<div class="viewcode-block" id="Font.stringWidth"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.Font.stringWidth">[docs]</a>        <span class="k">def</span> <span class="nf">stringWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;This is the &quot;purist&quot; approach to width.  The practical one</span>
+<span class="sd">            is to use the stringWidth one which may be optimized</span>
+<span class="sd">            in C.&quot;&quot;&quot;</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">widths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widths</span>
+            <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="o">+</span> <span class="n">widths</span><span class="p">[</span><span class="nb">ord</span><span class="p">(</span><span class="n">ch</span><span class="p">)]</span>
+            <span class="k">return</span> <span class="n">w</span> <span class="o">*</span> <span class="mf">0.001</span> <span class="o">*</span> <span class="n">size</span></div>
+
+    <span class="k">def</span> <span class="nf">_formatWidths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;returns a pretty block in PDF Array format to aid inspection&quot;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;[&#39;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">):</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">widths</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">255</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">text</span> <span class="o">+</span> <span class="s1">&#39; ]&#39;</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">16</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">text</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="n">text</span>
+
+<div class="viewcode-block" id="Font.addObjects"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.Font.addObjects">[docs]</a>    <span class="k">def</span> <span class="nf">addObjects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+        <span class="c1"># XXX Kiva specific change</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+
+<span class="n">PFB_MARKER</span><span class="o">=</span><span class="nb">chr</span><span class="p">(</span><span class="mh">0x80</span><span class="p">)</span>
+<span class="n">PFB_ASCII</span><span class="o">=</span><span class="nb">chr</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">PFB_BINARY</span><span class="o">=</span><span class="nb">chr</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">PFB_EOF</span><span class="o">=</span><span class="nb">chr</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_pfbSegLen</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;compute a pfb style length from the first 4 bytes of string d&#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="p">((((</span><span class="nb">ord</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">p</span><span class="o">+</span><span class="mi">3</span><span class="p">])</span><span class="o">&lt;&lt;</span><span class="mi">8</span><span class="p">)</span><span class="o">|</span><span class="nb">ord</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">p</span><span class="o">+</span><span class="mi">2</span><span class="p">])</span><span class="o">&lt;&lt;</span><span class="mi">8</span><span class="p">)</span><span class="o">|</span><span class="nb">ord</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">]))</span><span class="o">&lt;&lt;</span><span class="mi">8</span><span class="p">)</span><span class="o">|</span><span class="nb">ord</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">p</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">_pfbCheck</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">fn</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">!=</span><span class="n">PFB_MARKER</span> <span class="ow">or</span> <span class="n">d</span><span class="p">[</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">!=</span><span class="n">m</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Bad pfb file</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> expected chr(</span><span class="si">%d</span><span class="s1">)chr(</span><span class="si">%d</span><span class="s1">) at char </span><span class="si">%d</span><span class="s1">, got chr(</span><span class="si">%d</span><span class="s1">)chr(</span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="nb">ord</span><span class="p">(</span><span class="n">PFB_MARKER</span><span class="p">),</span><span class="nb">ord</span><span class="p">(</span><span class="n">m</span><span class="p">),</span><span class="n">p</span><span class="p">,</span><span class="nb">ord</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">p</span><span class="p">]),</span><span class="nb">ord</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">])))</span>
+    <span class="k">if</span> <span class="n">m</span><span class="o">==</span><span class="n">PFB_EOF</span><span class="p">:</span> <span class="k">return</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="mi">2</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">_pfbSegLen</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="mi">4</span>
+    <span class="k">if</span> <span class="n">p</span><span class="o">+</span><span class="n">l</span><span class="o">&gt;</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Bad pfb file</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> needed </span><span class="si">%d</span><span class="s1">+</span><span class="si">%d</span><span class="s1"> bytes have only </span><span class="si">%d</span><span class="s1">!&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">p</span><span class="p">,</span> <span class="n">p</span><span class="o">+</span><span class="n">l</span>
+
+
+<div class="viewcode-block" id="EmbeddedType1Face"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.EmbeddedType1Face">[docs]</a><span class="k">class</span> <span class="nc">EmbeddedType1Face</span><span class="p">(</span><span class="n">TypeFace</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A Type 1 font other than one of the basic 14.</span>
+
+<span class="sd">    Its glyph data will be embedded in the PDF file.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">afmFileName</span><span class="p">,</span> <span class="n">pfbFileName</span><span class="p">):</span>
+        <span class="c1"># ignore afm file for now</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">afmFileName</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">afmFileName</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pfbFileName</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">pfbFileName</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">requiredEncoding</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loadGlyphs</span><span class="p">(</span><span class="n">pfbFileName</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loadMetrics</span><span class="p">(</span><span class="n">afmFileName</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_loadGlyphs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pfbFileName</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Loads in binary glyph data, and finds the four length</span>
+<span class="sd">        measurements needed for the font descriptor.&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pfbFileName</span><span class="p">),</span> <span class="s1">&#39;file </span><span class="si">%s</span><span class="s1"> not found&#39;</span> <span class="o">%</span> <span class="n">pfbFileName</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">pfbFileName</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">s1</span><span class="p">,</span> <span class="n">l1</span> <span class="o">=</span> <span class="n">_pfbCheck</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">PFB_ASCII</span><span class="p">,</span><span class="n">pfbFileName</span><span class="p">)</span>
+        <span class="n">s2</span><span class="p">,</span> <span class="n">l2</span> <span class="o">=</span> <span class="n">_pfbCheck</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">PFB_BINARY</span><span class="p">,</span><span class="n">pfbFileName</span><span class="p">)</span>
+        <span class="n">s3</span><span class="p">,</span> <span class="n">l3</span> <span class="o">=</span> <span class="n">_pfbCheck</span><span class="p">(</span><span class="n">l2</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">PFB_ASCII</span><span class="p">,</span><span class="n">pfbFileName</span><span class="p">)</span>
+        <span class="n">_pfbCheck</span><span class="p">(</span><span class="n">l3</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">PFB_EOF</span><span class="p">,</span><span class="n">pfbFileName</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_binaryData</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">s1</span><span class="p">:</span><span class="n">l1</span><span class="p">]</span><span class="o">+</span><span class="n">d</span><span class="p">[</span><span class="n">s2</span><span class="p">:</span><span class="n">l2</span><span class="p">]</span><span class="o">+</span><span class="n">d</span><span class="p">[</span><span class="n">s3</span><span class="p">:</span><span class="n">l3</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_binaryData</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_length1</span> <span class="o">=</span> <span class="n">l1</span><span class="o">-</span><span class="n">s1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_length2</span> <span class="o">=</span> <span class="n">l2</span><span class="o">-</span><span class="n">s2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_length3</span> <span class="o">=</span> <span class="n">l3</span><span class="o">-</span><span class="n">s3</span>
+
+
+    <span class="k">def</span> <span class="nf">_loadMetrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">afmFileName</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Loads in and parses font metrics.&quot;&quot;&quot;</span>
+        <span class="c1">#assert os.path.isfile(afmFileName), &quot;AFM file %s not found&quot; % afmFileName</span>
+        <span class="p">(</span><span class="n">topLevel</span><span class="p">,</span> <span class="n">glyphData</span><span class="p">)</span> <span class="o">=</span> <span class="n">parseAFMFile</span><span class="p">(</span><span class="n">afmFileName</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">topLevel</span><span class="p">[</span><span class="s1">&#39;FontName&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ascent</span> <span class="o">=</span> <span class="n">topLevel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Ascender&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">descent</span> <span class="o">=</span> <span class="n">topLevel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Descender&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">capHeight</span> <span class="o">=</span> <span class="n">topLevel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CapHeight&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">italicAngle</span> <span class="o">=</span> <span class="n">topLevel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ItalicAngle&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stemV</span> <span class="o">=</span> <span class="n">topLevel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;stemV&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xHeight</span> <span class="o">=</span> <span class="n">topLevel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;XHeight&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">strBbox</span> <span class="o">=</span> <span class="n">topLevel</span><span class="p">[</span><span class="s1">&#39;FontBBox&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bbox</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">tok</span><span class="p">)</span> <span class="k">for</span> <span class="n">tok</span> <span class="ow">in</span> <span class="n">strBbox</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bbox</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1000</span><span class="p">,</span><span class="mi">1000</span><span class="p">]</span>
+
+        <span class="n">glyphWidths</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">cid</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="ow">in</span> <span class="n">glyphData</span><span class="p">:</span>
+            <span class="n">glyphWidths</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">glyphWidths</span> <span class="o">=</span> <span class="n">glyphWidths</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">glyphNames</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glyphWidths</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="c1"># for font-specific encodings like Symbol, Dingbats, Carta we</span>
+        <span class="c1"># need to make a new encoding as well....</span>
+        <span class="k">if</span> <span class="n">topLevel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;EncodingScheme&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;FontSpecific&#39;</span><span class="p">:</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="mi">256</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="ow">in</span> <span class="n">glyphData</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">code</span> <span class="o">&gt;=</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">code</span> <span class="o">&lt;=</span><span class="mi">255</span><span class="p">:</span>
+                    <span class="n">names</span><span class="p">[</span><span class="n">code</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="n">encName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;Encoding&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">requiredEncoding</span> <span class="o">=</span> <span class="n">encName</span>
+            <span class="n">enc</span> <span class="o">=</span> <span class="n">Encoding</span><span class="p">(</span><span class="n">encName</span><span class="p">,</span> <span class="n">names</span><span class="p">)</span>
+            <span class="n">registerEncoding</span><span class="p">(</span><span class="n">enc</span><span class="p">)</span>
+
+<div class="viewcode-block" id="EmbeddedType1Face.addObjects"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.EmbeddedType1Face.addObjects">[docs]</a>    <span class="k">def</span> <span class="nf">addObjects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+        <span class="c1"># XXX Kiva specific changes</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+
+<div class="viewcode-block" id="registerTypeFace"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.registerTypeFace">[docs]</a><span class="k">def</span> <span class="nf">registerTypeFace</span><span class="p">(</span><span class="n">face</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">face</span><span class="p">,</span> <span class="n">TypeFace</span><span class="p">),</span> <span class="s1">&#39;Not a TypeFace: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">face</span>
+    <span class="n">_typefaces</span><span class="p">[</span><span class="n">face</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">face</span></div>
+    <span class="c1"># XXX Kiva specific changes</span>
+
+<div class="viewcode-block" id="registerEncoding"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.registerEncoding">[docs]</a><span class="k">def</span> <span class="nf">registerEncoding</span><span class="p">(</span><span class="n">enc</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">enc</span><span class="p">,</span> <span class="n">Encoding</span><span class="p">),</span> <span class="s1">&#39;Not an Encoding: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">enc</span>
+    <span class="k">if</span> <span class="n">enc</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">_encodings</span><span class="p">:</span>
+        <span class="c1"># already got one, complain if they are not the same</span>
+        <span class="k">if</span> <span class="n">enc</span><span class="o">.</span><span class="n">isEqual</span><span class="p">(</span><span class="n">_encodings</span><span class="p">[</span><span class="n">enc</span><span class="o">.</span><span class="n">name</span><span class="p">]):</span>
+            <span class="n">enc</span><span class="o">.</span><span class="n">freeze</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FontError</span><span class="p">(</span><span class="s1">&#39;Encoding &quot;</span><span class="si">%s</span><span class="s1">&quot; already registered with a different name vector!&#39;</span> <span class="o">%</span> <span class="n">enc</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_encodings</span><span class="p">[</span><span class="n">enc</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">enc</span>
+        <span class="n">enc</span><span class="o">.</span><span class="n">freeze</span><span class="p">()</span></div>
+    <span class="c1"># have not yet dealt with immutability!</span>
+
+<div class="viewcode-block" id="registerFont"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.registerFont">[docs]</a><span class="k">def</span> <span class="nf">registerFont</span><span class="p">(</span><span class="n">font</span><span class="p">):</span>
+    <span class="s2">&quot;Registers a font, including setting up info for accelerated stringWidth&quot;</span>
+    <span class="c1"># FIXME: This doesn&#39;t work</span>
+    <span class="c1">#assert isinstance(font, Font), &#39;Not a Font: %s&#39; % font</span>
+    <span class="n">fontName</span> <span class="o">=</span> <span class="n">font</span><span class="o">.</span><span class="n">fontName</span>
+    <span class="n">_fonts</span><span class="p">[</span><span class="n">fontName</span><span class="p">]</span> <span class="o">=</span> <span class="n">font</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">font</span><span class="o">.</span><span class="n">_multiByte</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">_stringWidth</span><span class="p">:</span>
+            <span class="n">_rl_accel</span><span class="o">.</span><span class="n">setFontInfo</span><span class="p">(</span><span class="n">fontName</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+                                  <span class="n">_dummyEncoding</span><span class="p">,</span>
+                                  <span class="n">font</span><span class="o">.</span><span class="n">face</span><span class="o">.</span><span class="n">ascent</span><span class="p">,</span>
+                                  <span class="n">font</span><span class="o">.</span><span class="n">face</span><span class="o">.</span><span class="n">descent</span><span class="p">,</span>
+                                  <span class="n">font</span><span class="o">.</span><span class="n">widths</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="getTypeFace"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.getTypeFace">[docs]</a><span class="k">def</span> <span class="nf">getTypeFace</span><span class="p">(</span><span class="n">faceName</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Lazily constructs known typefaces if not found.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_typefaces</span><span class="p">[</span><span class="n">faceName</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="c1"># not found, construct it if known</span>
+        <span class="k">if</span> <span class="n">faceName</span> <span class="ow">in</span> <span class="n">standardFonts</span><span class="p">:</span>
+            <span class="n">face</span> <span class="o">=</span> <span class="n">TypeFace</span><span class="p">(</span><span class="n">faceName</span><span class="p">)</span>
+            <span class="n">registerTypeFace</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">face</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#try a brute force search</span>
+            <span class="n">afm</span> <span class="o">=</span> <span class="n">bruteForceSearchForAFM</span><span class="p">(</span><span class="n">faceName</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">afm</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;.pfb&#39;</span><span class="p">,</span> <span class="s1">&#39;.PFB&#39;</span><span class="p">):</span>
+                    <span class="n">pfb</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">afm</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">e</span>
+                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pfb</span><span class="p">):</span> <span class="k">break</span>
+                <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pfb</span><span class="p">),</span> <span class="s1">&#39;file </span><span class="si">%s</span><span class="s1"> not found!&#39;</span> <span class="o">%</span> <span class="n">pfb</span>
+                <span class="n">face</span> <span class="o">=</span> <span class="n">EmbeddedType1Face</span><span class="p">(</span><span class="n">afm</span><span class="p">,</span> <span class="n">pfb</span><span class="p">)</span>
+                <span class="n">registerTypeFace</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">face</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span></div>
+
+<div class="viewcode-block" id="getEncoding"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.getEncoding">[docs]</a><span class="k">def</span> <span class="nf">getEncoding</span><span class="p">(</span><span class="n">encName</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Lazily constructs known encodings if not found.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_encodings</span><span class="p">[</span><span class="n">encName</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">encName</span> <span class="ow">in</span> <span class="n">standardEncodings</span><span class="p">:</span>
+            <span class="n">enc</span> <span class="o">=</span> <span class="n">Encoding</span><span class="p">(</span><span class="n">encName</span><span class="p">)</span>
+            <span class="n">registerEncoding</span><span class="p">(</span><span class="n">enc</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">enc</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span></div>
+
+<div class="viewcode-block" id="getFont"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.getFont">[docs]</a><span class="k">def</span> <span class="nf">getFont</span><span class="p">(</span><span class="n">fontName</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Lazily constructs known fonts if not found.</span>
+
+<span class="sd">    Names of the form &#39;face-encoding&#39; will be built if</span>
+<span class="sd">    face and encoding are known.  Also if the name is</span>
+<span class="sd">    just one of the standard 14, it will make up a font</span>
+<span class="sd">    in the default encoding.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_fonts</span><span class="p">[</span><span class="n">fontName</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="c1">#it might have a font-specific encoding e.g. Symbol</span>
+        <span class="c1"># or Dingbats.  If not, take the default.</span>
+        <span class="n">face</span> <span class="o">=</span> <span class="n">getTypeFace</span><span class="p">(</span><span class="n">fontName</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">face</span><span class="o">.</span><span class="n">requiredEncoding</span><span class="p">:</span>
+            <span class="n">font</span> <span class="o">=</span> <span class="n">Font</span><span class="p">(</span><span class="n">fontName</span><span class="p">,</span> <span class="n">fontName</span><span class="p">,</span> <span class="n">face</span><span class="o">.</span><span class="n">requiredEncoding</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">font</span> <span class="o">=</span> <span class="n">Font</span><span class="p">(</span><span class="n">fontName</span><span class="p">,</span> <span class="n">fontName</span><span class="p">,</span> <span class="n">defaultEncoding</span><span class="p">)</span>
+        <span class="n">registerFont</span><span class="p">(</span><span class="n">font</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">font</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_slowStringWidth</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">fontName</span><span class="p">,</span> <span class="n">fontSize</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Define this anyway so it can be tested, but whether it is used or not depends on _rl_accel&quot;&quot;&quot;</span>
+    <span class="n">font</span> <span class="o">=</span> <span class="n">getFont</span><span class="p">(</span><span class="n">fontName</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">font</span><span class="o">.</span><span class="n">stringWidth</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">fontSize</span><span class="p">)</span>
+
+
+<span class="c1"># XXX Kiva specific changes</span>
+<span class="n">stringWidth</span> <span class="o">=</span> <span class="n">_slowStringWidth</span>
+
+<div class="viewcode-block" id="dumpFontData"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.dumpFontData">[docs]</a><span class="k">def</span> <span class="nf">dumpFontData</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Registered Encodings:&#39;</span><span class="p">)</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">_encodings</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">encName</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   &#39;</span><span class="p">,</span><span class="n">encName</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Registered Typefaces:&#39;</span><span class="p">)</span>
+    <span class="n">faces</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">_typefaces</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">faceName</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   &#39;</span><span class="p">,</span> <span class="n">faceName</span><span class="p">)</span>
+
+
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Registered Fonts:&#39;</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">_fonts</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">k</span><span class="p">:</span>
+        <span class="n">font</span> <span class="o">=</span> <span class="n">_fonts</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">font</span><span class="o">.</span><span class="n">fontName</span><span class="p">,</span> <span class="n">font</span><span class="o">.</span><span class="n">face</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">font</span><span class="o">.</span><span class="n">encoding</span><span class="o">.</span><span class="n">name</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="test3widths"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.test3widths">[docs]</a><span class="k">def</span> <span class="nf">test3widths</span><span class="p">(</span><span class="n">texts</span><span class="p">):</span>
+    <span class="c1"># checks all 3 algorithms give same answer, note speed</span>
+    <span class="kn">import</span> <span class="nn">time</span>
+    <span class="k">for</span> <span class="n">fontName</span> <span class="ow">in</span> <span class="n">standardFonts</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">:</span>
+            <span class="n">l1</span> <span class="o">=</span> <span class="n">_stringWidth</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">fontName</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fast stringWidth took </span><span class="si">%0.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
+
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">getFont</span><span class="p">(</span><span class="n">fontName</span><span class="p">)</span><span class="o">.</span><span class="n">widths</span>
+        <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">:</span>
+            <span class="n">l2</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+                <span class="n">l2</span> <span class="o">=</span> <span class="n">l2</span> <span class="o">+</span> <span class="n">w</span><span class="p">[</span><span class="nb">ord</span><span class="p">(</span><span class="n">ch</span><span class="p">)]</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;slow stringWidth took </span><span class="si">%0.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
+
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">:</span>
+            <span class="n">l3</span> <span class="o">=</span> <span class="n">getFont</span><span class="p">(</span><span class="n">fontName</span><span class="p">)</span><span class="o">.</span><span class="n">stringWidth</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;class lookup and stringWidth took </span><span class="si">%0.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="testStringWidthAlgorithms"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.testStringWidthAlgorithms">[docs]</a><span class="k">def</span> <span class="nf">testStringWidthAlgorithms</span><span class="p">():</span>
+    <span class="n">rawdata</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;../../rlextra/rml2pdf/doc/rml_user_guide.prep&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;rawdata length </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">rawdata</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;test one huge string...&#39;</span><span class="p">)</span>
+    <span class="n">test3widths</span><span class="p">([</span><span class="n">rawdata</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">rawdata</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;test </span><span class="si">%d</span><span class="s1"> shorter strings (average length </span><span class="si">%0.2f</span><span class="s1"> chars)...&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">),</span> <span class="mf">1.0</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">rawdata</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)))</span>
+    <span class="n">test3widths</span><span class="p">(</span><span class="n">words</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="test"><a class="viewcode-back" href="../../api/kiva.pdfmetrics.html#kiva.pdfmetrics.test">[docs]</a><span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="n">helv</span> <span class="o">=</span> <span class="n">TypeFace</span><span class="p">(</span><span class="s1">&#39;Helvetica&#39;</span><span class="p">)</span>
+    <span class="n">registerTypeFace</span><span class="p">(</span><span class="n">helv</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">helv</span><span class="o">.</span><span class="n">glyphNames</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">30</span><span class="p">])</span>
+
+    <span class="n">wombat</span> <span class="o">=</span> <span class="n">TypeFace</span><span class="p">(</span><span class="s1">&#39;Wombat&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">wombat</span><span class="o">.</span><span class="n">glyphNames</span><span class="p">)</span>
+    <span class="n">registerTypeFace</span><span class="p">(</span><span class="n">wombat</span><span class="p">)</span>
+
+    <span class="n">dumpFontData</span><span class="p">()</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">test</span><span class="p">()</span>
+    <span class="n">testStringWidthAlgorithms</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.constraints_container &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.constraints_container</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">deque</span>
+
+<span class="c1"># traits imports</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">Bool</span><span class="p">,</span>
+    <span class="n">Callable</span><span class="p">,</span>
+    <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">Either</span><span class="p">,</span>
+    <span class="n">Instance</span><span class="p">,</span>
+    <span class="n">List</span><span class="p">,</span>
+    <span class="n">Property</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># local imports</span>
+<span class="kn">from</span> <span class="nn">.container</span> <span class="k">import</span> <span class="n">Container</span>
+<span class="kn">from</span> <span class="nn">.coordinate_box</span> <span class="k">import</span> <span class="n">CoordinateBox</span>
+<span class="kn">from</span> <span class="nn">.layout.layout_helpers</span> <span class="k">import</span> <span class="n">expand_constraints</span>
+<span class="kn">from</span> <span class="nn">.layout.layout_manager</span> <span class="k">import</span> <span class="n">LayoutManager</span>
+<span class="kn">from</span> <span class="nn">.layout.utils</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">add_symbolic_contents_constraints</span><span class="p">,</span>
+    <span class="n">get_from_constraints_namespace</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="ConstraintsContainer"><a class="viewcode-back" href="../../api/enable.constraints_container.html#enable.constraints_container.ConstraintsContainer">[docs]</a><span class="k">class</span> <span class="nc">ConstraintsContainer</span><span class="p">(</span><span class="n">Container</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A Container which lays out its child components using a</span>
+<span class="sd">    constraints-based layout solver.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># A read-only symbolic object that represents the left boundary of</span>
+    <span class="c1"># the component</span>
+    <span class="n">contents_left</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_from_constraints_namespace</span><span class="p">)</span>
+
+    <span class="c1"># A read-only symbolic object that represents the right boundary</span>
+    <span class="c1"># of the component</span>
+    <span class="n">contents_right</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_from_constraints_namespace</span><span class="p">)</span>
+
+    <span class="c1"># A read-only symbolic object that represents the bottom boundary</span>
+    <span class="c1"># of the component</span>
+    <span class="n">contents_bottom</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_from_constraints_namespace</span><span class="p">)</span>
+
+    <span class="c1"># A read-only symbolic object that represents the top boundary of</span>
+    <span class="c1"># the component</span>
+    <span class="n">contents_top</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_from_constraints_namespace</span><span class="p">)</span>
+
+    <span class="c1"># A read-only symbolic object that represents the width of the</span>
+    <span class="c1"># component</span>
+    <span class="n">contents_width</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_from_constraints_namespace</span><span class="p">)</span>
+
+    <span class="c1"># A read-only symbolic object that represents the height of the</span>
+    <span class="c1"># component</span>
+    <span class="n">contents_height</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_from_constraints_namespace</span><span class="p">)</span>
+
+    <span class="c1"># A read-only symbolic object that represents the vertical center</span>
+    <span class="c1"># of the component</span>
+    <span class="n">contents_v_center</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_from_constraints_namespace</span><span class="p">)</span>
+
+    <span class="c1"># A read-only symbolic object that represents the horizontal</span>
+    <span class="c1"># center of the component</span>
+    <span class="n">contents_h_center</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_from_constraints_namespace</span><span class="p">)</span>
+
+    <span class="c1"># The layout constraints for this container.</span>
+    <span class="c1"># This can either be a list or a callable. If it is a callable, it will be</span>
+    <span class="c1"># called with a single argument, the ConstraintsContainer, and be expected</span>
+    <span class="c1"># to return a list of constraints.</span>
+    <span class="n">layout_constraints</span> <span class="o">=</span> <span class="n">Either</span><span class="p">(</span><span class="n">List</span><span class="p">,</span> <span class="n">Callable</span><span class="p">)</span>
+
+    <span class="c1"># A boolean which indicates whether or not to allow the layout</span>
+    <span class="c1"># ownership of this container to be transferred to an ancestor.</span>
+    <span class="c1"># This is False by default, which means that every container</span>
+    <span class="c1"># get its own layout solver. This improves speed and reduces</span>
+    <span class="c1"># memory use (by keeping a solver&#39;s internal tableaux small)</span>
+    <span class="c1"># but at the cost of not being able to share constraints</span>
+    <span class="c1"># across Container boundaries. This flag must be explicitly</span>
+    <span class="c1"># marked as True to enable sharing.</span>
+    <span class="n">share_layout</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Sharing related private traits</span>
+    <span class="n">_owns_layout</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">_layout_owner</span> <span class="o">=</span> <span class="n">Any</span>
+
+    <span class="c1"># The contents box constraints for this container</span>
+    <span class="n">_contents_constraints</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="c1"># The user-specified layout constraints, with layout helpers expanded</span>
+    <span class="n">_layout_constraints</span> <span class="o">=</span> <span class="n">Property</span>
+
+    <span class="c1"># A dictionary of components added to this container</span>
+    <span class="n">_component_map</span> <span class="o">=</span> <span class="n">Dict</span>
+
+    <span class="c1"># The kiwi solver</span>
+    <span class="n">_layout_manager</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">LayoutManager</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">_offset_table</span> <span class="o">=</span> <span class="n">List</span>
+    <span class="n">_layout_table</span> <span class="o">=</span> <span class="n">List</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Public methods</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ConstraintsContainer.do_layout"><a class="viewcode-back" href="../../api/enable.constraints_container.html#enable.constraints_container.ConstraintsContainer.do_layout">[docs]</a>    <span class="k">def</span> <span class="nf">do_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Make sure child components get a chance to refresh their layout.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+            <span class="n">component</span><span class="o">.</span><span class="n">do_layout</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConstraintsContainer.refresh"><a class="viewcode-back" href="../../api/enable.constraints_container.html#enable.constraints_container.ConstraintsContainer.refresh">[docs]</a>    <span class="k">def</span> <span class="nf">refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Re-run the constraints solver in response to a resize or</span>
+<span class="sd">        constraints modification.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_owns_layout</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout_manager</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span>
+
+            <span class="n">mgr_layout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout_manager</span><span class="o">.</span><span class="n">layout</span>
+            <span class="n">offset_table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset_table</span>
+            <span class="n">width_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_width</span>
+            <span class="n">height_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_height</span>
+            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span>
+
+            <span class="k">def</span> <span class="nf">layout</span><span class="p">():</span>
+                <span class="n">running_index</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">for</span> <span class="n">offset_index</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout_table</span><span class="p">:</span>
+                    <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">offset_table</span><span class="p">[</span><span class="n">offset_index</span><span class="p">]</span>
+                    <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">left</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="n">item</span><span class="o">.</span><span class="n">bottom</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="n">nx</span> <span class="o">-</span> <span class="n">dx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">-</span> <span class="n">dy</span><span class="p">)</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">item</span><span class="o">.</span><span class="n">layout_width</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span>
+                        <span class="n">item</span><span class="o">.</span><span class="n">layout_height</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span>
+                    <span class="p">)</span>
+                    <span class="n">offset_table</span><span class="p">[</span><span class="n">running_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+                    <span class="n">running_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">mgr_layout</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">width_var</span><span class="p">,</span> <span class="n">height_var</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalidate_draw</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_layout_owner</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ConstraintsContainer.relayout"><a class="viewcode-back" href="../../api/enable.constraints_container.html#enable.constraints_container.ConstraintsContainer.relayout">[docs]</a>    <span class="k">def</span> <span class="nf">relayout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Explicitly regenerate the container&#39;s constraints and refresh the</span>
+<span class="sd">        layout.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">share_layout</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_layout</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout_owner</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_layout_owner</span><span class="o">.</span><span class="n">relayout</span><span class="p">()</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Layout Sharing</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="ConstraintsContainer.transfer_layout_ownership"><a class="viewcode-back" href="../../api/enable.constraints_container.html#enable.constraints_container.ConstraintsContainer.transfer_layout_ownership">[docs]</a>    <span class="k">def</span> <span class="nf">transfer_layout_ownership</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; A method which can be called by other components in the</span>
+<span class="sd">        hierarchy to gain ownership responsibility for the layout</span>
+<span class="sd">        of the children of this container. By default, the transfer</span>
+<span class="sd">        is allowed and is the mechanism which allows constraints to</span>
+<span class="sd">        cross widget boundaries. Subclasses should reimplement this</span>
+<span class="sd">        method if different behavior is desired.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        owner : ConstraintsContainer</span>
+<span class="sd">            The container which has taken ownership responsibility</span>
+<span class="sd">            for laying out the children of this component. All</span>
+<span class="sd">            relayout and refresh requests will be forwarded to this</span>
+<span class="sd">            component.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        results : bool</span>
+<span class="sd">            True if the transfer was allowed, False otherwise.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">share_layout</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_owns_layout</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layout_owner</span> <span class="o">=</span> <span class="n">owner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layout_manager</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ConstraintsContainer.will_transfer"><a class="viewcode-back" href="../../api/enable.constraints_container.html#enable.constraints_container.ConstraintsContainer.will_transfer">[docs]</a>    <span class="k">def</span> <span class="nf">will_transfer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Whether or not the container expects to transfer its layout</span>
+<span class="sd">        ownership to its parent.</span>
+
+<span class="sd">        This method is predictive in nature and exists so that layout</span>
+<span class="sd">        managers are not senslessly created during the bottom-up layout</span>
+<span class="sd">        initialization pass. It is declared public so that subclasses</span>
+<span class="sd">        can override the behavior if necessary.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="n">ConstraintsContainer</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">share_layout</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Traits methods</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">_bounds_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Run the solver when the container&#39;s bounds change.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ConstraintsContainer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_bounds_changed</span><span class="p">(</span><span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_layout_constraints_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Refresh the layout when the user constraints change.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relayout</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get__contents_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the constraints which define the content box of this</span>
+<span class="sd">        container.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">add_symbolic_contents_constraints</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_constraints_vars</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contents_left</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">left</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contents_bottom</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">bottom</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contents_right</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">left</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_width</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contents_top</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">bottom</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_height</span><span class="p">,</span>
+        <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_get__layout_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; React to changes of the user controlled constraints.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_constraints</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout_constraints</span><span class="p">):</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_constraints</span>
+
+        <span class="c1"># Expand any layout helpers</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">cns</span> <span class="k">for</span> <span class="n">cns</span> <span class="ow">in</span> <span class="n">expand_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">__components_items_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Make sure components that are added can be used with constraints.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Remove stale components from the map</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">removed</span><span class="p">:</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_component_size_hint_changed</span><span class="p">,</span>
+                <span class="s2">&quot;layout_size_hint&quot;</span><span class="p">,</span>
+                <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_component_map</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+
+        <span class="c1"># Check the added components</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_and_add_components</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">added</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__components_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Make sure components that are added can be used with constraints.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Clear the component maps</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_component_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_component_size_hint_changed</span><span class="p">,</span>
+                <span class="s2">&quot;layout_size_hint&quot;</span><span class="p">,</span>
+                <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_component_map</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Check the new components</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_and_add_components</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_component_size_hint_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Refresh the size hint contraints for a child component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relayout</span><span class="p">()</span>
+
+    <span class="c1"># ------------------------------------------------------------------------</span>
+    <span class="c1"># Protected methods</span>
+    <span class="c1"># ------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_build_layout_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Build the layout and offset tables for this container.</span>
+
+<span class="sd">        A layout table is a pair of flat lists which hold the required</span>
+<span class="sd">        objects for laying out the child widgets of this container.</span>
+<span class="sd">        The flat table is built in advance (and rebuilt if and when</span>
+<span class="sd">        the tree structure changes) so that it&#39;s not necessary to</span>
+<span class="sd">        perform an expensive tree traversal to layout the children</span>
+<span class="sd">        on every resize event.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : (list, list)</span>
+<span class="sd">            The offset table and layout table to use during a resize</span>
+<span class="sd">            event.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># The offset table is a list of (dx, dy) tuples which are the</span>
+        <span class="c1"># x, y offsets of children expressed in the coordinates of the</span>
+        <span class="c1"># layout owner container. This owner container may be different</span>
+        <span class="c1"># from the parent of the widget, and so the delta offset must</span>
+        <span class="c1"># be subtracted from the computed geometry values during layout.</span>
+        <span class="c1"># The offset table is updated during a layout pass in breadth</span>
+        <span class="c1"># first order.</span>
+        <span class="c1">#</span>
+        <span class="c1"># The layout table is a flat list of (idx, updater) tuples. The</span>
+        <span class="c1"># idx is an index into the offset table where the given child</span>
+        <span class="c1"># can find the offset to use for its layout. The updater is a</span>
+        <span class="c1"># callable provided by the widget which accepts the dx, dy</span>
+        <span class="c1"># offset and will update the layout geometry of the widget.</span>
+        <span class="n">zero_offset</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">offset_table</span> <span class="o">=</span> <span class="p">[</span><span class="n">zero_offset</span><span class="p">]</span>
+        <span class="n">layout_table</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">queue</span> <span class="o">=</span> <span class="n">deque</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">child</span><span class="p">)</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_component_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+        <span class="c1"># Micro-optimization: pre-fetch bound methods and store globals</span>
+        <span class="c1"># as locals. This method is not on the code path of a resize</span>
+        <span class="c1"># event, but it is on the code path of a relayout. If there</span>
+        <span class="c1"># are many children, the queue could potentially grow large.</span>
+        <span class="n">push_offset</span> <span class="o">=</span> <span class="n">offset_table</span><span class="o">.</span><span class="n">append</span>
+        <span class="n">push_item</span> <span class="o">=</span> <span class="n">layout_table</span><span class="o">.</span><span class="n">append</span>
+        <span class="n">push</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">append</span>
+        <span class="n">pop</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">popleft</span>
+        <span class="n">CoordinateBox_</span> <span class="o">=</span> <span class="n">CoordinateBox</span>
+        <span class="n">Container_</span> <span class="o">=</span> <span class="n">ConstraintsContainer</span>
+        <span class="n">isinst</span> <span class="o">=</span> <span class="nb">isinstance</span>
+
+        <span class="c1"># The queue yields the items in the tree in breadth-first order</span>
+        <span class="c1"># starting with the immediate children of this container. If a</span>
+        <span class="c1"># given child is a container that will share its layout, then</span>
+        <span class="c1"># the children of that container are added to the queue to be</span>
+        <span class="c1"># added to the layout table.</span>
+        <span class="n">running_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">queue</span><span class="p">:</span>
+            <span class="n">offset_index</span><span class="p">,</span> <span class="n">item</span> <span class="o">=</span> <span class="n">pop</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">isinst</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">CoordinateBox_</span><span class="p">):</span>
+                <span class="n">push_item</span><span class="p">((</span><span class="n">offset_index</span><span class="p">,</span> <span class="n">item</span><span class="p">))</span>
+                <span class="n">push_offset</span><span class="p">(</span><span class="n">zero_offset</span><span class="p">)</span>
+                <span class="n">running_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">isinst</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Container_</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">transfer_layout_ownership</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">_component_map</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                            <span class="n">push</span><span class="p">((</span><span class="n">running_index</span><span class="p">,</span> <span class="n">child</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">offset_table</span><span class="p">,</span> <span class="n">layout_table</span>
+
+    <span class="k">def</span> <span class="nf">_check_and_add_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">components</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Make sure components can be used with constraints.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">components</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">id</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Components added to a </span><span class="si">{0}</span><span class="s2"> must have a valid &#39;id&#39; trait.&quot;</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_component_map</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;A Component with id &#39;</span><span class="si">{0}</span><span class="s2">&#39; has already been added.&quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Can&#39;t add a Component with the same id as its parent.&quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_component_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_component_size_hint_changed</span><span class="p">,</span> <span class="s2">&quot;layout_size_hint&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Update the layout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relayout</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_generate_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout_table</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Creates the list of kiwi Constraint objects for</span>
+<span class="sd">        the widgets for which this container owns the layout.</span>
+
+<span class="sd">        This method walks over the items in the given layout table and</span>
+<span class="sd">        aggregates their constraints into a single list of kiwi</span>
+<span class="sd">        Constraint objects which can be given to the layout</span>
+<span class="sd">        manager.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        layout_table : list</span>
+<span class="sd">            The layout table created by a call to _build_layout_table.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : list</span>
+<span class="sd">            The list of kiwi Constraint instances to pass to</span>
+<span class="sd">            the layout manager.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">user_cns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout_constraints</span>
+        <span class="n">user_cns_extend</span> <span class="o">=</span> <span class="n">user_cns</span><span class="o">.</span><span class="n">extend</span>
+
+        <span class="c1"># The list of raw kiwi constraints which will be returned</span>
+        <span class="c1"># from this method to be added to the kiwi solver.</span>
+        <span class="n">raw_cns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hard_constraints</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_contents_constraints</span>
+        <span class="n">raw_cns_extend</span> <span class="o">=</span> <span class="n">raw_cns</span><span class="o">.</span><span class="n">extend</span>
+
+        <span class="n">isinst</span> <span class="o">=</span> <span class="nb">isinstance</span>
+        <span class="n">Container_</span> <span class="o">=</span> <span class="n">ConstraintsContainer</span>
+        <span class="c1"># The first element in a layout table item is its offset index</span>
+        <span class="c1"># which is not relevant to constraints generation.</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">layout_table</span><span class="p">:</span>
+            <span class="n">raw_cns_extend</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">_hard_constraints</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">isinst</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">Container_</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">transfer_layout_ownership</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                    <span class="n">user_cns_extend</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">_layout_constraints</span><span class="p">)</span>
+                    <span class="n">raw_cns_extend</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">_contents_constraints</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">raw_cns_extend</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">_size_constraints</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">raw_cns_extend</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">_size_constraints</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">raw_cns</span> <span class="o">+</span> <span class="n">user_cns</span>
+
+    <span class="k">def</span> <span class="nf">_init_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Initializes the layout for the container.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Layout ownership can only be transferred *after* this init</span>
+        <span class="c1"># layout method is called, since layout occurs bottom up. So,</span>
+        <span class="c1"># we only initialize a layout manager if we are not going to</span>
+        <span class="c1"># transfer ownership at some point.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">will_transfer</span><span class="p">():</span>
+            <span class="n">offset_table</span><span class="p">,</span> <span class="n">layout_table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_layout_table</span><span class="p">()</span>
+            <span class="n">cns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_constraints</span><span class="p">(</span><span class="n">layout_table</span><span class="p">)</span>
+            <span class="c1"># Initializing the layout manager can fail if the objective</span>
+            <span class="c1"># function is unbounded. We let that failure occur so it can</span>
+            <span class="c1"># be logged. Nothing is stored until it succeeds.</span>
+            <span class="n">manager</span> <span class="o">=</span> <span class="n">LayoutManager</span><span class="p">()</span>
+            <span class="n">manager</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">cns</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_offset_table</span> <span class="o">=</span> <span class="n">offset_table</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_layout_table</span> <span class="o">=</span> <span class="n">layout_table</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_layout_manager</span> <span class="o">=</span> <span class="n">manager</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Enable Tools &mdash; enable 4.6.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.6.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/et.ico"/>
+    <link rel="top" title="enable 4.6.0 documentation" href="index.html" />
+    <link rel="next" title="Enable Drag and Drop Events" href="enable_drag_and_drop.html" />
+    <link rel="prev" title="Enable Keyboard Events" href="enable_key_events.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="enable-tools">
+<h1>Enable Tools<a class="headerlink" href="#enable-tools" title="Permalink to this headline">¶</a></h1>
+<p>Enable <code class="docutils literal"><span class="pre">Tools</span></code> are <code class="docutils literal"><span class="pre">Interator</span></code> subclasses that do not have to have any
+visual representation, and which can be dynamically added and removed from
+components by adding or removing them from the component&#8217;s <code class="docutils literal"><span class="pre">tools</span></code> list.
+This permits developers to quickly build up complex behaviours from simple,
+reproducible parts without having complex inheritance hierarchies.</p>
+<div class="section" id="basic-tools">
+<h2>Basic Tools<a class="headerlink" href="#basic-tools" title="Permalink to this headline">¶</a></h2>
+<p>Enable provides a number of basic tools for common interactions.</p>
+<div class="section" id="buttontool">
+<h3>ButtonTool<a class="headerlink" href="#buttontool" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="xref py py-class docutils literal"><span class="pre">ButtonTool</span></code> provides basic push-button or checkbox
+interactions, depending on how it is configured.  The primary interface it
+provides is a <code class="xref py py-attr docutils literal"><span class="pre">clicked</span></code> event which is fired when the user clicks in
+the region of the underlying component, or when the <code class="xref py py-meth docutils literal"><span class="pre">click()</span></code> method is
+called.  The <code class="xref py py-attr docutils literal"><span class="pre">clicked</span></code> event is fired on mouse up.</p>
+<p>To get checkbox-style behaviour, set <code class="xref py py-attr docutils literal"><span class="pre">togglable</span></code> to <code class="docutils literal"><span class="pre">True</span></code> and
+then every click will invert the <code class="xref py py-attr docutils literal"><span class="pre">checked</span></code> trait.  The toggle state
+can also be  changed via the <code class="xref py py-meth docutils literal"><span class="pre">toggle()</span></code> method, which does not fire the
+<code class="xref py py-attr docutils literal"><span class="pre">clicked</span></code> event when called.  For buttons with multi-state toggles,
+subclasses can override the <code class="xref py py-meth docutils literal"><span class="pre">toggle()</span></code> method to perform more complex
+state changes.</p>
+<p>By default, the tool responds to clicks that are within the associated
+component, but subclasses can override this behaviour by replacing the
+<code class="xref py py-meth docutils literal"><span class="pre">is_clickable()</span></code> method with something else.</p>
+<p>It will commonly be the case that components or <code class="xref py py-class docutils literal"><span class="pre">ButtonTool</span></code>
+subclasses which draw may wish to respond to user interactions by drawing
+themselves in a highlighted or selected mode when the mouse is down inside
+the button region.  The <code class="xref py py-attr docutils literal"><span class="pre">down</span></code> trait provides this information
+conveniently, so that users of the tool can change their drawing state and
+request redraws when it changes.</p>
+</div>
+<div class="section" id="dragtool">
+<h3>DragTool<a class="headerlink" href="#dragtool" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="xref py py-class docutils literal"><span class="pre">DragTool</span></code> is an abstract base class that provides basic
+interaction support for draging within Enable.  Many other tools within
+Enable and Chaco use it.</p>
+</div>
+<div class="section" id="hovertool">
+<h3>HoverTool<a class="headerlink" href="#hovertool" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="xref py py-class docutils literal"><span class="pre">HoverTool</span></code> is a simple tool that calls a callback when the
+mouse has been held steadily over the component for a period of time.</p>
+</div>
+<div class="section" id="movetool">
+<h3>MoveTool<a class="headerlink" href="#movetool" title="Permalink to this headline">¶</a></h3>
+<p>A <code class="xref py py-class docutils literal"><span class="pre">DragTool</span></code> subclass that allows a user to move a component around
+its container by dragging.</p>
+</div>
+<div class="section" id="resizetool">
+<h3>ResizeTool<a class="headerlink" href="#resizetool" title="Permalink to this headline">¶</a></h3>
+<p>A <code class="xref py py-class docutils literal"><span class="pre">DragTool</span></code> subclass that allows a user to resize a component by
+dragging from the edges of the component.</p>
+</div>
+<div class="section" id="valuedragtool">
+<h3>ValueDragTool<a class="headerlink" href="#valuedragtool" title="Permalink to this headline">¶</a></h3>
+<p>A <code class="xref py py-class docutils literal"><span class="pre">DragTool</span></code> subclass that allows a drag operation to set an
+arbitrary value.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/e-logo-rev.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Enable Tools</a><ul>
+<li><a class="reference internal" href="#basic-tools">Basic Tools</a><ul>
+<li><a class="reference internal" href="#buttontool">ButtonTool</a></li>
+<li><a class="reference internal" href="#dragtool">DragTool</a></li>
+<li><a class="reference internal" href="#hovertool">HoverTool</a></li>
+<li><a class="reference internal" href="#movetool">MoveTool</a></li>
+<li><a class="reference internal" href="#resizetool">ResizeTool</a></li>
+<li><a class="reference internal" href="#valuedragtool">ValueDragTool</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="enable_key_events.html" title="previous chapter">Enable Keyboard Events</a></li>
+      <li>Next: <a href="enable_drag_and_drop.html" title="next chapter">Enable Drag and Drop Events</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/enable_basic_tools.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2008-2015, Enthought.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/enable_basic_tools.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

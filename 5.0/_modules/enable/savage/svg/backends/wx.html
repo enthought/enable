@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.savage.svg.backends.wx &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../../../../index.html" >
+    <link rel="up" title="Module code" href="../../../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../../../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.savage.svg.backends.wx</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="kn">from</span> <span class="nn">enable.savage.svg</span> <span class="k">import</span> <span class="n">svg_extras</span>
+
+
+<div class="viewcode-block" id="elliptical_arc_to"><a class="viewcode-back" href="../../../../../api/enable.savage.svg.backends.wx.html#enable.savage.svg.backends.wx.elliptical_arc_to">[docs]</a><span class="k">def</span> <span class="nf">elliptical_arc_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">ry</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">large_arc_flag</span><span class="p">,</span> <span class="n">sweep_flag</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">wx</span>
+
+    <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetCurrentPoint</span><span class="p">()</span>
+    <span class="n">arcs</span> <span class="o">=</span> <span class="n">svg_extras</span><span class="o">.</span><span class="n">elliptical_arc_to</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">ry</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">large_arc_flag</span><span class="p">,</span> <span class="n">sweep_flag</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">arc</span> <span class="ow">in</span> <span class="n">arcs</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">GraphicsRenderer_GetDefaultRenderer</span><span class="p">()</span><span class="o">.</span><span class="n">CreatePath</span><span class="p">()</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">MoveToPoint</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">AddCurveToPoint</span><span class="p">(</span><span class="o">*</span><span class="n">arc</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">AddPath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetCurrentPoint</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MoveToPoint</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CloseSubpath</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="AddEllipticalArc"><a class="viewcode-back" href="../../../../../api/enable.savage.svg.backends.wx.html#enable.savage.svg.backends.wx.AddEllipticalArc">[docs]</a><span class="k">def</span> <span class="nf">AddEllipticalArc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">dtheta</span><span class="p">,</span>
+                     <span class="n">clockwise</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Draws an arc of an ellipse within bounding rect (x,y,w,h) from</span>
+<span class="sd">    startArc to endArc (in degrees, relative to the horizontal line of</span>
+<span class="sd">    the eclipse)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">wx</span>
+
+    <span class="c1"># compute the cubic bezier and add that to the path by calling</span>
+    <span class="c1"># AddCurveToPoint</span>
+    <span class="n">sub_paths</span> <span class="o">=</span> <span class="n">svg_extras</span><span class="o">.</span><span class="n">bezier_arc</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">width</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">height</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">dtheta</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">sub_path</span> <span class="ow">in</span> <span class="n">sub_paths</span><span class="p">:</span>
+        <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">cx1</span><span class="p">,</span> <span class="n">cy1</span><span class="p">,</span> <span class="n">cx2</span><span class="p">,</span> <span class="n">cy2</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">sub_path</span>
+
+        <span class="n">path</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">GraphicsRenderer_GetDefaultRenderer</span><span class="p">()</span><span class="o">.</span><span class="n">CreatePath</span><span class="p">()</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">MoveToPoint</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">AddCurveToPoint</span><span class="p">(</span><span class="n">cx1</span><span class="p">,</span> <span class="n">cy1</span><span class="p">,</span> <span class="n">cx2</span><span class="p">,</span> <span class="n">cy2</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">AddPath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MoveToPoint</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">GetCurrentPoint</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CloseSubpath</span><span class="p">()</span></div>
+
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">wx</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">GraphicsPath</span><span class="p">,</span> <span class="s2">&quot;AddEllipticalArcTo&quot;</span><span class="p">):</span>
+
+        <span class="n">wx</span><span class="o">.</span><span class="n">GraphicsPath</span><span class="o">.</span><span class="n">AddEllipticalArcTo</span> <span class="o">=</span> <span class="n">AddEllipticalArc</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">GraphicsPath</span><span class="o">.</span><span class="n">elliptical_arc_to</span> <span class="o">=</span> <span class="n">elliptical_arc_to</span>
+
+    <span class="k">del</span> <span class="n">AddEllipticalArc</span>
+    <span class="k">del</span> <span class="n">wx</span>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../../index.html">
+              <img class="logo" src="../../../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

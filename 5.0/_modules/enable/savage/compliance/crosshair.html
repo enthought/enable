@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.savage.compliance.crosshair &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../../../../index.html" >
+    <link rel="up" title="Module code" href="../../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="../../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.savage.compliance.crosshair</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot; Cross-hair tool for measuring SVG rendering results.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">enable.api</span> <span class="k">import</span> <span class="n">BaseTool</span><span class="p">,</span> <span class="n">ColorTrait</span><span class="p">,</span> <span class="n">LineStyle</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">on_trait_change</span>
+
+
+<div class="viewcode-block" id="Crosshair"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.crosshair.html#enable.savage.compliance.crosshair.Crosshair">[docs]</a><span class="k">class</span> <span class="nc">Crosshair</span><span class="p">(</span><span class="n">BaseTool</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Display a crosshair at the given SVG coordinates.</span>
+
+<span class="sd">    This will do the appropriate transformations in order to map Enable</span>
+<span class="sd">    coordinates to SVG coordinates.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">svg_coords</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">(</span><span class="n">Float</span><span class="p">,</span> <span class="n">Float</span><span class="p">)</span>
+    <span class="n">line_color</span> <span class="o">=</span> <span class="n">ColorTrait</span><span class="p">(</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+    <span class="n">line_width</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">line_style</span> <span class="o">=</span> <span class="n">LineStyle</span><span class="p">(</span><span class="s2">&quot;solid&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Whether the mouse is currently inside the component or not.</span>
+    <span class="n">mouse_in</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">draw_mode</span> <span class="o">=</span> <span class="s2">&quot;overlay&quot;</span>
+
+<div class="viewcode-block" id="Crosshair.draw"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.crosshair.html#enable.savage.compliance.crosshair.Crosshair.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draws this tool on a graphics context.</span>
+
+<span class="sd">        It is assumed that the graphics context has a coordinate transform that</span>
+<span class="sd">        matches the origin of its component. (For containers, this is just the</span>
+<span class="sd">        origin; for components, it is the origin of their containers.)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse_in</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c1"># Convert from SVG coordinates to Enable coordinates.</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">height</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">svg_coords</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">h</span> <span class="o">-</span> <span class="n">y0</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">save_state</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">line_color_</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">line_width</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_line_dash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">line_style_</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">x2</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">y2</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">restore_state</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Crosshair.overlay"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.crosshair.html#enable.savage.compliance.crosshair.Crosshair.overlay">[docs]</a>    <span class="k">def</span> <span class="nf">overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draws this component overlaid on a graphics context.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">view_bounds</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Crosshair.do_layout"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.crosshair.html#enable.savage.compliance.crosshair.Crosshair.do_layout">[docs]</a>    <span class="k">def</span> <span class="nf">do_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Crosshair.normal_mouse_enter"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.crosshair.html#enable.savage.compliance.crosshair.Crosshair.normal_mouse_enter">[docs]</a>    <span class="k">def</span> <span class="nf">normal_mouse_enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mouse_in</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Crosshair.normal_mouse_leave"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.crosshair.html#enable.savage.compliance.crosshair.Crosshair.normal_mouse_leave">[docs]</a>    <span class="k">def</span> <span class="nf">normal_mouse_leave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mouse_in</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Crosshair.normal_mouse_move"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.crosshair.html#enable.savage.compliance.crosshair.Crosshair.normal_mouse_move">[docs]</a>    <span class="k">def</span> <span class="nf">normal_mouse_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Handles the mouse being moved.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c1"># Map the Enable coordinates of the event to SVG coordinates.</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">height</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">h</span> <span class="o">-</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">svg_coords</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">handled</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Crosshair.ensure_redraw"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.crosshair.html#enable.savage.compliance.crosshair.Crosshair.ensure_redraw">[docs]</a>    <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s2">&quot;svg_coords,mouse_in&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">ensure_redraw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">invalidate_and_redraw</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="MultiController"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.crosshair.html#enable.savage.compliance.crosshair.MultiController">[docs]</a><span class="k">class</span> <span class="nc">MultiController</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Keep multiple Crosshairs in sync.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">svg_coords</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">(</span><span class="n">Float</span><span class="p">,</span> <span class="n">Float</span><span class="p">)</span>
+    <span class="n">mouse_in</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">crosshairs</span> <span class="o">=</span> <span class="n">List</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">crosshairs</span><span class="p">,</span> <span class="o">**</span><span class="n">traits</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MultiController</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">traits</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">crosshairs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MultiController.add"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.crosshair.html#enable.savage.compliance.crosshair.MultiController.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">crosshair</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Synch a new Crosshair.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">crosshair</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">crosshairs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sync_trait</span><span class="p">(</span><span class="s2">&quot;svg_coords&quot;</span><span class="p">,</span> <span class="n">crosshair</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sync_trait</span><span class="p">(</span><span class="s2">&quot;mouse_in&quot;</span><span class="p">,</span> <span class="n">crosshair</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">crosshairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">crosshair</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MultiController.remove"><a class="viewcode-back" href="../../../../api/enable.savage.compliance.crosshair.html#enable.savage.compliance.crosshair.MultiController.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">crosshair</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Unsynch a recorded Crosshair.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">crosshair</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">crosshairs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sync_trait</span><span class="p">(</span><span class="s2">&quot;svg_coords&quot;</span><span class="p">,</span> <span class="n">crosshair</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sync_trait</span><span class="p">(</span><span class="s2">&quot;mouse_in&quot;</span><span class="p">,</span> <span class="n">crosshair</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">crosshairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">crosshair</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

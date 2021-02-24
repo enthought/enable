@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>kiva.affine module &mdash; enable 5.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.0.0 documentation" href="../index.html" >
+    <link rel="up" title="kiva package" href="kiva.html" >
+    <link rel="next" title="kiva.api module" href="kiva.api.html" >
+    <link rel="prev" title="kiva.abstract_graphics_context module" href="kiva.abstract_graphics_context.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.0.0 documentation</a></li>
+	
+          <li class="active"><a href="kiva.html" accesskey="U">kiva package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="kiva.api.html" title="kiva.api module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="kiva.abstract_graphics_context.html" title="kiva.abstract_graphics_context module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-kiva.affine">
+<span id="kiva-affine-module"></span><h1>kiva.affine module<a class="headerlink" href="#module-kiva.affine" title="Permalink to this headline">¶</a></h1>
+<p>Functions for affine matrices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>Space Telescope Science Institute</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>BSD Style</p>
+</dd>
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Eric Jones, Enthought, Inc., <a class="reference external" href="mailto:eric&#37;&#52;&#48;enthought&#46;com">eric<span>&#64;</span>enthought<span>&#46;</span>com</a></p>
+</dd>
+</dl>
+<p>These affine operations are based coordinate system transformations,
+not translations of pts, etc.  To translate a point, you multiply
+it by the affine transform matrix:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>             <span class="n">a</span>    <span class="n">b</span>    <span class="mi">0</span>
+<span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span>  <span class="n">c</span>    <span class="n">d</span>    <span class="mi">0</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="s1">&#39;, y&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+             <span class="n">tx</span>   <span class="n">ty</span>   <span class="mi">1</span>
+</pre></div>
+</div>
+<p>This is the opposite order of multiplication from what many are
+accustomed to.</p>
+<p>Here is a useful link:</p>
+<blockquote>
+<div><p><a class="reference external" href="http://mathworld.wolfram.com/AffineTransformation.html">http://mathworld.wolfram.com/AffineTransformation.html</a></p>
+</div></blockquote>
+<p class="rubric">Notes</p>
+<p>I’m not using a class because of possible speed implications.
+Currently the affine transform is a 3x3 array.  Other tools use
+a 6-tuple of (a, b, c, d, tx, ty) to represent the transform because
+the other 3 array entries are constant.  Other code should call
+methods from this module instead of manipulating the array,
+in case the implementation is changed at some future date.</p>
+<dl class="function">
+<dt id="kiva.affine.affine_from_rotation">
+<code class="sig-prename descclassname">kiva.affine.</code><code class="sig-name descname">affine_from_rotation</code><span class="sig-paren">(</span><em class="sig-param">angle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/affine.html#affine_from_rotation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.affine.affine_from_rotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an affine transform rotated by angle in radians.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.affine.affine_from_scale">
+<code class="sig-prename descclassname">kiva.affine.</code><code class="sig-name descname">affine_from_scale</code><span class="sig-paren">(</span><em class="sig-param">sx</em>, <em class="sig-param">sy</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/affine.html#affine_from_scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.affine.affine_from_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an affine transform providing the given scaling.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.affine.affine_from_translation">
+<code class="sig-prename descclassname">kiva.affine.</code><code class="sig-name descname">affine_from_translation</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/affine.html#affine_from_translation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.affine.affine_from_translation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an affine transform with the given translation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.affine.affine_from_values">
+<code class="sig-prename descclassname">kiva.affine.</code><code class="sig-name descname">affine_from_values</code><span class="sig-paren">(</span><em class="sig-param">a</em>, <em class="sig-param">b</em>, <em class="sig-param">c</em>, <em class="sig-param">d</em>, <em class="sig-param">tx</em>, <em class="sig-param">ty</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/affine.html#affine_from_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.affine.affine_from_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the affine matrix corresponding to the values</p>
+<dl class="simple">
+<dt>The result is the array::</dt><dd><p>[ a    b    0 ]
+[ c    d    0 ]
+[ tx   ty   1 ]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.affine.affine_identity">
+<code class="sig-prename descclassname">kiva.affine.</code><code class="sig-name descname">affine_identity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/affine.html#affine_identity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.affine.affine_identity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new identity affine_transform object.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.affine.affine_params">
+<code class="sig-prename descclassname">kiva.affine.</code><code class="sig-name descname">affine_params</code><span class="sig-paren">(</span><em class="sig-param">m</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/affine.html#affine_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.affine.affine_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the a, b, c, d, tx, ty values of an
+affine transform.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.affine.concat">
+<code class="sig-prename descclassname">kiva.affine.</code><code class="sig-name descname">concat</code><span class="sig-paren">(</span><em class="sig-param">transform</em>, <em class="sig-param">other</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/affine.html#concat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.affine.concat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the concatenation of transform with other.  This
+is simply transform pre-multiplied by other.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.affine.invert">
+<code class="sig-prename descclassname">kiva.affine.</code><code class="sig-name descname">invert</code><span class="sig-paren">(</span><em class="sig-param">m</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/affine.html#invert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.affine.invert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the inverse of the transform, m.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.affine.is_identity">
+<code class="sig-prename descclassname">kiva.affine.</code><code class="sig-name descname">is_identity</code><span class="sig-paren">(</span><em class="sig-param">m</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/affine.html#is_identity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.affine.is_identity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether an affine transform is the identity transform.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.affine.rotate">
+<code class="sig-prename descclassname">kiva.affine.</code><code class="sig-name descname">rotate</code><span class="sig-paren">(</span><em class="sig-param">transform</em>, <em class="sig-param">angle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/affine.html#rotate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.affine.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotates transform by angle in radians.</p>
+<p>Rotation is done using the following formula:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="mi">0</span>       <span class="n">a</span>  <span class="n">b</span>   <span class="mi">0</span>
+<span class="o">-</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="mi">0</span>   <span class="o">*</span>   <span class="n">c</span>  <span class="n">d</span>   <span class="mi">0</span> <span class="o">=</span>
+   <span class="mi">0</span>       <span class="mi">0</span>     <span class="mi">1</span>      <span class="n">tx</span> <span class="n">ty</span>   <span class="mi">1</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="n">a</span><span class="o">+</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="n">b</span>   <span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="n">b</span><span class="o">+</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="n">d</span>    <span class="mi">0</span>
+<span class="o">-</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="n">a</span><span class="o">+</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="n">c</span>  <span class="o">-</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="n">b</span><span class="o">+</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="n">d</span>    <span class="mi">0</span>
+         <span class="n">tx</span>                  <span class="n">ty</span>           <span class="mi">1</span>
+</pre></div>
+</div>
+<p>where x = angle.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.affine.scale">
+<code class="sig-prename descclassname">kiva.affine.</code><code class="sig-name descname">scale</code><span class="sig-paren">(</span><em class="sig-param">transform</em>, <em class="sig-param">sx</em>, <em class="sig-param">sy</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/affine.html#scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.affine.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a scaled version of the transform by the given values.</p>
+<p>Scaling is done using the following formula:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sx</span>  <span class="mi">0</span>  <span class="mi">0</span>     <span class="n">a</span>  <span class="n">b</span>  <span class="mi">0</span>      <span class="n">sx</span><span class="o">*</span><span class="n">a</span> <span class="n">sx</span><span class="o">*</span><span class="n">b</span>  <span class="mi">0</span>
+<span class="mi">0</span>  <span class="n">sy</span>  <span class="mi">0</span>  <span class="o">*</span>  <span class="n">c</span>  <span class="n">d</span>  <span class="mi">0</span>  <span class="o">=</span>   <span class="n">sy</span><span class="o">*</span><span class="n">c</span> <span class="n">sy</span><span class="o">*</span><span class="n">d</span>  <span class="mi">0</span>
+<span class="mi">0</span>   <span class="mi">0</span>  <span class="mi">1</span>    <span class="n">tx</span> <span class="n">ty</span>  <span class="mi">1</span>       <span class="mi">0</span>    <span class="mi">0</span>    <span class="mi">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.affine.transform_point">
+<code class="sig-prename descclassname">kiva.affine.</code><code class="sig-name descname">transform_point</code><span class="sig-paren">(</span><em class="sig-param">ctm</em>, <em class="sig-param">pt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/affine.html#transform_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.affine.transform_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns pt transformed by the affine transform, ctm.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.affine.transform_points">
+<code class="sig-prename descclassname">kiva.affine.</code><code class="sig-name descname">transform_points</code><span class="sig-paren">(</span><em class="sig-param">ctm</em>, <em class="sig-param">pts</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/affine.html#transform_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.affine.transform_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transforms an array of points using the affine transform, ctm.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.affine.translate">
+<code class="sig-prename descclassname">kiva.affine.</code><code class="sig-name descname">translate</code><span class="sig-paren">(</span><em class="sig-param">transform</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/affine.html#translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.affine.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns transform translated by (x, y).</p>
+<p>Translation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span>  <span class="mi">0</span>  <span class="mi">0</span>      <span class="n">a</span>   <span class="n">b</span>   <span class="mi">0</span>         <span class="n">a</span>          <span class="n">b</span>        <span class="mi">0</span>
+<span class="mi">0</span>  <span class="mi">1</span>  <span class="mi">0</span>   <span class="o">*</span>  <span class="n">c</span>   <span class="n">d</span>   <span class="mi">0</span>  <span class="o">=</span>      <span class="n">c</span>          <span class="n">d</span>        <span class="mi">0</span>
+<span class="n">x</span>  <span class="n">y</span>  <span class="mi">1</span>     <span class="n">tx</span>  <span class="n">ty</span>   <span class="mi">1</span>     <span class="n">x</span><span class="o">*</span><span class="n">a</span><span class="o">+</span><span class="n">y</span><span class="o">*</span><span class="n">c</span><span class="o">+</span><span class="n">y</span>  <span class="n">x</span><span class="o">*</span><span class="n">b</span><span class="o">+</span><span class="n">y</span><span class="o">*</span><span class="n">d</span><span class="o">+</span><span class="n">ty</span>   <span class="mi">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.affine.trs_factor">
+<code class="sig-prename descclassname">kiva.affine.</code><code class="sig-name descname">trs_factor</code><span class="sig-paren">(</span><em class="sig-param">m</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/affine.html#trs_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.affine.trs_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factors a matrix as if it is the product of translate/rotate/scale
+matrices applied (i.e., concatenated) in that order.  It returns:</p>
+<blockquote>
+<div><p>tx,ty,sx,sy,angle</p>
+</div></blockquote>
+<p>where tx and ty are the translations, sx and sy are the scaling
+values and angle is the rotational angle in radians.</p>
+<p>If the input matrix was created in a way other than concatenating
+t/r/s matrices, the results could be wrong.  For example, if there
+is any skew in the matrix, the returned results are wrong.</p>
+<p>Needs Test!</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kiva.affine.tsr_factor">
+<code class="sig-prename descclassname">kiva.affine.</code><code class="sig-name descname">tsr_factor</code><span class="sig-paren">(</span><em class="sig-param">m</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/affine.html#tsr_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kiva.affine.tsr_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factors a matrix as if it is the product of translate/scale/rotate
+matrices applied (i.e., concatenated) in that order.  It returns:</p>
+<blockquote>
+<div><p>tx, ty, sx, sy, angle</p>
+</div></blockquote>
+<p>where tx and ty are the translations, sx and sy are the scaling
+values and angle is the rotational angle in radians.</p>
+<p>If the input matrix was created in a way other than concatenating
+t/s/r matrices, the results could be wrong.  For example, if there
+is any skew in the matrix, the returned results are wrong.</p>
+<p>Needs Test!</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="kiva.abstract_graphics_context.html"
+                        title="previous chapter">kiva.abstract_graphics_context module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="kiva.api.html"
+                        title="next chapter">kiva.api module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/kiva.affine.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Feb 23, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
