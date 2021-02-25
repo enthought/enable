@@ -40,7 +40,7 @@ draw_modes = {
     constants.EOF_FILL_STROKE: agg.DrawingMode.DrawEofFillStroke,
 }
 text_modes = {
-    constants.TEXT_FILL: agg.TextDrawingMode.TextDrawFill,
+    constants.TEXT_FILL: agg.TextDrawingMode.TextDrawRaster,
     constants.TEXT_STROKE: agg.TextDrawingMode.TextDrawStroke,
     constants.TEXT_FILL_STROKE: agg.TextDrawingMode.TextDrawFillStroke,
     constants.TEXT_INVISIBLE: agg.TextDrawingMode.TextDrawInvisible,
@@ -611,7 +611,7 @@ class GraphicsContext(object):
     def select_font(self, name, size, textEncoding):
         """ Set the font for the current graphics context.
         """
-        self.font = agg.Font(name, size, agg.FontCacheType.RasterFontCache)
+        self.font = agg.Font(name, size)
 
     def set_font(self, font):
         """ Set the font for the current graphics context.
@@ -625,7 +625,7 @@ class GraphicsContext(object):
             return
 
         font = self.font
-        self.select_font(font.filepath, size, font.cache_type)
+        self.select_font(font.filepath, size)
 
     def set_character_spacing(self, spacing):
         msg = "set_character_spacing not implemented on celiagg yet."
@@ -674,6 +674,7 @@ class GraphicsContext(object):
             self.font,
             transform,
             self.canvas_state,
+            fill=self.fill_paint,
             stroke=self.stroke_paint,
         )
 
@@ -692,7 +693,8 @@ class GraphicsContext(object):
         if self.font is None:
             raise RuntimeError("get_text_extent called before setting a font!")
 
-        x1, x2 = 0.0, self.font.width(text)
+        font_cache = self.gc.font_cache
+        x1, x2 = 0.0, font_cache.width(self.font, text)
         y1, y2 = 0.0, self.font.height
         return x1, y1, x2, y2
 
@@ -801,13 +803,11 @@ class GraphicsContext(object):
 
     def draw_path_at_points(self, points, path, mode=constants.FILL_STROKE):
         """ Draw a path object at many different points.
-
-        XXX: This is currently broken for some reason
         """
-        shape = agg.ShapeAtPoints(path.path, points)
         self.canvas_state.drawing_mode = draw_modes[mode]
-        self.gc.draw_shape(
-            shape,
+        self.gc.draw_shape_at_points(
+            path.path,
+            points,
             self.transform,
             self.canvas_state,
             stroke=self.stroke_paint,
