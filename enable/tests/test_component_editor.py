@@ -11,10 +11,11 @@
 """
 import unittest
 
-from enable.component_editor import ComponentEditor
 from traits.api import Any, HasTraits
 from traitsui.api import Item, View
 
+from enable.component import Component
+from enable.component_editor import ComponentEditor
 from enable.tests._testing import get_dialog_size, skip_if_null
 
 ITEM_WIDTH, ITEM_HEIGHT = 700, 200
@@ -72,3 +73,18 @@ class TestComponentEditor(unittest.TestCase):
 
         self.assertGreater(size[0], ITEM_WIDTH - 1)
         self.assertGreater(size[1], ITEM_HEIGHT - 1)
+
+    def test_component_hidpi_size_stability(self):
+        # Issue #634: HiDPI doubles size of components when a component is
+        # replaced
+        dialog = _ComponentDialogWithSize(thing=Component())
+        dialog.edit_traits()
+
+        initial_bounds = dialog.thing.bounds
+        # Force the window into HiDPI mode
+        dialog.thing.window.base_pixel_scale = 2.0
+
+        dialog.thing = Component()
+        new_bounds = dialog.thing.bounds
+
+        self.assertListEqual(initial_bounds, new_bounds)
