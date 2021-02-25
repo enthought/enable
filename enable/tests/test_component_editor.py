@@ -74,6 +74,7 @@ class TestComponentEditor(unittest.TestCase):
         self.assertGreater(size[0], ITEM_WIDTH - 1)
         self.assertGreater(size[1], ITEM_HEIGHT - 1)
 
+    @skip_if_null
     def test_component_hidpi_size_stability(self):
         # Issue #634: HiDPI doubles size of components when a component is
         # replaced
