@@ -881,13 +881,14 @@ class FontProperties(object):
         Return the name of the font that best matches the font
         properties.
         """
-        filename, face_index = default_font_manager().findfont(self)
-        filename = str(filename)
-        if filename.endswith(".afm"):
-            return afm.AFM(open(filename)).get_familyname()
+        spec = default_font_manager().findfont(self)
+        if spec.filename.endswith(".afm"):
+            return afm.AFM(open(spec.filename)).get_familyname()
 
-        font, face_index = default_font_manager().findfont(self)
-        prop_dict = getPropDict(TTFont(str(font), fontNumber=face_index))
+        spec = default_font_manager().findfont(self)
+        prop_dict = getPropDict(
+            TTFont(spec.filename), fontNumber=spec.face_index
+        )
         return prop_dict["name"]
 
     def get_style(self):
@@ -1313,6 +1314,18 @@ class FontManager:
         <http://www.w3.org/TR/1998/REC-CSS2-19980512/>`_ documentation
         for a description of the font finding algorithm.
         """
+        class FontSpec(object):
+            """ An object to represent the return value of findfont().
+            """
+            def __init__(self, filename, face_index=0):
+                self.filename = str(filename)
+                self.face_index = face_index
+
+            def __fspath__(self):
+                """ Implement the os.PathLike abstract interface.
+                """
+                return self.filename
+
         if not isinstance(prop, FontProperties):
             prop = FontProperties(prop)
         fname = prop.get_file()
@@ -1320,7 +1333,7 @@ class FontManager:
             logger.debug("findfont returning %s", fname)
             # It's not at all clear where a `FontProperties` instance with
             # `fname` already set would come from. Assume face_index == 0.
-            return (fname, 0)
+            return FontSpec(fname)
 
         if fontext == "afm":
             font_cache = self.afm_lookup_cache
@@ -1376,7 +1389,7 @@ class FontManager:
                     UserWarning,
                 )
                 # Assume this is never a .ttc font, so 0 is ok for face index.
-                result = (self.defaultFont[fontext], 0)
+                result = FontSpec(self.defaultFont[fontext])
         else:
             logger.debug(
                 "findfont: Matching %s to %s (%s[%d]) with score of %f",
@@ -1386,9 +1399,9 @@ class FontManager:
                 best_font.face_index,
                 best_score,
             )
-            result = (best_font.fname, best_font.face_index)
+            result = FontSpec(best_font.fname, best_font.face_index)
 
-        if not os.path.isfile(result[0]):
+        if not os.path.isfile(result.filename):
             if rebuild_if_missing:
                 logger.debug(
                     "findfont: Found a missing font file.  Rebuilding cache."

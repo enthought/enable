@@ -116,8 +116,7 @@ class Font(object):
         matches our font properties.
         """
         fp = self._make_font_props()
-        filename, face_index = default_font_manager().findfont(fp)
-        return str(filename), face_index
+        return default_font_manager().findfont(fp)
 
     def findfontname(self):
         """ Returns the name of the font that most closely matches our font

@@ -616,8 +616,8 @@ class GraphicsContext(object):
     def set_font(self, font):
         """ Set the font for the current graphics context.
         """
-        filename, face_index = font.findfont()
-        self.font = agg.Font(filename, font.size, face_index)
+        spec = font.findfont()
+        self.font = agg.Font(spec.filename, font.size, spec.face_index)
 
     def set_font_size(self, size):
         """ Set the font size for the current graphics context.
