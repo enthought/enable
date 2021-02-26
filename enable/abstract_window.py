@@ -220,16 +220,19 @@ class AbstractWindow(HasTraits):
         size = self._get_control_size()
         if (size is not None) and hasattr(self.component, "bounds"):
             new.on_trait_change(self.component_bounds_changed, "bounds")
+            pix_scale = self.base_pixel_scale
             if getattr(self.component, "fit_window", False):
                 self.component.outer_position = [0, 0]
-                self.component.outer_bounds = list(size)
+                self.component.outer_bounds = [
+                    size[0] / pix_scale, size[1] / pix_scale
+                ]
             elif hasattr(self.component, "resizable"):
                 if "h" in self.component.resizable:
                     self.component.outer_x = 0
-                    self.component.outer_width = size[0]
+                    self.component.outer_width = size[0] / pix_scale
                 if "v" in self.component.resizable:
                     self.component.outer_y = 0
-                    self.component.outer_height = size[1]
+                    self.component.outer_height = size[1] / pix_scale
         self._update_region = None
         self.redraw()
 
