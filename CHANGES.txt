@@ -1,6 +1,15 @@
 Enable CHANGELOG
 ================
 
+Enable 5.0.1
+============
+
+Fixes
+-----
+
+* Fix KeySpec.from_string (#638)
+* Don't mess up the component bounds in HiDPI mode (#635)
+
 Enable 5.0.0
 ============
 
