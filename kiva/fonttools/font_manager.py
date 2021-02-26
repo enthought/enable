@@ -887,7 +887,7 @@ class FontProperties(object):
 
         spec = default_font_manager().findfont(self)
         prop_dict = getPropDict(
-            TTFont(spec.filename), fontNumber=spec.face_index
+            TTFont(spec.filename, fontNumber=spec.face_index)
         )
         return prop_dict["name"]
 
