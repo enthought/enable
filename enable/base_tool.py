@@ -73,7 +73,7 @@ class KeySpec(object):
         codes = s.split("+")
         key = codes[-1]
         modifiers = set(code.lower() for code in codes[:-1])
-        ignore = set("alt", "shift", "control") - modifiers
+        ignore = {"alt", "shift", "control"} - modifiers
         return cls(key, *modifiers, ignore=ignore)
 
 
