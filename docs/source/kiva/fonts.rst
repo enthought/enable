@@ -93,7 +93,7 @@ number in the situation where glyphs hang below the baseline. In any case,
 .. note::
    ``get_text_extent`` does not respect endline characters. It is assumed that
    ``text`` describes a single line of text. To render multiple lines, one
-   should split the text into individual lines first and then measure an draw
+   should split the text into individual lines first and then measure and draw
    each line in sequence. A blank line's height should be the same as the
    height of the selected font.
 
@@ -124,4 +124,3 @@ method.
    There is also a :py:meth:`GraphicsContext.set_text_matrix` method which
    allows a text-specific affine transform to be set. Unfortunately it's not
    implemented uniformly across backends, so it's recommended not to use it.
-
