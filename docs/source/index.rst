@@ -4,15 +4,18 @@ Enable Documentation
 .. toctree::
   :maxdepth: 2
 
-  enable_concepts.rst
-  enable_constraints_layout.rst
-  enable_key_events.rst
-  enable_basic_tools.rst
-  enable_drag_and_drop.rst
-  enable_undo_redo.rst
-  enable_toolkit_selection.rst
+  enable/concepts.rst
+  enable/constraints_layout.rst
+  enable/key_events.rst
+  enable/basic_tools.rst
+  enable/drag_and_drop.rst
+  enable/undo_redo.rst
+  enable/toolkit_selection.rst
 
-  kiva.rst
+  kiva/overview.rst
+  kiva/quickref.rst
+  kiva/fonts.rst
+
   credits.rst
 
 API Documentation
