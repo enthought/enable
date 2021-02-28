@@ -1523,30 +1523,29 @@ cdef class CGBitmapContext(CGContext):
     def width(self):
         return CGBitmapContextGetWidth(self.context)
 
-    def __getsegcount__(self, void* tmp):
-        cdef int *lenp
-        lenp = <int *>tmp
-        if lenp != NULL:
-            lenp[0] = self.height()*self.bytes_per_row
-        return 1
+    def __getbuffer__(self, Py_buffer *buffer, int flags):
+        cdef Py_ssize_t shape[2]
+        cdef Py_ssize_t strides[2]
 
-    def __getreadbuffer__(self, int segment, void** ptr):
-        # ignore invalid segment; the caller can't mean anything but the only
-        # segment available; we're all adults
-        ptr[0] = self.data
-        return self.height()*self.bytes_per_row
+        shape[0] = self.bytes_per_row
+        shape[1] = self.height()
+        strides[0] = self.bytes_per_row
+        strides[1] = 1
 
-    def __getwritebuffer__(self, int segment, void** ptr):
-        # ignore invalid segment; the caller can't mean anything but the only
-        # segment available; we're all adults
-        ptr[0] = self.data
-        return self.height()*self.bytes_per_row
+        buffer.buf = <char *>(self.data)
+        buffer.format = 'b'
+        buffer.internal = NULL
+        buffer.itemsize = 1
+        buffer.len = self.height() * self.bytes_per_row
+        buffer.ndim = 2
+        buffer.obj = self
+        buffer.readonly = 1
+        buffer.shape = shape
+        buffer.strides = strides
+        buffer.suboffsets = NULL
 
-    def __getcharbuffer__(self, int segment, char** ptr):
-        # ignore invalid segment; the caller can't mean anything but the only
-        # segment available; we're all adults
-        ptr[0] = <char*>(self.data)
-        return self.height()*self.bytes_per_row
+    def __releasebuffer__(self, Py_buffer *buffer):
+        pass
 
     def clear(self, object clear_color=(1.0, 1.0, 1.0, 1.0)):
         """Paint over the whole image with a solid color.
@@ -1601,7 +1600,8 @@ cdef class CGBitmapContext(CGContext):
         if file_format is None:
             file_format = ''
 
-        img = PilImage.frombytes(mode, (self.width(), self.height()), self)
+        img = PilImage.frombuffer(mode, (self.width(), self.height()), self,
+                                  'raw', mode, 0, 1)
         if 'A' in mode:
             # Check the output format to see if it can handle an alpha channel.
             no_alpha_formats = ('jpg', 'bmp', 'eps', 'jpeg')
