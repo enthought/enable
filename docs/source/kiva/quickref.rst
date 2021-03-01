@@ -118,7 +118,7 @@ Drawing functions
 Enhanced drawing functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. note::
-   These methods are not available from every backend, so you should text for
+   These methods are not available from every backend, so you should test for
    their presence before attempting to call them.
 
 .. automethod:: kiva.abstract_graphics_context.EnhancedAbstractGraphicsContext.draw_marker_at_points
