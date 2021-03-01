@@ -13,6 +13,7 @@ Enable Documentation
   enable/toolkit_selection.rst
 
   kiva/overview.rst
+  kiva/backends.rst
   kiva/quickref.rst
   kiva/fonts.rst
 
