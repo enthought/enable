@@ -12,7 +12,7 @@ from numpy import linspace, zeros
 # Enthought library imports
 from kiva.api import STROKE
 from traits.api import (
-    Any, Bool, Enum, Float, Int, Property, Trait, on_trait_change,
+    Any, Bool, Enum, Float, Int, Property, Trait, observe,
 )
 from traitsui.api import EnumEditor
 
@@ -521,8 +521,8 @@ class Slider(Component):
     def _get_tick_size(self):
         return self._cached_tick_size
 
-    @on_trait_change("bounds,bounds_items")
-    def _update_sizes(self):
+    @observe("bounds.items")
+    def _update_sizes(self, event=None):
         if self._slider_size_mode == "percent":
             if self.orientation == "h":
                 self._cached_slider_size = int(
