@@ -267,22 +267,24 @@ class Scrolled(Container):
     def _view_position_items_changed_for_viewport_component(self):
         self.update_from_viewport()
 
-    def _component_bounds_items_handler(self, object, event):
+    def _component_bounds_items_handler(self, event):
         if event.added != event.removed:
             self.update_bounds()
 
-    def _component_bounds_handler(self, object, name, old, new):
+    def _component_bounds_handler(self, event):
+        old = event.old
+        new = event.new
         if old is None or new is None or old[0] != new[0] or old[1] != new[1]:
             self.update_bounds()
 
     def _component_changed(self, old, new):
         if old is not None:
-            old.on_trait_change(
+            old.observe(
                 self._component_bounds_handler, "bounds", remove=True
             )
-            old.on_trait_change(
+            old.observe(
                 self._component_bounds_items_handler,
-                "bounds_items",
+                "bounds:items",
                 remove=True,
             )
         if new is None:
@@ -291,9 +293,9 @@ class Scrolled(Container):
             if self.viewport_component:
                 self.viewport_component.component = new
             new.container = self
-        new.on_trait_change(self._component_bounds_handler, "bounds")
-        new.on_trait_change(
-            self._component_bounds_items_handler, "bounds_items"
+        new.observe(self._component_bounds_handler, "bounds")
+        new.observe(
+            self._component_bounds_items_handler, "bounds:items"
         )
         self._layout_needed = True
 
@@ -421,10 +423,10 @@ class Scrolled(Container):
                 )
                 v_pos = self.viewport_component.view_position
                 self._hsb.scroll_position = v_pos[0]
-                self._hsb.on_trait_change(
+                self._hsb.observe(
                     self._handle_horizontal_scroll, "scroll_position"
                 )
-                self._hsb.on_trait_change(
+                self._hsb.observe(
                     self._mouse_thumb_changed, "mouse_thumb"
                 )
                 self.add(self._hsb)
@@ -462,10 +464,10 @@ class Scrolled(Container):
                 )
                 v_pos = self.viewport_component.view_position
                 self._vsb.scroll_position = v_pos[1]
-                self._vsb.on_trait_change(
+                self._vsb.observe(
                     self._handle_vertical_scroll, "scroll_position"
                 )
-                self._vsb.on_trait_change(
+                self._vsb.observe(
                     self._mouse_thumb_changed, "mouse_thumb"
                 )
                 self.add(self._vsb)
@@ -503,7 +505,8 @@ class Scrolled(Container):
             sb.destroy()
         return None
 
-    def _handle_horizontal_scroll(self, position):
+    def _handle_horizontal_scroll(self, event):
+        position = event.new
         if self._sb_bounds_frozen:
             self._hscroll_position_updated = True
             return
@@ -519,7 +522,8 @@ class Scrolled(Container):
                     view_position=[position, viewport.view_position[1]]
                 )
 
-    def _handle_vertical_scroll(self, position):
+    def _handle_vertical_scroll(self, event):
+        position = event.new
         if self._sb_bounds_frozen:
             self._vscroll_position_updated = True
             return
@@ -535,8 +539,8 @@ class Scrolled(Container):
                     view_position=[viewport.view_position[0], position]
                 )
 
-    def _mouse_thumb_changed(self, object, attrname, event):
-        if event == "down" and not self.continuous_drag_update:
+    def _mouse_thumb_changed(self, event):
+        if event.new == "down" and not self.continuous_drag_update:
             self.freeze_scroll_bounds()
         else:
             self.unfreeze_scroll_bounds()
