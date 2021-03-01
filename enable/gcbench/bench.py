@@ -21,6 +21,7 @@ _BACKENDS = {
         "kiva.agg": "enable.null.image",
         "cairo": "enable.null.cairo",
         "celiagg": "enable.null.celiagg",
+        "opengl": "enable.gcbench.opengl",
         "qpainter": "enable.null.qpainter",
         "quartz": "enable.null.quartz",
     },
