@@ -5,6 +5,158 @@ This document is a summary of the classes and functions available in
 Kiva.  More specifically, it describes some of the details of the
 kiva.agg backend, including enumerated types and helper classes.
 
+Graphics Context
+----------------
+
+Construction
+~~~~~~~~~~~~
+__init__(ary_or_size, pix_format="bgra32", base_pixel_scale=1.0):
+    ``ary_or_size`` can be either a numpy array or a tuple of the form
+    (width, height). If it is an array, it will be used as the backing store
+    for the pixels. **Its shape must be compatible with** ``pix_format``
+
+    ``pix_format`` determines the pixel format and is a string which can be any
+    of the following: "gray8", "rgb24", "bgr24", "rgba32", "argb32", "abgr32",
+    "bgra32".
+
+    ``base_pixel_scale`` is scaling factor which will be applied to the
+    transformation matrix before all other transformations. It is used for
+    rendering to high-resolution displays.
+
+State functions
+~~~~~~~~~~~~~~~
+
+Saving and restoring state
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+In addtion to the ``save_state`` and ``restore_state`` methods, it is also possible
+to use a ``GraphicsContext`` instance as a context manager.
+
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.save_state
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.restore_state
+
+Methods controlling state
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_fill_color
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_fill_color
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_stroke_color
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_stroke_color
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_line_width
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_line_join
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_line_cap
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_line_dash
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.linear_gradient
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.radial_gradient
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_alpha
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_alpha
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_antialias
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_antialias
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_miter_limit
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_flatness
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_image_interpolation
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_image_interpolation
+
+
+Current Transformation Matrix
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+These methods control the affine transformation applied to drawing operations.
+The current transformation matrix is part of the graphic state and therefore
+covered by calls to ``save_state()`` and ``restore_state()``
+
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.translate_ctm
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.rotate_ctm
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.scale_ctm
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.concat_ctm
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_ctm
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_ctm
+
+
+Clipping functions
+~~~~~~~~~~~~~~~~~~
+
+.. note::
+   All of these functions are affected by the current transformation matrix.
+
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.clip_to_rect
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.clip_to_rects
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.clip
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.even_odd_clip
+
+
+Path functions
+~~~~~~~~~~~~~~
+The path has the concept of a "current point", which can be though of as the
+pen position. Many path manipulations use the current point as a starting
+position for the geometry which is added to the path.
+
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.begin_path
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.close_path
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_empty_path
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.add_path
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.move_to
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.line_to
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.lines
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.line_set
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.rect
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.rects
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.curve_to
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.quad_curve_to
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.arc
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.arc_to
+
+
+Drawing functions
+~~~~~~~~~~~~~~~~~
+
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.draw_path
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.fill_path
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.eof_fill_path
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.stroke_path
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.draw_rect
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.draw_image
+
+Enhanced drawing functions
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. note::
+   These methods are not available from every backend, so you should test for
+   their presence before attempting to call them.
+
+.. automethod:: kiva.abstract_graphics_context.EnhancedAbstractGraphicsContext.draw_marker_at_points
+.. automethod:: kiva.abstract_graphics_context.EnhancedAbstractGraphicsContext.draw_path_at_points
+
+Text functions
+~~~~~~~~~~~~~~
+
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_text_drawing_mode
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_text_matrix
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_text_matrix
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_text_position
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_text_position
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.show_text
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.show_text_at_point
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_text_extent
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_full_text_extent
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_character_spacing
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_character_spacing
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.select_font
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_font
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_font
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_font_size
+
+
+Misc functions
+~~~~~~~~~~~~~~
+
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.width
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.height
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.flush
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.synchronize
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.begin_page
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.end_page
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.clear_rect
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.save
+
+
 Types
 -----
 
@@ -63,19 +215,14 @@ to create specific kinds of :class:`AffineMatrix` instances:
 * ``scaling_matrix(float x_scale, float y_scale)``
 * ``skewing_matrix(float x_shear, float y_shear)``
 
-AggFontType
-~~~~~~~~~~~
-This is an internal representation of fonts for the ``kiva.agg`` backend. Use
-:class:`Font` instead.
-
-* ``__init__(name, size=12, family=0, style=0)``
-    constructs a :class:`AggFontType` instance
-* ``is_loaded() -> bool``
-    returns True if a font was actually loaded
 
 CompiledPath
 ~~~~~~~~~~~~
-Interface is the same as the `Path functions`_ in Graphics Context.
+A path is a collection of geometry that can be drawn in a graphics context with
+coloring and an affine transformation applied to it. It is the basic unit of
+drawing in a graphics context.
+
+Interface is the same as the `Path functions`_ .
 
 Enumerations
 ~~~~~~~~~~~~
@@ -136,206 +283,3 @@ path_cmd:
 path_flags:
     path_flags, path_flags_ccw, path_flags_close, path_flags_cw,
     path_flags_mask, path_flags_none
-
-
-Graphics Context
-----------------
-
-Construction
-~~~~~~~~~~~~
-__init__(ary_or_size, pix_format="bgra32", interpolation="nearest", base_pixel_scale=1.0):
-    ``ary_or_size`` can be either a numpy array or a tuple of the form
-    (width, height). If it is an array, it will be used as the backing store
-    for the pixels. **Its shape must be compatible with ``pix_format``**
-
-    ``pix_format`` determines the pixel format and is a string which can be any
-    of the following: "gray8", "rgb555", "rgb565", "rgb24", "bgr24", "rgba32",
-    "argb32", "abgr32", "bgra32".
-
-    ``interpolation`` determines the interpolation used by scaled image drawing
-    and is a string which can be any of the following: "nearest", "bilinear",
-    "bicubic", "spline16", "spline36", "sinc64", "sinc144", "sinc256",
-    "blackman64", "blackman100", "blackman256".
-
-    ``base_pixel_scale`` is scaling factor which will be applied to the
-    transformation matrix before all other transformations. It is used for
-    rendering to high-resolution displays.
-
-State functions
-~~~~~~~~~~~~~~~
-* ``save_state()``
-* ``restore_state()``
-* ``set_stroke_color(color)``
-* ``get_stroke_color() -> color``
-* ``set_line_width(float)``
-* ``set_line_join(line_join)``
-* ``set_line_cap(line_cap)``
-* ``set_line_dash(array)``
-
-    ``array`` is an even-length tuple of floats that represents the width of
-    each dash and gap in the dash pattern.
-
-* ``set_fill_color(color)``
-* ``get_fill_color() -> color``
-* ``linear_gradient(x1, y1, x2, y2, color_stop_array, spread_method, units)``
-    This method modifies the current fill pattern.
-
-    ``spread_method`` is one of the following strings: "pad", "reflect",
-    "repeat".
-
-    ``units`` is one of the following strings: "userSpaceOnUse",
-    "objectBoundingBox".
-* ``radial_gradient(cx, cy, r, fx, fy, color_stop_array, spread_method, units)``
-    same arguments as ``linear_gradient``. The direction of the gradient is
-    from the focus point to the center point.
-* ``set_alpha(float)``
-* ``get_alpha() -> float``
-* ``set_antialias(bool)``
-* ``get_antialias() -> bool``
-* ``set_miter_limit(float)``
-* ``set_flatness(float)``
-* ``get_image_interpolation() -> interpolation``
-* ``set_image_interpolation(interpolation)``
-
-* ``translate_ctm(float x, float y)``
-* ``rotate_ctm(float angle_in_radians)``
-* ``concat_ctm(AffineMatrix)``
-* ``scale_ctm(float x_scale, float y_scale)``
-* ``set_ctm(AffineMatrix)``
-* ``get_ctm() -> AffineMatrix``
-
-
-Clipping functions
-~~~~~~~~~~~~~~~~~~
-* ``clip_to_rect(rect)``
-* ``clip_to_rects(rect_array)``
-* ``clip()``
-    clips using the current path
-* ``even_odd_clip()``
-    modifies the current clipping path using the even-odd rule to
-    calculate the intersection of the current path and the current clipping path.
-
-Path functions
-~~~~~~~~~~~~~~
-* ``begin_path()``
-* ``close_path()``
-* ``get_empty_path() -> CompiledPath``
-    returns a blank :class:`CompiledPath` instance
-* ``add_path(CompiledPath)``
-* ``move_to(x, y)``
-* ``line_to(x, y)``
-* ``lines(point_array)``
-* ``rect(x, y, w, h)``
-* ``rects(rect_array)``
-* ``curve_to(x1, y1, x2, y2, end_x, end_y)``
-    draws a cubic bezier curve with
-    control points (x1, y1) and (x2, y2) that ends at point (end_x, end_y)
-
-* ``quad_curve_to(cp_x, cp_y, end_x, end_y)``
-    draws a quadratic bezier curve from the current point using control point
-    (cp_x, cp_y) and ending at (end_x, end_y)
-
-* ``arc(x, y, radius, start_angle, end_angle, bool cw=false)``
-    draws a circular arc of the given radius, centered at (x,y) with angular
-    span as indicated.
-
-    Angles are measured counter-clockwise from the positive X axis. If "cw" is
-    true, then the arc is swept from the end_angle back to the start_angle
-    (it does not change the sense in which the angles are measured).
-
-* ``arc_to(x1, y1, x2, y2, radius)``
-    Sweeps a circular arc from the pen position to a point on the line from
-    (x1, y1) to (x2, y2).
-
-    The arc is tangent to the line from the current pen position
-    to (x1, y1), and it is also tangent to the line from (x1, y1)
-    to (x2, y2). (x1, y1) is the imaginary intersection point of
-    the two lines tangent to the arc at the current point and
-    at (x2, y2).
-
-    If the tangent point on the line from the current pen position
-    to (x1, y1) is not equal to the current pen position, a line is
-    drawn to it. Depending on the supplied radius, the tangent
-    point on the line fron (x1, y1) to (x2, y2) may or may not be
-    (x2, y2). In either case, the arc is drawn to the point of
-    tangency, which is also the new pen position.
-
-    Consider the common case of rounding a rectangle's upper left
-    corner. Let "r" be the radius of rounding. Let the current
-    pen position be (x_left + r, y_top). Then (x2, y2) would be
-    (x_left, y_top - radius), and (x1, y1) would be (x_left, y_top).
-
-Drawing functions
-~~~~~~~~~~~~~~~~~
-* ``stroke_path()``
-* ``fill_path()``
-* ``eof_fill_path()``
-* ``draw_path(draw_mode=FILL_STROKE)``
-* ``draw_rect(rect, draw_mode=FILL_STROKE)``
-* ``draw_marker_at_points(point_array, int size, marker=marker_square)``
-* ``draw_path_at_points(point_array, CompiledPath, draw_mode)``
-* ``draw_image(graphics_context img, rect=None)``
-    If ``rect`` is defined, then ``img`` is scaled and drawn into it. Otherwise,
-    ``img`` is overlaid exactly on top of this graphics context.
-
-Text functions
-~~~~~~~~~~~~~~
-* ``set_text_drawing_mode(text_draw_mode)``
-* ``set_text_matrix(AffineMatrix)``
-* ``get_text_matrix() -> AffineMatrix``
-* ``set_text_position(float x, float x)``
-* ``get_text_position() -> (x, y)``
-* ``show_text(string)``
-* ``show_text_translate(string, float y, float y)``
-* ``get_text_extent(string) -> (x, y, w, h)``
-* ``get_full_text_extent(string) -> (w, h, x, y)``
-    deprecated. Order has been changed for backwards-compatibility with
-    existing Enable.
-* ``select_font(name, size, style)``
-* ``set_font(AggFontType)``
-* ``get_font() -> AggFontType``
-* ``set_font_size(int)``
-* ``set_character_spacing()``
-* ``get_character_spacing()``
-* ``set_text_drawing_mode()``
-* ``show_text_at_point()``
-
-Misc functions
-~~~~~~~~~~~~~~
-* ``width() -> int``
-* ``height() -> int``
-* ``stride() -> int``
-* ``bottom_up() -> bool``
-* ``format() -> pix_format``
-* ``flush()``
-    Force all pending drawing operations to be rendered immediately. This
-    only makes sense in window contexts, ie- the Mac Quartz backend.
-* ``synchronize()``
-    A deferred version of flush(). Also only relevant in window contexts.
-* ``begin_page()``
-* ``end_page()``
-* ``clear_rect(rect)``
-    Clears a rect. Not available in PDF context
-* ``convert_pixel_format(pix_format, bool inplace=0)``
-* ``save(filename, file_format=None, pil_options=None)``
-    Save the GraphicsContext to a file. Output files are always saved in RGB
-    or RGBA format; if this GC is not in one of these formats, it is
-    automatically converted.
-
-    If ``filename`` includes an extension, the image format is
-    inferred from it. ``file_format`` is only required if the
-    format can't be inferred from the filename (e.g. if you
-    wanted to save a PNG file as a .dat or .bin).
-
-    ``pil_options`` is a dict of format-specific options that
-    are passed down to the PIL image file writer. If a writer
-    doesn't recognize an option, it is silently ignored.
-
-    If the image has an alpha channel and the specified output
-    file format does not support alpha, the image is saved in
-    rgb24 format.
-
-
-Functions that are currently stubbed out or not implemented
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-* ``show_glyphs_at_point()``

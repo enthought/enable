@@ -1314,6 +1314,14 @@ class GraphicsContextBase(AbstractGraphicsContext):
     # Misc functions
     # -------------------------------------------
 
+    def width(self):
+        """ Returns the width of the graphics context. """
+        raise NotImplementedError()
+
+    def height(self):
+        """ Returns the height of the graphics context. """
+        raise NotImplementedError()
+
     def save(self, filename, file_format=None, pil_options=None):
         """ Save the graphics context to a file """
-        raise NotImplementedError
+        raise NotImplementedError()
