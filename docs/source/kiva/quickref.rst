@@ -63,15 +63,6 @@ to create specific kinds of :class:`AffineMatrix` instances:
 * ``scaling_matrix(float x_scale, float y_scale)``
 * ``skewing_matrix(float x_shear, float y_shear)``
 
-AggFontType
-~~~~~~~~~~~
-This is an internal representation of fonts for the ``kiva.agg`` backend. Use
-:class:`Font` instead.
-
-* ``__init__(name, size=12, family=0, style=0)``
-    constructs a :class:`AggFontType` instance
-* ``is_loaded() -> bool``
-    returns True if a font was actually loaded
 
 CompiledPath
 ~~~~~~~~~~~~
@@ -147,19 +138,14 @@ Graphics Context
 
 Construction
 ~~~~~~~~~~~~
-__init__(ary_or_size, pix_format="bgra32", interpolation="nearest", base_pixel_scale=1.0):
+__init__(ary_or_size, pix_format="bgra32", base_pixel_scale=1.0):
     ``ary_or_size`` can be either a numpy array or a tuple of the form
     (width, height). If it is an array, it will be used as the backing store
-    for the pixels. **Its shape must be compatible with ``pix_format``**
+    for the pixels. **Its shape must be compatible with** ``pix_format``
 
     ``pix_format`` determines the pixel format and is a string which can be any
-    of the following: "gray8", "rgb555", "rgb565", "rgb24", "bgr24", "rgba32",
-    "argb32", "abgr32", "bgra32".
-
-    ``interpolation`` determines the interpolation used by scaled image drawing
-    and is a string which can be any of the following: "nearest", "bilinear",
-    "bicubic", "spline16", "spline36", "sinc64", "sinc144", "sinc256",
-    "blackman64", "blackman100", "blackman256".
+    of the following: "gray8", "rgb24", "bgr24", "rgba32", "argb32", "abgr32",
+    "bgra32".
 
     ``base_pixel_scale`` is scaling factor which will be applied to the
     transformation matrix before all other transformations. It is used for
@@ -167,69 +153,37 @@ __init__(ary_or_size, pix_format="bgra32", interpolation="nearest", base_pixel_s
 
 State functions
 ~~~~~~~~~~~~~~~
-* ``save_state()``
-    Saves the state of the graphics context and pushes it onto a state stack.
-* ``restore_state()``
-    Pops the state stack, restoring the state from the previous call to
-    ``save_state()``.
-* ``set_fill_color(color)``
-    Sets the color used when calling ``fill_path()`` or ``draw_path()`` with any
-    mode which fills.
-* ``get_fill_color() -> color``
-    Returns the current fill color.
-* ``set_stroke_color(color)``
-    Sets the color used when calling ``stroke_path()`` or ``draw_path()`` with
-    any mode which strokes.
-* ``get_stroke_color() -> color``
-    Returns the current stroke color.
-* ``set_line_width(float)``
-    Sets the width of stroked lines. Note that this can be affected by the
-    current transformation matrix.
-* ``set_line_join(line_join)``
-    Sets the join type for multi-segment lines. Allowed values are
-    ``JOIN_ROUND``, ``JOIN_BEVEL``, or ``JOIN_MITER``.
-* ``set_line_cap(line_cap)``
-    Sets the cap type for line ends. Allowed values are ``CAP_BUTT``,
-    ``CAP_ROUND``, ``CAP_SQUARE``
-* ``set_line_dash(array)``
-    ``array`` is an even-length tuple of floats that represents the width of
-    each dash and gap in the dash pattern.
-* ``linear_gradient(x1, y1, x2, y2, color_stop_array, spread_method, units)``
-    This method modifies the current fill pattern.
 
-    ``spread_method`` is one of the following strings: "pad", "reflect",
-    "repeat".
+Saving and restoring state
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+In addtion to the ``save_state`` and ``restore_state`` methods, it is also possible
+to use a ``GraphicsContext`` instance as a context manager.
 
-    ``units`` is one of the following strings: "userSpaceOnUse",
-    "objectBoundingBox".
-* ``radial_gradient(cx, cy, r, fx, fy, color_stop_array, spread_method, units)``
-    same arguments as ``linear_gradient``. The direction of the gradient is
-    from the focus point to the center point.
-* ``set_alpha(float)``
-    Sets the transparency for all drawing calls.
-* ``get_alpha() -> float``
-    Returns the transparency used for drawing calls.
-* ``set_antialias(bool)``
-    Enables or disables anti-aliasing.
-* ``get_antialias() -> bool``
-    Returns True if anti-aliasing is enabled.
-* ``set_miter_limit(float)``
-    If the line join type is set to ``JOIN_MITER``, the miter limit determines
-    whether the lines should be joined with a bevel instead of a miter.
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.save_state
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.restore_state
 
-    Note that this may not be implemented by all backends.
-* ``set_flatness(float)``
-    Controls how accurately curved paths are rendered.
+Methods controlling state
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    Note that this may not be implemented by all backends.
-* ``get_image_interpolation() -> interpolation``
-    Returns the currently set image interpolation method.
-* ``set_image_interpolation(interpolation)``
-    Sets the image interpolation method. Allowed values are "nearest",
-    "bilinear", "bicubic", "spline16", "spline36", "sinc64", "sinc144",
-    "sinc256", "blackman64", "blackman100", and "blackman256"
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_fill_color
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_fill_color
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_stroke_color
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_stroke_color
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_line_width
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_line_join
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_line_cap
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_line_dash
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.linear_gradient
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.radial_gradient
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_alpha
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_alpha
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_antialias
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_antialias
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_miter_limit
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_flatness
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_image_interpolation
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_image_interpolation
 
-    Note that this may not be implemented by all backends.
 
 Current Transformation Matrix
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -237,18 +191,12 @@ These methods control the affine transformation applied to drawing operations.
 The current transformation matrix is part of the graphic state and therefore
 covered by calls to ``save_state()`` and ``restore_state()``
 
-* ``translate_ctm(float x, float y)``
-    Translate in X and Y
-* ``rotate_ctm(float angle_in_radians)``
-    Rotate by some angle
-* ``concat_ctm(AffineMatrix)``
-    Premultiplies the current transformation matrix by a specified affine matrix
-* ``scale_ctm(float x_scale, float y_scale)``
-    Scales in X and Y
-* ``set_ctm(AffineMatrix)``
-    Assigns a specified affine matrix to the current transformation matrix
-* ``get_ctm() -> AffineMatrix``
-    Returns the current transformation matrix as an ``AffineMatrix``
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.translate_ctm
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.rotate_ctm
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.scale_ctm
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.concat_ctm
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_ctm
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_ctm
 
 
 Clipping functions
@@ -257,16 +205,11 @@ Clipping functions
 .. note::
    All of these functions are affected by the current transformation matrix.
 
-* ``clip_to_rect(rect)``
-    Clips drawing to a single rectangle
-* ``clip_to_rects(rect_array)``
-    Clips drawing to a collection of rectangles.
-* ``clip()``
-    Clips using the current path
-* ``even_odd_clip()``
-    Modifies the current clipping path using the even-odd rule to
-    calculate the intersection of the current path and the current clipping
-    path.
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.clip_to_rect
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.clip_to_rects
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.clip
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.even_odd_clip
+
 
 Path functions
 ~~~~~~~~~~~~~~
@@ -274,176 +217,69 @@ The path has the concept of a "current point", which can be though of as the
 pen position. Many path manipulations use the current point as a starting
 position for the geometry which is added to the path.
 
-* ``begin_path()``
-    Initializes the path to an empty state.
-* ``close_path()``
-    Closes the current path. This means that the final point gets connected to
-    the starting point.
-* ``get_empty_path() -> CompiledPath``
-    returns a blank :class:`CompiledPath` instance
-* ``add_path(CompiledPath)``
-    Adds a ``CompiledPath`` instance as a subpath of the current path
-* ``move_to(x, y)``
-    Moves the current point to (x, y).
-* ``line_to(x, y)``
-    Adds a line from the current point to the passed in point.
-* ``lines(point_array)``
-    Adds a collection of line segments to the current path.
-* ``rect(x, y, w, h)``
-    Adds a rectangle to the current path
-* ``rects(rect_array)``
-    Adds a collection of rectangles to the current path
-* ``curve_to(x1, y1, x2, y2, end_x, end_y)``
-    Adds a cubic bezier curve from the current point with control points
-    (x1, y1) and (x2, y2) that ends at point (end_x, end_y)
-* ``quad_curve_to(cp_x, cp_y, end_x, end_y)``
-    Adds a quadratic bezier curve from the current point using control point
-    (cp_x, cp_y) and ending at (end_x, end_y)
-* ``arc(x, y, radius, start_angle, end_angle, bool cw=false)``
-    Adds a circular arc of the given radius, centered at (x,y) with angular
-    span as indicated.
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.begin_path
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.close_path
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_empty_path
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.add_path
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.move_to
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.line_to
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.lines
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.line_set
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.rect
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.rects
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.curve_to
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.quad_curve_to
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.arc
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.arc_to
 
-    Angles are measured counter-clockwise from the positive X axis. If "cw" is
-    true, then the arc is swept from the end_angle back to the start_angle
-    (it does not change the sense in which the angles are measured).
-* ``arc_to(x1, y1, x2, y2, radius)``
-    Sweeps a circular arc from the current point to a point on the line from
-    (x1, y1) to (x2, y2).
-
-    The arc is tangent to the line from the current point
-    to (x1, y1), and it is also tangent to the line from (x1, y1)
-    to (x2, y2). (x1, y1) is the imaginary intersection point of
-    the two lines tangent to the arc at the current point and
-    at (x2, y2).
-
-    If the tangent point on the line from the current point
-    to (x1, y1) is not equal to the current point, a line is
-    drawn to it. Depending on the supplied radius, the tangent
-    point on the line fron (x1, y1) to (x2, y2) may or may not be
-    (x2, y2). In either case, the arc is drawn to the point of
-    tangency, which is also the new current point.
-
-    Consider the common case of rounding a rectangle's upper left
-    corner. Let "r" be the radius of rounding. Let the current point be
-    (x_left + r, y_top). Then (x2, y2) would be
-    (x_left, y_top - radius), and (x1, y1) would be (x_left, y_top).
 
 Drawing functions
 ~~~~~~~~~~~~~~~~~
-* ``stroke_path()``
-    Strokes the current path
-* ``fill_path()``
-    Fills the current path using the zero-winding fill rule
-* ``eof_fill_path()``
-    Fills the current path using the even-odd fill rule
-* ``draw_path(draw_mode=FILL_STROKE)``
-    Draws the current path using a draw mode. Allowed modes are ``FILL``,
-    ``EOF_FILL``, ``STROKE``, ``FILL_STROKE``, ``EOF_FILL_STROKE``
-* ``draw_rect(rect, draw_mode=FILL_STROKE)``
-    Draws a rectangle using the specified drawing mode.
 
-    ``rect`` is a tuple of the form ``(x, y, width, height)``
-* ``draw_marker_at_points(point_array, int size, marker=marker_square)``
-    Draws markers at all the points in ``point_array``. Allowed markers are
-    "circle", "cross", "crossed_circle", "dash", "diamond", "dot", "four_rays",
-    "pixel", "semiellipse_down", "semiellipse_left", "x", "semiellipse_right",
-    "semiellipse_up", "square", "triangle_down", "triangle_left",
-    "triangle_right", and "triangle_up".
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.draw_path
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.fill_path
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.eof_fill_path
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.stroke_path
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.draw_rect
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.draw_image
 
-    Note: This is basically only supported by the ``kiva.agg`` backend. Use
-    ``draw_path_at_points`` instead.
-* ``draw_path_at_points(point_array, path, draw_mode)``
-    Draws a ``CompiledPath`` object at each point in ``point_array`` using the
-    specified drawing mode.
+Enhanced drawing functions
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. note::
+   These methods are not available from every backend, so you should text for
+   their presence before attempting to call them.
 
-    Note: This is not available with all backends.
-* ``draw_image(img, rect=None)``
-    Draws an image. If ``rect`` is defined, then ``img`` is scaled and drawn
-    into it. Otherwise, ``img`` is overlaid exactly on top of this graphics
-    context.
-
-    ``img`` can be a PIL ``Image`` instance, a numpy array, or another 
-    ``GraphicsContext`` instance.
+.. automethod:: kiva.abstract_graphics_context.EnhancedAbstractGraphicsContext.draw_marker_at_points
+.. automethod:: kiva.abstract_graphics_context.EnhancedAbstractGraphicsContext.draw_path_at_points
 
 Text functions
 ~~~~~~~~~~~~~~
-* ``set_text_drawing_mode(text_draw_mode)``
-    Sets the text drawing mode. Allowed values are ``TEXT_FILL``,
-    ``TEXT_STROKE``, ``TEXT_FILL_STROKE``, ``TEXT_INVISIBLE``,
-    ``TEXT_FILL_CLIP``, ``TEXT_STROKE_CLIP``, ``TEXT_FILL_STROKE_CLIP``,
-    ``TEXT_CLIP``
-* ``set_text_matrix(AffineMatrix)``
-    Sets a transformation matrix which only applies to text.
 
-    Note: This is not uniformly implemented across all backends.
-* ``get_text_matrix() -> AffineMatrix``
-    Returns a previously set text transformation matrix.
-* ``set_text_position(float x, float x)``
-    Sets the position where text will be drawn by ``show_text``
-* ``get_text_position() -> (x, y)``
-    Returns the previously set text position.
-* ``show_text(string, point=None)``
-    Draws ``string`` at the current text position, or ``point`` if it is
-    provided.
-* ``show_text_at_point(string, float y, float y)``
-    Draws string at the specified position
-* ``get_text_extent(string) -> (x, y, w, h)``
-    Returns the bounding box of ``string`` if rendered using the currently set
-    font.
-* ``get_full_text_extent(string) -> (w, h, x, y)``
-    deprecated. Order has been changed for backwards-compatibility with
-    existing Enable.
-* ``select_font(name, size, style)``
-    Selects a font using ``name``, ``size``, and ``style``. Note that this will
-    be fulfilled on a best-effort basis. The system might not have the exact
-    font which is requested.
-* ``set_font(Font)``
-    Sets the font using a :class:`kiva.api.Font` object
-* ``get_font() -> Font``
-    Returns the currently selected font as a :class:`kiva.api.Font` object
-* ``set_font_size(int)``
-    Sets the size of drawn text in points
-* ``set_character_spacing()``
-* ``get_character_spacing()``
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_text_drawing_mode
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_text_matrix
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_text_matrix
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_text_position
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_text_position
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.show_text
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.show_text_at_point
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_text_extent
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_full_text_extent
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_character_spacing
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_character_spacing
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.select_font
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_font
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_font
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_font_size
 
 
 Misc functions
 ~~~~~~~~~~~~~~
-* ``width() -> int``
-    Returns the width of the graphics context, in pixels
-* ``height() -> int``
-    Returns the height of the graphics context, in pixels
-* ``format() -> pix_format``
-    Returns the pixel format of the graphics context
-* ``flush()``
-    Force all pending drawing operations to be rendered immediately. This
-    only makes sense in window contexts, ie- the Mac Quartz backend.
-* ``synchronize()``
-    A deferred version of flush(). Also only relevant in window contexts.
-* ``begin_page()``
-* ``end_page()``
-* ``clear_rect(rect)``
-    Clears a rect. Not available in the PDF backend,
-* ``convert_pixel_format(pix_format, bool inplace=0)``
-* ``save(filename, file_format=None, pil_options=None)``
-    Save the GraphicsContext to a file. Output files are always saved in RGB
-    or RGBA format; if this GC is not in one of these formats, it is
-    automatically converted.
 
-    If ``filename`` includes an extension, the image format is
-    inferred from it. ``file_format`` is only required if the
-    format can't be inferred from the filename (e.g. if you
-    wanted to save a PNG file as a .dat or .bin).
-
-    ``pil_options`` is a dict of format-specific options that
-    are passed down to the PIL image file writer. If a writer
-    doesn't recognize an option, it is silently ignored.
-
-    If the image has an alpha channel and the specified output
-    file format does not support alpha, the image is saved in
-    rgb24 format.
-
-
-Functions that are currently stubbed out or not implemented
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-* ``show_glyphs_at_point()``
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.width
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.height
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.flush
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.synchronize
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.begin_page
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.end_page
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.clear_rect
+.. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.save
