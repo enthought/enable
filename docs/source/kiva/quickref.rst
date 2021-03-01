@@ -5,134 +5,6 @@ This document is a summary of the classes and functions available in
 Kiva.  More specifically, it describes some of the details of the
 kiva.agg backend, including enumerated types and helper classes.
 
-Types
------
-
-Primitive types
-~~~~~~~~~~~~~~~
-The following conventions are used to describe input and output types:
-
-color:
-    Either a 3-tuple or 4-tuple. The represented color depends on the
-    graphics context's pixel format.
-rect:
-    (origin_x, origin_y, width, height)
-bool:
-    an int that is 1 or 0
-point_array:
-    an array/sequence of length-2 arrays, e.g. ((x, y), (x2, y2),...)
-rect_array:
-    an array/sequence of rects ((x, y, w, h), (x2, y2, w2, h2), ...)
-color_stop_array:
-    an array/sequence of color stops ((offset, r, g, b, a),
-    (offset2, r2, g2, b2, a2), ...) where offset is some number between 0 and 1
-    inclusive and the entries are sorted from lowest offset to highest.
-
-AffineMatrix
-~~~~~~~~~~~~
-All of the following member functions modify the instance on which they
-are called:
-
-* ``__init__(v0, v1, v2, v3, v4, v5)``
-    also __init__()
-* ``reset()``
-    Sets this matrix to the identity
-* ``multiply(AffineMatrix)``
-    multiples this matrix by another.
-* ``invert()``
-    sets this matrix to the inverse of itself
-* ``flip_x()``
-    mirrors around X
-* ``flip_y()``
-    mirrors around Y
-
-The rest of the member functions return information about the matrix.
-
-* ``scale() -> float``
-    returns the average scale of this matrix
-* ``determinant() -> float``
-    returns the determinant
-* ``asarray() -> array``
-    returns the matrix as a 1D numpy array of floats
-
-The following factory methods are available in the top-level "agg" namespace
-to create specific kinds of :class:`AffineMatrix` instances:
-
-* ``translation_matrix(float x, float x)``
-* ``rotation_matrix(float angle_in_radians)``
-* ``scaling_matrix(float x_scale, float y_scale)``
-* ``skewing_matrix(float x_shear, float y_shear)``
-
-
-CompiledPath
-~~~~~~~~~~~~
-A path is a colection of geometry that can be draw in a graphics context with
-coloring and an affine transformation applied to it. It is the basic unit of
-drawing in a graphics context.
-
-Interface is the same as the `Path functions`_ .
-
-Enumerations
-~~~~~~~~~~~~
-The following enumerations are represented by top-level constants in the "agg"
-namespace.  They are fundamentally integers.  Some of them also have dicts that
-map between their names and integer values
-
-line_cap:
-    CAP_BUTT, CAP_ROUND, CAP_SQUARE
-line_join:
-    JOIN_ROUND, JOIN_BEVEL, JOIN_MITER
-draw_mode:
-    FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE
-
-text_style:
-    NORMAL, BOLD, ITALIC
-text_draw_mode:
-    TEXT_FILL, TEXT_STROKE, TEXT_FILL_STROKE, TEXT_INVISIBLE, TEXT_FILL_CLIP,
-    TEXT_STROKE_CLIP, TEXT_FILL_STROKE_CLIP, TEXT_CLIP
-
-pix_format:
-    (NOTE: the strings in the dicts omit the ``pix_format_`` prefix)
-
-    dicts:
-        pix_format_string_map, pix_format_enum_map
-    values:
-        pix_format_gray8, pix_format_rgb555, pix_format_rgb565,
-        pix_format_rgb24, pix_format_bgr24, pix_format_rgba32, pix_format_argb32,
-        pix_format_abgr32, pix_format_bgra32
-
-interpolation:
-    dicts:
-        interp_enum_map, interp_string_map
-    values:
-        nearest, bilinear, bicubic, spline16, spline36, sinc64, sinc144,
-        sinc256, blackman64, blackman100, blackman256
-
-marker:
-    (NOTE: the strings in the dicts omit the ``marker_`` prefix)
-
-    dicts:
-        marker_string_map, marker_enum_map
-    values:
-        marker_circle, marker_cross, marker_crossed_circle, marker_dash,
-        marker_diamond, marker_dot, marker_four_rays, marker_pixel,
-        marker_semiellipse_down, marker_semiellipse_left, marker_x,
-        marker_semiellipse_right, marker_semiellipse_up, marker_square,
-        marker_triangle_down, marker_triangle_left, marker_triangle_right,
-        marker_triangle_up
-
-path_cmd and path_flags are low-level Agg path attributes.  See the Agg
-documentation for more information about them.  We just pass them through in Kiva.
-
-path_cmd:
-    path_cmd_curve3, path_cmd_curve4, path_cmd_end_poly,
-    path_cmd_line_to, path_cmd_mask, path_cmd_move_to, path_cmd_stop
-
-path_flags:
-    path_flags, path_flags_ccw, path_flags_close, path_flags_cw,
-    path_flags_mask, path_flags_none
-
-
 Graphics Context
 ----------------
 
@@ -283,3 +155,131 @@ Misc functions
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.end_page
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.clear_rect
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.save
+
+
+Types
+-----
+
+Primitive types
+~~~~~~~~~~~~~~~
+The following conventions are used to describe input and output types:
+
+color:
+    Either a 3-tuple or 4-tuple. The represented color depends on the
+    graphics context's pixel format.
+rect:
+    (origin_x, origin_y, width, height)
+bool:
+    an int that is 1 or 0
+point_array:
+    an array/sequence of length-2 arrays, e.g. ((x, y), (x2, y2),...)
+rect_array:
+    an array/sequence of rects ((x, y, w, h), (x2, y2, w2, h2), ...)
+color_stop_array:
+    an array/sequence of color stops ((offset, r, g, b, a),
+    (offset2, r2, g2, b2, a2), ...) where offset is some number between 0 and 1
+    inclusive and the entries are sorted from lowest offset to highest.
+
+AffineMatrix
+~~~~~~~~~~~~
+All of the following member functions modify the instance on which they
+are called:
+
+* ``__init__(v0, v1, v2, v3, v4, v5)``
+    also __init__()
+* ``reset()``
+    Sets this matrix to the identity
+* ``multiply(AffineMatrix)``
+    multiples this matrix by another.
+* ``invert()``
+    sets this matrix to the inverse of itself
+* ``flip_x()``
+    mirrors around X
+* ``flip_y()``
+    mirrors around Y
+
+The rest of the member functions return information about the matrix.
+
+* ``scale() -> float``
+    returns the average scale of this matrix
+* ``determinant() -> float``
+    returns the determinant
+* ``asarray() -> array``
+    returns the matrix as a 1D numpy array of floats
+
+The following factory methods are available in the top-level "agg" namespace
+to create specific kinds of :class:`AffineMatrix` instances:
+
+* ``translation_matrix(float x, float x)``
+* ``rotation_matrix(float angle_in_radians)``
+* ``scaling_matrix(float x_scale, float y_scale)``
+* ``skewing_matrix(float x_shear, float y_shear)``
+
+
+CompiledPath
+~~~~~~~~~~~~
+A path is a collection of geometry that can be drawn in a graphics context with
+coloring and an affine transformation applied to it. It is the basic unit of
+drawing in a graphics context.
+
+Interface is the same as the `Path functions`_ .
+
+Enumerations
+~~~~~~~~~~~~
+The following enumerations are represented by top-level constants in the "agg"
+namespace.  They are fundamentally integers.  Some of them also have dicts that
+map between their names and integer values
+
+line_cap:
+    CAP_BUTT, CAP_ROUND, CAP_SQUARE
+line_join:
+    JOIN_ROUND, JOIN_BEVEL, JOIN_MITER
+draw_mode:
+    FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE
+
+text_style:
+    NORMAL, BOLD, ITALIC
+text_draw_mode:
+    TEXT_FILL, TEXT_STROKE, TEXT_FILL_STROKE, TEXT_INVISIBLE, TEXT_FILL_CLIP,
+    TEXT_STROKE_CLIP, TEXT_FILL_STROKE_CLIP, TEXT_CLIP
+
+pix_format:
+    (NOTE: the strings in the dicts omit the ``pix_format_`` prefix)
+
+    dicts:
+        pix_format_string_map, pix_format_enum_map
+    values:
+        pix_format_gray8, pix_format_rgb555, pix_format_rgb565,
+        pix_format_rgb24, pix_format_bgr24, pix_format_rgba32, pix_format_argb32,
+        pix_format_abgr32, pix_format_bgra32
+
+interpolation:
+    dicts:
+        interp_enum_map, interp_string_map
+    values:
+        nearest, bilinear, bicubic, spline16, spline36, sinc64, sinc144,
+        sinc256, blackman64, blackman100, blackman256
+
+marker:
+    (NOTE: the strings in the dicts omit the ``marker_`` prefix)
+
+    dicts:
+        marker_string_map, marker_enum_map
+    values:
+        marker_circle, marker_cross, marker_crossed_circle, marker_dash,
+        marker_diamond, marker_dot, marker_four_rays, marker_pixel,
+        marker_semiellipse_down, marker_semiellipse_left, marker_x,
+        marker_semiellipse_right, marker_semiellipse_up, marker_square,
+        marker_triangle_down, marker_triangle_left, marker_triangle_right,
+        marker_triangle_up
+
+path_cmd and path_flags are low-level Agg path attributes.  See the Agg
+documentation for more information about them.  We just pass them through in Kiva.
+
+path_cmd:
+    path_cmd_curve3, path_cmd_curve4, path_cmd_end_poly,
+    path_cmd_line_to, path_cmd_mask, path_cmd_move_to, path_cmd_stop
+
+path_flags:
+    path_flags, path_flags_ccw, path_flags_close, path_flags_cw,
+    path_flags_mask, path_flags_none
