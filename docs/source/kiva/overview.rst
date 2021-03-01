@@ -1,3 +1,5 @@
+.. _kiva_overview:
+
 Kiva
 ====
 
@@ -17,7 +19,7 @@ that could be rendered to a GUI window, an image file, a PDF file, or a number
 of other possible output formats without any (or at least minimal) changes to
 the image generation code.
 
-Kiva is the base layer of the Chaco plotting library, and is what is
+Kiva is the base drawing layer of the Chaco plotting library, and is what is
 responsible for actually drawing pixels on the screen.  Developers interested
 in writing code that renders new plots or other graphical features for Chaco
 will need to be at least passingly familiar with the Kiva drawing API.

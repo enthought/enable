@@ -4,7 +4,7 @@ Enable Documentation
 .. toctree::
   :maxdepth: 2
 
-  enable/concepts.rst
+  enable/overview.rst
   enable/constraints_layout.rst
   enable/key_events.rst
   enable/basic_tools.rst
