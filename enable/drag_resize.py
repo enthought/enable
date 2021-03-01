@@ -58,7 +58,7 @@ class DragResizeHandler(Interactor):
             self.float_y = yb
 
         # Set up the drag termination handler:
-        self.on_trait_change(self.drag_done, drag_event)
+        self.observe(self.drag_done, drag_event)
 
     # -------------------------------------------------------------------------
     #  Handle the mouse moving while resizing:
@@ -151,7 +151,7 @@ class DragResizeHandler(Interactor):
 
     def drag_done(self, event):
         # 'Unhook' the drag done notification handler:
-        self.on_trait_change(self.drag_done, self.drag_event, remove=True)
+        self.observe(self.drag_done, self.drag_event, remove=True)
 
         # Inform the component that the resize operation is complete:
         self.component.resized = True
