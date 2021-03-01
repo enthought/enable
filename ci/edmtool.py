@@ -386,10 +386,10 @@ def test_clean(runtime, toolkit):
         '--runtime={}'.format(runtime),
     ]
     try:
-        install(args=args, standalone_mode=False)
-        test(args=args, standalone_mode=False)
+        install(args=args)
+        test(args=args)
     finally:
-        cleanup(args=args, standalone_mode=False)
+        cleanup(args=args)
 
 
 @cli.command()
@@ -417,7 +417,7 @@ def test_all():
         for toolkit in toolkits:
             args = ['--toolkit={}'.format(toolkit),
                     '--runtime={}'.format(runtime)]
-            test_clean(args, standalone_mode=True)
+            test_clean(args)
 
 
 # ----------------------------------------------------------------------------
