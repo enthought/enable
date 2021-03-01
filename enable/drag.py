@@ -39,7 +39,7 @@ class DragHandler(Interactor):
         self.window = components[0].window
         self.drag_over = []
 
-        self.on_trait_change(self.drag_done, drag_event)
+        self.observe(self.drag_done, drag_event)
 
     # -------------------------------------------------------------------------
     #  Handle the mouse moving while dragging:
@@ -151,6 +151,8 @@ class DragHandler(Interactor):
     # -------------------------------------------------------------------------
 
     def drag_done(self, event):
+        print('!'*100)
+        print(event)
         components = self.components
         drag_copy = self.drag_copy
         start_event = self.start_event
