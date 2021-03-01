@@ -15,7 +15,7 @@ import pstats
 
 from traits.api import (
     Any, Bool, Constant, Dict, Event, Float, HasTraits, Instance, Int, List,
-    Property, Str, on_trait_change
+    Property, Str, observe
 )
 from traitsui.api import (
     CodeEditor, Group, HGroup, Item, Label, TabularAdapter, TabularEditor,
@@ -208,12 +208,12 @@ class ProfileResults(HasTraits):
             total_time=self.total_time,
         )
 
-    @on_trait_change("total_time,percentages,basenames")
-    def _adapter_traits_changed(self, object, name, old, new):
-        setattr(self.adapter, name, new)
+    @observe("total_time,percentages,basenames")
+    def _adapter_traits_changed(self, event):
+        setattr(self.adapter, event.name, event.new)
 
-    @on_trait_change("sort_key,sort_ascending")
-    def _resort(self):
+    @observe("sort_key,sort_ascending")
+    def _resort(self, event=None):
         self.records = self.sort_records(self.records)
 
     def _column_clicked_changed(self, new):
@@ -365,17 +365,18 @@ class Sike(HasTraits):
                 )
         return callees
 
-    @on_trait_change("percentages,basenames")
-    def _adapter_traits_changed(self, object, name, old, new):
+    @observe("percentages,basenames")
+    def _adapter_traits_changed(self, event):
         for obj in [
             self.main_results,
             self.callee_results,
             self.caller_results,
         ]:
-            setattr(obj, name, new)
+            setattr(obj, event.name, event.new)
 
-    @on_trait_change("main_results:selected_record")
-    def update_sub_results(self, new):
+    @observe("main_results:selected_record")
+    def update_sub_results(self, event):
+        new = event.new
         if new is None:
             return
         self.caller_results.total_time = new.cum_time
@@ -404,16 +405,17 @@ class Sike(HasTraits):
         else:
             self.trait_set(code="", filename="", line=1)
 
-    @on_trait_change("caller_results:dclicked," "callee_results:dclicked")
-    def goto_record(self, new):
+    @observe("caller_results:dclicked," "callee_results:dclicked")
+    def goto_record(self, event):
+        new = event.new
         if new is None:
             return
         if new.item.file_line_name in self.record_map:
             record = self.record_map[new.item.file_line_name]
             self.main_results.selected_record = record
 
-    @on_trait_change("stats")
-    def _refresh_stats(self):
+    @observe("stats")
+    def _refresh_stats(self, event=None):
         """ Refresh the records from the stored Stats object.
         """
         self.main_results.records = self.main_results.sort_records(
