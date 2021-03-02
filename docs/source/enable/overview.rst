@@ -4,8 +4,9 @@ Enable
 
 Enable is a library which provides an interactive 2D canvas, upon which one can
 build `interactive plots <https://docs.enthought.com/chaco>`_ or other
-applications. It is analogous to the HTML5 ``<canvas>`` element and provides a
-similar 2D drawing interface via :ref:`kiva_overview`.
+applications. It is analogous to the
+`HTML5 \<canvas\> element <https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API>`_
+and provides a similar 2D drawing interface via :ref:`kiva_overview`.
 
 Enable is a foundational layer of the Chaco plotting library, and is what is
 responsible for handling user interaction and interfacing with the underlying
