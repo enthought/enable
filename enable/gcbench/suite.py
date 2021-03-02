@@ -151,7 +151,7 @@ class show_text:
                 y -= self.font.size * 1.4
 
 
-class draw_gradient:
+class draw_path_linear_gradient:
     def __init__(self, gc, module):
         self.gc = gc
 
@@ -171,3 +171,41 @@ class draw_gradient:
                 'pad',
             )
             self.gc.fill_path()
+
+
+class show_text_radial_gradient:
+    def __init__(self, gc, module):
+        from kiva.api import Font
+
+        self.text = [
+            'The quick brown',
+            'fox jumped over',
+            'the lazy dog',
+            '狐假虎威',
+        ]
+        self.font = Font('Times New Roman', size=36)
+        self.gc = gc
+
+    def __call__(self):
+        import numpy as np
+        from kiva import constants
+
+        starting_color = np.array([0.0, 1.0, 1.0, 1.0, 1.0])
+        ending_color = np.array([1.0, 0.0, 0.0, 0.0, 1.0])
+        with self.gc:
+            self.gc.radial_gradient(
+                128,
+                128,
+                150,
+                128,
+                128,
+                np.array([starting_color, ending_color]),
+                'pad',
+            )
+            self.gc.set_text_drawing_mode(constants.TEXT_FILL_STROKE)
+            self.gc.set_font(self.font)
+            y = 256 - self.font.size * 1.4
+            for line in self.text:
+                self.gc.set_text_position(4, y)
+                self.gc.show_text(line)
+                y -= self.font.size * 1.4
