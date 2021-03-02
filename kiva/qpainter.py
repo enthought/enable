@@ -734,6 +734,7 @@ class GraphicsContext(object):
     def fill_path(self):
         """
         """
+        self.path.path.setFillRule(QtCore.Qt.WindingFill)
         self.gc.fillPath(self.path.path, self.gc.brush())
         self.begin_path()
 
