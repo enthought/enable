@@ -644,16 +644,22 @@ class GraphicsContext(object):
         self.gc.setFont(font)
 
     def set_character_spacing(self, spacing):
-        """
+        """ Set the spacing between characters when drawing text
         """
         font = self.gc.font()
         font.setLetterSpacing(QtGui.QFont.AbsoluteSpacing, spacing)
         self.gc.setFont(font)
 
-    def set_text_drawing_mode(self):
+    def get_character_spacing(self):
+        """ Get the spacing between characters when drawing text
         """
+        font = self.gc.font()
+        return font.letterSpacing()
+
+    def set_text_drawing_mode(self, mode):
+        """ Set the drawing mode to use with text
         """
-        pass
+        raise NotImplementedError()
 
     def set_text_position(self, x, y):
         """

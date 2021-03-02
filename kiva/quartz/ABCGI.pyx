@@ -826,12 +826,18 @@ cdef class CGContext:
         self.current_font = self.font_cache[key]
 
     def set_character_spacing(self, float spacing):
+        """ Set the spacing between characters when drawing text
         """
-        """
-
         # XXX: Perhaps this should be handled by the kerning attribute
         # in the attributed string that is used to make a line of text?
         CGContextSetCharacterSpacing(self.context, spacing)
+
+    def get_character_spacing(self):
+        """ Get the current spacing between characters when drawing text
+        """
+        # XXX: There is no "get" counterpart for CGContextSetCharacterSpacing
+        msg = "get_character_spacing not implemented for Quartz yet."
+        raise NotImplementedError(msg)
 
     def set_text_drawing_mode(self, object mode):
         """

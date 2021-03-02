@@ -96,7 +96,8 @@ class AbstractGraphicsContext(object, metaclass=ABCMeta):
 
     @abstractmethod
     def set_fill_color(self, color):
-        """ Set the color used to fill the region bounded by a path
+        """ Set the color used to fill the region bounded by a path or when
+        drawing text.
 
         Parameters
         ----------
@@ -108,7 +109,9 @@ class AbstractGraphicsContext(object, metaclass=ABCMeta):
 
     @abstractmethod
     def get_fill_color(self):
-        """ Get the color used to fill the region bounded by a path """
+        """ Get the color used to fill the region bounded by a path or when
+        drawing text.
+        """
 
     @abstractmethod
     def linear_gradient(self, x1, y1, x2, y2, stops, spread_method, units):
@@ -493,7 +496,7 @@ class AbstractGraphicsContext(object, metaclass=ABCMeta):
         """ Get the current point where text will be drawn """
 
     @abstractmethod
-    def show_text(self, text):
+    def show_text(self, text, point=None):
         """ Draw the specified string at the current point """
 
     @abstractmethod

@@ -631,6 +631,10 @@ class GraphicsContext(object):
         msg = "set_character_spacing not implemented on celiagg yet."
         raise NotImplementedError(msg)
 
+    def get_character_spacing(self):
+        msg = "get_character_spacing not implemented on celiagg yet."
+        raise NotImplementedError(msg)
+
     def set_text_drawing_mode(self, mode):
         try:
             tmode = text_modes[mode]
