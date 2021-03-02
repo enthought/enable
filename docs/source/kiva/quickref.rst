@@ -83,6 +83,8 @@ Clipping functions
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.even_odd_clip
 
 
+.. _kiva_path_functions:
+
 Path functions
 ~~~~~~~~~~~~~~
 The path has the concept of a "current point", which can be though of as the
@@ -104,6 +106,7 @@ position for the geometry which is added to the path.
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.arc
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.arc_to
 
+.. _kiva_drawing_functions:
 
 Drawing functions
 ~~~~~~~~~~~~~~~~~
@@ -214,15 +217,6 @@ to create specific kinds of :class:`AffineMatrix` instances:
 * ``rotation_matrix(float angle_in_radians)``
 * ``scaling_matrix(float x_scale, float y_scale)``
 * ``skewing_matrix(float x_shear, float y_shear)``
-
-
-CompiledPath
-~~~~~~~~~~~~
-A path is a collection of geometry that can be drawn in a graphics context with
-coloring and an affine transformation applied to it. It is the basic unit of
-drawing in a graphics context.
-
-Interface is the same as the `Path functions`_ .
 
 Enumerations
 ~~~~~~~~~~~~
