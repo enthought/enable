@@ -27,4 +27,4 @@ class GraphicsContext(pdf_backend.GraphicsContext):
     def save(self, filename, *args, **kw):
         # Reportlab is a bit silly
         self.gc._filename = filename
-        super().save()
+        super().save(filename, *args, **kw)
