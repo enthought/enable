@@ -122,9 +122,9 @@ def gen_timings(gc, func):
 
     times = np.array(times)
     return {
-        "max": times.max() * 1000,
-        "min": times.min() * 1000,
         "mean": times.mean() * 1000,
+        "min": times.min() * 1000,
+        "max": times.max() * 1000,
         "std": times.std() * 1000,
         "count": len(times),
     }
