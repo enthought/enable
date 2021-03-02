@@ -38,16 +38,26 @@ def benchmark(outdir=None):
     """
     suite = gen_suite()
 
-    results = {}
-    # NOTE: Only checking UI backends for now
-    for name, mod_name in _BACKENDS["ui"].items():
-        print(f"Benchmarking backend: {name}", end="")
-        try:
-            module = importlib.import_module(mod_name)
-        except ImportError:
-            print(" ... Not available")
-            continue
-        results[name] = benchmark_backend(suite, name, module, outdir=outdir)
+    results = {t: {} for t in _BACKENDS}
+    for btype, backends in _BACKENDS.items():
+        for name, mod_name in backends.items():
+            print(f"Benchmarking backend: {name}", end="")
+            try:
+                module = importlib.import_module(mod_name)
+            except ImportError:
+                print(" ... Not available")
+                continue
+
+            # UI backends are checked for performance, File backends are not.
+            if btype == "ui":
+                results[btype][name] = benchmark_backend(
+                    suite, name, module, outdir=outdir
+                )
+            else:
+                # XXX: Use the fact that `name` is the same as the file ext.
+                results[btype][name] = exercise_backend(
+                    suite, name, module, extension=name, outdir=outdir
+                )
 
     return results
 
@@ -58,7 +68,7 @@ def benchmark_backend(suite, mod_name, module, outdir=None):
     GraphicsContext = getattr(module, "GraphicsContext")
     gc = GraphicsContext(_SIZE)
 
-    timings = {}
+    results = {}
     for name, symbol in suite.items():
         print(f"\n\tBenchmark {name}", end="")
         try:
@@ -70,20 +80,63 @@ def benchmark_backend(suite, mod_name, module, outdir=None):
             # Double sized
             with gc:
                 gc.scale_ctm(2, 2)
-                timings[name] = gen_timings(gc, instance)
+                stats = gen_timings(gc, instance)
         else:
             # Normal scale
-            timings[name] = gen_timings(gc, instance)
+            stats = gen_timings(gc, instance)
 
-        if timings[name] is None:
+        if stats is None:
             print(f" ... Failed", end="")
+            results[name] = None
+            continue
 
-        if timings[name] is not None and outdir is not None:
+        results[name] = {"times": stats}
+        if outdir is not None:
             fname = os.path.join(outdir, f"{mod_name}.{name}.png")
             gc.save(fname)
+            results[name]["format"] = "png"
+            results[name]["filename"] = os.path.basename(fname)
 
     print()  # End the line that was left
-    return timings
+    return results
+
+
+def exercise_backend(suite, mod_name, module, extension, outdir=None):
+    """ Exercise a single backend
+    """
+    GraphicsContext = getattr(module, "GraphicsContext")
+
+    results = {name: None for name in suite}
+    for name, symbol in suite.items():
+        # Skip 2x versions
+        if name.endswith("2x"):
+            results[name] = {"skip": True}
+            continue
+
+        # Use a fresh context each time
+        gc = GraphicsContext(_SIZE)
+
+        print(f"\n\tBenchmark {name}", end="")
+        try:
+            instance = symbol(gc, module)
+        except Exception:
+            continue
+
+        try:
+            instance()
+        except Exception:
+            print(f" ... Failed", end="")
+            continue
+
+        results[name] = {"times": {}}
+        if outdir is not None:
+            fname = os.path.join(outdir, f"{mod_name}.{name}.{extension}")
+            gc.save(fname)
+            results[name]["format"] = extension
+            results[name]["filename"] = os.path.basename(fname)
+
+    print()  # End the line that was left
+    return results
 
 
 def gen_suite():
