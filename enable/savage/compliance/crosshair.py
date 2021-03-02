@@ -11,7 +11,7 @@
 """
 
 from enable.api import BaseTool, ColorTrait, LineStyle
-from traits.api import Bool, Float, HasTraits, List, Tuple, on_trait_change
+from traits.api import Bool, Float, HasTraits, List, Tuple, observe
 
 
 class Crosshair(BaseTool):
@@ -84,8 +84,8 @@ class Crosshair(BaseTool):
         self.svg_coords = event.x, y
         event.handled = True
 
-    @on_trait_change("svg_coords,mouse_in")
-    def ensure_redraw(self):
+    @observe("svg_coords,mouse_in")
+    def ensure_redraw(self, event=None):
         if self.component is not None:
             self.component.invalidate_and_redraw()
 

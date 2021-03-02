@@ -27,8 +27,7 @@ import numpy as np
 from enable.api import Component
 from enable.component_editor import ComponentEditor
 from traits.api import (
-    Any, Button, Dict, HasTraits, HTML, Instance, List, Property, Str,
-    on_trait_change
+    Any, Button, Dict, HasTraits, HTML, Instance, List, Property, Str, observe
 )
 from traitsui.api import (
     EnumEditor, HGroup, HSplit, Item, Tabbed, VGroup, View, VSplit
@@ -396,10 +395,10 @@ class Comparator(HasTraits):
         else:
             return "%1.3g %1.3g" % self.ch_controller.svg_coords
 
-    @on_trait_change("profile_this:profile_ended")
-    def _update_profiling(self, new):
-        if new is not None:
-            name, p = new
+    @observe("profile_this:profile_ended")
+    def _update_profiling(self, event):
+        if event.new is not None:
+            name, p = event.new
             stats = pstats.Stats(p)
             if name == "Parsing":
                 self.parsing_sike.stats = stats

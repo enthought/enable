@@ -17,7 +17,7 @@ from enable.simple_layout import simple_container_get_preferred_size
 from enable.tools.viewport_zoom_tool import ViewportZoomTool
 from kiva import affine
 from traits.api import (
-    Any, Bool, Delegate, Enum, Float, Instance, on_trait_change,
+    Any, Bool, Delegate, Enum, Float, Instance, observe,
 )
 
 # Local relative imports
@@ -320,20 +320,25 @@ class Viewport(Component):
             new.viewports.append(self)
             self._update_component_view_bounds()
 
-    @on_trait_change("component:bounds")
-    def _component_bounds_updated(self, obj, name, old, new):
-        if name == "bounds":
-            delta_x = new[0] - old[0]
-            delta_y = new[1] - old[1]
-        elif name == "bounds_items":
-            delta_x = 0
-            delta_y = 0
-            if new.index == 1:
-                delta_y = new.added[0] - new.removed[0]
-            else:
-                delta_x = new.added[0] - new.removed[0]
-                if len(new.removed) == 2:
-                    delta_y = new.added[1] - new.removed[1]
+    @observe("component:bounds")
+    def _updated_component_bounds(self, event):
+        new = event.new
+        old = event.old
+
+        delta_x = new[0] - old[0]
+        delta_y = new[1] - old[1]
+        self._adjust_view_from_component_resize(delta_x, delta_y)
+
+    @observe("component:bounds:items")
+    def _updated_component_bounds_items(self, event):
+        delta_x = 0
+        delta_y = 0
+        if event.index == 1:
+            delta_y = event.added[0] - event.removed[0]
+        else:
+            delta_x = event.added[0] - event.removed[0]
+            if len(event.removed) == 2:
+                delta_y = event.added[1] - event.removed[1]
         self._adjust_view_from_component_resize(delta_x, delta_y)
 
     def _bounds_changed(self, old, new):
@@ -348,8 +353,8 @@ class Viewport(Component):
     def _bounds_items_changed(self, event):
         return self._bounds_changed(None, self.bounds)
 
-    @on_trait_change("view_bounds,view_position")
-    def _handle_view_box_changed(self):
+    @observe("view_bounds,view_position")
+    def _handle_view_box_changed(self, event=None):
         self._update_component_view_bounds()
 
     def _get_position(self):
