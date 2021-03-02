@@ -84,7 +84,7 @@ class AbstractGraphicsContext(object, metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def set_line_dash(self, line_dash):
+    def set_line_dash(self, line_dash, phase=0):
         """ Set the dash style to use when stroking a path
 
         Parameters
@@ -92,6 +92,8 @@ class AbstractGraphicsContext(object, metaclass=ABCMeta):
             line_dash
                 An even-lengthed tuple of floats that represents
                 the width of each dash and gap in the dash pattern.
+            phase : float
+                Specifies how many units into the dash pattern to start.
         """
 
     @abstractmethod
