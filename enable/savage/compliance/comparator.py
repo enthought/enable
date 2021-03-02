@@ -103,7 +103,7 @@ class Comparator(HasTraits):
 
     # The currently selected SVG file.
     current_file = Str()
-    abs_current_file = Property(depends_on=["current_file"])
+    abs_current_file = Property(observe=["current_file"])
 
     # The current XML ElementTree root Element and its XMLTree view model.
     current_xml = Any()
@@ -116,7 +116,7 @@ class Comparator(HasTraits):
 
     # The text showing the current mouse coordinates over any of the
     # components.
-    mouse_coords = Property(Str, depends_on=["ch_controller.svg_coords"])
+    mouse_coords = Property(Str, observe=["ch_controller.svg_coords"])
 
     # Move forward and backward through the list of SVG files.
     move_forward = Button(">>")

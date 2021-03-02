@@ -31,13 +31,13 @@ class Image(Component):
     data = Array(shape=(None, None, (3, 4)), dtype="uint8")
 
     #: the format of the image data (eg. RGB vs. RGBA)
-    format = Property(Enum("rgb24", "rgba32"), depends_on="data")
+    format = Property(Enum("rgb24", "rgba32"), observe="data")
 
     #: the size-hint for constraints-based layout
-    layout_size_hint = Property(data, depends_on="data")
+    layout_size_hint = Property(data, observe="data")
 
     #: the image as a C-contiguous ndarray
-    _image = Property(Array(shape=(None, None, None)), depends_on="data")
+    _image = Property(Array(shape=(None, None, None)), observe="data")
 
     @classmethod
     def from_file(cls, filename, **traits):
