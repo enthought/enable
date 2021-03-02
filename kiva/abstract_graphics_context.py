@@ -659,7 +659,8 @@ class EnhancedAbstractGraphicsContext(AbstractGraphicsContext):
         """
 
     @abstractmethod
-    def draw_path_at_points(self, point_array, compiled_path, draw_mode):
+    def draw_path_at_points(self, point_array, compiled_path,
+                            draw_mode=FILL_STROKE):
         """ Draw a compiled path at a collection of points
 
         The starting point of the paths are specified by the points,
