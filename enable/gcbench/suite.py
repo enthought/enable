@@ -52,6 +52,18 @@ def gen_points(count=100):
     return points.reshape(count // 2, 2)
 
 
+def gen_moderate_complexity_path(obj):
+    import math
+
+    obj.arc(150, 100, 50, math.pi, 1.5*math.pi)
+    obj.move_to(150,50)
+    obj.line_to(250, 75)
+    obj.line_to(150, 100)
+    obj.curve_to(115, 75, 135, 125, 100, 100) 
+
+    return obj
+
+
 class draw_path:
     def __init__(self, gc, module):
         self.gc = gc
@@ -137,3 +149,25 @@ class show_text:
                 self.gc.set_text_position(4, y)
                 self.gc.show_text(line)
                 y -= self.font.size * 1.4
+
+
+class draw_gradient:
+    def __init__(self, gc, module):
+        self.gc = gc
+
+    def __call__(self):
+        import numpy as np
+        # colors are 5 doubles: offset, red, green, blue, alpha
+        starting_color = np.array([0.0, 1.0, 1.0, 1.0, 1.0])
+        ending_color = np.array([1.0, 0.0, 0.0, 0.0, 1.0])
+        with self.gc:
+            gen_moderate_complexity_path(self.gc)
+            self.gc.linear_gradient(
+                100,
+                100,
+                250,
+                75,
+                np.array([starting_color, ending_color]),
+                'pad',
+            )
+            self.gc.fill_path()
