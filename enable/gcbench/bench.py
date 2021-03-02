@@ -26,7 +26,7 @@ _BACKENDS = {
         "quartz": "enable.null.quartz",
     },
     "file": {
-        "pdf": "enable.null.pdf",
+        "pdf": "enable.gcbench.pdf",
         "ps": "enable.null.ps",
         "svg": "enable.null.svg",
     },
