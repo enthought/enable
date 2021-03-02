@@ -258,13 +258,13 @@ class SVGButtonEditor(Editor):
         """
         name = self.extended_name
         if name != "None":
-            self.context_object.on_trait_change(
+            self.context_object.observe(
                 self._update_editor, name, dispatch="ui"
             )
         self.init(parent)
         self._sync_values()
 
-    def update_editor(self):
+    def update_editor(self, event):
         """ Updates the editor when the object trait changes externally to the
             editor.
         """
