@@ -50,6 +50,12 @@ join_style[constants.JOIN_ROUND] = 1
 join_style[constants.JOIN_BEVEL] = 2
 join_style[constants.JOIN_MITER] = 0
 
+font_styles = {}
+font_styles["regular"] = ""
+font_styles["bold"] = "-Bold"
+font_styles["italic"] = "-Oblique"
+font_styles["bold italic"] = "-BoldOblique"
+
 # stroke, fill, mode
 path_mode = {}
 path_mode[constants.FILL_STROKE] = (1, 1, canvas.FILL_NON_ZERO)
@@ -612,9 +618,10 @@ class GraphicsContext(GraphicsContextBase):
     # Drawing Text
     # ----------------------------------------------------------------
 
-    def select_font(self, name, size, textEncoding):
+    def select_font(self, name, size, style="regular", encoding=None):
         """ PDF ignores the Encoding variable.
         """
+        name += font_styles.get(style, "")
         self.gc.setFont(name, size)
 
     def set_font(self, font):
@@ -625,6 +632,8 @@ class GraphicsContext(GraphicsContextBase):
         if face_name == "":
             face_name = "Helvetica"
 
+        # Apply the style as a suffix to the face name
+        face_name += font_styles.get(font.style, "")
         try:
             self.gc.setFont(face_name, font.size)
         except KeyError:

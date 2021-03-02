@@ -608,15 +608,15 @@ class GraphicsContext(object):
     # Drawing Text
     # ----------------------------------------------------------------
 
-    def select_font(self, name, size, textEncoding):
+    def select_font(self, face_name, size=12, style='regular', encoding=None):
         """ Set the font for the current graphics context.
         """
-        self.font = agg.Font(name, size)
+        self.set_font(Font(face_name, size=size, style=style))
 
     def set_font(self, font):
         """ Set the font for the current graphics context.
         """
-        self.select_font(font.findfont(), font.size, None)
+        self.font = agg.Font(font.findfont(), font.size)
 
     def set_font_size(self, size):
         """ Set the font size for the current graphics context.

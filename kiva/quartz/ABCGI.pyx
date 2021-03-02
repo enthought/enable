@@ -787,8 +787,8 @@ cdef class CGContext:
     # Drawing Text
     #----------------------------------------------------------------
 
-    def select_font(self, object name, float size, style='regular'):
-        """
+    def select_font(self, object name, float size, style='regular', encoding=None):
+        """ Select a font to use.
         """
         key = (name, size, style)
         if key not in self.font_cache:
