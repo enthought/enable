@@ -28,6 +28,12 @@ _DOC_TEMPLATE = """
   th {{
     text-align: left;
   }}
+  td.valid {{
+    background: lightgreen;
+  }}
+  td.invalid {{
+    background: lightpink;
+  }}
 </style>
 <h3>Kiva Backend Benchmark Results</h3>
 <p>
@@ -60,32 +66,54 @@ def publish(results, outdir):
 
     # Scale timing values relative to a "baseline" backend implementation
     for name in functions.keys():
-        functions[name] = _format_stats(functions[name], "kiva.agg")
+        functions[name] = _format_stats(functions[name], name, "kiva.agg")
 
-    # Build some table data
-    headers = ["Draw Function"] + backends
-    headers = "\n".join(f"<th>{head}</th>" for head in headers)
-    rows = [
-        [f"<td>{name}</td>"] + [f"<td>{stats[bend]}</td>" for bend in backends]
-        for name, stats in functions.items()
-    ]
-    rows = ["".join(row) for row in rows]
-    rows = "\n".join(f"<tr>{row}</tr>" for row in rows)
-    table = _TABLE_TEMPLATE.format(headers=headers, rows=rows)
+    table = _build_table(backends, functions)
 
     path = os.path.join(outdir, "index.html")
     with open(path, "w") as fp:
         fp.write(_DOC_TEMPLATE.format(content=table))
 
 
-def _format_stats(function, baseline):
+def _build_table(backends, functions):
+    """ Build some table data
+    """
+    # All the row data
+    rows = []
+    for name, stats in functions.items():
+        # Start the row off with the name of the function
+        row = [f"<td>{name}</td>"]
+        for bend in backends:
+            # Each backend stat includes a "valid" flag
+            stat, valid = stats[bend]
+            # Which gets used to add a CSS class for styling
+            klass = "valid" if valid else "invalid"
+            row.append(f'<td class="{klass}">{stat}</td>')
+        # Concat all the <td>'s into a single string
+        rows.append("".join(row))
+    # Concat all the <tr>'s into a multiline string.
+    rows = "\n".join(f"<tr>{row}</tr>" for row in rows)
+
+    # Headers
+    headers = ["Draw Function"] + backends
+    headers = "\n".join(f"<th>{head}</th>" for head in headers)
+
+    # Smash it all together in the template
+    return _TABLE_TEMPLATE.format(headers=headers, rows=rows)
+
+
+def _format_stats(function, func_name, baseline):
+    """ Convert stats for individual benchmark runs into data for a table cell.
+    """
     basevalue = function[baseline]
     formatted = {}
     for name, value in function.items():
         if value is math.nan:
-            formatted[name] = "X"
+            formatted[name] = ("n/a", False)
         else:
             relvalue = basevalue / value
-            formatted[name] = f"{relvalue:0.2f}"
+            # Link to the image created by the benchmark
+            link = f'<a href="{name}.{func_name}.png">'
+            formatted[name] = (f"{link}{relvalue:0.2f}</a>", True)
 
     return formatted
