@@ -6,9 +6,9 @@ Enable Documentation
 
   kiva/overview.rst
   kiva/backends.rst
-  kiva/quickref.rst
   kiva/fonts.rst
   kiva/compiled_path.rst
+  kiva/quickref.rst
 
   enable/overview.rst
   enable/constraints_layout.rst
