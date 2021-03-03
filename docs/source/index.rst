@@ -4,6 +4,13 @@ Enable Documentation
 .. toctree::
   :maxdepth: 2
 
+  kiva/overview.rst
+  kiva/backends.rst
+  kiva/fonts.rst
+  kiva/compiled_path.rst
+  kiva/state.rst
+  kiva/quickref.rst
+
   enable/overview.rst
   enable/constraints_layout.rst
   enable/key_events.rst
@@ -11,13 +18,6 @@ Enable Documentation
   enable/drag_and_drop.rst
   enable/undo_redo.rst
   enable/toolkit_selection.rst
-
-  kiva/overview.rst
-  kiva/backends.rst
-  kiva/quickref.rst
-  kiva/fonts.rst
-  kiva/compiled_path.rst
-  kiva/state.rst
 
   credits.rst
 
