@@ -427,7 +427,7 @@ class Scrolled(Container):
                     self._handle_horizontal_scroll, "scroll_position"
                 )
                 self._hsb.observe(
-                    self._mouse_thumb_changed, "mouse_thumb"
+                    self._handle_mouse_thumb, "mouse_thumb"
                 )
                 self.add(self._hsb)
             else:
@@ -468,7 +468,7 @@ class Scrolled(Container):
                     self._handle_vertical_scroll, "scroll_position"
                 )
                 self._vsb.observe(
-                    self._mouse_thumb_changed, "mouse_thumb"
+                    self._handle_mouse_thumb, "mouse_thumb"
                 )
                 self.add(self._vsb)
             else:
@@ -539,7 +539,7 @@ class Scrolled(Container):
                     view_position=[viewport.view_position[0], position]
                 )
 
-    def _mouse_thumb_changed(self, event):
+    def _handle_mouse_thumb(self, event):
         if event.new == "down" and not self.continuous_drag_update:
             self.freeze_scroll_bounds()
         else:
