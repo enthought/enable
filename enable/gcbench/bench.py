@@ -14,10 +14,12 @@ import time
 
 import numpy as np
 
+from enable.gcbench.data import BenchResult, BenchTiming
+
 _MAX_DURATION = 1.0
 _SIZE = (512, 512)
 _BACKENDS = {
-    "ui": {
+    "gui": {
         "kiva.agg": "enable.null.image",
         "cairo": "enable.null.cairo",
         "celiagg": "enable.null.celiagg",
@@ -37,8 +39,8 @@ def benchmark(outdir=None):
     """ Benchmark all backends
     """
     suite = gen_suite()
+    results = {btype: {} for btype in _BACKENDS}
 
-    results = {t: {} for t in _BACKENDS}
     for btype, backends in _BACKENDS.items():
         for name, mod_name in backends.items():
             print(f"Benchmarking backend: {name}", end="")
@@ -48,12 +50,13 @@ def benchmark(outdir=None):
                 print(" ... Not available")
                 continue
 
-            # UI backends are checked for performance, File backends are not.
-            if btype == "ui":
+            if btype == "gui":
+                # GUI backends are checked for performance (and features).
                 results[btype][name] = benchmark_backend(
                     suite, name, module, outdir=outdir
                 )
             else:
+                # File backends are checked for feature coverage.
                 # XXX: Use the fact that `name` is the same as the file ext.
                 results[btype][name] = exercise_backend(
                     suite, name, module, extension=name, outdir=outdir
@@ -70,32 +73,35 @@ def benchmark_backend(suite, mod_name, module, outdir=None):
 
     results = {}
     for name, symbol in suite.items():
+        # Result `summary` defaults to "fail"
+        results[name] = result = BenchResult()
+
         print(f"\n\tBenchmark {name}", end="")
         try:
             instance = symbol(gc, module)
         except Exception:
+            print(f" ... Failed", end="")
             continue
 
         if name.endswith("2x"):
             # Double sized
             with gc:
                 gc.scale_ctm(2, 2)
-                stats = gen_timings(gc, instance)
+                timing = gen_timing(gc, instance)
         else:
             # Normal scale
-            stats = gen_timings(gc, instance)
+            timing = gen_timing(gc, instance)
 
-        if stats is None:
+        if timing is None:
             print(f" ... Failed", end="")
-            results[name] = None
             continue
 
-        results[name] = {"times": stats}
+        result.timing = timing
+        result.summary = "success"
         if outdir is not None:
             fname = os.path.join(outdir, f"{mod_name}.{name}.png")
             gc.save(fname)
-            results[name]["format"] = "png"
-            results[name]["filename"] = os.path.basename(fname)
+            result.output = os.path.basename(fname)
 
     print()  # End the line that was left
     return results
@@ -106,11 +112,14 @@ def exercise_backend(suite, mod_name, module, extension, outdir=None):
     """
     GraphicsContext = getattr(module, "GraphicsContext")
 
-    results = {name: None for name in suite}
+    results = {}
     for name, symbol in suite.items():
+        # Result `summary` defaults to "fail"
+        results[name] = result = BenchResult()
+
         # Skip 2x versions
         if name.endswith("2x"):
-            results[name] = {"skip": True}
+            result.summary = "skip"
             continue
 
         # Use a fresh context each time
@@ -120,20 +129,21 @@ def exercise_backend(suite, mod_name, module, extension, outdir=None):
         try:
             instance = symbol(gc, module)
         except Exception:
+            print(f" ... Failed", end="")
             continue
 
         try:
             instance()
+            result.summary = "success"
         except Exception:
             print(f" ... Failed", end="")
             continue
 
-        results[name] = {"times": {}}
         if outdir is not None:
             fname = os.path.join(outdir, f"{mod_name}.{name}.{extension}")
             gc.save(fname)
-            results[name]["format"] = extension
-            results[name]["filename"] = os.path.basename(fname)
+            # Record the output
+            result.output = os.path.basename(fname)
 
     print()  # End the line that was left
     return results
@@ -142,6 +152,7 @@ def exercise_backend(suite, mod_name, module, extension, outdir=None):
 def gen_suite():
     """ Create a suite of benchmarks to run against each backend
     """
+    # Import here so we can use `suite` as a name elsewhere.
     from enable.gcbench import suite
 
     benchmarks = {}
@@ -149,12 +160,12 @@ def gen_suite():
         symbol = getattr(suite, name)
         if inspect.isclass(symbol):
             benchmarks[name] = symbol
-            benchmarks[f"{name} 2x"] = symbol
+            benchmarks[f"{name}_2x"] = symbol
 
     return benchmarks
 
 
-def gen_timings(gc, func):
+def gen_timing(gc, func):
     """ Run a function multiple times and generate some stats
     """
     duration = 0.0
@@ -174,10 +185,10 @@ def gen_timings(gc, func):
         return None
 
     times = np.array(times)
-    return {
-        "mean": times.mean() * 1000,
-        "min": times.min() * 1000,
-        "max": times.max() * 1000,
-        "std": times.std() * 1000,
-        "count": len(times),
-    }
+    return BenchTiming(
+        count=len(times),
+        mean=times.mean() * 1000,
+        minimum=times.min() * 1000,
+        maximum=times.max() * 1000,
+        stddev=times.std() * 1000,
+    )
