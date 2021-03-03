@@ -112,7 +112,6 @@ htmltemplate = """<html xmlns:svg="http://www.w3.org/2000/svg"
 </html>
 """
 
-font_map = {"Arial": "Helvetica"}
 try:
     # expensive way of computing string widths
     import reportlab.pdfbase.pdfmetrics as pdfmetrics
@@ -124,8 +123,6 @@ except ImportError:
     from . import _fontdata
 
     _reportlab_loaded = 0
-
-font_face_map = {"Arial": "Helvetica", "": "Helvetica"}
 
 
 # This backend has no compiled path object, yet.
@@ -185,10 +182,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     # Text handling code
 
     def set_font(self, font):
-        self.face_name = font_face_map.get(font.face_name, font.face_name)
-        self.font = pdfmetrics.Font(
-            self.face_name, self.face_name, pdfmetrics.defaultEncoding
-        )
+        self.face_name = font.face_name
         self.font_size = font.size
 
     # actual implementation =)

@@ -19,12 +19,14 @@
 
 # standard library imports
 import copy
+import os
 import warnings
 
 from numpy import ndarray, pi
 
 # ReportLab PDF imports
-import reportlab.pdfbase.pdfmetrics
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 import reportlab.pdfbase._fontdata
 from reportlab.pdfgen import canvas
 
@@ -35,6 +37,7 @@ from .line_state import is_dashed
 from .constants import FILL, STROKE, EOF_FILL
 import kiva.constants as constants
 import kiva.affine as affine
+from kiva.fonttools.font import Font
 
 
 cap_style = {}
@@ -621,7 +624,18 @@ class GraphicsContext(GraphicsContextBase):
         face_name = font.face_name
         if face_name == "":
             face_name = "Helvetica"
-        self.gc.setFont(face_name, font.size)
+
+        try:
+            self.gc.setFont(face_name, font.size)
+        except KeyError:
+            # Face name is not recognized.
+            # Register the TTF font that kiva's font_manager located
+            filename = font.findfont()
+            if not os.path.splitext(filename)[-1] in (".ttf", ".ttc"):
+                raise
+
+            pdfmetrics.registerFont(TTFont(face_name, filename))
+            self.gc.setFont(face_name, font.size)
 
     def get_font(self):
         """ Get the current font """
