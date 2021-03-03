@@ -116,7 +116,8 @@ class AbstractGraphicsContext(object, metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def linear_gradient(self, x1, y1, x2, y2, stops, spread_method, units):
+    def linear_gradient(self, x1, y1, x2, y2, stops, spread_method,
+                        units="userSpaceOnUse"):
         """ Modify the fill color to be a linear gradient
 
         Parameters
@@ -142,7 +143,8 @@ class AbstractGraphicsContext(object, metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def radial_gradient(self, cx, cy, r, fx, fy, stops, spread_method, units):
+    def radial_gradient(self, cx, cy, r, fx, fy, stops, spread_method,
+                        units="userSpaceOnUse"):
         """ Modify the fill color to be a radial gradient
 
         Parameters
