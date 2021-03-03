@@ -8,10 +8,23 @@
 #
 # Thanks for using Enthought open source!
 
+# ****************************************
+# * READ THIS BEFORE ADDING NEW IMPORTS: *
+# ****************************************
+#
+# The benchmark runner in .bench (see the `gen_suite` function) uses the
+# `inspect.isclass` to automatically discover the available benchmarks in
+# this module. Therefore one must be careful to import only module objects
+# or functions only. Any classes will get picked up as benchmarks.
+
+import math
+
+import numpy as np
+
+import kiva.api as kiva_api
+
 
 def gen_image():
-    import numpy as np
-
     img = np.zeros((256, 256, 4), dtype=np.uint8)
     img[50:150, 50:150, (0, 3)] = 255
     img[5:200, 5:50, (1, 3)] = 255
@@ -21,8 +34,6 @@ def gen_image():
 
 
 def gen_large_path(obj):
-    import math
-
     obj.arc(125, 125, 100, 0.0, 2 * math.pi)
     for x in range(0, 250, 25):
         obj.move_to(x, 10)
@@ -46,15 +57,11 @@ def gen_small_path(obj):
 
 
 def gen_points(count=100):
-    import numpy as np
-
     points = (np.random.random(size=count) * 250.0)
     return points.reshape(count // 2, 2)
 
 
 def gen_moderate_complexity_path(obj):
-    import math
-
     obj.arc(150, 100, 50, math.pi, 1.5*math.pi)
     obj.move_to(150, 50)
     obj.line_to(250, 75)
@@ -94,10 +101,8 @@ class draw_marker_at_points:
         self.gc = gc
 
     def __call__(self):
-        from kiva import constants
-
         self.gc.draw_marker_at_points(
-            self.points, 5.0, constants.PLUS_MARKER
+            self.points, 5.0, kiva_api.PLUS_MARKER
         )
 
 
@@ -108,13 +113,11 @@ class draw_path_at_points:
         self.gc = gc
 
     def __call__(self):
-        from kiva.api import STROKE
-
         with self.gc:
             self.gc.set_stroke_color((0.99, 0.66, 0.33, 0.75))
             self.gc.set_line_width(1.5)
             self.gc.draw_path_at_points(
-                self.points, self.path, STROKE
+                self.points, self.path, kiva_api.STROKE
             )
 
 
@@ -129,15 +132,13 @@ class draw_image:
 
 class show_text:
     def __init__(self, gc, module):
-        from kiva.api import Font
-
         self.text = [
             'The quick brown',
             'fox jumped over',
             'the lazy dog',
             '狐假虎威',
         ]
-        self.font = Font('Times New Roman', size=36)
+        self.font = kiva_api.Font('Times New Roman', size=36)
         self.gc = gc
 
     def __call__(self):
@@ -153,58 +154,47 @@ class show_text:
 
 class draw_path_linear_gradient:
     def __init__(self, gc, module):
-        import numpy as np
         # colors are 5 doubles: offset, red, green, blue, alpha
-        starting_color = np.array([0.0, 1.0, 1.0, 1.0, 1.0])
-        ending_color = np.array([1.0, 0.0, 0.0, 0.0, 1.0])
-        self.grad_args = (
-            100,
-            100,
-            250,
-            75,
-            np.array([starting_color, ending_color]),
-            'pad',
-        )
+        starting_color = [0.0, 1.0, 1.0, 1.0, 1.0]
+        ending_color = [1.0, 0.0, 0.0, 0.0, 1.0]
+        self.gradient = np.array([starting_color, ending_color])
         self.gc = gc
 
     def __call__(self):
         with self.gc:
             gen_moderate_complexity_path(self.gc)
-            self.gc.linear_gradient(*self.grad_args)
+            self.gc.linear_gradient(
+                100, 100, 250, 75,
+                self.gradient,
+                'pad',
+            )
             self.gc.fill_path()
 
 
 class show_text_radial_gradient:
     def __init__(self, gc, module):
-        import numpy as np
-        from kiva.api import Font
-
-        starting_color = np.array([0.0, 1.0, 1.0, 1.0, 1.0])
-        ending_color = np.array([1.0, 0.0, 0.0, 0.0, 1.0])
-        self.grad_args = (
-            128,
-            128,
-            150,
-            128,
-            128,
-            np.array([starting_color, ending_color]),
-            'pad',
-        )
+        starting_color = [0.0, 1.0, 1.0, 1.0, 1.0]
+        mid_color = [0.5, 1.0, 0.0, 1.0, 1.0]
+        ending_color = [1.0, 1.0, 1.0, 0.0, 1.0]
+        self.gradient = np.array([starting_color, mid_color, ending_color])
         self.text = [
             'The quick brown',
             'fox jumped over',
             'the lazy dog',
             '狐假虎威',
         ]
-        self.font = Font('Times New Roman', size=36)
+        self.font = kiva_api.Font('Times New Roman', size=36)
         self.gc = gc
 
     def __call__(self):
-        from kiva import constants
-
         with self.gc:
-            self.gc.radial_gradient(*self.grad_args)
-            self.gc.set_text_drawing_mode(constants.TEXT_FILL_STROKE)
+            self.gc.radial_gradient(
+                128, 128, 150, 128, 128,
+                self.gradient,
+                'pad',
+            )
+            self.gc.set_text_drawing_mode(kiva_api.TEXT_FILL_STROKE)
+            self.gc.set_line_width(0.5)
             self.gc.set_font(self.font)
             y = 256 - self.font.size * 1.4
             for line in self.text:
