@@ -1,7 +1,7 @@
 Kiva State
 ==========
 Kiva is a "stateful" drawing API. What this means is that the graphics context
-has a collection of state which affect the results of its drawing actions.
+has a collection of state which affects the results of its drawing actions.
 Furthermore, Kiva enables this state to be managed with a stack such that state
 can be "pushed" onto the stack before making some temporary changes and then
 "popped" off the stack to restore the state to a version which no longer
@@ -15,6 +15,8 @@ along with the methods which operate on them:
 * Affine transformation (:py:meth:`translate_ctm`, :py:meth:`rotate_ctm`,
   :py:meth:`scale_ctm`, :py:meth:`concat_ctm`, :py:meth:`set_ctm`,
   :py:meth:`get_ctm`)
+* Clipping (:py:meth:`clip_to_rect`, :py:meth:`clip_to_rects`, :py:meth:`clip`,
+  :py:meth:`even_odd_clip`)
 * Fill color (:py:meth:`set_fill_color`, :py:meth:`get_fill_color`,
   :py:meth:`linear_gradient`, :py:meth:`radial_gradient`)
 * Stroke color (:py:meth:`set_stroke_color`, :py:meth:`get_stroke_color`)
@@ -39,6 +41,15 @@ and use the ``with`` keyword to create a block of code where the graphics state
 is temporarily modified. Using the context manager approach provides safety from
 "temporary" modifications becoming permanent if an uncaught exception is raised
 while drawing.
+
+In Enable and Chaco, it is frequently the case that a graphics context instance
+will be passed into a method for the purpose of some drawing. Because it is not
+reasonable to push the responsibility of state management "up" the call stack,
+the onus is on the code making state modifications to do them safely so that
+other changes don't leak into other code.
+
+**Well behaved code should take care to only modify graphics state inside a**
+``with`` **block**.
 
 Example
 -------
@@ -68,16 +79,17 @@ properties: stroke color, width, and cap. A rectangle is then added to the
 current path and stroked.
 
 .. literalinclude:: state_ex.py
-  :lines: 18-25
+  :lines: 17-24
   :linenos:
   :lineno-match:
 
-After leaving the ``with`` block, the state is now restored to its default. A
-line is drawn from some point 20 units away from the origin -- which was
-displaced by the default scale and translate -- to a point which is next to the
-rectangle that was drawn a few lines above.
+After leaving the first ``with`` block, the state is now restored to its
+default. A new ``with`` block is entered and the current transformation matrix
+is modified with the same rotation as the first drawing block, but a
+*different* translation is applied. The line properties are unchanged
+and so use the defaults set at the top.
 
 .. literalinclude:: state_ex.py
-  :lines: 27-29
+  :lines: 26-31
   :linenos:
   :lineno-match:

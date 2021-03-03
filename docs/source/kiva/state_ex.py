@@ -13,7 +13,6 @@ gc.set_line_join(JOIN_ROUND)
 gc.set_line_cap(CAP_SQUARE)
 
 for i in range(0, 12):
-    r = 100
     theta = i*2*math.pi / 12.0
     with gc:
         gc.rotate_ctm(theta)
@@ -24,8 +23,11 @@ for i in range(0, 12):
         gc.rect(0, 0, 25, 25)
         gc.stroke_path()
 
-    gc.move_to(20 * math.cos(theta), 20 * math.sin(theta))
-    gc.line_to(r * math.cos(theta), r * math.sin(theta))
-    gc.stroke_path()
+    with gc:
+        gc.rotate_ctm(theta)
+        gc.translate_ctm(20, 0)
+        gc.move_to(0, 0)
+        gc.line_to(80, 0)
+        gc.stroke_path()
 
 gc.save("state_ex.png")
