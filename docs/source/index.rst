@@ -8,6 +8,7 @@ Enable Documentation
   kiva/backends.rst
   kiva/fonts.rst
   kiva/compiled_path.rst
+  kiva/state.rst
   kiva/quickref.rst
 
   enable/overview.rst
