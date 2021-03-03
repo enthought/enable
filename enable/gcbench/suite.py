@@ -52,6 +52,18 @@ def gen_points(count=100):
     return points.reshape(count // 2, 2)
 
 
+def gen_moderate_complexity_path(obj):
+    import math
+
+    obj.arc(150, 100, 50, math.pi, 1.5*math.pi)
+    obj.move_to(150, 50)
+    obj.line_to(250, 75)
+    obj.line_to(150, 100)
+    obj.curve_to(115, 75, 135, 125, 100, 100)
+
+    return obj
+
+
 class draw_path:
     def __init__(self, gc, module):
         self.gc = gc
@@ -131,6 +143,68 @@ class show_text:
     def __call__(self):
         with self.gc:
             self.gc.set_fill_color((0.5, 0.5, 0.0, 1.0))
+            self.gc.set_font(self.font)
+            y = 256 - self.font.size * 1.4
+            for line in self.text:
+                self.gc.set_text_position(4, y)
+                self.gc.show_text(line)
+                y -= self.font.size * 1.4
+
+
+class draw_path_linear_gradient:
+    def __init__(self, gc, module):
+        import numpy as np
+        # colors are 5 doubles: offset, red, green, blue, alpha
+        starting_color = np.array([0.0, 1.0, 1.0, 1.0, 1.0])
+        ending_color = np.array([1.0, 0.0, 0.0, 0.0, 1.0])
+        self.grad_args = (
+            100,
+            100,
+            250,
+            75,
+            np.array([starting_color, ending_color]),
+            'pad',
+        )
+        self.gc = gc
+
+    def __call__(self):
+        with self.gc:
+            gen_moderate_complexity_path(self.gc)
+            self.gc.linear_gradient(*self.grad_args)
+            self.gc.fill_path()
+
+
+class show_text_radial_gradient:
+    def __init__(self, gc, module):
+        import numpy as np
+        from kiva.api import Font
+
+        starting_color = np.array([0.0, 1.0, 1.0, 1.0, 1.0])
+        ending_color = np.array([1.0, 0.0, 0.0, 0.0, 1.0])
+        self.grad_args = (
+            128,
+            128,
+            150,
+            128,
+            128,
+            np.array([starting_color, ending_color]),
+            'pad',
+        )
+        self.text = [
+            'The quick brown',
+            'fox jumped over',
+            'the lazy dog',
+            '狐假虎威',
+        ]
+        self.font = Font('Times New Roman', size=36)
+        self.gc = gc
+
+    def __call__(self):
+        from kiva import constants
+
+        with self.gc:
+            self.gc.radial_gradient(*self.grad_args)
+            self.gc.set_text_drawing_mode(constants.TEXT_FILL_STROKE)
             self.gc.set_font(self.font)
             y = 256 - self.font.size * 1.4
             for line in self.text:
