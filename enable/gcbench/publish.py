@@ -33,6 +33,8 @@ _INDEX_TEMPLATE = """
   td.invalid {{
     background: lightpink;
   }}
+    td.skipped {{
+  }}
 </style>
 <h3>Kiva Backend Benchmark Results</h3>
 <p>
@@ -79,17 +81,21 @@ _TABLE_TEMPLATE = """
 def publish(results, outdir):
     """ Write the test results out as a simple webpage.
     """
-    backends = list(results)
+    backends = []
     functions = {}
-    for bend in backends:
-        for func, stats in results[bend].items():
-            functions.setdefault(func, {})[bend] = stats
 
-    # Scale timing values relative to the "kiva.agg" backend implementation
+    # Transpose the results so that they're accesible by function.
+    for btype, backend_results in results.items():
+        backends.extend(list(backend_results))
+        for bend in backend_results:
+            for name, res in backend_results[bend].items():
+                functions.setdefault(name, {})[bend] = res
+
     comparisons = {}
     for name, results in functions.items():
         _build_function_page(name, results, outdir)
-        comparisons[name] = _format_mean(results, "kiva.agg")
+        # Scale timing values relative to the "kiva.agg" backend implementation
+        comparisons[name] = _format_benchmark(results, "kiva.agg")
 
     comparison_table = _build_comparison_table(backends, comparisons)
     path = os.path.join(outdir, "index.html")
@@ -108,10 +114,8 @@ def _build_comparison_table(backends, comparisons):
         link = f'<a href="{name}.html">'
         row = [f"<td>{link}{name}</a></td>"]
         for bend in backends:
-            # Each backend stat includes a "valid" flag
-            stat, valid = stats[bend]
-            # Which gets used to add a CSS class for styling
-            klass = "valid" if valid else "invalid"
+            # Each backend stat includes a CSS class for table styling
+            stat, klass = stats[bend]
             row.append(f'<td class="{klass}">{stat}</td>')
         # Concat all the <td>'s into a single string
         rows.append("".join(row))
@@ -131,16 +135,16 @@ def _build_function_page(benchmark_name, results, outdir):
     """
     # Build the rows
     backends = []
-    img_tds, stat_tds = "", ""
-    for name, stats in results.items():
-        if stats is None:
+    output_tds, stat_tds = "", ""
+    for backend_name, result in results.items():
+        if result is None or "skip" in result:
             continue
 
-        backends.append(name)
-        img_tds += f'<td><img src="{name}.{benchmark_name}.png" /></td>'
-        stat_tds += f"<td>{_format_stats(stats)}</td>"
+        backends.append(backend_name)
+        output_tds += f"<td>{_format_output(result)}</td>"
+        stat_tds += f"<td>{_format_stats(result['times'])}</td>"
 
-    rows = f"<tr>{img_tds}</tr>\n<tr>{stat_tds}</tr>"
+    rows = f"<tr>{output_tds}</tr>\n<tr>{stat_tds}</tr>"
 
     # Headers
     headers = "\n".join(f"<th>{name}</th>" for name in backends)
@@ -155,27 +159,42 @@ def _build_function_page(benchmark_name, results, outdir):
         fp.write(content)
 
 
-def _format_mean(results, baseline):
-    """ Convert stats for individual benchmark runs into data for a table cell.
+def _format_benchmark(results, baseline):
+    """ Convert stats for backend benchmark runs into data for a table row.
     """
-    basestats = results[baseline]
-    if basestats is None:
-        return {name: ("invalid", False) for name in results}
-
-    basevalue = basestats["mean"]
+    basevalue = results[baseline]["times"]["mean"]
     formatted = {}
-    for name, stats in results.items():
-        if stats is not None:
-            relvalue = basevalue / stats["mean"]
-            formatted[name] = (f"{relvalue:0.2f}", True)
+    for name, result in results.items():
+        if result is not None:
+            stats = result.get("times", {})
+            if stats:
+                relvalue = basevalue / stats["mean"]
+                formatted[name] = (f"{relvalue:0.2f}", "valid")
+            else:
+                if "skip" in result:
+                    # Benchmark was skipped
+                    formatted[name] = ("\N{HEAVY MINUS SIGN}", "skipped")
+                else:
+                    # No times, but the backend succeeded
+                    formatted[name] = ("\N{HEAVY CHECK MARK}", "valid")
         else:
-            formatted[name] = ("n/a", False)
+            formatted[name] = ("\N{HEAVY BALLOT X}", "invalid")
 
     return formatted
 
 
+def _format_output(result):
+    """ Convert the output from a single benchmark run into an image embed or
+    link.
+    """
+    if result["format"] in ("png", "svg"):
+        return f'<img src="{result["filename"]}" />'
+    else:
+        return f'<a href="{result["filename"]}">download</a>'
+
+
 def _format_stats(stats):
-    """ Convert stats for a single benchmark run into a table.
+    """ Convert timing stats for a single benchmark run into a table.
     """
     rows = [
         f"<tr><td>{key.capitalize()}</td><td>{value:0.4f}</td></tr>"
