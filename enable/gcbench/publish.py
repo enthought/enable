@@ -21,11 +21,16 @@ _INDEX_TEMPLATE = """
 <style>
   table, th, td {{
     padding: 4px;
+    background: #eee;
     border: 1px solid gray;
     border-collapse: collapse;
   }}
   th {{
-    text-align: left;
+    text-align: center;
+  }}
+  td.valid,td.invalid,td.skipped {{
+    text-align: center;
+    vertical-align: center;
   }}
   td.valid {{
     background: lightgreen;
@@ -33,11 +38,19 @@ _INDEX_TEMPLATE = """
   td.invalid {{
     background: lightpink;
   }}
+  td.skipped {{
+    background: inherit;
+  }}
 </style>
 <h3>Kiva Backend Benchmark Results</h3>
 <p>
 All results are shown relative to the kiva.agg backend. Numbers less than 1.0
 indicate a slower result and numbers greater than 1.0 indicate a faster result.
+<br><br>
+For backends that aren't timed:<br>
+"\N{HEAVY CHECK MARK}" indicates a successful run<br>
+"\N{HEAVY BALLOT X}" indicates a failed run<br>
+"\N{HEAVY MINUS SIGN}" indicates a skipped run<br>
 </p>
 {comparison_table}
 </body>
@@ -52,11 +65,15 @@ _IMAGE_PAGE_TEMPLATE = """
 </head>
 <body>
 <style>
-  table, th, td {{
+  table, td {{
     padding: 4px;
     border: 1px solid gray;
     border-collapse: collapse;
     text-align: left;
+    vertical-align: top;
+  }}
+  th {{
+    text-align: center;
   }}
 </style>
 <p>
@@ -68,9 +85,7 @@ Results for the "{benchmark_name}" benchmark. All times are in milliseconds.
 """
 _TABLE_TEMPLATE = """
 <table>
-<tr>
-{headers}
-</tr>
+<tr>{headers}</tr>
 {rows}
 </table>
 """
@@ -79,71 +94,83 @@ _TABLE_TEMPLATE = """
 def publish(results, outdir):
     """ Write the test results out as a simple webpage.
     """
-    backends = list(results)
-    functions = {}
-    for bend in backends:
-        for func, stats in results[bend].items():
-            functions.setdefault(func, {})[bend] = stats
+    backends = []
+    benchmarks = {}
 
-    # Scale timing values relative to the "kiva.agg" backend implementation
+    # Transpose the results so that they're accesible by benchmark.
+    for btype, backend_results in results.items():
+        backends.extend(list(backend_results))
+        for bend in backend_results:
+            for benchmark_name, res in backend_results[bend].items():
+                benchmarks.setdefault(benchmark_name, {})[bend] = res
+
+    # Convert each benchmark into an output comparison page and a row for the
+    # comparison table.
     comparisons = {}
-    for name, results in functions.items():
-        _build_function_page(name, results, outdir)
-        comparisons[name] = _format_mean(results, "kiva.agg")
+    for benchmark_name, benchmark_results in benchmarks.items():
+        _build_output_comparison_page(
+            benchmark_name, benchmark_results, outdir
+        )
+        # Compare each result to the "kiva.agg" result
+        baseline = benchmark_results["kiva.agg"]
+        comparisons[benchmark_name] = {
+            name: result.compare_to(baseline)
+            for name, result in benchmark_results.items()
+        }
 
+    # Fill out the comparison table and write the summary index
     comparison_table = _build_comparison_table(backends, comparisons)
     path = os.path.join(outdir, "index.html")
-    with open(path, "w") as fp:
+    with open(path, "w", encoding="utf-8") as fp:
         fp.write(_INDEX_TEMPLATE.format(comparison_table=comparison_table))
 
 
 def _build_comparison_table(backends, comparisons):
     """ Build some table data for comparison of backend performance timings.
     """
-    # All the row data
-    rows = []
-    for name, stats in comparisons.items():
-        # Start the row off with the name of the function
-        # Link to the table of images created by each backend
-        link = f'<a href="{name}.html">'
-        row = [f"<td>{link}{name}</a></td>"]
-        for bend in backends:
-            # Each backend stat includes a "valid" flag
-            stat, valid = stats[bend]
-            # Which gets used to add a CSS class for styling
-            klass = "valid" if valid else "invalid"
-            row.append(f'<td class="{klass}">{stat}</td>')
-        # Concat all the <td>'s into a single string
-        rows.append("".join(row))
-    # Concat all the <tr>'s into a multiline string.
-    rows = "\n".join(f"<tr>{row}</tr>" for row in rows)
-
     # Headers
     headers = ["Draw Function"] + backends
-    headers = "\n".join(f"<th>{head}</th>" for head in headers)
+    headers = "\n".join(_th(head) for head in headers)
+
+    # Build the rows
+    rows = []
+    for benchmark_name, comparisons in comparisons.items():
+        # Start the row off with the name of the benchmark
+        # Link to the benchmark output comparison page
+        row = [_td(_link(f"{benchmark_name}.html", benchmark_name))]
+
+        # Add column entries for the BenchComparisons, ordered by backend
+        for bend in backends:
+            comp = comparisons[bend]
+            row.append(f'<td class="{comp.css_class}">{comp.value}</td>')
+
+        # Concat all the columns into a single table row
+        rows.append(_tr("".join(row)))
+    rows = "\n".join(rows)
 
     # Smash it all together in the template
     return _TABLE_TEMPLATE.format(headers=headers, rows=rows)
 
 
-def _build_function_page(benchmark_name, results, outdir):
+def _build_output_comparison_page(benchmark_name, backend_results, outdir):
     """ Build a page which shows backend outputs next to each other.
     """
+    # Headers
+    headers = ("Backend", "Output", "Timing")
+    headers = "".join(_th(name) for name in headers)
+
     # Build the rows
-    backends = []
-    img_tds, stat_tds = "", ""
-    for name, stats in results.items():
-        if stats is None:
+    rows = []
+    for backend_name, result in backend_results.items():
+        # If no file was output, skip
+        if not result.output:
             continue
 
-        backends.append(name)
-        img_tds += f'<td><img src="{name}.{benchmark_name}.png" /></td>'
-        stat_tds += f"<td>{_format_stats(stats)}</td>"
-
-    rows = f"<tr>{img_tds}</tr>\n<tr>{stat_tds}</tr>"
-
-    # Headers
-    headers = "\n".join(f"<th>{name}</th>" for name in backends)
+        # A row is [Backend | Output | Timing]
+        output = _format_output(result)
+        timing = _format_timing(result)
+        rows.append(_tr(f"{_td(backend_name)}{_td(output)}{_td(timing)}"))
+    rows = "\n".join(rows)
 
     table = _TABLE_TEMPLATE.format(headers=headers, rows=rows)
     content = _IMAGE_PAGE_TEMPLATE.format(
@@ -155,31 +182,40 @@ def _build_function_page(benchmark_name, results, outdir):
         fp.write(content)
 
 
-def _format_mean(results, baseline):
-    """ Convert stats for individual benchmark runs into data for a table cell.
+def _format_output(result):
+    """ Convert the output from a single benchmark run into an image embed or
+    link.
     """
-    basestats = results[baseline]
-    if basestats is None:
-        return {name: ("invalid", False) for name in results}
-
-    basevalue = basestats["mean"]
-    formatted = {}
-    for name, stats in results.items():
-        if stats is not None:
-            relvalue = basevalue / stats["mean"]
-            formatted[name] = (f"{relvalue:0.2f}", True)
-        else:
-            formatted[name] = ("n/a", False)
-
-    return formatted
+    if result.output_format in (".png", ".svg"):
+        return _img(result.output)
+    else:
+        return _link(result.output, "download")
 
 
-def _format_stats(stats):
-    """ Convert stats for a single benchmark run into a table.
+def _format_timing(result):
+    """ Convert timing stats for a single benchmark run into a table.
     """
-    rows = [
-        f"<tr><td>{key.capitalize()}</td><td>{value:0.4f}</td></tr>"
-        for key, value in stats.items()
-    ]
-    rows = "\n".join(rows)
-    return f"<p>Timings:</p><table>{rows}</table>"
+    if result.timing is None:
+        return ""
+    return result.timing.to_html()
+
+
+# HTML utils
+def _img(src):
+    return f'<img src="{src}" />'
+
+
+def _link(target, text):
+    return f'<a href="{target}">{text}</a>'
+
+
+def _td(data, **attrs):
+    return f"<td>{data}</td>"
+
+
+def _th(data):
+    return f"<th>{data}</th>"
+
+
+def _tr(data):
+    return f"<tr>{data}</tr>"

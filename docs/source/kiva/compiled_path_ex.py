@@ -1,5 +1,5 @@
 from math import pi
-from kiva.agg import GraphicsContextArray as GraphicsContext
+from kiva.image import GraphicsContext
 
 gc = GraphicsContext((600, 600))
 
@@ -17,4 +17,4 @@ for i in range(0, 12):
     gc.add_path(path)
     gc.fill_path()
 
-gc.save("example.png")
+gc.save("compiled_path_ex.png")
