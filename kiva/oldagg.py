@@ -7,12 +7,12 @@
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 #
 # Thanks for using Enthought open source!
-from .image import (
-    CompiledPath, font_metrics_provider, GraphicsContext, NativeScrollBar,
-    Window
+from kiva.image import (
+    CompiledPath, font_metrics_provider, FontType, GraphicsContext,
+    GraphicsContextSystem, Image
 )
 
 __all__ = [
-    "CompiledPath", "GraphicsContext", "NativeScrollBar", "Window",
-    "font_metrics_provider"
+    "CompiledPath", "font_metrics_provider", "FontType", "GraphicsContext",
+    "GraphicsContextSystem", "Image"
 ]
