@@ -8,16 +8,14 @@ from kiva.agg import (
     CompiledPath
 )
 
-
-gc = GraphicsContext((600, 600))
-
+gc = GraphicsContext((600, 400))
 
 # step 1) draw wires
 gc.rect(50, 50, 500, 100)
 gc.rect(200, 150, 200, 50)
 gc.rect(200, 200, 200, 50)
-
 gc.stroke_path()
+gc.save("images/step_1.png")
 
 # step 2) draw dots for wire connections
 points = np.array([
@@ -28,6 +26,7 @@ points = np.array([
     [550., 130.] 
 ])
 gc.draw_marker_at_points(points, 4.0, CIRCLE_MARKER)
+gc.save("images/step_2.png")
 
 # step 3) Ammeter and Voltmeter
 with gc:  # Voltmeter
@@ -55,9 +54,9 @@ with gc:  # Ammeter
     gc.set_fill_color((0., 0., 0., 1.0))
     x, y, w, h = gc.get_text_extent('V')
     gc.show_text_at_point('V', -w/2, -h/2)
+gc.save("images/step_3.png")
 
 # step 5) clear some space for the resistors
-
 clear_resistor_path = CompiledPath()
 clear_resistor_path.move_to(0,0)
 clear_resistor_path.line_to(80, 0)
@@ -73,19 +72,15 @@ with gc:
     gc.set_line_width(2)
     gc.draw_path_at_points(resistor_locations, clear_resistor_path, STROKE)
 
-
-
 #step 4) resistors
-
 resistor_path = CompiledPath()
 resistor_path.move_to(0,0)
 resistor_path_points = [(i*10+5, 10*(-1)**i) for i in range(8)]
 for x, y in resistor_path_points:
     resistor_path.line_to(x,y)
 resistor_path.line_to(80, 0)
-
 gc.draw_path_at_points(resistor_locations, resistor_path, STROKE)
-
+gc.save("images/step_45.png")
 
 # step 6) switch
 # white out the wire 
@@ -106,6 +101,7 @@ with gc:
     gc.move_to(0, 0)
     gc.line_to(30, 0)
     gc.stroke_path()
+gc.save("images/step_6.png")
 
 # step 7) battery
 with gc:
@@ -143,4 +139,4 @@ with gc:
     gc.line_set(thick_starts, thick_ends)
     gc.stroke_path()
 
-gc.save("tutorial.png")
+gc.save("images/tutorial.png")
