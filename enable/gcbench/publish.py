@@ -121,7 +121,7 @@ def publish(results, outdir):
     # Fill out the comparison table and write the summary index
     comparison_table = _build_comparison_table(backends, comparisons)
     path = os.path.join(outdir, "index.html")
-    with open(path, "w") as fp:
+    with open(path, "w", encoding="utf-8") as fp:
         fp.write(_INDEX_TEMPLATE.format(comparison_table=comparison_table))
 
 
