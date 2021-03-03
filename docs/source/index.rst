@@ -17,6 +17,7 @@ Enable Documentation
   kiva/quickref.rst
   kiva/fonts.rst
   kiva/compiled_path.rst
+  kiva_tutorial/index
 
   credits.rst
 
