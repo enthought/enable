@@ -18,6 +18,7 @@ from enable.gcbench.data import BenchResult, BenchTiming
 
 _MAX_DURATION = 1.0
 _SIZE = (512, 512)
+_2X_SIZE = (1024, 1024)
 _BACKENDS = {
     "gui": {
         "kiva.agg": "enable.null.image",
@@ -69,12 +70,14 @@ def benchmark_backend(suite, mod_name, module, outdir=None):
     """ Benchmark a single backend
     """
     GraphicsContext = getattr(module, "GraphicsContext")
-    gc = GraphicsContext(_SIZE)
 
     results = {}
     for name, symbol in suite.items():
         # Result `summary` defaults to "fail"
-        results[name] = result = BenchResult()
+        results[name] = result = BenchResult(output_size=_SIZE)
+
+        size = _2X_SIZE if name.endswith("2x") else _SIZE
+        gc = GraphicsContext(size)
 
         print(f"\n\tBenchmark {name}", end="")
         try:
@@ -115,7 +118,7 @@ def exercise_backend(suite, mod_name, module, extension, outdir=None):
     results = {}
     for name, symbol in suite.items():
         # Result `summary` defaults to "fail"
-        results[name] = result = BenchResult()
+        results[name] = result = BenchResult(output_size=_SIZE)
 
         # Skip 2x versions
         if name.endswith("2x"):
