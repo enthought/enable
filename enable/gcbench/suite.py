@@ -25,22 +25,22 @@ import kiva.api as kiva_api
 
 
 def gen_image():
-    img = np.zeros((256, 256, 4), dtype=np.uint8)
-    img[50:150, 50:150, (0, 3)] = 255
-    img[5:200, 5:50, (1, 3)] = 255
-    img[85:195, 85:195, (2, 3)] = 255
-    img[205:250, 205:250, :] = 255
+    img = np.zeros((512, 512, 4), dtype=np.uint8)
+    img[100:300, 100:300, (0, 3)] = 255
+    img[10:400, 10:400, (1, 3)] = 255
+    img[195:400, 195:400, (2, 3)] = 255
+    img[410:500, 410:500, :] = 255
     return img
 
 
 def gen_large_path(obj):
-    obj.arc(125, 125, 100, 0.0, 2 * math.pi)
-    for x in range(0, 250, 25):
-        obj.move_to(x, 10)
-        obj.line_to(x, 250)
-    for y in range(0, 250, 25):
-        obj.move_to(10, y)
-        obj.line_to(250, y)
+    obj.arc(250, 250, 240, 0.0, 2 * math.pi)
+    for x in range(50, 500, 50):
+        obj.move_to(x, 0)
+        obj.line_to(x, 500)
+    for y in range(50, 500, 50):
+        obj.move_to(0, y)
+        obj.line_to(500, y)
 
     return obj
 
@@ -57,16 +57,16 @@ def gen_small_path(obj):
 
 
 def gen_points(count=100):
-    points = (np.random.random(size=count) * 250.0)
+    points = (np.random.random(size=count) * 500.0)
     return points.reshape(count // 2, 2)
 
 
 def gen_moderate_complexity_path(obj):
-    obj.arc(150, 100, 50, math.pi, 1.5*math.pi)
-    obj.move_to(150, 50)
-    obj.line_to(250, 75)
-    obj.line_to(150, 100)
-    obj.curve_to(115, 75, 135, 125, 100, 100)
+    obj.arc(300, 200, 100, math.pi, 1.5*math.pi)
+    obj.move_to(300, 100)
+    obj.line_to(500, 150)
+    obj.line_to(300, 200)
+    obj.curve_to(230, 150, 270, 250, 200, 200)
 
     return obj
 
@@ -79,19 +79,20 @@ class draw_path:
         with self.gc:
             gen_large_path(self.gc)
             self.gc.set_stroke_color((0.33, 0.66, 0.99, 1.0))
+            self.gc.set_line_width(5.0)
             self.gc.stroke_path()
 
 
 class draw_rect:
     def __init__(self, gc, module):
-        self.points = gen_points()
+        self.points = gen_points(200)
         self.gc = gc
 
     def __call__(self):
         with self.gc:
             self.gc.set_fill_color((0.33, 0.66, 0.99, 1.0))
             for pt in self.points:
-                self.gc.rect(pt[0], pt[1], 20.0, 20.0)
+                self.gc.rect(pt[0], pt[1], 15.0, 15.0)
             self.gc.fill_path()
 
 
@@ -127,7 +128,7 @@ class draw_image:
         self.gc = gc
 
     def __call__(self):
-        self.gc.draw_image(self.img, (0, 0, 256, 256))
+        self.gc.draw_image(self.img, (0, 0, 512, 512))
 
 
 class show_text:
@@ -138,14 +139,14 @@ class show_text:
             'the lazy dog',
             '狐假虎威',
         ]
-        self.font = kiva_api.Font('Times New Roman', size=36)
+        self.font = kiva_api.Font('Times New Roman', size=72)
         self.gc = gc
 
     def __call__(self):
         with self.gc:
             self.gc.set_fill_color((0.5, 0.5, 0.0, 1.0))
             self.gc.set_font(self.font)
-            y = 256 - self.font.size * 1.4
+            y = 512 - self.font.size * 1.4
             for line in self.text:
                 self.gc.set_text_position(4, y)
                 self.gc.show_text(line)
@@ -164,7 +165,7 @@ class draw_path_linear_gradient:
         with self.gc:
             gen_moderate_complexity_path(self.gc)
             self.gc.linear_gradient(
-                100, 100, 250, 75,
+                200, 200, 500, 150,
                 self.gradient,
                 'pad',
             )
@@ -183,20 +184,20 @@ class show_text_radial_gradient:
             'the lazy dog',
             '狐假虎威',
         ]
-        self.font = kiva_api.Font('Times New Roman', size=36)
+        self.font = kiva_api.Font('Times New Roman', size=72)
         self.gc = gc
 
     def __call__(self):
         with self.gc:
             self.gc.radial_gradient(
-                128, 128, 150, 128, 128,
+                256, 256, 300, 256, 256,
                 self.gradient,
                 'pad',
             )
             self.gc.set_text_drawing_mode(kiva_api.TEXT_FILL_STROKE)
             self.gc.set_line_width(0.5)
             self.gc.set_font(self.font)
-            y = 256 - self.font.size * 1.4
+            y = 512 - self.font.size * 1.4
             for line in self.text:
                 self.gc.set_text_position(4, y)
                 self.gc.show_text(line)

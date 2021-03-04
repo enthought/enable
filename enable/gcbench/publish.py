@@ -187,7 +187,7 @@ def _format_output(result):
     link.
     """
     if result.output_format in (".png", ".svg"):
-        return _img(result.output)
+        return _img(result.output, *result.output_size)
     else:
         return _link(result.output, "download")
 
@@ -201,8 +201,8 @@ def _format_timing(result):
 
 
 # HTML utils
-def _img(src):
-    return f'<img src="{src}" />'
+def _img(src, width, height):
+    return f'<img src="{src}" width="{width}" height="{height}"/>'
 
 
 def _link(target, text):

@@ -10,7 +10,7 @@
 import os
 
 from traits.api import (
-    Enum, File, Float, HasStrictTraits, Instance, Int, Property, Str
+    Enum, File, Float, HasStrictTraits, Instance, Int, Property, Str, Tuple
 )
 
 
@@ -21,9 +21,10 @@ class BenchResult(HasStrictTraits):
     # Default to "fail"!
     summary = Enum("fail", "skip", "success")
 
-    #: A path to an output file and its format
+    #: A path to an output file with a format and size
     output = File()
     output_format = Property(Str(), observe="output")
+    output_size = Tuple(Int(), Int())
 
     #: Timing results
     timing = Instance("BenchTiming")
