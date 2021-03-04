@@ -41,7 +41,7 @@ now, they will come into play later in the tutorial.
 
 Now we are ready to use it to start drawing - simple as that.  Lets start with
 just drawing the wires.  Given that they are rectangles, this can be done
-quite easily using the graphics context's `rect` method.
+quite easily using the graphics context's :py:meth:`rect` method.
 
 .. literalinclude:: tutorial.py
     :lines: 10-14
@@ -106,9 +106,9 @@ which we will now use to draw the resistors. As you can see the path for each
 resistor will be exactly the same. Rather than moving our coordinate system
 around to each location and redrawing the same path at each location, we will
 instead define the path using a CompiledPath and draw at each of the various
-desired locations using the `draw_path_at_points` method. To do this we
-instantiate a :class:`CompiledPath`, and then define our path just as we would with
-the graphics context's current path. The interface uses the same
+desired locations using the :py:meth:`draw_path_at_points` method. To do this
+we instantiate a :class:`CompiledPath`, and then define our path just as we
+would with the graphics context's current path. The interface uses the same
 :ref:`kiva_path_functions`. Finally, we can simply call
 :py:meth:`draw_path_at_points` passing in the locations we want to draw the
 path, our compiled path, and the drawing mode.
@@ -146,3 +146,13 @@ our coordinate system back to as it was before.
 
 We will leave the drawing of the battery as an exercise for the reader, but the
 full code for the example is available :download:`here <../tutorial.py>`.
+
+
+This tutorial was intended as a ramp up for drawing with kiva. Many of the
+approaches taken in the code we chosen with the idea of teaching, not
+optimizing code, in mind. In pactice, you probably would not want to implement
+drawing in this because it is not as performant as it could be. For example,
+
+Now that you better understand the basics of what
+kiva drawing is all about, please refer to (.......) to see what a more
+"production" level version of code for this drawing might look like. This
