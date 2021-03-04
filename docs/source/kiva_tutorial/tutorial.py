@@ -3,10 +3,7 @@ from math import tau
 import numpy as np
 
 from kiva.api import CAP_ROUND, CIRCLE_MARKER, Font, STROKE
-from kiva.agg import (
-    GraphicsContextArray as GraphicsContext,
-    CompiledPath
-)
+from kiva.image import GraphicsContext, CompiledPath
 
 gc = GraphicsContext((600, 400))
 
@@ -29,6 +26,8 @@ gc.draw_marker_at_points(points, 4.0, CIRCLE_MARKER)
 gc.save("images/step_2.png")
 
 # step 3) Ammeter and Voltmeter
+font = Font('Times New Roman', size=20)
+gc.set_font(font)
 with gc:  # Voltmeter
     gc.translate_ctm(50, 100)
     gc.set_fill_color((.9, .9, 0.5, 1.0))
@@ -36,8 +35,6 @@ with gc:  # Voltmeter
     gc.set_line_width(3)
     gc.draw_path()
 
-    font = Font('Times New Roman', size=20)
-    gc.set_font(font)
     gc.set_fill_color((0., 0., 0., 1.0))
     x, y, w, h = gc.get_text_extent('A')
     gc.show_text_at_point('A', -w/2, -h/2)
@@ -49,8 +46,6 @@ with gc:  # Ammeter
     gc.set_line_width(3)
     gc.draw_path()
 
-    font = Font('Times New Roman', size=20)
-    gc.set_font(font)
     gc.set_fill_color((0., 0., 0., 1.0))
     x, y, w, h = gc.get_text_extent('V')
     gc.show_text_at_point('V', -w/2, -h/2)
