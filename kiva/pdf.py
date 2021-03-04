@@ -783,5 +783,5 @@ class GraphicsContext(GraphicsContextBase):
             # erase the current path.
             self.current_pdf_path = None
 
-    def save(self, filename, file_format=None, pil_options=None):
+    def save(self, filename='', file_format=None, pil_options=None):
         self.gc.save()
