@@ -5,7 +5,7 @@ import numpy as np
 from kiva.api import CAP_ROUND, CIRCLE_MARKER, Font, STROKE
 from kiva.image import GraphicsContext, CompiledPath
 
-gc = GraphicsContext((600, 400))
+gc = GraphicsContext((600, 300))
 
 # step 1) draw wires
 gc.rect(50, 50, 500, 100)

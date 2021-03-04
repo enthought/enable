@@ -177,6 +177,7 @@ def draw_meter(gc, location, color, text):
         x, y, w, h = gc.get_text_extent(text)
         gc.show_text_at_point(text, -w/2, -h/2)
 
+
 def draw_switch(gc, location, angle):
     """
     Draws a switch at given location.  Assumes location is the connected side
@@ -198,6 +199,7 @@ def draw_switch(gc, location, angle):
         gc.move_to(0, 0)
         gc.line_to(30, 0)
         gc.stroke_path()
+
 
 def draw_battery(gc, location):
     """
@@ -228,7 +230,7 @@ def draw_battery(gc, location):
 
 if __name__ == "__main__":
 
-    gc = GraphicsContext((600, 400))
+    gc = GraphicsContext((600, 300))
 
     # step 1) Draw a skeleton of the circuit
     component_locations = [

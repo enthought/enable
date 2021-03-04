@@ -52,6 +52,15 @@ quite easily using the graphics context's :py:meth:`rect` method.
 
 That was easy. Now, let's draw the dots indicating wire connections. To do
 this, we can use the optimized :py:meth:`draw_marker_at_points` method.
+
+.. note::
+  :py:meth:`draw_marker_at_points` is currently only implemented by the
+  ``kiva.agg`` backend which may soon be deprecated. We can guard against this
+  to make our code backend agnostic, but for the purposes of keeping the
+  tutorial simple we do not do that here. See the
+  :download:`advanced version of the tutorial  <tutorial_advanced.py>` for
+  how to do so.
+
 In this case, with only 5 dots to draw, the speed up is likely negligible.
 However, in scenarios where you need to draw many markers this method can
 provide a significant boost as opposed to just using a for loop.  Here we
@@ -99,17 +108,17 @@ need to draw the text at (-w/2, -h/2).
   :height: 400
 
 As you may have noticed, most of the code for drawing the Ammeter and the
-Voltmeter was effectively the same.  Sometimes it is useful to work with an
+Voltmeter was effectively the same. Sometimes it is useful to work with an
 independent path instance as opposed to specifically messing with the current
 path of the graphics context. This brings us to the notion of CompiledPaths,
 which we will now use to draw the resistors. As you can see the path for each
 resistor will be exactly the same. Rather than moving our coordinate system
 around to each location and redrawing the same path at each location, we will
-instead define the path using a CompiledPath and draw at each of the various
-desired locations using the :py:meth:`draw_path_at_points` method. To do this
-we instantiate a :class:`CompiledPath`, and then define our path just as we
-would with the graphics context's current path. The interface uses the same
-:ref:`kiva_path_functions`. Finally, we can simply call
+instead define the path using a :class:CompiledPath and draw at each of the
+various desired locations using the :py:meth:`draw_path_at_points` method. To
+do this we instantiate a :class:`CompiledPath`, and then define our path just
+as we would with the graphics context's current path. The interface uses the
+same :ref:`kiva_path_functions`. Finally, we can simply call
 :py:meth:`draw_path_at_points` passing in the locations we want to draw the
 path, our compiled path, and the drawing mode.
 
@@ -119,7 +128,10 @@ path, our compiled path, and the drawing mode.
 If you run just this code, you will notice that things don't look quite right,
 as the original lines for the wires still show underneath our resistors. We can
 get rid of these by drawing white lines over the relevant portions of the wire
-before we call the above code.  Explicitly, we can run 
+before we call the above code. Note that this is not the most performant
+approach we could take especially in the context of an interactive application.
+In general we want to strive to touch each pixel as few times as necessary.
+However, in this case to keep the tutorial simple, we can run 
 
 .. literalinclude:: tutorial.py
     :lines: 54-68
@@ -145,7 +157,7 @@ our coordinate system back to as it was before.
   :height: 400
 
 We will leave the drawing of the battery as an exercise for the reader, but the
-full code for the example is available :download:`here <../tutorial.py>`.
+full code for the example is available :download:`here <tutorial.py>`.
 
 
 This tutorial was intended as a ramp up for drawing with kiva. Many of the
@@ -154,5 +166,7 @@ optimizing code, in mind. In pactice, you probably would not want to implement
 drawing in this because it is not as performant as it could be. For example,
 
 Now that you better understand the basics of what
-kiva drawing is all about, please refer to (.......) to see what a more
-"production" level version of code for this drawing might look like. This
+kiva drawing is all about, please refer to the 
+:download:`advanced version of the tutorial  <tutorial_advanced.py>` to
+see what a more "production" level version of code for this drawing might look
+like.
