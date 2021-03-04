@@ -1524,8 +1524,10 @@ cdef class CGBitmapContext(CGContext):
         return CGBitmapContextGetWidth(self.context)
 
     def __getbuffer__(self, Py_buffer *buffer, int flags):
-        cdef Py_ssize_t shape[2]
-        cdef Py_ssize_t strides[2]
+        """ When another object calls PyObject_GetBuffer on us.
+        """
+        cdef Py_ssize_t* shape = <Py_ssize_t *>PyMem_Malloc(2 * sizeof(Py_ssize_t))
+        cdef Py_ssize_t* strides = <Py_ssize_t *>PyMem_Malloc(2 * sizeof(Py_ssize_t))
 
         shape[0] = self.bytes_per_row
         shape[1] = self.height()
@@ -1533,19 +1535,27 @@ cdef class CGBitmapContext(CGContext):
         strides[1] = 1
 
         buffer.buf = <char *>(self.data)
-        buffer.format = 'b'
-        buffer.internal = NULL
-        buffer.itemsize = 1
-        buffer.len = self.height() * self.bytes_per_row
-        buffer.ndim = 2
         buffer.obj = self
+        buffer.len = self.height() * self.bytes_per_row
         buffer.readonly = 1
+        buffer.itemsize = 1
+        buffer.format = 'b'
+        buffer.ndim = 2
         buffer.shape = shape
         buffer.strides = strides
         buffer.suboffsets = NULL
+        buffer.internal = NULL
 
     def __releasebuffer__(self, Py_buffer *buffer):
-        pass
+        """ When PyBuffer_Release is called on buffers from __getbuffer__.
+        """
+        # Just deallocate the shape and strides allocated by __getbuffer__.
+        # Since buffer.obj is a referenced counted reference to this object
+        # (thus keeping this object alive as long a connected buffer exists)
+        # and we don't mutate `self.data` outside of __init__ and __dealloc__,
+        # we have nothing further to do here.
+        PyMem_Free(buffer.shape)
+        PyMem_Free(buffer.strides)
 
     def clear(self, object clear_color=(1.0, 1.0, 1.0, 1.0)):
         """Paint over the whole image with a solid color.
