@@ -1523,30 +1523,39 @@ cdef class CGBitmapContext(CGContext):
     def width(self):
         return CGBitmapContextGetWidth(self.context)
 
-    def __getsegcount__(self, void* tmp):
-        cdef int *lenp
-        lenp = <int *>tmp
-        if lenp != NULL:
-            lenp[0] = self.height()*self.bytes_per_row
-        return 1
+    def __getbuffer__(self, Py_buffer *buffer, int flags):
+        """ When another object calls PyObject_GetBuffer on us.
+        """
+        cdef Py_ssize_t* shape = <Py_ssize_t *>PyMem_Malloc(2 * sizeof(Py_ssize_t))
+        cdef Py_ssize_t* strides = <Py_ssize_t *>PyMem_Malloc(2 * sizeof(Py_ssize_t))
 
-    def __getreadbuffer__(self, int segment, void** ptr):
-        # ignore invalid segment; the caller can't mean anything but the only
-        # segment available; we're all adults
-        ptr[0] = self.data
-        return self.height()*self.bytes_per_row
+        shape[0] = self.bytes_per_row
+        shape[1] = self.height()
+        strides[0] = self.bytes_per_row
+        strides[1] = 1
 
-    def __getwritebuffer__(self, int segment, void** ptr):
-        # ignore invalid segment; the caller can't mean anything but the only
-        # segment available; we're all adults
-        ptr[0] = self.data
-        return self.height()*self.bytes_per_row
+        buffer.buf = <char *>(self.data)
+        buffer.obj = self
+        buffer.len = self.height() * self.bytes_per_row
+        buffer.readonly = 1
+        buffer.itemsize = 1
+        buffer.format = 'b'
+        buffer.ndim = 2
+        buffer.shape = shape
+        buffer.strides = strides
+        buffer.suboffsets = NULL
+        buffer.internal = NULL
 
-    def __getcharbuffer__(self, int segment, char** ptr):
-        # ignore invalid segment; the caller can't mean anything but the only
-        # segment available; we're all adults
-        ptr[0] = <char*>(self.data)
-        return self.height()*self.bytes_per_row
+    def __releasebuffer__(self, Py_buffer *buffer):
+        """ When PyBuffer_Release is called on buffers from __getbuffer__.
+        """
+        # Just deallocate the shape and strides allocated by __getbuffer__.
+        # Since buffer.obj is a referenced counted reference to this object
+        # (thus keeping this object alive as long a connected buffer exists)
+        # and we don't mutate `self.data` outside of __init__ and __dealloc__,
+        # we have nothing further to do here.
+        PyMem_Free(buffer.shape)
+        PyMem_Free(buffer.strides)
 
     def clear(self, object clear_color=(1.0, 1.0, 1.0, 1.0)):
         """Paint over the whole image with a solid color.
@@ -1601,7 +1610,8 @@ cdef class CGBitmapContext(CGContext):
         if file_format is None:
             file_format = ''
 
-        img = PilImage.frombytes(mode, (self.width(), self.height()), self)
+        img = PilImage.frombuffer(mode, (self.width(), self.height()), self,
+                                  'raw', mode, 0, 1)
         if 'A' in mode:
             # Check the output format to see if it can handle an alpha channel.
             no_alpha_formats = ('jpg', 'bmp', 'eps', 'jpeg')
