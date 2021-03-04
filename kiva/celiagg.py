@@ -103,8 +103,8 @@ class GraphicsContext(object):
         self.__state_stack = []
 
         # For HiDPI support
-        base_scale = kwargs.pop('base_pixel_scale', 1)
-        self.transform.scale(base_scale, base_scale)
+        self.base_scale = kwargs.pop('base_pixel_scale', 1)
+        self.transform.scale(self.base_scale, self.base_scale)
 
     # ----------------------------------------------------------------
     # Size info
@@ -814,7 +814,7 @@ class GraphicsContext(object):
             fill=self.fill_paint,
         )
 
-    def save(self, filename, file_format=None):
+    def save(self, filename, file_format=None, pil_options=None):
         """ Save the contents of the context to a file
         """
         try:
@@ -824,6 +824,8 @@ class GraphicsContext(object):
 
         if file_format is None:
             file_format = ''
+        if pil_options is None:
+            pil_options = {}
 
         pixels = self.gc.array
         if self.pix_format.startswith('bgra'):
@@ -837,14 +839,23 @@ class GraphicsContext(object):
             data = pixels
         img = Image.fromarray(data, 'RGBA')
 
+        ext = (
+            os.path.splitext(filename)[1][1:] if isinstance(filename, str)
+            else ''
+        )
         # Check the output format to see if it can handle an alpha channel.
         no_alpha_formats = ('jpg', 'bmp', 'eps', 'jpeg')
-        if ((isinstance(filename, str) and
-                os.path.splitext(filename)[1][1:] in no_alpha_formats) or
-                (file_format.lower() in no_alpha_formats)):
+        if ext in no_alpha_formats or file_format.lower() in no_alpha_formats:
             img = img.convert('RGB')
 
-        img.save(filename, format=file_format)
+        # Check the output format to see if it can handle DPI
+        dpi_formats = ('jpg', 'png', 'tiff', 'jpeg')
+        if ext in dpi_formats or file_format.lower() in dpi_formats:
+            # Assume 72dpi is 1x
+            dpi = int(self.base_scale * 72)
+            pil_options['dpi'] = (dpi, dpi)
+
+        img.save(filename, format=file_format, **pil_options)
 
 
 class CompiledPath(object):

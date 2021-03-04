@@ -163,7 +163,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     def height(self):
         return self.size[1]
 
-    def save(self, filename):
+    def save(self, filename, file_format=None, pil_options=None):
         with open(filename, "w") as f:
             ext = os.path.splitext(filename)[1]
             if ext == ".svg":

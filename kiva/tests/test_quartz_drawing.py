@@ -20,4 +20,7 @@ class TestQuartzDrawing(DrawingImageTester, unittest.TestCase):
     def create_graphics_context(self, width, height, pixel_scale):
         from kiva.quartz import ABCGI
 
-        return ABCGI.CGBitmapContext((width, height))
+        return ABCGI.CGBitmapContext((width, height), base_pixel_scale=pixel_scale)
+
+    def test_save_dpi(self):
+        self.assertEqual(self.save_and_return_dpi(), 144)

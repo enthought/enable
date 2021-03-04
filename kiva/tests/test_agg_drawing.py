@@ -19,6 +19,9 @@ class TestAggDrawing(DrawingImageTester, unittest.TestCase):
     def create_graphics_context(self, width, height, pixel_scale):
         return GraphicsContext((width, height), base_pixel_scale=pixel_scale)
 
+    def test_save_dpi(self):
+        self.assertEqual(self.save_and_return_dpi(), 144)
+
     def test_unicode_gradient_args(self):
         color_nodes = [(0.0, 1.0, 0.0, 0.0), (1.0, 0.0, 0.0, 0.0)]
         with self.draw_and_check():
