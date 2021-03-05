@@ -1250,7 +1250,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self.translate_ctm(x, y)
         component.draw(self, view_bounds=(0, 0, w, h))
 
-    def save(self, filename, file_format=None):
+    def save(self, filename, file_format=None, pil_options=None):
         """ Save the GraphicsContext to a (PNG) file.
             file_format is ignored.
         """

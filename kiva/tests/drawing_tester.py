@@ -175,6 +175,19 @@ class DrawingImageTester(DrawingTester):
         """
         raise NotImplementedError()
 
+    def save_and_return_dpi(self):
+        """ Draw an image and save it. Then read it back and return the DPI
+        """
+        self.gc.begin_path()
+        self.gc.arc(150, 150, 100, 0.0, 2 * numpy.pi)
+        self.gc.fill_path()
+
+        filename = "{0}.png".format(self.filename)
+        self.gc.save(filename)
+        image = Image.open(filename)
+        dpi = image.info['dpi']
+        return dpi[0]
+
     @contextlib.contextmanager
     def draw_and_check(self):
         yield

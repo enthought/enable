@@ -370,6 +370,7 @@ namespace kiva {
                 _swig_setattr(self, GraphicsContextArray, 'thisown2', 1)
 
                 self.bmp_array = ary
+                self.base_scale = base_pixel_scale
 
             def __del__(self, destroy=_agg.destroy_graphics_context):
                 try:
@@ -839,15 +840,27 @@ namespace kiva {
                 """
                 from PIL import Image
 
+                FmtsWithDpi = ('jpg', 'png', 'tiff', 'jpeg')
                 FmtsWithoutAlpha = ('jpg', 'bmp', 'eps', "jpeg")
                 size = (self.width(), self.height())
                 fmt = self.format()
+
+                if pil_options is None:
+                    pil_options = {}
+
+                file_ext = filename.rpartition(".")[-1].lower() if isinstance(filename, str) else ""
+                if (file_ext in FmtsWithDpi or
+                        (file_format is not None and
+                         file_format.lower() in FmtsWithDpi)):
+                    # Assume 72dpi is 1x
+                    dpi = int(72 * self.base_scale)
+                    pil_options["dpi"] = (dpi, dpi)
 
                 # determine the output pixel format and PIL format
                 if fmt.endswith("32"):
                     pilformat = "RGBA"
                     pixelformat = "rgba32"
-                    if (isinstance(filename, str) and filename[-3:].lower() in FmtsWithoutAlpha) or \
+                    if file_ext in FmtsWithoutAlpha or \
                        (file_format is not None and file_format.lower() in FmtsWithoutAlpha):
                         pilformat = "RGB"
                         pixelformat = "rgb24"
@@ -865,7 +878,7 @@ namespace kiva {
                     bmp = self.bmp_array
 
                 img = Image.fromarray(bmp, pilformat)
-                img.save(filename, format=file_format, options=pil_options)
+                img.save(filename, format=file_format, **pil_options)
 
 
             #----------------------------------------------------------------
