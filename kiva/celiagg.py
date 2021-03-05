@@ -852,7 +852,7 @@ class GraphicsContext(object):
         dpi_formats = ('jpg', 'png', 'tiff', 'jpeg')
         if ext in dpi_formats or file_format.lower() in dpi_formats:
             # Assume 72dpi is 1x
-            dpi = int(self.base_scale * 72)
+            dpi = int(72 * self.base_scale)
             pil_options['dpi'] = (dpi, dpi)
 
         img.save(filename, format=file_format, **pil_options)

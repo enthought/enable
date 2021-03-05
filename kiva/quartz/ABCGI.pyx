@@ -1624,6 +1624,7 @@ cdef class CGBitmapContext(CGContext):
         # Check te output format to see if DPI can be passed
         dpi_formats = ('jpg', 'png', 'tiff', 'jpeg')
         if file_ext in dpi_formats or file_format.lower() in dpi_formats:
+            # Assume 72dpi is 1x
             dpi = int(72 * self.base_scale)
             pil_options['dpi'] = (dpi, dpi)
 

@@ -18,6 +18,7 @@ class TestCeliaggDrawing(DrawingImageTester, unittest.TestCase):
         return GraphicsContext((width, height), base_pixel_scale=pixel_scale)
 
     def test_save_dpi(self):
+        # Base DPI is 72, but our default pixel scale is 2x.
         self.assertEqual(self.save_and_return_dpi(), 144)
 
     def test_clip_rect_transform(self):

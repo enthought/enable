@@ -848,10 +848,11 @@ namespace kiva {
                 if pil_options is None:
                     pil_options = {}
 
-                file_ext = filename[-3:].lower() if isinstance(filename, str) else ''
+                file_ext = filename.rpartition(".")[-1].lower() if isinstance(filename, str) else ""
                 if (file_ext in FmtsWithDpi or
                         (file_format is not None and
                          file_format.lower() in FmtsWithDpi)):
+                    # Assume 72dpi is 1x
                     dpi = int(72 * self.base_scale)
                     pil_options["dpi"] = (dpi, dpi)
 
