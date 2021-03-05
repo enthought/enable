@@ -31,8 +31,8 @@ gc.set_font(font)
 with gc:  # Voltmeter
     gc.translate_ctm(50, 100)
     gc.set_fill_color((.9, .9, 0.5, 1.0))
-    gc.arc(0, 0, 20, 0.0, tau)
     gc.set_line_width(3)
+    gc.arc(0, 0, 20, 0.0, tau)
     gc.draw_path()
 
     gc.set_fill_color((0., 0., 0., 1.0))
@@ -42,8 +42,8 @@ with gc:  # Voltmeter
 with gc:  # Ammeter
     gc.translate_ctm(300, 250)
     gc.set_fill_color((0.5, .9, 0.5, 1.0))
-    gc.arc(0, 0, 20, 0.0, tau)
     gc.set_line_width(3)
+    gc.arc(0, 0, 20, 0.0, tau)
     gc.draw_path()
 
     gc.set_fill_color((0., 0., 0., 1.0))
