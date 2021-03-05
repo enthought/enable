@@ -62,7 +62,7 @@ class DragTool(BaseTool):
 
     # private property to hold the current list of KeySpec instances of the
     # cancel keys
-    _cancel_keys = Property(List(KeySpec), depends_on="cancel_keys")
+    _cancel_keys = Property(List(KeySpec), observe="cancel_keys")
 
     # ------------------------------------------------------------------------
     # Interface for subclasses

@@ -34,7 +34,7 @@ class TextField(Component):
     # ------------------------------------------------------------------------
 
     # The text to be edited
-    text = Property(depends_on=["_text_changed"])
+    text = Property(observe=["_text_changed"])
 
     # Events that get fired on certain keypresses
     accept = Event
@@ -74,10 +74,10 @@ class TextField(Component):
 
     # The max width/height of the displayed text in characters
     _text_width = Property(
-        depends_on=["_style", "height"], cached="_height_cache"
+        observe=["_style", "height"], cached="_height_cache"
     )
     _text_height = Property(
-        depends_on=["_style", "width"], cached="_width_cache"
+        observe=["_style", "width"], cached="_width_cache"
     )
 
     # The x-y position of the cursor in the text

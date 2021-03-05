@@ -188,6 +188,7 @@ cdef class ShadingFunction
 
 cdef class CGContext:
     cdef CGContextRef context
+    cdef float base_scale
     cdef long can_release
     cdef object current_font
     cdef object current_style
@@ -201,9 +202,10 @@ cdef class CGContext:
         self.can_release = 0
         self.text_matrix = CGAffineTransformMake(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
 
-    def __init__(self, size_t context, long can_release=0):
+    def __init__(self, size_t context, long can_release=0, base_pixel_scale=1.0):
         self.context = <CGContextRef>context
 
+        self.base_scale = base_pixel_scale
         self.can_release = can_release
         self.fill_color = (0.0, 0.0, 0.0, 1.0)
         self.stroke_color = (0.0, 0.0, 0.0, 1.0)
@@ -1340,7 +1342,7 @@ cdef class CGLayerContext(CGContextInABox):
         # Create a CGBitmapContext from this layer, draw to it, then let it save
         # itself out.
         rect = (0, 0) + self.size
-        bmp = CGBitmapContext(self.size)
+        bmp = CGBitmapContext(self.size, base_pixel_scale=self.base_scale)
         CGContextDrawLayerInRect(bmp.context,  CGRectMakeFromPython(rect), self.layer)
         bmp.save(filename, file_format=file_format, pil_options=pil_options)
 
@@ -1411,11 +1413,13 @@ cdef class CGBitmapContext(CGContext):
 
     def __init__(self, object size_or_array, bool grey_scale=0,
         int bits_per_component=8, int bytes_per_row=-1,
-        alpha_info=kCGImageAlphaPremultipliedLast):
+        alpha_info=kCGImageAlphaPremultipliedLast, base_pixel_scale=1.0):
 
         cdef int bits_per_pixel
         cdef CGColorSpaceRef colorspace
         cdef void* dataptr
+
+        self.base_scale = base_pixel_scale
 
         if hasattr(size_or_array, '__array_interface__'):
             # It's an array.
@@ -1523,30 +1527,39 @@ cdef class CGBitmapContext(CGContext):
     def width(self):
         return CGBitmapContextGetWidth(self.context)
 
-    def __getsegcount__(self, void* tmp):
-        cdef int *lenp
-        lenp = <int *>tmp
-        if lenp != NULL:
-            lenp[0] = self.height()*self.bytes_per_row
-        return 1
+    def __getbuffer__(self, Py_buffer *buffer, int flags):
+        """ When another object calls PyObject_GetBuffer on us.
+        """
+        cdef Py_ssize_t* shape = <Py_ssize_t *>PyMem_Malloc(2 * sizeof(Py_ssize_t))
+        cdef Py_ssize_t* strides = <Py_ssize_t *>PyMem_Malloc(2 * sizeof(Py_ssize_t))
 
-    def __getreadbuffer__(self, int segment, void** ptr):
-        # ignore invalid segment; the caller can't mean anything but the only
-        # segment available; we're all adults
-        ptr[0] = self.data
-        return self.height()*self.bytes_per_row
+        shape[0] = self.bytes_per_row
+        shape[1] = self.height()
+        strides[0] = self.bytes_per_row
+        strides[1] = 1
 
-    def __getwritebuffer__(self, int segment, void** ptr):
-        # ignore invalid segment; the caller can't mean anything but the only
-        # segment available; we're all adults
-        ptr[0] = self.data
-        return self.height()*self.bytes_per_row
+        buffer.buf = <char *>(self.data)
+        buffer.obj = self
+        buffer.len = self.height() * self.bytes_per_row
+        buffer.readonly = 1
+        buffer.itemsize = 1
+        buffer.format = 'b'
+        buffer.ndim = 2
+        buffer.shape = shape
+        buffer.strides = strides
+        buffer.suboffsets = NULL
+        buffer.internal = NULL
 
-    def __getcharbuffer__(self, int segment, char** ptr):
-        # ignore invalid segment; the caller can't mean anything but the only
-        # segment available; we're all adults
-        ptr[0] = <char*>(self.data)
-        return self.height()*self.bytes_per_row
+    def __releasebuffer__(self, Py_buffer *buffer):
+        """ When PyBuffer_Release is called on buffers from __getbuffer__.
+        """
+        # Just deallocate the shape and strides allocated by __getbuffer__.
+        # Since buffer.obj is a referenced counted reference to this object
+        # (thus keeping this object alive as long a connected buffer exists)
+        # and we don't mutate `self.data` outside of __init__ and __dealloc__,
+        # we have nothing further to do here.
+        PyMem_Free(buffer.shape)
+        PyMem_Free(buffer.strides)
 
     def clear(self, object clear_color=(1.0, 1.0, 1.0, 1.0)):
         """Paint over the whole image with a solid color.
@@ -1600,17 +1613,31 @@ cdef class CGBitmapContext(CGContext):
 
         if file_format is None:
             file_format = ''
+        if pil_options is None:
+            pil_options = {}
 
-        img = PilImage.frombytes(mode, (self.width(), self.height()), self)
+        file_ext = (
+            os.path.splitext(filename)[1][1:] if isinstance(filename, str)
+            else ''
+        )
+
+        # Check te output format to see if DPI can be passed
+        dpi_formats = ('jpg', 'png', 'tiff', 'jpeg')
+        if file_ext in dpi_formats or file_format.lower() in dpi_formats:
+            # Assume 72dpi is 1x
+            dpi = int(72 * self.base_scale)
+            pil_options['dpi'] = (dpi, dpi)
+
+        img = PilImage.frombuffer(mode, (self.width(), self.height()), self,
+                                  'raw', mode, 0, 1)
         if 'A' in mode:
             # Check the output format to see if it can handle an alpha channel.
             no_alpha_formats = ('jpg', 'bmp', 'eps', 'jpeg')
-            if ((isinstance(filename, basestring) and
-                 os.path.splitext(filename)[1][1:] in no_alpha_formats) or
-                (file_format.lower() in no_alpha_formats)):
+            if (file_ext in no_alpha_formats or
+                    file_format.lower() in no_alpha_formats):
                 img = img.convert('RGB')
 
-        img.save(filename, format=file_format, options=pil_options)
+        img.save(filename, format=file_format, **pil_options)
 
 cdef class CGImage:
     cdef CGImageRef image

@@ -42,6 +42,12 @@ draw_modes[constants.STROKE] = 0
 draw_modes[constants.FILL_STROKE] = QtCore.Qt.OddEvenFill
 draw_modes[constants.EOF_FILL_STROKE] = QtCore.Qt.WindingFill
 
+font_styles = {}
+font_styles["regular"] = constants.NORMAL
+font_styles["bold"] = constants.BOLD
+font_styles["italic"] = constants.ITALIC
+font_styles["bold italic"] = constants.BOLD_ITALIC
+
 gradient_coord_modes = {}
 gradient_coord_modes["userSpaceOnUse"] = QtGui.QGradient.LogicalMode
 gradient_coord_modes["objectBoundingBox"] = QtGui.QGradient.ObjectBoundingMode
@@ -612,15 +618,23 @@ class GraphicsContext(object):
     # Drawing Text
     # ----------------------------------------------------------------
 
-    def select_font(self, name, size, textEncoding):
+    def select_font(self, name, size, style="regular", encoding=None):
         """ Set the font for the current graphics context.
         """
-        self.gc.setFont(QtGui.QFont(name, size))
+        style = font_styles.get(style, constants.NORMAL)
+        font = Font(name, size=size, style=style)
+        self.set_font(font)
 
     def set_font(self, font):
         """ Set the font for the current graphics context.
         """
-        self.select_font(font.face_name, font.size, None)
+        qfont = QtGui.QFont(font.face_name, font.size)
+
+        if font.style in (constants.BOLD, constants.BOLD_ITALIC):
+            qfont.setBold(True)
+        if font.style in (constants.ITALIC, constants.BOLD_ITALIC):
+            qfont.setItalic(True)
+        self.gc.setFont(qfont)
 
     def set_font_size(self, size):
         """
@@ -720,6 +734,7 @@ class GraphicsContext(object):
     def fill_path(self):
         """
         """
+        self.path.path.setFillRule(QtCore.Qt.WindingFill)
         self.gc.fillPath(self.path.path, self.gc.brush())
         self.begin_path()
 
@@ -819,7 +834,7 @@ class GraphicsContext(object):
         "Converts between a Kiva and a Qt y coordinate"
         return self._height - y - 1
 
-    def save(self, filename, file_format=None):
+    def save(self, filename, file_format=None, pil_options=None):
         """ Save the contents of the context to a file
         """
         if isinstance(self.qt_dc, QtGui.QPixmap):
