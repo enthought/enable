@@ -10,7 +10,7 @@ Enable Documentation
   kiva/compiled_path.rst
   kiva/state.rst
   kiva/quickref.rst
-  kiva_tutorial/index
+  kiva_tutorial/index.rst
 
   enable/overview.rst
   enable/constraints_layout.rst

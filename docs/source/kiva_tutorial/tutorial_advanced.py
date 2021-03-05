@@ -2,7 +2,7 @@ from math import tau
 
 import numpy as np
 
-from kiva.api import CAP_ROUND, Font, STROKE
+from kiva.api import CAP_ROUND, CIRCLE_MARKER, FILL, Font, STROKE
 from kiva.image import GraphicsContext, CompiledPath
 
 
@@ -58,10 +58,18 @@ def draw_rect_wire_frame_with_components(gc, x, y, w, h, component_locations):
     component_locations : List of pairs of 2-tuple
         The start and end points of the components in order encountered
     """
-    left_comps = [comp_loc for comp_loc in component_locations if comp_loc[0][0] == x]
-    top_comps = [comp_loc for comp_loc in component_locations if comp_loc[0][1] == y + h]
-    right_comps =[comp_loc for comp_loc in component_locations if comp_loc[0][0] == x + w]
-    bottom_comps = [comp_loc for comp_loc in component_locations if comp_loc[0][1] == y]
+    left_comps = [
+        comp_loc for comp_loc in component_locations if comp_loc[0][0] == x
+    ]
+    top_comps = [
+        comp_loc for comp_loc in component_locations if comp_loc[0][1] == y + h
+    ]
+    right_comps =[
+        comp_loc for comp_loc in component_locations if comp_loc[0][0] == x + w
+    ]
+    bottom_comps = [
+        comp_loc for comp_loc in component_locations if comp_loc[0][1] == y
+    ]
 
     draw_wire_with_components(gc, (x, y), (x, y + h), left_comps)
     draw_wire_with_components(gc, (x, y + h), (x + w, y + h), top_comps)
@@ -73,7 +81,7 @@ def draw_wire_connections_at_points(gc, points):
     """
     Draw wire connections at each of the given points. This function checks if
     the graphics context implements optimized methods for doing so, and draws
-    using the mostt optimal approach available.
+    using the most optimal approach available.
 
     Parameters
     ----------
@@ -82,7 +90,6 @@ def draw_wire_connections_at_points(gc, points):
     points : List of pairs of 2-tuple
         The points where wire connections are to be drawn
     """
-    from kiva.api import CIRCLE_MARKER, FILL
 
     if hasattr(gc, 'draw_marker_at_points'):
         gc.draw_marker_at_points(points, 4.0, CIRCLE_MARKER)
@@ -136,7 +143,6 @@ def draw_resistors_at_points(gc, points, resistor_path):
     resistor_path : CompiledPath
         The resistor path we wish to draw
     """
-    from kiva.api import STROKE
 
     if hasattr(gc, 'draw_path_at_points'):
         gc.draw_path_at_points(points, resistor_path, STROKE)
@@ -165,12 +171,13 @@ def draw_meter(gc, location, color, text):
         The text to be placed in the center of the meter symbol
     """
     font = Font('Times New Roman', size=20)
-    gc.set_font(font)
     with gc:
-        gc.translate_ctm(*location)
+        gc.set_font(font)
         gc.set_fill_color(color)
-        gc.arc(0, 0, 20, 0.0, tau)
         gc.set_line_width(3)
+        gc.translate_ctm(*location)
+
+        gc.arc(0, 0, 20, 0.0, tau)
         gc.draw_path()
 
         gc.set_fill_color((0., 0., 0., 1.0))
@@ -240,8 +247,12 @@ if __name__ == "__main__":
         ((430, 50), (350, 50)),
         ((230, 50), (150, 50))
     ]
-    draw_rect_wire_frame_with_components(gc, 50, 50, 500, 100, component_locations)
-    draw_rect_wire_frame_with_components(gc, 200, 200, 200, 50, [((340, 200), (260, 200))])
+    draw_rect_wire_frame_with_components(
+        gc, 50, 50, 500, 100, component_locations
+    )
+    draw_rect_wire_frame_with_components(
+        gc, 200, 200, 200, 50, [((340, 200), (260, 200))]
+    )
     draw_wire_with_components(gc, (200, 150), (200, 200), [])
     draw_wire_with_components(gc, (400, 150), (400, 200), [])
 
