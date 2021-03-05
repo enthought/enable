@@ -22,4 +22,4 @@ class TestGCErrors(unittest.TestCase):
         gc = GraphicsContext((50, 50))
 
         # Pass in a 3D array, but with an invalid size in the last dimension.
-        self.assertRaises(TypeError, gc.draw_image, arr.reshape(2, 2, 1))
+        self.assertRaises(ValueError, gc.draw_image, arr.reshape(2, 2, 1))

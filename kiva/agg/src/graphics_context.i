@@ -745,7 +745,11 @@ namespace kiva {
                 # GraphicsContexts, so create one.
                 if isinstance(img, ndarray):
                     # Let PIL figure out the pixel format
-                    img = Image.fromarray(img)
+                    try:
+                        img = Image.fromarray(img)
+                    except TypeError as ex:
+                        # External code is expecting a ValueError
+                        raise ValueError(str(ex))
                 if isinstance(img, Image.Image):
                     if img.mode not in pil_format_map:
                         img = img.convert("RGB")
