@@ -25,8 +25,13 @@ If ``image`` contains an alpha channel and transparent or translucent pixels,
 this transparency should also be honored by the destination graphics context.
 However, not all backends may support this.
 
-Regarding the ``rect`` argument to :py:meth:`draw_image`. It will be transformed
-by the current transformation matrix.
+Regarding the ``rect`` argument to :py:meth:`draw_image`, if it is not
+specified then the bounding rectangle of the graphics context will be used. As
+mentioned before, ``rect`` can be used to apply an arbitrary translation and
+scaling to an image. The translation is the x,y position of the rectangle and
+the scaling is the ratio of the image's width and height to those of the
+rectangle. In every case, ``rect`` will be transformed by the current
+transformation matrix.
 
 Special considerations
 ----------------------
