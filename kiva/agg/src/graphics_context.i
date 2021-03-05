@@ -734,17 +734,32 @@ namespace kiva {
                                            double rect[4], bool force_copy=false)
             %{
             def draw_image(self, img, rect=None, force_copy=False):
+                from PIL import Image
+
+                pil_format_map = {
+                    "RGB": "rgb24",
+                    "RGBA": "rgba32",
+                }
+
+                # The C++ implementation only handles other
+                # GraphicsContexts, so create one.
                 if isinstance(img, ndarray):
-                    # The C++ implementation only handles other
-                    # GraphicsContexts, so create one.
-                    if img.shape[-1] == 3:
-                        pix_format = 'rgb24'
-                    else:
-                        pix_format = 'rgba32'
-                    img = GraphicsContextArray(img, pix_format=pix_format)
+                    # Let PIL figure out the pixel format
+                    try:
+                        img = Image.fromarray(img)
+                    except TypeError as ex:
+                        # External code is expecting a ValueError
+                        raise ValueError(str(ex))
+                if isinstance(img, Image.Image):
+                    if img.mode not in pil_format_map:
+                        img = img.convert("RGB")
+                    pix_format = pil_format_map[img.mode]
+                    img = GraphicsContextArray(array(img), pix_format=pix_format)
+
                 if rect is None:
-                    rect = array((0,0,img.width(),img.height()),float)
-                return _agg.GraphicsContextArray_draw_image(self,img,rect,force_copy)
+                    rect = array((0, 0, img.width(), img.height()), float)
+
+                return _agg.GraphicsContextArray_draw_image(self, img, rect, force_copy)
             %}
 
             int draw_image(kiva::graphics_context_base* img,

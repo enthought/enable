@@ -37,7 +37,7 @@ class ImageComponent(Component):
         if self.image is None:
             return
 
-        gc.draw_image(self.image, (0, 0, gc.width(), gc.height()))
+        gc.draw_image(self.image, (0, 0, self.width, self.height))
 
     def _image_default(self):
         mode = self.image_mode
