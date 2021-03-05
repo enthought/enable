@@ -29,6 +29,26 @@ along with the methods which operate on them:
 * Miter limit (:py:meth:`set_miter_limit`)
 * Flatness (:py:meth:`set_flatness`)
 * Image interpolation (:py:meth:`set_image_interpolation`, :py:meth:`get_image_interpolation`)
+* Text drawing mode (:py:meth:`set_text_drawing_mode`)
+
+Color
+-----
+Kiva has two colors in its graphics state: stroke color and fill color. Stroke
+color is used for the lines in paths when the drawing mode is ``STROKE``,
+``FILL_STROKE`` or ``EOF_FILL_STROKE``. Fill color is used for text and for
+the enclosed sections of paths when the drawing mode is ``FILL``, ``EOF_FILL``,
+``FILL_STROKE``, or ``EOF_FILL_STROKE``. Additionally, the fill color can be
+set by the :py:meth:`linear_gradient` and :py:meth:`radial_gradient` methods.
+
+.. note::
+   Even though text uses the fill color, text will not be filled with a
+   gradient *unless* the text drawing mode is ``TEXT_FILL_STROKE`` and even that
+   will only work if the backend supports it.
+
+Color values should always be passed in as 3- or 4- tuples. The order of the
+color components is ``(R, G, B[, A])`` and values must be floating point numbers
+in the range [0, 1]. Even if a graphics context is not able to draw with alpha
+blending, it's still OK to pass a 4 component color value when setting state.
 
 State Stack Management
 ----------------------
