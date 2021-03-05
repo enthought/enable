@@ -109,16 +109,16 @@ namespace agg24
 
         void update_char_size();
         void update_signature();
-        int  find_face(const char* face_name) const;
+        int  find_face(const char* face_name, unsigned face_index) const;
 
         bool            m_flag32;
         int             m_change_stamp;
         int             m_last_error;
         char*           m_name;
         unsigned        m_name_len;
-        unsigned        m_face_index;
         FT_Encoding     m_char_map;
         char*           m_signature;
+        char*           m_face_lookup_scratch_space;
         unsigned        m_height;
         unsigned        m_width;
         bool            m_hinting;
