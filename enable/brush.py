@@ -129,7 +129,7 @@ class Gradient(HasStrictTraits):
     def _stops_default(self):
         return [
             ColorStop(offset=0.0, color="white"),
-            ColorStop(offset=0.0, color="black"),
+            ColorStop(offset=1.0, color="black"),
         ]
 
 
