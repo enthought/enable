@@ -198,7 +198,7 @@ class RadialGradientBrush(GradientBrush):
     #: The center point of the radial gradient.
     center = Tuple(Float, Float, update=True)
 
-    #: The radiaus of the radial gradient.
+    #: The radius of the radial gradient.
     radius = Float(update=True)
 
     #: The focus point of the radial gradient.

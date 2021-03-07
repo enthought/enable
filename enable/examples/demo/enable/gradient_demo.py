@@ -49,7 +49,7 @@ class GradientBox(Component):
     #: The currently selected color stop, or None if nothing is selected.
     selected = Instance(ColorStop, update=True)
 
-    #: The currently selected color stop, or None if nothing is selected.
+    #: A linear brush that renders the gradient from left to right.
     _brush = Instance(LinearGradientBrush, update=True)
 
     def map_screen(self, offset):
