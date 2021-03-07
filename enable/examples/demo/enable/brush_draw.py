@@ -8,8 +8,7 @@
 #
 # Thanks for using Enthought open source!
 """
-This demonstrates the most basic drawing capabilities using Enable.  A new
-component is created and added to a container.
+This demonstrates using Brush to set the fill of a region.
 """
 from traits.api import Instance
 
