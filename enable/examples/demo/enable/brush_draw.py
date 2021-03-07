@@ -13,8 +13,9 @@ This demonstrates using Brush to set the fill of a region.
 from traits.api import Instance
 
 from enable.example_support import DemoFrame, demo_main
-from enable.api import Component, Container
-from enable.brush import RadialGradientBrush, Brush, ColorStop
+from enable.api import (
+    Brush, ColorStop, Component, Container, Gradient, RadialGradientBrush
+)
 
 
 class Box(Component):
@@ -42,11 +43,13 @@ class Demo(DemoFrame):
                 center=(0.5, 0.5),
                 radius=0.5,
                 focus=(0.75, 0.75),
-                stops=[
-                    ColorStop(offset=0.0, color="red"),
-                    ColorStop(offset=1.0, color="yellow"),
-                ],
-                spread_method='reflect',
+                gradient=Gradient(
+                    stops=[
+                        ColorStop(offset=0.0, color="red"),
+                        ColorStop(offset=1.0, color="yellow"),
+                    ],
+                ),
+                spread_method='pad',
                 units="objectBoundingBox",
             )
         )

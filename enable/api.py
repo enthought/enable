@@ -165,6 +165,7 @@ Brushes
 - :class:`~.Brush`
 - :class:`~.ColorBrush`
 - :class:`~.ColorStop`
+- :class:`~.Gradient`
 - :class:`~.LinearGradientBrush`
 - :class:`~.RadialGradientBrush`
 
@@ -290,6 +291,7 @@ from .brush import (
     Brush,
     ColorBrush,
     ColorStop,
+    Gradient,
     LinearGradientBrush,
     RadialGradientBrush,
 )

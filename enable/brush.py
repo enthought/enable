@@ -97,11 +97,47 @@ class ColorStop(HasStrictTraits):
         self.updated = True
 
 
+class Gradient(HasStrictTraits):
+    """ A color gradient. """
+
+    #: The sequence of color stops for the gradient.
+    stops = List(Instance(ColorStop), update=True)
+
+    #: A trait which fires when the gradient is updated.
+    updated = Event()
+
+    def to_array(self):
+        """ Return a sorted list of stop arrays.
+
+        This is the raw form of the stops required by Kiva.
+
+        Returns
+        -------
+        stop_array_list : arrays
+            A list of array of (offset, r, b, b, a) values corresponding to
+            the color stops.
+        """
+        return array([
+            stop.to_array()
+            for stop in sorted(self.stops, key=attrgetter("offset"))
+        ])
+
+    @observe("stops.items.updated")
+    def observe_stops(self, event):
+        self.updated = True
+
+    def _stops_default(self):
+        return [
+            ColorStop(offset=0.0, color="white"),
+            ColorStop(offset=0.0, color="black"),
+        ]
+
+
 class GradientBrush(Brush):
     """ A brush that paints a color gradient. """
 
     #: The sequence of color stops for the gradient.
-    stops = List(Instance(ColorStop), update=True)
+    gradient = Instance(Gradient, args=(), allow_none=False, update=True)
 
     #: How the gradient extends beyond the main area of the gradient.
     #:
@@ -123,23 +159,7 @@ class GradientBrush(Brush):
     #:     the bounding box of the path being filled.
     units = Enum("userSpaceOnUse", "objectBoundingBox", update=True)
 
-    def to_array(self):
-        """ Return a sorted list of stop arrays.
-
-        This is the raw form of the stops required by Kiva.
-
-        Returns
-        -------
-        stop_array_list : arrays
-            A list of array of (offset, r, b, b, a) values corresponding to
-            the color stops.
-        """
-        return array([
-            stop.to_array()
-            for stop in sorted(self.stops, key=attrgetter("offset"))
-        ])
-
-    @observe("stops:items.updated")
+    @observe("gradient:updated")
     def observe_stops(self, event):
         self.updated = True
 
@@ -166,7 +186,7 @@ class LinearGradientBrush(GradientBrush):
         gc.linear_gradient(
             *self.start,
             *self.end,
-            self.to_array(),
+            self.gradient.to_array(),
             self.spread_method,
             self.units,
         )
@@ -198,7 +218,7 @@ class RadialGradientBrush(GradientBrush):
             *self.center,
             self.radius,
             *self.focus,
-            self.to_array(),
+            self.gradient.to_array(),
             self.spread_method,
             self.units,
         )

@@ -19,7 +19,7 @@ from kiva.testing import KivaTestAssistant
 from traits.testing.api import UnittestTools
 
 from enable.brush import (
-    ColorBrush, ColorStop, LinearGradientBrush, RadialGradientBrush
+    ColorBrush, ColorStop, Gradient, LinearGradientBrush, RadialGradientBrush
 )
 
 
@@ -48,7 +48,7 @@ class BrushTestMixin(KivaTestAssistant, UnittestTools):
 class GradientBrushTestMixin(BrushTestMixin):
 
     def set_brush_stops(self, brush):
-        brush.stops = [
+        brush.gradient.stops = [
             ColorStop(offset=0.0, color='red'),
             ColorStop(offset=0.5, color='yellow'),
             ColorStop(offset=1.0, color='lime'),
@@ -60,38 +60,8 @@ class GradientBrushTestMixin(BrushTestMixin):
     def test_units_updated(self):
         self.do_update_brush_trait("spread_method", "reflect")
 
-    def test_stops_updated(self):
-        self.do_update_brush_trait(
-            "stops",
-            [
-                ColorStop(offset=0.0, color='blue'),
-                ColorStop(offset=1.0, color='lime'),
-            ]
-        )
-
-    def test_stops_items_updated(self):
-        brush = self.create_brush()
-        with self.assertTraitChanges(brush, "updated", count=1):
-            brush.stops[0] = ColorStop(offset=0.0, color='blue')
-
-    def test_stops_items_updated_updated(self):
-        brush = self.create_brush()
-        with self.assertTraitChanges(brush, "updated", count=1):
-            brush.stops[0].updated = True
-
-    def test_to_array(self):
-        brush = self.create_brush()
-
-        a = brush.to_array()
-
-        assert_array_equal(
-            a,
-            np.array([
-                np.array([0.0, 1.0, 0.0, 0.0, 1.0]),
-                np.array([0.5, 1.0, 1.0, 0.0, 1.0]),
-                np.array([1.0, 0.0, 1.0, 0.0, 1.0]),
-            ])
-        )
+    def test_gradient_updated(self):
+        self.do_update_brush_trait("gradient", Gradient())
 
 
 class TestColorBrush(TestCase, BrushTestMixin):
@@ -129,6 +99,55 @@ class TestColorStop(TestCase, UnittestTools):
 
         with self.assertTraitChanges(color_stop, "updated", count=1):
             color_stop.color = "blue"
+
+
+class TestGradient(TestCase, UnittestTools):
+
+    def create_gradient(self):
+        return Gradient()
+
+    def set_stops(self, gradient):
+        gradient.stops = [
+            ColorStop(offset=0.0, color='red'),
+            ColorStop(offset=0.5, color='yellow'),
+            ColorStop(offset=1.0, color='lime'),
+        ]
+
+    def test_to_array(self):
+        gradient = self.create_gradient()
+        self.set_stops(gradient)
+
+        a = gradient.to_array()
+
+        assert_array_equal(
+            a,
+            np.array([
+                np.array([0.0, 1.0, 0.0, 0.0, 1.0]),
+                np.array([0.5, 1.0, 1.0, 0.0, 1.0]),
+                np.array([1.0, 0.0, 1.0, 0.0, 1.0]),
+            ])
+        )
+
+    def test_stops_updated(self):
+        gradient = self.create_gradient()
+        self.set_stops(gradient)
+        with self.assertTraitChanges(gradient, "updated", count=1):
+            gradient.stops = [
+                ColorStop(offset=0.0, color='blue'),
+                ColorStop(offset=1.0, color='lime'),
+            ]
+
+    def test_stops_items_updated(self):
+        gradient = self.create_gradient()
+        self.set_stops(gradient)
+        with self.assertTraitChanges(gradient, "updated", count=1):
+            gradient.stops[0] = ColorStop(offset=0.0, color='blue')
+
+    def test_stops_items_updated_updated(self):
+        gradient = self.create_gradient()
+        self.set_stops(gradient)
+        with self.assertTraitChanges(gradient, "updated", count=1):
+            gradient.stops[0].updated = True
 
 
 class TestLinearGradientBrush(TestCase, GradientBrushTestMixin):
