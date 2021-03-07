@@ -113,6 +113,19 @@ class TestGradient(TestCase, UnittestTools):
             ColorStop(offset=1.0, color='lime'),
         ]
 
+    def test_default_draw_celiagg(self):
+        gc = GraphicsContext((200, 200))
+        gradient = self.create_gradient()
+        with gc:
+            gc.linear_gradient(
+                125,
+                75,
+                75,
+                125,
+                gradient.to_array(),
+                "pad",
+            )
+
     def test_to_array(self):
         gradient = self.create_gradient()
         self.set_stops(gradient)
