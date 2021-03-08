@@ -490,7 +490,6 @@ namespace agg24
 
 
 
-    static const unsigned _face_lookup_scratch_length = 1024;
 
 
 
@@ -506,7 +505,7 @@ namespace agg24
         delete [] m_face_names;
         delete [] m_faces;
         delete [] m_signature;
-        delete [] m_face_lookup_scratch_space;
+        delete [] m_face_lookup_scratch;
         if(m_library_initialized) FT_Done_FreeType(m_library);
     }
 
@@ -521,7 +520,8 @@ namespace agg24
         m_name_len(256-16-1),
         m_char_map(FT_ENCODING_NONE),
         m_signature(new char [256+256-16]),
-        m_face_lookup_scratch_space(new char [_face_lookup_scratch_length]),
+        m_face_lookup_scratch_len(512),
+        m_face_lookup_scratch(new char [m_face_lookup_scratch_len]),
         m_height(0),
         m_width(0),
         m_hinting(true),
@@ -569,17 +569,24 @@ namespace agg24
 
 
     //------------------------------------------------------------------------
-    int font_engine_freetype_base::find_face(const char* face_name, unsigned face_index) const
+    int font_engine_freetype_base::find_face(const char* face_name, unsigned face_name_len, unsigned face_index)
     {
         unsigned i;
 
+        if ((face_name_len + 4 + 1) > m_face_lookup_scratch_len)
+        {
+            delete [] m_face_lookup_scratch;
+            m_face_lookup_scratch_len = face_name_len + 4 + 1;
+            m_face_lookup_scratch = new char [m_face_lookup_scratch_len];
+        }
+
         // Build the lookup string by combining the face_index and face_name
-        snprintf(m_face_lookup_scratch_space, _face_lookup_scratch_length,
+        snprintf(m_face_lookup_scratch, m_face_lookup_scratch_len,
                  "%04u%s", face_index, face_name);
 
         for(i = 0; i < m_num_faces; ++i)
         {
-            if(strcmp(m_face_lookup_scratch_space, m_face_names[i]) == 0) return i;
+            if(strcmp(m_face_lookup_scratch, m_face_names[i]) == 0) return i;
         }
         return -1;
     }
@@ -619,7 +626,8 @@ namespace agg24
         {
             m_last_error = 0;
 
-            int idx = find_face(font_name, face_index);
+            unsigned font_name_len = strlen(font_name);
+            int idx = find_face(font_name, font_name_len, face_index);
             if(idx >= 0)
             {
                 m_cur_face = m_faces[idx];
@@ -658,7 +666,7 @@ namespace agg24
 
                 if(m_last_error == 0)
                 {
-                    m_face_names[m_num_faces] = new char [strlen(font_name) + 4 + 1];
+                    m_face_names[m_num_faces] = new char [font_name_len + 4 + 1];
                     sprintf(m_face_names[m_num_faces], "%04u%s", face_index, font_name);
                     m_cur_face = m_faces[m_num_faces];
                     m_name     = m_face_names[m_num_faces];
