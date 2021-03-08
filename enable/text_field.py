@@ -567,9 +567,5 @@ class TextField(Component):
         self.border_color = self._style.border_color
 
         self.metrics.set_font(self._style.font)
-        # FIXME!!  The height being passed in gets over-written here
-        # if not self.multiline:
-        #    self.height = (self.metrics.get_text_extent("T")[3] +
-        #                   self._style.text_offset*2)
 
         self.request_redraw()
