@@ -460,16 +460,16 @@ class TextField(Component):
     def _acquire_focus(self, window):
         self._draw_cursor = True
         window.focus_owner = self
-        window.observe(self._focus_owner_changed, "focus_owner")
+        window.observe(self._window_focus_owner_updated, "focus_owner")
         self.request_redraw()
 
-    def _focus_owner_changed(self, event):
+    def _window_focus_owner_updated(self, event):
         obj = event.object
         old = event.old
         new = event.new
         if old == self and new != self:
             obj.observe(
-                self._focus_owner_changed, "focus_owner", remove=True
+                self._window_focus_owner_updated, "focus_owner", remove=True
             )
         self._draw_cursor = False
         self.request_redraw()

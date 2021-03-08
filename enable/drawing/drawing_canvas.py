@@ -160,13 +160,13 @@ class DrawingCanvasToolbar(Container):
     def _canvas_changed(self, old, new):
         if old:
             old.observe(
-                self._canvas_bounds_changed, "bounds.items", remove=True
+                self._canvas_bounds_updated, "bounds.items", remove=True
             )
 
         if new:
-            new.observe(self._canvas_bounds_changed, "bounds.items")
+            new.observe(self._canvas_bounds_updated, "bounds.items")
 
-    def _canvas_bounds_changed(self, event):
+    def _canvas_bounds_updated(self, event):
         self.width = self.canvas.width
         self.y = self.canvas.height - self.height
 
