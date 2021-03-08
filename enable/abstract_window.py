@@ -239,8 +239,7 @@ class AbstractWindow(HasTraits):
 
     def component_bounds_changed(self, event):
         """
-        Dynamic trait listener that handles our component changing its size;
-        bounds is a length-2 list of [width, height].
+        Dynamic trait listener that handles our component changing its size.
         """
         self.invalidate_draw()
         pass
