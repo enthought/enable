@@ -151,8 +151,6 @@ class DragHandler(Interactor):
     # -------------------------------------------------------------------------
 
     def drag_done(self, event):
-        print('!'*100)
-        print(event)
         components = self.components
         drag_copy = self.drag_copy
         start_event = self.start_event
