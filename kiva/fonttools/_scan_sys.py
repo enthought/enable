@@ -109,6 +109,38 @@ def scan_system_fonts(fontpaths=None, fontext="ttf"):
     return [fname for fname in fontfiles if os.path.exists(fname)]
 
 
+def scan_user_fonts(fontpaths=None, fontext="ttf"):
+    """ Search for fonts in the specified font paths.
+    """
+    if fontpaths is None:
+        return []
+
+    if isinstance(fontpaths, str):
+        fontpaths = [fontpaths]
+
+    fontfiles = set()
+    fontexts = _get_fontext_synonyms(fontext)
+    for path in fontpaths:
+        path = os.path.abspath(path)
+        if os.path.isdir(path):
+            # For directories, find all the fonts within
+            files = []
+            for ext in fontexts:
+                files.extend(glob.glob(os.path.join(path, "*." + ext)))
+                files.extend(glob.glob(os.path.join(path, "*." + ext.upper())))
+
+            for fname in files:
+                if os.path.exists(fname) and not os.path.isdir(fname):
+                    fontfiles.add(fname)
+        elif os.path.exists(path):
+            # For files, make sure they have the correct extension
+            ext = os.path.splitext(path)[-1][1:].lower()
+            if ext in fontexts:
+                fontfiles.add(path)
+
+    return sorted(fontfiles)
+
+
 # ----------------------------------------------------------------------------
 # utility funcs
 

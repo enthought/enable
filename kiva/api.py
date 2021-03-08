@@ -146,4 +146,4 @@ from .constants import (
     INVERTED_TRIANGLE_MARKER, PLUS_MARKER, DOT_MARKER, PIXEL_MARKER
 )
 from ._cython_speedups import points_in_polygon
-from .fonttools import Font
+from .fonttools import add_application_font, Font
