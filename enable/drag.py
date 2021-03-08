@@ -39,7 +39,7 @@ class DragHandler(Interactor):
         self.window = components[0].window
         self.drag_over = []
 
-        self.observe(self.drag_done, drag_event)
+        self.on_trait_change(self.drag_done, drag_event)
 
     # -------------------------------------------------------------------------
     #  Handle the mouse moving while dragging:
