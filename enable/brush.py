@@ -106,7 +106,7 @@ class Gradient(HasStrictTraits):
     #: A trait which fires when the gradient is updated.
     updated = Event()
 
-    #: A temporary
+    #: A temporary cache for the stop array.
     _array_cache = ArrayOrNone()
 
     def to_array(self):

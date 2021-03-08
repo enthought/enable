@@ -318,7 +318,7 @@ class DragSelectedTool(AttributeDragTool):
     model = Instance(ColorStop)
 
     #: The attribute to link to the drag.
-    x_attr = "offset",
+    x_attr = "offset"
 
     #: The bounds on the valus of the attribute.
     x_bounds = (0.0, 1.0)
