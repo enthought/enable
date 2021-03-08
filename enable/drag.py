@@ -151,23 +151,25 @@ class DragHandler(Interactor):
     # -------------------------------------------------------------------------
 
     def drag_done(self, event):
+        print('!'*100)
+        print(event)
         components = self.components
         drag_copy = self.drag_copy
         start_event = self.start_event
 
         # 'Unhook' the drag done notification handler:
-        self.observe(self.drag_done, self.drag_event, remove=True)
+        self.on_trait_change(self.drag_done, self.drag_event, remove=True)
 
         # Compute the new drag bounds:
-        x = event.new.x
-        y = event.new.y
+        x = event.x
+        y = event.y
         dx = x - self.start_x
         dy = y - self.start_y
         xl, yb, xr, yt = add_rectangles(
             self.drag_bounds_rect_start, (dx, dy, dx, dy)
         )
         drag_bounds_rect = bounds_to_coordinates(
-            self.drag_validate(event.new, (xl, yb, xr - xl, yt - yb))
+            self.drag_validate(event, (xl, yb, xr - xl, yt - yb))
         )
 
         # If the new bounds are not within the drag area, use the last drag
@@ -190,7 +192,7 @@ class DragHandler(Interactor):
                 copy=drag_copy,
                 components=components,
                 start_event=start_event,
-                window=event.new.window,
+                window=event.window,
             )
 
         # Process the 'dropped_on' event for the object(s) it was dropped on:
@@ -203,7 +205,7 @@ class DragHandler(Interactor):
             copy=drag_copy,
             components=components,
             start_event=start_event,
-            window=event.new.window,
+            window=event.window,
         )
         index = send_event_to(components_at, "dropped_on", drag_event)
 
