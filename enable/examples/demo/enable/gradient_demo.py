@@ -321,7 +321,7 @@ class DragSelectedTool(AttributeDragTool):
     x_attr = "offset",
 
     #: The bounds on the valus of the attribute.
-    x_bounds = (0.0, 1.0),
+    x_bounds = (0.0, 1.0)
 
     def is_draggable(self, x, y):
         """ The end stops are not draggable. """

@@ -16,11 +16,11 @@ from operator import attrgetter
 from numpy import array
 
 from traits.api import (
-    ABCHasStrictTraits, Enum, Event, Float, HasStrictTraits, Instance, List,
-    Range, Tuple, observe
+    ABCHasStrictTraits, ArrayOrNone, Enum, Event, Float, HasStrictTraits,
+    Instance, List, Range, Tuple, observe
 )
 
-from enable.colors import transparent_color_trait
+from enable.colors import ColorTrait
 
 
 class Brush(ABCHasStrictTraits):
@@ -53,7 +53,7 @@ class ColorBrush(Brush):
     """ A simple brush that paints a solid color. """
 
     #: The color to brush the region with.
-    color = transparent_color_trait(update=True)
+    color = ColorTrait("transparent", update=True)
 
     def set_brush(self, gc):
         """ Apply the brush settings to a graphics context.
@@ -75,7 +75,7 @@ class ColorStop(HasStrictTraits):
     offset = Range(0.0, 1.0, update=True)
 
     #: The color at the color stop.
-    color = transparent_color_trait(update=True)
+    color = ColorTrait("transparent", update=True)
 
     #: A trait which fires when the color stop is updated.
     updated = Event()
@@ -101,10 +101,13 @@ class Gradient(HasStrictTraits):
     """ A color gradient. """
 
     #: The sequence of color stops for the gradient.
-    stops = List(Instance(ColorStop), update=True)
+    stops = List(Instance(ColorStop))
 
     #: A trait which fires when the gradient is updated.
     updated = Event()
+
+    #: A temporary
+    _array_cache = ArrayOrNone()
 
     def to_array(self):
         """ Return a sorted list of stop arrays.
@@ -115,15 +118,18 @@ class Gradient(HasStrictTraits):
         -------
         stop_array_list : arrays
             A list of array of (offset, r, b, b, a) values corresponding to
-            the color stops.
+            the color stops.  This array should not be mutated.
         """
-        return array([
-            stop.to_array()
-            for stop in sorted(self.stops, key=attrgetter("offset"))
-        ])
+        if self._array_cache is None:
+            self._array_cache = array([
+                stop.to_array()
+                for stop in sorted(self.stops, key=attrgetter("offset"))
+            ])
+        return self._array_cache
 
     @observe("stops.items.updated")
     def observe_stops(self, event):
+        self._array_cache = None
         self.updated = True
 
     def _stops_default(self):
