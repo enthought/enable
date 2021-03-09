@@ -16,8 +16,8 @@ from enable.component import Component
 
 class TestAbstractWindow(unittest.TestCase):
 
-    @mock.patch.object(AbstractWindow, "component_bounds_changed")
-    def test_component_bounds_changed(self, mock_method):
+    @mock.patch.object(AbstractWindow, "component_bounds_updated")
+    def test_component_bounds_updated(self, mock_method):
         """ Make sure trait listener for changing component bounds gets set up.
         """
 

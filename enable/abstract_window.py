@@ -205,7 +205,7 @@ class AbstractWindow(HasTraits):
     def _component_changed(self, old, new):
         if old is not None:
             old.observe(
-                self.component_bounds_changed, "bounds", remove=True
+                self.component_bounds_updated, "bounds", remove=True
             )
             old.window = None
 
@@ -219,7 +219,7 @@ class AbstractWindow(HasTraits):
         # toolkit control
         size = self._get_control_size()
         if hasattr(self.component, "bounds"):
-            new.observe(self.component_bounds_changed, "bounds")
+            new.observe(self.component_bounds_updated, "bounds")
             if size is not None:
                 pix_scale = self.base_pixel_scale
                 if getattr(self.component, "fit_window", False):
@@ -237,7 +237,7 @@ class AbstractWindow(HasTraits):
         self._update_region = None
         self.redraw()
 
-    def component_bounds_changed(self, event):
+    def component_bounds_updated(self, event):
         """
         Dynamic trait listener that handles our component changing its size.
         """
