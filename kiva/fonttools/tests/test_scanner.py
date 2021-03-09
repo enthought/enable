@@ -104,7 +104,7 @@ class TestFontDirectoryScanning(unittest.TestCase):
         fonts = scan_system_fonts(fontext="ttf")
         self.assertNotEqual([], fonts)
 
-    @unittest.skipIf(not is_generic, "This test is only for Windows")
+    @unittest.skipIf(not is_windows, "This test is only for Windows")
     def test_windows_scanning(self):
         fonts = scan_system_fonts(fontext="ttf")
         self.assertNotEqual([], fonts)
