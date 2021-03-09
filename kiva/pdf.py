@@ -50,6 +50,12 @@ join_style[constants.JOIN_ROUND] = 1
 join_style[constants.JOIN_BEVEL] = 2
 join_style[constants.JOIN_MITER] = 0
 
+font_styles = {}
+font_styles["regular"] = ""
+font_styles["bold"] = "-Bold"
+font_styles["italic"] = "-Oblique"
+font_styles["bold italic"] = "-BoldOblique"
+
 # stroke, fill, mode
 path_mode = {}
 path_mode[constants.FILL_STROKE] = (1, 1, canvas.FILL_NON_ZERO)
@@ -612,9 +618,10 @@ class GraphicsContext(GraphicsContextBase):
     # Drawing Text
     # ----------------------------------------------------------------
 
-    def select_font(self, name, size, textEncoding):
+    def select_font(self, name, size, style="regular", encoding=None):
         """ PDF ignores the Encoding variable.
         """
+        name += font_styles.get(style, "")
         self.gc.setFont(name, size)
 
     def set_font(self, font):
@@ -625,6 +632,8 @@ class GraphicsContext(GraphicsContextBase):
         if face_name == "":
             face_name = "Helvetica"
 
+        # Apply the style as a suffix to the face name
+        face_name += font_styles.get(font.style, "")
         try:
             self.gc.setFont(face_name, font.size)
         except KeyError:
@@ -646,20 +655,6 @@ class GraphicsContext(GraphicsContextBase):
         """
         font = self.gc._fontname
         self.gc.setFont(font, size)
-
-    def set_character_spacing(self):
-        """
-        """
-        pass
-
-    def get_character_spacing(self):
-        """ Get the current font """
-        raise NotImplementedError
-
-    def set_text_drawing_mode(self):
-        """
-        """
-        pass
 
     def set_text_position(self, x, y):
         """
@@ -683,22 +678,22 @@ class GraphicsContext(GraphicsContextBase):
         a, b, c, d, tx, ty = self.gc._textMatrix
         return affine.affine_from_values(a, b, c, d, tx, ty)
 
-    def show_text(self, text, x=None, y=None):
+    def show_text(self, text, point=None):
         """ Draws text on the device at current text position.
 
             This is also used for showing text at a particular point
-            specified by x and y.
+            specified by ``point``.
 
             This ignores the text matrix for now.
         """
-        if x and y:
-            pass
+        if point:
+            x, y = point
         else:
             x, y = self.text_xy
         self.gc.drawString(x, y, text)
 
     def show_text_at_point(self, text, x, y):
-        self.show_text(text, x, y)
+        self.show_text(text, point=(x, y))
 
     def show_glyphs(self):
         """

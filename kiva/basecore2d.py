@@ -811,11 +811,13 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """
         return self.state.fill_color
 
-    def linear_gradient(self, x1, y1, x2, y2, stops, spread_method, units):
+    def linear_gradient(self, x1, y1, x2, y2, stops, spread_method,
+                        units="userSpaceOnUse"):
         """ Modify the fill color to be a linear gradient """
         pass
 
-    def radial_gradient(self, cx, cy, r, fx, fy, stops, spread_method, units):
+    def radial_gradient(self, cx, cy, r, fx, fy, stops, spread_method,
+                        units="userSpaceOnUse"):
         """ Modify the fill color to be a linear gradient """
         pass
 
@@ -1003,7 +1005,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """
         return self.state.text_matrix.copy()
 
-    def show_text(self, text):
+    def show_text(self, text, point=None):
         """ Draws text on the device at the current text position.
 
             This calls the device dependent device_show_text() method to
@@ -1011,7 +1013,12 @@ class GraphicsContextBase(AbstractGraphicsContext):
 
             It is not clear yet how this should affect the current point.
         """
-        self.device_show_text(text)
+        if point is not None:
+            with self:
+                self.set_text_position(*point)
+                self.device_show_text(text)
+        else:
+            self.device_show_text(text)
 
     def show_text_tanslate(self, text, dx, dy):
         """ Draws text at the specified offset. """
