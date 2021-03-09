@@ -218,7 +218,7 @@ class AbstractWindow(HasTraits):
         # If possible, size the new component according to the size of the
         # toolkit control
         size = self._get_control_size()
-        if self.component is not None:
+        if new is not None:
             new.observe(self.component_bounds_updated, "bounds")
             if size is not None:
                 pix_scale = self.base_pixel_scale
