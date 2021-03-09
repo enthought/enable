@@ -204,8 +204,8 @@ class AbstractWindow(HasTraits):
 
     def _component_changed(self, old, new):
         if old is not None:
-            old.on_trait_change(
-                self.component_bounds_changed, "bounds", remove=True
+            old.observe(
+                self.component_bounds_updated, "bounds", remove=True
             )
             old.window = None
 
@@ -218,28 +218,28 @@ class AbstractWindow(HasTraits):
         # If possible, size the new component according to the size of the
         # toolkit control
         size = self._get_control_size()
-        if (size is not None) and hasattr(self.component, "bounds"):
-            new.on_trait_change(self.component_bounds_changed, "bounds")
-            pix_scale = self.base_pixel_scale
-            if getattr(self.component, "fit_window", False):
-                self.component.outer_position = [0, 0]
-                self.component.outer_bounds = [
-                    size[0] / pix_scale, size[1] / pix_scale
-                ]
-            elif hasattr(self.component, "resizable"):
-                if "h" in self.component.resizable:
-                    self.component.outer_x = 0
-                    self.component.outer_width = size[0] / pix_scale
-                if "v" in self.component.resizable:
-                    self.component.outer_y = 0
-                    self.component.outer_height = size[1] / pix_scale
+        if new is not None:
+            new.observe(self.component_bounds_updated, "bounds")
+            if size is not None:
+                pix_scale = self.base_pixel_scale
+                if getattr(self.component, "fit_window", False):
+                    self.component.outer_position = [0, 0]
+                    self.component.outer_bounds = [
+                        size[0] / pix_scale, size[1] / pix_scale
+                    ]
+                elif hasattr(self.component, "resizable"):
+                    if "h" in self.component.resizable:
+                        self.component.outer_x = 0
+                        self.component.outer_width = size[0] / pix_scale
+                    if "v" in self.component.resizable:
+                        self.component.outer_y = 0
+                        self.component.outer_height = size[1] / pix_scale
         self._update_region = None
         self.redraw()
 
-    def component_bounds_changed(self, bounds):
+    def component_bounds_updated(self, event):
         """
-        Dynamic trait listener that handles our component changing its size;
-        bounds is a length-2 list of [width, height].
+        Dynamic trait listener that handles our component changing its size.
         """
         self.invalidate_draw()
         pass

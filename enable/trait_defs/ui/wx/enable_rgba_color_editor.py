@@ -150,8 +150,8 @@ class ColorEditor(Editor):
         self.control = window.control
         self._picker = picker
         self.control.SetSize((picker.min_width, picker.min_height))
-        picker.on_trait_change(self.popup_editor, "clicked", dispatch="ui")
-        picker.on_trait_change(self.update_object, "color", dispatch="ui")
+        picker.observe(self.popup_editor, "clicked", dispatch="ui")
+        picker.observe(self.update_object, "color", dispatch="ui")
 
     # -------------------------------------------------------------------------
     #  Invokes the pop-up editor for an object trait:
