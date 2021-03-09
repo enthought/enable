@@ -1,3 +1,12 @@
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 import unittest
 from unittest import mock
 
@@ -8,10 +17,12 @@ from enable.component import Component
 class TestAbstractWindow(unittest.TestCase):
 
     @mock.patch.object(AbstractWindow, "component_bounds_changed")
-    def test_component_bounds_change(self, mock_method):
-        class TestWindow(AbstractWindow):
+    def test_component_bounds_changed(self, mock_method):
+        """ Make sure trait listener for changing component bounds gets set up.
+        """
 
-            # needed to avoid NotImplementedError
+        class TestWindow(AbstractWindow):
+            # needed to avoid a NotImplementedError, not under test
             def _redraw(self):
                 pass
 
