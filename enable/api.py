@@ -159,6 +159,16 @@ Drawing Primitives
 - :class:`~.Line`
 - :class:`~.Polygon`
 
+Brushes
+=======
+
+- :class:`~.Brush`
+- :class:`~.ColorBrush`
+- :class:`~.ColorStop`
+- :class:`~.Gradient`
+- :class:`~.LinearGradientBrush`
+- :class:`~.RadialGradientBrush`
+
 """
 
 # Major package imports
@@ -276,6 +286,15 @@ else:
 from .label import Label
 
 from .graphics_context import GraphicsContextEnable, ImageGraphicsContextEnable
+
+from .brush import (
+    Brush,
+    ColorBrush,
+    ColorStop,
+    Gradient,
+    LinearGradientBrush,
+    RadialGradientBrush,
+)
 
 # Old Enable classes and widgets
 from .abstract_window import AbstractWindow
