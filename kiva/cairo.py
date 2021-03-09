@@ -1082,11 +1082,15 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         return copy.copy(self.text_matrix)
 
-    def show_text(self, text, point=(0.0, 0.0)):
+    def show_text(self, text, point=None):
         """ Draws text on the device at the current text position.
             Leaves the current point unchanged.
         """
-        self.show_text_at_point(text, point[0], point[1])
+        if point is not None:
+            x, y = point
+        else:
+            x, y = 0.0, 0.0
+        self.show_text_at_point(text, x, y)
 
     def show_glyphs(self):
         """

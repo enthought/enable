@@ -644,16 +644,22 @@ class GraphicsContext(object):
         self.gc.setFont(font)
 
     def set_character_spacing(self, spacing):
-        """
+        """ Set the spacing between characters when drawing text
         """
         font = self.gc.font()
         font.setLetterSpacing(QtGui.QFont.AbsoluteSpacing, spacing)
         self.gc.setFont(font)
 
-    def set_text_drawing_mode(self):
+    def get_character_spacing(self):
+        """ Get the spacing between characters when drawing text
         """
+        font = self.gc.font()
+        return font.letterSpacing()
+
+    def set_text_drawing_mode(self, mode):
+        """ Set the drawing mode to use with text
         """
-        pass
+        raise NotImplementedError()
 
     def set_text_position(self, x, y):
         """
@@ -690,10 +696,14 @@ class GraphicsContext(object):
         unflip_trans.translate(0, self._height)
         unflip_trans.scale(1.0, -1.0)
 
-        self.gc.save()
-        self.gc.setTransform(unflip_trans, True)
-        self.gc.drawText(QtCore.QPointF(pos[0], self._flip_y(pos[1])), text)
-        self.gc.restore()
+        # Make some temporary modifications to the state
+        with self:
+            # Kiva uses the fill color for text
+            brush = self.gc.brush()
+            self.gc.setPen(brush.color())
+            self.gc.setTransform(unflip_trans, True)
+            pos = QtCore.QPointF(pos[0], self._flip_y(pos[1]))
+            self.gc.drawText(pos, text)
 
     def show_text_at_point(self, text, x, y):
         """ Draw text at some point (x, y).

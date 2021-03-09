@@ -84,7 +84,7 @@ class AbstractGraphicsContext(object, metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def set_line_dash(self, line_dash):
+    def set_line_dash(self, line_dash, phase=0):
         """ Set the dash style to use when stroking a path
 
         Parameters
@@ -92,11 +92,14 @@ class AbstractGraphicsContext(object, metaclass=ABCMeta):
             line_dash
                 An even-lengthed tuple of floats that represents
                 the width of each dash and gap in the dash pattern.
+            phase : float
+                Specifies how many units into the dash pattern to start.
         """
 
     @abstractmethod
     def set_fill_color(self, color):
-        """ Set the color used to fill the region bounded by a path
+        """ Set the color used to fill the region bounded by a path or when
+        drawing text.
 
         Parameters
         ----------
@@ -108,10 +111,13 @@ class AbstractGraphicsContext(object, metaclass=ABCMeta):
 
     @abstractmethod
     def get_fill_color(self):
-        """ Get the color used to fill the region bounded by a path """
+        """ Get the color used to fill the region bounded by a path or when
+        drawing text.
+        """
 
     @abstractmethod
-    def linear_gradient(self, x1, y1, x2, y2, stops, spread_method, units):
+    def linear_gradient(self, x1, y1, x2, y2, stops, spread_method,
+                        units="userSpaceOnUse"):
         """ Modify the fill color to be a linear gradient
 
         Parameters
@@ -137,7 +143,8 @@ class AbstractGraphicsContext(object, metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def radial_gradient(self, cx, cy, r, fx, fy, stops, spread_method, units):
+    def radial_gradient(self, cx, cy, r, fx, fy, stops, spread_method,
+                        units="userSpaceOnUse"):
         """ Modify the fill color to be a radial gradient
 
         Parameters
@@ -493,7 +500,7 @@ class AbstractGraphicsContext(object, metaclass=ABCMeta):
         """ Get the current point where text will be drawn """
 
     @abstractmethod
-    def show_text(self, text):
+    def show_text(self, text, point=None):
         """ Draw the specified string at the current point """
 
     @abstractmethod
@@ -656,7 +663,8 @@ class EnhancedAbstractGraphicsContext(AbstractGraphicsContext):
         """
 
     @abstractmethod
-    def draw_path_at_points(self, point_array, compiled_path, draw_mode):
+    def draw_path_at_points(self, point_array, compiled_path,
+                            draw_mode=FILL_STROKE):
         """ Draw a compiled path at a collection of points
 
         The starting point of the paths are specified by the points,
