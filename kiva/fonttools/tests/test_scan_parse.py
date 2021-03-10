@@ -8,22 +8,18 @@
 #
 # Thanks for using Enthought open source!
 import os
-import sys
 import unittest
 from unittest import mock
 
 from fontTools.ttLib import TTFont
 from pkg_resources import resource_filename
 
-from .._scanner import (
+from .._scan_parse import (
     _afm_font_property, _build_afm_entries, _ttf_font_property,
-    create_font_list, FontEntry, scan_system_fonts
+    create_font_list, FontEntry
 )
 
 data_dir = resource_filename("kiva.fonttools.tests", "data")
-is_macos = (sys.platform == "darwin")
-is_windows = (sys.platform in ("win32", "cygwin"))
-is_generic = not (is_macos or is_windows)
 
 
 class TestFontEntryCreation(unittest.TestCase):
@@ -49,7 +45,7 @@ class TestFontEntryCreation(unittest.TestCase):
         for fontprop in fontlist:
             self.assertIsInstance(fontprop, FontEntry)
 
-    @mock.patch("kiva.fonttools._scanner._ttf_font_property",
+    @mock.patch("kiva.fonttools._scan_parse._ttf_font_property",
                 side_effect=ValueError)
     def test_ttc_exception_on__ttf_font_property(self, m_ttf_font_property):
         # When
@@ -60,7 +56,7 @@ class TestFontEntryCreation(unittest.TestCase):
         self.assertEqual(len(fontlist), 0)
         self.assertEqual(m_ttf_font_property.call_count, 1)
 
-    @mock.patch("kiva.fonttools._scanner.TTCollection",
+    @mock.patch("kiva.fonttools._scan_parse.TTCollection",
                 side_effect=RuntimeError)
     def test_ttc_exception_on_TTCollection(self, m_TTCollection):
         # When
@@ -70,44 +66,6 @@ class TestFontEntryCreation(unittest.TestCase):
         # Then
         self.assertEqual(len(fontlist), 0)
         self.assertEqual(m_TTCollection.call_count, 1)
-
-
-class TestFontDirectoryScanning(unittest.TestCase):
-    def test_directory_scanning(self):
-        expected = [
-            os.path.join(data_dir, fname)
-            for fname in os.listdir(data_dir)
-        ]
-        fonts = scan_system_fonts(data_dir, fontext="ttf")
-        self.assertListEqual(sorted(expected), sorted(fonts))
-
-        # There are no AFM fonts in the test data
-        fonts = scan_system_fonts(data_dir, fontext="afm")
-        self.assertListEqual([], fonts)
-
-    def test_directories_scanning(self):
-        expected = sorted([
-            os.path.join(data_dir, fname)
-            for fname in os.listdir(data_dir)
-        ])
-        # Pass a list of directories instead of a single path string
-        fonts = scan_system_fonts([data_dir], fontext="ttf")
-        self.assertListEqual(sorted(expected), sorted(fonts))
-
-    @unittest.skipIf(not is_generic, "This test is only for generic platforms")
-    def test_generic_scanning(self):
-        fonts = scan_system_fonts(fontext="ttf")
-        self.assertNotEqual([], fonts)
-
-    @unittest.skipIf(not is_macos, "This test is only for macOS")
-    def test_macos_scanning(self):
-        fonts = scan_system_fonts(fontext="ttf")
-        self.assertNotEqual([], fonts)
-
-    @unittest.skipIf(not is_windows, "This test is only for Windows")
-    def test_windows_scanning(self):
-        fonts = scan_system_fonts(fontext="ttf")
-        self.assertNotEqual([], fonts)
 
 
 class TestAFMFontEntry(unittest.TestCase):
@@ -247,14 +205,14 @@ class TestTTFFontEntry(unittest.TestCase):
         test_font = os.path.join(data_dir, "TestTTF.ttf")
 
         # When
-        target = "kiva.fonttools._scanner.get_ttf_prop_dict"
+        target = "kiva.fonttools._scan_parse.get_ttf_prop_dict"
         with mock.patch(target, return_value={}):
             with self.assertRaises(KeyError):
                 # Pass None since we're mocking get_ttf_prop_dict
                 _ttf_font_property(test_font, None)
 
     def test_property_branches(self):
-        target = "kiva.fonttools._scanner.get_ttf_prop_dict"
+        target = "kiva.fonttools._scan_parse.get_ttf_prop_dict"
         test_font = os.path.join(data_dir, "TestTTF.ttf")
 
         # Given
