@@ -42,8 +42,9 @@ class TestFontEntryCreation(unittest.TestCase):
 
         # Then
         self.assertEqual(len(fontlist), 2)
-        for fontprop in fontlist:
+        for idx, fontprop in enumerate(fontlist):
             self.assertIsInstance(fontprop, FontEntry)
+            self.assertEqual(fontprop.face_index, idx)
 
     @mock.patch("kiva.fonttools._scan_parse._ttf_font_property",
                 side_effect=ValueError)
@@ -103,7 +104,7 @@ class TestAFMFontEntry(unittest.TestCase):
 
         # Given
         fake_font = FakeAFM("TestyFont", "Testy", 0, "Bold")
-        exp_name = "Testy"
+        exp_family = "Testy"
         exp_style = "normal"
         exp_variant = "normal"
         exp_weight = 700
@@ -112,7 +113,7 @@ class TestAFMFontEntry(unittest.TestCase):
         # When
         entry = _afm_font_property(fake_path, fake_font)
         # Then
-        self.assertEqual(entry.name, exp_name)
+        self.assertEqual(entry.family, exp_family)
         self.assertEqual(entry.style, exp_style)
         self.assertEqual(entry.variant, exp_variant)
         self.assertEqual(entry.weight, exp_weight)
@@ -158,7 +159,7 @@ class TestTTFFontEntry(unittest.TestCase):
     def test_font(self):
         # Given
         test_font = os.path.join(data_dir, "TestTTF.ttf")
-        exp_name = "Test TTF"
+        exp_family = "Test TTF"
         exp_style = "normal"
         exp_variant = "normal"
         exp_weight = 400
@@ -169,7 +170,7 @@ class TestTTFFontEntry(unittest.TestCase):
         entry = _ttf_font_property(test_font, TTFont(test_font))
 
         # Then
-        self.assertEqual(entry.name, exp_name)
+        self.assertEqual(entry.family, exp_family)
         self.assertEqual(entry.style, exp_style)
         self.assertEqual(entry.variant, exp_variant)
         self.assertEqual(entry.weight, exp_weight)
@@ -182,7 +183,7 @@ class TestTTFFontEntry(unittest.TestCase):
         """
         # Given
         test_font = os.path.join(data_dir, "TestTTF Italic.ttf")
-        exp_name = "Test TTF"
+        exp_family = "Test TTF"
         exp_style = "italic"
         exp_variant = "normal"
         exp_weight = 400
@@ -193,7 +194,7 @@ class TestTTFFontEntry(unittest.TestCase):
         entry = _ttf_font_property(test_font, TTFont(test_font))
 
         # Then
-        self.assertEqual(entry.name, exp_name)
+        self.assertEqual(entry.family, exp_family)
         self.assertEqual(entry.style, exp_style)
         self.assertEqual(entry.variant, exp_variant)
         self.assertEqual(entry.weight, exp_weight)
@@ -212,14 +213,16 @@ class TestTTFFontEntry(unittest.TestCase):
                 _ttf_font_property(test_font, None)
 
     def test_property_branches(self):
+        # These tests mock `get_ttf_prop_dict` in order to test the various
+        # branches of `_ttf_font_property`.
         target = "kiva.fonttools._scan_parse.get_ttf_prop_dict"
         test_font = os.path.join(data_dir, "TestTTF.ttf")
 
         # Given
-        exp_name = "TestyFont Bold Capitals"
         prop_dict = {
-            "name": exp_name,
-            "sfnt4": exp_name,
+            "family": "TestyFont Capitals",
+            "style": "Bold",
+            "full_name": "TestyFont Capitals Bold",
         }
         # When
         with mock.patch(target, return_value=prop_dict):
@@ -229,10 +232,10 @@ class TestTTFFontEntry(unittest.TestCase):
         self.assertEqual(entry.variant, "small-caps")
 
         # Given
-        exp_name = "TestyFont Bold Oblique"
         prop_dict = {
-            "name": exp_name,
-            "sfnt4": exp_name,
+            "family": "TestyFont",
+            "style": "Bold Oblique",
+            "full_name": "TestyFont Bold Oblique",
         }
         # When
         with mock.patch(target, return_value=prop_dict):
@@ -251,8 +254,9 @@ class TestTTFFontEntry(unittest.TestCase):
         for name, stretch in stretch_options.items():
             # Given
             prop_dict = {
-                "name": name,
-                "sfnt4": name,
+                "family": "TestyFont",
+                "style": "Regular",
+                "full_name": name,
             }
             # When
             with mock.patch(target, return_value=prop_dict):
