@@ -8,6 +8,17 @@
 #
 # Thanks for using Enthought open source!
 
+font_family_aliases = {
+    "serif",
+    "sans-serif",
+    "sans serif",
+    "cursive",
+    "fantasy",
+    "monospace",
+    "sans",
+    "modern",
+}
+
 font_scalings = {
     "xx-small": 0.579,
     "x-small": 0.694,
@@ -19,6 +30,62 @@ font_scalings = {
     "larger": 1.2,
     "smaller": 0.833,
     None: 1.0,
+}
+
+preferred_fonts = {
+    "fantasy": [
+        "Comic Sans MS",
+        "Chicago",
+        "Charcoal",
+        "ImpactWestern",
+        "fantasy",
+    ],
+    "cursive": [
+        "Apple Chancery",
+        "Textile",
+        "Zapf Chancery",
+        "Sand",
+        "cursive",
+    ],
+    "monospace": [
+        "Bitstream Vera Sans Mono",
+        "DejaVu Sans Mono",
+        "Andale Mono",
+        "Nimbus Mono L",
+        "Courier New",
+        "Courier",
+        "Fixed",
+        "Terminal",
+        "monospace",
+    ],
+    "serif": [
+        "Bitstream Vera Serif",
+        "DejaVu Serif",
+        "New Century Schoolbook",
+        "Century Schoolbook L",
+        "Utopia",
+        "ITC Bookman",
+        "Bookman",
+        "Nimbus Roman No9 L",
+        "Times New Roman",
+        "Times",
+        "Palatino",
+        "Charter",
+        "serif",
+    ],
+    "sans-serif": [
+        "Bitstream Vera Sans",
+        "DejaVu Sans",
+        "Helvetica Neue",
+        "Arial",
+        "Verdana",
+        "Helvetica",
+        "Lucida Grande",
+        "Geneva",
+        "Lucid",
+        "Avant Garde",
+        "sans-serif",
+    ],
 }
 
 stretch_dict = {
