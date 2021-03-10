@@ -844,6 +844,7 @@ namespace kiva {
                 img : Image
                     The contents of the context as a PIL/Pillow Image.
                 """
+                from PIL import Image
                 size = (self.width(), self.height())
                 fmt = self.format()
 
@@ -864,8 +865,7 @@ namespace kiva {
                 else:
                     bmp = self.bmp_array
 
-                from PIL import Image
-                return Image(bmp, pilformat)
+                return Image.fromarray(bmp, pilformat)
 
             def save(self, filename, file_format=None, pil_options=None):
                 """ Save the GraphicsContext to a file.  Output files are always
