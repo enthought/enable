@@ -100,12 +100,10 @@ def create_font_list(fontfiles, fontext="ttf"):
     The default is to create a list of TrueType fonts. An AFM font list can
     optionally be created.
     """
-    # FIXME: This function is particularly difficult to debug
-    fontlist = []
-
-    #  Add fonts from list of known font files.
+    # Use a set() to filter out files which were already scanned
     seen = set()
 
+    fontlist = []
     for fpath in fontfiles:
         logger.debug("create_font_list %s", fpath)
         fname = os.path.basename(fpath)
@@ -429,7 +427,7 @@ def _afm_font_property(fontpath, font):
         style = "normal"
 
     #  Variants are: small-caps and normal (default)
-    # !!!!  Untested
+    # NOTE: Not sure how many fonts actually have these strings in their name
     variant = "normal"
     for value in ("capitals", "small-caps"):
         if value in name.lower():
@@ -491,6 +489,7 @@ def _ttf_font_property(fpath, font):
         style = "normal"
 
     #  Variants are: small-caps and normal (default)
+    # NOTE: Not sure how many fonts actually have these strings in their name
     variant = "normal"
     for value in ("capitals", "small-caps"):
         if value in name.lower():
