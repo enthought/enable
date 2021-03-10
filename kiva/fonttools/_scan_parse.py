@@ -58,14 +58,16 @@ class FontEntry(object):
     """ A class for storing Font properties. It is used when populating
     the font lookup dictionary.
     """
-    def __init__(self, fname="", name="", style="normal", variant="normal",
-                 weight="normal", stretch="normal", size="medium"):
+    def __init__(self, fname="", family="", style="normal", variant="normal",
+                 weight="normal", stretch="normal", size="medium",
+                 face_index=0):
         self.fname = fname
-        self.name = name
+        self.family = family
         self.style = style
         self.variant = variant
         self.weight = weight
         self.stretch = stretch
+        self.face_index = face_index
         try:
             self.size = str(float(size))
         except ValueError:
@@ -74,8 +76,8 @@ class FontEntry(object):
     def __repr__(self):
         fname = os.path.basename(self.fname)
         return (
-            f"<FontEntry '{self.name}' ({fname}) {self.style} {self.variant} "
-            f"{self.weight} {self.stretch}>"
+            f"<FontEntry '{self.family}' ({fname}[{self.face_index}]) "
+            f"{self.style} {self.variant} {self.weight} {self.stretch}>"
         )
 
 
@@ -120,8 +122,8 @@ def _build_ttf_entries(fpath):
             if ext.lower() == ".ttc":
                 collection = TTCollection(fp)
                 try:
-                    for font in collection.fonts:
-                        entries.append(_ttf_font_property(fpath, font))
+                    for idx, font in enumerate(collection.fonts):
+                        entries.append(_ttf_font_property(fpath, font, idx))
                 except Exception:
                     logger.error(_FONT_ENTRY_ERR_MSG, fpath, exc_info=True)
             else:
@@ -144,22 +146,22 @@ def _afm_font_property(fontpath, font):
 
     *font* is a class:`AFM` instance.
     """
-    name = font.get_familyname()
+    family = font.get_familyname()
     fontname = font.get_fontname().lower()
 
     #  Styles are: italic, oblique, and normal (default)
-    if font.get_angle() != 0 or name.lower().find("italic") >= 0:
+    if font.get_angle() != 0 or family.lower().find("italic") >= 0:
         style = "italic"
-    elif name.lower().find("oblique") >= 0:
+    elif family.lower().find("oblique") >= 0:
         style = "oblique"
     else:
         style = "normal"
 
     #  Variants are: small-caps and normal (default)
-    # NOTE: Not sure how many fonts actually have these strings in their name
+    # NOTE: Not sure how many fonts actually have these strings in their family
     variant = "normal"
     for value in ("capitals", "small-caps"):
-        if value in name.lower():
+        if value in family.lower():
             variant = "small-caps"
             break
 
@@ -194,34 +196,40 @@ def _afm_font_property(fontpath, font):
 
     #  All AFM fonts are apparently scalable.
     size = "scalable"
-    return FontEntry(fontpath, name, style, variant, weight, stretch, size)
+    return FontEntry(fontpath, family, style, variant, weight, stretch, size)
 
 
-def _ttf_font_property(fpath, font):
+def _ttf_font_property(fpath, font, face_index=0):
     """ A function for populating the :class:`FontEntry` by extracting
     information from the TrueType font file.
 
     *font* is a :class:`TTFont` instance.
     """
     props = get_ttf_prop_dict(font)
-    name = props.get("name")
-    if name is None:
-        raise KeyError("No name could be found for: {}".format(fpath))
+    family = props.get("family")
+    if family is None:
+        raise KeyError("No family could be found for: {}".format(fpath))
+
+    # Some properties
+    full_name = props.get("full_name", "").lower()
+    style_prop = props.get("style", "").lower()
+    if style_prop == "":
+        # For backwards compatibility with previous parsing behavior
+        style_prop = full_name
 
     #  Styles are: italic, oblique, and normal (default)
-    sfnt4 = props.get("sfnt4", "").lower()
-    if sfnt4.find("oblique") >= 0:
+    if style_prop.find("oblique") >= 0:
         style = "oblique"
-    elif sfnt4.find("italic") >= 0:
+    elif style_prop.find("italic") >= 0:
         style = "italic"
     else:
         style = "normal"
 
     #  Variants are: small-caps and normal (default)
-    # NOTE: Not sure how many fonts actually have these strings in their name
+    # NOTE: Not sure how many fonts actually have these strings in their family
     variant = "normal"
-    for value in ("capitals", "small-caps"):
-        if value in name.lower():
+    for value in ("capitals", "small-caps", "smallcaps"):
+        if value in family.lower():
             variant = "small-caps"
             break
 
@@ -230,7 +238,7 @@ def _ttf_font_property(fpath, font):
     #    lighter and bolder are also allowed.
     weight = None
     for w in weight_dict.keys():
-        if sfnt4.find(w) >= 0:
+        if style_prop.find(w) >= 0:
             weight = w
             break
     if not weight:
@@ -243,13 +251,13 @@ def _ttf_font_property(fpath, font):
     #    and ultra-expanded.
     #  Relative stretches are: wider, narrower
     #  Child value is: inherit
-    if sfnt4.find("demi cond") >= 0:
+    if full_name.find("demi cond") >= 0:
         stretch = "semi-condensed"
-    elif (sfnt4.find("narrow") >= 0
-            or sfnt4.find("condensed") >= 0
-            or sfnt4.find("cond") >= 0):
+    elif (full_name.find("narrow") >= 0
+            or full_name.find("condensed") >= 0
+            or full_name.find("cond") >= 0):
         stretch = "condensed"
-    elif sfnt4.find("wide") >= 0 or sfnt4.find("expanded") >= 0:
+    elif full_name.find("wide") >= 0 or full_name.find("expanded") >= 0:
         stretch = "expanded"
     else:
         stretch = "normal"
@@ -263,4 +271,13 @@ def _ttf_font_property(fpath, font):
 
     #  !!!!  Incomplete
     size = "scalable"
-    return FontEntry(fpath, name, style, variant, weight, stretch, size)
+    return FontEntry(
+        fname=fpath,
+        family=family,
+        style=style,
+        variant=variant,
+        weight=weight,
+        stretch=stretch,
+        size=size,
+        face_index=face_index,
+    )

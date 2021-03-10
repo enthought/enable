@@ -9,22 +9,66 @@
 # Thanks for using Enthought open source!
 from kiva.fonttools._constants import weight_dict
 
+# Unicode & Apple
+_plat_ids = (0, 1)
+_english_id = 0
+# MS
+# https://docs.microsoft.com/en-us/typography/opentype/spec/name#windows-language-ids  # noqa: E501
+_ms_plat_id = 3
+_ms_english_ids = {
+    0x0C09: "Australia",
+    0x2809: "Belize",
+    0x1009: "Canada",
+    0x2409: "Caribbean",
+    0x4009: "India",
+    0x1809: "Ireland",
+    0x2009: "Jamaica",
+    0x4409: "Malaysia",
+    0x1409: "New Zealand",
+    0x3409: "Republic of the Philippines",
+    0x4809: "Singapore",
+    0x1C09: "South Africa",
+    0x2C09: "Trinidad and Tobago",
+    0x0809: "United Kingdom",
+    0x0409: "United States",
+    0x3009: "Zimbabwe",
+}
+# TrueType 'name' table IDs
+# https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6name.html  # noqa: E501
+_name_ids = {
+    0: "copyright",
+    1: "family",
+    2: "style",
+    3: "unique_subfamily_id",
+    4: "full_name",
+    5: "version",
+    6: "postscript_name",
+}
+
 
 def get_ttf_prop_dict(font):
-    """ Return the property dictionary from a :class:`TTFont` instance.
+    """ Parse the 'name' table of a :class:`TTFont` instance.
     """
-    n = font["name"]
     propdict = {}
-    for prop in n.names:
-        try:
-            if "name" in propdict and "sfnt4" in propdict:
-                break
-            elif prop.nameID == 1 and "name" not in propdict:
-                propdict["name"] = _decode_prop(prop.string)
-            elif prop.nameID == 4 and "sfnt4" not in propdict:
-                propdict["sfnt4"] = _decode_prop(prop.string)
-        except UnicodeDecodeError:
+    table = font["name"]
+    for rec in table.names:
+        # We only care about records in English
+        plat, lang = rec.platformID, rec.langID
+        if not ((plat in _plat_ids and lang == _english_id)
+                or (plat == _ms_plat_id and lang in _ms_english_ids)):
             continue
+        # And of those, just the ones we have names for
+        if rec.nameID not in _name_ids:
+            continue
+
+        # Convert the nameID to a nice string
+        key = _name_ids[rec.nameID]
+        # Skip duplicate records
+        if key in propdict:
+            continue
+
+        # Use the NameRecord's toStr() method instead of ad-hoc decoding
+        propdict[key] = rec.toStr()
 
     return propdict
 
@@ -45,19 +89,3 @@ def weight_as_number(weight):
     else:
         raise ValueError("weight not a valid integer")
     return weight
-
-
-def _decode_prop(prop):
-    """ Decode a prop string.
-
-    Parameters
-    ----------
-    prop : bytestring
-
-    Returns
-    -------
-    string
-    """
-    # Adapted from: https://gist.github.com/pklaus/dce37521579513c574d0
-    encoding = "utf-16-be" if b"\x00" in prop else "utf-8"
-    return prop.decode(encoding)
