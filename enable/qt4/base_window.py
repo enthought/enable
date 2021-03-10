@@ -346,11 +346,6 @@ class _QtGLWindow(QtOpenGL.QGLWidget):
     def dropEvent(self, event):
         self.handler.dropEvent(event)
 
-    # TODO: by symmetry this belongs here, but we need to test it
-    # def sizeHint(self):
-    #    qt_size_hint = super(_QtGLWindow, self).sizeHint()
-    #    return self.handler.sizeHint(qt_size_hint)
-
 
 class _Window(AbstractWindow):
 

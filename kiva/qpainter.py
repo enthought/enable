@@ -42,6 +42,12 @@ draw_modes[constants.STROKE] = 0
 draw_modes[constants.FILL_STROKE] = QtCore.Qt.OddEvenFill
 draw_modes[constants.EOF_FILL_STROKE] = QtCore.Qt.WindingFill
 
+font_styles = {}
+font_styles["regular"] = constants.NORMAL
+font_styles["bold"] = constants.BOLD
+font_styles["italic"] = constants.ITALIC
+font_styles["bold italic"] = constants.BOLD_ITALIC
+
 gradient_coord_modes = {}
 gradient_coord_modes["userSpaceOnUse"] = QtGui.QGradient.LogicalMode
 gradient_coord_modes["objectBoundingBox"] = QtGui.QGradient.ObjectBoundingMode
@@ -612,15 +618,23 @@ class GraphicsContext(object):
     # Drawing Text
     # ----------------------------------------------------------------
 
-    def select_font(self, name, size, textEncoding):
+    def select_font(self, name, size, style="regular", encoding=None):
         """ Set the font for the current graphics context.
         """
-        self.gc.setFont(QtGui.QFont(name, size))
+        style = font_styles.get(style, constants.NORMAL)
+        font = Font(name, size=size, style=style)
+        self.set_font(font)
 
     def set_font(self, font):
         """ Set the font for the current graphics context.
         """
-        self.select_font(font.face_name, font.size, None)
+        qfont = QtGui.QFont(font.face_name, font.size)
+
+        if font.style in (constants.BOLD, constants.BOLD_ITALIC):
+            qfont.setBold(True)
+        if font.style in (constants.ITALIC, constants.BOLD_ITALIC):
+            qfont.setItalic(True)
+        self.gc.setFont(qfont)
 
     def set_font_size(self, size):
         """
@@ -630,16 +644,22 @@ class GraphicsContext(object):
         self.gc.setFont(font)
 
     def set_character_spacing(self, spacing):
-        """
+        """ Set the spacing between characters when drawing text
         """
         font = self.gc.font()
         font.setLetterSpacing(QtGui.QFont.AbsoluteSpacing, spacing)
         self.gc.setFont(font)
 
-    def set_text_drawing_mode(self):
+    def get_character_spacing(self):
+        """ Get the spacing between characters when drawing text
         """
+        font = self.gc.font()
+        return font.letterSpacing()
+
+    def set_text_drawing_mode(self, mode):
+        """ Set the drawing mode to use with text
         """
-        pass
+        raise NotImplementedError()
 
     def set_text_position(self, x, y):
         """
@@ -676,10 +696,14 @@ class GraphicsContext(object):
         unflip_trans.translate(0, self._height)
         unflip_trans.scale(1.0, -1.0)
 
-        self.gc.save()
-        self.gc.setTransform(unflip_trans, True)
-        self.gc.drawText(QtCore.QPointF(pos[0], self._flip_y(pos[1])), text)
-        self.gc.restore()
+        # Make some temporary modifications to the state
+        with self:
+            # Kiva uses the fill color for text
+            brush = self.gc.brush()
+            self.gc.setPen(brush.color())
+            self.gc.setTransform(unflip_trans, True)
+            pos = QtCore.QPointF(pos[0], self._flip_y(pos[1]))
+            self.gc.drawText(pos, text)
 
     def show_text_at_point(self, text, x, y):
         """ Draw text at some point (x, y).
@@ -720,6 +744,7 @@ class GraphicsContext(object):
     def fill_path(self):
         """
         """
+        self.path.path.setFillRule(QtCore.Qt.WindingFill)
         self.gc.fillPath(self.path.path, self.gc.brush())
         self.begin_path()
 
@@ -819,7 +844,7 @@ class GraphicsContext(object):
         "Converts between a Kiva and a Qt y coordinate"
         return self._height - y - 1
 
-    def save(self, filename, file_format=None):
+    def save(self, filename, file_format=None, pil_options=None):
         """ Save the contents of the context to a file
         """
         if isinstance(self.qt_dc, QtGui.QPixmap):

@@ -63,7 +63,7 @@ class ScriptedComponent(Component):
 
     #: how long did the last draw take
     last_draw_time = Float(0.0)
-    fps_display = Property(Str, depends_on="last_draw_time")
+    fps_display = Property(Str, observe="last_draw_time")
 
     #: compiled code
     _draw_code = Any

@@ -31,7 +31,7 @@ class Demo(DemoFrame):
             range=(0, 100.0, 10.0, 1.0),
             enabled=True,
         )
-        vscroll.on_trait_change(self._update_vscroll, "scroll_position")
+        vscroll.observe(self._update_vscroll, "scroll_position")
 
         hscroll = NativeScrollBar(
             orientation="horizontal",
@@ -40,31 +40,30 @@ class Demo(DemoFrame):
             range=(0, 100.0, 10.0, 1.0),
             enabled=True,
         )
-        hscroll.on_trait_change(self._update_hscroll, "scroll_position")
+        hscroll.observe(self._update_hscroll, "scroll_position")
 
         container = Container(
             bounds=[200, 200], border_visible=True, padding=15
         )
         container.add(label, hscroll, vscroll)
-        container.on_trait_change(self._update_layout, "bounds")
-        container.on_trait_change(self._update_layout, "bounds_items")
+        container.observe(self._update_layout, "bounds.items")
 
         self.label = label
         self.hscroll = hscroll
         self.vscroll = vscroll
         return container
 
-    def _update_hscroll(self):
+    def _update_hscroll(self, event):
         text = self.label.text.split("\n")
         text[0] = "h: " + str(self.hscroll.scroll_position)
         self.label.text = "\n".join(text)
 
-    def _update_vscroll(self):
+    def _update_vscroll(self, event):
         text = self.label.text.split("\n")
         text[1] = "v: " + str(self.vscroll.scroll_position)
         self.label.text = "\n".join(text)
 
-    def _update_layout(self):
+    def _update_layout(self, event):
         self.vscroll._widget_moved = True
         self.hscroll._widget_moved = True
 

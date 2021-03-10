@@ -11,14 +11,15 @@ from collections import namedtuple
 from io import BytesIO
 from math import fabs
 import os
+import sys
 import warnings
 
 import celiagg as agg
 import numpy as np
 
-from .abstract_graphics_context import AbstractGraphicsContext
-from .fonttools import Font
+from kiva.abstract_graphics_context import AbstractGraphicsContext
 import kiva.constants as constants
+from kiva.fonttools import Font
 
 # These are the symbols that a backend has to define.
 __all__ = ["CompiledPath", "Font", "font_metrics_provider", "GraphicsContext"]
@@ -41,7 +42,7 @@ draw_modes = {
     constants.EOF_FILL_STROKE: agg.DrawingMode.DrawEofFillStroke,
 }
 text_modes = {
-    constants.TEXT_FILL: agg.TextDrawingMode.TextDrawFill,
+    constants.TEXT_FILL: agg.TextDrawingMode.TextDrawRaster,
     constants.TEXT_STROKE: agg.TextDrawingMode.TextDrawStroke,
     constants.TEXT_FILL_STROKE: agg.TextDrawingMode.TextDrawFillStroke,
     constants.TEXT_INVISIBLE: agg.TextDrawingMode.TextDrawInvisible,
@@ -104,8 +105,8 @@ class GraphicsContext(object):
         self.__state_stack = []
 
         # For HiDPI support
-        base_scale = kwargs.pop('base_pixel_scale', 1)
-        self.transform.scale(base_scale, base_scale)
+        self.base_scale = kwargs.pop('base_pixel_scale', 1)
+        self.transform.scale(self.base_scale, self.base_scale)
 
     # ----------------------------------------------------------------
     # Size info
@@ -609,15 +610,21 @@ class GraphicsContext(object):
     # Drawing Text
     # ----------------------------------------------------------------
 
-    def select_font(self, name, size, textEncoding):
+    def select_font(self, face_name, size=12, style='regular', encoding=None):
         """ Set the font for the current graphics context.
         """
-        self.font = agg.Font(name, size, agg.FontCacheType.RasterFontCache)
+        self.set_font(Font(face_name, size=size, style=style))
 
     def set_font(self, font):
         """ Set the font for the current graphics context.
         """
-        self.select_font(font.findfont(), font.size, None)
+        if sys.platform in ('win32', 'cygwin'):
+            # Win32 font selection is handled by the OS
+            self.font = agg.Font(font.findfontname(), font.size)
+        else:
+            # FreeType font selection is handled by kiva
+            spec = font.findfont()
+            self.font = agg.Font(spec.filename, font.size, spec.face_index)
 
     def set_font_size(self, size):
         """ Set the font size for the current graphics context.
@@ -625,11 +632,15 @@ class GraphicsContext(object):
         if self.font is None:
             return
 
-        font = self.font
-        self.select_font(font.filepath, size, font.cache_type)
+        # Just set a new height
+        self.font.height = size
 
     def set_character_spacing(self, spacing):
         msg = "set_character_spacing not implemented on celiagg yet."
+        raise NotImplementedError(msg)
+
+    def get_character_spacing(self):
+        msg = "get_character_spacing not implemented on celiagg yet."
         raise NotImplementedError(msg)
 
     def set_text_drawing_mode(self, mode):
@@ -675,6 +686,7 @@ class GraphicsContext(object):
             self.font,
             transform,
             self.canvas_state,
+            fill=self.fill_paint,
             stroke=self.stroke_paint,
         )
 
@@ -693,7 +705,8 @@ class GraphicsContext(object):
         if self.font is None:
             raise RuntimeError("get_text_extent called before setting a font!")
 
-        x1, x2 = 0.0, self.font.width(text)
+        font_cache = self.gc.font_cache
+        x1, x2 = 0.0, font_cache.width(self.font, text)
         y1, y2 = 0.0, self.font.height
         return x1, y1, x2, y2
 
@@ -802,35 +815,46 @@ class GraphicsContext(object):
 
     def draw_path_at_points(self, points, path, mode=constants.FILL_STROKE):
         """ Draw a path object at many different points.
-
-        XXX: This is currently broken for some reason
         """
-        shape = agg.ShapeAtPoints(path.path, points)
         self.canvas_state.drawing_mode = draw_modes[mode]
-        self.gc.draw_shape(
-            shape,
+        self.gc.draw_shape_at_points(
+            path.path,
+            points,
             self.transform,
             self.canvas_state,
             stroke=self.stroke_paint,
             fill=self.fill_paint,
         )
 
-    def save(self, filename, file_format=None):
+    def save(self, filename, file_format=None, pil_options=None):
         """ Save the contents of the context to a file
         """
+
         if file_format is None:
             file_format = ''
+        if pil_options is None:
+            pil_options = {}
 
         img = self.to_image()
 
+        ext = (
+            os.path.splitext(filename)[1][1:] if isinstance(filename, str)
+            else ''
+        )
+        
         # Check the output format to see if it can handle an alpha channel.
         no_alpha_formats = ('jpg', 'bmp', 'eps', 'jpeg')
-        if ((isinstance(filename, str) and
-                os.path.splitext(filename)[1][1:] in no_alpha_formats) or
-                (file_format.lower() in no_alpha_formats)):
+        if ext in no_alpha_formats or file_format.lower() in no_alpha_formats:
             img = img.convert('RGB')
 
-        img.save(filename, format=file_format)
+        # Check the output format to see if it can handle DPI
+        dpi_formats = ('jpg', 'png', 'tiff', 'jpeg')
+        if ext in dpi_formats or file_format.lower() in dpi_formats:
+            # Assume 72dpi is 1x
+            dpi = int(72 * self.base_scale)
+            pil_options['dpi'] = (dpi, dpi)
+
+        img.save(filename, format=file_format, **pil_options)
 
     def to_image(self):
         """ Return the contents of the context as a PIL Image.
@@ -846,7 +870,7 @@ class GraphicsContext(object):
         try:
             from PIL import Image
         except ImportError:
-            raise ImportError('Need Pillow to save images')
+            raise ImportError("need Pillow to save images")
 
         pixels = self.gc.array
         if self.pix_format.startswith('bgra'):

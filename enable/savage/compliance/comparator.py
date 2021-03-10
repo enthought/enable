@@ -27,8 +27,7 @@ import numpy as np
 from enable.api import Component
 from enable.component_editor import ComponentEditor
 from traits.api import (
-    Any, Button, Dict, HasTraits, HTML, Instance, List, Property, Str,
-    on_trait_change
+    Any, Button, Dict, HasTraits, HTML, Instance, List, Property, Str, observe
 )
 from traitsui.api import (
     EnumEditor, HGroup, HSplit, Item, Tabbed, VGroup, View, VSplit
@@ -104,7 +103,7 @@ class Comparator(HasTraits):
 
     # The currently selected SVG file.
     current_file = Str()
-    abs_current_file = Property(depends_on=["current_file"])
+    abs_current_file = Property(observe=["current_file"])
 
     # The current XML ElementTree root Element and its XMLTree view model.
     current_xml = Any()
@@ -117,7 +116,7 @@ class Comparator(HasTraits):
 
     # The text showing the current mouse coordinates over any of the
     # components.
-    mouse_coords = Property(Str, depends_on=["ch_controller.svg_coords"])
+    mouse_coords = Property(Str, observe=["ch_controller.svg_coords"])
 
     # Move forward and backward through the list of SVG files.
     move_forward = Button(">>")
@@ -396,10 +395,10 @@ class Comparator(HasTraits):
         else:
             return "%1.3g %1.3g" % self.ch_controller.svg_coords
 
-    @on_trait_change("profile_this:profile_ended")
-    def _update_profiling(self, new):
-        if new is not None:
-            name, p = new
+    @observe("profile_this:profile_ended")
+    def _update_profiling(self, event):
+        if event.new is not None:
+            name, p = event.new
             stats = pstats.Stats(p)
             if name == "Parsing":
                 self.parsing_sike.stats = stats

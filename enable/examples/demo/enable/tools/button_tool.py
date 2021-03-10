@@ -29,7 +29,8 @@ class SelectableBox(Box):
 
     selected_color = ColorTrait("green")
 
-    def select(self, selected):
+    def select(self, event):
+        selected = event.new
         self.selected = selected
 
     def _selected_changed(self):
@@ -68,7 +69,7 @@ class MyFrame(DemoFrame):
 
     """
 
-    def button_clicked(self):
+    def button_clicked(self, event):
         print("clicked")
 
     # -------------------------------------------------------------------------
@@ -86,8 +87,8 @@ class MyFrame(DemoFrame):
         push_button_box.tools.append(push_button_tool)
 
         # print when box clicked, change color when button down
-        push_button_tool.on_trait_change(self.button_clicked, "clicked")
-        push_button_tool.on_trait_change(push_button_box.select, "down")
+        push_button_tool.observe(self.button_clicked, "clicked")
+        push_button_tool.observe(push_button_box.select, "down")
 
         # another box for a toggle button
         toggle_box = SelectableBox(
@@ -102,7 +103,7 @@ class MyFrame(DemoFrame):
         toggle_box.tools.append(toggle_button_tool)
 
         # change color when checked down
-        toggle_button_tool.on_trait_change(toggle_box.select, "checked")
+        toggle_button_tool.observe(toggle_box.select, "checked")
 
         container = Container(bounds=[600, 600])
         container.add(push_button_box)

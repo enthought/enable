@@ -175,6 +175,19 @@ class DrawingImageTester(DrawingTester):
         """
         raise NotImplementedError()
 
+    def save_and_return_dpi(self):
+        """ Draw an image and save it. Then read it back and return the DPI
+        """
+        self.gc.begin_path()
+        self.gc.arc(150, 150, 100, 0.0, 2 * numpy.pi)
+        self.gc.fill_path()
+
+        filename = "{0}.png".format(self.filename)
+        self.gc.save(filename)
+        image = Image.open(filename)
+        dpi = image.info['dpi']
+        return dpi[0]
+
     @contextlib.contextmanager
     def draw_and_check(self):
         yield
@@ -186,17 +199,23 @@ class DrawingImageTester(DrawingTester):
         """ Load the image and check that there is some content in it.
         """
         image = numpy.array(Image.open(filename))
-        # default is expected to be a totally white image
+        # Default is expected to be a totally white image.
+        # Therefore we check if the whole image is not white.
+
+        # Previously this method checked for red pixels. However this is
+        # not [currently] possible with the quartz backend because it writes
+        # out image with premultiplied alpha and none of its pixels are the
+        # exact red expected here.
 
         self.assertEqual(image.shape[:2], (600, 600))
         if image.shape[2] == 3:
-            check = numpy.sum(image == [255, 0, 0], axis=2) == 3
+            check = numpy.sum(image == [255, 255, 255]) != (600 * 600 * 3)
         elif image.shape[2] == 4:
-            check = numpy.sum(image == [255, 0, 0, 255], axis=2) == 4
+            check = numpy.sum(image == [255, 255, 255, 255]) != (600 * 600 * 4)
         else:
             self.fail(
                 "Pixel size is not 3 or 4, but {0}".format(image.shape[2])
             )
-        if check.any():
+        if check:
             return
         self.fail("The image looks empty, no red pixels were drawn")

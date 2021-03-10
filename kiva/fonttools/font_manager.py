@@ -198,12 +198,13 @@ preferred_fonts = {
     "sans-serif": [
         "Bitstream Vera Sans",
         "DejaVu Sans",
-        "Lucida Grande",
+        "Helvetica Neue",
+        "Arial",
         "Verdana",
+        "Helvetica",
+        "Lucida Grande",
         "Geneva",
         "Lucid",
-        "Arial",
-        "Helvetica",
         "Avant Garde",
         "sans-serif",
     ],
@@ -545,22 +546,25 @@ class FontEntry(object):
     """
 
     def __init__(self, fname="", name="", style="normal", variant="normal",
-                 weight="normal", stretch="normal", size="medium"):
+                 weight="normal", stretch="normal", size="medium",
+                 face_index=0):
         self.fname = fname
         self.name = name
         self.style = style
         self.variant = variant
         self.weight = weight
         self.stretch = stretch
+        self.face_index = face_index
         try:
             self.size = str(float(size))
         except ValueError:
             self.size = size
 
     def __repr__(self):
-        return "<Font '%s' (%s) %s %s %s %s>" % (
+        return "<Font '%s' (%s[%d]) %s %s %s %s>" % (
             self.name,
             os.path.basename(self.fname),
+            self.face_index,
             self.style,
             self.variant,
             self.weight,
@@ -568,7 +572,7 @@ class FontEntry(object):
         )
 
 
-def ttfFontProperty(fpath, font):
+def ttfFontProperty(fpath, font, index=0):
     """
     A function for populating the :class:`FontKey` by extracting
     information from the TrueType font file.
@@ -639,7 +643,7 @@ def ttfFontProperty(fpath, font):
     #  !!!!  Incomplete
     size = "scalable"
 
-    return FontEntry(fpath, name, style, variant, weight, stretch, size)
+    return FontEntry(fpath, name, style, variant, weight, stretch, size, index)
 
 
 def afmFontProperty(fontpath, font):
@@ -758,8 +762,8 @@ def createFontList(fontfiles, fontext="ttf"):
                         collection = TTCollection(f)
                         try:
                             props = []
-                            for font in collection.fonts:
-                                props.append(ttfFontProperty(fpath, font))
+                            for idx, font in enumerate(collection.fonts):
+                                props.append(ttfFontProperty(fpath, font, idx))
                             fontlist.extend(props)
                             continue
                         except Exception:
@@ -878,12 +882,14 @@ class FontProperties(object):
         Return the name of the font that best matches the font
         properties.
         """
-        filename = str(default_font_manager().findfont(self))
-        if filename.endswith(".afm"):
-            return afm.AFM(open(filename)).get_familyname()
+        spec = default_font_manager().findfont(self)
+        if spec.filename.endswith(".afm"):
+            return afm.AFM(open(spec.filename)).get_familyname()
 
-        font = default_font_manager().findfont(self)
-        prop_dict = getPropDict(TTFont(str(font)))
+        spec = default_font_manager().findfont(self)
+        prop_dict = getPropDict(
+            TTFont(spec.filename, fontNumber=spec.face_index)
+        )
         return prop_dict["name"]
 
     def get_style(self):
@@ -1091,7 +1097,7 @@ class FontManager:
     # Increment this version number whenever the font cache data
     # format or behavior has changed and requires a existing font
     # cache files to be rebuilt.
-    __version__ = 7
+    __version__ = 8
 
     def __init__(self, size=None, weight="normal"):
         self._version = self.__version__
@@ -1309,12 +1315,26 @@ class FontManager:
         <http://www.w3.org/TR/1998/REC-CSS2-19980512/>`_ documentation
         for a description of the font finding algorithm.
         """
+        class FontSpec(object):
+            """ An object to represent the return value of findfont().
+            """
+            def __init__(self, filename, face_index=0):
+                self.filename = str(filename)
+                self.face_index = face_index
+
+            def __fspath__(self):
+                """ Implement the os.PathLike abstract interface.
+                """
+                return self.filename
+
         if not isinstance(prop, FontProperties):
             prop = FontProperties(prop)
         fname = prop.get_file()
         if fname is not None:
             logger.debug("findfont returning %s", fname)
-            return fname
+            # It's not at all clear where a `FontProperties` instance with
+            # `fname` already set would come from. Assume face_index == 0.
+            return FontSpec(fname)
 
         if fontext == "afm":
             font_cache = self.afm_lookup_cache
@@ -1369,18 +1389,20 @@ class FontManager:
                     % (prop, self.defaultFont[fontext]),
                     UserWarning,
                 )
-                result = self.defaultFont[fontext]
+                # Assume this is never a .ttc font, so 0 is ok for face index.
+                result = FontSpec(self.defaultFont[fontext])
         else:
             logger.debug(
-                "findfont: Matching %s to %s (%s) with score of %f",
+                "findfont: Matching %s to %s (%s[%d]) with score of %f",
                 prop,
                 best_font.name,
                 best_font.fname,
+                best_font.face_index,
                 best_score,
             )
-            result = best_font.fname
+            result = FontSpec(best_font.fname, best_font.face_index)
 
-        if not os.path.isfile(result):
+        if not os.path.isfile(result.filename):
             if rebuild_if_missing:
                 logger.debug(
                     "findfont: Found a missing font file.  Rebuilding cache."

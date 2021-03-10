@@ -399,7 +399,6 @@ class EmbeddedType1Face(TypeFace):
 
     def _loadMetrics(self, afmFileName):
         """Loads in and parses font metrics."""
-        #assert os.path.isfile(afmFileName), "AFM file %s not found" % afmFileName
         (topLevel, glyphData) = parseAFMFile(afmFileName)
 
         self.name = topLevel['FontName']
@@ -460,7 +459,6 @@ def registerEncoding(enc):
 def registerFont(font):
     "Registers a font, including setting up info for accelerated stringWidth"
     # FIXME: This doesn't work
-    #assert isinstance(font, Font), 'Not a Font: %s' % font
     fontName = font.fontName
     _fonts[fontName] = font
     if not font._multiByte:

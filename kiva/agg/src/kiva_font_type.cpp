@@ -39,9 +39,10 @@ const char* freetype_suffixes[] = { ".ttf", ".pfa", ".pfb" };
 // Therefore this simple function is left in.
 
 kiva::font_type::font_type(std::string _name, int _size, int _family,
-                           int _style, int _encoding, bool validate):
+                           int _style, int _encoding, int _face_index, bool validate):
                            name(_name), size(_size), family(_family), style(_style),
-                           encoding(_encoding), _is_loaded(false)
+                           encoding(_encoding), face_index(_face_index),
+                           _is_loaded(false)
 {
     std::string full_file_name;
     if (validate)
@@ -83,10 +84,9 @@ kiva::font_type::font_type(std::string _name, int _size, int _family,
 
 kiva::font_type::font_type(const kiva::font_type &font) :
     name(font.name), filename(font.filename), size(font.size),
-    _is_loaded(font.is_loaded())
+    family(font.family), style(font.style), encoding(font.encoding),
+    face_index(font.face_index), _is_loaded(font.is_loaded())
 {
-    this->family = font.family;
-    this->style = font.style;
 }
 
 kiva::font_type &kiva::font_type::operator=(const kiva::font_type& font)
@@ -95,6 +95,7 @@ kiva::font_type &kiva::font_type::operator=(const kiva::font_type& font)
     this->family = font.family;
     this->style = font.style;
     this->encoding = font.encoding;
+    this->face_index = font.face_index;
     this->name = font.name;
     this->filename = font.filename;
     this->_is_loaded = font.is_loaded();

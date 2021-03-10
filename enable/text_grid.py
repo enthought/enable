@@ -16,7 +16,7 @@ from numpy import arange, array, dstack, repeat, newaxis
 
 # Enthought library imports
 from traits.api import (
-    Any, Array, Bool, Int, List, Property, Trait, Tuple, on_trait_change,
+    Any, Array, Bool, Int, List, Property, Trait, Tuple, observe,
 )
 from kiva.trait_defs.api import KivaFont
 
@@ -296,8 +296,8 @@ class TextGrid(Component):
         self._compute_positions()
         self._update_bounds()
 
-    @on_trait_change("cell_border_width,cell_padding")
-    def cell_properties_changed(self):
+    @observe("cell_border_width,cell_padding")
+    def cell_properties_changed(self, event=None):
         self._compute_positions()
         self._update_bounds()
 

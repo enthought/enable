@@ -34,7 +34,7 @@ class TextField(Component):
     # ------------------------------------------------------------------------
 
     # The text to be edited
-    text = Property(depends_on=["_text_changed"])
+    text = Property(observe=["_text_changed"])
 
     # Events that get fired on certain keypresses
     accept = Event
@@ -74,10 +74,10 @@ class TextField(Component):
 
     # The max width/height of the displayed text in characters
     _text_width = Property(
-        depends_on=["_style", "height"], cached="_height_cache"
+        observe=["_style", "height"], cached="_height_cache"
     )
     _text_height = Property(
-        depends_on=["_style", "width"], cached="_width_cache"
+        observe=["_style", "width"], cached="_width_cache"
     )
 
     # The x-y position of the cursor in the text
@@ -460,13 +460,16 @@ class TextField(Component):
     def _acquire_focus(self, window):
         self._draw_cursor = True
         window.focus_owner = self
-        window.on_trait_change(self._focus_owner_changed, "focus_owner")
+        window.observe(self._window_focus_owner_updated, "focus_owner")
         self.request_redraw()
 
-    def _focus_owner_changed(self, obj, name, old, new):
+    def _window_focus_owner_updated(self, event):
+        obj = event.object
+        old = event.old
+        new = event.new
         if old == self and new != self:
-            obj.on_trait_change(
-                self._focus_owner_changed, "focus_owner", remove=True
+            obj.observe(
+                self._window_focus_owner_updated, "focus_owner", remove=True
             )
         self._draw_cursor = False
         self.request_redraw()
@@ -567,9 +570,5 @@ class TextField(Component):
         self.border_color = self._style.border_color
 
         self.metrics.set_font(self._style.font)
-        # FIXME!!  The height being passed in gets over-written here
-        # if not self.multiline:
-        #    self.height = (self.metrics.get_text_extent("T")[3] +
-        #                   self._style.text_offset*2)
 
         self.request_redraw()

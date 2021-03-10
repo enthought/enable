@@ -370,6 +370,7 @@ namespace kiva {
                 _swig_setattr(self, GraphicsContextArray, 'thisown2', 1)
 
                 self.bmp_array = ary
+                self.base_scale = base_pixel_scale
 
             def __del__(self, destroy=_agg.destroy_graphics_context):
                 try:
@@ -560,11 +561,12 @@ namespace kiva {
                         and (font.encoding == cur_font.encoding):
                         return
                     else:
-                        newfilename = font.findfont()
+                        spec = font.findfont()
                         agg_font = AggFontType(font.face_name, font.size, font.family, font.style,
-                                               font.encoding, False)
-                        agg_font.filename = newfilename
+                                               font.encoding, spec.face_index, False)
+                        agg_font.filename = spec.filename
                 else:
+                    # XXX: What are we expecting here?
                     agg_font = AggFontType(font.face_name, font.size, font.family, font.style, font.encoding)
                 try:
                     retval = _agg.GraphicsContextArray_set_font(self, agg_font)
@@ -733,17 +735,32 @@ namespace kiva {
                                            double rect[4], bool force_copy=false)
             %{
             def draw_image(self, img, rect=None, force_copy=False):
+                from PIL import Image
+
+                pil_format_map = {
+                    "RGB": "rgb24",
+                    "RGBA": "rgba32",
+                }
+
+                # The C++ implementation only handles other
+                # GraphicsContexts, so create one.
                 if isinstance(img, ndarray):
-                    # The C++ implementation only handles other
-                    # GraphicsContexts, so create one.
-                    if img.shape[-1] == 3:
-                        pix_format = 'rgb24'
-                    else:
-                        pix_format = 'rgba32'
-                    img = GraphicsContextArray(img, pix_format=pix_format)
+                    # Let PIL figure out the pixel format
+                    try:
+                        img = Image.fromarray(img)
+                    except TypeError as ex:
+                        # External code is expecting a ValueError
+                        raise ValueError(str(ex))
+                if isinstance(img, Image.Image):
+                    if img.mode not in pil_format_map:
+                        img = img.convert("RGB")
+                    pix_format = pil_format_map[img.mode]
+                    img = GraphicsContextArray(array(img), pix_format=pix_format)
+
                 if rect is None:
-                    rect = array((0,0,img.width(),img.height()),float)
-                return _agg.GraphicsContextArray_draw_image(self,img,rect,force_copy)
+                    rect = array((0, 0, img.width(), img.height()), float)
+
+                return _agg.GraphicsContextArray_draw_image(self, img, rect, force_copy)
             %}
 
             int draw_image(kiva::graphics_context_base* img,
@@ -873,15 +890,27 @@ namespace kiva {
                 """
                 from PIL import Image
 
+                FmtsWithDpi = ('jpg', 'png', 'tiff', 'jpeg')
                 FmtsWithoutAlpha = ('jpg', 'bmp', 'eps', "jpeg")
                 size = (self.width(), self.height())
                 fmt = self.format()
+
+                if pil_options is None:
+                    pil_options = {}
+
+                file_ext = filename.rpartition(".")[-1].lower() if isinstance(filename, str) else ""
+                if (file_ext in FmtsWithDpi or
+                        (file_format is not None and
+                         file_format.lower() in FmtsWithDpi)):
+                    # Assume 72dpi is 1x
+                    dpi = int(72 * self.base_scale)
+                    pil_options["dpi"] = (dpi, dpi)
 
                 # determine the output pixel format and PIL format
                 if fmt.endswith("32"):
                     pilformat = "RGBA"
                     pixelformat = "rgba32"
-                    if (isinstance(filename, str) and filename[-3:].lower() in FmtsWithoutAlpha) or \
+                    if file_ext in FmtsWithoutAlpha or \
                        (file_format is not None and file_format.lower() in FmtsWithoutAlpha):
                         pilformat = "RGB"
                         pixelformat = "rgb24"
@@ -899,7 +928,7 @@ namespace kiva {
                     bmp = self.bmp_array
 
                 img = Image.fromarray(bmp, pilformat)
-                img.save(filename, format=file_format, options=pil_options)
+                img.save(filename, format=file_format, **pil_options)
 
 
             #----------------------------------------------------------------

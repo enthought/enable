@@ -184,7 +184,7 @@ class SimpleColorEditor(Editor):
         self._swatch = window.component
         self.control = window.control
         self.control.SetSize((110, 20))
-        window.component.on_trait_change(
+        window.component.observe(
             self.popup_editor, "left_up", dispatch="ui"
         )
 

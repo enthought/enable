@@ -90,7 +90,7 @@ supported_combinations = {
 
 dependencies = {
     "apptools",
-    "celiagg",
+    "celiagg^=2.0.0",
     "coverage",
     "Cython",
     "fonttools",
@@ -413,11 +413,17 @@ def test_all():
     """ Run test_clean across all supported environment combinations.
 
     """
+    failed_command = False
     for runtime, toolkits in supported_combinations.items():
         for toolkit in toolkits:
             args = ['--toolkit={}'.format(toolkit),
                     '--runtime={}'.format(runtime)]
-            test_clean(args, standalone_mode=True)
+            try:
+                test_clean(args, standalone_mode=True)
+            except SystemExit:
+                failed_command = True
+    if failed_command:
+        sys.exit(1)
 
 
 # ----------------------------------------------------------------------------

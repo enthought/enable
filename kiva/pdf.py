@@ -19,12 +19,14 @@
 
 # standard library imports
 import copy
+import os
 import warnings
 
 from numpy import ndarray, pi
 
 # ReportLab PDF imports
-import reportlab.pdfbase.pdfmetrics
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 import reportlab.pdfbase._fontdata
 from reportlab.pdfgen import canvas
 
@@ -35,6 +37,7 @@ from .line_state import is_dashed
 from .constants import FILL, STROKE, EOF_FILL
 import kiva.constants as constants
 import kiva.affine as affine
+from kiva.fonttools.font import Font
 
 
 cap_style = {}
@@ -46,6 +49,12 @@ join_style = {}
 join_style[constants.JOIN_ROUND] = 1
 join_style[constants.JOIN_BEVEL] = 2
 join_style[constants.JOIN_MITER] = 0
+
+font_styles = {}
+font_styles["regular"] = ""
+font_styles["bold"] = "-Bold"
+font_styles["italic"] = "-Oblique"
+font_styles["bold italic"] = "-BoldOblique"
 
 # stroke, fill, mode
 path_mode = {}
@@ -609,9 +618,10 @@ class GraphicsContext(GraphicsContextBase):
     # Drawing Text
     # ----------------------------------------------------------------
 
-    def select_font(self, name, size, textEncoding):
+    def select_font(self, name, size, style="regular", encoding=None):
         """ PDF ignores the Encoding variable.
         """
+        name += font_styles.get(style, "")
         self.gc.setFont(name, size)
 
     def set_font(self, font):
@@ -621,7 +631,20 @@ class GraphicsContext(GraphicsContextBase):
         face_name = font.face_name
         if face_name == "":
             face_name = "Helvetica"
-        self.gc.setFont(face_name, font.size)
+
+        # Apply the style as a suffix to the face name
+        face_name += font_styles.get(font.style, "")
+        try:
+            self.gc.setFont(face_name, font.size)
+        except KeyError:
+            # Face name is not recognized.
+            # Register the TTF font that kiva's font_manager located
+            filename = font.findfont()
+            if not os.path.splitext(filename)[-1] in (".ttf", ".ttc"):
+                raise
+
+            pdfmetrics.registerFont(TTFont(face_name, filename))
+            self.gc.setFont(face_name, font.size)
 
     def get_font(self):
         """ Get the current font """
@@ -632,20 +655,6 @@ class GraphicsContext(GraphicsContextBase):
         """
         font = self.gc._fontname
         self.gc.setFont(font, size)
-
-    def set_character_spacing(self):
-        """
-        """
-        pass
-
-    def get_character_spacing(self):
-        """ Get the current font """
-        raise NotImplementedError
-
-    def set_text_drawing_mode(self):
-        """
-        """
-        pass
 
     def set_text_position(self, x, y):
         """
@@ -669,22 +678,22 @@ class GraphicsContext(GraphicsContextBase):
         a, b, c, d, tx, ty = self.gc._textMatrix
         return affine.affine_from_values(a, b, c, d, tx, ty)
 
-    def show_text(self, text, x=None, y=None):
+    def show_text(self, text, point=None):
         """ Draws text on the device at current text position.
 
             This is also used for showing text at a particular point
-            specified by x and y.
+            specified by ``point``.
 
             This ignores the text matrix for now.
         """
-        if x and y:
-            pass
+        if point:
+            x, y = point
         else:
             x, y = self.text_xy
         self.gc.drawString(x, y, text)
 
     def show_text_at_point(self, text, x, y):
-        self.show_text(text, x, y)
+        self.show_text(text, point=(x, y))
 
     def show_glyphs(self):
         """
@@ -783,5 +792,5 @@ class GraphicsContext(GraphicsContextBase):
             # erase the current path.
             self.current_pdf_path = None
 
-    def save(self):
+    def save(self, filename='', file_format=None, pil_options=None):
         self.gc.save()

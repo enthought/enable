@@ -18,11 +18,11 @@ class Demo(DemoFrame):
         container = OverlayContainer()
         container.add(compass)
 
-        compass.on_trait_change(self._arrow_printer, "clicked")
+        compass.observe(self._arrow_printer, "clicked")
         self.compass = compass
         return container
 
-    def _arrow_printer(self):
+    def _arrow_printer(self, event):
         print("Clicked:", self.compass.clicked)
 
 

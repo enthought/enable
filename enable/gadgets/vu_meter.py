@@ -72,10 +72,10 @@ class VUMeter(Component):
     _outer_radial_margin = Float(60.0)
 
     # The angle (in radians) of the span of the curve axis.
-    _phi = Property(Float, depends_on=["angle"])
+    _phi = Property(Float, observe=["angle"])
 
     # This is the radius of the circular axis (in screen coordinates).
-    _axis_radius = Property(Float, depends_on=["_phi", "width", "height"])
+    _axis_radius = Property(Float, observe=["_phi", "width", "height"])
 
     # ---------------------------------------------------------------------
     # Trait Property methods

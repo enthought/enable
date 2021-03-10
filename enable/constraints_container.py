@@ -252,8 +252,8 @@ class ConstraintsContainer(Container):
         """
         # Remove stale components from the map
         for item in event.removed:
-            item.on_trait_change(
-                self._component_size_hint_changed,
+            item.observe(
+                self._handle_changed_component_size_hint,
                 "layout_size_hint",
                 remove=True,
             )
@@ -267,8 +267,8 @@ class ConstraintsContainer(Container):
         """
         # Clear the component maps
         for key, item in self._component_map.items():
-            item.on_trait_change(
-                self._component_size_hint_changed,
+            item.observe(
+                self._handle_changed_component_size_hint,
                 "layout_size_hint",
                 remove=True,
             )
@@ -277,7 +277,7 @@ class ConstraintsContainer(Container):
         # Check the new components
         self._check_and_add_components(new)
 
-    def _component_size_hint_changed(self):
+    def _handle_changed_component_size_hint(self, event):
         """ Refresh the size hint contraints for a child component
         """
         self.relayout()
@@ -369,8 +369,8 @@ class ConstraintsContainer(Container):
                 raise ValueError(msg)
 
             self._component_map[key] = item
-            item.on_trait_change(
-                self._component_size_hint_changed, "layout_size_hint"
+            item.observe(
+                self._handle_changed_component_size_hint, "layout_size_hint"
             )
 
         # Update the layout

@@ -44,11 +44,15 @@ jobs:
         run: sudo apt-get install libglu1-mesa-dev
       - name: Install build dependencies
         run: |
+          sudo apt-get install swig
           python -m pip install -U pip setuptools wheel
           python -m pip install numpy
+          python -m pip install Cython
       - name: Install prebuilt wxPython
         run: python -m pip install -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04 wxPython
         if: matrix.toolkit == 'wx'
+      - name: Install prebuilt celiagg
+        run: python -m pip install celiagg
       - name: Install source dependencies
         run: |
           python -m pip install git+http://github.com/enthought/traits.git#egg=traits

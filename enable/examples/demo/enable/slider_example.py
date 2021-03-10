@@ -29,11 +29,11 @@ class Demo(DemoFrame):
         container = OverlayContainer()
         container.add(slider)
 
-        slider.on_trait_change(self.val_changed, "value")
+        slider.observe(self.val_changed, "value")
         self.slider = slider
         return container
 
-    def val_changed(self):
+    def val_changed(self, event):
         print(self.slider.value)
 
 
