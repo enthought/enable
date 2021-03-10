@@ -554,7 +554,8 @@ class Container(Component):
         else:
             pass
 
-    def _window_resized(self, newsize):
+    def _window_resized(self, event):
+        newsize = event.new
         if newsize is not None:
             self.bounds = [newsize[0] - self.x, newsize[1] - self.y]
 
@@ -564,11 +565,11 @@ class Container(Component):
     def _fit_window_changed(self, old, new):
         if self._window is not None:
             if not self.fit_window:
-                self._window.on_trait_change(
+                self._window.observe(
                     self._window_resized, "resized", remove=True
                 )
             else:
-                self._window.on_trait_change(self._window_resized, "resized")
+                self._window.observe(self._window_resized, "resized")
 
     def _bounds_changed(self, old, new):
         # crappy... calling our parent's handler seems like a common traits
