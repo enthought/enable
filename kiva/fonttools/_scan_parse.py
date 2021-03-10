@@ -17,9 +17,9 @@ but has been modified quite a bit in the decade since it was copied.
 import logging
 import os
 
+from fontTools.afmLib import AFM
 from fontTools.ttLib import TTCollection, TTFont, TTLibError
 
-from kiva.fonttools import afm
 from kiva.fonttools._constants import weight_dict
 from kiva.fonttools._util import get_ttf_prop_dict, weight_as_number
 
@@ -89,18 +89,10 @@ def _build_afm_entries(fpath):
     instance or an empty list if there was an error.
     """
     try:
-        fh = open(fpath, "r")
-    except OSError:
-        logger.error(f"Could not open font file {fpath}", exc_info=True)
-        return []
-
-    try:
-        font = afm.AFM(fh)
-    except RuntimeError:
+        font = AFM(fpath)
+    except Exception:
         logger.error(f"Could not parse font file {fpath}", exc_info=True)
         return []
-    finally:
-        fh.close()
 
     try:
         return [_afm_font_property(fpath, font)]
@@ -140,17 +132,17 @@ def _build_ttf_entries(fpath):
     return entries
 
 
-def _afm_font_property(fontpath, font):
+def _afm_font_property(fpath, font):
     """ A function for populating a :class:`FontEntry` instance by
     extracting information from the AFM font file.
 
     *font* is a class:`AFM` instance.
     """
-    family = font.get_familyname()
-    fontname = font.get_fontname().lower()
+    family = font.FamilyName
+    fontname = font.FullName.lower()
 
     #  Styles are: italic, oblique, and normal (default)
-    if font.get_angle() != 0 or family.lower().find("italic") >= 0:
+    if float(font.ItalicAngle) != 0.0 or family.lower().find("italic") >= 0:
         style = "italic"
     elif family.lower().find("oblique") >= 0:
         style = "oblique"
@@ -160,7 +152,7 @@ def _afm_font_property(fontpath, font):
     #  Variants are: small-caps and normal (default)
     # NOTE: Not sure how many fonts actually have these strings in their family
     variant = "normal"
-    for value in ("capitals", "small-caps"):
+    for value in ("capitals", "small-caps", "smallcaps"):
         if value in family.lower():
             variant = "small-caps"
             break
@@ -168,7 +160,7 @@ def _afm_font_property(fontpath, font):
     #  Weights are: 100, 200, 300, 400 (normal: default), 500 (medium),
     #    600 (semibold, demibold), 700 (bold), 800 (heavy), 900 (black)
     #    lighter and bolder are also allowed.
-    weight = weight_as_number(font.get_weight().lower())
+    weight = weight_as_number(font.Weight.lower())
 
     #  Stretch can be absolute and relative
     #  Absolute stretches are: ultra-condensed, extra-condensed, condensed,
@@ -196,7 +188,15 @@ def _afm_font_property(fontpath, font):
 
     #  All AFM fonts are apparently scalable.
     size = "scalable"
-    return FontEntry(fontpath, family, style, variant, weight, stretch, size)
+    return FontEntry(
+        fname=fpath,
+        family=family,
+        style=style,
+        variant=variant,
+        weight=weight,
+        stretch=stretch,
+        size=size,
+    )
 
 
 def _ttf_font_property(fpath, font, face_index=0):

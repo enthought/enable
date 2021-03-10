@@ -76,34 +76,28 @@ class TestAFMFontEntry(unittest.TestCase):
             entries = _build_afm_entries("nonexistant.path")
         self.assertListEqual([], entries)
 
-        # XXX: Once AFM code has been converted to expect bytestrings:
         # Add a test which passes an existing file (non-afm) to
-        # _build_afm_entries.
+        ttf_fontpath = os.path.join(data_dir, "TestTTF.ttf")
+        entries = _build_afm_entries(ttf_fontpath)
+        self.assertListEqual([], entries)
+
+        # Add a test which passes an existing file (non-afm) to
+        afm_fontpath = os.path.join(data_dir, "TestAFM.afm")
+        entries = _build_afm_entries(afm_fontpath)
+        self.assertEqual(len(entries), 1)
 
     def test_property_branches(self):
-        fake_path = os.path.join(data_dir, "TestAFM.afm")
+        fake_path = os.path.join(data_dir, "FakeAFM.afm")
 
         class FakeAFM:
             def __init__(self, name, family, angle, weight):
-                self.name = name
-                self.family = family
-                self.angle = angle
-                self.weight = weight
-
-            def get_angle(self):
-                return self.angle
-
-            def get_familyname(self):
-                return self.family
-
-            def get_fontname(self):
-                return self.name
-
-            def get_weight(self):
-                return self.weight
+                self.FullName = name
+                self.FamilyName = family
+                self.ItalicAngle = angle
+                self.Weight = weight
 
         # Given
-        fake_font = FakeAFM("TestyFont", "Testy", 0, "Bold")
+        fake_font = FakeAFM("TestyFont", "Testy", "0.0", "Bold")
         exp_family = "Testy"
         exp_style = "normal"
         exp_variant = "normal"

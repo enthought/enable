@@ -26,18 +26,24 @@ class TestFontDirectoryScanning(unittest.TestCase):
         expected = [
             os.path.join(data_dir, fname)
             for fname in os.listdir(data_dir)
+            if os.path.splitext(fname)[-1] in (".ttf", ".ttc")
         ]
         fonts = scan_system_fonts(data_dir, fontext="ttf")
         self.assertListEqual(sorted(expected), sorted(fonts))
 
-        # There are no AFM fonts in the test data
+        expected = [
+            os.path.join(data_dir, fname)
+            for fname in os.listdir(data_dir)
+            if os.path.splitext(fname)[-1] == ".afm"
+        ]
         fonts = scan_system_fonts(data_dir, fontext="afm")
-        self.assertListEqual([], fonts)
+        self.assertListEqual(sorted(expected), sorted(fonts))
 
     def test_directories_scanning(self):
         expected = sorted([
             os.path.join(data_dir, fname)
             for fname in os.listdir(data_dir)
+            if os.path.splitext(fname)[-1] in (".ttf", ".ttc")
         ])
         # Pass a list of directories instead of a single path string
         fonts = scan_system_fonts([data_dir], fontext="ttf")
