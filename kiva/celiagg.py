@@ -10,14 +10,15 @@
 from collections import namedtuple
 from math import fabs
 import os
+import sys
 import warnings
 
 import celiagg as agg
 import numpy as np
 
-from .abstract_graphics_context import AbstractGraphicsContext
-from .fonttools import Font
+from kiva.abstract_graphics_context import AbstractGraphicsContext
 import kiva.constants as constants
+from kiva.fonttools import Font
 
 # These are the symbols that a backend has to define.
 __all__ = ["CompiledPath", "Font", "font_metrics_provider", "GraphicsContext"]
@@ -616,7 +617,13 @@ class GraphicsContext(object):
     def set_font(self, font):
         """ Set the font for the current graphics context.
         """
-        self.font = agg.Font(font.findfont(), font.size)
+        if sys.platform in ('win32', 'cygwin'):
+            # Win32 font selection is handled by the OS
+            self.font = agg.Font(font.findfontname(), font.size)
+        else:
+            # FreeType font selection is handled by kiva
+            spec = font.findfont()
+            self.font = agg.Font(spec.filename, font.size, spec.face_index)
 
     def set_font_size(self, size):
         """ Set the font size for the current graphics context.
@@ -624,8 +631,8 @@ class GraphicsContext(object):
         if self.font is None:
             return
 
-        font = self.font
-        self.select_font(font.filepath, size)
+        # Just set a new height
+        self.font.height = size
 
     def set_character_spacing(self, spacing):
         msg = "set_character_spacing not implemented on celiagg yet."
