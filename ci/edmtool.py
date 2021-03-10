@@ -246,16 +246,31 @@ def docs(runtime, toolkit, environment):
         "sphinx",
         "enthought_sphinx_theme",
     ])
-    ignore = " ".join([
+    enable_ignore = " ".join([
+        "enable/gcbench",
         "enable/null",
-        "enable/pyglet_backend",
         "enable/qt4",
         "enable/savage/trait_defs/ui/qt4",
         "enable/savage/trait_defs/ui/wx",
         "enable/trait_defs/ui/qt4",
         "enable/trait_defs/ui/wx",
-        "enable/vtk_backend",
         "enable/wx",
+        "*/tests",
+    ])
+    kiva_ignore = " ".join([
+        "kiva/fonttools/font_manager.py",
+        "kiva/basecore2d.py",
+        "kiva/cairo.py",
+        "kiva/celiagg.py",
+        "kiva/oldagg.py",
+        "kiva/pdf.py",
+        "kiva/pdfmetrics.py",
+        "kiva/ps.py",
+        "kiva/qpainter.py",
+        "kiva/svg.py",
+        "kiva/agg",
+        "kiva/gl",
+        "kiva/quartz",
         "*/tests",
     ])
     commands = [
@@ -279,7 +294,7 @@ def docs(runtime, toolkit, environment):
         + api_path
         + " -t " + templates_path
         + " enable "
-        + ignore
+        + enable_ignore
     ]
     execute(commands, parameters)
     click.echo("Done regenerating enable API docs")
@@ -289,7 +304,7 @@ def docs(runtime, toolkit, environment):
         + api_path
         + " -t " + templates_path
         + " kiva "
-        + " */tests"
+        + kiva_ignore
     ]
     execute(commands, parameters)
     click.echo("Done regenerating kiva API docs")

@@ -32,29 +32,49 @@ In addtion to the ``save_state`` and ``restore_state`` methods, it is also possi
 to use a ``GraphicsContext`` instance as a context manager.
 
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.save_state
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.restore_state
+  :noindex:
 
 Methods controlling state
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_fill_color
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_fill_color
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_stroke_color
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_stroke_color
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_line_width
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_line_join
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_line_cap
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_line_dash
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.linear_gradient
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.radial_gradient
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_alpha
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_alpha
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_antialias
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_antialias
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_miter_limit
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_flatness
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_image_interpolation
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_image_interpolation
+  :noindex:
 
 
 Current Transformation Matrix
@@ -64,11 +84,17 @@ The current transformation matrix is part of the graphic state and therefore
 covered by calls to ``save_state()`` and ``restore_state()``
 
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.translate_ctm
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.rotate_ctm
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.scale_ctm
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.concat_ctm
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_ctm
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_ctm
+  :noindex:
 
 
 Clipping functions
@@ -78,9 +104,13 @@ Clipping functions
    All of these functions are affected by the current transformation matrix.
 
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.clip_to_rect
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.clip_to_rects
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.clip
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.even_odd_clip
+  :noindex:
 
 
 .. _kiva_path_functions:
@@ -92,19 +122,33 @@ pen position. Many path manipulations use the current point as a starting
 position for the geometry which is added to the path.
 
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.begin_path
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.close_path
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_empty_path
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.add_path
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.move_to
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.line_to
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.lines
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.line_set
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.rect
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.rects
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.curve_to
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.quad_curve_to
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.arc
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.arc_to
+  :noindex:
 
 .. _kiva_drawing_functions:
 
@@ -112,11 +156,17 @@ Drawing functions
 ~~~~~~~~~~~~~~~~~
 
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.draw_path
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.fill_path
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.eof_fill_path
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.stroke_path
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.draw_rect
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.draw_image
+  :noindex:
 
 Enhanced drawing functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -125,39 +175,64 @@ Enhanced drawing functions
    their presence before attempting to call them.
 
 .. automethod:: kiva.abstract_graphics_context.EnhancedAbstractGraphicsContext.draw_marker_at_points
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.EnhancedAbstractGraphicsContext.draw_path_at_points
+  :noindex:
 
 Text functions
 ~~~~~~~~~~~~~~
 
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_text_drawing_mode
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_text_matrix
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_text_matrix
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_text_position
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_text_position
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.show_text
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.show_text_at_point
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_text_extent
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_full_text_extent
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_character_spacing
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_character_spacing
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.select_font
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_font
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.get_font
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.set_font_size
+  :noindex:
 
 
 Misc functions
 ~~~~~~~~~~~~~~
 
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.width
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.height
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.flush
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.synchronize
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.begin_page
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.end_page
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.clear_rect
+  :noindex:
 .. automethod:: kiva.abstract_graphics_context.AbstractGraphicsContext.save
+  :noindex:
 
 
 Types
