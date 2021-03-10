@@ -76,14 +76,6 @@ class Component(CoordinateBox, Interactor):
     # Layout traits
     # ------------------------------------------------------------------------
 
-    # The layout system to use:
-    #
-    # * 'chaco': Chaco-level layout (the "old" system)
-    # * 'enable': Enable-level layout, based on the db/resolver containment
-    #   model.
-    # NB: this is in preparation for future work
-    # layout_switch = Enum("chaco", "enable")
-
     # Dimensions that this component is resizable in.  For resizable
     # components,  get_preferred_size() is called before their actual
     # bounds are set.
@@ -325,12 +317,6 @@ class Component(CoordinateBox, Interactor):
 
     # The element ID of this component.
     id = Str
-
-    # These will be used by the new layout system, but are currently unused.
-    # max_width = Any
-    # min_width = Any
-    # max_height = Any
-    # min_height = Any
 
     # ------------------------------------------------------------------------
     # Private traits
