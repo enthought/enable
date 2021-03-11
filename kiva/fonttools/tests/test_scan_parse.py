@@ -15,6 +15,7 @@ from fontTools.afmLib import AFM
 from fontTools.ttLib import TTFont
 from pkg_resources import resource_filename
 
+from .._constants import weight_dict
 from .._scan_parse import (
     _afm_font_property, _build_afm_entries, _ttf_font_property,
     create_font_list, FontEntry
@@ -248,11 +249,12 @@ class TestTTFFontEntry(unittest.TestCase):
         # Then
         self.assertEqual(entry.variant, "small-caps")
 
+        # ref: https://github.com/enthought/enable/issues/391
         # Given
         prop_dict = {
-            "family": "TestyFont",
+            "family": "TestyFont Roman",
             "style": "Bold Oblique",
-            "full_name": "TestyFont Bold Oblique",
+            "full_name": "TestyFont Roman Bold Oblique",
         }
         # When
         with mock.patch(target, return_value=prop_dict):
@@ -260,6 +262,7 @@ class TestTTFFontEntry(unittest.TestCase):
             entry = _ttf_font_property(test_font, None)
         # Then
         self.assertEqual(entry.style, "oblique")
+        self.assertEqual(entry.weight, weight_dict["bold"])
 
         stretch_options = {
             "TestyFont Narrow": "condensed",

@@ -7,8 +7,7 @@
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 #
 # Thanks for using Enthought open source!
-"""
-Defines the Kiva Font class and a utility method to parse free-form font
+""" Defines the Kiva Font class and a utility method to parse free-form font
 specification strings into Font instances.
 """
 import copy
@@ -17,7 +16,8 @@ from kiva.constants import (
     BOLD_ITALIC, BOLD, DECORATIVE, DEFAULT, ITALIC, MODERN, NORMAL, ROMAN,
     SCRIPT, SWISS, TELETYPE,
 )
-from .font_manager import default_font_manager, FontProperties
+from kiva.fonttools._font_properties import FontProperties
+from kiva.fonttools.font_manager import default_font_manager
 
 # Various maps used by str_to_font
 font_families = {
@@ -30,7 +30,7 @@ font_families = {
 }
 font_styles = {"italic": ITALIC}
 font_weights = {"bold": BOLD}
-font_noise = ["pt", "point", "family"]
+font_noise = {"pt", "point", "family"}
 
 
 def str_to_font(fontspec):
@@ -95,20 +95,21 @@ class Font(object):
 
     def __init__(self, face_name="", size=12, family=SWISS, weight=NORMAL,
                  style=NORMAL, underline=0, encoding=DEFAULT):
-        if ((type(size) != int)
-                or (type(family) != type(SWISS))
-                or (type(weight) != type(NORMAL))
-                or (type(style) != type(NORMAL))
-                or (type(underline) != int)
-                or (not isinstance(face_name, str))
-                or (type(encoding) != type(DEFAULT))):
+        if (not isinstance(face_name, str)
+                or not isinstance(size, int)
+                or not isinstance(family, int)
+                or not isinstance(weight, int)
+                or not isinstance(style, int)
+                or not isinstance(underline, int)
+                or not isinstance(encoding, int)):
             raise RuntimeError("Bad value in Font() constructor.")
+
+        self.face_name = face_name
         self.size = size
         self.family = family
         self.weight = weight
         self.style = style
         self.underline = underline
-        self.face_name = face_name
         self.encoding = encoding
 
     def findfont(self):
@@ -157,37 +158,29 @@ class Font(object):
     name = property(_get_name, _set_name)
 
     def copy(self):
-        """ Returns a copy of the font object."""
+        """ Returns a copy of the font object.
+        """
         return copy.deepcopy(self)
 
     def __eq__(self, other):
-        result = False
         try:
-            if (self.family == other.family
+            return (self.family == other.family
+                    and self.face_name == other.face_name
                     and self.size == other.size
                     and self.weight == other.weight
                     and self.style == other.style
                     and self.underline == other.underline
-                    and self.face_name == other.face_name
-                    and self.encoding == other.encoding):
-                result = True
+                    and self.encoding == other.encoding)
         except AttributeError:
             pass
-        return result
+        return False
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
     def __repr__(self):
-        fmt = (
-            "Font(size=%d,family=%d,weight=%d, style=%d, face_name='%s', "
-            "encoding=%d)"
-        )
-        return fmt % (
-            self.size,
-            self.family,
-            self.weight,
-            self.style,
-            self.face_name,
-            self.encoding,
+        return (
+            f"Font(face_name='{self.face_name}', size={self.size}, "
+            f"family={self.family}, weight={self.weight}, style={self.style}, "
+            f"underline={self.underline}, encoding={self.encoding})"
         )

@@ -16,16 +16,13 @@ import unittest
 from unittest import mock
 
 from pkg_resources import resource_filename
-from fontTools.ttLib import TTFont
 
 from traits.etsconfig.api import ETSConfig
 
-from .. import font_manager as font_manager_module
-from ..font_manager import (
-    createFontList, default_font_manager, FontEntry, FontManager,
-    ttfFontProperty,
-)
 from ._testing import patch_global_font_manager
+from .. import font_manager as font_manager_module
+from .._scan_parse import create_font_list, FontEntry
+from ..font_manager import default_font_manager, FontManager
 
 data_dir = resource_filename("kiva.fonttools.tests", "data")
 
@@ -36,81 +33,34 @@ class TestCreateFontList(unittest.TestCase):
 
     def test_fontlist_from_ttc(self):
         # When
-        fontlist = createFontList([self.ttc_fontpath])
+        fontlist = create_font_list([self.ttc_fontpath])
 
         # Then
         self.assertEqual(len(fontlist), 2)
         for fontprop in fontlist:
             self.assertIsInstance(fontprop, FontEntry)
 
-    @mock.patch("kiva.fonttools.font_manager.ttfFontProperty",
+    @mock.patch("kiva.fonttools._scan_parse._ttf_font_property",
                 side_effect=ValueError)
     def test_ttc_exception_on_ttfFontProperty(self, m_ttfFontProperty):
         # When
         with self.assertLogs("kiva"):
-            fontlist = createFontList([self.ttc_fontpath])
+            fontlist = create_font_list([self.ttc_fontpath])
 
         # Then
         self.assertEqual(len(fontlist), 0)
         self.assertEqual(m_ttfFontProperty.call_count, 1)
 
-    @mock.patch("kiva.fonttools.font_manager.TTCollection",
+    @mock.patch("kiva.fonttools._scan_parse.TTCollection",
                 side_effect=RuntimeError)
     def test_ttc_exception_on_TTCollection(self, m_TTCollection):
         # When
         with self.assertLogs("kiva"):
-            fontlist = createFontList([self.ttc_fontpath])
+            fontlist = create_font_list([self.ttc_fontpath])
 
         # Then
         self.assertEqual(len(fontlist), 0)
         self.assertEqual(m_TTCollection.call_count, 1)
-
-
-class TestTTFFontProperty(unittest.TestCase):
-    def test_font(self):
-        # Given
-        test_font = os.path.join(data_dir, "TestTTF.ttf")
-        exp_name = "Test TTF"
-        exp_style = "normal"
-        exp_variant = "normal"
-        exp_weight = 400
-        exp_stretch = "normal"
-        exp_size = "scalable"
-
-        # When
-        entry = ttfFontProperty(test_font, TTFont(test_font))
-
-        # Then
-        self.assertEqual(entry.name, exp_name)
-        self.assertEqual(entry.style, exp_style)
-        self.assertEqual(entry.variant, exp_variant)
-        self.assertEqual(entry.weight, exp_weight)
-        self.assertEqual(entry.stretch, exp_stretch)
-        self.assertEqual(entry.size, exp_size)
-
-    def test_font_with_italic_style(self):
-        """Test that a font with Italic style, writing with a capital
-        "I" is correctly identified as "italic" style.
-        """
-        # Given
-        test_font = os.path.join(data_dir, "TestTTF Italic.ttf")
-        exp_name = "Test TTF"
-        exp_style = "italic"
-        exp_variant = "normal"
-        exp_weight = 400
-        exp_stretch = "normal"
-        exp_size = "scalable"
-
-        # When
-        entry = ttfFontProperty(test_font, TTFont(test_font))
-
-        # Then
-        self.assertEqual(entry.name, exp_name)
-        self.assertEqual(entry.style, exp_style)
-        self.assertEqual(entry.variant, exp_variant)
-        self.assertEqual(entry.weight, exp_weight)
-        self.assertEqual(entry.stretch, exp_stretch)
-        self.assertEqual(entry.size, exp_size)
 
 
 class TestFontCache(unittest.TestCase):
@@ -226,7 +176,7 @@ def patch_font_cache(dirpath, ttf_files):
 
 
 def patch_system_fonts(ttf_files):
-    """ Patch findSystemFonts with the given list of font file paths.
+    """ Patch scan_system_fonts with the given list of font file paths.
 
     This speeds up tests by avoiding having to parse a lot of font files
     on a system.
@@ -242,6 +192,7 @@ def patch_system_fonts(ttf_files):
             return ttf_files
         return []
 
+    # Patch the version which was imported into `kiva.fonttools.font_manager`
     return mock.patch(
-        "kiva.fonttools.font_manager.findSystemFonts", fake_find_system_fonts
+        "kiva.fonttools.font_manager.scan_system_fonts", fake_find_system_fonts
     )
