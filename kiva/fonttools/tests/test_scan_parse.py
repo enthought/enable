@@ -11,6 +11,7 @@ import os
 import unittest
 from unittest import mock
 
+from fontTools.afmLib import AFM
 from fontTools.ttLib import TTFont
 from pkg_resources import resource_filename
 
@@ -76,31 +77,47 @@ class TestAFMFontEntry(unittest.TestCase):
             entries = _build_afm_entries("nonexistant.path")
         self.assertListEqual([], entries)
 
-        # XXX: Once AFM code has been converted to expect bytestrings:
-        # Add a test which passes an existing file (non-afm) to
-        # _build_afm_entries.
+        # Add a test which passes an existing file (non-afm)
+        ttf_fontpath = os.path.join(data_dir, "TestTTF.ttf")
+        with self.assertLogs("kiva"):
+            entries = _build_afm_entries(ttf_fontpath)
+        self.assertListEqual([], entries)
+
+    def test_afm_font_success(self):
+        afm_fontpath = os.path.join(data_dir, "TestAFM.afm")
+        entries = _build_afm_entries(afm_fontpath)
+        self.assertEqual(len(entries), 1)
+
+    def test_afm_font_parse(self):
+        # Given
+        test_font = os.path.join(data_dir, "TestAFM.afm")
+        exp_family = "TestFont"
+        exp_style = "normal"
+        exp_variant = "normal"
+        exp_weight = 400
+        exp_stretch = "normal"
+        exp_size = "scalable"
+
+        # When
+        entry = _afm_font_property(test_font, AFM(test_font))
+
+        # Then
+        self.assertEqual(entry.family, exp_family)
+        self.assertEqual(entry.style, exp_style)
+        self.assertEqual(entry.variant, exp_variant)
+        self.assertEqual(entry.weight, exp_weight)
+        self.assertEqual(entry.stretch, exp_stretch)
+        self.assertEqual(entry.size, exp_size)
 
     def test_property_branches(self):
-        fake_path = os.path.join(data_dir, "TestAFM.afm")
+        fake_path = os.path.join(data_dir, "FakeAFM.afm")
 
         class FakeAFM:
             def __init__(self, name, family, angle, weight):
-                self.name = name
-                self.family = family
-                self.angle = angle
-                self.weight = weight
-
-            def get_angle(self):
-                return self.angle
-
-            def get_familyname(self):
-                return self.family
-
-            def get_fontname(self):
-                return self.name
-
-            def get_weight(self):
-                return self.weight
+                self.FullName = name
+                self.FamilyName = family
+                self.ItalicAngle = str(angle)
+                self.Weight = weight
 
         # Given
         fake_font = FakeAFM("TestyFont", "Testy", 0, "Bold")
