@@ -24,13 +24,11 @@ class DragTool(BaseTool):
     # The mouse button used for this drag operation.
     drag_button = Enum("left", "right")
 
-    # Cancel the drag operation if the mouse leaves the associated component?
-    cancel_drag_on_leave = Bool(False)
-
-    # End the drag operation if the mouse leaves the associated component?
+    # Do nothing, cancel or end the drag operation if the mouse leaves the
+    # associated component?
     # NOTE: This behavior depends on "mouse_leave" events, which in general
     # are not fired when `capture_mouse` is True (default).
-    end_drag_on_leave = Bool(False)
+    on_drag_leave = Enum(None, 'cancel', 'end')
 
     # These keys, if pressed during drag, cause the drag operation to reset.
     cancel_keys = List(Str, ["Esc"])
@@ -46,7 +44,7 @@ class DragTool(BaseTool):
     # Whether or not to capture the mouse during the drag operation. In effect,
     # this routes mouse events back to this tool for dispatching, rather than
     # allowing the event to be handled by the window. This may have effects
-    # surrounding "mouse_leave" events: see note on `end_drag_on_leave` flag.
+    # surrounding "mouse_leave" events: see note on `on_drag_leave` flag.
     capture_mouse = Bool(True)
 
     # ------------------------------------------------------------------------
@@ -101,7 +99,7 @@ class DragTool(BaseTool):
         """ Called when the drag is cancelled.
 
         A drag is usually cancelled by receiving a mouse_leave event when
-        end_drag_on_leave is True, or by the user pressing any of the
+        on_drag_leave is 'cancel', or by the user pressing any of the
         **cancel_keys**.
         """
         pass
@@ -208,9 +206,9 @@ class DragTool(BaseTool):
         return False
 
     def _drag_mouse_leave(self, event):
-        if self.cancel_drag_on_leave and self._drag_state == "dragging":
+        if self.on_drag_leave == "cancel" and self._drag_state == "dragging":
             return self._cancel_drag(event)
-        elif self.end_drag_on_leave and self._drag_state == "dragging":
+        elif self.on_drag_leave == "end" and self._drag_state == "dragging":
             return self._end_drag(event)
         return False
 
