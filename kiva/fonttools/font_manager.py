@@ -61,6 +61,7 @@ from fontTools.ttLib import TTCollection, TTFont, TTLibError
 from traits.etsconfig.api import ETSConfig
 
 from . import afm
+from ._constants import font_family_aliases, preferred_fonts
 
 logger = logging.getLogger(__name__)
 
@@ -106,17 +107,6 @@ weight_dict = {
     "black": 900,
 }
 
-font_family_aliases = {
-    "serif",
-    "sans-serif",
-    "sans serif",
-    "cursive",
-    "fantasy",
-    "monospace",
-    "sans",
-    "modern",
-}
-
 #  OS Font paths
 MSFolders = r"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders"
 
@@ -153,62 +143,6 @@ if home is not None:
 ###############################################################################
 #  functions to replace those that matplotlib ship in different modules
 ###############################################################################
-
-preferred_fonts = {
-    "fantasy": [
-        "Comic Sans MS",
-        "Chicago",
-        "Charcoal",
-        "ImpactWestern",
-        "fantasy",
-    ],
-    "cursive": [
-        "Apple Chancery",
-        "Textile",
-        "Zapf Chancery",
-        "Sand",
-        "cursive",
-    ],
-    "monospace": [
-        "Bitstream Vera Sans Mono",
-        "DejaVu Sans Mono",
-        "Andale Mono",
-        "Nimbus Mono L",
-        "Courier New",
-        "Courier",
-        "Fixed",
-        "Terminal",
-        "monospace",
-    ],
-    "serif": [
-        "Bitstream Vera Serif",
-        "DejaVu Serif",
-        "New Century Schoolbook",
-        "Century Schoolbook L",
-        "Utopia",
-        "ITC Bookman",
-        "Bookman",
-        "Nimbus Roman No9 L",
-        "Times New Roman",
-        "Times",
-        "Palatino",
-        "Charter",
-        "serif",
-    ],
-    "sans-serif": [
-        "Bitstream Vera Sans",
-        "DejaVu Sans",
-        "Helvetica Neue",
-        "Arial",
-        "Verdana",
-        "Helvetica",
-        "Lucida Grande",
-        "Geneva",
-        "Lucid",
-        "Avant Garde",
-        "sans-serif",
-    ],
-}
 
 
 def _is_writable_dir(p):
@@ -1184,8 +1118,6 @@ class FontManager:
 
         No match will return 1.0.
         """
-        global preferred_fonts
-
         family2 = family2.lower()
         for i, family1 in enumerate(families):
             family1 = family1.lower()
