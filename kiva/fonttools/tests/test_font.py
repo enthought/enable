@@ -12,7 +12,8 @@
 import os
 import unittest
 
-from kiva.api import Font
+from kiva.api import BOLD, ITALIC, Font, MODERN, ROMAN
+from kiva.fonttools import str_to_font
 from kiva.fonttools.tests._testing import patch_global_font_manager
 
 
@@ -54,3 +55,26 @@ class TestFont(unittest.TestCase):
 
         # Name should be nonempty.
         self.assertGreater(len(name), 0)
+
+    def test_str_to_font(self):
+        # Simple
+        from_str = str_to_font("modern 10")
+        from_ctor = Font(family=MODERN, size=10)
+        self.assertEqual(from_ctor, from_str)
+
+        # Some complexity
+        from_str = str_to_font("roman bold italic 12")
+        from_ctor = Font(family=ROMAN, weight=BOLD, style=ITALIC, size=12)
+        self.assertEqual(from_ctor, from_str)
+
+        # Lots of complexity
+        from_str = str_to_font("Times roman bold italic underline 72")
+        from_ctor = Font(
+            "Times",
+            family=ROMAN,
+            weight=BOLD,
+            style=ITALIC,
+            size=72,
+            underline=1,
+        )
+        self.assertEqual(from_ctor, from_str)
