@@ -24,6 +24,9 @@ class DragTool(BaseTool):
     # The mouse button used for this drag operation.
     drag_button = Enum("left", "right")
 
+    # Cancel the drag operation if the mouse leaves the associated component?
+    cancel_drag_on_leave = Bool(False)
+
     # End the drag operation if the mouse leaves the associated component?
     # NOTE: This behavior depends on "mouse_leave" events, which in general
     # are not fired when `capture_mouse` is True (default).
@@ -143,6 +146,14 @@ class DragTool(BaseTool):
             event.window.set_mouse_owner(None)
         return outcome
 
+    def _end_drag(self, event):
+        self._drag_state = "nondrag"
+        outcome = self.drag_end(event)
+        self._mouse_down_received = False
+        if event.window.mouse_owner == self:
+            event.window.set_mouse_owner(None)
+        return outcome
+
     def _drag_cancel_keypressed(self, event):
         if (self._drag_state != "nondrag"
                 and any(map(lambda x: x.match(event), self._cancel_keys))):
@@ -197,8 +208,10 @@ class DragTool(BaseTool):
         return False
 
     def _drag_mouse_leave(self, event):
-        if self.end_drag_on_leave and self._drag_state == "dragging":
+        if self.cancel_drag_on_leave and self._drag_state == "dragging":
             return self._cancel_drag(event)
+        elif self.end_drag_on_leave and self._drag_state == "dragging":
+            return self._end_drag(event)
         return False
 
     def _drag_mouse_enter(self, event):
