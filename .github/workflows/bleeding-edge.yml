@@ -27,6 +27,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install qt5-default
+          sudo apt-get install fontconfig
           sudo apt-get install libxkbcommon-x11-0
           sudo apt-get install libxcb-icccm4
           sudo apt-get install libxcb-image0

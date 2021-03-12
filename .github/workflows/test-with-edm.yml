@@ -22,6 +22,7 @@ jobs:
       - name: Install Qt dependencies for Linux
         run: |
           sudo apt-get update
+          sudo apt-get install fontconfig
           sudo apt-get install libxkbcommon-x11-0
         if: matrix.toolkit != 'wx'
       - name: Install Wx dependencies for Linux
