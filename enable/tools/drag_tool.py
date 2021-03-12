@@ -9,6 +9,9 @@
 # Thanks for using Enthought open source!
 """ Defines the base DragTool class.
 """
+import inspect
+import warnings
+
 # Enthought library imports
 from enable.base_tool import BaseTool, KeySpec
 from traits.api import Bool, Enum, List, Property, Str, Tuple, cached_property
@@ -23,6 +26,13 @@ class DragTool(BaseTool):
 
     # The mouse button used for this drag operation.
     drag_button = Enum("left", "right")
+
+    # Deprecated; on_drag_leave is the new, more flexible / intuitive means for
+    # providing this functionality
+    # Cancel the drag operation if the mouse leaves the associated component?
+    # NOTE: This behavior depends on "mouse_leave" events, which in general
+    # are not fired when `capture_mouse` is True (default).
+    end_drag_on_leave = Bool(False)
 
     # Do nothing, cancel or end the drag operation if the mouse leaves the
     # associated component?
@@ -99,8 +109,8 @@ class DragTool(BaseTool):
         """ Called when the drag is cancelled.
 
         A drag is usually cancelled by receiving a mouse_leave event when
-        on_drag_leave is 'cancel', or by the user pressing any of the
-        **cancel_keys**.
+        end_drag_on_leave is True, or on_drag_leave is 'cancel', or by the user
+        pressing any of the **cancel_keys**.
         """
         pass
 
@@ -140,7 +150,7 @@ class DragTool(BaseTool):
         self._drag_state = "nondrag"
         outcome = self.drag_cancel(event)
         self._mouse_down_received = False
-        if event.window.mouse_owner == self:
+        if event.window.mouse_owner is self:
             event.window.set_mouse_owner(None)
         return outcome
 
@@ -148,7 +158,7 @@ class DragTool(BaseTool):
         self._drag_state = "nondrag"
         outcome = self.drag_end(event)
         self._mouse_down_received = False
-        if event.window.mouse_owner == self:
+        if event.window.mouse_owner is self:
             event.window.set_mouse_owner(None)
         return outcome
 
@@ -206,6 +216,20 @@ class DragTool(BaseTool):
         return False
 
     def _drag_mouse_leave(self, event):
+        if self.end_drag_on_leave:
+            # raise deprecation warning
+            msg = ("end_drag_on_leave is now deprecated as its name was "
+                  "misleading. It triggers a drag_cancel not drag_end on "
+                  "leave. Use new on_drag_end Enum trait instead.")
+            frame = inspect.currentframe().f_back
+            warnings.warn(
+                msg,
+                category=DeprecationWarning,
+            )
+            if self._drag_state == "dragging":
+                return self._cancel_drag(event)
+            return False
+
         if self.on_drag_leave == "cancel" and self._drag_state == "dragging":
             return self._cancel_drag(event)
         elif self.on_drag_leave == "end" and self._drag_state == "dragging":
