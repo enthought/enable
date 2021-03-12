@@ -111,6 +111,11 @@ def scan_system_fonts(fontpaths=None, fontext="ttf"):
 
 def scan_user_fonts(fontpaths=None, fontext="ttf"):
     """ Search for fonts in the specified font paths.
+
+    Returns
+    -------
+    filepaths : list of str
+        A list of unique font file paths.
     """
     if fontpaths is None:
         return []

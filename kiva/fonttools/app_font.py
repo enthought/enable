@@ -14,36 +14,41 @@ from traits.etsconfig.api import ETSConfig
 from kiva.fonttools.font_manager import default_font_manager
 
 
-def add_application_font(filename):
+def add_application_fonts(filenames):
     """ Add a TrueType font to the system in a way that makes it available to
     both the GUI toolkit and Kiva.
 
     Parameters
     ----------
-    filename : str
-        The filesystem path of a TrueType or OpenType font file.
+    filenames : list of str
+        Filesystem paths of TrueType or OpenType font files.
     """
+    if isinstance(filenames, str):
+        filenames = [filenames]
+
     # Handle Kiva
     fm = default_font_manager()
-    fm.update_fonts([filename])
+    fm.update_fonts(filenames)
 
     # Handle the GUI toolkit
     if ETSConfig.toolkit.startswith("qt"):
-        _qt_impl(filename)
+        _qt_impl(filenames)
     elif ETSConfig.toolkit == "wx":
-        _wx_impl(filename)
+        _wx_impl(filenames)
 
 
-def _qt_impl(filename):
+def _qt_impl(filenames):
     from pyface.qt import QtGui
 
-    QtGui.QFontDatabase.addApplicationFont(filename)
+    for fname in filenames:
+        QtGui.QFontDatabase.addApplicationFont(fname)
 
 
-def _wx_impl(filename):
+def _wx_impl(filenames):
     import wx
 
     if hasattr(wx.Font, "CanUsePrivateFont") and wx.Font.CanUsePrivateFont():
-        wx.Font.AddPrivateFont(filename)
+        for fname in filenames:
+            wx.Font.AddPrivateFont(fname)
     else:
         warnings.warn("Wx does not support private fonts! Failed to add.")

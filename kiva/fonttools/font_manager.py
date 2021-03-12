@@ -137,17 +137,23 @@ class FontManager:
         """
         self.__default_weight = weight
 
-    def update_fonts(self, filenames):
+    def update_fonts(self, paths):
         """ Update the font lists with new font files.
+
+        The specified ``paths`` will be searched for valid font files and those
+        files will have their fonts added to internal collections searched by
+        :meth:`findfont`.
+
+        Parameters
+        ----------
+        filenames : list of str
+            A list of font file paths or directory paths.
         """
-        afm_paths = scan_user_fonts(filenames, fontext="afm")
-        ttf_paths = scan_user_fonts(filenames, fontext="ttf")
+        afm_paths = scan_user_fonts(paths, fontext="afm")
+        ttf_paths = scan_user_fonts(paths, fontext="ttf")
 
         self.afmlist.extend(create_font_list(afm_paths))
         self.ttflist.extend(create_font_list(ttf_paths))
-
-        self.ttf_lookup_cache = {}
-        self.afm_lookup_cache = {}
 
     def findfont(self, prop, fontext="ttf", directory=None,
                  fallback_to_default=True, rebuild_if_missing=True):

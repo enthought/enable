@@ -14,7 +14,7 @@ import pkg_resources
 
 from traits.etsconfig.api import ETSConfig
 
-from kiva.api import add_application_font, Font
+from kiva.api import add_application_fonts, Font
 
 is_null = (ETSConfig.toolkit in ("", "null"))
 is_qt = ETSConfig.toolkit.startswith("qt")
@@ -33,7 +33,7 @@ class TestNullApplicationFonts(unittest.TestCase):
         with self.assertWarns(UserWarning):
             self.assertNotEqual(kivafont.findfont().filename, path)
 
-        add_application_font(path)
+        add_application_fonts([path])
 
         # After adding the font
         self.assertEqual(kivafont.findfont().filename, path)
@@ -61,7 +61,7 @@ class TestQtApplicationFonts(unittest.TestCase):
         # Before adding the font
         self.assertNotIn(family, font_db.families())
 
-        add_application_font(path)
+        add_application_fonts([path])
 
         # After adding the font
         self.assertIn(family, font_db.families())
@@ -94,7 +94,7 @@ class TestWxApplicationFonts(unittest.TestCase):
         # Before adding the font
         self.assertFalse(wxfont.IsOk())
 
-        add_application_font(path)
+        add_application_fonts([path])
 
         # After adding the font
         self.assertTrue(wxfont.IsOk())
