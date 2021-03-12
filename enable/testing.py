@@ -89,6 +89,7 @@ class EnableTestAssistant(KivaTestAssistant):
                 alt_down=alt_down,
                 control_down=control_down,
                 shift_down=shift_down,
+                left_down=True,
             )
         x, y = points[-1]
         self.mouse_up(
