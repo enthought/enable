@@ -12,7 +12,7 @@
 import os
 import unittest
 
-from kiva.api import BOLD, ITALIC, Font, MODERN, ROMAN
+from kiva.api import BOLD, Font, ITALIC, MODERN, ROMAN
 from kiva.fonttools import str_to_font
 from kiva.fonttools.tests._testing import patch_global_font_manager
 
@@ -33,7 +33,6 @@ class TestFont(unittest.TestCase):
         font = Font(face_name="")
         spec = font.findfont()
         self.assertTrue(os.path.exists(spec.filename))
-        self.assertEqual(spec.face_index, 0)
 
     def test_find_font_some_face_name(self):
         font = Font(face_name="ProbablyNotFound")
@@ -43,7 +42,6 @@ class TestFont(unittest.TestCase):
         with self.assertWarns(UserWarning):
             spec = font.findfont()
         self.assertTrue(os.path.exists(spec.filename))
-        self.assertEqual(spec.face_index, 0)
 
     def test_find_font_name(self):
         font = Font(face_name="ProbablyNotFound")
