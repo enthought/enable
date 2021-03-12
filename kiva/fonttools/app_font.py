@@ -37,7 +37,7 @@ def add_application_font(filename):
 def _qt_impl(filename):
     from pyface.qt import QtGui
 
-    QtGui.QFontDatabase().addApplicationFont(filename)
+    QtGui.QFontDatabase.addApplicationFont(filename)
 
 
 def _wx_impl(filename):

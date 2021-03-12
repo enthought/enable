@@ -56,15 +56,15 @@ class TestQtApplicationFonts(unittest.TestCase):
 
         path = os.path.join(data_dir, "TestTTF.ttf")
         family = "Test TTF"
-        qfont = QtGui.QFont(family)
+        font_db = QtGui.QFontDatabase()
 
         # Before adding the font
-        self.assertFalse(qfont.exactMatch())
+        self.assertNotIn(family, font_db.families())
 
         add_application_font(path)
 
         # After adding the font
-        self.assertTrue(qfont.exactMatch())
+        self.assertIn(family, font_db.families())
 
 
 @unittest.skipIf(not is_wx, "Test only for wx")
