@@ -298,7 +298,8 @@ class EnableTestAssistant(KivaTestAssistant):
         return event
 
     def mouse_move(self, interactor, x, y, window=None, alt_down=False,
-                   control_down=False, shift_down=False):
+                   control_down=False, shift_down=False, left_down=False,
+                   right_down=False):
         """ Send a mouse move event to the interactor.
 
         Parameters
@@ -320,14 +321,22 @@ class EnableTestAssistant(KivaTestAssistant):
             get_pointer_position() or should use a mock for the method.
 
         alt_down : boolean, optional
-            The button is pressed while `alt` is down. Default value is False.
+            The mouse is moved while `alt` is down. Default value is False.
 
         control_down : boolean, optional
-            The button is pressed while `control` is down. Default value is
+            The mouse is moved while `control` is down. Default value is
             False.
 
         shift_down : boolean, optional
-            The button is pressed while `shift` is down. Default value is
+            The mouse is moved while `shift` is down. Default value is
+            False.
+
+        left_down : boolean, optional
+            The mouse is moved while `left` is down. Default value is
+            False.
+
+        right_down : boolean, optional
+            The mouse is moved while `right` is down. Default value is
             False.
 
         Returns
@@ -343,6 +352,8 @@ class EnableTestAssistant(KivaTestAssistant):
             alt_down=alt_down,
             control_down=control_down,
             shift_down=shift_down,
+            left_down=left_down,
+            right_down=right_down,
         )
         if hasattr(window.get_pointer_position, "return_value"):
             # Note: Non-mock windows shouldn't try to get pointer position
