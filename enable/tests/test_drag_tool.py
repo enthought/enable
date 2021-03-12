@@ -19,8 +19,14 @@ class DummyTool(DragTool):
 
     canceled = Int
 
+    ended = Int
+
     def drag_cancel(self, event):
         self.canceled += 1
+        return True
+
+    def drag_end(self, event):
+        self.ended += 1
         return True
 
 
@@ -82,3 +88,40 @@ class DragToolTestCase(EnableTestAssistant, unittest.TestCase):
         self.assertEqual(tool.canceled, 1)
         self.assertEqual(tool._drag_state, "dragging")
         self.assertFalse(event.handled)
+
+    def test_on_drag_leave(self):
+        # When on_drag_leave is 'cancel' then the drag_cancel is called
+        # and the _drag_state will be 'nondrag'
+        tool = self.tool
+        tool.on_drag_leave = 'cancel'
+        tool._drag_state = "dragging"  # force dragging state
+        event = self.mouse_leave(interactor=tool, x=0, y=0)
+        self.assertEqual(tool.canceled, 1)
+        self.assertEqual(tool._drag_state, "nondrag")
+        self.assertTrue(event.handled)
+
+        # When on_drag_leave is 'end' then the drag_end is called
+        # and the _drag_state will be 'nondrag'
+        tool.on_drag_leave = 'end'
+        tool._drag_state = "dragging"  # force dragging state
+        event = self.mouse_leave(interactor=tool, x=0, y=0)
+        self.assertEqual(tool.ended, 1)
+        self.assertEqual(tool._drag_state, "nondrag")
+        self.assertTrue(event.handled)
+
+    def test_on_drag_leave_no_op(self):
+        """ If end_drag_on_leave is set, on_drag_leave trait is ignored. """
+
+        tool = self.tool
+        tool.end_drag_on_leave = True
+        tool.on_drag_leave = 'end'
+        tool._drag_state = "dragging"  # force dragging state
+        event = self.mouse_leave(interactor=tool, x=0, y=0)
+
+        # end_drag_on_leave should be handled like normal
+        self.assertEqual(tool.canceled, 1)
+        self.assertEqual(tool._drag_state, "nondrag")
+        self.assertTrue(event.handled)
+
+        # even though on_drag_leave = 'end' we do nothing
+        self.assertEqual(tool.ended, 0)
