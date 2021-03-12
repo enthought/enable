@@ -43,7 +43,6 @@ class TestTestAssistant(unittest.TestCase):
 
         self.assertEqual(event.x, 10)
         self.assertEqual(event.y, 20)
-        # left_down from calling mouse_dwn is carried into mouse move event
         self.assertIs(event.left_down, True)
 
     def test_mouse_dclick(self):
