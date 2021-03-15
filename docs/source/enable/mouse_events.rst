@@ -1,12 +1,13 @@
 Enable Mouse Events
 ===================
 
-Enable mouse events are represented by the :class:`MouseEvent` type and their
-event names (which are the suffixes used by :py:meth:`dispatch`) can be
-divided into two groups: mouse clicks and mouse movements. The mouse click
-events have names ending in ``_down``, ``_up``, or ``_dclick`` and names
-beginning with ``left``, ``right``, or ``middle``. This means that Enable only
-supports three mouse buttons (plus wheel events).
+Enable mouse events are represented by the :class:`~.MouseEvent` type and their
+event names (which are the suffixes used by
+:py:meth:`enable.interactor.Interactor.dispatch`) can be divided into two
+groups: mouse clicks and mouse movements. The mouse click events have names
+ending in ``_down``, ``_up``, or ``_dclick`` and names beginning with ``left``,
+``right``, or ``middle``. This means that Enable only supports three mouse
+buttons (plus wheel events).
 
 Event types
 -----------
