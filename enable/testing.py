@@ -336,11 +336,15 @@ class EnableTestAssistant(KivaTestAssistant):
 
         left_down : boolean, optional
             The mouse is moved while `left` is down. Default value is
-            False.
+            Undefined.
+
+        middle_down : boolean, optional
+            The mouse is moved while `middle` is down. Default value is
+            Undefined.
 
         right_down : boolean, optional
             The mouse is moved while `right` is down. Default value is
-            False.
+            Undefined.
 
         Returns
         -------
