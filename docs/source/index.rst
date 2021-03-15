@@ -17,6 +17,7 @@ Enable Documentation
   enable/abstract_window
   enable/constraints_layout
   enable/key_events
+  enable/mouse_events
   enable/basic_tools
   enable/drag_and_drop
   enable/undo_redo

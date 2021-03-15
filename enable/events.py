@@ -130,14 +130,25 @@ class BasicEvent(HasTraits):
 
 
 class MouseEvent(BasicEvent):
+    """ A mouse event.
+    """
+    #: If True, the ALT key is pressed on the keyboard
     alt_down = ReadOnly
+    #: If True, the CTRL key is pressed on the keyboard
     control_down = ReadOnly
+    #: If True, a SHIFT key is pressed on the keyboard
     shift_down = ReadOnly
+    #: If True, the left button is pressed on the mouse
     left_down = ReadOnly
+    #: If True, the middle button is pressed on the mouse
     middle_down = ReadOnly
+    #: If True, the right button is pressed on the mouse
     right_down = ReadOnly
+    #: If a wheel event, holds number of units moved by the wheel
     mouse_wheel = ReadOnly
+    #: If a wheel event, contains either "horizontal" or "vertical"
     mouse_wheel_axis = ReadOnly
+    #: If a wheel event, contains a 2D movement vector as a tuple
     mouse_wheel_delta = ReadOnly
 
 
