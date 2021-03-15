@@ -9,6 +9,8 @@
 # Thanks for using Enthought open source!
 from unittest.mock import Mock
 
+from traits.api import Undefined
+
 from enable.abstract_window import AbstractWindow
 from enable.events import DragEvent, KeyEvent, MouseEvent
 from kiva.testing import KivaTestAssistant
@@ -89,6 +91,7 @@ class EnableTestAssistant(KivaTestAssistant):
                 alt_down=alt_down,
                 control_down=control_down,
                 shift_down=shift_down,
+                left_down=True,
             )
         x, y = points[-1]
         self.mouse_up(
@@ -298,7 +301,8 @@ class EnableTestAssistant(KivaTestAssistant):
         return event
 
     def mouse_move(self, interactor, x, y, window=None, alt_down=False,
-                   control_down=False, shift_down=False):
+                   control_down=False, shift_down=False, left_down=Undefined,
+                   middle_down=Undefined, right_down=Undefined):
         """ Send a mouse move event to the interactor.
 
         Parameters
@@ -320,15 +324,27 @@ class EnableTestAssistant(KivaTestAssistant):
             get_pointer_position() or should use a mock for the method.
 
         alt_down : boolean, optional
-            The button is pressed while `alt` is down. Default value is False.
+            The mouse is moved while `alt` is down. Default value is False.
 
         control_down : boolean, optional
-            The button is pressed while `control` is down. Default value is
+            The mouse is moved while `control` is down. Default value is
             False.
 
         shift_down : boolean, optional
-            The button is pressed while `shift` is down. Default value is
+            The mouse is moved while `shift` is down. Default value is
             False.
+
+        left_down : boolean, optional
+            The mouse is moved while `left` is down. Default value is
+            Undefined.
+
+        middle_down : boolean, optional
+            The mouse is moved while `middle` is down. Default value is
+            Undefined.
+
+        right_down : boolean, optional
+            The mouse is moved while `right` is down. Default value is
+            Undefined.
 
         Returns
         -------
@@ -343,6 +359,9 @@ class EnableTestAssistant(KivaTestAssistant):
             alt_down=alt_down,
             control_down=control_down,
             shift_down=shift_down,
+            left_down=left_down,
+            middle_down=middle_down,
+            right_down=right_down,
         )
         if hasattr(window.get_pointer_position, "return_value"):
             # Note: Non-mock windows shouldn't try to get pointer position

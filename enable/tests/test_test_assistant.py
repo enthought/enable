@@ -36,6 +36,15 @@ class TestTestAssistant(unittest.TestCase):
         test_assistant.mouse_down(component, x=0, y=0)
         component.normal_left_down.assert_called_once()
 
+    def test_mouse_move_while_down(self):
+        test_assistant = EnableTestAssistant()
+        component = Component(bounds=[100, 200])
+        event = test_assistant.mouse_move(component, 10, 20, left_down=True)
+
+        self.assertEqual(event.x, 10)
+        self.assertEqual(event.y, 20)
+        self.assertIs(event.left_down, True)
+
     def test_mouse_dclick(self):
         test_assistant = EnableTestAssistant()
         component = Component(bounds=[100, 200])

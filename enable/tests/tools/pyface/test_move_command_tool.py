@@ -47,13 +47,13 @@ class MoveCommandToolTestCase(unittest.TestCase, EnableTestAssistant,
 
         # start moving the mouse
         mouse_move_event = self.mouse_move(
-            self.component, 145, 145, window=window
+            self.component, 145, 145, window=window, left_down=True
         )
         self.assertTrue(mouse_move_event.handled)
 
         # move the mouse to the final location
         mouse_move_event = self.mouse_move(
-            self.component, 195, 95, window=window
+            self.component, 195, 95, window=window, left_down=True
         )
         self.assertTrue(mouse_move_event.handled)
 
@@ -87,13 +87,13 @@ class MoveCommandToolTestCase(unittest.TestCase, EnableTestAssistant,
 
         # start moving the mouse
         mouse_move_event = self.mouse_move(
-            self.component, 145, 145, window=window
+            self.component, 145, 145, window=window, left_down=True
         )
         self.assertTrue(mouse_move_event.handled)
 
         # move the mouse to the final location
         mouse_move_event = self.mouse_move(
-            self.component, 195, 95, window=window
+            self.component, 195, 95, window=window, left_down=True
         )
         self.assertTrue(mouse_move_event.handled)
 
@@ -121,13 +121,13 @@ class MoveCommandToolTestCase(unittest.TestCase, EnableTestAssistant,
 
         # start moving the mouse
         mouse_move_event = self.mouse_move(
-            self.component, 145, 145, window=window
+            self.component, 145, 145, window=window, left_down=True
         )
         self.assertTrue(mouse_move_event.handled)
 
         # move the mouse to the final location
         mouse_move_event = self.mouse_move(
-            self.component, 195, 95, window=window
+            self.component, 195, 95, window=window, left_down=True
         )
         self.assertTrue(mouse_move_event.handled)
 
