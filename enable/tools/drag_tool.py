@@ -9,7 +9,6 @@
 # Thanks for using Enthought open source!
 """ Defines the base DragTool class.
 """
-import inspect
 import warnings
 
 # Enthought library imports
@@ -116,6 +115,9 @@ class DragTool(BaseTool):
 
     def drag_end(self, event):
         """ Called when a mouse event causes the drag operation to end.
+
+        A drag is ended when a user releases the mouse, or by receiving a 
+        mouse_leave event when on_drag_leave is 'end'.
         """
         pass
 
@@ -219,9 +221,8 @@ class DragTool(BaseTool):
         if self.end_drag_on_leave:
             # raise deprecation warning
             msg = ("end_drag_on_leave is now deprecated as its name was "
-                  "misleading. It triggers a drag_cancel not drag_end on "
-                  "leave. Use new on_drag_end Enum trait instead.")
-            frame = inspect.currentframe().f_back
+                   "misleading. It triggers a drag_cancel not drag_end on "
+                   "leave. Use new on_drag_end Enum trait instead.")
             warnings.warn(
                 msg,
                 category=DeprecationWarning,

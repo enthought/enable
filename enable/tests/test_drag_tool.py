@@ -8,6 +8,7 @@
 #
 # Thanks for using Enthought open source!
 import unittest
+import warnings
 
 from traits.api import Int
 
@@ -74,7 +75,9 @@ class DragToolTestCase(EnableTestAssistant, unittest.TestCase):
         tool = self.tool
         tool.end_drag_on_leave = True
         tool._drag_state = "dragging"  # force dragging state
-        event = self.mouse_leave(interactor=tool, x=0, y=0)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            event = self.mouse_leave(interactor=tool, x=0, y=0)
         self.assertEqual(tool.canceled, 1)
         self.assertEqual(tool._drag_state, "nondrag")
         self.assertTrue(event.handled)
@@ -116,7 +119,9 @@ class DragToolTestCase(EnableTestAssistant, unittest.TestCase):
         tool.end_drag_on_leave = True
         tool.on_drag_leave = 'end'
         tool._drag_state = "dragging"  # force dragging state
-        event = self.mouse_leave(interactor=tool, x=0, y=0)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            event = self.mouse_leave(interactor=tool, x=0, y=0)
 
         # end_drag_on_leave should be handled like normal
         self.assertEqual(tool.canceled, 1)
