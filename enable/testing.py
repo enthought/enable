@@ -9,6 +9,8 @@
 # Thanks for using Enthought open source!
 from unittest.mock import Mock
 
+from traits.api import Undefined
+
 from enable.abstract_window import AbstractWindow
 from enable.events import DragEvent, KeyEvent, MouseEvent
 from kiva.testing import KivaTestAssistant
@@ -299,8 +301,8 @@ class EnableTestAssistant(KivaTestAssistant):
         return event
 
     def mouse_move(self, interactor, x, y, window=None, alt_down=False,
-                   control_down=False, shift_down=False, left_down=False,
-                   right_down=False):
+                   control_down=False, shift_down=False, left_down=Undefined,
+                   right_down=Undefined):
         """ Send a mouse move event to the interactor.
 
         Parameters
