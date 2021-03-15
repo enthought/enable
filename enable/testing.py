@@ -302,7 +302,7 @@ class EnableTestAssistant(KivaTestAssistant):
 
     def mouse_move(self, interactor, x, y, window=None, alt_down=False,
                    control_down=False, shift_down=False, left_down=Undefined,
-                   right_down=Undefined):
+                   middle_down=Undefined, right_down=Undefined):
         """ Send a mouse move event to the interactor.
 
         Parameters
@@ -356,6 +356,7 @@ class EnableTestAssistant(KivaTestAssistant):
             control_down=control_down,
             shift_down=shift_down,
             left_down=left_down,
+            middle_down=middle_down,
             right_down=right_down,
         )
         if hasattr(window.get_pointer_position, "return_value"):
