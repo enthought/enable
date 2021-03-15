@@ -20,10 +20,10 @@ else:
 
 from kiva.tests.drawing_tester import DrawingImageTester
 
-is_windows = sys.platform in ("win32", "cygwin")
+is_linux = (sys.platform == "linux")
 
 
-@unittest.skipIf(is_windows, "Pyglet/GL backend issues on Windows")
+@unittest.skipIf(not is_linux, "Pyglet/GL backend issues on most platforms")
 @unittest.skipIf(PYGLET_NOT_AVAILABLE, "Cannot import pyglet")
 class TestGLDrawing(DrawingImageTester, unittest.TestCase):
     def tearDown(self):

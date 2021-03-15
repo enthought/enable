@@ -168,7 +168,14 @@ class AbstractWindow(HasTraits):
         raise NotImplementedError
 
     def set_pointer(self, pointer):
-        "Sets the current cursor shape"
+        """ Sets the current cursor shape.
+
+        Parameters
+        ----------
+        pointer: str
+            The name of the cursor shape. Valid values are in
+            :py:attr:`enable.toolkit_constants.pointer_names`
+        """
         raise NotImplementedError
 
     def set_timer_interval(self, component, interval):
@@ -184,7 +191,13 @@ class AbstractWindow(HasTraits):
         raise NotImplementedError
 
     def get_pointer_position(self):
-        "Returns the current pointer position in local window coordinates"
+        """ Returns the current pointer position in local window coordinates.
+
+        Returns
+        -------
+        (x, y) : tuple
+            The x,y position of the mouse
+        """
         raise NotImplementedError
 
     # ------------------------------------------------------------------------
@@ -245,7 +258,20 @@ class AbstractWindow(HasTraits):
         pass
 
     def set_mouse_owner(self, mouse_owner, transform=None, history=None):
-        "Handle the 'mouse_owner' being changed"
+        """ Handle the 'mouse_owner' being changed
+
+        Parameters
+        ----------
+        mouse_owner : :class:`Component` or None
+            The new "mouse owner" component. This component will receive all
+            key and mouse events until a new mouse owner is set.
+        transform : 3x3 :class:`ndarray` or None
+            An affine transform which is applied to events before dispatch
+        history : list of :class:`Interactor` or None
+            A list of interactors which is used to build a tranform
+            (via :py:meth:`get_event_transform`) to be applied to events before
+            dispatch.
+        """
         if mouse_owner is None:
             self._release_mouse()
             self.mouse_owner = None
@@ -452,8 +478,14 @@ class AbstractWindow(HasTraits):
 
         return drag_event.handled
 
-    def set_tooltip(self, components):
-        "Set the window's tooltip (if necessary)"
+    def set_tooltip(self, tooltip):
+        """ Set the window's tooltip (if necessary)
+
+        Parameters
+        ----------
+        tooltip : str
+            The tooltip text.
+        """
         raise NotImplementedError
 
     def redraw(self):

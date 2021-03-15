@@ -7,4 +7,7 @@
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 #
 # Thanks for using Enthought open source!
+from .app_font import add_application_fonts
 from .font import Font, str_to_font
+
+__all__ = ["add_application_fonts", "Font", "str_to_font"]

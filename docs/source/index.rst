@@ -4,25 +4,26 @@ Enable Documentation
 .. toctree::
   :maxdepth: 2
 
-  kiva/overview.rst
-  kiva/backends.rst
-  kiva/fonts.rst
-  kiva/compiled_path.rst
-  kiva/images.rst
-  kiva/state.rst
-  kiva/quickref.rst
-  kiva_tutorial/index.rst
+  kiva/overview
+  kiva/backends
+  kiva/fonts
+  kiva/compiled_path
+  kiva/images
+  kiva/state
+  kiva/quickref
+  kiva_tutorial/index
 
-  enable/overview.rst
-  enable/constraints_layout.rst
-  enable/key_events.rst
-  enable/mouse_events.rst
-  enable/basic_tools.rst
-  enable/drag_and_drop.rst
-  enable/undo_redo.rst
-  enable/toolkit_selection.rst
+  enable/overview
+  enable/abstract_window
+  enable/constraints_layout
+  enable/key_events
+  enable/mouse_events
+  enable/basic_tools
+  enable/drag_and_drop
+  enable/undo_redo
+  enable/toolkit_selection
 
-  credits.rst
+  credits
 
 API Documentation
 -----------------
