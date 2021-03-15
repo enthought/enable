@@ -463,6 +463,20 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     def device_update_fill_state(self):
         pass
 
+    def _repr_svg_(self):
+        """ Return a the current contents of the context as SVG text.
+
+        This provides Jupyter and IPython compatibility, so that the graphics
+        context can be displayed in the Jupyter Notebook or the IPython Qt
+        console.
+
+        Returns
+        -------
+        svg : str
+            The contents of the context as an SVG string.
+        """
+        return self.render('svg')
+
 
 def font_metrics_provider():
     return GraphicsContext((1, 1))

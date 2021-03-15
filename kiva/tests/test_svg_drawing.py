@@ -28,3 +28,16 @@ class TestSVGDrawing(DrawingTester, unittest.TestCase):
         elements = [element for element in tree.iter()]
         if not len(elements) in [4, 7]:
             self.fail("The expected number of elements was not found")
+
+    def test_ipython_repr_svg(self):
+        self.gc.begin_path()
+        self.gc.rect(75, 75, 25, 25)
+        self.gc.fill_path()
+        stream = self.gc._repr_svg_()
+        filename = "{0}.svg".format(self.filename)
+        with open(filename, 'w', encoding='utf8') as fp:
+            fp.write(stream)
+        tree = ElementTree.parse(filename)
+        elements = [element for element in tree.iter()]
+        if not len(elements) in [4, 7]:
+            self.fail("The expected number of elements was not found")

@@ -36,3 +36,13 @@ class TestAggDrawing(DrawingImageTester, unittest.TestCase):
                 0, 0, w, 0, grad_stops, "pad", b"userSpaceOnUse"
             )
             self.gc.fill_path()
+
+    def test_ipython_repr_png(self):
+        self.gc.begin_path()
+        self.gc.rect(75, 75, 25, 25)
+        self.gc.fill_path()
+        stream = self.gc._repr_png_()
+        filename = "{0}.png".format(self.filename)
+        with open(filename, 'wb') as fp:
+            fp.write(stream)
+        self.assertImageSavedWithContent(filename)

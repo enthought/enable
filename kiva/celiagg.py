@@ -8,6 +8,7 @@
 #
 # Thanks for using Enthought open source!
 from collections import namedtuple
+from io import BytesIO
 from math import fabs
 import os
 import sys
@@ -828,32 +829,19 @@ class GraphicsContext(object):
     def save(self, filename, file_format=None, pil_options=None):
         """ Save the contents of the context to a file
         """
-        try:
-            from PIL import Image
-        except ImportError:
-            raise ImportError("need Pillow to save images")
 
         if file_format is None:
             file_format = ''
         if pil_options is None:
             pil_options = {}
 
-        pixels = self.gc.array
-        if self.pix_format.startswith('bgra'):
-            # Data is BGRA; Convert to RGBA
-            data = np.empty(pixels.shape, dtype=np.uint8)
-            data[..., 0] = pixels[..., 2]
-            data[..., 1] = pixels[..., 1]
-            data[..., 2] = pixels[..., 0]
-            data[..., 3] = pixels[..., 3]
-        else:
-            data = pixels
-        img = Image.fromarray(data, 'RGBA')
+        img = self.to_image()
 
         ext = (
             os.path.splitext(filename)[1][1:] if isinstance(filename, str)
             else ''
         )
+        
         # Check the output format to see if it can handle an alpha channel.
         no_alpha_formats = ('jpg', 'bmp', 'eps', 'jpeg')
         if ext in no_alpha_formats or file_format.lower() in no_alpha_formats:
@@ -867,6 +855,52 @@ class GraphicsContext(object):
             pil_options['dpi'] = (dpi, dpi)
 
         img.save(filename, format=file_format, **pil_options)
+
+    def to_image(self):
+        """ Return the contents of the context as a PIL Image.
+
+        If the graphics context is in BGRA format, it will convert it to
+        RGBA for the image.
+
+        Returns
+        -------
+        img : Image
+            A PIL/Pillow Image object with the data in RGBA format.
+        """
+        try:
+            from PIL import Image
+        except ImportError:
+            raise ImportError("need Pillow to save images")
+
+        pixels = self.gc.array
+        if self.pix_format.startswith('bgra'):
+            # Data is BGRA; Convert to RGBA
+            data = np.empty(pixels.shape, dtype=np.uint8)
+            data[..., 0] = pixels[..., 2]
+            data[..., 1] = pixels[..., 1]
+            data[..., 2] = pixels[..., 0]
+            data[..., 3] = pixels[..., 3]
+        else:
+            data = pixels
+
+        return Image.fromarray(data, 'RGBA')
+
+    def _repr_png_(self):
+        """ Return a the current contents of the context as PNG image.
+
+        This provides Jupyter and IPython compatibility, so that the graphics
+        context can be displayed in the Jupyter Notebook or the IPython Qt
+        console.
+
+        Returns
+        -------
+        data : bytes
+            The contents of the context as PNG-format bytes.
+        """
+        img = self.to_image()
+        data = BytesIO()
+        img.save(data, format='png')
+        return data.getvalue()
 
 
 class CompiledPath(object):

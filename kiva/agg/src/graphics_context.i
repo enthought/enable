@@ -833,6 +833,40 @@ namespace kiva {
             def get_empty_path(self):
                 return CompiledPath()
 
+            def to_image(self):
+                """ Return the contents of the GraphicsContext as a PIL Image.
+
+                Images are in RGB or RGBA format; if this GC is not in one of
+                these formats, it is automatically converted.
+
+                Returns
+                -------
+                img : Image
+                    The contents of the context as a PIL/Pillow Image.
+                """
+                from PIL import Image
+                size = (self.width(), self.height())
+                fmt = self.format()
+
+                # determine the output pixel format and PIL format
+                if fmt.endswith("32"):
+                    pilformat = "RGBA"
+                    pixelformat = "rgba32"
+                elif fmt.endswith("24"):
+                    pilformat = "RGB"
+                    pixelformat = "rgb24"
+
+                # perform a conversion if necessary
+                if fmt != pixelformat:
+                    newimg = GraphicsContextArray(size, fmt)
+                    newimg.draw_image(self)
+                    newimg.convert_pixel_format(pixelformat, 1)
+                    bmp = newimg.bmp_array
+                else:
+                    bmp = self.bmp_array
+
+                return Image.fromarray(bmp, pilformat)
+
             def save(self, filename, file_format=None, pil_options=None):
                 """ Save the GraphicsContext to a file.  Output files are always
                     saved in RGB or RGBA format; if this GC is not in one of
@@ -906,6 +940,29 @@ namespace kiva {
 
             def __exit__(self, type, value, traceback):
                 self.restore_state()
+
+            #----------------------------------------------------------------
+            # IPython/Jupyter support
+            #----------------------------------------------------------------
+
+            def _repr_png_(self):
+                """ Return a the current contents of the context as PNG image.
+
+                This provides Jupyter and IPython compatibility, so that the graphics
+                context can be displayed in the Jupyter Notebook or the IPython Qt
+                console.
+
+                Returns
+                -------
+                data : bytes
+                    The contents of the context as PNG-format bytes.
+                """
+                from io import BytesIO
+
+                img = self.to_image()
+                data = BytesIO()
+                img.save(data, format='png')
+                return data.getvalue()
 
             %}
 
