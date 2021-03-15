@@ -16,6 +16,7 @@ Enable Documentation
   enable/overview.rst
   enable/constraints_layout.rst
   enable/key_events.rst
+  enable/mouse_events.rst
   enable/basic_tools.rst
   enable/drag_and_drop.rst
   enable/undo_redo.rst
