@@ -55,6 +55,20 @@ def create_font_database(fontfiles, fontext="ttf"):
     return FontDatabase(fontlist)
 
 
+def update_font_database(database, fontfiles, fontext="ttf"):
+    """ Add additional font entries to an existing :class:`FontDatabase`
+    instance.
+    """
+    fontlist = []
+    for fpath in fontfiles:
+        if fontext == "afm":
+            fontlist.extend(_build_afm_entries(fpath))
+        else:
+            fontlist.extend(_build_ttf_entries(fpath))
+
+    database.add_fonts(fontlist)
+
+
 # ----------------------------------------------------------------------------
 # utility funcs
 
