@@ -75,8 +75,7 @@ class DragToolTestCase(EnableTestAssistant, unittest.TestCase):
         tool = self.tool
         tool.end_drag_on_leave = True
         tool._drag_state = "dragging"  # force dragging state
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", DeprecationWarning)
+        with self.assertWarns(DeprecationWarning):
             event = self.mouse_leave(interactor=tool, x=0, y=0)
         self.assertEqual(tool.canceled, 1)
         self.assertEqual(tool._drag_state, "nondrag")
@@ -119,8 +118,7 @@ class DragToolTestCase(EnableTestAssistant, unittest.TestCase):
         tool.end_drag_on_leave = True
         tool.on_drag_leave = 'end'
         tool._drag_state = "dragging"  # force dragging state
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", DeprecationWarning)
+        with self.assertWarns(DeprecationWarning):
             event = self.mouse_leave(interactor=tool, x=0, y=0)
 
         # end_drag_on_leave should be handled like normal
