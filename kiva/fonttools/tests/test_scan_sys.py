@@ -13,7 +13,7 @@ import unittest
 
 from pkg_resources import resource_filename
 
-from .._scan_sys import scan_system_fonts
+from .._scan_sys import scan_system_fonts, scan_user_fonts
 
 data_dir = resource_filename("kiva.fonttools.tests", "data")
 is_macos = (sys.platform == "darwin")
@@ -48,6 +48,13 @@ class TestFontDirectoryScanning(unittest.TestCase):
         # Pass a list of directories instead of a single path string
         fonts = scan_system_fonts([data_dir], fontext="ttf")
         self.assertListEqual(sorted(expected), sorted(fonts))
+
+    def test_user_font_scanning(self):
+        ttf_fonts = scan_user_fonts(data_dir, fontext="ttf")
+        self.assertEqual(len(ttf_fonts), 3)
+
+        afm_fonts = scan_user_fonts(data_dir, fontext="afm")
+        self.assertEqual(len(afm_fonts), 1)
 
     @unittest.skipIf(not is_generic, "This test is only for generic platforms")
     def test_generic_scanning(self):

@@ -38,7 +38,7 @@ import warnings
 from traits.etsconfig.api import ETSConfig
 
 from kiva.fonttools._scan_parse import create_font_list
-from kiva.fonttools._scan_sys import scan_system_fonts
+from kiva.fonttools._scan_sys import scan_system_fonts, scan_user_fonts
 from kiva.fonttools._score import (
     score_family, score_size, score_stretch, score_style, score_variant,
     score_weight
@@ -137,12 +137,23 @@ class FontManager:
         """
         self.__default_weight = weight
 
-    def update_fonts(self, filenames):
+    def update_fonts(self, paths):
         """ Update the font lists with new font files.
-        Currently not implemented.
+
+        The specified ``paths`` will be searched for valid font files and those
+        files will have their fonts added to internal collections searched by
+        :meth:`findfont`.
+
+        Parameters
+        ----------
+        filenames : list of str
+            A list of font file paths or directory paths.
         """
-        #  !!!!  Needs implementing
-        raise NotImplementedError
+        afm_paths = scan_user_fonts(paths, fontext="afm")
+        ttf_paths = scan_user_fonts(paths, fontext="ttf")
+
+        self.afmlist.extend(create_font_list(afm_paths))
+        self.ttflist.extend(create_font_list(ttf_paths))
 
     def findfont(self, prop, fontext="ttf", directory=None,
                  fallback_to_default=True, rebuild_if_missing=True):

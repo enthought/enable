@@ -63,6 +63,8 @@ jobs:
       - name: Sanity check package version
         run: python -m pip list
       - name: Run enable test suite
+        env:
+          PYTHONFAULTHANDLER: 1
         uses: GabrielBB/xvfb-action@v1
         with:
           # kiva agg requires at least 15-bit color depth.
@@ -70,6 +72,8 @@ jobs:
           run: --server-args="-screen 0 1024x768x24" python -m unittest discover -v enable
           working-directory: ${{ runner.temp }}
       - name: Run kiva test suite
+        env:
+          PYTHONFAULTHANDLER: 1
         uses: GabrielBB/xvfb-action@v1
         with:
           run: python -m unittest discover -v kiva
