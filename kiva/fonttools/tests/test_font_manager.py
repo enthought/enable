@@ -21,46 +21,9 @@ from traits.etsconfig.api import ETSConfig
 
 from ._testing import patch_global_font_manager
 from .. import font_manager as font_manager_module
-from .._scan_parse import create_font_list, FontEntry
 from ..font_manager import default_font_manager, FontManager
 
 data_dir = resource_filename("kiva.fonttools.tests", "data")
-
-
-class TestCreateFontList(unittest.TestCase):
-    def setUp(self):
-        self.ttc_fontpath = os.path.join(data_dir, "TestTTC.ttc")
-
-    def test_fontlist_from_ttc(self):
-        # When
-        fontlist = create_font_list([self.ttc_fontpath])
-
-        # Then
-        self.assertEqual(len(fontlist), 2)
-        for fontprop in fontlist:
-            self.assertIsInstance(fontprop, FontEntry)
-
-    @mock.patch("kiva.fonttools._scan_parse._ttf_font_property",
-                side_effect=ValueError)
-    def test_ttc_exception_on_ttfFontProperty(self, m_ttfFontProperty):
-        # When
-        with self.assertLogs("kiva"):
-            fontlist = create_font_list([self.ttc_fontpath])
-
-        # Then
-        self.assertEqual(len(fontlist), 0)
-        self.assertEqual(m_ttfFontProperty.call_count, 1)
-
-    @mock.patch("kiva.fonttools._scan_parse.TTCollection",
-                side_effect=RuntimeError)
-    def test_ttc_exception_on_TTCollection(self, m_TTCollection):
-        # When
-        with self.assertLogs("kiva"):
-            fontlist = create_font_list([self.ttc_fontpath])
-
-        # Then
-        self.assertEqual(len(fontlist), 0)
-        self.assertEqual(m_TTCollection.call_count, 1)
 
 
 class TestFontCache(unittest.TestCase):
@@ -68,7 +31,8 @@ class TestFontCache(unittest.TestCase):
 
     def setUp(self):
         self.ttf_files = [
-            os.path.abspath(os.path.join(data_dir, "TestTTF.ttf"))
+            os.path.abspath(os.path.join(data_dir, "TestTTF.ttf")),
+            os.path.abspath(os.path.join(data_dir, "TestTTC.ttc")),
         ]
 
         temp_dir_obj = tempfile.TemporaryDirectory()
@@ -81,10 +45,12 @@ class TestFontCache(unittest.TestCase):
             with patch_font_cache(self.temp_dir, self.ttf_files):
                 default_manager = font_manager_module.default_font_manager()
 
-            # For some reasons, there are duplications in the list of files
-            self.assertEqual(
-                set(default_manager.ttffiles), set(self.ttf_files)
-            )
+            # Check that all files are in the internal FontDatabase
+            entries = default_manager.ttf_db.fonts_for_directory(data_dir)
+            # Remove duplicates, since there may be more fonts than files.
+            files = sorted(set(ent.fname for ent in entries))
+            self.assertListEqual(files, sorted(self.ttf_files))
+
             # The global singleton is now set.
             self.assertIsInstance(font_manager_module.fontManager, FontManager)
 

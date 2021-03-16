@@ -37,7 +37,9 @@ import warnings
 
 from traits.etsconfig.api import ETSConfig
 
-from kiva.fonttools._scan_parse import create_font_list
+from kiva.fonttools._scan_parse import (
+    create_font_database, update_font_database
+)
 from kiva.fonttools._scan_sys import scan_system_fonts, scan_user_fonts
 from kiva.fonttools._score import (
     score_family, score_size, score_stretch, score_style, score_variant,
@@ -74,17 +76,18 @@ class FontManager:
     # Increment this version number whenever the font cache data
     # format or behavior has changed and requires a existing font
     # cache files to be rebuilt.
-    __version__ = 9
+    __version__ = 10
 
     def __init__(self, size=None, weight="normal"):
         self._version = self.__version__
 
         self.__default_weight = weight
         self.default_size = size if size is not None else 12.0
-
-        paths = []
+        self.default_family = "sans-serif"
+        self.default_font = {}
 
         #  Create list of font paths
+        paths = []
         for pathname in ["TTFPATH", "AFMPATH"]:
             if pathname in os.environ:
                 ttfpath = os.environ[pathname]
@@ -96,28 +99,26 @@ class FontManager:
                     paths.append(ttfpath)
 
         logger.debug("font search path %s", str(paths))
-        #  Load TrueType fonts and create font dictionary.
 
-        self.ttffiles = scan_system_fonts(paths) + scan_system_fonts()
-        self.defaultFamily = {"ttf": "Bitstream Vera Sans", "afm": "Helvetica"}
-        self.defaultFont = {}
-
-        for fname in self.ttffiles:
+        # Load TrueType fonts and create font database.
+        ttffiles = scan_system_fonts(paths) + scan_system_fonts()
+        for fname in ttffiles:
             logger.debug("trying fontname %s", fname)
             if fname.lower().find("vera.ttf") >= 0:
-                self.defaultFont["ttf"] = fname
+                self.default_font["ttf"] = fname
                 break
         else:
             # use anything
-            self.defaultFont["ttf"] = self.ttffiles[0]
+            self.default_font["ttf"] = ttffiles[0]
 
-        self.ttflist = create_font_list(self.ttffiles)
+        self.ttf_db = create_font_database(ttffiles, fontext="ttf")
 
-        self.afmfiles = scan_system_fonts(
+        # Load AFM fonts and create font database.
+        afmfiles = scan_system_fonts(
             paths, fontext="afm"
         ) + scan_system_fonts(fontext="afm")
-        self.afmlist = create_font_list(self.afmfiles, fontext="afm")
-        self.defaultFont["afm"] = None
+        self.afm_db = create_font_database(afmfiles, fontext="afm")
+        self.default_font["afm"] = None
 
         self.ttf_lookup_cache = {}
         self.afm_lookup_cache = {}
@@ -152,8 +153,8 @@ class FontManager:
         afm_paths = scan_user_fonts(paths, fontext="afm")
         ttf_paths = scan_user_fonts(paths, fontext="ttf")
 
-        self.afmlist.extend(create_font_list(afm_paths))
-        self.ttflist.extend(create_font_list(ttf_paths))
+        update_font_database(self.afm_db, afm_paths, fontext="afm")
+        update_font_database(self.ttf_db, ttf_paths, fontext="ttf")
 
     def findfont(self, prop, fontext="ttf", directory=None,
                  fallback_to_default=True, rebuild_if_missing=True):
@@ -210,24 +211,32 @@ class FontManager:
 
         if fontext == "afm":
             font_cache = self.afm_lookup_cache
-            fontlist = self.afmlist
+            font_db = self.afm_db
         else:
             font_cache = self.ttf_lookup_cache
-            fontlist = self.ttflist
+            font_db = self.ttf_db
 
         if directory is None:
             cached = font_cache.get(hash(prop))
             if cached:
                 return cached
 
-        best_score = 1e64
-        best_font = None
+        # Narrow the search
+        if directory is not None:
+            # Only search the fonts from `directory`
+            fontlist = font_db.fonts_for_directory(directory)
+        else:
+            # Only search the fonts included in the families list of the query.
+            # This is safe because `score_family` will return 1.0 (no match) if
+            # none of the listed families match an entry's family. Further,
+            # both `fonts_for_family` and `score_family` will expand generic
+            # families ("serif", "monospace") into lists of candidate families,
+            # which ensures that all possible matching fonts will be scored.
+            fontlist = font_db.fonts_for_family(prop.get_family())
 
+        best_score = 20.0
+        best_font = None
         for font in fontlist:
-            fname = font.fname
-            if (directory is not None
-                    and os.path.commonprefix([fname, directory]) != directory):
-                continue
             # Matching family should have highest priority, so it is multiplied
             # by 10.0
             score = (
@@ -250,10 +259,10 @@ class FontManager:
             if fallback_to_default:
                 warnings.warn(
                     "findfont: Font family %s not found. Falling back to %s"
-                    % (prop.get_family(), self.defaultFamily[fontext])
+                    % (prop.get_family(), self.default_family)
                 )
                 default_prop = prop.copy()
-                default_prop.set_family(self.defaultFamily[fontext])
+                default_prop.set_family(self.default_family)
                 return self.findfont(
                     default_prop, fontext, directory,
                     fallback_to_default=False,
@@ -263,11 +272,11 @@ class FontManager:
                 # so just return the vera.ttf
                 warnings.warn(
                     "findfont: Could not match %s. Returning %s"
-                    % (prop, self.defaultFont[fontext]),
+                    % (prop, self.default_font[fontext]),
                     UserWarning,
                 )
                 # Assume this is never a .ttc font, so 0 is ok for face index.
-                result = FontSpec(self.defaultFont[fontext])
+                result = FontSpec(self.default_font[fontext])
         else:
             logger.debug(
                 "findfont: Matching %s to %s (%s[%d]) with score of %f",

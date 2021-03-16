@@ -21,6 +21,7 @@ from fontTools.afmLib import AFM
 from fontTools.ttLib import TTCollection, TTFont, TTLibError
 
 from kiva.fonttools._constants import weight_dict
+from kiva.fonttools._database import FontDatabase, FontEntry
 from kiva.fonttools._util import get_ttf_prop_dict, weight_as_number
 
 logger = logging.getLogger(__name__)
@@ -28,19 +29,19 @@ logger = logging.getLogger(__name__)
 _FONT_ENTRY_ERR_MSG = "Could not convert font to FontEntry for file %s"
 
 
-def create_font_list(fontfiles, fontext="ttf"):
-    """ Creates a list of :class`FontEntry` instances from a list of provided
+def create_font_database(fontfiles, fontext="ttf"):
+    """ Creates a :class:`FontDatabase` instance from a list of provided
     filepaths.
 
-    The default is to create a list of TrueType fonts. An AFM font list can
-    optionally be created.
+    The default is to locate TrueType fonts. An AFM database can optionally be
+    created.
     """
     # Use a set() to filter out files which were already scanned
     seen = set()
 
     fontlist = []
     for fpath in fontfiles:
-        logger.debug("create_font_list %s", fpath)
+        logger.debug("create_font_database %s", fpath)
         fname = os.path.basename(fpath)
         if fname in seen:
             continue
@@ -51,34 +52,21 @@ def create_font_list(fontfiles, fontext="ttf"):
         else:
             fontlist.extend(_build_ttf_entries(fpath))
 
-    return fontlist
+    return FontDatabase(fontlist)
 
 
-class FontEntry(object):
-    """ A class for storing Font properties. It is used when populating
-    the font lookup dictionary.
+def update_font_database(database, fontfiles, fontext="ttf"):
+    """ Add additional font entries to an existing :class:`FontDatabase`
+    instance.
     """
-    def __init__(self, fname="", family="", style="normal", variant="normal",
-                 weight="normal", stretch="normal", size="medium",
-                 face_index=0):
-        self.fname = fname
-        self.family = family
-        self.style = style
-        self.variant = variant
-        self.weight = weight
-        self.stretch = stretch
-        self.face_index = face_index
-        try:
-            self.size = str(float(size))
-        except ValueError:
-            self.size = size
+    fontlist = []
+    for fpath in fontfiles:
+        if fontext == "afm":
+            fontlist.extend(_build_afm_entries(fpath))
+        else:
+            fontlist.extend(_build_ttf_entries(fpath))
 
-    def __repr__(self):
-        fname = os.path.basename(self.fname)
-        return (
-            f"<FontEntry '{self.family}' ({fname}[{self.face_index}]) "
-            f"{self.style} {self.variant} {self.weight} {self.stretch}>"
-        )
+    database.add_fonts(fontlist)
 
 
 # ----------------------------------------------------------------------------

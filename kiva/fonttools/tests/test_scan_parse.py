@@ -18,7 +18,7 @@ from pkg_resources import resource_filename
 from .._constants import weight_dict
 from .._scan_parse import (
     _afm_font_property, _build_afm_entries, _ttf_font_property,
-    create_font_list, FontEntry
+    create_font_database
 )
 
 data_dir = resource_filename("kiva.fonttools.tests", "data")
@@ -29,34 +29,34 @@ class TestFontEntryCreation(unittest.TestCase):
         self.ttc_fontpath = os.path.join(data_dir, "TestTTC.ttc")
         self.ttf_fontpath = os.path.join(data_dir, "TestTTF.ttf")
 
-    def test_fontlist_duplicates(self):
+    def test_fontdb_duplicates(self):
         # When
         three_duplicate_ttfs = [self.ttf_fontpath] * 3
-        fontlist = create_font_list(three_duplicate_ttfs)
+        font_db = create_font_database(three_duplicate_ttfs)
 
         # Then
-        self.assertEqual(len(fontlist), 1)
-        self.assertIsInstance(fontlist[0], FontEntry)
+        self.assertEqual(len(font_db), 1)
 
-    def test_fontlist_from_ttc(self):
+    def test_fontdb_from_ttc(self):
         # When
-        fontlist = create_font_list([self.ttc_fontpath])
+        font_db = create_font_database([self.ttc_fontpath])
 
         # Then
-        self.assertEqual(len(fontlist), 2)
-        for idx, fontprop in enumerate(fontlist):
-            self.assertIsInstance(fontprop, FontEntry)
-            self.assertEqual(fontprop.face_index, idx)
+        entries = font_db.fonts_for_directory(data_dir)
+        self.assertEqual(len(entries), 2)
+        entries.sort(key=lambda x: x.face_index)
+        for idx, entry in enumerate(entries):
+            self.assertEqual(entry.face_index, idx)
 
     @mock.patch("kiva.fonttools._scan_parse._ttf_font_property",
                 side_effect=ValueError)
     def test_ttc_exception_on__ttf_font_property(self, m_ttf_font_property):
         # When
         with self.assertLogs("kiva"):
-            fontlist = create_font_list([self.ttc_fontpath])
+            font_db = create_font_database([self.ttc_fontpath])
 
         # Then
-        self.assertEqual(len(fontlist), 0)
+        self.assertEqual(len(font_db), 0)
         self.assertEqual(m_ttf_font_property.call_count, 1)
 
     @mock.patch("kiva.fonttools._scan_parse.TTCollection",
@@ -64,10 +64,10 @@ class TestFontEntryCreation(unittest.TestCase):
     def test_ttc_exception_on_TTCollection(self, m_TTCollection):
         # When
         with self.assertLogs("kiva"):
-            fontlist = create_font_list([self.ttc_fontpath])
+            font_db = create_font_database([self.ttc_fontpath])
 
         # Then
-        self.assertEqual(len(fontlist), 0)
+        self.assertEqual(len(font_db), 0)
         self.assertEqual(m_TTCollection.call_count, 1)
 
 
