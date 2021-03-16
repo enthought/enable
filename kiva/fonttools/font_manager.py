@@ -76,13 +76,11 @@ class FontManager:
     # Increment this version number whenever the font cache data
     # format or behavior has changed and requires a existing font
     # cache files to be rebuilt.
-    __version__ = 10
+    __version__ = 11
 
-    def __init__(self, size=None, weight="normal"):
+    def __init__(self):
         self._version = self.__version__
 
-        self.__default_weight = weight
-        self.default_size = size if size is not None else 12.0
         self.default_family = "sans-serif"
         self.default_font = {}
 
@@ -123,21 +121,6 @@ class FontManager:
         self.ttf_lookup_cache = {}
         self.afm_lookup_cache = {}
 
-    def get_default_weight(self):
-        """ Return the default font weight.
-        """
-        return self.__default_weight
-
-    def get_default_size(self):
-        """ Return the default font size.
-        """
-        return self.default_size
-
-    def set_default_weight(self, weight):
-        """ Set the default font weight.  The initial value is 'normal'.
-        """
-        self.__default_weight = weight
-
     def update_fonts(self, paths):
         """ Update the font lists with new font files.
 
@@ -156,10 +139,10 @@ class FontManager:
         update_font_database(self.afm_db, afm_paths, fontext="afm")
         update_font_database(self.ttf_db, ttf_paths, fontext="ttf")
 
-    def findfont(self, prop, fontext="ttf", directory=None,
+    def findfont(self, query, fontext="ttf", directory=None,
                  fallback_to_default=True, rebuild_if_missing=True):
         """ Search the font list for the font that most closely matches
-        the :class:`FontProperties` *prop*.
+        the :class:`FontQuery` *query*.
 
         :meth:`findfont` performs a nearest neighbor search.  Each
         font is given a similarity score to the target font
@@ -181,7 +164,7 @@ class FontManager:
         <http://www.w3.org/TR/1998/REC-CSS2-19980512/>`_ documentation
         for a description of the font finding algorithm.
         """
-        from kiva.fonttools._font_properties import FontProperties
+        from kiva.fonttools._query import FontQuery
 
         class FontSpec(object):
             """ An object to represent the return value of findfont().
@@ -199,13 +182,13 @@ class FontManager:
                 args = f"{self.filename}, face_index={self.face_index}"
                 return f"FontSpec({args})"
 
-        if not isinstance(prop, FontProperties):
-            prop = FontProperties(prop)
+        if not isinstance(query, FontQuery):
+            query = FontQuery(query)
 
-        fname = prop.get_file()
+        fname = query.get_file()
         if fname is not None:
             logger.debug("findfont returning %s", fname)
-            # It's not at all clear where a `FontProperties` instance with
+            # It's not at all clear where a `FontQuery` instance with
             # `fname` already set would come from. Assume face_index == 0.
             return FontSpec(fname)
 
@@ -217,7 +200,7 @@ class FontManager:
             font_db = self.ttf_db
 
         if directory is None:
-            cached = font_cache.get(hash(prop))
+            cached = font_cache.get(hash(query))
             if cached:
                 return cached
 
@@ -232,7 +215,7 @@ class FontManager:
             # both `fonts_for_family` and `score_family` will expand generic
             # families ("serif", "monospace") into lists of candidate families,
             # which ensures that all possible matching fonts will be scored.
-            fontlist = font_db.fonts_for_family(prop.get_family())
+            fontlist = font_db.fonts_for_family(query.get_family())
 
         best_score = 20.0
         best_font = None
@@ -240,12 +223,12 @@ class FontManager:
             # Matching family should have highest priority, so it is multiplied
             # by 10.0
             score = (
-                score_family(prop.get_family(), font.family) * 10.0
-                + score_style(prop.get_style(), font.style)
-                + score_variant(prop.get_variant(), font.variant)
-                + score_weight(prop.get_weight(), font.weight)
-                + score_stretch(prop.get_stretch(), font.stretch)
-                + score_size(prop.get_size(), font.size, self.default_size)
+                score_family(query.get_family(), font.family) * 10.0
+                + score_style(query.get_style(), font.style)
+                + score_variant(query.get_variant(), font.variant)
+                + score_weight(query.get_weight(), font.weight)
+                + score_stretch(query.get_stretch(), font.stretch)
+                + score_size(query.get_size(), font.size)
             )
             # Lowest score wins
             if score < best_score:
@@ -259,12 +242,12 @@ class FontManager:
             if fallback_to_default:
                 warnings.warn(
                     "findfont: Font family %s not found. Falling back to %s"
-                    % (prop.get_family(), self.default_family)
+                    % (query.get_family(), self.default_family)
                 )
-                default_prop = prop.copy()
-                default_prop.set_family(self.default_family)
+                default_query = query.copy()
+                default_query.set_family(self.default_family)
                 return self.findfont(
-                    default_prop, fontext, directory,
+                    default_query, fontext, directory,
                     fallback_to_default=False,
                 )
             else:
@@ -272,7 +255,7 @@ class FontManager:
                 # so just return the vera.ttf
                 warnings.warn(
                     "findfont: Could not match %s. Returning %s"
-                    % (prop, self.default_font[fontext]),
+                    % (query, self.default_font[fontext]),
                     UserWarning,
                 )
                 # Assume this is never a .ttc font, so 0 is ok for face index.
@@ -280,7 +263,7 @@ class FontManager:
         else:
             logger.debug(
                 "findfont: Matching %s to %s (%s[%d]) with score of %f",
-                prop,
+                query,
                 best_font.family,
                 best_font.fname,
                 best_font.face_index,
@@ -295,7 +278,7 @@ class FontManager:
                 )
                 _rebuild()
                 return default_font_manager().findfont(
-                    prop, fontext, directory,
+                    query, fontext, directory,
                     fallback_to_default=True,
                     rebuild_if_missing=False,
                 )
@@ -303,7 +286,7 @@ class FontManager:
                 raise ValueError("No valid font could be found")
 
         if directory is None:
-            font_cache[hash(prop)] = result
+            font_cache[hash(query)] = result
         return result
 
 
@@ -373,7 +356,6 @@ def _load_from_cache_or_rebuild(cache_file):
                 or fontManager._version != FontManager.__version__):
             fontManager = _new_font_manager(cache_file)
         else:
-            fontManager.default_size = None
             logger.debug("Using fontManager instance from %s", cache_file)
     except Exception:
         fontManager = _new_font_manager(cache_file)

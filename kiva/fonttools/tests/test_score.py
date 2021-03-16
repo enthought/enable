@@ -42,24 +42,20 @@ class TestFontScoring(unittest.TestCase):
 
     def test_score_size(self):
         # exact matches
-        self.assertEqual(score_size(12.0, 12.0, default=24.0), 0.0)
-        self.assertEqual(score_size("12.0", 12.0, default=24.0), 0.0)
-        self.assertEqual(score_size(12.0, "12.0", default=24.0), 0.0)
+        self.assertEqual(score_size(12.0, 12.0), 0.0)
+        self.assertEqual(score_size("12.0", 12.0), 0.0)
+        self.assertEqual(score_size(12.0, "12.0"), 0.0)
 
         # scaled exact matches
-        self.assertEqual(score_size(12.0, "scalable", default=24.0), 0.0)
-        self.assertEqual(score_size("medium", 24.0, default=24.0), 0.0)
-        self.assertEqual(score_size("larger", 24.0, default=20.0), 0.0)
+        self.assertEqual(score_size(12.0, "scalable"), 0.0)
 
         # fuzzy matches
-        self.assertAlmostEqual(score_size(12.0, 19.2, default=12.0), 0.1)
-        self.assertAlmostEqual(score_size(12.0, 48.0, default=12.0), 0.5)
-        self.assertAlmostEqual(score_size("medium", 48.0, default=12.0), 0.5)
-        self.assertAlmostEqual(score_size("larger", 60.0, default=20.0), 0.5)
+        self.assertAlmostEqual(score_size(12.0, 19.2), 0.1)
+        self.assertAlmostEqual(score_size(12.0, 48.0), 0.5)
 
         # misses
-        self.assertEqual(score_size(8.0, 80.0, default=12.0), 1.0)
-        self.assertEqual(score_size(24.0, "doesn't matter", default=12.0), 1.0)
+        self.assertEqual(score_size(8.0, 80.0), 1.0)
+        self.assertEqual(score_size(24.0, "doesn't matter"), 1.0)
 
     def test_score_stretch(self):
         # exact matches
