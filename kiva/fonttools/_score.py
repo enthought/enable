@@ -15,8 +15,7 @@ but has been modified quite a bit in the decade since it was copied.
 ####################
 """
 from kiva.fonttools._constants import (
-    font_family_aliases, font_scalings, preferred_fonts, stretch_dict,
-    weight_dict
+    font_family_aliases, preferred_fonts, stretch_dict, weight_dict
 )
 
 # Each of the scoring functions below should return a value between
@@ -49,7 +48,7 @@ def score_family(families, family2):
     return 1.0
 
 
-def score_size(size1, size2, default):
+def score_size(size1, size2):
     """ Returns a match score between *size1* and *size2*.
 
     If *size2* (the size specified in the font file) is 'scalable', this
@@ -65,7 +64,7 @@ def score_size(size1, size2, default):
     try:
         sizeval1 = float(size1)
     except ValueError:
-        sizeval1 = default * font_scalings.get(size1, 1.0)
+        return 1.0
     try:
         sizeval2 = float(size2)
     except ValueError:

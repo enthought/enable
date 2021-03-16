@@ -10,18 +10,17 @@
 from fontTools.afmLib import AFM
 from fontTools.ttLib import TTFont
 
-from kiva.fonttools._constants import font_scalings, stretch_dict, weight_dict
+from kiva.fonttools._constants import stretch_dict, weight_dict
 from kiva.fonttools._util import get_ttf_prop_dict
 from kiva.fonttools.font_manager import default_font_manager
 
 
-class FontProperties(object):
-    """ A class for storing and manipulating font properties.
+class FontQuery(object):
+    """ A class for storing properties needed to query the font manager.
 
-    The font properties are those described in the `W3C Cascading
-    Style Sheet, Level 1
-    <http://www.w3.org/TR/1998/REC-CSS2-19980512/>`_ font
-    specification.  The six properties are:
+    The properties are those described in the `W3C Cascading
+    Style Sheet, Level 1 <http://www.w3.org/TR/1998/REC-CSS2-19980512/>`_ font
+    specification. The six properties are:
 
       - family: A list of font names in decreasing order of priority.
         The items may include a generic font family name, either
@@ -41,17 +40,10 @@ class FontProperties(object):
         'roman', 'semibold', 'demibold', 'demi', 'bold', 'heavy',
         'extra bold', 'black'
 
-      - size: Either an relative value of 'xx-small', 'x-small',
-        'small', 'medium', 'large', 'x-large', 'xx-large' or an
-        absolute font size, e.g. 12
+      - size: An absolute font size, e.g. 12
 
     Alternatively, a font may be specified using an absolute path to a
     .ttf file, by using the *fname* kwarg.
-
-    The preferred usage of font sizes is to use the relative values,
-    e.g.  'large', instead of absolute font sizes, e.g. 12.  This
-    approach allows all text sizes to be made larger or smaller based
-    on the font manager's default font size.
     """
     def __init__(self, family=None, style=None, variant=None, weight=None,
                  stretch=None, size=None, fname=None, _init=None):
@@ -146,15 +138,6 @@ class FontProperties(object):
         """
         return self._size
 
-    def get_size_in_points(self):
-        if self._size is not None:
-            try:
-                return float(self._size)
-            except ValueError:
-                pass
-        default_size = default_font_manager().get_default_size()
-        return default_size * font_scalings.get(self._size)
-
     def get_file(self):
         """ Return the filename of the associated font.
         """
@@ -238,15 +221,13 @@ class FontProperties(object):
     def set_size(self, size):
         """ Set the font size.
 
-        Either an relative value of 'xx-small', 'x-small', 'small', 'medium',
-        'large', 'x-large', 'xx-large' or an absolute font size, e.g. 12.
+        An absolute font size, e.g. 12.
         """
         if size is not None:
             try:
                 size = float(size)
             except ValueError:
-                if size is not None and size not in font_scalings:
-                    raise ValueError("size is invalid")
+                raise ValueError("size is invalid")
         self._size = size
 
     def set_file(self, file):
@@ -259,4 +240,4 @@ class FontProperties(object):
     def copy(self):
         """ Return a deep copy of self
         """
-        return FontProperties(_init=self)
+        return FontQuery(_init=self)
