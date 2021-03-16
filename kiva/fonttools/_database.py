@@ -82,6 +82,9 @@ class FontDatabase:
     def fonts_for_family(self, families):
         """ Returns all fonts which best match a particular family query or
         all possible fonts if exact families are not matched.
+
+        `families` is a list of real and generic family names. An iterable
+        of `FontEntry` instances is returned.
         """
         flat_list = (lambda it: list(itertools.chain.from_iterable(it)))
 
@@ -93,6 +96,7 @@ class FontDatabase:
             return entries
 
         # Return all entries if no families found
+        # Yes, self._entries is a set. Consumers should only expect an iterable
         return self._entries
 
     def __len__(self):

@@ -223,8 +223,15 @@ class FontManager:
 
         # Narrow the search
         if directory is not None:
+            # Only search the fonts from `directory`
             fontlist = font_db.fonts_for_directory(directory)
         else:
+            # Only search the fonts included in the families list of the query.
+            # This is safe because `score_family` will return 1.0 (no match) if
+            # none of the listed families match an entry's family. Further,
+            # both `fonts_for_family` and `score_family` will expand generic
+            # families ("serif", "monospace") into lists of candidate families,
+            # which ensures that all possible matching fonts will be scored.
             fontlist = font_db.fonts_for_family(prop.get_family())
 
         best_score = 20.0
