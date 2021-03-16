@@ -17,6 +17,7 @@ import warnings
 import celiagg as agg
 import numpy as np
 
+from kiva import marker_renderer
 from kiva.abstract_graphics_context import AbstractGraphicsContext
 import kiva.constants as constants
 from kiva.fonttools import Font
@@ -75,6 +76,11 @@ pix_format_canvases = {
     'bgra32': agg.CanvasBGRA32,
     'rgb24': agg.CanvasRGB24,
 }
+pix_format_marker_renderers = {
+    'rgba32': marker_renderer.MarkerRendererRGBA32,
+    'bgra32': marker_renderer.MarkerRendererBGRA32,
+    'rgb24': marker_renderer.MarkerRendererRGB24,
+}
 StateBundle = namedtuple(
     'StateBundle',
     ['state', 'path', 'stroke', 'fill', 'transform', 'text_transform', 'font'],
@@ -89,8 +95,11 @@ class GraphicsContext(object):
         self.pix_format = kwargs.get('pix_format', 'rgba32')
 
         shape = (self._height, self._width, 4)
+        buffer = np.zeros(shape, dtype=np.uint8)
         canvas_klass = pix_format_canvases[self.pix_format]
-        self.gc = canvas_klass(np.zeros(shape, dtype=np.uint8), bottom_up=True)
+        self.gc = canvas_klass(buffer, bottom_up=True)
+        marker_ren_klass = pix_format_marker_renderers[self.pix_format]
+        self.marker_gc = marker_ren_klass(buffer, bottom_up=True)
 
         # init the state variables
         clip = agg.Rect(0, 0, self._width, self._height)
@@ -826,6 +835,33 @@ class GraphicsContext(object):
             fill=self.fill_paint,
         )
 
+    def draw_marker_at_points(self, points, size,
+                              marker=constants.SQUARE_MARKER):
+        """ Draw a marker at a collection of points
+        """
+        # Apply the current transform
+        ctm = self.transform
+        self.marker_gc.transform(
+            ctm.sx, ctm.shy,
+            ctm.shx, ctm.sy,
+            ctm.tx, ctm.ty,
+        )
+
+        # Grab the fill and stroke colors (where possible)
+        fill = (0.0, 0.0, 0.0, 0.0)
+        stroke = (0.0, 0.0, 0.0, 1.0)
+        if isinstance(self.fill_paint, agg.SolidPaint):
+            fp = self.fill_paint
+            fill = (fp.r, fp.g, fp.b, fp.a)
+        if isinstance(self.stroke_paint, agg.SolidPaint):
+            sp = self.stroke_paint
+            stroke = (sp.r, sp.g, sp.b, sp.a)
+
+        # Draw using the marker renderer
+        self.marker_gc.draw_marker_at_points(
+            points, size, marker, fill, stroke
+        )
+
     def save(self, filename, file_format=None, pil_options=None):
         """ Save the contents of the context to a file
         """
@@ -841,7 +877,7 @@ class GraphicsContext(object):
             os.path.splitext(filename)[1][1:] if isinstance(filename, str)
             else ''
         )
-        
+
         # Check the output format to see if it can handle an alpha channel.
         no_alpha_formats = ('jpg', 'bmp', 'eps', 'jpeg')
         if ext in no_alpha_formats or file_format.lower() in no_alpha_formats:
