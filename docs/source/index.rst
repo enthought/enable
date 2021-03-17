@@ -1,6 +1,9 @@
 Enable Documentation
 ====================
 
+Kiva
+----
+
 .. toctree::
   :maxdepth: 2
 
@@ -12,6 +15,12 @@ Enable Documentation
   kiva/state
   kiva/quickref
   kiva_tutorial/index
+
+Enable
+------
+
+.. toctree::
+  :maxdepth: 2
 
   enable/overview
   enable/abstract_window
@@ -35,4 +44,14 @@ API Documentation
   api/enable
   api/kiva
 
-* :ref:`search`
+Internal Documentation
+----------------------
+
+.. toctree::
+  :maxdepth: 1
+
+  kiva/font_manager
+
+----
+
+:ref:`search`
