@@ -93,6 +93,12 @@ Marker Types
 - :attr:`~.DOT_MARKER`
 - :attr:`~.PIXEL_MARKER`
 
+Marker Renderer
+===============
+This can be used by Kiva backends to implement :py:meth:`draw_marker_at_points`
+
+- :class:`~.MarkerRenderer`
+
 Fonts
 =====
 
@@ -148,3 +154,4 @@ from .constants import (
 )
 from ._cython_speedups import points_in_polygon
 from .fonttools import add_application_fonts, Font
+from .marker_renderer import MarkerRenderer

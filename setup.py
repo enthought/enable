@@ -292,6 +292,22 @@ def base_extensions():
             include_dirs=['kiva', numpy.get_include()],
             language='c++',
         ),
+        Extension(
+            'kiva._marker_renderer',
+            sources=['kiva/_marker_renderer.pyx'],
+            depends=[
+                'kiva/_marker_renderer.pxd',
+            ],
+            include_dirs=[
+                os.path.join('kiva', 'markers', 'agg'),
+                os.path.join('kiva', 'markers'),
+                numpy.get_include(),
+            ],
+            define_macros=[
+                ("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION"),
+            ],
+            language='c++',
+        ),
     ]
 
 

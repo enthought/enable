@@ -9,6 +9,7 @@ include docs/Makefile
 include docs/kiva/agg/notes
 include kiva/_cython_speedups.*
 include kiva/_hit_test.*
+include kiva/_marker_renderer.*
 recursive-include docs *.py *.rst *.txt *.css *.png *.ico *.doc
 recursive-include enable/examples *.py *.svg *.jpg *.enaml
 recursive-include kiva/examples *.py *.txt *.gif *.jpg
@@ -19,4 +20,5 @@ recursive-include kiva/agg/LICENSES *
 recursive-include kiva/fonttools/tests/data *.ttc *.ttf *.afm
 recursive-include kiva/fonttools/LICENSES *
 recursive-include kiva/gl *.h *.cpp *.i LICENSE_*
+recursive-include kiva/markers *.h LICENSE_*
 recursive-include kiva/quartz *.pyx *.pxi *.pxd mac_context*.*

@@ -18,6 +18,7 @@ build/
 dist/
 
 # SWIG & Cython intermediate files
+kiva/_marker_renderer.cpp
 kiva/agg/agg.py
 kiva/agg/agg_wrap.cpp
 kiva/agg/plat_support.py
