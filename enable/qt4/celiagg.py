@@ -21,7 +21,7 @@ class Window(BaseWindow):
     # Keep a buffer around for converting RGBA -> BGRA
     _shuffle_buffer = Array(shape=(None, None, 4), dtype=np.uint8)
 
-    def _create_gc(self, size, pix_format="rgba32"):
+    def _create_gc(self, size, pix_format="bgra32"):
         gc = GraphicsContext(
             (size[0] + 1, size[1] + 1),
             pix_format=pix_format,
@@ -58,7 +58,7 @@ class Window(BaseWindow):
 
         Qt's Format_RGB32 is actually BGR. So, Yeah...
         """
-        src = self._gc.gc.array
+        src = self._gc.bmp_array
         dst = self._shuffle_buffer
         src_fmt = self._gc.pix_format
 
