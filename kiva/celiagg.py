@@ -87,7 +87,7 @@ class GraphicsContext(object):
         super(GraphicsContext, self).__init__()
         self._width = size[0]
         self._height = size[1]
-        self.pix_format = kwargs.get('pix_format', 'rgba32')
+        self.pix_format = kwargs.get('pix_format', 'bgra32')
 
         shape = (self._height, self._width, 4)
         buffer = np.zeros(shape, dtype=np.uint8)
@@ -112,6 +112,9 @@ class GraphicsContext(object):
         # For HiDPI support
         self.base_scale = kwargs.pop('base_pixel_scale', 1)
         self.transform.scale(self.base_scale, self.base_scale)
+
+        # Make this look like a kiva.agg GC
+        self.bmp_array = buffer
 
     # ----------------------------------------------------------------
     # Size info
@@ -584,16 +587,16 @@ class GraphicsContext(object):
         elif isinstance(img, Image.Image):
             img, img_format = normalize_image(img)
             img_array = np.array(img)
+        elif isinstance(img, GraphicsContext):
+            img_array = img.gc.array
+            img_format = pix_formats[img.pix_format]
         elif hasattr(img, 'bmp_array'):
-            # An offscreen kiva context
+            # An offscreen kiva.agg context
             # XXX: Use a copy to kill the read-only flag which plays havoc
             # with the Cython memoryviews used by celiagg
             img = Image.fromarray(img.bmp_array)
             img, img_format = normalize_image(img)
             img_array = np.array(img)
-        elif isinstance(img, GraphicsContext):
-            img_array = img.gc.array
-            img_format = pix_formats[img.pix_format]
         else:
             msg = "Cannot render image of type '{}' into celiagg context."
             warnings.warn(msg.format(type(img)))
