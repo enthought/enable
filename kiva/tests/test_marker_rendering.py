@@ -61,7 +61,7 @@ class TestMarkerDrawing(unittest.TestCase):
             if np.sum(image == [255, 255, 255, 255]) == (300 * 300 * 4):
                 self.fail("The image looks empty, no pixels were drawn")
 
-        buffer = np.ones((300, 300, 4), dtype=np.uint8)
+        buffer = np.empty((300, 300, 4), dtype=np.uint8)
         for pix_format in pixel_formats:
             gc = MarkerRenderer(buffer, pix_format=pix_format)
             self.exercise(gc, buffer, check)
@@ -75,7 +75,7 @@ class TestMarkerDrawing(unittest.TestCase):
             if np.sum(image == [255, 255, 255, 255]) == (300 * 300 * 4):
                 self.fail("The image looks empty, no pixels were drawn")
 
-        buffer = np.ones((300, 300, 4), dtype=np.uint8)
+        buffer = np.empty((300, 300, 4), dtype=np.uint8)
         for pix_format in pixel_formats:
             gc = MarkerRenderer(buffer, pix_format=pix_format)
             self.exercise(gc, buffer, check)
@@ -89,18 +89,40 @@ class TestMarkerDrawing(unittest.TestCase):
             if np.sum(image == [255, 255, 255]) == (300 * 300 * 3):
                 self.fail("The image looks empty, no pixels were drawn")
 
-        buffer = np.ones((300, 300, 3), dtype=np.uint8)
+        buffer = np.empty((300, 300, 3), dtype=np.uint8)
         for pix_format in pixel_formats:
             gc = MarkerRenderer(buffer, pix_format=pix_format)
             self.exercise(gc, buffer, check)
 
-    def test_bad_arguments(self):
-        buffer = np.ones((100, 100, 3), dtype=np.uint8)
+    def test_transformation(self):
+        fill = (1.0, 0.0, 0.0, 1.0)
+        stroke = (0.0, 0.0, 0.0, 1.0)
+        buffer = np.empty((100, 100, 3), dtype=np.uint8)
         gc = MarkerRenderer(buffer, pix_format="rgb24")
 
+        # Translate past the bounds
+        gc.transform(1.0, 1.0, 0.0, 0.0, 110, 110)
+        points = np.array([[0.0, 0.0]])
+        buffer.fill(255)
+        gc.draw_markers(points, 5, constants.SQUARE_MARKER, fill, stroke)
+        # Transformed the point _out_ of the bounds. We expect nothing drawn
+        all_white = (np.sum(buffer == [255, 255, 255]) == buffer.size)
+        self.assertTrue(all_white)
+
+        # Scale past the bounds
+        gc.transform(2.0, 2.0, 0.0, 0.0, 0.0, 0.0)
+        points = np.array([[90.0, 90.0]])
+        gc.draw_markers(points, 5, constants.SQUARE_MARKER, fill, stroke)
+        # Transformed the point _out_ of the bounds. We expect nothing drawn
+        all_white = (np.sum(buffer == [255, 255, 255]) == buffer.size)
+        self.assertTrue(all_white)
+
+    def test_bad_arguments(self):
         fill = (1.0, 0.0, 0.0, 1.0)
         stroke = (0.0, 0.0, 0.0, 1.0)
         points = np.array([[1.0, 10.0], [50.0, 50.0], [42.0, 24.0]])
+        buffer = np.empty((100, 100, 3), dtype=np.uint8)
+        gc = MarkerRenderer(buffer, pix_format="rgb24")
 
         # Input array shape checking
         with self.assertRaises(ValueError):

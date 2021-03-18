@@ -88,11 +88,11 @@ namespace kiva_markers
         }
 
         void transform(const double sx, const double sy,
-                       const double shy, const double shx,
+                       const double shx, const double shy,
                        const double tx, const double ty)
         {
             m_transform.sx = sx; m_transform.sy = sy;
-            m_transform.shy = shy; m_transform.shx = shx;
+            m_transform.shx = shx; m_transform.shy = shy;
             m_transform.tx = tx; m_transform.ty = ty;
         }
 

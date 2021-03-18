@@ -65,22 +65,22 @@ cdef class MarkerRendererBase:
             &_fill[0], &_stroke[0]
         )
 
-    def transform(self, sx, sy, shy, shx, tx, ty):
-        """transform(sx, sy, shy, shx, tx, ty)
+    def transform(self, sx, sy, shx, shy, tx, ty):
+        """transform(sx, sy, shx, shy, tx, ty)
         Set the transform to be applied to the marker points and size.
 
         :param sx: Scale in X
         :param sy: Scale in Y
-        :param shy: Shear in X
-        :param shx: Shear in Y
+        :param shx: Shear in X
+        :param shy: Shear in Y
         :param tx: Translation in X
         :param ty: Translation in Y
         """
         cdef:
             double _sx = <double>sx
             double _sy = <double>sy
-            double _shy = <double>shy
             double _shx = <double>shx
+            double _shy = <double>shy
             double _tx = <double>tx
             double _ty = <double>ty
 
