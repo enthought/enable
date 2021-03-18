@@ -17,10 +17,10 @@ import warnings
 import celiagg as agg
 import numpy as np
 
-from kiva import marker_renderer
 from kiva.abstract_graphics_context import AbstractGraphicsContext
 import kiva.constants as constants
 from kiva.fonttools import Font
+from kiva.marker_renderer import MarkerRenderer
 
 # These are the symbols that a backend has to define.
 __all__ = ["CompiledPath", "Font", "font_metrics_provider", "GraphicsContext"]
@@ -76,11 +76,6 @@ pix_format_canvases = {
     'bgra32': agg.CanvasBGRA32,
     'rgb24': agg.CanvasRGB24,
 }
-pix_format_marker_renderers = {
-    'rgba32': marker_renderer.MarkerRendererRGBA32,
-    'bgra32': marker_renderer.MarkerRendererBGRA32,
-    'rgb24': marker_renderer.MarkerRendererRGB24,
-}
 StateBundle = namedtuple(
     'StateBundle',
     ['state', 'path', 'stroke', 'fill', 'transform', 'text_transform', 'font'],
@@ -98,8 +93,9 @@ class GraphicsContext(object):
         buffer = np.zeros(shape, dtype=np.uint8)
         canvas_klass = pix_format_canvases[self.pix_format]
         self.gc = canvas_klass(buffer, bottom_up=True)
-        marker_ren_klass = pix_format_marker_renderers[self.pix_format]
-        self.marker_gc = marker_ren_klass(buffer, bottom_up=True)
+        self.marker_gc = MarkerRenderer(
+            buffer, pix_format=self.pix_format, bottom_up=True
+        )
 
         # init the state variables
         clip = agg.Rect(0, 0, self._width, self._height)
@@ -835,15 +831,15 @@ class GraphicsContext(object):
             fill=self.fill_paint,
         )
 
-    def draw_marker_at_points(self, points, size,
+    def draw_marker_at_points(self, points_array, size,
                               marker=constants.SQUARE_MARKER):
         """ Draw a marker at a collection of points
         """
         # Apply the current transform
         ctm = self.transform
         self.marker_gc.transform(
-            ctm.sx, ctm.shy,
-            ctm.shx, ctm.sy,
+            ctm.sx, ctm.sy,
+            ctm.shx, ctm.shy,
             ctm.tx, ctm.ty,
         )
 
@@ -858,8 +854,8 @@ class GraphicsContext(object):
             stroke = (sp.r, sp.g, sp.b, sp.a)
 
         # Draw using the marker renderer
-        self.marker_gc.draw_marker_at_points(
-            points, size, marker, fill, stroke
+        return self.marker_gc.draw_markers(
+            points_array, size, marker, fill, stroke
         )
 
     def save(self, filename, file_format=None, pil_options=None):

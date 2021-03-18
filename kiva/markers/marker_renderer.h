@@ -37,11 +37,11 @@ namespace kiva_markers
     {
     public:
         virtual ~marker_renderer_base(){}
-        virtual void draw_marker_at_points(const double* pts, const unsigned Npts,
-                                           const unsigned size, const marker_type type,
-                                           const double* fill, const double* stroke) = 0;
-        virtual void transform(const double sx, const double shy, const double shx,
-                               const double sy, const double tx, const double ty) = 0;
+        virtual bool draw_markers(const double* pts, const unsigned Npts,
+                                  const unsigned size, const marker_type type,
+                                  const double* fill, const double* stroke) = 0;
+        virtual void transform(const double sx, const double sy, const double shx,
+                               const double shy, const double tx, const double ty) = 0;
     };
 
     template<typename pixfmt_t>
@@ -59,13 +59,13 @@ namespace kiva_markers
 
         virtual ~marker_renderer() {}
 
-        void draw_marker_at_points(const double* pts, const unsigned Npts,
-                                   const unsigned size, const marker_type type,
-                                   const double* fill, const double* stroke)
+        bool draw_markers(const double* pts, const unsigned Npts,
+                          const unsigned size, const marker_type type,
+                          const double* fill, const double* stroke)
         {
             // Map from our marker type to the AGG marker type
             const agg24markers::marker_e marker = _get_marker_type(type);
-            if (marker == agg24markers::end_of_markers) return;
+            if (marker == agg24markers::end_of_markers) return false;
 
             // Assign fill and line colors
             m_renderer.fill_color(agg24markers::rgba(fill[0], fill[1], fill[2], fill[3]));
@@ -83,17 +83,17 @@ namespace kiva_markers
                 m_transform.transform(&mx, &my);
                 m_renderer.marker(int(mx), int(my), size * scale, marker);
             }
+
+            return true;
         }
 
-        void transform(const double sx, const double shy, const double shx,
-                       const double sy, const double tx, const double ty)
+        void transform(const double sx, const double sy,
+                       const double shy, const double shx,
+                       const double tx, const double ty)
         {
-            m_transform.sx = sx;
-            m_transform.shy = shy;
-            m_transform.shx = shx;
-            m_transform.sy = sy;
-            m_transform.tx = tx;
-            m_transform.ty = ty;
+            m_transform.sx = sx; m_transform.sy = sy;
+            m_transform.shy = shy; m_transform.shx = shx;
+            m_transform.tx = tx; m_transform.ty = ty;
         }
 
     private:

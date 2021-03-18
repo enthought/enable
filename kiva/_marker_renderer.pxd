@@ -25,17 +25,17 @@ cdef extern from "marker_renderer.h" namespace "agg24markers":
 
 
 cdef extern from "marker_renderer.h" namespace "kiva_markers":
-    # This is just here for the type signature/
+    # This is just here for the type signature
     cdef enum marker_type:
         pass
 
     # Abstract base class
     cdef cppclass marker_renderer_base:
-        void draw_marker_at_points(double* pts, unsigned Npts,
-                                   unsigned size, marker_type marker,
-                                   double* fill, double* stroke)
-        void transform(double sx, double shy,
-                       double shx, double sy,
+        bool draw_markers(double* pts, unsigned Npts,
+                          unsigned size, marker_type marker,
+                          double* fill, double* stroke)
+        void transform(double sx, double sy,
+                       double shx, double shy,
                        double tx, double ty)
 
     # Template class

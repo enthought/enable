@@ -13,35 +13,18 @@ import unittest
 import numpy as np
 
 from kiva import constants
-from kiva.marker_renderer import MarkerRendererRGB24
+from kiva.marker_renderer import MarkerRenderer
 
 
 class TestMarkerDrawing(unittest.TestCase):
-    def setUp(self):
-        self.buffer = np.ones((300, 300, 3), dtype=np.uint8)
-        self.gc = MarkerRendererRGB24(self.buffer)
-
-    def tearDown(self):
-        del self.gc
-
     @contextlib.contextmanager
-    def draw_and_check(self):
+    def draw_and_check(self, buffer, check):
         # Start with a white backgroud
-        self.buffer.fill(255)
+        buffer.fill(255)
         yield
-        self.assertImageContainsDrawing(self.buffer)
+        check(buffer)
 
-    def assertImageContainsDrawing(self, image):
-        """ Check that there is something drawn.
-        """
-        # Default is expected to be a totally white image.
-        # Therefore we check if the whole image is not white.
-        if np.sum(image == [255, 255, 255]) != (300 * 300 * 3):
-            return
-
-        self.fail("The image looks empty, no pixels were drawn")
-
-    def test_draw(self):
+    def exercise(self, renderer, buffer, check):
         marker_names = (
             "SQUARE_MARKER",
             "DIAMOND_MARKER",
@@ -62,8 +45,76 @@ class TestMarkerDrawing(unittest.TestCase):
 
         for name in marker_names:
             with self.subTest(msg=name):
-                with self.draw_and_check():
+                with self.draw_and_check(buffer, check):
                     marker = getattr(constants, name)
-                    self.gc.draw_marker_at_points(
+                    retval = renderer.draw_markers(
                         points, 5, marker, fill, stroke
                     )
+                    self.assertTrue(retval)
+
+    def test_msb_alpha_32_bit(self):
+        pixel_formats = ("abgr32", "argb32")
+
+        def check(image):
+            # Default is expected to be a totally white image.
+            # Therefore we check if the whole image is white.
+            if np.sum(image == [255, 255, 255, 255]) == (300 * 300 * 4):
+                self.fail("The image looks empty, no pixels were drawn")
+
+        buffer = np.ones((300, 300, 4), dtype=np.uint8)
+        for pix_format in pixel_formats:
+            gc = MarkerRenderer(buffer, pix_format=pix_format)
+            self.exercise(gc, buffer, check)
+
+    def test_lsb_alpha_32_bit(self):
+        pixel_formats = ("bgra32", "rgba32")
+
+        def check(image):
+            # Default is expected to be a totally white image.
+            # Therefore we check if the whole image is white.
+            if np.sum(image == [255, 255, 255, 255]) == (300 * 300 * 4):
+                self.fail("The image looks empty, no pixels were drawn")
+
+        buffer = np.ones((300, 300, 4), dtype=np.uint8)
+        for pix_format in pixel_formats:
+            gc = MarkerRenderer(buffer, pix_format=pix_format)
+            self.exercise(gc, buffer, check)
+
+    def test_no_alpha_24_bit(self):
+        pixel_formats = ("bgr24", "rgb24")
+
+        def check(image):
+            # Default is expected to be a totally white image.
+            # Therefore we check if the whole image is white.
+            if np.sum(image == [255, 255, 255]) == (300 * 300 * 3):
+                self.fail("The image looks empty, no pixels were drawn")
+
+        buffer = np.ones((300, 300, 3), dtype=np.uint8)
+        for pix_format in pixel_formats:
+            gc = MarkerRenderer(buffer, pix_format=pix_format)
+            self.exercise(gc, buffer, check)
+
+    def test_bad_arguments(self):
+        buffer = np.ones((100, 100, 3), dtype=np.uint8)
+        gc = MarkerRenderer(buffer, pix_format="rgb24")
+
+        fill = (1.0, 0.0, 0.0, 1.0)
+        stroke = (0.0, 0.0, 0.0, 1.0)
+        points = np.array([[1.0, 10.0], [50.0, 50.0], [42.0, 24.0]])
+
+        # Input array shape checking
+        with self.assertRaises(ValueError):
+            gc.draw_markers(fill, 5, constants.PLUS_MARKER, fill, stroke)
+        with self.assertRaises(ValueError):
+            gc.draw_markers(points, 5, constants.PLUS_MARKER, fill[:2], stroke)
+        with self.assertRaises(ValueError):
+            gc.draw_markers(points, 5, constants.PLUS_MARKER, fill, stroke[:2])
+
+        # Argument type coercions
+        with self.assertRaises(TypeError):
+            gc.draw_markers(points, 5, "plus", fill, stroke)
+        with self.assertRaises(TypeError):
+            gc.draw_markers(points, [5], constants.PLUS_MARKER, fill, stroke)
+
+        # Finally, check that drawing a bad marker ID returns False
+        self.assertFalse(gc.draw_markers(points, 5, 500, fill, stroke))
