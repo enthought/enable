@@ -1,5 +1,6 @@
 .. _kiva_overview:
 
+====
 Kiva
 ====
 
@@ -34,13 +35,13 @@ available on any platform, and should work even if there is no GUI or windowing
 system available.
 
 Kiva Concepts
--------------
+=============
 
 This section gives a whirlwind tour of the concepts involved with drawing with
 Kiva.
 
 The Graphics Context
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 
 The heart of the Kiva drawing API is the "graphics context", frequently
 abbreviated as ``gc`` in code.  The graphics context holds the current drawing
@@ -97,7 +98,7 @@ performed in C where possible::
     gc.stroke_path()
 
 Coordinate Model
-~~~~~~~~~~~~~~~~
+----------------
 
 Kiva uses mathematical axes direction conventions as opposed to framebuffer
 axes conventions.  In other words, the origin is always at the *bottom*
@@ -132,7 +133,7 @@ is drawn through the center of the pixels:
 .. image:: images/pixel_coordinates.png
 
 The Coordinate Transform Matrix
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------
 
 The Kiva API allows arbitrary affine transforms to be applied to the graphics
 context during drawing.  The API provides convenience methods for common
@@ -186,7 +187,7 @@ transformations, such as rotation and scaling::
 If desired, the user can also supply their own transformations directly.
 
 Paths
------
+=====
 
 The basic drawing operations are performed by building a path out of primitive
 operations, and then performing stroking and/or filling operations with it.
@@ -339,7 +340,7 @@ Winding vs. Even-Odd Fill::
 .. image:: images/fill.png
 
 Text
-~~~~
+----
 
 Text can be rendered at a point by first setting the font to use, then setting
 the text location using ``set_text_position()`` and then ``show_text()`` to
@@ -359,3 +360,55 @@ render the text::
 .. image:: images/text.png
 
 Text defaults to being rendered filled, but can be rendered with an outline.
+
+
+Kiva Backends
+=============
+
+GUI-capable
+-----------
+Each of these backends can be used to draw the contents of windows in a
+graphical user interface.
+
+kiva.agg/image
+~~~~~~~~~~~~~~
+This is a wrapper of the popular Anti-Grain Geometry C++ library. It is the
+current default backend.
+
+cairo
+~~~~~
+A backend based on the `Cairo graphics library <https://www.cairographics.org/>`_.
+
+celiagg
+~~~~~~~
+A newer wrapper of Anti-Grain Geometry which is maintained outside of
+kiva/enable.
+
+gl
+~~
+OpenGL drawing. This backend is quite limited compared to others.
+
+qpainter
+~~~~~~~~
+Qt ``QPainter`` drawing. This is only availble with the Qt toolkit.
+
+quartz
+~~~~~~
+macOS Quartz graphics (ie `CGContext <https://developer.apple.com/documentation/coregraphics/cgcontext>`_).
+This is only available on macOS.
+
+File-only
+---------
+Each of these backends can be used to create an output file.
+
+pdf
+~~~
+A backend which writes PDF files.
+
+ps
+~~
+A backend which writes PostScript files.
+
+svg
+~~~
+A backend which writes SVG files.

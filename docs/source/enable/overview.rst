@@ -277,3 +277,62 @@ Container
 nested. Containers are responsible for event dispatch, draw dispatch, and
 layout. Containers override a lot of Component methods, so that they behave more
 like containers than plain components do.
+
+Top-level Windows
+-----------------
+When a component is shown on screen via a GUI toolkit, its :attr:`window` trait
+contains an instance of :class:`~.AbstractWindow` which serves as a delegate
+between the underlying window system and the component.
+
+For the most part, code doesn't need to interact with the underlying window.
+However one common exception is tools which want to set a custom cursor. This
+is accomplished via the :py:meth:`set_pointer` method.
+
+AbstractWindow
+~~~~~~~~~~~~~~
+The following methods are the public interface of :class:`AbstractWindow`.
+
+.. automethod:: enable.abstract_window.AbstractWindow.get_pointer_position
+  :noindex:
+
+.. automethod:: enable.abstract_window.AbstractWindow.redraw
+  :noindex:
+
+.. automethod:: enable.abstract_window.AbstractWindow.set_mouse_owner
+  :noindex:
+
+.. automethod:: enable.abstract_window.AbstractWindow.set_pointer
+  :noindex:
+
+.. automethod:: enable.abstract_window.AbstractWindow.set_tooltip
+  :noindex:
+
+
+Enable TraitsUI Editors
+-----------------------
+
+To facilitate the inclusion of Enable :class:`~.Component` objects in
+`TraitsUI GUIs <https://docs.enthought.com/traitsui>`_, Enable provides
+:class:`~.ComponentEditor`.
+
+ComponentEditor
+~~~~~~~~~~~~~~~
+:class:`~.ComponentEditor` is a fairly simple editor. It only has a few traits
+which are of interest to users:
+
+bgcolor
+^^^^^^^
+``bgcolor`` is a :class:`ColorTrait` which can be used to specify the background
+color of the component. The default value is ``"sys_window"``, which may or may
+not match the default window background color of the GUI toolkit you are using.
+
+high_resolution
+^^^^^^^^^^^^^^^
+``high_resolution`` is a boolean which, if True, tells Enable that you would
+like your component to take advantage of HiDPI displays if the GUI toolkit
+supports it. The default value is True.
+
+size
+^^^^
+``size`` is a tuple of integers which can be used to specify the initial size of
+the component in a GUI. The default value is ``(400, 400)``.
