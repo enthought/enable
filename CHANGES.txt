@@ -1,6 +1,83 @@
 Enable CHANGELOG
 ================
 
+Enable 5.1.0
+============
+
+Thanks to:
+
+* Aaron Ayres
+* Rahul Poruri
+* Corran Webster
+* John Wiggins
+
+Enhancements
+------------
+* Create an independent renderer for draw_marker_at_points (#724)
+* Add IPython display support (#389)
+* Add a way for applications to supply custom fonts (#711)
+* Add Brush classes (#689)
+* Add a benchmark program for comparing Kiva backends (#647, #653, #659, #661, #666, #667, #668, #671, #673, #677)
+* Add a celiagg Kiva backend for Wx (#608)
+
+Changes
+-------
+* Add new on_drag_leave Enum trait to DragTool (#712)
+* Refactor Font management and selection (#693, #695, #700, #701, #702, #704, #707, #714, #723)
+* Accept PIL Image instances in kiva.agg draw_image() (#682)
+* Supply DPI when saving images (#678)
+* Add face_index support to celiagg and kiva.agg backends. (#605)
+
+Fixes
+-----
+* Reorder the preferred fonts list (#698)
+* Extract a better property dict from TTF fonts (#697)
+* Get the Qt Quartz backend working again (#679)
+* Fix set_font() for PDF and SVG backends (#674)
+* Fix QPainter fill_path (#660)
+* Fix save() in the quartz backend (#645)
+* Fix font selection in the QPainter backend (#641)
+
+Documentation
+-------------
+* Add some developer docs for Kiva's FontManager (#725)
+* Document Enable trait types (#721)
+* Add documentation for mouse events (#717)
+* Add documentation for AbstractWindow (#718)
+* Ignore Kiva backends in the API docs (#703)
+* Add a Kiva tutorial (#676)
+* Document how colors work in Kiva (#684)
+* Document image drawing in Kiva (#680)
+* Place Kiva docs before Enable docs (#675)
+* Document GraphicsContext state (#672)
+* Add documentation for CompiledPath (#662)
+* Add an intro section for Enable docs (#658)
+* Update the Kiva GraphicsContext documentation (#644)
+* Document the available Kiva backends (#646)
+* Reorg docs and document Kiva text rendering (#639)
+
+Testing
+-------
+* Allow sending "mouse move" with left/right down with EnableTestAssistant (#715)
+* Add tests for str_to_font (#705)
+
+Maintenance
+-----------
+* Remove kiva.fonttools.sstruct (#699)
+* Remove old/broken code (#692)
+* Add an 'oldagg' backend pointing to kiva.agg (#669)
+* Replace uses of on_trait_change with observe (#656, #663, #665, #654)
+* Normalize some signatures of Kiva methods (#691)
+* Add ContextMenuTool to enable.tools.pyface.api (#690)
+* Update celiagg backend to use 2.0.0 API (#633)
+
+Build and Continuous Integration
+--------------------------------
+* fix edmtool test-all command (#655)
+* Install cron job dependencies correctly (#637)
+* Add Cython and SWIG to cron job build deps (#607)
+
+
 Enable 5.0.0
 ============
 
