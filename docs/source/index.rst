@@ -1,6 +1,14 @@
 Enable Documentation
 ====================
 
+Tutorials
+---------
+
+.. toctree::
+  :maxdepth: 2
+
+  kiva_tutorial/index
+
 Kiva
 ----
 
@@ -8,13 +16,8 @@ Kiva
   :maxdepth: 2
 
   kiva/overview
-  kiva/backends
-  kiva/fonts
-  kiva/compiled_path
-  kiva/images
-  kiva/state
   kiva/quickref
-  kiva_tutorial/index
+  kiva/drawing_details
 
 Enable
 ------
@@ -23,15 +26,10 @@ Enable
   :maxdepth: 2
 
   enable/overview
-  enable/abstract_window
+  enable/tools
+  enable/events
   enable/constraints_layout
-  enable/key_events
-  enable/mouse_events
-  enable/basic_tools
-  enable/drag_and_drop
   enable/traits
-  enable/traitsui
-  enable/undo_redo
   enable/toolkit_selection
 
   credits
