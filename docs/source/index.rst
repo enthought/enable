@@ -30,6 +30,7 @@ Enable
   enable/basic_tools
   enable/drag_and_drop
   enable/traits
+  enable/traitsui
   enable/undo_redo
   enable/toolkit_selection
 

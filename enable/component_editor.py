@@ -86,7 +86,7 @@ class _ComponentEditor(Editor):
 
 
 class ComponentEditor(BasicEditorFactory):
-    """ wxPython editor factory for Enable components.
+    """ TraitsUI editor factory for Enable components.
     """
 
     # -------------------------------------------------------------------------
@@ -96,19 +96,19 @@ class ComponentEditor(BasicEditorFactory):
     # The class used to create all editor styles (overrides BasicEditorFactory)
     klass = _ComponentEditor
 
-    # The background color for the window
+    #: The background color for the window
     bgcolor = ColorTrait("sys_window")
 
-    # When available, use HiDPI for GraphicsContext rasterization.
+    #: When available, use HiDPI for GraphicsContext rasterization.
     high_resolution = Bool(True)
 
-    # The default size of the Window wrapping this Enable component
+    #: The default size of the Window wrapping this Enable component
     size = Tuple((400, 400))
 
-    # Convenience function for accessing the width
+    #: Convenience function for accessing the width
     width = Property
 
-    # Convenience function for accessing the width
+    #: Convenience function for accessing the width
     height = Property
 
     def _get_width(self):
