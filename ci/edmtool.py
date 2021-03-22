@@ -90,7 +90,7 @@ supported_combinations = {
 
 dependencies = {
     "apptools",
-    "celiagg^=2.0.0",
+    "celiagg",
     "coverage",
     "Cython",
     "fonttools",
