@@ -161,7 +161,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         return self.size[1]
 
     def save(self, filename, file_format=None, pil_options=None):
-        with open(filename, "w") as f:
+        with open(filename, "w", encoding="utf-8") as f:
             ext = os.path.splitext(filename)[1]
             if ext == ".svg":
                 template = xmltemplate
