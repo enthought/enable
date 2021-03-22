@@ -58,10 +58,11 @@ class AbstractOverlay(Component):
     # Concrete methods / reimplementations of Component methods
     # ----------------------------------------------------------------------
 
-    def __init__(self, component=None, *args, **kw):
+    # Implement __init__ so `component` trait can be passed as a positional arg
+    def __init__(self, component=None, **kw):
         if component is not None:
-            self.component = component
-        super(AbstractOverlay, self).__init__(*args, **kw)
+            kw["component"] = component
+        super(AbstractOverlay, self).__init__(**kw)
 
     def do_layout(self, size=None, force=False, component=None):
         """ Tells this component to do a layout at a given size.  This differs
