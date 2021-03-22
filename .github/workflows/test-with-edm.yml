@@ -5,6 +5,7 @@
 name: Test with EDM
 
 # Runs for all Pull Requests and merges to the master branch
+# Jobs run on the master branch will skip steps if the cache is already warm.
 on:
   pull_request:
   push:
@@ -39,11 +40,9 @@ jobs:
       - name: Cache EDM packages
         id: cacheStep
         uses: actions/cache@v2
-        env:
-          cache-name: ${{ runner.os }}-${{ matrix.toolkit }}-${{ hashFiles('ci/edmtool.py') }}
         with:
           path: ~/.cache
-          key: ${{ env.cache-name }}
+          key: ${{ runner.os }}-${{ matrix.toolkit }}-${{ hashFiles('ci/edmtool.py') }}
       - name: Setup EDM
         uses: enthought/setup-edm-action@v1
         if: github.event_name == 'pull_request' || steps.cacheStep.outputs.cache-hit != 'true'
@@ -81,11 +80,9 @@ jobs:
       - name: Cache EDM packages
         id: cacheStep
         uses: actions/cache@v2
-        env:
-          cache-name: ${{ runner.os }}-${{ matrix.toolkit }}-${{ hashFiles('ci/edmtool.py') }}
         with:
           path: ~/.cache
-          key: ${{ env.cache-name }}
+          key: ${{ runner.os }}-${{ matrix.toolkit }}-${{ hashFiles('ci/edmtool.py') }}
       - name: Setup EDM
         if: github.event_name == 'pull_request' || steps.cacheStep.outputs.cache-hit != 'true'
         uses: enthought/setup-edm-action@v1
