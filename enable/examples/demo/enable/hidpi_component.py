@@ -18,7 +18,8 @@ import math
 from traits.api import Any, HasTraits, Instance, Str
 from traitsui.api import HGroup, UItem, View
 
-from enable.api import Component, ComponentEditor, str_to_font
+from enable.api import Component, ComponentEditor
+from kiva.fonttools import str_to_font
 
 
 class MyComponent(Component):
@@ -27,7 +28,7 @@ class MyComponent(Component):
 
     def draw(self, gc, **kwargs):
         if not self._font:
-            self._font = str_to_font(None, None, "modern 48")
+            self._font = str_to_font("modern 48")
 
         gc.clear((0.5, 0.5, 0.5))
         mx = self.x + self.width / 2.0
