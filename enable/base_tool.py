@@ -170,5 +170,5 @@ class BaseTool(Interactor):
     def deactivate(self, component=None):
         """ Handles this component no longer being the active tool.
         """
-        # Compatibility with new AbstractController interface
+        # Compatibility with [Chaco's] AbstractController interface
         self._deactivate()

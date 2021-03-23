@@ -146,11 +146,11 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
     _screen_end = Trait(None, None, Tuple)
 
     def __init__(self, component=None, *args, **kw):
-        # Support AbstractController-style constructors so that this can be
-        # handed in the component it will be overlaying in the constructor
-        # without using kwargs.
-        self.component = component
-        super(ViewportZoomTool, self).__init__(*args, **kw)
+        # Support [Chaco's] AbstractController-style constructors which allow
+        # the component as the first positional argument.
+        if component is not None:
+            kw["component"] = component
+        super(ViewportZoomTool, self).__init__(**kw)
         self._reset_state_to_current()
 
         if self.tool_mode == "range":
