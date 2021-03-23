@@ -11,13 +11,7 @@ import sys
 import unittest
 
 try:
-    from pyface.qt import QtGui
-except ImportError:
-    QT_NOT_AVAILABLE = True
-else:
-    QT_NOT_AVAILABLE = False
-try:
-    from pyface.qt import is_qt5
+    from pyface.qt import is_qt5, QtGui
 except ImportError:
     is_qt5 = False
 
@@ -26,7 +20,7 @@ from kiva.tests.drawing_tester import DrawingImageTester
 is_linux = sys.platform.startswith("linux")
 
 
-@unittest.skipIf(QT_NOT_AVAILABLE, "Cannot import qt")
+@unittest.skipIf(not is_qt5, "Qt5 is required")
 class TestQPainterDrawing(DrawingImageTester, unittest.TestCase):
     def setUp(self):
         application = QtGui.QApplication.instance()
