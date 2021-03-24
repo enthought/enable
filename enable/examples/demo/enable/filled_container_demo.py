@@ -21,8 +21,9 @@ as the user drags the circles around.
 from numpy import array
 from traits.api import Any, Enum, Float, Instance, Tuple
 
-from enable.api import Container, Component, Pointer, str_to_font
+from enable.api import Container, Component, Pointer
 from enable.example_support import DemoFrame, demo_main
+from kiva.fonttools import str_to_font
 
 
 class MyFilledContainer(Container):
@@ -35,7 +36,7 @@ class MyFilledContainer(Container):
     def _draw_container_mainlayer(self, gc, view_bounds, mode="default"):
         'Draws a filled container with the word "Container" in the center'
         if not self._font:
-            self._font = str_to_font(None, None, "modern 10")
+            self._font = str_to_font("modern 10")
 
         with gc:
             gc.set_fill_color(self.bgcolor_)
