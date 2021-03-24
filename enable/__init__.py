@@ -13,7 +13,7 @@
 from ._version import full_version as __version__
 
 __requires__ = [
-    "numpy", "pillow", "traits", "traitsui", "pyface", "fonttools"
+    "numpy", "pillow", "traits>=6.2.0", "traitsui", "pyface", "fonttools"
 ]
 
 __extras_require__ = {
