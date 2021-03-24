@@ -16,26 +16,40 @@ from enable.component import Component
 
 class TestAbstractWindow(unittest.TestCase):
 
+    def test_cleanup(self):
+        class TestWindow(AbstractWindow):
+            def _redraw(self):
+                pass
+
+            def _get_control_size(self):
+                return (10, 10)
+
+        thing = Component()
+        window = TestWindow(
+            parent=None,
+            component=thing,
+        )
+        window.cleanup()
+        self.assertIsNone(window.component)
+
     @mock.patch.object(AbstractWindow, "component_bounds_updated")
     def test_component_bounds_updated(self, mock_method):
         """ Make sure trait listener for changing component bounds gets set up.
         """
-
         class TestWindow(AbstractWindow):
             # needed to avoid a NotImplementedError, not under test
             def _redraw(self):
                 pass
 
             def _get_control_size(self):
-                # this happens in the wild 
+                # this happens in the wild
                 return None
-        
-        thing = Component()
 
+        thing = Component()
         TestWindow(
             parent=None,
             component=thing,
         )
+
         thing.bounds = [13.0, 13.0]
-        
         self.assertTrue(mock_method.called)
