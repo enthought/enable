@@ -123,11 +123,11 @@ class BaseTool(Interactor):
     # Concrete methods
     # ------------------------------------------------------------------------
 
-    def __init__(self, component=None, **kwtraits):
-        if "component" in kwtraits:
-            component = kwtraits["component"]
-        super(BaseTool, self).__init__(**kwtraits)
-        self.component = component
+    # Implement __init__ so `component` trait can be passed as a positional arg
+    def __init__(self, component=None, **traits):
+        if component is not None:
+            traits["component"] = component
+        super(BaseTool, self).__init__(**traits)
 
     def dispatch(self, event, suffix):
         """ Dispatches a mouse event based on the current event state.
@@ -170,5 +170,5 @@ class BaseTool(Interactor):
     def deactivate(self, component=None):
         """ Handles this component no longer being the active tool.
         """
-        # Compatibility with new AbstractController interface
+        # Compatibility with [Chaco's] AbstractController interface
         self._deactivate()
