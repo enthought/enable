@@ -14,9 +14,15 @@ import time
 def instrument_graphics_context(klass):
     """ Add profiling wrappers to all public methods of a class.
 
-    This is intended to be used on implementers of AbstractGraphicsContext, but
-    it could just as easily wrap other classes (although the "draw time" text
-    in the profile log will look odd)
+    This is intended to be used on implementers of `AbstractGraphicsContext`,
+    but it could just as easily wrap other classes (although the "draw time"
+    text in the profile log will look odd)
+
+    To use, call this function on a `GraphicsContext` class object once at the
+    module level. Then in a method which wraps a whole draw cycle (like
+    `paintEvent` in Qt), add a call to the `dump_profile_and_reset` method
+    after the drawing is done. Each paint will append profiling results to the
+    output file.
     """
     # Wrap all the public methods
     for name in dir(klass):
