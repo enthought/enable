@@ -11,8 +11,9 @@ This document aims to describe the structure of the code circa version 5.1.0.
 Overview
 --------
 The basic function of :class:`FontManager` is to provide a :py:meth:`findfont`
-method which can be called by the :class:`~.Font` class to resolve a font name
-or font file location on the system where the code is running.
+method which can be called by the :class:`Font <kiva.fonttools.font.Font>`
+class to resolve a font name or font file location on the system where the code
+is running.
 
 To accomplish this, it:
 
@@ -21,9 +22,9 @@ To accomplish this, it:
 2. Examines all the font files identified in the first step and extracts their
    metadata using `fonttools <https://fonttools.readthedocs.io/en/latest/>`_.
    [:py:func:`create_font_database`]
-3. The :class:`FontManager` is then ready to be used. :class:`~.Font` instances
-   call :py:meth:`findfont` on the global :class:`FontManager` singleton as
-   needed.
+3. The :class:`FontManager` is then ready to be used.
+   :class:`Font <kiva.fonttools.font.Font>` instances call :py:meth:`findfont`
+   on the global :class:`FontManager` singleton as needed.
 
 Because scanning a system for available fonts is quite an expensive operation,
 :class:`FontManager` stores a

@@ -10,7 +10,7 @@
 """ API for enable.primitives subpackage.
 
 - :class:`~.Annotater`
-- :class:`~.Box`
+- :class:`Box <enable.primitives.box.Box>`
 - :class:`~.Line`
 - :class:`~.Polygon`
 - :class:`~.Shape`

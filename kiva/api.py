@@ -102,8 +102,8 @@ This can be used by Kiva backends to implement :py:meth:`draw_marker_at_points`
 Fonts
 =====
 
-- :class:`~.Font`
-- :func:`~.add_application_fonts`
+- :class:`Font <kiva.fonttools.font.Font>`
+- :func:`add_application_fonts <kiva.fonttools.app_font.add_application_fonts>`
 
 Font Constants
 --------------

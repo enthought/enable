@@ -223,14 +223,14 @@ Drawing text in kiva is accomplished via a few methods on
 measuring the size of rendered text, and drawing the text.
 
 Font Selection
-++++++++++++++
+--------------
 
 Font selection for use with the text rendering capabilities of
 :class:`GraphicsContext` can be accomplished in a few different ways depending
 on the amount of control needed by your drawing code.
 
 Simplest: ``select_font``
--------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The simplest form of font selection is the
 :py:meth:`GraphicsContext.select_font` method. The tradeoff for this simplicity
@@ -249,7 +249,7 @@ up with.
 
 
 The ``KivaFont`` trait and ``set_font``
----------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you're already doing your drawing within an application using traits, you can
 use the :class:`kiva.trait_defs.api.KivaFont` trait.
@@ -263,7 +263,7 @@ use the :class:`kiva.trait_defs.api.KivaFont` trait.
 
 
 ``Font`` objects
-----------------
+~~~~~~~~~~~~~~~~
 
 If you don't want to rely on the font description parsing in ``KivaFont``, you
 can also manually construct a :class:`kiva.fonttools.font.Font` instance. Once
@@ -289,7 +289,7 @@ desired font.
 
 
 Measuring Text
-++++++++++++++
+--------------
 
 Before drawing text, one often wants to know what the bounding rectangle of the
 rendered text will be so that the text can be positioned correctly. To do this,
@@ -316,7 +316,7 @@ number in the situation where glyphs hang below the baseline. In any case,
 
 
 Drawing Text
-++++++++++++
+------------
 
 Text can be drawn in a graphics context with the
 :py:meth:`GraphicsContext.show_text` and

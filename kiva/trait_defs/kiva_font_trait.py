@@ -167,16 +167,14 @@ else:
 def KivaFontFunc(*args, **metadata):
     """ Returns a trait whose value must be a GUI toolkit-specific font.
 
-    Description
-    -----------
+    Description:
     For wxPython, the returned trait accepts any of the following:
 
     * an kiva.fonttools.Font instance
     * a string describing the font, including one or more of the font family,
       size, weight, style, and typeface name.
 
-    Default Value
-    -------------
+    Default Value:
     For wxPython, 'Arial 10'
     """
     return KivaFontTrait(*args, **metadata)
