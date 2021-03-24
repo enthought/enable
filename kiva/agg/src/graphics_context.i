@@ -722,10 +722,26 @@ namespace kiva {
 
             void clear_clip_path();
             void clear(agg24::rgba& value=_clear_color);
+
+            // Exception handler for cell block overflow
+            %exception {
+                try
+                {
+                    $action
+                }
+                catch (const std::overflow_error& exn)
+                {
+                    PyErr_SetString(PyExc_OverflowError, exn.what());
+                    return NULL;
+                }
+            }
+
             void stroke_path();
             void fill_path();
             void eof_fill_path();
             void draw_path(draw_mode_e mode=FILL_STROKE);
+
+            %exception;  // clear exception handlers
 
             void draw_rect(double rect[4],
                            draw_mode_e mode=FILL_STROKE);
