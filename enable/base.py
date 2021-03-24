@@ -78,8 +78,16 @@ font_noise = ["pt", "point", "family"]
 
 
 def str_to_font(object, name, value):
-    "Converts a (somewhat) free-form string into a valid Font object."
-    # FIXME: Make this less free-form and more well-defined.
+    """ Converts a (somewhat) free-form string into a valid Font object.
+    """
+    import warnings
+
+    warnings.warn(
+        ("str_to_font should not be imported from enable.api. Use the version "
+         "from kiva.fonttools instead."),
+        DeprecationWarning,
+        stacklevel=2,
+    )
     try:
         point_size = 10
         family = SWISS
@@ -115,14 +123,9 @@ def str_to_font(object, name, value):
     raise TraitError(object, name, "a font descriptor string", repr(value))
 
 
-str_to_font.info = (
-    "a string describing a font (e.g. '12 pt bold italic "
-    + "swiss family Arial' or 'default 12')"
-)
-
 # Pick a default font that should work on all platforms.
 default_font_name = "modern 10"
-default_font = str_to_font(None, None, default_font_name)
+default_font = Font(family=MODERN, size=10)
 
 
 def bounding_box(components):
