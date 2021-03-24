@@ -184,8 +184,8 @@ class DrawingImageTester(DrawingTester):
 
         filename = "{0}.png".format(self.filename)
         self.gc.save(filename)
-        image = Image.open(filename)
-        dpi = image.info['dpi']
+        with Image.open(filename) as image:
+            dpi = image.info['dpi']
         return dpi[0]
 
     @contextlib.contextmanager
