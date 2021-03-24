@@ -53,6 +53,8 @@ jobs:
         run: edm --config ci/.edm.yaml install -y wheel click coverage
       - name: Install test environment
         if: github.event_name == 'pull_request' || steps.cacheStep.outputs.cache-hit != 'true'
+        env:
+          PIP_CACHE_DIR: ~/.cache/pip
         run: edm run -- python ci/edmtool.py install --toolkit=${{ matrix.toolkit }}
       - name: Run tests
         if: github.event_name == 'pull_request' || steps.cacheStep.outputs.cache-hit != 'true'
@@ -93,6 +95,8 @@ jobs:
         run: edm --config ci/.edm.yaml install -y wheel click coverage
       - name: Install test environment
         if: github.event_name == 'pull_request' || steps.cacheStep.outputs.cache-hit != 'true'
+        env:
+          PIP_CACHE_DIR: ~/.cache/pip
         run: edm run -- python ci/edmtool.py install --toolkit=${{ matrix.toolkit }}
       - name: Run tests
         if: github.event_name == 'pull_request' || steps.cacheStep.outputs.cache-hit != 'true'
