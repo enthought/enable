@@ -660,6 +660,11 @@ class EnhancedAbstractGraphicsContext(AbstractGraphicsContext):
                 ``TRIANGLE_MARKER``, ``INVERTED_TRIANGLE_MARKER``,
                 ``PLUS_MARKER``, ``DOT_MARKER``, or ``PIXEL_MARKER``. Each is
                 defined in :py:mod:`kiva.api`.
+
+        Returns
+        -------
+            result : bool
+                True if markers were drawn, False otherwise.
         """
 
     @abstractmethod
