@@ -498,8 +498,12 @@ class AbstractWindow(HasTraits):
         if self.component is not None:
             self.component.cleanup(self)
             self.component.parent = None
+            # Break a reference cycle
             self.component.window = None
-            self.component = None
+            # Set `component` without triggering traits machinery!
+            # Otherwise a new component will be assigned and the reference
+            # cycle will be reestablished.
+            self.trait_setq(component=None)
 
         self.control = None
         if self._gc is not None:
