@@ -16,7 +16,6 @@ Enable Base
 ===========
 
 - :class:`~.IDroppedOnHandler`
-- :func:`~.str_to_font`
 - :func:`~.intersect_bounds`
 
 Constants
