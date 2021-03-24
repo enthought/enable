@@ -63,8 +63,6 @@ class TestAggDrawing(DrawingImageTester, unittest.TestCase):
         with self.assertRaises(OverflowError):
             self.gc.stroke_path()
 
-        self.gc.begin_path()
-
         # This many points is OK
         count = 9000
         points = genpoints(count)

@@ -732,6 +732,13 @@ namespace kiva {
                 catch (const std::overflow_error& exn)
                 {
                     PyErr_SetString(PyExc_OverflowError, exn.what());
+
+                    // XXX: This is a hacky, but `arg1` is the graphics context
+                    // object in the SWIG-generated code.
+                    // The path needs to be cleared by drawing calls and this
+                    // guarantees that it is even if an exception is thrown.
+                    (arg1)->begin_path();
+
                     return NULL;
                 }
             }
