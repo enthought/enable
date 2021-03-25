@@ -22,6 +22,7 @@ _2X_SIZE = (1024, 1024)
 _BACKENDS = {
     "gui": {
         "kiva.agg": "enable.null.image",
+        "blend2d": "enable.null.blend2d",
         "cairo": "enable.null.cairo",
         "celiagg": "enable.null.celiagg",
         "opengl": "enable.gcbench.opengl",
