@@ -23,8 +23,8 @@ from setuptools.command.install import install as base_install
 MAJOR = 5
 MINOR = 1
 MICRO = 0
-PRERELEASE = "rc2"
-IS_RELEASED = True
+PRERELEASE = "rc3"
+IS_RELEASED = False
 
 # Templates for version strings.
 RELEASED_VERSION = "{major}.{minor}.{micro}{prerelease}"
