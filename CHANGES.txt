@@ -23,13 +23,16 @@ Enhancements
 Changes
 -------
 * Add new on_drag_leave Enum trait to DragTool (#712)
-* Refactor Font management and selection (#693, #695, #700, #701, #702, #704, #707, #714, #723)
+* Refactor Font management and selection (#693, #695, #700, #701, #702, #704, #707, #714, #723, #726)
 * Accept PIL Image instances in kiva.agg draw_image() (#682)
 * Supply DPI when saving images (#678)
 * Add face_index support to celiagg and kiva.agg backends. (#605)
 
 Fixes
 -----
+* Catch the exception thrown by AGG (#751)
+* Don't create a ref cycle in AbstractWindow.cleanup() (#749)
+* Set encoding when saving svg file (#735)
 * Reorder the preferred fonts list (#698)
 * Extract a better property dict from TTF fonts (#697)
 * Get the Qt Quartz backend working again (#679)
@@ -40,6 +43,10 @@ Fixes
 
 Documentation
 -------------
+* Mention return value for draw_marker_at_points (#754)
+* Update constrained layout documentation (#746)
+* Rearrange the documentation (#732)
+* Add documentation for ComponentEditor (#730)
 * Add some developer docs for Kiva's FontManager (#725)
 * Document Enable trait types (#721)
 * Add documentation for mouse events (#717)
@@ -63,6 +70,10 @@ Testing
 
 Maintenance
 -----------
+* Deprecate the str_to_font in enable.base (#748)
+* Use BGRA32 for celiagg's default pixel format (#729)
+* Require a minimum of Traits 6.2.0 (#755)
+* Don't test drawing on Qt4 [due to lack of Pillow support] (#745)
 * Remove kiva.fonttools.sstruct (#699)
 * Remove old/broken code (#692)
 * Add an 'oldagg' backend pointing to kiva.agg (#669)
