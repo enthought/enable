@@ -59,7 +59,14 @@ copyright = '2005-2021, Enthought'
 # other places throughout the built documents.
 base_path = os.path.dirname(__file__)
 version_file = os.path.join(base_path, '..', '..', 'enable', '_version.py')
-version = release = runpy.run_path(version_file)['full_version']
+if os.path.isfile(version_file):
+    version = release = runpy.run_path(version_file)['full_version']
+else:
+    try:
+        from enable._version import full_version as version
+        release = version
+    except ImportError:
+        raise RuntimeError('Enable must be installed before building docs!')
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
