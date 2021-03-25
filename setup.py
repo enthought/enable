@@ -12,6 +12,7 @@ from distutils.command.build import build as base_build
 import glob
 import os
 import re
+import runpy
 import subprocess
 import sys
 
@@ -46,16 +47,6 @@ class PatchedInstall(base_install):
     def run(self):
         self.run_command('build_ext')
         super().run()
-
-
-def read_version_py(path):
-    """ Read a _version.py file in a safe way.
-    """
-    with open(path, 'r') as fp:
-        code = compile(fp.read(), 'kiva._version', 'exec')
-    context = {}
-    exec(code, context)
-    return context['git_revision'], context['version']
 
 
 def git_version():
@@ -122,7 +113,8 @@ is_released = {is_released}
     elif os.path.exists(kiva_version_path):
         # must be a source distribution, use existing version file
         try:
-            git_revision, version = read_version_py(kiva_version_path)
+            context = runpy.run_path(kiva_version_path)
+            git_revision, version = context['git_revision'], context['version']
         except (SyntaxError, KeyError):
             raise RuntimeError("Unable to read git_revision. Try removing "
                                "kiva/_version.py and the build directory "
@@ -437,10 +429,20 @@ def macos_extensions():
 
 
 if __name__ == "__main__":
-    write_version_py(filename=os.path.join('enable', '_version.py'))
+    # Write version modules as needed
+    enable_version_path = os.path.join('enable', '_version.py')
+    write_version_py(filename=enable_version_path)
     write_version_py(filename=os.path.join('kiva', '_version.py'))
 
-    from enable import __version__, __extras_require__, __requires__
+    # Read the version
+    context = runpy.run_path(enable_version_path)
+    __version__ = context['full_version']
+
+    # Read the requirements from enable.__init__
+    enable_init_path = os.path.join('enable', '__init__.py')
+    context = runpy.run_path(enable_init_path)
+    __extras_require__ = context['__extras_require__']
+    __requires__ = context['__requires__']
 
     with open('README.rst', 'r') as fp:
         long_description = fp.read()

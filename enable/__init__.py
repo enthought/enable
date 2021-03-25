@@ -10,7 +10,10 @@
 """ A multi-platform object drawing library.
     Part of the Enable project of the Enthought Tool Suite.
 """
-from ._version import full_version as __version__
+try:
+    from enable._version import full_version as __version__
+except ImportError:
+    __version__ = "not-built"
 
 __requires__ = [
     "numpy", "pillow", "traits>=6.2.0", "traitsui", "pyface", "fonttools"
