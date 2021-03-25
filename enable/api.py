@@ -132,7 +132,7 @@ Enable Components
 - :class:`~.BaseTool`
 - :class:`~.KeySpec`
 - :class:`~.AbstractOverlay`
-- :class:`~.Canvas`
+- :class:`Canvas <enable.canvas.Canvas>`
 - :class:`~.Component`
 - :class:`~.Container`
 - :class:`~.CoordinateBox`
@@ -154,7 +154,7 @@ Drawing Primitives
 ==================
 
 - :class:`~.Annotater`
-- :class:`~.Box`
+- :class:`Box <enable.primitives.box.Box>`
 - :class:`~.Line`
 - :class:`~.Polygon`
 
@@ -162,11 +162,11 @@ Brushes
 =======
 
 - :class:`~.Brush`
-- :class:`~.ColorBrush`
+- :class:`ColorBrush <enable.brush.ColorBrush>`
 - :class:`~.ColorStop`
 - :class:`~.Gradient`
-- :class:`~.LinearGradientBrush`
-- :class:`~.RadialGradientBrush`
+- :class:`LinearGradientBrush <enable.brush.LinearGradientBrush>`
+- :class:`RadialGradientBrush <enable.brush.RadialGradientBrush>`
 
 """
 

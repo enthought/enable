@@ -105,8 +105,7 @@ def RGBAColorFunc(*args, **metadata):
     """ Returns a trait whose value must be a GUI toolkit-specific RGBA-based
     color.
 
-    Description
-    -----------
+    Description:
     For wxPython, the returned trait accepts any of the following values:
 
     * A tuple of the form (*r*, *g*, *b*, *a*), in which *r*, *g*, *b*, and *a*
@@ -116,8 +115,7 @@ def RGBAColorFunc(*args, **metadata):
       alpha (transparency) value, *RR* is the red value, *GG* is the green
       value, and *BB* is the blue value
 
-    Default Value
-    -------------
+    Default Value:
     For wxPython, (1.0, 1.0, 1.0, 1.0) (that is, opaque white)
     """
     tmp_trait = Trait(

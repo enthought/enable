@@ -16,7 +16,7 @@
 - :class:`~.DragSegment`
 - :class:`~.DragBox`
 - :class:`~.DrawingTool`
-- :class:`~.Button`
+- :class:`Button <enable.drawing.drawing_canvas.Button>`
 - :class:`~.ToolbarButton`
 - :class:`~.DrawingCanvasToolbar`
 - :class:`~.DrawingCanvas`
