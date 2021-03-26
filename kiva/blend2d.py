@@ -61,9 +61,10 @@ class GraphicsContext(object):
         self._kiva_font = None
         self.text_pos = (0, 0)
 
-        # For HiDPI support
+        # flip y / HiDPI
         self.base_scale = kwargs.pop("base_pixel_scale", 1)
-        self.gc.scale(self.base_scale, self.base_scale)
+        self.gc.translate(0, size[1])
+        self.gc.scale(self.base_scale, -self.base_scale)
 
     # ----------------------------------------------------------------
     # Size info
@@ -401,12 +402,10 @@ class GraphicsContext(object):
     # ----------------------------------------------------------------
 
     def set_fill_color(self, color):
-        # XXX: Work around a problem with alpha values in blend2d wrapper
-        self.gc.set_fill_style(color[:3])
+        self.gc.set_fill_style(color)
 
     def set_stroke_color(self, color):
-        # XXX: Work around a problem with alpha values in blend2d wrapper
-        self.gc.set_stroke_style(color[:3])
+        self.gc.set_stroke_style(color)
 
     def set_alpha(self, alpha):
         self.gc.set_alpha(alpha)
@@ -424,8 +423,7 @@ class GraphicsContext(object):
             spread_method, blend2d.ExtendMode.PAD
         )
         for stop in stops:
-            # XXX: Work around a problem with alpha values in blend2d wrapper
-            gradient.add_stop(stop[0], stop[1:4])
+            gradient.add_stop(stop[0], stop[1:])
         self.gc.set_fill_style(gradient)
 
     def radial_gradient(self, cx, cy, r, fx, fy, stops, spread_method,
@@ -437,8 +435,7 @@ class GraphicsContext(object):
             spread_method, blend2d.ExtendMode.PAD
         )
         for stop in stops:
-            # XXX: Work around a problem with alpha values in blend2d wrapper
-            gradient.add_stop(stop[0], stop[1:4])
+            gradient.add_stop(stop[0], stop[1:])
         self.gc.set_fill_style(gradient)
 
     # ----------------------------------------------------------------
@@ -481,8 +478,9 @@ class GraphicsContext(object):
             return
 
         # XXX: Unscaled!
+        # XXX: Upside down!
         x, y, *_ = rect
-        w, h = img.width(), img.height()
+        w, h = img.width, img.height
         image = blend2d.Image(img_array)
         rect = blend2d.Rect(0, 0, w, h)
         self.gc.blit_image((x, y), image, rect)
@@ -544,12 +542,19 @@ class GraphicsContext(object):
         if self.font is None:
             raise RuntimeError("show_text called before setting a font!")
 
+        # Convert between a Kiva and a Blend2D Y coordinate
+        flip_y = (lambda y: self._height - y - 1)
+
         if point is None:
             pos = tuple(self.text_pos)
         else:
             pos = tuple(point)
 
-        self.gc.stroke_text(pos, self.font, text)
+        with self.gc:
+            self.gc.translate(0, self._height)
+            self.gc.scale(1.0, -1.0)
+            pos = (pos[0], flip_y(pos[1]))
+            self.gc.stroke_text(pos, self.font, text)
 
     def show_text_at_point(self, text, x, y):
         """ Draw text at some point (x, y).
@@ -597,7 +602,7 @@ class GraphicsContext(object):
     def clear(self, clear_color=(1.0, 1.0, 1.0, 1.0)):
         self.gc.clear()
         with self.gc:
-            self.gc.set_fill_style(clear_color[:3])
+            self.gc.set_fill_style(clear_color)
             self.gc.fill_rect(blend2d.Rect(0, 0, self._width, self._height))
 
     def draw_path(self, mode=constants.FILL_STROKE):
@@ -672,7 +677,14 @@ class GraphicsContext(object):
         except ImportError:
             raise ImportError("need Pillow to save images")
 
-        return Image.fromarray(self._buffer, "RGBA")
+        # Data is BGRA; Convert to RGBA
+        data = np.empty(self._buffer.shape, dtype=np.uint8)
+        data[..., 0] = self._buffer[..., 2]
+        data[..., 1] = self._buffer[..., 1]
+        data[..., 2] = self._buffer[..., 0]
+        data[..., 3] = self._buffer[..., 3]
+
+        return Image.fromarray(data, "RGBA")
 
 
 class CompiledPath(object):
