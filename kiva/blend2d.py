@@ -65,6 +65,8 @@ class GraphicsContext(object):
         self.base_scale = kwargs.pop("base_pixel_scale", 1)
         self.gc.translate(0, size[1])
         self.gc.scale(self.base_scale, -self.base_scale)
+        # Lock it in
+        self.gc.user_to_meta()
 
     # ----------------------------------------------------------------
     # Size info
@@ -119,7 +121,8 @@ class GraphicsContext(object):
     def get_ctm(self):
         """ Return the current coordinate transform matrix.
         """
-        raise NotImplementedError()
+        # XXX: Not a useful return value
+        return self.gc.user_matrix()
 
     # ----------------------------------------------------------------
     # Save/Restore graphics state.
@@ -255,7 +258,7 @@ class GraphicsContext(object):
     def begin_path(self):
         """ Clear the current drawing path and begin a new one.
         """
-        self.path.reset()
+        self.path.clear()
 
     def move_to(self, x, y):
         """ Start a new drawing subpath at place the current point at (x, y).
@@ -289,13 +292,13 @@ class GraphicsContext(object):
     def rect(self, x, y, sx, sy):
         """ Add a rectangle as a new subpath.
         """
-        self.path.rect(x, y, sx, sy)
+        self.path.add_rect(x, y, sx, sy)
 
     def rects(self, rects):
         """ Add multiple rectangles as separate subpaths to the path.
         """
         for rect in rects:
-            self.path.rect(rect)
+            self.path.add_rect(rect)
 
     def draw_rect(self, rect, mode=constants.FILL_STROKE):
         """ Draw a rect.
@@ -323,14 +326,14 @@ class GraphicsContext(object):
         self.path.quadric_to(cpx, cpy, x, y)
 
     def arc(self, x, y, radius, start_angle, end_angle, clockwise=False):
-        # XXX: Only circles are supported for now
-        if math.fabs(end_angle - start_angle) >= math.pi:
-            self.path.ellipse(x, y, radius, radius)
-        else:
-            raise NotImplementedError()
+        self.path.arc_to(
+            x, y, radius, radius,
+            start_angle, math.fabs(end_angle-start_angle),
+            forceMoveTo=True
+        )
 
     def arc_to(self, x1, y1, x2, y2, radius):
-        raise NotImplementedError()
+        self.path.arc_quadrant_to(x1, y1, x2, y2)
 
     # ----------------------------------------------------------------
     # Getting infomration on paths
@@ -339,17 +342,19 @@ class GraphicsContext(object):
     def is_path_empty(self):
         """ Test to see if the current drawing path is empty
         """
-        raise NotImplementedError()
+        return self.path.empty()
 
     def get_path_current_point(self):
         """ Return the current point from the graphics context.
         """
-        raise NotImplementedError()
+        return self.path.get_last_vertex()
 
     def get_path_bounding_box(self):
         """ Return the bounding box for the current path object.
         """
-        raise NotImplementedError()
+        # XXX: Returns a blend2d.Rect which is sort of useless...
+        self.path.get_bounding_box()
+
 
     # ----------------------------------------------------------------
     # Clipping path manipulation
@@ -370,7 +375,7 @@ class GraphicsContext(object):
 
             Region should be a 4-tuple or a sequence.
         """
-        raise NotImplementedError()
+        self.gc.clip_to_rect(blend2d.Rect(x, y, w, h))
 
     def clip_to_rects(self, rects):
         """ Clip context to a collection of rectangles
@@ -477,13 +482,12 @@ class GraphicsContext(object):
             warnings.warn(msg.format(type(img)))
             return
 
-        # XXX: Unscaled!
         # XXX: Upside down!
-        x, y, *_ = rect
+        dst_rect = blend2d.Rect(*rect)
         w, h = img.width, img.height
         image = blend2d.Image(img_array)
         rect = blend2d.Rect(0, 0, w, h)
-        self.gc.blit_image((x, y), image, rect)
+        self.gc.blit_scaled_image(dst_rect, image, rect)
 
     # ----------------------------------------------------------------
     # Drawing Text
@@ -554,7 +558,7 @@ class GraphicsContext(object):
             self.gc.translate(0, self._height)
             self.gc.scale(1.0, -1.0)
             pos = (pos[0], flip_y(pos[1]))
-            self.gc.stroke_text(pos, self.font, text)
+            self.gc.fill_text(pos, self.font, text)
 
     def show_text_at_point(self, text, x, y):
         """ Draw text at some point (x, y).
@@ -600,10 +604,9 @@ class GraphicsContext(object):
         raise NotImplementedError()
 
     def clear(self, clear_color=(1.0, 1.0, 1.0, 1.0)):
-        self.gc.clear()
         with self.gc:
             self.gc.set_fill_style(clear_color)
-            self.gc.fill_rect(blend2d.Rect(0, 0, self._width, self._height))
+            self.gc.fill_all()
 
     def draw_path(self, mode=constants.FILL_STROKE):
         """ Walk through all the drawing subpaths and draw each element.
@@ -695,7 +698,7 @@ class CompiledPath(object):
         raise NotImplementedError()
 
     def begin_path(self):
-        self.path.reset()
+        self.path.clear()
 
     def move_to(self, x, y):
         self.path.move_to(x, y)
@@ -725,11 +728,11 @@ class CompiledPath(object):
         self.path.quadric_to(cx, cy, x, y)
 
     def rect(self, x, y, sx, sy):
-        self.path.rect(x, y, sx, sy)
+        self.path.add_rect(x, y, sx, sy)
 
     def rects(self, rects):
         for rect in rects:
-            self.path.rect(rect)
+            self.path.add_rect(rect)
 
     def add_path(self, other_path):
         if isinstance(other_path, CompiledPath):
@@ -739,13 +742,14 @@ class CompiledPath(object):
         self.path.close()
 
     def is_empty(self):
-        raise NotImplementedError()
+        return self.path.empty()
 
     def get_current_point(self):
-        raise NotImplementedError()
+        return self.path.get_last_vertex()
 
     def get_bounding_box(self):
-        raise NotImplementedError()
+        # XXX: Returns a blend2d.Rect which is sort of useless...
+        self.path.get_bounding_box()
 
 
 # GraphicsContext should implement AbstractGraphicsContext
