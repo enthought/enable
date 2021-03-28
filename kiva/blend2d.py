@@ -60,6 +60,7 @@ class GraphicsContext(object):
         self.font = None
         self._kiva_font = None
         self.text_pos = (0, 0)
+        self.text_drawing_mode = constants.TEXT_FILL
 
         # flip y / HiDPI
         self.base_scale = kwargs.pop("base_pixel_scale", 1)
@@ -523,7 +524,16 @@ class GraphicsContext(object):
         raise NotImplementedError(msg)
 
     def set_text_drawing_mode(self, mode):
-        raise NotImplementedError()
+        supported_modes = {
+            constants.TEXT_FILL,
+            constants.TEXT_STROKE,
+            constants.TEXT_FILL_STROKE,
+            constants.TEXT_INVISIBLE,
+        }
+        if mode not in supported_modes:
+            raise NotImplementedError()
+
+        self.text_drawing_mode = mode
 
     def set_text_position(self, x, y):
         self.text_pos = (x, y)
@@ -546,6 +556,10 @@ class GraphicsContext(object):
         if self.font is None:
             raise RuntimeError("show_text called before setting a font!")
 
+        if self.text_drawing_mode == constants.TEXT_INVISIBLE:
+            # XXX: This is probably more sophisticated in practice
+            return
+
         # Convert between a Kiva and a Blend2D Y coordinate
         flip_y = (lambda y: self._height - y - 1)
 
@@ -554,11 +568,15 @@ class GraphicsContext(object):
         else:
             pos = tuple(point)
 
+        mode = self.text_drawing_mode
         with self.gc:
             self.gc.translate(0, self._height)
             self.gc.scale(1.0, -1.0)
             pos = (pos[0], flip_y(pos[1]))
-            self.gc.fill_text(pos, self.font, text)
+            if mode in (constants.TEXT_FILL, constants.TEXT_FILL_STROKE):
+                self.gc.fill_text(pos, self.font, text)
+            if mode in (constants.TEXT_STROKE, constants.TEXT_FILL_STROKE):
+                self.gc.stroke_text(pos, self.font, text)
 
     def show_text_at_point(self, text, x, y):
         """ Draw text at some point (x, y).
