@@ -21,7 +21,7 @@ class FontEntry(object):
     """
     def __init__(self, fname="", family="", style="normal", variant="normal",
                  weight="normal", stretch="normal", size="medium",
-                 face_index=0):
+                 face_index=0, languages=None):
 
         self.fname = fname
         self.family = family
@@ -30,6 +30,7 @@ class FontEntry(object):
         self.weight = weight
         self.stretch = stretch
         self.face_index = face_index
+        self.languages = languages or frozenset(["Unknown"])
 
         try:
             self.size = str(float(size))
@@ -44,7 +45,8 @@ class FontEntry(object):
         fname = os.path.basename(self.fname)
         return (
             f"<FontEntry '{self.family}' ({fname}[{self.face_index}]) "
-            f"{self.style} {self.variant} {self.weight} {self.stretch}>"
+            f"{self.style} {self.variant} {self.weight} {self.stretch} "
+            f"{sorted(self.languages)}>"
         )
 
 

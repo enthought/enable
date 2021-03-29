@@ -44,10 +44,80 @@ _name_ids = {
     5: "version",
     6: "postscript_name",
 }
+# OpenType 'OS/2' `ulCodePageRange` bit meanings
+_ot_code_page_masks = {
+    "Latin": 0x93,
+    "Cyrillic": 0x4,
+    "Greek": 0x8,
+    "Hebrew": 0x20,
+    "Arabic": 0x40,
+    "Vietnamese": 0x100,
+    "Thai": 0x10000,
+    "Japanese": 0x20000,
+    "Simplified Chinese": 0x40000,
+    "Traditional Chinese": 0x100000,
+    "Korean": 0x280000,
+    "Symbol": 0x80000000,
+}
+# OpenType 'OS/2' table `ulUnicodeRange` bit meanings
+_ot_unicode_range_bits = {
+    0: "Latin",
+    1: "Latin",
+    2: "Latin",
+    3: "Latin",
+    7: "Greek",
+    8: "Coptic",
+    9: "Cyrillic",
+    10: "Armenian",
+    11: "Hebrew",
+    12: "Vai",
+    13: "Arabic",
+    14: "NKo",
+    15: "Devanagari",
+    16: "Bengali",
+    17: "Gurmukhi",
+    18: "Gujarati",
+    19: "Oriya",
+    20: "Tamil",
+    21: "Telugu",
+    22: "Kannada",
+    23: "Malayalam",
+    24: "Thai",
+    25: "Lao",
+    26: "Georgia",
+    27: "Balinese",
+    28: "Korean",
+    29: "Latin",
+    30: "Greek",
+    38: "Math",
+    52: "Korean",
+    56: "Korean",
+    58: "Phoenician",
+    70: "Tibetan",
+    71: "Syriac",
+    72: "Thaana",
+    73: "Sinhala",
+    74: "Myanmar",
+    75: "Ethiopic",
+    76: "Cherokee",
+    77: "Unified Canadian Aboriginal Syllabics",
+    78: "Ogham",
+    79: "Runic",
+    80: "Khmer",
+    81: "Mongolian",
+    86: "Gothic",
+    87: "Deseret",
+    93: "Limbu",
+    94: "Tai Le",
+    95: "New Tai Lue",
+    96: "Buginese",
+    97: "Glagolitic",
+    98: "Tifinagh",
+}
 
 
 def get_ttf_prop_dict(font):
-    """ Parse the 'name' table of a :class:`TTFont` instance.
+    """ Parse the 'name' and 'OS/2' tables of a :class:`TTFont` instance.
     """
     propdict = {}
     table = font["name"]
@@ -69,6 +139,32 @@ def get_ttf_prop_dict(font):
 
         # Use the NameRecord's toStr() method instead of ad-hoc decoding
         propdict[key] = rec.toStr()
+
+    # NOTE: not all fonts have this table, but it's the easiest to extract
+    # language support information from
+    propdict["languages"] = set()
+    try:
+        table = font["OS/2"]
+        languages = set()
+        # Check the unicode range bits
+        unicode_bits = table.getUnicodeRanges()
+        if unicode_bits:
+            for bit in unicode_bits:
+                if bit in _ot_unicode_range_bits:
+                    languages.add(_ot_unicode_range_bits[bit])
+        # Check the codepage range bits
+        cp_bits = table.ulCodePageRange1
+        for lang, mask in _ot_code_page_masks.items():
+            if cp_bits & mask:
+                languages.add(lang)
+        # Lock the set so that it's hashable
+        propdict["languages"] = frozenset(languages)
+    except KeyError:
+        pass
+
+    # Make sure "languages" is never empty
+    if not propdict["languages"]:
+        propdict["languages"] = frozenset(["Unknown"])
 
     return propdict
 
