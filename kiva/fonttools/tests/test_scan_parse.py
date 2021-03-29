@@ -183,6 +183,7 @@ class TestTTFFontEntry(unittest.TestCase):
         exp_weight = 400
         exp_stretch = "normal"
         exp_size = "scalable"
+        exp_languages = frozenset(["Latin"])
 
         # When
         entry = _ttf_font_property(test_font, TTFont(test_font))
@@ -194,6 +195,7 @@ class TestTTFFontEntry(unittest.TestCase):
         self.assertEqual(entry.weight, exp_weight)
         self.assertEqual(entry.stretch, exp_stretch)
         self.assertEqual(entry.size, exp_size)
+        self.assertEqual(entry.languages, exp_languages)
 
     def test_font_with_italic_style(self):
         """Test that a font with Italic style, writing with a capital
@@ -207,6 +209,7 @@ class TestTTFFontEntry(unittest.TestCase):
         exp_weight = 400
         exp_stretch = "normal"
         exp_size = "scalable"
+        exp_languages = frozenset(["Latin"])
 
         # When
         entry = _ttf_font_property(test_font, TTFont(test_font))
@@ -218,6 +221,7 @@ class TestTTFFontEntry(unittest.TestCase):
         self.assertEqual(entry.weight, exp_weight)
         self.assertEqual(entry.stretch, exp_stretch)
         self.assertEqual(entry.size, exp_size)
+        self.assertEqual(entry.languages, exp_languages)
 
     def test_nameless_font(self):
         # Given

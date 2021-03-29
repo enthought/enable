@@ -268,4 +268,5 @@ def _ttf_font_property(fpath, font, face_index=0):
         stretch=stretch,
         size=size,
         face_index=face_index,
+        languages=props.get("languages", None),
     )
