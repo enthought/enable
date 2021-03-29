@@ -44,7 +44,9 @@ _name_ids = {
     5: "version",
     6: "postscript_name",
 }
-# OpenType 'OS/2' `ulCodePageRange` bit meanings
+# OpenType 'OS/2' table data
+# https://docs.microsoft.com/en-us/typography/opentype/spec/os2
+# `ulCodePageRange` bit meanings
 _ot_code_page_masks = {
     "Latin": 0x93,
     "Cyrillic": 0x4,
@@ -59,7 +61,7 @@ _ot_code_page_masks = {
     "Korean": 0x280000,
     "Symbol": 0x80000000,
 }
-# OpenType 'OS/2' table `ulUnicodeRange` bit meanings
+# `ulUnicodeRange` bit meanings
 _ot_unicode_range_bits = {
     0: "Latin",
     1: "Latin",
@@ -140,8 +142,8 @@ def get_ttf_prop_dict(font):
         # Use the NameRecord's toStr() method instead of ad-hoc decoding
         propdict[key] = rec.toStr()
 
-    # NOTE: not all fonts have this table, but it's the easiest to extract
-    # language support information from
+    # NOTE: Not all fonts have the "OS/2" table, but it's the easiest to
+    # extract language support information from.
     propdict["languages"] = set()
     try:
         table = font["OS/2"]
