@@ -487,13 +487,13 @@ class Scrolled(Container):
     def _release_sb(self, sb):
         if sb is not None:
             if sb == self._vsb:
-                sb.on_trait_change(
+                sb.observe(
                     self._handle_vertical_scroll,
                     "scroll_position",
                     remove=True,
                 )
             if sb == self._hsb:
-                sb.on_trait_change(
+                sb.observe(
                     self._handle_horizontal_scroll,
                     "scroll_position",
                     remove=True,
