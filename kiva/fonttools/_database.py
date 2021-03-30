@@ -59,6 +59,7 @@ class FontDatabase:
         self._entries = {ent for ent in entries if isinstance(ent, FontEntry)}
         self._family_map = self._build_family_map(self._entries)
         self._file_map = self._build_file_map(self._entries)
+        self._language_map = self._build_language_map(self._entries)
 
     def add_fonts(self, entries):
         """ Add more :class`FontEntry` instances to the database.
@@ -71,6 +72,8 @@ class FontDatabase:
             self._entries.add(entry)
             self._family_map.setdefault(entry.family, []).append(entry)
             self._file_map.setdefault(entry.fname, []).append(entry)
+            for lang in entry.languages:
+                self._language_map.setdefault(lang, []).append(entry)
 
     def fonts_for_directory(self, directory):
         """ Returns all fonts whose file is in a directory.
@@ -101,6 +104,11 @@ class FontDatabase:
         # Yes, self._entries is a set. Consumers should only expect an iterable
         return self._entries
 
+    def fonts_for_language(self, language):
+        """ Returns all fonts which support a particular language.
+        """
+        return self._language_map.get(language, [])
+
     def __len__(self):
         return len(self._entries)
 
@@ -117,5 +125,14 @@ class FontDatabase:
         ret = {}
         for entry in entries:
             ret.setdefault(entry.fname, []).append(entry)
+
+        return ret
+
+    @staticmethod
+    def _build_language_map(entries):
+        ret = {}
+        for entry in entries:
+            for lang in entry.languages:
+                ret.setdefault(lang, []).append(entry)
 
         return ret

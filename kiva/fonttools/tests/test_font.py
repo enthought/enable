@@ -54,6 +54,18 @@ class TestFont(unittest.TestCase):
         # Name should be nonempty.
         self.assertGreater(len(name), 0)
 
+    def test_find_font_for_language(self):
+        font = Font(face_name="")
+
+        # Nearly every font supports Latin script, so this shouldn't fail
+        spec = font.findfont(language="Latin")
+        self.assertTrue(os.path.exists(spec.filename))
+
+        # There will be warnings for an unknown language
+        with self.assertWarns(UserWarning):
+            spec = font.findfont(language="FancyTalk")
+        self.assertTrue(os.path.exists(spec.filename))
+
     def test_str_to_font(self):
         # Simple
         from_str = str_to_font("modern 10")

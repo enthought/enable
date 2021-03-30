@@ -112,18 +112,38 @@ class Font(object):
         self.underline = underline
         self.encoding = encoding
 
-    def findfont(self):
+    def findfont(self, language=None):
         """ Returns the file name and face index of the font that most closely
         matches our font properties.
+
+        Parameters
+        ----------
+        language : str [optional]
+            If provided, attempt to find a font which supports ``language``.
         """
         query = self._make_font_query()
+        if language is not None:
+            spec = default_font_manager().find_fallback(query, language)
+            if spec is not None:
+                return spec
+
         return default_font_manager().findfont(query)
 
-    def findfontname(self):
+    def findfontname(self, language=None):
         """ Returns the name of the font that most closely matches our font
-        properties
+        properties.
+
+        Parameters
+        ----------
+        language : str [optional]
+            If provided, attempt to find a font which supports ``language``.
         """
         query = self._make_font_query()
+        if language is not None:
+            spec = default_font_manager().find_fallback(query, language)
+            if spec is not None:
+                return spec.family
+
         return query.get_name()
 
     def _make_font_query(self):

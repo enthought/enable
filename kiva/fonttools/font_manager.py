@@ -76,7 +76,7 @@ class FontManager:
     # Increment this version number whenever the font cache data
     # format or behavior has changed and requires a existing font
     # cache files to be rebuilt.
-    __version__ = 11
+    __version__ = 12
 
     def __init__(self):
         self._version = self.__version__
@@ -120,6 +120,8 @@ class FontManager:
 
         self.ttf_lookup_cache = {}
         self.afm_lookup_cache = {}
+        self.ttf_fallback_cache = {}
+        self.afm_fallback_cache = {}
 
     def update_fonts(self, paths):
         """ Update the font lists with new font files.
@@ -138,6 +140,55 @@ class FontManager:
 
         update_font_database(self.afm_db, afm_paths, fontext="afm")
         update_font_database(self.ttf_db, ttf_paths, fontext="ttf")
+
+    def find_fallback(self, query, language, fontext="ttf"):
+        """ Search the font list for a font which most closely matches
+        the :class:`FontQuery` *query*, and has support for ``language``.
+        """
+        if fontext == "afm":
+            font_cache = self.afm_fallback_cache
+            font_db = self.afm_db
+        else:
+            font_cache = self.ttf_fallback_cache
+            font_db = self.ttf_db
+
+        key = hash(language + str(query))
+        cached = font_cache.get(key)
+        if cached:
+            return cached
+
+        # Narrow the search to a single language
+        fontlist = font_db.fonts_for_language(language)
+
+        best_score = 3.0
+        best_font = None
+        for font in fontlist:
+            score = (
+                score_family(query.get_family(), font.family)
+                + score_style(query.get_style(), font.style)
+                + score_weight(query.get_weight(), font.weight)
+            )
+            # Lowest score wins
+            if score < best_score:
+                best_score = score
+                best_font = font
+            # Exact matches stop the search
+            if score == 0:
+                break
+
+        # If no suitable font is found, return None
+        if best_font is None or best_score >= 3.0:
+            msg = "find_fallback: Font for {} in language {} not found"
+            warnings.warn(msg.format(query, language))
+            return None
+
+        result = FontSpec(
+            best_font.fname,
+            best_font.family,
+            best_font.face_index,
+        )
+        font_cache[key] = result
+        return result
 
     def findfont(self, query, fontext="ttf", directory=None,
                  fallback_to_default=True, rebuild_if_missing=True):
@@ -166,22 +217,6 @@ class FontManager:
         """
         from kiva.fonttools._query import FontQuery
 
-        class FontSpec(object):
-            """ An object to represent the return value of findfont().
-            """
-            def __init__(self, filename, face_index=0):
-                self.filename = str(filename)
-                self.face_index = face_index
-
-            def __fspath__(self):
-                """ Implement the os.PathLike abstract interface.
-                """
-                return self.filename
-
-            def __repr__(self):
-                args = f"{self.filename}, face_index={self.face_index}"
-                return f"FontSpec({args})"
-
         if not isinstance(query, FontQuery):
             query = FontQuery(query)
 
@@ -190,7 +225,7 @@ class FontManager:
             logger.debug("findfont returning %s", fname)
             # It's not at all clear where a `FontQuery` instance with
             # `fname` already set would come from. Assume face_index == 0.
-            return FontSpec(fname)
+            return FontSpec(fname, query.family[0])
 
         if fontext == "afm":
             font_cache = self.afm_lookup_cache
@@ -259,7 +294,7 @@ class FontManager:
                     UserWarning,
                 )
                 # Assume this is never a .ttc font, so 0 is ok for face index.
-                result = FontSpec(self.default_font[fontext])
+                result = FontSpec(self.default_font[fontext], "Default")
         else:
             logger.debug(
                 "findfont: Matching %s to %s (%s[%d]) with score of %f",
@@ -269,7 +304,11 @@ class FontManager:
                 best_font.face_index,
                 best_score,
             )
-            result = FontSpec(best_font.fname, best_font.face_index)
+            result = FontSpec(
+                best_font.fname,
+                best_font.family,
+                best_font.face_index,
+            )
 
         if not os.path.isfile(result.filename):
             if rebuild_if_missing:
@@ -288,6 +327,25 @@ class FontManager:
         if directory is None:
             font_cache[hash(query)] = result
         return result
+
+
+class FontSpec(object):
+    """ An object to represent the return value of findfont() and
+    find_fallback().
+    """
+    def __init__(self, filename, family, face_index=0):
+        self.filename = str(filename)
+        self.family = family
+        self.face_index = face_index
+
+    def __fspath__(self):
+        """ Implement the os.PathLike abstract interface.
+        """
+        return self.filename
+
+    def __repr__(self):
+        args = f"{self.filename}, {self.family}, face_index={self.face_index}"
+        return f"FontSpec({args})"
 
 
 # ---------------------------------------------------------------------------
