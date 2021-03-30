@@ -41,6 +41,13 @@ class UnicodeAnalyzer:
         return result
 
     def _lookup_codepoint(self, cp):
+        """ Look up a single codepoint in the database.
+        """
+        # `self.ranges` is an Nx2 numpy array of codepoint ranges. We subtract
+        # the given codepoint to get an Nx2 array of offsets. The "bucket"
+        # containing the given codepoint is the one whose start offset is zero
+        # or negative and whose end is zero or positive. That should only be
+        # True in one location, so we get the index of that location.
         comps = self.ranges - ord(cp)
         index = ((comps[:, 0] <= 0) == (comps[:, 1] >= 0)).argmax()
         return self.values[index]
