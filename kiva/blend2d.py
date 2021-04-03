@@ -88,34 +88,23 @@ class GraphicsContext(object):
     # ----------------------------------------------------------------
 
     def scale_ctm(self, sx, sy):
-        """ Set the coordinate system scale to the given values, (sx, sy).
-
-            sx:float -- The new scale factor for the x axis
-            sy:float -- The new scale factor for the y axis
+        """ Concatenate a scaling to the current transformation matrix
         """
         self.gc.scale(sx, sy)
 
     def translate_ctm(self, tx, ty):
-        """ Translate the coordinate system by the given value by (tx, ty)
-
-            tx:float --  The distance to move in the x direction
-            ty:float --   The distance to move in the y direction
+        """ Concatenate a translation to the current transformation matrix
         """
         self.gc.translate(tx, ty)
 
     def rotate_ctm(self, angle):
-        """ Rotates the coordinate space for drawing by the given angle.
-
-            angle:float -- the angle, in radians, to rotate the coordinate
-                           system
+        """ Concatenate a rotation to the current transformation matrix.
         """
         self.gc.rotate(angle)
 
     def concat_ctm(self, transform):
-        """ Concatenate the transform to current coordinate transform matrix.
-
-            transform:affine_matrix -- the transform matrix to concatenate with
-                                       the current coordinate matrix.
+        """ Concatenate an arbitrary affine matrix to the current
+        transformation matrix.
         """
         raise NotImplementedError()
 
@@ -130,9 +119,9 @@ class GraphicsContext(object):
     # ----------------------------------------------------------------
 
     def save_state(self):
-        """ Save the current graphic's context state.
+        """ Save the current graphics context's state.
 
-            This should always be paired with a restore_state
+        This should always be paired with a restore_state
         """
         # XXX: This doesn't save the current font or path!
         self.gc.save()
@@ -162,17 +151,11 @@ class GraphicsContext(object):
         raise NotImplementedError()
 
     def set_line_width(self, width):
-        """ Set the line width for drawing
-
-            width:float -- The new width for lines in user space units.
-        """
+        """ Set the width of the pen used to stroke a path """
         self.gc.set_stroke_width(width)
 
     def set_line_join(self, style):
-        """ Set style for joining lines in a drawing.
-
-            style:join_style -- The line joining style.  The available
-                                styles are JOIN_ROUND, JOIN_BEVEL, JOIN_MITER.
+        """ Set the style of join to use a path corners
         """
         try:
             sjoin = join_style[style]
@@ -182,23 +165,14 @@ class GraphicsContext(object):
             raise ValueError(msg)
 
     def set_miter_limit(self, limit):
-        """ Specifies limits on line lengths for mitering line joins.
+        """ Set the limit at which mitered joins are flattened.
 
-            If line_join is set to miter joins, the limit specifies which
-            line joins should actually be mitered.  If lines aren't mitered,
-            they are joined with a bevel.  The line width is divided by
-            the length of the miter.  If the result is greater than the
-            limit, the bevel style is used.
-
-            limit:float -- limit for mitering joins.
+        Only applicable when the line join type is set to ``JOIN_MITER``.
         """
         self.gc.set_stroke_miter_limit(limit)
 
     def set_line_cap(self, style):
-        """ Specify the style of endings to put on line ends.
-
-            style:cap_style -- the line cap style to use. Available styles
-                               are CAP_ROUND, CAP_BUTT, CAP_SQUARE
+        """ Set the style of cap to use a path ends
         """
         try:
             scap = cap_style[style]
@@ -209,20 +183,11 @@ class GraphicsContext(object):
 
     def set_line_dash(self, lengths, phase=0):
         """ Set the dash style to use when stroking a path
-
-            lengths:float array -- An array of floating point values
-                                   specifing the lengths of on/off painting
-                                   pattern for lines.
-            phase:float -- Specifies how many units into dash pattern
-                           to start.  phase defaults to 0.
         """
         raise NotImplementedError()
 
     def set_flatness(self, flatness):
-        """ Not implemented
-
-            It is device dependent and therefore not recommended by
-            the PDF documentation.
+        """ Set the error tolerance when drawing curved paths
         """
         msg = "set_flatness not implemented for blend2d"
         raise NotImplementedError(msg)
@@ -267,18 +232,12 @@ class GraphicsContext(object):
         self.path.move_to(x, y)
 
     def line_to(self, x, y):
-        """ Add a line from the current point to the given point (x, y).
-
-            The current point is moved to (x, y).
+        """ Add a line from the current point to (x, y) to the path
         """
         self.path.line_to(x, y)
 
     def lines(self, points):
-        """ Add a series of lines as a new subpath.
-
-            Currently implemented by calling line_to a zillion times.
-
-            Points is an Nx2 array of x, y pairs.
+        """ Adds a series of lines as a new subpath.
         """
         for (x, y) in points:
             self.path.line_to(x, y)
@@ -321,12 +280,18 @@ class GraphicsContext(object):
         self.path.close()
 
     def curve_to(self, cp1x, cp1y, cp2x, cp2y, x, y):
+        """ Draw a cubic bezier curve
+        """
         self.path.cubic_to(cp1x, cp1y, cp2x, cp2y, x, y)
 
     def quad_curve_to(self, cpx, cpy, x, y):
+        """ Draw a quadratic bezier curve
+        """
         self.path.quadric_to(cpx, cpy, x, y)
 
-    def arc(self, x, y, radius, start_angle, end_angle, clockwise=False):
+    def arc(self, x, y, radius, start_angle, end_angle, cw=False):
+        """ Draw a circular arc of the given radius, centered at ``(x, y)``
+        """
         self.path.arc_to(
             x, y, radius, radius,
             start_angle, math.fabs(end_angle-start_angle),
@@ -334,10 +299,12 @@ class GraphicsContext(object):
         )
 
     def arc_to(self, x1, y1, x2, y2, radius):
+        """ Draw a circular arc from current point to tangent line
+        """
         self.path.arc_quadrant_to(x1, y1, x2, y2)
 
     # ----------------------------------------------------------------
-    # Getting infomration on paths
+    # Getting information on paths
     # ----------------------------------------------------------------
 
     def is_path_empty(self):
@@ -374,7 +341,7 @@ class GraphicsContext(object):
     def clip_to_rect(self, x, y, w, h):
         """ Clip context to the given rectangular region.
 
-            Region should be a 4-tuple or a sequence.
+        Region should be a 4-tuple or a sequence.
         """
         self.gc.clip_to_rect(blend2d.Rect(x, y, w, h))
 
@@ -408,12 +375,18 @@ class GraphicsContext(object):
     # ----------------------------------------------------------------
 
     def set_fill_color(self, color):
+        """ Set the color used to fill the region bounded by a path or when
+        drawing text.
+        """
         self.gc.set_fill_style(color)
 
     def set_stroke_color(self, color):
+        """ Set the color used when stroking a path
+        """
         self.gc.set_stroke_style(color)
 
     def set_alpha(self, alpha):
+        """ Set the alpha to use when drawing """
         self.gc.set_alpha(alpha)
 
     # ----------------------------------------------------------------
@@ -449,10 +422,7 @@ class GraphicsContext(object):
     # ----------------------------------------------------------------
 
     def draw_image(self, img, rect=None):
-        """
-        img is either a N*M*3 or N*M*4 numpy array, or a PIL Image
-
-        rect - a tuple (x, y, w, h)
+        """ Render an image into a rectangle
         """
         from PIL import Image
 
@@ -516,14 +486,19 @@ class GraphicsContext(object):
         self.set_font(self._kiva_font)
 
     def set_character_spacing(self, spacing):
+        """ Set the spacing between characters when drawing text
+        """
         msg = "set_character_spacing not implemented on blend2d yet."
         raise NotImplementedError(msg)
 
     def get_character_spacing(self):
+        """ Get the current spacing between characters when drawing text """
         msg = "get_character_spacing not implemented on blend2d yet."
         raise NotImplementedError(msg)
 
     def set_text_drawing_mode(self, mode):
+        """ Set the drawing mode to use with text
+        """
         supported_modes = {
             constants.TEXT_FILL,
             constants.TEXT_STROKE,
@@ -536,22 +511,24 @@ class GraphicsContext(object):
         self.text_drawing_mode = mode
 
     def set_text_position(self, x, y):
+        """ Set the current point for drawing text
+        """
         self.text_pos = (x, y)
 
     def get_text_position(self):
+        """ Get the current point where text will be drawn """
         return self.text_pos
 
     def set_text_matrix(self, ttm):
+        """ Set the transformation matrix to use when drawing text """
         raise NotImplementedError()
 
     def get_text_matrix(self):
+        """ Get the transformation matrix to use when drawing text """
         raise NotImplementedError()
 
     def show_text(self, text, point=None):
-        """ Draw text on the device at current text position.
-
-            This is also used for showing text at a particular point
-            specified by x and y.
+        """ Draw the specified string at the current point
         """
         if self.font is None:
             raise RuntimeError("show_text called before setting a font!")
@@ -605,14 +582,20 @@ class GraphicsContext(object):
     # ----------------------------------------------------------------
 
     def stroke_path(self):
+        """ Stroke the current path with pen settings from current state
+        """
         self.gc.stroke_path(self.path)
         self.begin_path()
 
     def fill_path(self):
+        """ Fill the current path with fill settings from the current state
+        """
         self.gc.fill_path(self.path)
         self.begin_path()
 
     def eof_fill_path(self):
+        """ Fill the current path with fill settings from the current state
+        """
         # XXX: Not fully implemented
         # self.gc.set_fill_rule()
         self.gc.fill_path(self.path)
@@ -627,9 +610,7 @@ class GraphicsContext(object):
             self.gc.fill_all()
 
     def draw_path(self, mode=constants.FILL_STROKE):
-        """ Walk through all the drawing subpaths and draw each element.
-
-            Each subpath is drawn separately.
+        """ Draw the current path with the specified mode
         """
         if mode in (constants.FILL, constants.FILL_STROKE):
             self.gc.fill_path(self.path)
@@ -721,8 +702,12 @@ class CompiledPath(object):
     def move_to(self, x, y):
         self.path.move_to(x, y)
 
-    def arc(self, x, y, r, start_angle, end_angle, clockwise=False):
-        self.path.arc(x, y, r, start_angle, end_angle, clockwise)
+    def arc(self, x, y, r, start_angle, end_angle, cw=False):
+        self.path.arc_to(
+            x, y, r, r,
+            start_angle, math.fabs(end_angle-start_angle),
+            forceMoveTo=True
+        )
 
     def arc_to(self, x1, y1, x2, y2, r):
         raise NotImplementedError()
