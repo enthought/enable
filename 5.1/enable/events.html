@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>Enable GUI Events &mdash; enable 5.1.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.1.0 documentation" href="../index.html" >
+    <link rel="next" title="Enable Constraints Layout" href="constraints_layout.html" >
+    <link rel="prev" title="Enable Tools" href="tools.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.1.0 documentation</a></li>
+	 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="constraints_layout.html" title="Enable Constraints Layout"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="tools.html" title="Enable Tools"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="enable-gui-events">
+<h1>Enable GUI Events<a class="headerlink" href="#enable-gui-events" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="mouse-events">
+<h2>Mouse Events<a class="headerlink" href="#mouse-events" title="Permalink to this headline">¶</a></h2>
+<p>Enable mouse events are represented by the <a class="reference internal" href="../api/enable.events.html#enable.events.MouseEvent" title="enable.events.MouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">MouseEvent</span></code></a> type and their
+event names (which are the suffixes used by
+<a class="reference internal" href="../api/enable.interactor.html#enable.interactor.Interactor.dispatch" title="enable.interactor.Interactor.dispatch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enable.interactor.Interactor.dispatch()</span></code></a>) can be divided into two
+groups: mouse clicks and mouse movements. The mouse click events have names
+ending in <code class="docutils literal notranslate"><span class="pre">_down</span></code>, <code class="docutils literal notranslate"><span class="pre">_up</span></code>, or <code class="docutils literal notranslate"><span class="pre">_dclick</span></code> and names beginning with <code class="docutils literal notranslate"><span class="pre">left</span></code>,
+<code class="docutils literal notranslate"><span class="pre">right</span></code>, or <code class="docutils literal notranslate"><span class="pre">middle</span></code>. This means that Enable only supports three mouse
+buttons (plus wheel events).</p>
+<div class="section" id="mouse-event-types">
+<h3>Mouse Event types<a class="headerlink" href="#mouse-event-types" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="down">
+<h4>*_down<a class="headerlink" href="#down" title="Permalink to this headline">¶</a></h4>
+<p>A mouse button was pressed. Dispatched as <code class="docutils literal notranslate"><span class="pre">left_down</span></code>, <code class="docutils literal notranslate"><span class="pre">right_down</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">middle_down</span></code>.</p>
+</div>
+<div class="section" id="up">
+<h4>*_up<a class="headerlink" href="#up" title="Permalink to this headline">¶</a></h4>
+<p>A mouse button was released. Dispatched as <code class="docutils literal notranslate"><span class="pre">left_up</span></code>, <code class="docutils literal notranslate"><span class="pre">right_up</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">middle_up</span></code>.</p>
+</div>
+<div class="section" id="dclick">
+<h4>*_dclick<a class="headerlink" href="#dclick" title="Permalink to this headline">¶</a></h4>
+<p>A mouse button was double-clicked. Dispatched as <code class="docutils literal notranslate"><span class="pre">left_dclick</span></code>,
+<code class="docutils literal notranslate"><span class="pre">right_dclick</span></code>, or <code class="docutils literal notranslate"><span class="pre">middle_dclick</span></code>.</p>
+</div>
+<div class="section" id="move">
+<h4>move<a class="headerlink" href="#move" title="Permalink to this headline">¶</a></h4>
+<p>The mouse moved within a component.</p>
+</div>
+<div class="section" id="enter">
+<h4>enter<a class="headerlink" href="#enter" title="Permalink to this headline">¶</a></h4>
+<p>The mouse moved into a component’s bounds.</p>
+</div>
+<div class="section" id="leave">
+<h4>leave<a class="headerlink" href="#leave" title="Permalink to this headline">¶</a></h4>
+<p>The mouse moved out of a component’s bounds.</p>
+</div>
+<div class="section" id="wheel">
+<h4>wheel<a class="headerlink" href="#wheel" title="Permalink to this headline">¶</a></h4>
+<p>The mouse wheel moved.</p>
+</div>
+</div>
+<div class="section" id="mouseevent">
+<h3>MouseEvent<a class="headerlink" href="#mouseevent" title="Permalink to this headline">¶</a></h3>
+<p>Below is a listing of the traits on a <cite>MouseEvent</cite> instance.</p>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="sig-prename descclassname">enable.events.</code><code class="sig-name descname">MouseEvent</code><a class="reference internal" href="../_modules/enable/events.html#MouseEvent"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>A mouse event.</p>
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">alt_down</code><em class="property"> = ReadOnly</em></dt>
+<dd><p>If True, the ALT key is pressed on the keyboard</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">control_down</code><em class="property"> = ReadOnly</em></dt>
+<dd><p>If True, the CTRL key is pressed on the keyboard</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">left_down</code><em class="property"> = ReadOnly</em></dt>
+<dd><p>If True, the left button is pressed on the mouse</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">middle_down</code><em class="property"> = ReadOnly</em></dt>
+<dd><p>If True, the middle button is pressed on the mouse</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">mouse_wheel</code><em class="property"> = ReadOnly</em></dt>
+<dd><p>If a wheel event, holds number of units moved by the wheel</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">mouse_wheel_axis</code><em class="property"> = ReadOnly</em></dt>
+<dd><p>If a wheel event, contains either “horizontal” or “vertical”</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">mouse_wheel_delta</code><em class="property"> = ReadOnly</em></dt>
+<dd><p>If a wheel event, contains a 2D movement vector as a tuple</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">right_down</code><em class="property"> = ReadOnly</em></dt>
+<dd><p>If True, the right button is pressed on the mouse</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">shift_down</code><em class="property"> = ReadOnly</em></dt>
+<dd><p>If True, a SHIFT key is pressed on the keyboard</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="keyboard-events">
+<h2>Keyboard Events<a class="headerlink" href="#keyboard-events" title="Permalink to this headline">¶</a></h2>
+<p>Previous versions of Enable had just one keyboard event, a ‘key_pressed’
+event.  This event conflated which key(s) were physically being pressed
+with the text which should be generated by that keypress.  All the underlying
+windowing/event systems have a way of distinguishing these two pieces of
+information, either by issuing separate events for each (Wx, Pyglet, Vtk), or
+by storing them as different attributes on the event object (Qt).</p>
+<p>In addition, there was no way to detect a key-up event.  This is a comparatively
+minor use case, but potentially useful for doing things like toggling pointer
+states to indicate different mouse behaviour when modifiers keys are pressed.</p>
+<div class="section" id="new-events">
+<h3>New Events<a class="headerlink" href="#new-events" title="Permalink to this headline">¶</a></h3>
+<dl>
+<dt>key_pressed:</dt><dd><p>We will keep the ‘key_pressed’ event.  However the semantics will change so
+that it will keep track of the physical key being pressed rather than the
+text being entered.  Thus pressing the ‘a’ key with the shift key down will
+result in an event with the ‘character’ attribute set to ‘a’, instead of ‘A’
+as it would be now.  The lower-case version of the character will be the
+canonical representation of the key, since that will cause minimal problems
+with existing event handlers in Enable and Chaco.</p>
+<p>The character mapping will be used as it is now to map special keys to
+standard strings (like right arrow generating the string ‘right’).</p>
+<p>In addition, events will now be generated by pressing modifier keys by
+themselves (eg. pressing shift will generate an event).</p>
+<p>Most Chaco code will continue to use key_pressed as the primary event to
+listen to, it will just work more consistently than it did before.  Some
+code may need to change to reflect the change in what the character
+attribute returns (XXX or we add a ‘key’ attribute and deprecate the
+‘character’ attribute).</p>
+<p>On Wx this event will be generated by EVT_KEY_DOWN, on Qt, this event
+will be generated by keyPressEvent, but will access the ‘key()’ attribute
+rather than the ‘text()’ attribute.</p>
+</dd>
+<dt>key_released:</dt><dd><p>We will introduce a new ‘key_released’ event, which is essentially the
+mirror image of the ‘key_pressed’ event.</p>
+<p>On Wx this event will be generated by EVT_KEY_UP, on Qt, this event
+will be generated by keyReleaseEvent, but will access the ‘key()’ attribute
+rather than the ‘text()’ attribute.</p>
+</dd>
+<dt>character:</dt><dd><p>We will introduce a new ‘character’ event, which will hold the
+unicode characters, if any, that are generated by the key press
+event.  It is possible that this event may also be generated by
+other mechanisms in the future, like pasting text.  The event may
+hold multiple characters.</p>
+<p>This event will not be generated if the key_pressed event is handled.
+This is largely because this is the way that wx works, but it also makes
+a certain amount of sense from an interaction modelling point of view.</p>
+<p>This will never do key mapping to standard Enable names for non-printable
+characters: if there is no appropriate unicode representation, no event
+will be emitted.</p>
+<p>The handful of Enable widgets which expect actual text input will be
+changed to use the character event instead of the key_pressed event.</p>
+<p>On Wx this event will be generated by EVT_CHAR, on Qt, this event
+will be generated by keyPressEvent, but will access the ‘text()’ attribute
+rather than the ‘key()’ attribute.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="why-three-events">
+<h3>Why Three Events?<a class="headerlink" href="#why-three-events" title="Permalink to this headline">¶</a></h3>
+<p>Qt’s two-event model is generally nicer and cleaner, but adapting the other
+backends to use that model would require holding global state from EVT_KEY_DOWN
+(or its equivalent) to fold in to the Enable event generated from EVT_CHAR.
+This seems potentially fragile.  The other alternative would be to try to work
+out from the EVT_KEY_DOWN what text would be generated, and that seems even more
+fragile.</p>
+<p>On the other hand, adapting Qt to a 3-event model is straightforward: on
+keyPressedEvent we generate a ‘key_pressed’ event, and if text() is non-empty,
+we subsequently also emit a ‘character’ event.</p>
+</div>
+</div>
+<div class="section" id="drag-and-drop-events">
+<h2>Drag and Drop Events<a class="headerlink" href="#drag-and-drop-events" title="Permalink to this headline">¶</a></h2>
+<p>Enable has support for objects being dropped onto components built on top of
+the backend’s (and, in practice, PyFace’s) support for drag and drop.</p>
+<p>All drag-and-drop related events have type <code class="docutils literal notranslate"><span class="pre">DragEvent</span></code> and provide the
+<code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> coordinates of the event, and the object being dragged or
+dropped (if it is available from the backend, otherwise this will be <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p>
+<p>The system generates 3 types of drag and drop events:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">drag_over</span></code></dt><dd><p>These events are generated when the user is moving a dragged object over
+the Enable window. Tools or other Interactors which want to indicate that
+they can accept the drag should indicate this by calling the
+<code class="docutils literal notranslate"><span class="pre">set_drag_result()</span></code> method of the Enable window indicating the type of
+operation that will be performed on the object (the default is a “copy”,
+but other possibilties include “move” or “link”, the full list of
+possibilites is found in the appropriate <code class="docutils literal notranslate"><span class="pre">constants</span></code> module).  The value
+of the drag result influences the way that the operating system displays
+the dragged objects and cursor whil dragging.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">drag_leave</span></code></dt><dd><p>This event is generated when the user drags objects out of the window.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">dropped_on</span></code></dt><dd><p>This event is generated when the user releases the mouse button over the
+Enable window while dragging.  Tools or other Interactors should handle
+this event to perform whatever operations need to be performed with the
+dropped objects.</p>
+</dd>
+</dl>
+<div class="section" id="basedroptool">
+<h3>BaseDropTool<a class="headerlink" href="#basedroptool" title="Permalink to this headline">¶</a></h3>
+<p>As a convenience, there is a <code class="docutils literal notranslate"><span class="pre">BaseDropTool</span></code> class which handles most of the
+drag and drop interactions for you correctly.  To use this, you need to
+subclass and override at least the <code class="docutils literal notranslate"><span class="pre">accept_drop</span></code> and <code class="docutils literal notranslate"><span class="pre">handle_drop</span></code> methods.</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">accept_drop</span></code></dt><dd><p>This method is given the position and object instance and should return
+<code class="docutils literal notranslate"><span class="pre">True</span></code> if the drop is accepted or <code class="docutils literal notranslate"><span class="pre">False</span></code> if it is not.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">handle_drop</span></code></dt><dd><p>If the drop is accepted, this method is called with the position and the
+objects, and should perform whatever actions are required with the dropped
+objects.</p>
+</dd>
+</dl>
+<p>The behaviour is slightly different between the Wx and Qt backends: Qt provides
+a reference to the dragged objects during <code class="docutils literal notranslate"><span class="pre">drag_over</span></code> events, and so the
+<code class="docutils literal notranslate"><span class="pre">BaseDropTool</span></code> will call <code class="docutils literal notranslate"><span class="pre">accept_drop</span></code> during <code class="docutils literal notranslate"><span class="pre">drag_over</span></code> events to give
+better feedback about the state of the drag and drop operation; whereas Wx does
+not provide that information, so will always indicate to the operating system
+that a drop is possible.</p>
+<p>The type of drag result returned during <code class="docutils literal notranslate"><span class="pre">drag_over</span></code> events is controlled by
+the <code class="docutils literal notranslate"><span class="pre">default_drag_result</span></code> attribute.</p>
+<p>If you want more control over the response to <code class="docutils literal notranslate"><span class="pre">drag_over</span></code> events, then you
+can additionally override the <code class="docutils literal notranslate"><span class="pre">get_drag_result</span></code> method to return one of the
+drag result constants dependin on the position and (possibly) the objects
+being dragged.  If you want cross-toolkit compatibility, you must handle the
+case where the <code class="docutils literal notranslate"><span class="pre">get_drag_result</span></code> method is called with the object being
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, which indicates that the object is not known yet.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Enable GUI Events</a><ul>
+<li><a class="reference internal" href="#mouse-events">Mouse Events</a><ul>
+<li><a class="reference internal" href="#mouse-event-types">Mouse Event types</a><ul>
+<li><a class="reference internal" href="#down">*_down</a></li>
+<li><a class="reference internal" href="#up">*_up</a></li>
+<li><a class="reference internal" href="#dclick">*_dclick</a></li>
+<li><a class="reference internal" href="#move">move</a></li>
+<li><a class="reference internal" href="#enter">enter</a></li>
+<li><a class="reference internal" href="#leave">leave</a></li>
+<li><a class="reference internal" href="#wheel">wheel</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mouseevent">MouseEvent</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#keyboard-events">Keyboard Events</a><ul>
+<li><a class="reference internal" href="#new-events">New Events</a></li>
+<li><a class="reference internal" href="#why-three-events">Why Three Events?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#drag-and-drop-events">Drag and Drop Events</a><ul>
+<li><a class="reference internal" href="#basedroptool">BaseDropTool</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="tools.html"
+                        title="previous chapter">Enable Tools</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="constraints_layout.html"
+                        title="next chapter">Enable Constraints Layout</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/enable/events.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Apr 05, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

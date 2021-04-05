@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>Kiva Font Management &mdash; enable 5.1.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.1.0 documentation" href="../index.html" >
+    <link rel="prev" title="kiva.trait_defs.ui.wx.kiva_font_editor module" href="../api/kiva.trait_defs.ui.wx.kiva_font_editor.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.1.0 documentation</a></li>
+	 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="../api/kiva.trait_defs.ui.wx.kiva_font_editor.html" title="kiva.trait_defs.ui.wx.kiva_font_editor module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="kiva-font-management">
+<h1>Kiva Font Management<a class="headerlink" href="#kiva-font-management" title="Permalink to this headline">¶</a></h1>
+<p>Kiva’s <code class="xref py py-class docutils literal notranslate"><span class="pre">FontManager</span></code> code originated in the Matplotlib code base. Until
+version 5.1.0 it was largely unchanged. From 5.1.0 forward, it has been
+refactored to emphasize that it’s an internal detail which should be avoided by
+3rd party code.</p>
+<p>This document aims to describe the structure of the code circa version 5.1.0.</p>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>The basic function of <code class="xref py py-class docutils literal notranslate"><span class="pre">FontManager</span></code> is to provide a <code class="xref py py-meth docutils literal notranslate"><span class="pre">findfont()</span></code>
+method which can be called by the <a class="reference internal" href="../api/kiva.fonttools.html#kiva.fonttools.Font" title="kiva.fonttools.Font"><code class="xref py py-class docutils literal notranslate"><span class="pre">Font</span></code></a> class to resolve a font name
+or font file location on the system where the code is running.</p>
+<p>To accomplish this, it:</p>
+<ol class="arabic simple">
+<li><p>Scans the file system for files with known font file extensions (<code class="docutils literal notranslate"><span class="pre">.ttf</span></code>,
+<code class="docutils literal notranslate"><span class="pre">.ttc</span></code>, <code class="docutils literal notranslate"><span class="pre">.otf</span></code>, <code class="docutils literal notranslate"><span class="pre">.afm</span></code>) [<code class="xref py py-func docutils literal notranslate"><span class="pre">scan_system_fonts()</span></code>]</p></li>
+<li><p>Examines all the font files identified in the first step and extracts their
+metadata using <a class="reference external" href="https://fonttools.readthedocs.io/en/latest/">fonttools</a>.
+[<code class="xref py py-func docutils literal notranslate"><span class="pre">create_font_database()</span></code>]</p></li>
+<li><p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">FontManager</span></code> is then ready to be used. <a class="reference internal" href="../api/kiva.fonttools.html#kiva.fonttools.Font" title="kiva.fonttools.Font"><code class="xref py py-class docutils literal notranslate"><span class="pre">Font</span></code></a> instances
+call <code class="xref py py-meth docutils literal notranslate"><span class="pre">findfont()</span></code> on the global <code class="xref py py-class docutils literal notranslate"><span class="pre">FontManager</span></code> singleton as
+needed.</p></li>
+</ol>
+<p>Because scanning a system for available fonts is quite an expensive operation,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">FontManager</span></code> stores a
+<a class="reference external" href="https://docs.python.org/3/library/pickle.html">pickled</a> copy of its global
+singleton in a cache file. And because <code class="docutils literal notranslate"><span class="pre">pickle</span></code> is notoriously brittle, the
+font manager has a <code class="xref py py-attr docutils literal notranslate"><span class="pre">__version__</span></code> attribute must be incremented any
+time the attributes or their classes (<code class="xref py py-class docutils literal notranslate"><span class="pre">FontEntry</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">FontDatabase</span></code>,
+etc.) change. The <code class="xref py py-class docutils literal notranslate"><span class="pre">FontManager</span></code> singleton is loaded on-demand by the
+first call to <code class="xref py py-func docutils literal notranslate"><span class="pre">default_font_manager()</span></code>.</p>
+</div>
+<div class="section" id="font-resolution">
+<h2>Font Resolution<a class="headerlink" href="#font-resolution" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">findfont()</span></code> method uses a somewhat complex process for finding the
+best match to a given font query.</p>
+<ol class="arabic simple">
+<li><p>If a <code class="docutils literal notranslate"><span class="pre">directory</span></code> keyword argument was passed, only fonts whose files are
+children of <code class="docutils literal notranslate"><span class="pre">directory</span></code> will be checked. If none match, a default font is
+returned.</p></li>
+<li><p>If a <code class="docutils literal notranslate"><span class="pre">directory</span></code> is not specified, the search is first narrowed by the
+font family (or families) designated by the query. This is possible because
+the match scoring algorithm gives very bad scores to fonts whose family does
+not match the query.</p></li>
+<li><p>A score is computed for each font using the scoring functions
+[<code class="xref py py-func docutils literal notranslate"><span class="pre">score_family()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">score_size()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">score_stretch()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">score_style()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">score_variant()</span></code>, and
+<code class="xref py py-func docutils literal notranslate"><span class="pre">score_weight()</span></code>]</p></li>
+<li><p>If the score meets a certain threshold, the matching font is returned.
+Otherwise a default is returned.</p></li>
+<li><p>If the query was successful, it is added to a local query cache which will
+avoid the scoring process if a matching query is later performed again.</p></li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Kiva Font Management</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#font-resolution">Font Resolution</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../api/kiva.trait_defs.ui.wx.kiva_font_editor.html"
+                        title="previous chapter">kiva.trait_defs.ui.wx.kiva_font_editor module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/kiva/font_manager.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Apr 05, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

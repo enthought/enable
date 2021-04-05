@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>Kiva Interface Quick Reference &mdash; enable 5.1.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.1.0 documentation" href="../index.html" >
+    <link rel="next" title="Kiva Drawing In-depth" href="drawing_details.html" >
+    <link rel="prev" title="Kiva" href="overview.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.1.0 documentation</a></li>
+	 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="drawing_details.html" title="Kiva Drawing In-depth"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="overview.html" title="Kiva"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="kiva-interface-quick-reference">
+<h1>Kiva Interface Quick Reference<a class="headerlink" href="#kiva-interface-quick-reference" title="Permalink to this headline">¶</a></h1>
+<p>This document is a summary of the classes and functions available in
+Kiva.  More specifically, it describes some of the details of the
+kiva.agg backend, including enumerated types and helper classes.</p>
+<div class="section" id="graphics-context">
+<h2>Graphics Context<a class="headerlink" href="#graphics-context" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="construction">
+<h3>Construction<a class="headerlink" href="#construction" title="Permalink to this headline">¶</a></h3>
+<dl>
+<dt>__init__(ary_or_size, pix_format=”bgra32”, base_pixel_scale=1.0):</dt><dd><p><code class="docutils literal notranslate"><span class="pre">ary_or_size</span></code> can be either a numpy array or a tuple of the form
+(width, height). If it is an array, it will be used as the backing store
+for the pixels. <strong>Its shape must be compatible with</strong> <code class="docutils literal notranslate"><span class="pre">pix_format</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">pix_format</span></code> determines the pixel format and is a string which can be any
+of the following: “gray8”, “rgb24”, “bgr24”, “rgba32”, “argb32”, “abgr32”,
+“bgra32”.</p>
+<p><code class="docutils literal notranslate"><span class="pre">base_pixel_scale</span></code> is scaling factor which will be applied to the
+transformation matrix before all other transformations. It is used for
+rendering to high-resolution displays.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="state-functions">
+<h3>State functions<a class="headerlink" href="#state-functions" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="saving-and-restoring-state">
+<h4>Saving and restoring state<a class="headerlink" href="#saving-and-restoring-state" title="Permalink to this headline">¶</a></h4>
+<p>In addtion to the <code class="docutils literal notranslate"><span class="pre">save_state</span></code> and <code class="docutils literal notranslate"><span class="pre">restore_state</span></code> methods, it is also possible
+to use a <code class="docutils literal notranslate"><span class="pre">GraphicsContext</span></code> instance as a context manager.</p>
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">save_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.save_state"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Push the current graphics state onto the stack</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">restore_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.restore_state"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Pop the previous graphics state from the stack</p>
+</dd></dl>
+
+</div>
+<div class="section" id="methods-controlling-state">
+<h4>Methods controlling state<a class="headerlink" href="#methods-controlling-state" title="Permalink to this headline">¶</a></h4>
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">set_fill_color</code><span class="sig-paren">(</span><em class="sig-param">color</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.set_fill_color"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the color used to fill the region bounded by a path or when
+drawing text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>color</strong> – A three or four component tuple describing a color
+(R, G, B[, A]). Each color component should be in the range
+[0.0, 1.0]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">get_fill_color</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.get_fill_color"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get the color used to fill the region bounded by a path or when
+drawing text.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">set_stroke_color</code><span class="sig-paren">(</span><em class="sig-param">color</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.set_stroke_color"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the color used when stroking a path</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>color</strong> – A three or four component tuple describing a color
+(R, G, B[, A]). Each color component should be in the range
+[0.0, 1.0]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">get_stroke_color</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.get_stroke_color"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get the current color used when stroking a path</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">set_line_width</code><span class="sig-paren">(</span><em class="sig-param">width</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.set_line_width"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the width of the pen used to stroke a path</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">set_line_join</code><span class="sig-paren">(</span><em class="sig-param">line_join</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.set_line_join"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the style of join to use a path corners</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>line_join</strong> – Options are <code class="docutils literal notranslate"><span class="pre">JOIN_ROUND</span></code>, <code class="docutils literal notranslate"><span class="pre">JOIN_BEVEL</span></code>, or <code class="docutils literal notranslate"><span class="pre">JOIN_MITER</span></code>.
+Each is defined in <a class="reference internal" href="../api/kiva.api.html#module-kiva.api" title="kiva.api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">kiva.api</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">set_line_cap</code><span class="sig-paren">(</span><em class="sig-param">line_cap</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.set_line_cap"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the style of cap to use a path ends</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>line_cap</strong> – One of <code class="docutils literal notranslate"><span class="pre">CAP_BUTT</span></code>, <code class="docutils literal notranslate"><span class="pre">CAP_ROUND</span></code>, or <code class="docutils literal notranslate"><span class="pre">CAP_SQUARE</span></code>.
+Each is defined in <a class="reference internal" href="../api/kiva.api.html#module-kiva.api" title="kiva.api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">kiva.api</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">set_line_dash</code><span class="sig-paren">(</span><em class="sig-param">line_dash</em>, <em class="sig-param">phase=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.set_line_dash"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the dash style to use when stroking a path</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>line_dash</strong> – An even-lengthed tuple of floats that represents
+the width of each dash and gap in the dash pattern.</p></li>
+<li><p><strong>phase</strong> (<em>float</em>) – Specifies how many units into the dash pattern to start.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">linear_gradient</code><span class="sig-paren">(</span><em class="sig-param">x1</em>, <em class="sig-param">y1</em>, <em class="sig-param">x2</em>, <em class="sig-param">y2</em>, <em class="sig-param">stops</em>, <em class="sig-param">spread_method</em>, <em class="sig-param">units='userSpaceOnUse'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.linear_gradient"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Modify the fill color to be a linear gradient</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x1</strong> – The X starting point of the gradient.</p></li>
+<li><p><strong>y1</strong> – The Y starting point of the gradient.</p></li>
+<li><p><strong>x2</strong> – The X ending point of the gradient.</p></li>
+<li><p><strong>y3</strong> – The Y ending point of the gradient.</p></li>
+<li><p><strong>stops</strong> – An array/sequence of color stops
+((offset, r, g, b, a), (offset2, r2, g2, b2, a2), …) where
+offset is some number between 0 and 1 inclusive and the entries
+are sorted from lowest offset to highest.</p></li>
+<li><p><strong>spread_method</strong> – One of the following strings: “pad”, “reflect”, “repeat”.</p></li>
+<li><p><strong>units</strong> – One of the following strings: “userSpaceOnUse”,
+“objectBoundingBox”.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">radial_gradient</code><span class="sig-paren">(</span><em class="sig-param">cx</em>, <em class="sig-param">cy</em>, <em class="sig-param">r</em>, <em class="sig-param">fx</em>, <em class="sig-param">fy</em>, <em class="sig-param">stops</em>, <em class="sig-param">spread_method</em>, <em class="sig-param">units='userSpaceOnUse'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.radial_gradient"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Modify the fill color to be a radial gradient</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cx</strong> – The X center point of the gradient.</p></li>
+<li><p><strong>cy</strong> – The Y center point of the gradient.</p></li>
+<li><p><strong>r</strong> – The radius of the gradient</p></li>
+<li><p><strong>fx</strong> – The X ending point of the gradient.</p></li>
+<li><p><strong>fy</strong> – The Y ending point of the gradient.</p></li>
+<li><p><strong>stops</strong> – An array/sequence of color stops
+((offset, r, g, b, a), (offset2, r2, g2, b2, a2), …) where
+offset is some number between 0 and 1 inclusive and the entries
+are sorted from lowest offset to highest.</p></li>
+<li><p><strong>spread_method</strong> – One of the following strings: “pad”, “reflect”, “repeat”.</p></li>
+<li><p><strong>units</strong> – One of the following strings: “userSpaceOnUse”,
+“objectBoundingBox”.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">set_alpha</code><span class="sig-paren">(</span><em class="sig-param">alpha</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.set_alpha"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the alpha to use when drawing</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">get_alpha</code><span class="sig-paren">(</span><em class="sig-param">alpha</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.get_alpha"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Return the alpha used when drawing</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">set_antialias</code><span class="sig-paren">(</span><em class="sig-param">antialias</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.set_antialias"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set whether or not to antialias when drawing</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">get_antialias</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.get_antialias"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set whether or not to antialias when drawing</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">set_miter_limit</code><span class="sig-paren">(</span><em class="sig-param">miter_limit</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.set_miter_limit"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the limit at which mitered joins are flattened.</p>
+<p>Only applicable when the line join type is set to <code class="docutils literal notranslate"><span class="pre">JOIN_MITER</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">set_flatness</code><span class="sig-paren">(</span><em class="sig-param">flatness</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.set_flatness"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the error tolerance when drawing curved paths</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">set_image_interpolation</code><span class="sig-paren">(</span><em class="sig-param">interpolation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.set_image_interpolation"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the type of interpolation to use when scaling images.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>interpolation</strong> – One of “nearest”, “bilinear”, “bicubic”, “spline16”,
+“spline36”, “sinc64”, “sinc144”, “sinc256”, “blackman64”,
+“blackman100”, or “blackman256”.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">get_image_interpolation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.get_image_interpolation"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get the type of interpolation to use when scaling images</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="current-transformation-matrix">
+<h3>Current Transformation Matrix<a class="headerlink" href="#current-transformation-matrix" title="Permalink to this headline">¶</a></h3>
+<p>These methods control the affine transformation applied to drawing operations.
+The current transformation matrix is part of the graphic state and therefore
+covered by calls to <code class="docutils literal notranslate"><span class="pre">save_state()</span></code> and <code class="docutils literal notranslate"><span class="pre">restore_state()</span></code></p>
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">translate_ctm</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.translate_ctm"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Concatenate a translation to the current transformation matrix</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">rotate_ctm</code><span class="sig-paren">(</span><em class="sig-param">angle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.rotate_ctm"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Concatenate a rotation to the current transformation matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>angle</strong> – An angle in radians.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">scale_ctm</code><span class="sig-paren">(</span><em class="sig-param">x_scale</em>, <em class="sig-param">y_scale</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.scale_ctm"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Concatenate a scaling to the current transformation matrix</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">concat_ctm</code><span class="sig-paren">(</span><em class="sig-param">matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.concat_ctm"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Concatenate an arbitrary affine matrix to the current
+transformation matrix.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">set_ctm</code><span class="sig-paren">(</span><em class="sig-param">matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.set_ctm"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the current transformation matrix</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">get_ctm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.get_ctm"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get the current transformation matrix</p>
+</dd></dl>
+
+</div>
+<div class="section" id="clipping-functions">
+<h3>Clipping functions<a class="headerlink" href="#clipping-functions" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All of these functions are affected by the current transformation matrix.</p>
+</div>
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">clip_to_rect</code><span class="sig-paren">(</span><em class="sig-param">rect</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.clip_to_rect"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the clipping region to the specified rectangle</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">clip_to_rects</code><span class="sig-paren">(</span><em class="sig-param">rect_array</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.clip_to_rects"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the clipping region to the collection of rectangles</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">clip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.clip"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the clipping region to the current path</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">even_odd_clip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.even_odd_clip"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Modify clipping region with current path using even-odd rule</p>
+</dd></dl>
+
+</div>
+<div class="section" id="path-functions">
+<span id="kiva-path-functions"></span><h3>Path functions<a class="headerlink" href="#path-functions" title="Permalink to this headline">¶</a></h3>
+<p>The path has the concept of a “current point”, which can be though of as the
+pen position. Many path manipulations use the current point as a starting
+position for the geometry which is added to the path.</p>
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">begin_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.begin_path"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Start a new path</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">close_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.close_path"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Finish a subpath, connecting back to the start</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">get_empty_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.get_empty_path"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get an empty <code class="docutils literal notranslate"><span class="pre">CompiledPath</span></code> instance</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">add_path</code><span class="sig-paren">(</span><em class="sig-param">compiled_path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.add_path"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Add the current path to a compiled path</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">move_to</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.move_to"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Move the current point on the path without drawing</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">line_to</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.line_to"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Add a line from the current point to (x, y) to the path</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">lines</code><span class="sig-paren">(</span><em class="sig-param">points</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.lines"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Adds a series of lines as a new subpath.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>points</strong> – an Nx2 sequence of (x, y) pairs</p>
+</dd>
+</dl>
+<p>The current point is moved to the last point in <code class="docutils literal notranslate"><span class="pre">points</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">line_set</code><span class="sig-paren">(</span><em class="sig-param">starts</em>, <em class="sig-param">ends</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.line_set"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Adds a set of disjoint lines as a new subpath.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>starts</strong> – an Nx2 array of x,y pairs</p></li>
+<li><p><strong>ends</strong> – an Nx2 array of x,y pairs</p></li>
+</ul>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">starts</span></code> and <code class="docutils literal notranslate"><span class="pre">ends</span></code> arrays should have the same length.
+The current point is moved to the last point in <code class="docutils literal notranslate"><span class="pre">ends</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">rect</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">w</em>, <em class="sig-param">h</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.rect"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Add a rectangle as a new sub-path</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – The left X coordinate of the rectangle</p></li>
+<li><p><strong>y</strong> – The bottom Y coordinate of the rectangle</p></li>
+<li><p><strong>w</strong> – The width of the rectangle</p></li>
+<li><p><strong>h</strong> – The height of the rectangle</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">rects</code><span class="sig-paren">(</span><em class="sig-param">rect_array</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.rects"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Add a sequence of rectangles as separate sub-paths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rect_array</strong> – An Nx4 array of (x, y, w, h) quadruples</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">curve_to</code><span class="sig-paren">(</span><em class="sig-param">x1</em>, <em class="sig-param">y1</em>, <em class="sig-param">x2</em>, <em class="sig-param">y2</em>, <em class="sig-param">end_x</em>, <em class="sig-param">end_y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.curve_to"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Draw a cubic bezier curve</p>
+<p>The curve starts from the current point and ends at <code class="docutils literal notranslate"><span class="pre">(end_x,</span> <span class="pre">end_y)</span></code>,
+with control points <code class="docutils literal notranslate"><span class="pre">(x1,</span> <span class="pre">y1)</span></code> and <code class="docutils literal notranslate"><span class="pre">(x2,</span> <span class="pre">y2)</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">quad_curve_to</code><span class="sig-paren">(</span><em class="sig-param">cp_x</em>, <em class="sig-param">cp_y</em>, <em class="sig-param">end_x</em>, <em class="sig-param">end_y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.quad_curve_to"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Draw a quadratic bezier curve</p>
+<p>The curve starts the current point and ends at <code class="docutils literal notranslate"><span class="pre">(end_x,</span> <span class="pre">end_y)</span></code>,
+with control point <code class="docutils literal notranslate"><span class="pre">(cp_x,</span> <span class="pre">cp_y)</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">arc</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">radius</em>, <em class="sig-param">start_angle</em>, <em class="sig-param">end_angle</em>, <em class="sig-param">cw=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.arc"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Draw a circular arc of the given radius, centered at <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code></p>
+<p>The angular span is from <code class="docutils literal notranslate"><span class="pre">start_angle</span></code> to <code class="docutils literal notranslate"><span class="pre">end_angle</span></code>, where angles
+are measured counter-clockwise from the positive X axis.</p>
+<p>If “cw” is True, then the arc is swept from the <code class="docutils literal notranslate"><span class="pre">end_angle</span></code> back to
+the <code class="docutils literal notranslate"><span class="pre">start_angle</span></code> (it does not change the sense in which the angles
+are measured, but may affect rendering based on winding number
+calculations).</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">arc_to</code><span class="sig-paren">(</span><em class="sig-param">x1</em>, <em class="sig-param">y1</em>, <em class="sig-param">x2</em>, <em class="sig-param">y2</em>, <em class="sig-param">radius</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.arc_to"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Draw a circular arc from current point to tangent line</p>
+<p>The arc is tangent to the line from the current point to <code class="docutils literal notranslate"><span class="pre">(x1,</span> <span class="pre">y1)</span></code>,
+and it is also tangent to the line from <code class="docutils literal notranslate"><span class="pre">(x1,</span> <span class="pre">y1)</span></code> to <code class="docutils literal notranslate"><span class="pre">(x2,</span> <span class="pre">y2)</span></code>.
+<code class="docutils literal notranslate"><span class="pre">(x1,</span> <span class="pre">y1)</span></code> is the imaginary intersection point of the two lines
+tangent to the arc at the current point and at <code class="docutils literal notranslate"><span class="pre">(x2,</span> <span class="pre">y2)</span></code>.</p>
+<p>If the tangent point on the line from the current point to <code class="docutils literal notranslate"><span class="pre">(x1,</span> <span class="pre">y1)</span></code>
+is not equal to the current point, a line is drawn to it. Depending on
+the supplied <code class="docutils literal notranslate"><span class="pre">radius</span></code>, the tangent point on the line from
+<code class="docutils literal notranslate"><span class="pre">(x1,</span> <span class="pre">y1)</span></code> to <code class="docutils literal notranslate"><span class="pre">(x2,</span> <span class="pre">y2)</span></code> may or may not be <code class="docutils literal notranslate"><span class="pre">(x2,</span> <span class="pre">y2)</span></code>. In either
+case, the arc is drawn to the point of tangency, which is also the new
+current point.</p>
+<p>Consider the common case of rounding a rectangle’s upper left corner.
+Let “r” be the radius of rounding. Let the current point be
+<code class="docutils literal notranslate"><span class="pre">(x_left</span> <span class="pre">+</span> <span class="pre">r,</span> <span class="pre">y_top)</span></code>. Then <code class="docutils literal notranslate"><span class="pre">(x2,</span> <span class="pre">y2)</span></code> would be
+<code class="docutils literal notranslate"><span class="pre">(x_left,</span> <span class="pre">y_top</span> <span class="pre">-</span> <span class="pre">radius)</span></code>, and <code class="docutils literal notranslate"><span class="pre">(x1,</span> <span class="pre">y1)</span></code> would be
+<code class="docutils literal notranslate"><span class="pre">(x_left,</span> <span class="pre">y_top)</span></code>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="drawing-functions">
+<span id="kiva-drawing-functions"></span><h3>Drawing functions<a class="headerlink" href="#drawing-functions" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">draw_path</code><span class="sig-paren">(</span><em class="sig-param">draw_mode=5</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.draw_path"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Draw the current path with the specified mode</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>draw_mode</strong> – One of <code class="docutils literal notranslate"><span class="pre">FILL</span></code>, <code class="docutils literal notranslate"><span class="pre">EOF_FILL</span></code>, <code class="docutils literal notranslate"><span class="pre">STROKE</span></code>, <code class="docutils literal notranslate"><span class="pre">FILL_STROKE</span></code>,
+or <code class="docutils literal notranslate"><span class="pre">EOF_FILL_STROKE</span></code>. Each is defined in <a class="reference internal" href="../api/kiva.api.html#module-kiva.api" title="kiva.api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">kiva.api</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">fill_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.fill_path"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Fill the current path with fill settings from the current state</p>
+<p>This fills using the nonzero rule filling algorithm</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">eof_fill_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.eof_fill_path"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Fill the current path with fill settings from the current state</p>
+<p>This fills using the even-odd rule filling algorithm</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">stroke_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.stroke_path"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Stroke the current path with pen settings from current state</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">draw_rect</code><span class="sig-paren">(</span><em class="sig-param">rect</em>, <em class="sig-param">draw_mode=5</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.draw_rect"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Draw a rectangle with the specified mode</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rect</strong> – A tuple (x, y, w, h)</p></li>
+<li><p><strong>draw_mode</strong> – One of <code class="docutils literal notranslate"><span class="pre">FILL</span></code>, <code class="docutils literal notranslate"><span class="pre">EOF_FILL</span></code>, <code class="docutils literal notranslate"><span class="pre">STROKE</span></code>, <code class="docutils literal notranslate"><span class="pre">FILL_STROKE</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">EOF_FILL_STROKE</span></code>. Each is defined in <a class="reference internal" href="../api/kiva.api.html#module-kiva.api" title="kiva.api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">kiva.api</span></code></a>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">draw_image</code><span class="sig-paren">(</span><em class="sig-param">image</em>, <em class="sig-param">rect=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.draw_image"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Render an image into a rectangle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> – An image. Can be a numpy array, a PIL <code class="docutils literal notranslate"><span class="pre">Image</span></code> instance, or
+another <code class="docutils literal notranslate"><span class="pre">GraphicsContext</span></code> instance.</p></li>
+<li><p><strong>rect</strong> – A tuple (x, y, w, h). If not specified then the bounds of the
+the graphics context are used as the rectangle.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="section" id="enhanced-drawing-functions">
+<h4>Enhanced drawing functions<a class="headerlink" href="#enhanced-drawing-functions" title="Permalink to this headline">¶</a></h4>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These methods are not available from every backend, so you should test for
+their presence before attempting to call them.</p>
+</div>
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">EnhancedAbstractGraphicsContext.</code><code class="sig-name descname">draw_marker_at_points</code><span class="sig-paren">(</span><em class="sig-param">point_array</em>, <em class="sig-param">size</em>, <em class="sig-param">marker=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#EnhancedAbstractGraphicsContext.draw_marker_at_points"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Draw a marker at a collection of points</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point_array</strong> – An Nx2 array of x,y points</p></li>
+<li><p><strong>size</strong> – The size of the marker in points.</p></li>
+<li><p><strong>marker</strong> – One of <code class="docutils literal notranslate"><span class="pre">NO_MARKER</span></code>, <code class="docutils literal notranslate"><span class="pre">SQUARE_MARKER</span></code>, <code class="docutils literal notranslate"><span class="pre">DIAMOND_MARKER</span></code>,
+<code class="docutils literal notranslate"><span class="pre">CIRCLE_MARKER</span></code>, <code class="docutils literal notranslate"><span class="pre">CROSSED_CIRCLE_MARKER</span></code>, <code class="docutils literal notranslate"><span class="pre">CROSS_MARKER</span></code>,
+<code class="docutils literal notranslate"><span class="pre">TRIANGLE_MARKER</span></code>, <code class="docutils literal notranslate"><span class="pre">INVERTED_TRIANGLE_MARKER</span></code>,
+<code class="docutils literal notranslate"><span class="pre">PLUS_MARKER</span></code>, <code class="docutils literal notranslate"><span class="pre">DOT_MARKER</span></code>, or <code class="docutils literal notranslate"><span class="pre">PIXEL_MARKER</span></code>. Each is
+defined in <a class="reference internal" href="../api/kiva.api.html#module-kiva.api" title="kiva.api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">kiva.api</span></code></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong> – True if markers were drawn, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">EnhancedAbstractGraphicsContext.</code><code class="sig-name descname">draw_path_at_points</code><span class="sig-paren">(</span><em class="sig-param">point_array</em>, <em class="sig-param">compiled_path</em>, <em class="sig-param">draw_mode=5</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#EnhancedAbstractGraphicsContext.draw_path_at_points"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Draw a compiled path at a collection of points</p>
+<p>The starting point of the paths are specified by the points,
+and the drawing mode is specified by the third argument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point_array</strong> – An Nx2 array of x,y points</p></li>
+<li><p><strong>compiled_path</strong> – A <code class="docutils literal notranslate"><span class="pre">CompiledPath</span></code> instance.</p></li>
+<li><p><strong>draw_mode</strong> – One of <code class="docutils literal notranslate"><span class="pre">FILL</span></code>, <code class="docutils literal notranslate"><span class="pre">EOF_FILL</span></code>, <code class="docutils literal notranslate"><span class="pre">STROKE</span></code>, <code class="docutils literal notranslate"><span class="pre">FILL_STROKE</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">EOF_FILL_STROKE</span></code>. Each is defined in <a class="reference internal" href="../api/kiva.api.html#module-kiva.api" title="kiva.api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">kiva.api</span></code></a>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="text-functions">
+<h3>Text functions<a class="headerlink" href="#text-functions" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">set_text_drawing_mode</code><span class="sig-paren">(</span><em class="sig-param">draw_mode</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.set_text_drawing_mode"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the drawing mode to use with text</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>draw_mode</strong> – Allowed values are <code class="docutils literal notranslate"><span class="pre">TEXT_FILL</span></code>, <code class="docutils literal notranslate"><span class="pre">TEXT_STROKE</span></code>,
+<code class="docutils literal notranslate"><span class="pre">TEXT_FILL_STROKE</span></code>, <code class="docutils literal notranslate"><span class="pre">TEXT_INVISIBLE</span></code>, <code class="docutils literal notranslate"><span class="pre">TEXT_FILL_CLIP</span></code>,
+<code class="docutils literal notranslate"><span class="pre">TEXT_STROKE_CLIP</span></code>, <code class="docutils literal notranslate"><span class="pre">TEXT_FILL_STROKE_CLIP</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">TEXT_CLIP</span></code>. Each is defined in <a class="reference internal" href="../api/kiva.api.html#module-kiva.api" title="kiva.api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">kiva.api</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">set_text_matrix</code><span class="sig-paren">(</span><em class="sig-param">text_matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.set_text_matrix"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the transformation matrix to use when drawing text</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">get_text_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.get_text_matrix"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get the transformation matrix to use when drawing text</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">set_text_position</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.set_text_position"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the current point for drawing text</p>
+<p>This point is on the baseline of the text</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">get_text_position</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.get_text_position"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get the current point where text will be drawn</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">show_text</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">point=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.show_text"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Draw the specified string at the current point</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">show_text_at_point</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.show_text_at_point"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Draw text at the absolute position specified by the point</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">get_text_extent</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.get_text_extent"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Return a rectangle which encloses the specified text</p>
+<p>The rectangle (x, y, w, h) is relative to an origin which is at the
+baseline of the text and at the left of the first character rendered.
+In other words, x is the leading and y the descent.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">get_full_text_extent</code><span class="sig-paren">(</span><em class="sig-param">string</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.get_full_text_extent"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get the text extent as a tuple (w, h, x, y)</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is deprecated: you should use <code class="docutils literal notranslate"><span class="pre">get_text_extent()</span></code>
+instead. This order is provided for backwards-compatibility with
+existing Enable code.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">set_character_spacing</code><span class="sig-paren">(</span><em class="sig-param">spacing</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.set_character_spacing"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the spacing between characters when drawing text</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>spacing</strong> (<em>float</em>) – units of space extra space to add between text coordinates.
+It is specified in text coordinate system.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">get_character_spacing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.get_character_spacing"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get the current spacing between characters when drawing text</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">select_font</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">size=12</em>, <em class="sig-param">style='regular'</em>, <em class="sig-param">encoding=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.select_font"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the font based on the provided parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – The name of a font. E.g.: “Times New Roman”</p></li>
+<li><p><strong>size</strong> – The font size in points.</p></li>
+<li><p><strong>style</strong> – One of “regular”, “bold”, “italic”, “bold italic”</p></li>
+<li><p><strong>encoding</strong> – <p>A 4 letter encoding name. Common ones are:</p>
+<blockquote>
+<div><ul>
+<li><p>”unic” – unicode</p></li>
+<li><p>”armn” – apple roman</p></li>
+<li><p>”symb” – symbol</p></li>
+</ul>
+</div></blockquote>
+<p>Not all fonts support all encodings.  If none is
+specified, fonts that have unicode encodings
+default to unicode.  Symbol is the second choice.
+If neither are available, the encoding defaults
+to the first one returned in the FreeType charmap
+list for the font face.</p>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">set_font</code><span class="sig-paren">(</span><em class="sig-param">font</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.set_font"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the font with a <a class="reference internal" href="../api/kiva.fonttools.font.html#kiva.fonttools.font.Font" title="kiva.fonttools.font.Font"><code class="xref py py-class docutils literal notranslate"><span class="pre">kiva.fonttools.font.Font</span></code></a> object</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">get_font</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.get_font"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get the current font</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">set_font_size</code><span class="sig-paren">(</span><em class="sig-param">size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.set_font_size"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the size of the current font</p>
+</dd></dl>
+
+</div>
+<div class="section" id="misc-functions">
+<h3>Misc functions<a class="headerlink" href="#misc-functions" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">width</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.width"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Returns the width of the graphics context.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">height</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.height"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Returns the height of the graphics context.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.flush"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Render all pending draw operations immediately</p>
+<p>This only makes sense in GUI window contexts (eg. Quartz or QPainter).</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">synchronize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.synchronize"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>A deferred version of flush()</p>
+<p>Also only relevant in window contexts.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">begin_page</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.begin_page"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Start rendering in a new page</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">end_page</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.end_page"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Finish rendering in a page</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">clear_rect</code><span class="sig-paren">(</span><em class="sig-param">rect</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.clear_rect"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set rectangle to background colour</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This may not be available in some backends, such as PDF or
+PostScript.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">file_format=None</em>, <em class="sig-param">pil_options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.save"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Save the graphics context to a file</p>
+<p>Data is always saved in RGB or RGBA format, and converted to that
+format if not already in it.</p>
+<p>If the <code class="docutils literal notranslate"><span class="pre">file_format</span></code> argument is None, then the file format is
+inferred from the <code class="docutils literal notranslate"><span class="pre">filename</span></code> extension, and so is not usually needed.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">pil_options</span></code> argument is a dictionary of format-specific options
+that can be passed directly to PIL’s image file writers. For example,
+this can be used to control the compression level of JPEG or PNG
+output. Unrecognized options are silently ignored.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="types">
+<h2>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="primitive-types">
+<h3>Primitive types<a class="headerlink" href="#primitive-types" title="Permalink to this headline">¶</a></h3>
+<p>The following conventions are used to describe input and output types:</p>
+<dl class="simple">
+<dt>color:</dt><dd><p>Either a 3-tuple or 4-tuple. The represented color depends on the
+graphics context’s pixel format.</p>
+</dd>
+<dt>rect:</dt><dd><p>(origin_x, origin_y, width, height)</p>
+</dd>
+<dt>bool:</dt><dd><p>an int that is 1 or 0</p>
+</dd>
+<dt>point_array:</dt><dd><p>an array/sequence of length-2 arrays, e.g. ((x, y), (x2, y2),…)</p>
+</dd>
+<dt>rect_array:</dt><dd><p>an array/sequence of rects ((x, y, w, h), (x2, y2, w2, h2), …)</p>
+</dd>
+<dt>color_stop_array:</dt><dd><p>an array/sequence of color stops ((offset, r, g, b, a),
+(offset2, r2, g2, b2, a2), …) where offset is some number between 0 and 1
+inclusive and the entries are sorted from lowest offset to highest.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="affinematrix">
+<h3>AffineMatrix<a class="headerlink" href="#affinematrix" title="Permalink to this headline">¶</a></h3>
+<p>All of the following member functions modify the instance on which they
+are called:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">__init__(v0,</span> <span class="pre">v1,</span> <span class="pre">v2,</span> <span class="pre">v3,</span> <span class="pre">v4,</span> <span class="pre">v5)</span></code></dt><dd><p>also __init__()</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">reset()</span></code></dt><dd><p>Sets this matrix to the identity</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">multiply(AffineMatrix)</span></code></dt><dd><p>multiples this matrix by another.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">invert()</span></code></dt><dd><p>sets this matrix to the inverse of itself</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">flip_x()</span></code></dt><dd><p>mirrors around X</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">flip_y()</span></code></dt><dd><p>mirrors around Y</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>The rest of the member functions return information about the matrix.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">scale()</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code></dt><dd><p>returns the average scale of this matrix</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">determinant()</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code></dt><dd><p>returns the determinant</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">asarray()</span> <span class="pre">-&gt;</span> <span class="pre">array</span></code></dt><dd><p>returns the matrix as a 1D numpy array of floats</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>The following factory methods are available in the top-level “agg” namespace
+to create specific kinds of <code class="xref py py-class docutils literal notranslate"><span class="pre">AffineMatrix</span></code> instances:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">translation_matrix(float</span> <span class="pre">x,</span> <span class="pre">float</span> <span class="pre">x)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rotation_matrix(float</span> <span class="pre">angle_in_radians)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scaling_matrix(float</span> <span class="pre">x_scale,</span> <span class="pre">float</span> <span class="pre">y_scale)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">skewing_matrix(float</span> <span class="pre">x_shear,</span> <span class="pre">float</span> <span class="pre">y_shear)</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="enumerations">
+<h3>Enumerations<a class="headerlink" href="#enumerations" title="Permalink to this headline">¶</a></h3>
+<p>The following enumerations are represented by top-level constants in the “agg”
+namespace.  They are fundamentally integers.  Some of them also have dicts that
+map between their names and integer values</p>
+<dl>
+<dt>line_cap:</dt><dd><p>CAP_BUTT, CAP_ROUND, CAP_SQUARE</p>
+</dd>
+<dt>line_join:</dt><dd><p>JOIN_ROUND, JOIN_BEVEL, JOIN_MITER</p>
+</dd>
+<dt>draw_mode:</dt><dd><p>FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE</p>
+</dd>
+<dt>text_style:</dt><dd><p>NORMAL, BOLD, ITALIC</p>
+</dd>
+<dt>text_draw_mode:</dt><dd><p>TEXT_FILL, TEXT_STROKE, TEXT_FILL_STROKE, TEXT_INVISIBLE, TEXT_FILL_CLIP,
+TEXT_STROKE_CLIP, TEXT_FILL_STROKE_CLIP, TEXT_CLIP</p>
+</dd>
+<dt>pix_format:</dt><dd><p>(NOTE: the strings in the dicts omit the <code class="docutils literal notranslate"><span class="pre">pix_format_</span></code> prefix)</p>
+<dl class="simple">
+<dt>dicts:</dt><dd><p>pix_format_string_map, pix_format_enum_map</p>
+</dd>
+<dt>values:</dt><dd><p>pix_format_gray8, pix_format_rgb555, pix_format_rgb565,
+pix_format_rgb24, pix_format_bgr24, pix_format_rgba32, pix_format_argb32,
+pix_format_abgr32, pix_format_bgra32</p>
+</dd>
+</dl>
+</dd>
+<dt>interpolation:</dt><dd><dl class="simple">
+<dt>dicts:</dt><dd><p>interp_enum_map, interp_string_map</p>
+</dd>
+<dt>values:</dt><dd><p>nearest, bilinear, bicubic, spline16, spline36, sinc64, sinc144,
+sinc256, blackman64, blackman100, blackman256</p>
+</dd>
+</dl>
+</dd>
+<dt>marker:</dt><dd><p>(NOTE: the strings in the dicts omit the <code class="docutils literal notranslate"><span class="pre">marker_</span></code> prefix)</p>
+<dl class="simple">
+<dt>dicts:</dt><dd><p>marker_string_map, marker_enum_map</p>
+</dd>
+<dt>values:</dt><dd><p>marker_circle, marker_cross, marker_crossed_circle, marker_dash,
+marker_diamond, marker_dot, marker_four_rays, marker_pixel,
+marker_semiellipse_down, marker_semiellipse_left, marker_x,
+marker_semiellipse_right, marker_semiellipse_up, marker_square,
+marker_triangle_down, marker_triangle_left, marker_triangle_right,
+marker_triangle_up</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>path_cmd and path_flags are low-level Agg path attributes.  See the Agg
+documentation for more information about them.  We just pass them through in Kiva.</p>
+<dl class="simple">
+<dt>path_cmd:</dt><dd><p>path_cmd_curve3, path_cmd_curve4, path_cmd_end_poly,
+path_cmd_line_to, path_cmd_mask, path_cmd_move_to, path_cmd_stop</p>
+</dd>
+<dt>path_flags:</dt><dd><p>path_flags, path_flags_ccw, path_flags_close, path_flags_cw,
+path_flags_mask, path_flags_none</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Kiva Interface Quick Reference</a><ul>
+<li><a class="reference internal" href="#graphics-context">Graphics Context</a><ul>
+<li><a class="reference internal" href="#construction">Construction</a></li>
+<li><a class="reference internal" href="#state-functions">State functions</a><ul>
+<li><a class="reference internal" href="#saving-and-restoring-state">Saving and restoring state</a></li>
+<li><a class="reference internal" href="#methods-controlling-state">Methods controlling state</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#current-transformation-matrix">Current Transformation Matrix</a></li>
+<li><a class="reference internal" href="#clipping-functions">Clipping functions</a></li>
+<li><a class="reference internal" href="#path-functions">Path functions</a></li>
+<li><a class="reference internal" href="#drawing-functions">Drawing functions</a><ul>
+<li><a class="reference internal" href="#enhanced-drawing-functions">Enhanced drawing functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#text-functions">Text functions</a></li>
+<li><a class="reference internal" href="#misc-functions">Misc functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#types">Types</a><ul>
+<li><a class="reference internal" href="#primitive-types">Primitive types</a></li>
+<li><a class="reference internal" href="#affinematrix">AffineMatrix</a></li>
+<li><a class="reference internal" href="#enumerations">Enumerations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="overview.html"
+                        title="previous chapter">Kiva</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="drawing_details.html"
+                        title="next chapter">Kiva Drawing In-depth</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/kiva/quickref.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Apr 05, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

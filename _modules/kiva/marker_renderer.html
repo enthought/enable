@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>kiva.marker_renderer &mdash; enable 5.1.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '5.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="enable 5.1.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">enable 5.1.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for kiva.marker_renderer</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="kn">from</span> <span class="nn">kiva._marker_renderer</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">MarkerRendererABGR32</span><span class="p">,</span> <span class="n">MarkerRendererARGB32</span><span class="p">,</span> <span class="n">MarkerRendererBGR24</span><span class="p">,</span>
+    <span class="n">MarkerRendererBGRA32</span><span class="p">,</span> <span class="n">MarkerRendererRGB24</span><span class="p">,</span> <span class="n">MarkerRendererRGBA32</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;MarkerRenderer&quot;</span><span class="p">]</span>
+
+<span class="n">_renderers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;abgr32&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">MarkerRendererABGR32</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="s2">&quot;argb32&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">MarkerRendererARGB32</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="s2">&quot;bgra32&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">MarkerRendererBGRA32</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="s2">&quot;rgba32&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">MarkerRendererRGBA32</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="s2">&quot;bgr24&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">MarkerRendererBGR24</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="s2">&quot;rgb24&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">MarkerRendererRGB24</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="MarkerRenderer"><a class="viewcode-back" href="../../api/kiva.marker_renderer.html#kiva.marker_renderer.MarkerRenderer">[docs]</a><span class="k">def</span> <span class="nf">MarkerRenderer</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">pix_format</span><span class="o">=</span><span class="s2">&quot;bgra32&quot;</span><span class="p">,</span> <span class="n">bottom_up</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; MarkerRenderer(buffer, pix_format=&quot;bgra32&quot;, bottom_up=True)</span>
+<span class="sd">    Create a specialized renderer for implementing ``draw_marker_at_points``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    buffer : ndarray</span>
+<span class="sd">        A MxNx{3,4} numpy array of uint8 to be used as the backing pixel store</span>
+<span class="sd">    pix_format : str</span>
+<span class="sd">        A string specifying the pixel format. Same as what it passed to</span>
+<span class="sd">        ``GraphicsContext``.</span>
+<span class="sd">    bottom_up : bool [optional, defaults to True]</span>
+<span class="sd">        If True, the origin is bottom-left instead of top-left.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    renderer : A new MarkerRenderer instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">klass</span><span class="p">,</span> <span class="n">components</span> <span class="o">=</span> <span class="n">_renderers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pix_format</span><span class="p">,</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">klass</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{pix_format}</span><span class="s2"> is not a supported pixel format&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">buffer</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;uint8&quot;</span> <span class="ow">or</span> <span class="n">buffer</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">3</span>
+            <span class="ow">or</span> <span class="n">buffer</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="n">components</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Pixel buffer must be MxNx</span><span class="si">{components}</span><span class="s2"> and uint8&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">klass</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">bottom_up</span><span class="o">=</span><span class="n">bottom_up</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Apr 05, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

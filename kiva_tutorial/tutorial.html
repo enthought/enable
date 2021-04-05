@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>Introduction &mdash; enable 5.1.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.1.0 documentation" href="../index.html" >
+    <link rel="up" title="Kiva Tutorial" href="index.html" >
+    <link rel="next" title="Basic Tutorial Code" href="tutorial_code.html" >
+    <link rel="prev" title="Kiva Tutorial" href="index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.1.0 documentation</a></li>
+	
+          <li class="active"><a href="index.html" accesskey="U">Kiva Tutorial</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="tutorial_code.html" title="Basic Tutorial Code"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="index.html" title="Kiva Tutorial"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial is intended to help you get up and running working with Kiva.
+Kiva is a backend agnostic 2D vector drawing interface. In other words, it is
+a Python interface layer which sits on top of many different backends that
+provide 2D vector drawing functionality such as Quartz, Cairo, etc. Many of
+the concepts that will be covered here are generalizations of the ideas that
+govern the underlying backends. As such, new Kiva users may find it useful for
+their general understanding of what Kiva is all about to go through any of the
+numerous other tutorials and documentation out there for specific backends.
+Here are some we recommend:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/Introduction/Introduction.html">Quartz</a></p></li>
+<li><p><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D">HTML5 Canvas CanvasRenderingContext2D</a></p></li>
+</ul>
+<p>Before we dive in, we suggest at least skimming the Kiva documentation before
+going through the tutorial so you are familiar with the relevant terms and
+concepts.</p>
+</div>
+<div class="section" id="circuit-diagram-example">
+<h1>Circuit Diagram Example<a class="headerlink" href="#circuit-diagram-example" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial, we will go through the process of drawing the basic circuit
+diagram shown below step by step with Kiva. As mentioned, Kiva supports a
+variety of different backends, but for this tutorial we will work with the
+default agg backend.</p>
+<a class="reference internal image-reference" href="../_images/tutorial.png"><img alt="../_images/tutorial.png" src="../_images/tutorial.png" style="width: 600px; height: 300px;" /></a>
+<p>Starting from the beginning, we will need a GraphicsContext so we import it
+from our desired backend and instantiate it. Disregard the other imports for
+now, they will come into play later in the tutorial.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">tau</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">kiva.api</span> <span class="k">import</span> <span class="n">CAP_ROUND</span><span class="p">,</span> <span class="n">CIRCLE_MARKER</span><span class="p">,</span> <span class="n">Font</span><span class="p">,</span> <span class="n">STROKE</span>
+<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span><span class="p">,</span> <span class="n">CompiledPath</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">600</span><span class="p">,</span> <span class="mi">300</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Now we are ready to use it to start drawing - simple as that. Let’s start with
+just drawing the wires. Given that they are rectangles, this can be done
+quite easily using the graphics context’s <code class="xref py py-meth docutils literal notranslate"><span class="pre">rect()</span></code> method.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># step 1) draw wires</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/step_1.png"><img alt="../_images/step_1.png" src="../_images/step_1.png" style="width: 600px; height: 300px;" /></a>
+<p>That was easy. Now, let’s draw the dots indicating wire connections. To do
+this, we can use the optimized <code class="xref py py-meth docutils literal notranslate"><span class="pre">draw_marker_at_points()</span></code> method.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">draw_marker_at_points()</span></code> is currently only implemented by the
+<code class="docutils literal notranslate"><span class="pre">kiva.agg</span></code> backend which may soon be deprecated. We can guard against this
+to make our code backend agnostic, but for the purposes of keeping the
+tutorial simple we do not do that here. See the
+<a class="reference internal" href="tutorial_advanced_code.html#tutorial-advanced-code"><span class="std std-ref">advanced version of the tutorial</span></a> for
+how to do so.</p>
+</div>
+<p>In this case, with only 5 dots to draw, the speed up is likely negligible.
+However, in scenarios where you need to draw many markers this method can
+provide a significant boost as opposed to just using a for loop (on the order
+of hundreds or more). Here we simply define the points of the markers and call
+the method with the points, a marker size, and a marker (the <code class="docutils literal notranslate"><span class="pre">CIRCLE_MARKER</span></code>
+we imported from <code class="docutils literal notranslate"><span class="pre">kiva.api</span></code>) passed as arguments.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># step 2) draw dots for wire connections</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mf">200.</span><span class="p">,</span> <span class="mf">150.</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">200.</span><span class="p">,</span> <span class="mf">200.</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">400.</span><span class="p">,</span> <span class="mf">150.</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">400.</span><span class="p">,</span> <span class="mf">200.</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">550.</span><span class="p">,</span> <span class="mf">130.</span><span class="p">]</span> 
+<span class="p">])</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">draw_marker_at_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="n">CIRCLE_MARKER</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/step_2.png"><img alt="../_images/step_2.png" src="../_images/step_2.png" style="width: 600px; height: 300px;" /></a>
+<p>Next, we will draw the Ammeter and Voltmeter symbols. To do this, we are going
+to want to modify the graphics context’s state to transform our coordinate
+system to draw in the correct locations, and also to change things like the
+fill color, line width, etc. However, we only want these state modifications
+to apply to this specific part of the drawing. Luckily, to manage this, the
+graphics context object can actually be used as a python
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#typecontextmanager">context manager</a>.
+This allows us to meddle with state temporarily, do some drawing, and then have
+the state reset to where it was once we are finished.</p>
+<p>In the following code, we instantiate a <code class="xref py py-class docutils literal notranslate"><span class="pre">Font</span></code> object and set it to be
+the graphics context’s font. We do this first as it is the only font we intend
+to use, so it can be a persistent modification to the graphics state. Then, we
+use two <code class="docutils literal notranslate"><span class="pre">with</span></code> blocks to temporarily modify state. In each, we move to the
+desired location to draw the symbol, change fill color, adjust the line width,
+define a circular path with the <code class="xref py py-meth docutils literal notranslate"><span class="pre">arc()</span></code> method, and then finally draw
+our path. Once the path is drawn, we draw the text inside. To do this we first
+set the fill color back to black. Next, we ensure the font is centered in the
+circular path. We do this be calling <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_text_extent()</span></code> to determine
+the width and height that the text takes up. When we call
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">show_text_at_point()</span></code>, the arguments specifying the point to draw at
+represent the lower left corner of the resulting text. Thus, since the origin
+of our coordinate system is currently at the center of the circle, in order for
+the text to be centered we need to draw the text at (-w/2, -h/2).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># step 3) Ammeter and Voltmeter</span>
+<span class="n">font</span> <span class="o">=</span> <span class="n">Font</span><span class="p">(</span><span class="s1">&#39;Times New Roman&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_font</span><span class="p">(</span><span class="n">font</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">gc</span><span class="p">:</span>  <span class="c1"># Voltmeter</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">((</span><span class="o">.</span><span class="mi">9</span><span class="p">,</span> <span class="o">.</span><span class="mi">9</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">arc</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">draw_path</span><span class="p">()</span>
+
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_text_extent</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">show_text_at_point</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="o">-</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">gc</span><span class="p">:</span>  <span class="c1"># Ammeter</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">250</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">.</span><span class="mi">9</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">arc</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">draw_path</span><span class="p">()</span>
+
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_text_extent</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">show_text_at_point</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="o">-</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/step_3.png"><img alt="../_images/step_3.png" src="../_images/step_3.png" style="width: 600px; height: 300px;" /></a>
+<p>As you may have noticed, most of the code for drawing the Ammeter and the
+Voltmeter was effectively the same. Sometimes it is useful to work with an
+independent path instance as opposed to specifically messing with the current
+path of the graphics context. This brings us to the notion of CompiledPaths,
+which we will now use to draw the resistors. As you can see the path for each
+resistor will be exactly the same. Rather than moving our coordinate system
+around to each location and redrawing the same path at each location, we will
+instead define the path using a <code class="xref py py-class docutils literal notranslate"><span class="pre">CompiledPath</span></code> and draw it at each of
+the various desired locations using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">draw_path_at_points()</span></code> method.
+To do this we instantiate a <code class="xref py py-class docutils literal notranslate"><span class="pre">CompiledPath</span></code>, and then define our path
+just as we would with the graphics context’s current path. The interface uses
+the same <a class="reference internal" href="../kiva/quickref.html#kiva-path-functions"><span class="std std-ref">Path functions</span></a>. Finally, we can simply call
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">draw_path_at_points()</span></code> passing in the locations where we want to draw
+the path, our compiled path, and the drawing mode.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#step 4) resistors</span>
+<span class="n">resistor_path</span> <span class="o">=</span> <span class="n">CompiledPath</span><span class="p">()</span>
+<span class="n">resistor_path</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">resistor_path_points</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="o">*</span><span class="mi">10</span><span class="o">+</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">resistor_path_points</span><span class="p">:</span>
+    <span class="n">resistor_path</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+<span class="n">resistor_path</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">draw_path_at_points</span><span class="p">(</span><span class="n">resistor_locations</span><span class="p">,</span> <span class="n">resistor_path</span><span class="p">,</span> <span class="n">STROKE</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you run just this code, you will notice that things don’t look quite right,
+as the original lines for the wires still show underneath our resistors. We can
+get rid of these by drawing white lines over the relevant portions of the wire
+before we call the above code. Note that this is not the most performant
+approach we could take especially in the context of an interactive application.
+In general we want to strive to touch each pixel as few times as necessary.
+However, in this case to keep the tutorial simple, we can run the following
+code before drawing the resistors.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># step 5) clear some space for the resistors</span>
+<span class="n">clear_resistor_path</span> <span class="o">=</span> <span class="n">CompiledPath</span><span class="p">()</span>
+<span class="n">clear_resistor_path</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">clear_resistor_path</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">resistor_locations</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">350</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">260</span><span class="p">,</span> <span class="mi">150</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">260</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="p">]</span>
+<span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">))</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">draw_path_at_points</span><span class="p">(</span><span class="n">resistor_locations</span><span class="p">,</span> <span class="n">clear_resistor_path</span><span class="p">,</span> <span class="n">STROKE</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/step_45.png"><img alt="../_images/step_45.png" src="../_images/step_45.png" style="width: 600px; height: 300px;" /></a>
+<p>Now, for the switch. Just like above, we are going to want to “erase” the
+previously drawn wire. Then, for the actual switch, we want to effectively just
+rotate that segment of wire outwards. To do this we tranform our coordinates so
+that we can simply draw a line along the x axis of the same length as the gap
+we just created. Thus, we translate to the lower edge of the switch, and rotate
+our axis to the desired angle. Upon exit from the context manager, the
+coordinate system is reverted back to as it was before.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># step 6) switch</span>
+<span class="c1"># white out the wire </span>
+<span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="mi">550</span><span class="p">,</span> <span class="mi">130</span><span class="p">)</span>
+    <span class="c1"># wire connection dot markers have size 4 and we don&#39;t want to clear that</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">))</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">30</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+<span class="c1"># draw the switch</span>
+<span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+    <span class="c1"># move to the connected side of the switch and rotate coordinates</span>
+    <span class="c1"># to the angle we want to draw the switch</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="mi">550</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">rotate_ctm</span><span class="p">(</span><span class="n">tau</span><span class="o">/</span><span class="mi">6</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/step_6.png"><img alt="../_images/step_6.png" src="../_images/step_6.png" style="width: 600px; height: 300px;" /></a>
+<p>We will leave the drawing of the battery as an exercise for the reader, but the
+full code for the example is available <a class="reference internal" href="tutorial_code.html#tutorial-code"><span class="std std-ref">here</span></a>.</p>
+<p>This tutorial was intended as a ramp up for drawing with Kiva. Many of the
+approaches taken were chosen with a focus on teaching, not writing optimal
+code. In pactice, you probably would not want to implement drawing in this way
+because it is not as performant as it could be. For example, drawings lines and
+then “erasing” them by drawing a white line on top. Now that you better
+understand the basics of what Kiva drawing is all about, please refer to the
+<a class="reference internal" href="tutorial_advanced_code.html#tutorial-advanced-code"><span class="std std-ref">advanced version of the tutorial</span></a> to see
+what a more “production” level version of code for this drawing might look
+like.</p>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a></li>
+<li><a class="reference internal" href="#circuit-diagram-example">Circuit Diagram Example</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Kiva Tutorial</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tutorial_code.html"
+                        title="next chapter">Basic Tutorial Code</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/kiva_tutorial/tutorial.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Apr 05, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
