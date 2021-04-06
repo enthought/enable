@@ -118,10 +118,10 @@ class FontManager:
         self.afm_db = create_font_database(afmfiles, fontext="afm")
         self.default_font["afm"] = None
 
-        self.ttf_lookup_cache = {}
-        self.afm_lookup_cache = {}
-        self.ttf_fallback_cache = {}
-        self.afm_fallback_cache = {}
+        self._ttf_lookup_cache = {}
+        self._afm_lookup_cache = {}
+        self._ttf_fallback_cache = {}
+        self._afm_fallback_cache = {}
 
     def update_fonts(self, paths):
         """ Update the font lists with new font files.
@@ -146,10 +146,10 @@ class FontManager:
         the :class:`FontQuery` *query*, and has support for ``language``.
         """
         if fontext == "afm":
-            font_cache = self.afm_fallback_cache
+            font_cache = self._afm_fallback_cache
             font_db = self.afm_db
         else:
-            font_cache = self.ttf_fallback_cache
+            font_cache = self._ttf_fallback_cache
             font_db = self.ttf_db
 
         key = hash(language + str(query))
@@ -182,7 +182,7 @@ class FontManager:
             warnings.warn(msg.format(query, language))
             return None
 
-        result = FontSpec(
+        result = _FontSpec(
             best_font.fname,
             best_font.family,
             best_font.face_index,
@@ -225,13 +225,13 @@ class FontManager:
             logger.debug("findfont returning %s", fname)
             # It's not at all clear where a `FontQuery` instance with
             # `fname` already set would come from. Assume face_index == 0.
-            return FontSpec(fname, query.family[0])
+            return _FontSpec(fname, query.family[0])
 
         if fontext == "afm":
-            font_cache = self.afm_lookup_cache
+            font_cache = self._afm_lookup_cache
             font_db = self.afm_db
         else:
-            font_cache = self.ttf_lookup_cache
+            font_cache = self._ttf_lookup_cache
             font_db = self.ttf_db
 
         if directory is None:
@@ -294,7 +294,7 @@ class FontManager:
                     UserWarning,
                 )
                 # Assume this is never a .ttc font, so 0 is ok for face index.
-                result = FontSpec(self.default_font[fontext], "Default")
+                result = _FontSpec(self.default_font[fontext], "Default")
         else:
             logger.debug(
                 "findfont: Matching %s to %s (%s[%d]) with score of %f",
@@ -304,7 +304,7 @@ class FontManager:
                 best_font.face_index,
                 best_score,
             )
-            result = FontSpec(
+            result = _FontSpec(
                 best_font.fname,
                 best_font.family,
                 best_font.face_index,
@@ -329,7 +329,7 @@ class FontManager:
         return result
 
 
-class FontSpec(object):
+class _FontSpec(object):
     """ An object to represent the return value of findfont() and
     find_fallback().
     """
@@ -345,7 +345,7 @@ class FontSpec(object):
 
     def __repr__(self):
         args = f"{self.filename}, {self.family}, face_index={self.face_index}"
-        return f"FontSpec({args})"
+        return f"_FontSpec({args})"
 
 
 # ---------------------------------------------------------------------------
