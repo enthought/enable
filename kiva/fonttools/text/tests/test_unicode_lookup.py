@@ -20,11 +20,29 @@ class TestUnicodeAnalyzer(unittest.TestCase):
         res = an.languages(st)
         self.assertListEqual(res, [(0, len(st), "Common")])
 
+        st = "안녕하세요"
+        res = an.languages(st)
+        self.assertListEqual(res, [(0, len(st), "Korean")])
+
+        st = "こんにちは"
+        res = an.languages(st)
+        self.assertListEqual(res, [(0, len(st), "Japanese")])
+
+    def test_locale_dependent(self):
+        an = UnicodeAnalyzer()
+
+        # "Han" script is mapped to a language related to the default locale.
+        han_language = an.lang_map["Han"]
+
         st = "你好世界"
         res = an.languages(st)
-        self.assertListEqual(res, [(0, len(st), "Han")])
+        self.assertListEqual(res, [(0, len(st), han_language)])
 
         st = "Kiva Graphics一番😎"
-        expected = [(0, 13, "Common"), (13, 15, "Han"), (15, 16, 'Common')]
+        expected = [
+            (0, 13, "Common"),
+            (13, 15, han_language),
+            (15, 16, 'Common'),
+        ]
         res = an.languages(st)
         self.assertListEqual(res, expected)
