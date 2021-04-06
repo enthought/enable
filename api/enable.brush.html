@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.brush module &mdash; enable 5.1.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.1.0 documentation" href="../index.html" >
+    <link rel="up" title="enable package" href="enable.html" >
+    <link rel="next" title="enable.canvas module" href="enable.canvas.html" >
+    <link rel="prev" title="enable.base_tool module" href="enable.base_tool.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.1.0 documentation</a></li>
+	
+          <li class="active"><a href="enable.html" accesskey="U">enable package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="enable.canvas.html" title="enable.canvas module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="enable.base_tool.html" title="enable.base_tool module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-enable.brush">
+<span id="enable-brush-module"></span><h1>enable.brush module<a class="headerlink" href="#module-enable.brush" title="Permalink to this headline">¶</a></h1>
+<p>Brush classes to make filling regions cleaner.</p>
+<dl class="class">
+<dt id="enable.brush.Brush">
+<em class="property">class </em><code class="sig-prename descclassname">enable.brush.</code><code class="sig-name descname">Brush</code><a class="reference internal" href="../_modules/enable/brush.html#Brush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.brush.Brush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.ABCHasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.ABCHasStrictTraits</span></code></a></p>
+<p>A brush describes how to fill the pixels of a region.</p>
+<p>To use a brush when drawing, call set_brush with the current gc as the
+argument.</p>
+<dl class="method">
+<dt id="enable.brush.Brush.observe_update_traits">
+<code class="sig-name descname">observe_update_traits</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/brush.html#Brush.observe_update_traits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.brush.Brush.observe_update_traits" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="enable.brush.Brush.set_brush">
+<em class="property">abstract </em><code class="sig-name descname">set_brush</code><span class="sig-paren">(</span><em class="sig-param">gc</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/brush.html#Brush.set_brush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.brush.Brush.set_brush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the brush settings to a graphics context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gc</strong> (<em>graphics context</em>) – The graphics context to use the brush with.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="enable.brush.Brush.updated">
+<code class="sig-name descname">updated</code><em class="property"> = Event()</em><a class="headerlink" href="#enable.brush.Brush.updated" title="Permalink to this definition">¶</a></dt>
+<dd><p>A trait which fires when the brush is updated.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.brush.ColorBrush">
+<em class="property">class </em><code class="sig-prename descclassname">enable.brush.</code><code class="sig-name descname">ColorBrush</code><a class="reference internal" href="../_modules/enable/brush.html#ColorBrush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.brush.ColorBrush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.brush.Brush" title="enable.brush.Brush"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.brush.Brush</span></code></a></p>
+<p>A simple brush that paints a solid color.</p>
+<dl class="attribute">
+<dt id="enable.brush.ColorBrush.color">
+<code class="sig-name descname">color</code><em class="property"> = ColorTrait(&quot;transparent&quot;, update=True)</em><a class="headerlink" href="#enable.brush.ColorBrush.color" title="Permalink to this definition">¶</a></dt>
+<dd><p>The color to brush the region with.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.brush.ColorBrush.set_brush">
+<code class="sig-name descname">set_brush</code><span class="sig-paren">(</span><em class="sig-param">gc</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/brush.html#ColorBrush.set_brush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.brush.ColorBrush.set_brush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the brush settings to a graphics context.</p>
+<p>This sets the fill color of the GC to the specified color.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gc</strong> (<em>graphics context</em>) – The graphics context to use the brush with.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.brush.ColorStop">
+<em class="property">class </em><code class="sig-prename descclassname">enable.brush.</code><code class="sig-name descname">ColorStop</code><a class="reference internal" href="../_modules/enable/brush.html#ColorStop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.brush.ColorStop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
+<p>A point on a gradient with a fixed color.</p>
+<dl class="attribute">
+<dt id="enable.brush.ColorStop.color">
+<code class="sig-name descname">color</code><em class="property"> = ColorTrait(&quot;transparent&quot;, update=True)</em><a class="headerlink" href="#enable.brush.ColorStop.color" title="Permalink to this definition">¶</a></dt>
+<dd><p>The color at the color stop.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.brush.ColorStop.observe_update_traits">
+<code class="sig-name descname">observe_update_traits</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/brush.html#ColorStop.observe_update_traits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.brush.ColorStop.observe_update_traits" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enable.brush.ColorStop.offset">
+<code class="sig-name descname">offset</code><em class="property"> = Range(0.0, 1.0, update=True)</em><a class="headerlink" href="#enable.brush.ColorStop.offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>The position of the color stop in the gradient, between 0.0 and 1.0.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.brush.ColorStop.to_array">
+<code class="sig-name descname">to_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/brush.html#ColorStop.to_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.brush.ColorStop.to_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an array which represents the color stop.</p>
+<p>This is the raw form of the color stop required by Kiva.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>stop_array</strong> – Return an array of (offset, r, b, b, a).</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="enable.brush.ColorStop.updated">
+<code class="sig-name descname">updated</code><em class="property"> = Event()</em><a class="headerlink" href="#enable.brush.ColorStop.updated" title="Permalink to this definition">¶</a></dt>
+<dd><p>A trait which fires when the color stop is updated.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.brush.Gradient">
+<em class="property">class </em><code class="sig-prename descclassname">enable.brush.</code><code class="sig-name descname">Gradient</code><a class="reference internal" href="../_modules/enable/brush.html#Gradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.brush.Gradient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
+<p>A color gradient.</p>
+<dl class="method">
+<dt id="enable.brush.Gradient.observe_stops">
+<code class="sig-name descname">observe_stops</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/brush.html#Gradient.observe_stops"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.brush.Gradient.observe_stops" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enable.brush.Gradient.stops">
+<code class="sig-name descname">stops</code><em class="property"> = List(Instance(ColorStop))</em><a class="headerlink" href="#enable.brush.Gradient.stops" title="Permalink to this definition">¶</a></dt>
+<dd><p>The sequence of color stops for the gradient.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.brush.Gradient.to_array">
+<code class="sig-name descname">to_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/brush.html#Gradient.to_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.brush.Gradient.to_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a sorted list of stop arrays.</p>
+<p>This is the raw form of the stops required by Kiva.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>stop_array_list</strong> – A list of array of (offset, r, b, b, a) values corresponding to
+the color stops.  This array should not be mutated.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="enable.brush.Gradient.updated">
+<code class="sig-name descname">updated</code><em class="property"> = Event()</em><a class="headerlink" href="#enable.brush.Gradient.updated" title="Permalink to this definition">¶</a></dt>
+<dd><p>A trait which fires when the gradient is updated.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.brush.GradientBrush">
+<em class="property">class </em><code class="sig-prename descclassname">enable.brush.</code><code class="sig-name descname">GradientBrush</code><a class="reference internal" href="../_modules/enable/brush.html#GradientBrush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.brush.GradientBrush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.brush.Brush" title="enable.brush.Brush"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.brush.Brush</span></code></a></p>
+<p>A brush that paints a color gradient.</p>
+<dl class="attribute">
+<dt id="enable.brush.GradientBrush.gradient">
+<code class="sig-name descname">gradient</code><em class="property"> = Instance(Gradient, args=(), allow_none=False, update=True)</em><a class="headerlink" href="#enable.brush.GradientBrush.gradient" title="Permalink to this definition">¶</a></dt>
+<dd><p>The sequence of color stops for the gradient.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.brush.GradientBrush.observe_stops">
+<code class="sig-name descname">observe_stops</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/brush.html#GradientBrush.observe_stops"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.brush.GradientBrush.observe_stops" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="enable.brush.GradientBrush.spread_method">
+<code class="sig-name descname">spread_method</code><em class="property"> = Enum(&quot;pad&quot;, &quot;reflect&quot;, &quot;repeat&quot;, update=True)</em><a class="headerlink" href="#enable.brush.GradientBrush.spread_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>How the gradient extends beyond the main area of the gradient.</p>
+<dl class="simple">
+<dt>pad</dt><dd><p>Extend using the first and last colors.</p>
+</dd>
+<dt>reflect</dt><dd><p>Extend using a reflection of the gradient.</p>
+</dd>
+<dt>repeat</dt><dd><p>Extend by repeating the gradient.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="enable.brush.GradientBrush.units">
+<code class="sig-name descname">units</code><em class="property"> = Enum(&quot;userSpaceOnUse&quot;, &quot;objectBoundingBox&quot;, update=True)</em><a class="headerlink" href="#enable.brush.GradientBrush.units" title="Permalink to this definition">¶</a></dt>
+<dd><p>The coordinate space used by the gradient points.</p>
+<dl class="simple">
+<dt>userSpaceOnUse</dt><dd><p>Coordinates are specified in the current graph context’s coordinate
+system.</p>
+</dd>
+<dt>objectBoundingBox</dt><dd><p>Coordinates are specified between 0.0 and 1.0 and are relative to
+the bounding box of the path being filled.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.brush.LinearGradientBrush">
+<em class="property">class </em><code class="sig-prename descclassname">enable.brush.</code><code class="sig-name descname">LinearGradientBrush</code><a class="reference internal" href="../_modules/enable/brush.html#LinearGradientBrush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.brush.LinearGradientBrush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.brush.GradientBrush" title="enable.brush.GradientBrush"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.brush.GradientBrush</span></code></a></p>
+<p>A brush that paints a linear color gradient.</p>
+<dl class="attribute">
+<dt id="enable.brush.LinearGradientBrush.end">
+<code class="sig-name descname">end</code><em class="property"> = Tuple(Float, Float, update=True)</em><a class="headerlink" href="#enable.brush.LinearGradientBrush.end" title="Permalink to this definition">¶</a></dt>
+<dd><p>The stop point of the linear gradient.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.brush.LinearGradientBrush.set_brush">
+<code class="sig-name descname">set_brush</code><span class="sig-paren">(</span><em class="sig-param">gc</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/brush.html#LinearGradientBrush.set_brush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.brush.LinearGradientBrush.set_brush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the brush settings to a graphics context.</p>
+<p>This calls linear_gradient on the GC with the appropriate values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gc</strong> (<em>graphics context</em>) – The graphics context to use the brush with.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="enable.brush.LinearGradientBrush.start">
+<code class="sig-name descname">start</code><em class="property"> = Tuple(Float, Float, update=True)</em><a class="headerlink" href="#enable.brush.LinearGradientBrush.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>The start point of the linear gradient.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="enable.brush.RadialGradientBrush">
+<em class="property">class </em><code class="sig-prename descclassname">enable.brush.</code><code class="sig-name descname">RadialGradientBrush</code><a class="reference internal" href="../_modules/enable/brush.html#RadialGradientBrush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.brush.RadialGradientBrush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#enable.brush.GradientBrush" title="enable.brush.GradientBrush"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.brush.GradientBrush</span></code></a></p>
+<p>A brush that paints a radial color gradient.</p>
+<dl class="attribute">
+<dt id="enable.brush.RadialGradientBrush.center">
+<code class="sig-name descname">center</code><em class="property"> = Tuple(Float, Float, update=True)</em><a class="headerlink" href="#enable.brush.RadialGradientBrush.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>The center point of the radial gradient.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="enable.brush.RadialGradientBrush.focus">
+<code class="sig-name descname">focus</code><em class="property"> = Tuple(Float, Float, update=True)</em><a class="headerlink" href="#enable.brush.RadialGradientBrush.focus" title="Permalink to this definition">¶</a></dt>
+<dd><p>The focus point of the radial gradient.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="enable.brush.RadialGradientBrush.radius">
+<code class="sig-name descname">radius</code><em class="property"> = Float(update=True)</em><a class="headerlink" href="#enable.brush.RadialGradientBrush.radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>The radius of the radial gradient.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="enable.brush.RadialGradientBrush.set_brush">
+<code class="sig-name descname">set_brush</code><span class="sig-paren">(</span><em class="sig-param">gc</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/brush.html#RadialGradientBrush.set_brush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#enable.brush.RadialGradientBrush.set_brush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the brush settings to a graphics context.</p>
+<p>This calls radial_gradient on the GC with the appropriate values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gc</strong> (<em>graphics context</em>) – The graphics context to use the brush with.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enable.base_tool.html"
+                        title="previous chapter">enable.base_tool module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="enable.canvas.html"
+                        title="next chapter">enable.canvas module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/enable.brush.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Apr 05, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

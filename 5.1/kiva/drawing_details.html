@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>Kiva Drawing In-depth &mdash; enable 5.1.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.1.0 documentation" href="../index.html" >
+    <link rel="next" title="Enable" href="../enable/overview.html" >
+    <link rel="prev" title="Kiva Interface Quick Reference" href="quickref.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.1.0 documentation</a></li>
+	 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="../enable/overview.html" title="Enable"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="quickref.html" title="Kiva Interface Quick Reference"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="kiva-drawing-in-depth">
+<h1>Kiva Drawing In-depth<a class="headerlink" href="#kiva-drawing-in-depth" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="kiva-state">
+<h2>Kiva State<a class="headerlink" href="#kiva-state" title="Permalink to this headline">¶</a></h2>
+<p>Kiva is a “stateful” drawing API. What this means is that the graphics context
+has a collection of state which affects the results of its drawing actions.
+Furthermore, Kiva enables this state to be managed with a stack such that state
+can be “pushed” onto the stack before making some temporary changes and then
+“popped” off the stack to restore the state to a version which no longer
+includes those changes.</p>
+<div class="section" id="state-components">
+<h3>State Components<a class="headerlink" href="#state-components" title="Permalink to this headline">¶</a></h3>
+<p>Here is a list of all the pieces of state tracked by a Kiva graphics context,
+along with the methods which operate on them:</p>
+<ul class="simple">
+<li><p>Affine transformation (<code class="xref py py-meth docutils literal notranslate"><span class="pre">translate_ctm()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">rotate_ctm()</span></code>,
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">scale_ctm()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">concat_ctm()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">set_ctm()</span></code>,
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ctm()</span></code>)</p></li>
+<li><p>Clipping (<code class="xref py py-meth docutils literal notranslate"><span class="pre">clip_to_rect()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">clip_to_rects()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">clip()</span></code>,
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">even_odd_clip()</span></code>)</p></li>
+<li><p>Fill color (<code class="xref py py-meth docutils literal notranslate"><span class="pre">set_fill_color()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_fill_color()</span></code>,
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">linear_gradient()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">radial_gradient()</span></code>)</p></li>
+<li><p>Stroke color (<code class="xref py py-meth docutils literal notranslate"><span class="pre">set_stroke_color()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_stroke_color()</span></code>)</p></li>
+<li><p>Line width (<code class="xref py py-meth docutils literal notranslate"><span class="pre">set_line_width()</span></code>)</p></li>
+<li><p>Line join style (<code class="xref py py-meth docutils literal notranslate"><span class="pre">set_line_join()</span></code>)</p></li>
+<li><p>Line cap style (<code class="xref py py-meth docutils literal notranslate"><span class="pre">set_line_cap()</span></code>)</p></li>
+<li><p>Line dashing (<code class="xref py py-meth docutils literal notranslate"><span class="pre">set_line_dash()</span></code>)</p></li>
+<li><p>Global transparency (<code class="xref py py-meth docutils literal notranslate"><span class="pre">set_alpha()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_alpha()</span></code>)</p></li>
+<li><p>Anti-aliasing (<code class="xref py py-meth docutils literal notranslate"><span class="pre">set_antialias()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_antialias()</span></code>)</p></li>
+<li><p>Miter limit (<code class="xref py py-meth docutils literal notranslate"><span class="pre">set_miter_limit()</span></code>)</p></li>
+<li><p>Flatness (<code class="xref py py-meth docutils literal notranslate"><span class="pre">set_flatness()</span></code>)</p></li>
+<li><p>Image interpolation (<code class="xref py py-meth docutils literal notranslate"><span class="pre">set_image_interpolation()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_image_interpolation()</span></code>)</p></li>
+<li><p>Text drawing mode (<code class="xref py py-meth docutils literal notranslate"><span class="pre">set_text_drawing_mode()</span></code>)</p></li>
+</ul>
+</div>
+<div class="section" id="color">
+<h3>Color<a class="headerlink" href="#color" title="Permalink to this headline">¶</a></h3>
+<p>Kiva has two colors in its graphics state: stroke color and fill color. Stroke
+color is used for the lines in paths when the drawing mode is <code class="docutils literal notranslate"><span class="pre">STROKE</span></code>,
+<code class="docutils literal notranslate"><span class="pre">FILL_STROKE</span></code> or <code class="docutils literal notranslate"><span class="pre">EOF_FILL_STROKE</span></code>. Fill color is used for text and for
+the enclosed sections of paths when the drawing mode is <code class="docutils literal notranslate"><span class="pre">FILL</span></code>, <code class="docutils literal notranslate"><span class="pre">EOF_FILL</span></code>,
+<code class="docutils literal notranslate"><span class="pre">FILL_STROKE</span></code>, or <code class="docutils literal notranslate"><span class="pre">EOF_FILL_STROKE</span></code>. Additionally, the fill color can be
+set by the <code class="xref py py-meth docutils literal notranslate"><span class="pre">linear_gradient()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">radial_gradient()</span></code> methods.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Even though text uses the fill color, text will not be filled with a
+gradient <em>unless</em> the text drawing mode is <code class="docutils literal notranslate"><span class="pre">TEXT_FILL_STROKE</span></code> and even that
+will only work if the backend supports it.</p>
+</div>
+<p>Color values should always be passed in as 3- or 4- tuples. The order of the
+color components is <code class="docutils literal notranslate"><span class="pre">(R,</span> <span class="pre">G,</span> <span class="pre">B[,</span> <span class="pre">A])</span></code> and values must be floating point numbers
+in the range [0, 1]. Even if a graphics context is not able to draw with alpha
+blending, it’s still OK to pass a 4 component color value when setting state.</p>
+</div>
+<div class="section" id="state-stack-management">
+<h3>State Stack Management<a class="headerlink" href="#state-stack-management" title="Permalink to this headline">¶</a></h3>
+<p>Graphics context instances have two methods for saving and restoring the state,
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">save_state()</span></code> (“push”) and <code class="xref py py-meth docutils literal notranslate"><span class="pre">restore_state()</span></code> (“pop”). That said,
+it isn’t recommended practice to call the methods directly. Instead, you can
+treat the graphics context object as a
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#typecontextmanager">context manager</a>
+and use the <code class="docutils literal notranslate"><span class="pre">with</span></code> keyword to create a block of code where the graphics state
+is temporarily modified. Using the context manager approach provides safety from
+“temporary” modifications becoming permanent if an uncaught exception is raised
+while drawing.</p>
+<p>In Enable and Chaco, it is frequently the case that a graphics context instance
+will be passed into a method for the purpose of some drawing. Because it is not
+reasonable to push the responsibility of state management “up” the call stack,
+the onus is on the code making state modifications to do them safely so that
+other changes don’t leak into other code.</p>
+<p><strong>Well behaved code should take care to only modify graphics state inside a</strong>
+<code class="docutils literal notranslate"><span class="pre">with</span></code> <strong>block</strong>.</p>
+</div>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="../_images/state_ex.png"><img alt="../_images/state_ex.png" src="../_images/state_ex.png" style="width: 300px; height: 300px;" /></a>
+<p>First, the whole example:</p>
+<div class="highlight-default notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">kiva</span> <span class="k">import</span> <span class="n">CAP_ROUND</span><span class="p">,</span> <span class="n">CAP_SQUARE</span><span class="p">,</span> <span class="n">JOIN_ROUND</span>
+<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">))</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">scale_ctm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">0.66</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">0.66</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mf">7.0</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_line_join</span><span class="p">(</span><span class="n">JOIN_ROUND</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_line_cap</span><span class="p">(</span><span class="n">CAP_SQUARE</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">12</span><span class="p">):</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">12.0</span>
+    <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">rotate_ctm</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="mi">105</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="mi">12</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">fmod</span><span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">i</span> <span class="o">/</span> <span class="mi">12</span><span class="p">))</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mf">10.0</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_line_cap</span><span class="p">(</span><span class="n">CAP_ROUND</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">rotate_ctm</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;state_ex.png&quot;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>The first part sets up the default graphics state. Here, that includes a scale
+of 2 in X and Y, a translation of (150, 150) which is affected by the
+preceeding scale transformation, and some line properties: stroke color, width,
+join, and cap:</p>
+<div class="highlight-default notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">gc</span><span class="o">.</span><span class="n">scale_ctm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">0.66</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">0.66</span><span class="p">))</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mf">7.0</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_line_join</span><span class="p">(</span><span class="n">JOIN_ROUND</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">set_line_cap</span><span class="p">(</span><span class="n">CAP_SQUARE</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>Then in a loop, we draw twice (the two <code class="xref py py-meth docutils literal notranslate"><span class="pre">stroke_path()</span></code> calls). The first
+draw uses a <code class="docutils literal notranslate"><span class="pre">with</span></code> block to temporarily modify the drawing state. It adds more
+affine transformations: a rotate and a translate. It also changes some line
+properties: stroke color, width, and cap. A rectangle is then added to the
+current path and stroked.</p>
+<div class="highlight-default notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>17
+18
+19
+20
+21
+22
+23
+24</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">rotate_ctm</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="mi">105</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="mi">12</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">fmod</span><span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">i</span> <span class="o">/</span> <span class="mi">12</span><span class="p">))</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mf">10.0</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_line_cap</span><span class="p">(</span><span class="n">CAP_ROUND</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>After leaving the first <code class="docutils literal notranslate"><span class="pre">with</span></code> block, the state is now restored to its
+default. A new <code class="docutils literal notranslate"><span class="pre">with</span></code> block is entered and the current transformation matrix
+is modified with the same rotation as the first drawing block, but a
+<em>different</em> translation is applied. The line properties are unchanged
+and so use the defaults set at the top.</p>
+<div class="highlight-default notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>26
+27
+28
+29
+30
+31</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">rotate_ctm</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+<div class="section" id="compiledpath">
+<h2>CompiledPath<a class="headerlink" href="#compiledpath" title="Permalink to this headline">¶</a></h2>
+<p>A path is a collection of geometric objects that can be drawn in a graphics
+context with coloring and an affine transformation applied to it. It is the
+basic unit of drawing in a graphics context.</p>
+<p>Every graphics context instance has a current path which can be manipulated by
+the <a class="reference internal" href="quickref.html#kiva-path-functions"><span class="std std-ref">Path functions</span></a>. However, some drawing operations are easier to
+implement with an independent path instance
+(specifically <code class="xref py py-meth docutils literal notranslate"><span class="pre">draw_path_at_points()</span></code>).</p>
+<p>An independent path instance can be created in two ways. The first is via the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphicsContext.get_empty_path()</span></code> method. The second method is to use
+the <code class="xref py py-class docutils literal notranslate"><span class="pre">CompiledPath</span></code> class imported from the backend being used. The
+interface of a <code class="xref py py-class docutils literal notranslate"><span class="pre">CompiledPath</span></code> instance is the same as the
+<a class="reference internal" href="quickref.html#kiva-path-functions"><span class="std std-ref">Path functions</span></a> (modulo <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_empty_path()</span></code>).</p>
+<p>Once you have a path object, it can be drawn by adding it to the graphics
+context with the <code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphicsContext.add_path()</span></code> method (which adds the path
+to the current path) and then calling any of the <a class="reference internal" href="quickref.html#kiva-drawing-functions"><span class="std std-ref">Drawing functions</span></a>
+which operate on the current path.</p>
+<p>For certain backends which support it, the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphicsContext.draw_path_at_points()</span></code> method can be used to draw a
+path object at many different positions with a single function call.</p>
+<div class="section" id="id1">
+<h3>Example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="../_images/compiled_path_ex.png"><img alt="../_images/compiled_path_ex.png" src="../_images/compiled_path_ex.png" style="width: 300px; height: 300px;" /></a>
+<div class="highlight-default notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">pi</span>
+<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span>
+
+<span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">))</span>
+
+<span class="n">path</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_empty_path</span><span class="p">()</span>
+<span class="n">path</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+<span class="n">path</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+<span class="n">path</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+<span class="n">path</span><span class="o">.</span><span class="n">close_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">scale_ctm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">12</span><span class="p">):</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">rotate_ctm</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">12.0</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">((</span><span class="n">i</span> <span class="o">/</span> <span class="mf">12.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="mf">12.0</span><span class="p">)))</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">add_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">fill_path</span><span class="p">()</span>
+
+<span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;compiled_path_ex.png&quot;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+<div class="section" id="kiva-image-rendering">
+<h2>Kiva Image Rendering<a class="headerlink" href="#kiva-image-rendering" title="Permalink to this headline">¶</a></h2>
+<p>Drawing images in kiva is accomplished via
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphicsContext.draw_image()</span></code>. A unique feature of drawing images
+(relative to path drawing) is that you can apply an arbitrary translation and
+scaling to the image without involving the current transformation matrix.</p>
+<p>The signature for <code class="xref py py-meth docutils literal notranslate"><span class="pre">draw_image()</span></code> is straightforward:</p>
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">draw_image</code><span class="sig-paren">(</span><em class="sig-param">image</em>, <em class="sig-param">rect=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.draw_image"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Render an image into a rectangle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> – An image. Can be a numpy array, a PIL <code class="docutils literal notranslate"><span class="pre">Image</span></code> instance, or
+another <code class="docutils literal notranslate"><span class="pre">GraphicsContext</span></code> instance.</p></li>
+<li><p><strong>rect</strong> – A tuple (x, y, w, h). If not specified then the bounds of the
+the graphics context are used as the rectangle.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p>The <code class="docutils literal notranslate"><span class="pre">image</span></code> object that is passed to <code class="xref py py-meth docutils literal notranslate"><span class="pre">draw_image()</span></code> can be a numpy
+array, a <a class="reference external" href="https://pillow.readthedocs.io/en/stable/">PIL</a> <code class="docutils literal notranslate"><span class="pre">Image</span></code> instance,
+or another <code class="docutils literal notranslate"><span class="pre">GraphicsContext</span></code> instance of the same backend. If <code class="docutils literal notranslate"><span class="pre">image</span></code> is a
+numpy array, it is typically converted to a more convenient format via
+<a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.fromarray">PIL.Image.fromarray</a>.
+Therefore, one must be careful about the expected pixel format of the image. If
+your image is rendering with incorrect colors, this might be the problem.
+Passing the other allowed versions of <code class="docutils literal notranslate"><span class="pre">image</span></code> should give a more consistent
+result.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">image</span></code> contains an alpha channel and transparent or translucent pixels,
+this transparency should also be honored by the destination graphics context.
+However, not all backends may support this.</p>
+<p>Regarding the <code class="docutils literal notranslate"><span class="pre">rect</span></code> argument to <code class="xref py py-meth docutils literal notranslate"><span class="pre">draw_image()</span></code>, if it is not
+specified then the bounding rectangle of the graphics context will be used. As
+mentioned before, <code class="docutils literal notranslate"><span class="pre">rect</span></code> can be used to apply an arbitrary translation and
+scaling to an image. The translation is the x,y position of the rectangle and
+the scaling is the ratio of the image’s width and height to those of the
+rectangle. In every case, <code class="docutils literal notranslate"><span class="pre">rect</span></code> will be transformed by the current
+transformation matrix.</p>
+<div class="section" id="special-considerations">
+<h3>Special considerations<a class="headerlink" href="#special-considerations" title="Permalink to this headline">¶</a></h3>
+<p>If you only want to draw a subset of an image, you should pass only that subset
+to <code class="xref py py-meth docutils literal notranslate"><span class="pre">draw_image()</span></code>. The Kiva API does not support defining a “source”
+rectangle when drawing images, only a “destination”.</p>
+<p>If drawing images with some scaling applied, one might wish to have control
+over the interpolation used when drawing the image. This can be accomplished
+with the <code class="xref py py-meth docutils literal notranslate"><span class="pre">set_image_interpolation()</span></code> method.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_image_interpolation()</span></code> is currently only implemented by the
+<code class="docutils literal notranslate"><span class="pre">kiva.agg</span></code> backend. Other backends may have the method, but it is
+effectively a no-op.</p>
+</div>
+</div>
+<div class="section" id="saving-images">
+<h3>Saving images<a class="headerlink" href="#saving-images" title="Permalink to this headline">¶</a></h3>
+<p>One can also save the contents of a graphics context to an image. This is done
+via the <code class="xref py py-meth docutils literal notranslate"><span class="pre">save()</span></code> method:</p>
+<dl class="method">
+<dt>
+<em class="property">abstract </em><code class="sig-prename descclassname">AbstractGraphicsContext.</code><code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">file_format=None</em>, <em class="sig-param">pil_options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kiva/abstract_graphics_context.html#AbstractGraphicsContext.save"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Save the graphics context to a file</p>
+<p>Data is always saved in RGB or RGBA format, and converted to that
+format if not already in it.</p>
+<p>If the <code class="docutils literal notranslate"><span class="pre">file_format</span></code> argument is None, then the file format is
+inferred from the <code class="docutils literal notranslate"><span class="pre">filename</span></code> extension, and so is not usually needed.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">pil_options</span></code> argument is a dictionary of format-specific options
+that can be passed directly to PIL’s image file writers. For example,
+this can be used to control the compression level of JPEG or PNG
+output. Unrecognized options are silently ignored.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="kiva-text-rendering">
+<h2>Kiva Text Rendering<a class="headerlink" href="#kiva-text-rendering" title="Permalink to this headline">¶</a></h2>
+<p>Drawing text in kiva is accomplished via a few methods on
+<code class="xref py py-class docutils literal notranslate"><span class="pre">GraphicsContext</span></code>. There are three basic topics: selecting a font,
+measuring the size of rendered text, and drawing the text.</p>
+<p>Font selection for use with the text rendering capabilities of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">GraphicsContext</span></code> can be accomplished in a few different ways depending
+on the amount of control needed by your drawing code.</p>
+<div class="section" id="simplest-select-font">
+<h3>Simplest: <code class="docutils literal notranslate"><span class="pre">select_font</span></code><a class="headerlink" href="#simplest-select-font" title="Permalink to this headline">¶</a></h3>
+<p>The simplest form of font selection is the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphicsContext.select_font()</span></code> method. The tradeoff for this simplicity
+is that you’re at the mercy of the backend’s font lookup. If your desired font
+isn’t available from the system you’re using, it’s not defined what you will end
+up with.</p>
+<p><code class="docutils literal notranslate"><span class="pre">select_font(name,</span> <span class="pre">size=12)</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code> is the name of the desired font: “Helvetica Regular”,
+“Futura Medium Italic”, etc.</p>
+<p><code class="docutils literal notranslate"><span class="pre">size</span></code> is the size in points.</p>
+<p><strong>Supported backends</strong>: cairo, celiagg, pdf, ps, qpainter, quartz, svg.</p>
+</div>
+<div class="section" id="the-kivafont-trait-and-set-font">
+<h3>The <code class="docutils literal notranslate"><span class="pre">KivaFont</span></code> trait and <code class="docutils literal notranslate"><span class="pre">set_font</span></code><a class="headerlink" href="#the-kivafont-trait-and-set-font" title="Permalink to this headline">¶</a></h3>
+<p>If you’re already doing your drawing within an application using traits, you can
+use the <code class="xref py py-class docutils literal notranslate"><span class="pre">kiva.trait_defs.api.KivaFont</span></code> trait.</p>
+<p><code class="docutils literal notranslate"><span class="pre">KivaFont</span></code> traits are initialized with a string which describes the font:
+“Times Italic 18”, “Courier Bold 10”, etc. The <em>value</em> of the trait is a
+<a class="reference internal" href="../api/kiva.fonttools.font.html#kiva.fonttools.font.Font" title="kiva.fonttools.font.Font"><code class="xref py py-class docutils literal notranslate"><span class="pre">kiva.fonttools.font.Font</span></code></a> instance which can be passed to the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphicsContext.set_font()</span></code> method.</p>
+<p><strong>Supported backends</strong>: all backends</p>
+</div>
+<div class="section" id="font-objects">
+<h3><code class="docutils literal notranslate"><span class="pre">Font</span></code> objects<a class="headerlink" href="#font-objects" title="Permalink to this headline">¶</a></h3>
+<p>If you don’t want to rely on the font description parsing in <code class="docutils literal notranslate"><span class="pre">KivaFont</span></code>, you
+can also manually construct a <a class="reference internal" href="../api/kiva.fonttools.font.html#kiva.fonttools.font.Font" title="kiva.fonttools.font.Font"><code class="xref py py-class docutils literal notranslate"><span class="pre">kiva.fonttools.font.Font</span></code></a> instance. Once
+you have a <code class="docutils literal notranslate"><span class="pre">Font</span></code> instance, it can be passed to the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphicsContext.set_font()</span></code> method.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Font(face_name=&quot;&quot;,</span> <span class="pre">size=12,</span> <span class="pre">family=SWISS,</span> <span class="pre">weight=NORMAL,</span> <span class="pre">style=NORMAL)</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">face_name</span></code> is the font’s name: “Arial”, “Webdings”, “Verdana”, etc.</p>
+<p><code class="docutils literal notranslate"><span class="pre">size</span></code> is the size in points</p>
+<p><code class="docutils literal notranslate"><span class="pre">family</span></code> is a constant from <a class="reference internal" href="../api/kiva.constants.html#module-kiva.constants" title="kiva.constants"><code class="xref py py-mod docutils literal notranslate"><span class="pre">kiva.constants</span></code></a>. Pick from <code class="docutils literal notranslate"><span class="pre">DEFAULT</span></code>,
+<code class="docutils literal notranslate"><span class="pre">SWISS</span></code>, <code class="docutils literal notranslate"><span class="pre">ROMAN</span></code>, <code class="docutils literal notranslate"><span class="pre">MODERN</span></code>, <code class="docutils literal notranslate"><span class="pre">DECORATIVE</span></code>, <code class="docutils literal notranslate"><span class="pre">SCRIPT</span></code>, or <code class="docutils literal notranslate"><span class="pre">TELETYPE</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">face_name</span></code> is empty, the value of <code class="docutils literal notranslate"><span class="pre">family</span></code> will be used to select the
+desired font.</p>
+<p><code class="docutils literal notranslate"><span class="pre">weight</span></code> is a constant from <a class="reference internal" href="../api/kiva.constants.html#module-kiva.constants" title="kiva.constants"><code class="xref py py-mod docutils literal notranslate"><span class="pre">kiva.constants</span></code></a>. Pick from <code class="docutils literal notranslate"><span class="pre">NORMAL</span></code> or
+<code class="docutils literal notranslate"><span class="pre">BOLD</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">style</span></code> is a constant from <a class="reference internal" href="../api/kiva.constants.html#module-kiva.constants" title="kiva.constants"><code class="xref py py-mod docutils literal notranslate"><span class="pre">kiva.constants</span></code></a>. Pick from <code class="docutils literal notranslate"><span class="pre">NORMAL</span></code> or
+<code class="docutils literal notranslate"><span class="pre">ITALIC</span></code>.</p>
+<div class="section" id="measuring-text">
+<h4>Measuring Text<a class="headerlink" href="#measuring-text" title="Permalink to this headline">¶</a></h4>
+<p>Before drawing text, one often wants to know what the bounding rectangle of the
+rendered text will be so that the text can be positioned correctly. To do this,
+the <code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphicsContext.get_text_extent()</span></code> method is used.</p>
+<p><code class="docutils literal notranslate"><span class="pre">get_text_extent(text)</span> <span class="pre">-&gt;</span> <span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">width,</span> <span class="pre">height)</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">text</span></code> is the string that you want to measure. The currently selected font
+will be used, <em>so it’s important to set the font before calling this method.</em></p>
+<p>The return value is a <code class="docutils literal notranslate"><span class="pre">tuple</span></code> which describes a rectangle with its bottom-left
+corner at (x, y) and a width and height. The rectangle is relative to the
+origin and not affected by the currently set text transform. The bottom of the
+rectangle won’t always be 0, depending on the font. It might be a negative
+number in the situation where glyphs hang below the baseline. In any case,
+<code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">=</span> <span class="pre">0</span></code> is the baseline for the rendered glyphs.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">get_text_extent</span></code> does not respect endline characters. It is assumed that
+<code class="docutils literal notranslate"><span class="pre">text</span></code> describes a single line of text. To render multiple lines, one
+should split the text into individual lines first and then measure and draw
+each line in sequence. A blank line’s height should be the same as the
+height of the selected font.</p>
+</div>
+</div>
+<div class="section" id="drawing-text">
+<h4>Drawing Text<a class="headerlink" href="#drawing-text" title="Permalink to this headline">¶</a></h4>
+<p>Text can be drawn in a graphics context with the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphicsContext.show_text()</span></code> and
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphicsContext.show_text_at_point()</span></code> methods.</p>
+<p><code class="docutils literal notranslate"><span class="pre">show_text(text,</span> <span class="pre">point=None)</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">show_text_at_point(text,</span> <span class="pre">x,</span> <span class="pre">y)</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">show_text_at_point</span></code> or <code class="docutils literal notranslate"><span class="pre">show_text</span></code> with a <code class="docutils literal notranslate"><span class="pre">point=(x,</span> <span class="pre">y)</span></code> argument both
+do the same thing: Draw a line of text at the given (x, y) coordinate, which
+represents the horizontal position of the first glyph and the baseline position,
+respectively.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">show_text</span></code> is used <em>without</em> a <code class="docutils literal notranslate"><span class="pre">point</span></code> argument, then the current text
+position of the graphics context is used. This position can be set via the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphicsContext.set_text_position()</span></code> method. Relatedly, the text
+position can be retrieved with the <code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphicsContext.get_text_position()</span></code>
+method.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There is also a <code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphicsContext.set_text_matrix()</span></code> method which
+allows a text-specific affine transform to be set. Unfortunately it’s not
+implemented uniformly across backends, so it’s recommended not to use it.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Kiva Drawing In-depth</a><ul>
+<li><a class="reference internal" href="#kiva-state">Kiva State</a><ul>
+<li><a class="reference internal" href="#state-components">State Components</a></li>
+<li><a class="reference internal" href="#color">Color</a></li>
+<li><a class="reference internal" href="#state-stack-management">State Stack Management</a></li>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#compiledpath">CompiledPath</a><ul>
+<li><a class="reference internal" href="#id1">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#kiva-image-rendering">Kiva Image Rendering</a><ul>
+<li><a class="reference internal" href="#special-considerations">Special considerations</a></li>
+<li><a class="reference internal" href="#saving-images">Saving images</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#kiva-text-rendering">Kiva Text Rendering</a><ul>
+<li><a class="reference internal" href="#simplest-select-font">Simplest: <code class="docutils literal notranslate"><span class="pre">select_font</span></code></a></li>
+<li><a class="reference internal" href="#the-kivafont-trait-and-set-font">The <code class="docutils literal notranslate"><span class="pre">KivaFont</span></code> trait and <code class="docutils literal notranslate"><span class="pre">set_font</span></code></a></li>
+<li><a class="reference internal" href="#font-objects"><code class="docutils literal notranslate"><span class="pre">Font</span></code> objects</a><ul>
+<li><a class="reference internal" href="#measuring-text">Measuring Text</a></li>
+<li><a class="reference internal" href="#drawing-text">Drawing Text</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="quickref.html"
+                        title="previous chapter">Kiva Interface Quick Reference</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../enable/overview.html"
+                        title="next chapter">Enable</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/kiva/drawing_details.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Apr 05, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

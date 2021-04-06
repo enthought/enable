@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>Advanced Tutorial Code &mdash; enable 5.1.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.1.0 documentation" href="../index.html" >
+    <link rel="up" title="Kiva Tutorial" href="index.html" >
+    <link rel="next" title="Kiva" href="../kiva/overview.html" >
+    <link rel="prev" title="Basic Tutorial Code" href="tutorial_code.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.1.0 documentation</a></li>
+	
+          <li class="active"><a href="index.html" accesskey="U">Kiva Tutorial</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="../kiva/overview.html" title="Kiva"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="tutorial_code.html" title="Basic Tutorial Code"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="advanced-tutorial-code">
+<span id="tutorial-advanced-code"></span><h1>Advanced Tutorial Code<a class="headerlink" href="#advanced-tutorial-code" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">tau</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">kiva.api</span> <span class="k">import</span> <span class="n">CAP_ROUND</span><span class="p">,</span> <span class="n">CIRCLE_MARKER</span><span class="p">,</span> <span class="n">FILL</span><span class="p">,</span> <span class="n">Font</span><span class="p">,</span> <span class="n">STROKE</span>
+<span class="kn">from</span> <span class="nn">kiva.image</span> <span class="k">import</span> <span class="n">GraphicsContext</span><span class="p">,</span> <span class="n">CompiledPath</span>
+
+
+<span class="k">def</span> <span class="nf">draw_wire_with_components</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">component_locations</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws a straight, axis aligned, wire with gaps in it for components. This</span>
+<span class="sd">    function assumes the component locations are in order they are encountered</span>
+<span class="sd">    when moving from start to end. </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    gc : GraphicsContext</span>
+<span class="sd">        The Graphics context doing the drawing</span>
+<span class="sd">    start : 2-tuple</span>
+<span class="sd">        The start point of the wire</span>
+<span class="sd">    end : 2-tuple</span>
+<span class="sd">        The end point of the wire</span>
+<span class="sd">    component_locations : List of pairs of 2-tuple</span>
+<span class="sd">        The start and end points of the components in order encountered</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_stroke_color</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">))</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="o">*</span><span class="n">start</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">comp_start</span><span class="p">,</span> <span class="n">comp_end</span> <span class="ow">in</span> <span class="n">component_locations</span><span class="p">:</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="o">*</span><span class="n">comp_start</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="o">*</span><span class="n">comp_end</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="o">*</span><span class="n">end</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">draw_rect_wire_frame_with_components</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">component_locations</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws an axis aligned rectangle of wire with gaps in it for components.</span>
+<span class="sd">    component_locations is a list of pairs of points corresponding to the start</span>
+<span class="sd">    and end of a component.  The function assumes the component locations are</span>
+<span class="sd">    in order they are encountered when moving clockwise around the rectangle</span>
+<span class="sd">    starting at the lower left corner.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    gc : GraphicsContext</span>
+<span class="sd">        The Graphics context doing the drawing</span>
+<span class="sd">    x : int</span>
+<span class="sd">        The left X coordinate of the rectangle</span>
+<span class="sd">    y : int</span>
+<span class="sd">        The bottom Y coordinate of the rectangle</span>
+<span class="sd">    w : int</span>
+<span class="sd">        The width of the rectangle</span>
+<span class="sd">    h : int</span>
+<span class="sd">        The height of the rectangle</span>
+<span class="sd">    component_locations : List of pairs of 2-tuple</span>
+<span class="sd">        The start and end points of the components in order encountered</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">left_comps</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">comp_loc</span> <span class="k">for</span> <span class="n">comp_loc</span> <span class="ow">in</span> <span class="n">component_locations</span> <span class="k">if</span> <span class="n">comp_loc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">x</span>
+    <span class="p">]</span>
+    <span class="n">top_comps</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">comp_loc</span> <span class="k">for</span> <span class="n">comp_loc</span> <span class="ow">in</span> <span class="n">component_locations</span> <span class="k">if</span> <span class="n">comp_loc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span>
+    <span class="p">]</span>
+    <span class="n">right_comps</span> <span class="o">=</span><span class="p">[</span>
+        <span class="n">comp_loc</span> <span class="k">for</span> <span class="n">comp_loc</span> <span class="ow">in</span> <span class="n">component_locations</span> <span class="k">if</span> <span class="n">comp_loc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">x</span> <span class="o">+</span> <span class="n">w</span>
+    <span class="p">]</span>
+    <span class="n">bottom_comps</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">comp_loc</span> <span class="k">for</span> <span class="n">comp_loc</span> <span class="ow">in</span> <span class="n">component_locations</span> <span class="k">if</span> <span class="n">comp_loc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">y</span>
+    <span class="p">]</span>
+
+    <span class="n">draw_wire_with_components</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span><span class="p">),</span> <span class="n">left_comps</span><span class="p">)</span>
+    <span class="n">draw_wire_with_components</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span><span class="p">),</span> <span class="n">top_comps</span><span class="p">)</span>
+    <span class="n">draw_wire_with_components</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">right_comps</span><span class="p">)</span>
+    <span class="n">draw_wire_with_components</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">bottom_comps</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">draw_wire_connections_at_points</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draw wire connections at each of the given points. This function checks if</span>
+<span class="sd">    the graphics context implements optimized methods for doing so, and draws</span>
+<span class="sd">    using the most optimal approach available.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    gc : GraphicsContext</span>
+<span class="sd">        The Graphics context doing the drawing</span>
+<span class="sd">    points : List of pairs of 2-tuple</span>
+<span class="sd">        The points where wire connections are to be drawn</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="s1">&#39;draw_marker_at_points&#39;</span><span class="p">):</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">draw_marker_at_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="n">CIRCLE_MARKER</span><span class="p">)</span>
+    
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">wire_connection_path</span> <span class="o">=</span> <span class="n">CompiledPath</span><span class="p">()</span>
+        <span class="n">wire_connection_path</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">wire_connection_path</span><span class="o">.</span><span class="n">arc</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="s1">&#39;draw_path_at_points&#39;</span><span class="p">):</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">draw_path_at_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">wire_connection_path</span><span class="p">,</span> <span class="n">FILL</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">add_path</span><span class="p">(</span><span class="n">wire_connection_path</span><span class="p">)</span>
+                    <span class="n">gc</span><span class="o">.</span><span class="n">fill_path</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">create_resistor_path</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a CompiledPath for a resistor which can then be re-used as needed.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    CompiledPath</span>
+<span class="sd">        The reistor compiled path</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">resistor_path</span> <span class="o">=</span> <span class="n">CompiledPath</span><span class="p">()</span>
+    <span class="n">resistor_path</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">resistor_path_points</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="o">*</span><span class="mi">10</span><span class="o">+</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">resistor_path_points</span><span class="p">:</span>
+        <span class="n">resistor_path</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">resistor_path</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">resistor_path</span>
+
+
+<span class="k">def</span> <span class="nf">draw_resistors_at_points</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">resistor_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draw a resistor at each of the given points. This function checks if</span>
+<span class="sd">    the graphics context implements an optimized method for doing so, and draws</span>
+<span class="sd">    using the most optimal approach available.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    gc : GraphicsContext</span>
+<span class="sd">        The graphics context doing the drawing.</span>
+<span class="sd">    points : List of pairs of 2-tuple</span>
+<span class="sd">        The points where resistors are to be drawn </span>
+<span class="sd">    resistor_path : CompiledPath</span>
+<span class="sd">        The resistor path we wish to draw</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="s1">&#39;draw_path_at_points&#39;</span><span class="p">):</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">draw_path_at_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">resistor_path</span><span class="p">,</span> <span class="n">STROKE</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">add_path</span><span class="p">(</span><span class="n">resistor_path</span><span class="p">)</span>
+                <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">draw_meter</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws a meter of the given color, with the given text, at the given</span>
+<span class="sd">    location.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    gc : GraphicsContext</span>
+<span class="sd">        The graphics context doing the drawing.</span>
+<span class="sd">    location : 2-tuple</span>
+<span class="sd">        The point where the meter is to be drawn </span>
+<span class="sd">    color : 3 or 4 component tuple (R, G, B[, A])</span>
+<span class="sd">        The color of the meter</span>
+<span class="sd">    text : str</span>
+<span class="sd">        The text to be placed in the center of the meter symbol</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">font</span> <span class="o">=</span> <span class="n">Font</span><span class="p">(</span><span class="s1">&#39;Times New Roman&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_font</span><span class="p">(</span><span class="n">font</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="o">*</span><span class="n">location</span><span class="p">)</span>
+
+        <span class="n">gc</span><span class="o">.</span><span class="n">arc</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">draw_path</span><span class="p">()</span>
+
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_fill_color</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_text_extent</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">show_text_at_point</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="o">-</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">draw_switch</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws a switch at given location.  Assumes location is the connected side</span>
+<span class="sd">    of the switch, and angle assumes orientation facing directly accross the</span>
+<span class="sd">    switch.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    gc : GraphicsContext</span>
+<span class="sd">        The graphics context doing the drawing.</span>
+<span class="sd">    location : 2-tuple</span>
+<span class="sd">        The point where the switch is to be drawn </span>
+<span class="sd">    angle : float</span>
+<span class="sd">        The angle of the switch</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="o">*</span><span class="n">location</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">rotate_ctm</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">draw_battery</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">location</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws a battery at given location. Battery will extend down from the given</span>
+<span class="sd">    location.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    gc : GraphicsContext</span>
+<span class="sd">        The graphics context doing the drawing.</span>
+<span class="sd">    location : 2-tuple</span>
+<span class="sd">        The point where the switch is to be drawn </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">gc</span><span class="p">:</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">translate_ctm</span><span class="p">(</span><span class="o">*</span><span class="n">location</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">thin_starts</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">18</span><span class="p">)]</span>
+        <span class="n">thin_ends</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">20</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">18</span><span class="p">)]</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">line_set</span><span class="p">(</span><span class="n">thin_starts</span><span class="p">,</span> <span class="n">thin_ends</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+        <span class="n">thick_starts</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">28</span><span class="p">)]</span>
+        <span class="n">thick_ends</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">28</span><span class="p">)]</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_line_width</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">set_line_cap</span><span class="p">(</span><span class="n">CAP_ROUND</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">line_set</span><span class="p">(</span><span class="n">thick_starts</span><span class="p">,</span> <span class="n">thick_ends</span><span class="p">)</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="n">gc</span> <span class="o">=</span> <span class="n">GraphicsContext</span><span class="p">((</span><span class="mi">600</span><span class="p">,</span> <span class="mi">300</span><span class="p">))</span>
+
+    <span class="c1"># step 1) Draw a skeleton of the circuit</span>
+    <span class="n">component_locations</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">((</span><span class="mi">260</span><span class="p">,</span> <span class="mi">150</span><span class="p">),</span> <span class="p">(</span><span class="mi">340</span><span class="p">,</span> <span class="mi">150</span><span class="p">)),</span>
+        <span class="p">((</span><span class="mi">550</span><span class="p">,</span> <span class="mi">130</span><span class="p">),</span> <span class="p">(</span><span class="mi">550</span><span class="p">,</span> <span class="mi">100</span><span class="p">)),</span>
+        <span class="p">((</span><span class="mi">550</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span> <span class="p">(</span><span class="mi">550</span><span class="p">,</span> <span class="mi">60</span><span class="p">)),</span>
+        <span class="p">((</span><span class="mi">430</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="p">(</span><span class="mi">350</span><span class="p">,</span> <span class="mi">50</span><span class="p">)),</span>
+        <span class="p">((</span><span class="mi">230</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+    <span class="p">]</span>
+    <span class="n">draw_rect_wire_frame_with_components</span><span class="p">(</span>
+        <span class="n">gc</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">component_locations</span>
+    <span class="p">)</span>
+    <span class="n">draw_rect_wire_frame_with_components</span><span class="p">(</span>
+        <span class="n">gc</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="p">[((</span><span class="mi">340</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="p">(</span><span class="mi">260</span><span class="p">,</span> <span class="mi">200</span><span class="p">))]</span>
+    <span class="p">)</span>
+    <span class="n">draw_wire_with_components</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">150</span><span class="p">),</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="p">[])</span>
+    <span class="n">draw_wire_with_components</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">150</span><span class="p">),</span> <span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="p">[])</span>
+
+
+    <span class="c1"># step 2) draw dots for wire connections</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">150</span><span class="p">),</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">150</span><span class="p">),</span> <span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="p">(</span><span class="mi">550</span><span class="p">,</span> <span class="mi">130</span><span class="p">)]</span>
+    <span class="n">draw_wire_connections_at_points</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+
+    <span class="c1"># step 3) Draw the meters</span>
+    <span class="n">draw_meter</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="p">(</span><span class="o">.</span><span class="mi">9</span><span class="p">,</span> <span class="o">.</span><span class="mi">9</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>  <span class="c1"># Ammeter</span>
+    <span class="n">draw_meter</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">250</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">.</span><span class="mi">9</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="s1">&#39;V&#39;</span><span class="p">)</span>  <span class="c1"># Voltmeter</span>
+
+    <span class="c1">#step 4) Draw the resistors</span>
+    <span class="n">resistor_path</span> <span class="o">=</span> <span class="n">create_resistor_path</span><span class="p">()</span>
+    <span class="n">resistor_locations</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="p">(</span><span class="mi">350</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="p">(</span><span class="mi">260</span><span class="p">,</span> <span class="mi">150</span><span class="p">),</span> <span class="p">(</span><span class="mi">260</span><span class="p">,</span> <span class="mi">200</span><span class="p">)]</span>
+    <span class="n">draw_resistors_at_points</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">resistor_locations</span><span class="p">,</span> <span class="n">resistor_path</span><span class="p">)</span>
+
+    <span class="c1"># step 6) Draw the switch</span>
+    <span class="n">draw_switch</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="p">(</span><span class="mi">550</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span> <span class="n">tau</span><span class="o">/</span><span class="mi">6</span><span class="p">)</span>
+
+    <span class="c1"># step 7) Draw the battery</span>
+    <span class="n">draw_battery</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="p">(</span><span class="mi">550</span><span class="p">,</span><span class="mi">90</span><span class="p">))</span>
+    
+    <span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;images/tutorial_advanced.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="tutorial_code.html"
+                        title="previous chapter">Basic Tutorial Code</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../kiva/overview.html"
+                        title="next chapter">Kiva</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/kiva_tutorial/tutorial_advanced_code.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Apr 05, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

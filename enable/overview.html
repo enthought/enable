@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>Enable &mdash; enable 5.1.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.1.0 documentation" href="../index.html" >
+    <link rel="next" title="Enable Tools" href="tools.html" >
+    <link rel="prev" title="Kiva Drawing In-depth" href="../kiva/drawing_details.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.1.0 documentation</a></li>
+	 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="tools.html" title="Enable Tools"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="../kiva/drawing_details.html" title="Kiva Drawing In-depth"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="enable">
+<h1>Enable<a class="headerlink" href="#enable" title="Permalink to this headline">¶</a></h1>
+<p>Enable is a library which provides an interactive 2D canvas, upon which one can
+build <a class="reference external" href="https://docs.enthought.com/chaco">interactive plots</a> or other
+applications. It is analogous to the
+<a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">HTML5 &lt;canvas&gt; element</a>
+and provides a similar 2D drawing interface via <a class="reference internal" href="../kiva/overview.html#kiva-overview"><span class="std std-ref">Kiva</span></a>.</p>
+<p>Enable is a foundational layer of the Chaco plotting library, and is what is
+responsible for handling user interaction and interfacing with the underlying
+GUI toolkit. Developers interested in writing code that implements tools for
+Chaco will need to be familiar with the Enable API.</p>
+<div class="section" id="enable-concepts">
+<h2>Enable Concepts<a class="headerlink" href="#enable-concepts" title="Permalink to this headline">¶</a></h2>
+<p>Fundamentally an Enable application is made up of a few key parts. Most
+important is the <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code>, which is the interactive canvas which a
+user interacts with. Added to the root component are any number of <code class="xref py py-class docutils literal notranslate"><span class="pre">Tool</span></code>
+instances which handle the event dispatches. A root component might also contain
+one or more child component instances which are held in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">overlays</span></code> or
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">underlays</span></code> traits. These child components often handle display of
+individual tools, depending on need.</p>
+</div>
+<div class="section" id="component">
+<h2>Component<a class="headerlink" href="#component" title="Permalink to this headline">¶</a></h2>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code> is the most important object in Enable, the center of
+everything. It represents a visual component. It both draws a screen object, and
+receives input for it (keyboard, mouse, and multitouch events).</p>
+<p>Basic traits of Component include:</p>
+<ul class="simple">
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">visible</span></code>: Whether it’s visible</p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">invisible_layout</span></code>: Whether it uses space even when not visible (by
+default, invisible objects don’t take up space in layout)</p></li>
+</ul>
+<div class="section" id="padding">
+<h3>Padding<a class="headerlink" href="#padding" title="Permalink to this headline">¶</a></h3>
+<p>Layout in Enable uses padding, similar to CSS. In Chaco, it’s used for things
+around the edges of plot, like labels and tick marks that extend outside the
+main plot area.</p>
+<ul class="simple">
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">fill_padding</span></code>: Whether the background color fills the padding area as
+well as the main area of the component.</p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">padding_left</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">padding_right</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">padding_top</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">padding_bottom</span></code></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">padding</span></code>: Sets or gets all 4 padding size traits at once</p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">hpadding</span></code>: Read-only convenience property for the total amount of
+horizontal padding</p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">vpadding</span></code>: Read-only convenience property for the total amount of
+vertical padding</p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">padding_accepts_focus</span></code>: Whether the component responds to mouse events
+over the padding area</p></li>
+</ul>
+</div>
+<div class="section" id="parent-classes">
+<h3>Parent Classes<a class="headerlink" href="#parent-classes" title="Permalink to this headline">¶</a></h3>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code> subclasses both <code class="xref py py-class docutils literal notranslate"><span class="pre">CoordinateBox</span></code> (for drawing) and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Interactor</span></code> (for input). <code class="xref py py-class docutils literal notranslate"><span class="pre">CoordinateBox</span></code> has <code class="xref py py-attr docutils literal notranslate"><span class="pre">position</span></code> and
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">bounds</span></code> traits, and some secondary attributes for convenience: <code class="xref py py-attr docutils literal notranslate"><span class="pre">x</span></code>,
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">y</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">x2</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">y2</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">width</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">height</span></code>.
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Interactor</span></code> mixes in responses for event types. You can subclass one of
+these classes if you want only its capabilities. For example, if you want
+something that doesn’t draw but does respond to events, subclass
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Interactor</span></code> (e.g., a tool).</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">Interactor</span></code> defines common traits for screen interaction, including:</p>
+<ul class="simple">
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pointer</span></code>: The cursor shape when the interactor is active</p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">event_state</span></code>: The object’s event state, used for event dispatch</p></li>
+</ul>
+</div>
+<div class="section" id="container">
+<h3>Container<a class="headerlink" href="#container" title="Permalink to this headline">¶</a></h3>
+<p>All components have a <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>. They can only have a single
+container. One component can’t be contained by two objects.</p>
+<p>Whenever you request a component to redraw itself, it actually requests its
+container to redraw it, and a whole chain goes all the up to the top-level
+window.</p>
+</div>
+<div class="section" id="top-level-window">
+<h3>Top-level Window<a class="headerlink" href="#top-level-window" title="Permalink to this headline">¶</a></h3>
+<p>A component also has a reference to the top-level window. This window serves as
+a bridge between the OS and GUI toolkit. The <code class="xref py py-attr docutils literal notranslate"><span class="pre">window</span></code> trait delegates all
+the way up the containment chain to the top-level component, which has an actual
+reference to the actual window.</p>
+<p>The reference to the window is useful because Enable doesn’t make calls directly
+to the GUI toolkit. Rather, it asks the window to do things for it, such as
+creating a context menu.</p>
+</div>
+<div class="section" id="event-dispatch">
+<h3>Event Dispatch<a class="headerlink" href="#event-dispatch" title="Permalink to this headline">¶</a></h3>
+<p>The key methods of <code class="xref py py-class docutils literal notranslate"><span class="pre">Interactor</span></code> are <code class="xref py py-meth docutils literal notranslate"><span class="pre">dispatch()</span></code> and
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">_dispatch_stateful_event()</span></code>. There’s a complex method resolution that
+occurs beween <code class="xref py py-class docutils literal notranslate"><span class="pre">Interactor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>
+(which is a subclass of <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code>), and the Chaco-based subclasses of
+Enable <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>.</p>
+<p>When a component gets an event, it tries to handle it in a standard way, which
+is to dispatch to:</p>
+<ol class="arabic simple">
+<li><p>its active tool</p></li>
+<li><p>its overlays</p></li>
+<li><p>itself, so that any event handler methods on itself get called</p></li>
+<li><p>its underlays</p></li>
+<li><p>its listener tools</p></li>
+</ol>
+<p>That logic is in <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code>, in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">_new_dispatch()</span></code> method, which
+is called from <code class="xref py py-meth docutils literal notranslate"><span class="pre">Component.dispatch()</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">_old_dispatch()</span></code> is still
+being used by Chaco). If any of these handlers sets event.handled to True, event
+propagation stops. If an event gets as far as the listener tools, then all of
+them get the event.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The notion of an active tool is not used in current code, just older client
+code. Experience has shown that the notion of a tool promoting itself to be
+the “active” tool isn’t really useful, because usually the tools need to
+interact with each other. For newer tools, such as Pan, Zoom, or !DragZoom,
+when the user starts interacting with a tool, that tool calls capture_mouse()
+at the window level, and then all mouse events go to that tool, circumventing
+the entire dispatch() mechanism.</p>
+</div>
+<p>The event handlers that <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code> dispatches to are of the form
+<code class="samp docutils literal notranslate"><em><span class="pre">event_state</span></em><em><span class="pre">event_suffix</span></em></code>, where <em>event_suffix</em> corresponds to the
+actual kind of event that happened, e.g., <code class="xref py py-obj docutils literal notranslate"><span class="pre">left_down</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">left_up</span></code>,
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">left_dclick</span></code>, etc. Most objects default to having just a single event
+state, which is the “normal” event state. To make an Enable component that
+handled a left-click, you could subclass <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code>, and implement
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">normal_left_down()</span></code> or <code class="xref py py-meth docutils literal notranslate"><span class="pre">normal_left_up()</span></code>. The signature for handler
+methods is just one parameter, which is an event object that is an instance of
+(a subclass of) <code class="xref py py-class docutils literal notranslate"><span class="pre">BasicEvent</span></code>. Some subclasses of <code class="xref py py-class docutils literal notranslate"><span class="pre">BasicEvent</span></code>
+include <code class="xref py py-class docutils literal notranslate"><span class="pre">MouseEvent</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DragEvent</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">KeyEvent</span></code>, and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">BlobEvent</span></code> (for multitouch). It’s fairly easy to extend this event
+system with new kinds of events and new suffixes (as was done for multitouch). A
+disadvantage is that you don’t necessarily get feedback when you misspell an
+event handler method name in its definition.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This scheme is difficult to implement when the number of states and events
+gets large. There’s nothing to tell you if you’ve forgotten to implement one
+of the possible combinations.</p>
+</div>
+<p>If an interactor transforms an event, then it has to return the full
+transformation that it applies to the event.</p>
+<p>When an event comes in, it has a reference to the GUI toolkit window that the
+event came from. Lots of code calls methods on <code class="xref py py-obj docutils literal notranslate"><span class="pre">event.window</span></code> to get the
+window to do things, such as set a tooltip or create a context menu. That is the
+correct thing to do, because it’s possible for there to be two windows showing
+the same underlying component, so responses to events in a window should only
+happen in that window. When the user generates an event, that event propagates
+down the containment stack and things happen in response; a draw or update
+doesn’t actually happen until the next <code class="xref py py-meth docutils literal notranslate"><span class="pre">paint()</span></code>. By that time, the
+component no longer has a reference to the event or the event’s window; instead
+it uses its own reference to the window, <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.window</span></code>.</p>
+</div>
+<div class="section" id="coordinate-systems">
+<h3>Coordinate Systems<a class="headerlink" href="#coordinate-systems" title="Permalink to this headline">¶</a></h3>
+<p>Every component has <code class="xref py py-attr docutils literal notranslate"><span class="pre">x</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">y</span></code> traits from <code class="xref py py-class docutils literal notranslate"><span class="pre">CoordinateBox</span></code>.
+These are positions relative to the component’s parent container. When a
+container dispatches events, or loops over its children to draw, it transforms
+the coordinate system, so that as far as its children are concerned, the events
+are relative to the lower-left corner of the parent container. Objects don’t
+have to be bounded, but they do have to have an origin. The component is going
+to give coordinates to the <code class="xref py py-class docutils literal notranslate"><span class="pre">GraphicsContext</span></code> in its own coordinate
+system, and the container is responsible for offsetting the GC, and setting up
+the transform correctly. Likewise, when a component gets an event, it expects
+that event to be in the coordinate system of its parent container.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This introduces some complexity in trying to handle mouse event capture. If a
+tool or component captures the mouse, the top-level window has no idea what
+the coordinate system of that object is. It has to be able to ask an event,
+“give me your total transformation up to this point”, and then apply that
+transformation to all subsequent events. Programmers using Chaco or Enable
+don’t usually have to think about this, but the interactor does have to be
+able to do it. Containers implement this, so if you’re just writing a standard
+component, you don’t have to worry about it.</p>
+</div>
+</div>
+<div class="section" id="viewports">
+<h3>Viewports<a class="headerlink" href="#viewports" title="Permalink to this headline">¶</a></h3>
+<p>A component can have a list of viewports, which are views onto the component.
+Currently, this is used for the canvas, and for geophysical plotting. You could
+use it for something like a magnifying-glass view of a portion of a component or
+plot without duplicating it.</p>
+</div>
+<div class="section" id="layout">
+<h3>Layout<a class="headerlink" href="#layout" title="Permalink to this headline">¶</a></h3>
+<p>Containers are the sizers that do layout. Components within containers can
+declare that they are resizable, for example, but that doesn’t matter if
+the container they are in doesn’t do layout.</p>
+<p>The basic traits on <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code> for layout are <code class="xref py py-attr docutils literal notranslate"><span class="pre">resizable</span></code>,
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">aspect_ratio</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">auto_center</span></code>. For the <code class="xref py py-attr docutils literal notranslate"><span class="pre">resizable</span></code> trait,
+you can specify which directions the component is resizable in. Components
+also have lists of overlays and underlays.</p>
+<p>You can get access to the actual bounds of the component, including its
+padding with the <code class="samp docutils literal notranslate"><span class="pre">outer_</span><em><span class="pre">name</span></em></code> attributes. Those also take into account
+the thickness of any border around the component.</p>
+<p>For more control over layout, there is a
+<a class="reference internal" href="constraints_layout.html#constraints-layout"><span class="std std-ref">constraints-based layout</span></a> system available.</p>
+</div>
+<div class="section" id="rendering">
+<h3>Rendering<a class="headerlink" href="#rendering" title="Permalink to this headline">¶</a></h3>
+<p>Every component can have several layers:</p>
+<ul class="simple">
+<li><p>background</p></li>
+<li><p>image (Chaco only, not Enable)</p></li>
+<li><p>underlay</p></li>
+<li><p>main layer (the actual component)</p></li>
+<li><p>overlay</p></li>
+</ul>
+<p>These are defined by DEFAULT_DRAWING_ORDER, and stored in the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">drawing_order</span></code> trait.</p>
+<p>Complexity arises when you have multiple components in a container: How do
+their layers affect each other? Do you want the “overlay” layer of a component
+to draw on top of all components? Do you want the “background” elements
+to be behind everything else?</p>
+<p>This is resolved by the <code class="xref py py-attr docutils literal notranslate"><span class="pre">unified_draw</span></code> trait. If it is False (the
+default), the corresponding layers of all components are drawn in sequence. The
+container is responsible for calling the components to draw their layers in
+the correct sequence. If it is True, then all layers of the component are drawn
+in strict sequence. The point is the overall sequence at which a component
+with <code class="docutils literal notranslate"><span class="pre">unified_draw==True</span></code> is drawn is determined by its <code class="xref py py-attr docutils literal notranslate"><span class="pre">draw_layer</span></code>
+trait, which by default is ‘mainlayer’.</p>
+<p>For example, if you want a plot to act as an overlay, you could set
+<code class="docutils literal notranslate"><span class="pre">unified_draw==True</span></code> and <code class="docutils literal notranslate"><span class="pre">draw_layer=='overlay'</span></code>. These values tell the
+container to render the component when it gets to the ‘overlay’ layer.</p>
+<p>Set <code class="xref py py-attr docutils literal notranslate"><span class="pre">overlay_border</span></code> to True if you want the border to draw as part of
+the overlay; otherwise it draws as part of the background. By default,
+the border is drawn just inside the plot area; set <code class="xref py py-attr docutils literal notranslate"><span class="pre">inset_border</span></code> to
+False to draw it just outside the plot area.</p>
+<div class="section" id="backbuffer">
+<h4>Backbuffer<a class="headerlink" href="#backbuffer" title="Permalink to this headline">¶</a></h4>
+<p>A backbuffer provides the ability to render into an offscreen buffer, which is
+blitted on every draw, until it is invalidated. Various traits such as
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">use_backbuffer</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">backbuffer_padding</span></code> control the behavior of
+the backbuffer. A backbuffer is used for non-OpenGL backends, such as <cite>agg</cite>
+and on OS X. If <code class="xref py py-attr docutils literal notranslate"><span class="pre">use_backbuffer</span></code> is False, a backbuffer is never used,
+even if a backbuffer is referenced by a component.</p>
+<p>Users typically subclass Chaco <code class="xref py py-class docutils literal notranslate"><span class="pre">PlotComponent</span></code>, but may need features
+from Enable <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="id1">
+<h2>Container<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code> is a subclass of Enable <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code>. Containers can be
+nested. Containers are responsible for event dispatch, draw dispatch, and
+layout. Containers override a lot of Component methods, so that they behave more
+like containers than plain components do.</p>
+</div>
+<div class="section" id="top-level-windows">
+<h2>Top-level Windows<a class="headerlink" href="#top-level-windows" title="Permalink to this headline">¶</a></h2>
+<p>When a component is shown on screen via a GUI toolkit, its <code class="xref py py-attr docutils literal notranslate"><span class="pre">window</span></code> trait
+contains an instance of <a class="reference internal" href="../api/enable.abstract_window.html#enable.abstract_window.AbstractWindow" title="enable.abstract_window.AbstractWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractWindow</span></code></a> which serves as a delegate
+between the underlying window system and the component.</p>
+<p>For the most part, code doesn’t need to interact with the underlying window.
+However one common exception is tools which want to set a custom cursor. This
+is accomplished via the <code class="xref py py-meth docutils literal notranslate"><span class="pre">set_pointer()</span></code> method.</p>
+<div class="section" id="abstractwindow">
+<h3>AbstractWindow<a class="headerlink" href="#abstractwindow" title="Permalink to this headline">¶</a></h3>
+<p>The following methods are the public interface of <code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractWindow</span></code>.</p>
+<dl class="method">
+<dt>
+<code class="sig-prename descclassname">AbstractWindow.</code><code class="sig-name descname">get_pointer_position</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/abstract_window.html#AbstractWindow.get_pointer_position"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Returns the current pointer position in local window coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>(x, y)</strong> – The x,y position of the mouse</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-prename descclassname">AbstractWindow.</code><code class="sig-name descname">redraw</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/abstract_window.html#AbstractWindow.redraw"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Requests that the window be redrawn.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-prename descclassname">AbstractWindow.</code><code class="sig-name descname">set_mouse_owner</code><span class="sig-paren">(</span><em class="sig-param">mouse_owner</em>, <em class="sig-param">transform=None</em>, <em class="sig-param">history=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/abstract_window.html#AbstractWindow.set_mouse_owner"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Handle the ‘mouse_owner’ being changed</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mouse_owner</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code> or None) – The new “mouse owner” component. This component will receive all
+key and mouse events until a new mouse owner is set.</p></li>
+<li><p><strong>transform</strong> (3x3 <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> or None) – An affine transform which is applied to events before dispatch</p></li>
+<li><p><strong>history</strong> (list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Interactor</span></code> or None) – A list of interactors which is used to build a tranform
+(via <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_event_transform()</span></code>) to be applied to events before
+dispatch.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-prename descclassname">AbstractWindow.</code><code class="sig-name descname">set_pointer</code><span class="sig-paren">(</span><em class="sig-param">pointer</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/abstract_window.html#AbstractWindow.set_pointer"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Sets the current cursor shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pointer</strong> (<em>str</em>) – The name of the cursor shape. Valid values are in
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">enable.toolkit_constants.pointer_names</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-prename descclassname">AbstractWindow.</code><code class="sig-name descname">set_tooltip</code><span class="sig-paren">(</span><em class="sig-param">tooltip</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/enable/abstract_window.html#AbstractWindow.set_tooltip"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set the window’s tooltip (if necessary)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tooltip</strong> (<em>str</em>) – The tooltip text.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="enable-traitsui-editors">
+<h2>Enable TraitsUI Editors<a class="headerlink" href="#enable-traitsui-editors" title="Permalink to this headline">¶</a></h2>
+<p>To facilitate the inclusion of Enable <a class="reference internal" href="../api/enable.component.html#enable.component.Component" title="enable.component.Component"><code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code></a> objects in
+<a class="reference external" href="https://docs.enthought.com/traitsui">TraitsUI GUIs</a>, Enable provides
+<a class="reference internal" href="../api/enable.component_editor.html#enable.component_editor.ComponentEditor" title="enable.component_editor.ComponentEditor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComponentEditor</span></code></a>.</p>
+<div class="section" id="componenteditor">
+<h3>ComponentEditor<a class="headerlink" href="#componenteditor" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="../api/enable.component_editor.html#enable.component_editor.ComponentEditor" title="enable.component_editor.ComponentEditor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComponentEditor</span></code></a> is a fairly simple editor. It only has a few traits
+which are of interest to users:</p>
+<div class="section" id="bgcolor">
+<h4>bgcolor<a class="headerlink" href="#bgcolor" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">bgcolor</span></code> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">ColorTrait</span></code> which can be used to specify the background
+color of the component. The default value is <code class="docutils literal notranslate"><span class="pre">&quot;sys_window&quot;</span></code>, which may or may
+not match the default window background color of the GUI toolkit you are using.</p>
+</div>
+<div class="section" id="high-resolution">
+<h4>high_resolution<a class="headerlink" href="#high-resolution" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">high_resolution</span></code> is a boolean which, if True, tells Enable that you would
+like your component to take advantage of HiDPI displays if the GUI toolkit
+supports it. The default value is True.</p>
+</div>
+<div class="section" id="size">
+<h4>size<a class="headerlink" href="#size" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">size</span></code> is a tuple of integers which can be used to specify the initial size of
+the component in a GUI. The default value is <code class="docutils literal notranslate"><span class="pre">(400,</span> <span class="pre">400)</span></code>.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Enable</a><ul>
+<li><a class="reference internal" href="#enable-concepts">Enable Concepts</a></li>
+<li><a class="reference internal" href="#component">Component</a><ul>
+<li><a class="reference internal" href="#padding">Padding</a></li>
+<li><a class="reference internal" href="#parent-classes">Parent Classes</a></li>
+<li><a class="reference internal" href="#container">Container</a></li>
+<li><a class="reference internal" href="#top-level-window">Top-level Window</a></li>
+<li><a class="reference internal" href="#event-dispatch">Event Dispatch</a></li>
+<li><a class="reference internal" href="#coordinate-systems">Coordinate Systems</a></li>
+<li><a class="reference internal" href="#viewports">Viewports</a></li>
+<li><a class="reference internal" href="#layout">Layout</a></li>
+<li><a class="reference internal" href="#rendering">Rendering</a><ul>
+<li><a class="reference internal" href="#backbuffer">Backbuffer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id1">Container</a></li>
+<li><a class="reference internal" href="#top-level-windows">Top-level Windows</a><ul>
+<li><a class="reference internal" href="#abstractwindow">AbstractWindow</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#enable-traitsui-editors">Enable TraitsUI Editors</a><ul>
+<li><a class="reference internal" href="#componenteditor">ComponentEditor</a><ul>
+<li><a class="reference internal" href="#bgcolor">bgcolor</a></li>
+<li><a class="reference internal" href="#high-resolution">high_resolution</a></li>
+<li><a class="reference internal" href="#size">size</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../kiva/drawing_details.html"
+                        title="previous chapter">Kiva Drawing In-depth</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tools.html"
+                        title="next chapter">Enable Tools</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/enable/overview.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Apr 05, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
