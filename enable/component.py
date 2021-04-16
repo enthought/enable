@@ -926,25 +926,6 @@ class Component(CoordinateBox, Interactor):
     def dispatch(self, event, suffix):
         """ Dispatches a mouse event based on the current event state.
 
-        Parameters
-        ----------
-        event : an Enable MouseEvent
-            A mouse event.
-        suffix : string
-            The name of the mouse event as a suffix to the event state name,
-            e.g. "_left_down" or "_window_enter".
-        """
-
-        # This hasattr check is necessary to ensure compatibility with Chaco
-        # components.
-        if not getattr(self, "use_draw_order", True):
-            self._old_dispatch(event, suffix)
-        else:
-            self._new_dispatch(event, suffix)
-
-    def _new_dispatch(self, event, suffix):
-        """ Dispatches a mouse event
-
         If the component has a **controller**, the method dispatches the event
         to it, and returns. Otherwise, the following objects get a chance to
         handle the event:
@@ -958,6 +939,14 @@ class Component(CoordinateBox, Interactor):
         If any object in this sequence handles the event, the method returns
         without proceeding any further through the sequence. If nothing
         handles the event, the method simply returns.
+
+        Parameters
+        ----------
+        event : an Enable MouseEvent
+            A mouse event.
+        suffix : string
+            The name of the mouse event as a suffix to the event state name,
+            e.g. "_left_down" or "_window_enter".
         """
 
         # Maintain compatibility with .controller for now
@@ -992,41 +981,6 @@ class Component(CoordinateBox, Interactor):
         if not event.handled:
             for tool in self.tools:
                 tool.dispatch(event, suffix)
-
-    def _old_dispatch(self, event, suffix):
-        """ Dispatches a mouse event.
-
-        If the component has a **controller**, the method dispatches the event
-        to it and returns. Otherwise, the following objects get a chance to
-        handle the event:
-
-        1. The component's active tool, if any.
-        2. Any listener tools.
-        3. The component itself.
-
-        If any object in this sequence handles the event, the method returns
-        without proceeding any further through the sequence. If nothing
-        handles the event, the method simply returns.
-
-        """
-        if self.controller is not None:
-            self.controller.dispatch(event, suffix)
-            return
-
-        if self._active_tool is not None:
-            self._active_tool.dispatch(event, suffix)
-
-        if event.handled:
-            return
-
-        for tool in self.tools:
-            tool.dispatch(event, suffix)
-            if event.handled:
-                return
-
-        if not event.handled:
-            self._dispatch_to_enable(event, suffix)
-        return
 
     def _get_active_tool(self):
         return self._active_tool
