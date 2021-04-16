@@ -20,6 +20,10 @@ def stacked_preferred_size(container, components=None):
         container._cached_preferred_size = container.fixed_preferred_size
         return container.fixed_preferred_size
 
+    if container.resizable == "":
+        container._cached_preferred_size = container.outer_bounds[:]
+        return container.outer_bounds
+
     if components is None:
         components = container.components
 
