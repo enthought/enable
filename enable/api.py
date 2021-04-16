@@ -138,6 +138,8 @@ Enable Components
 - :class:`~.CoordinateBox`
 - :class:`~.ComponentEditor`
 - :class:`~.OverlayContainer`
+- :class:`~.HStackedContainer`
+- :class:`~.VStackedContainer`
 - :class:`~.ConstraintsContainer`
 - :class:`~.Label`
 - :class:`~.GraphicsContextEnable`
@@ -271,6 +273,7 @@ from .container import Container
 from .coordinate_box import CoordinateBox
 from .component_editor import ComponentEditor
 from .overlay_container import OverlayContainer
+from .stacked_container import HStackedContainer, VStackedContainer
 
 try:
     import kiwisolver
