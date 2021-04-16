@@ -117,11 +117,9 @@ is to dispatch to:
 4. its underlays
 5. its listener tools
 
-That logic is in :class:`Component`, in the :meth:`\_new_dispatch` method, which
-is called from :meth:`Component.dispatch` (:meth:`\_old_dispatch` is still
-being used by Chaco). If any of these handlers sets event.handled to True, event
-propagation stops. If an event gets as far as the listener tools, then all of
-them get the event.
+That logic is in :class:`Component`, in the :meth:`Component.dispatch`. If any
+of these handlers sets event.handled to True, event propagation stops. If an
+event gets as far as the listener tools, then all of them get the event.
 
 .. note::
 
