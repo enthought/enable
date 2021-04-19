@@ -18,6 +18,7 @@ from enable.markers import CustomMarker
 
 class TestCustomMarker(unittest.TestCase):
 
+    # regression test for enthought/chaco#232
     def test_add_to_path(self):
         path = CompiledPath()
         path.begin_path()
@@ -33,6 +34,7 @@ class TestCustomMarker(unittest.TestCase):
         # should not fail
         marker.add_to_path(gc.get_empty_path(), np.int64(0))
 
+    # regression test for enthought/chaco#232
     def test_get_compiled_path(self):
         path = CompiledPath()
         path.begin_path()
