@@ -32,7 +32,8 @@ class AbstractMarker(HasTraits):
     """
 
     #: How this marker is to be stroked (from kiva.api).
-    # Since this needs to be a class variable, it can't be a trait.
+    #: This is a class variable and the available options are
+    #: (FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE).
     draw_mode = STROKE
 
     #: The kiva marker type (from kiva.api).
