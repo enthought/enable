@@ -52,10 +52,10 @@ class HStackedContainer(StackedContainer):
     # Overrides StackedPlotContainer.
     stack_index = 0
 
-    # VPlotContainer attributes
+    # HPlotContainer attributes
 
-    # The horizontal alignment of objects that don't span the full width.
-    halign = Enum("bottom", "top", "center")
+    # The vertical alignment of objects that don't span the full height.
+    valign = Enum("bottom", "top", "center")
 
     # The order in which components in the plot container are laid out.
     stack_order = Enum("left_to_right", "right_to_left")
@@ -67,9 +67,9 @@ class HStackedContainer(StackedContainer):
             components = self.components
         else:
             components = self.components[::-1]
-        if self.halign == "bottom":
+        if self.valign == "bottom":
             align = "min"
-        elif self.halign == "center":
+        elif self.valign == "center":
             align = "center"
         else:
             align = "max"
