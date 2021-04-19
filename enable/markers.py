@@ -188,8 +188,6 @@ class LeftTriangleMarker(AbstractMarker):
 
     #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
-    # Do not render anti-aliased. (Overrides AbstractMarker.)
-    antialias = True
 
     def _add_to_path(self, path, size):
         path.lines(array([(size, -size), (size, size), (-0.732 * size, 0)]))
@@ -201,8 +199,6 @@ class RightTriangleMarker(AbstractMarker):
 
     #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
-    # Do not render anti-aliased. (Overrides AbstractMarker.)
-    antialias = True
 
     def _add_to_path(self, path, size):
         path.lines(array([(-size, -size), (-size, size), (0.732 * size, 0)]))
@@ -214,8 +210,6 @@ class PentagonMarker(AbstractMarker):
 
     #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
-    # Do not render anti-aliased. (Overrides AbstractMarker.)
-    antialias = True
 
     def _add_to_path(self, path, size):
         # xi = size * cos(2*pi*i/5. + pi/2), yi = size * sin(2*pi*i/5. + pi/2)
@@ -238,8 +232,6 @@ class Hexagon1Marker(AbstractMarker):
 
     #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
-    # Do not render anti-aliased. (Overrides AbstractMarker.)
-    antialias = True
 
     def _add_to_path(self, path, size):
         # xi = size * cos(2*pi*i/6.), yi = size * sin(2*pi*i/6.)
@@ -263,8 +255,6 @@ class Hexagon2Marker(AbstractMarker):
 
     #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
-    # Do not render anti-aliased. (Overrides AbstractMarker.)
-    antialias = True
 
     def _add_to_path(self, path, size):
         # Like Hexagon1Marker but with an offset of 30 deg.
@@ -324,8 +314,6 @@ class StarMarker(AbstractMarker):
 
     #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
-    # Do not render anti-aliased. (Overrides AbstractMarker.)
-    antialias = True
 
     def _add_to_path(self, path, size):
         # Generated from
@@ -355,8 +343,6 @@ class CrossPlusMarker(AbstractMarker):
 
     #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = STROKE
-    # Do not render anti-aliased. (Overrides AbstractMarker.)
-    antialias = True
 
     def _add_to_path(self, path, size):
         # Darw an X
