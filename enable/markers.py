@@ -31,19 +31,18 @@ class AbstractMarker(HasTraits):
     """ Abstract class for markers.
     """
 
-    # How this marker is to be stroked (from kiva.api).
+    #: How this marker is to be stroked (from kiva.api).
     # Since this needs to be a class variable, it can't be a trait.
     draw_mode = STROKE
-    # draw_mode = Enum(FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE)
 
-    # The kiva marker type (from kiva.api).
+    #: The kiva marker type (from kiva.api).
     kiva_marker = NO_MARKER
 
-    # Close the path object after drawing this marker?
+    #: Close the path object after drawing this marker?
     close_path = Bool(True)
 
-    # Render the marker antialiased?  Some
-    # markers render faster and look better if they are not anti-aliased..
+    #: Render the marker antialiased?  Some
+    #: markers render faster and look better if they are not anti-aliased.
     antialias = Bool(True)
 
     def add_to_path(self, path, size):
@@ -78,11 +77,11 @@ class SquareMarker(AbstractMarker):
     """ A marker that is a square.
     """
 
-    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
-    # The Kiva marker type. (Overrides AbstractMarker.)
+    #: The Kiva marker type. (Overrides AbstractMarker.)
     kiva_marker = SQUARE_MARKER
-    # Do not render anti-aliased. (Overrides AbstractMarker.)
+    #: Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
 
     def _add_to_path(self, path, size):
@@ -93,11 +92,11 @@ class DiamondMarker(AbstractMarker):
     """ A marker that is a diamond.
     """
 
-    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
-    # The Kiva marker type. (Overrides AbstractMarker.)
+    #: The Kiva marker type. (Overrides AbstractMarker.)
     kiva_marker = DIAMOND_MARKER
-    # Do not render anti-aliased. (Overrides AbstractMarker.)
+    #: Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
 
     def _add_to_path(self, path, size):
@@ -108,11 +107,11 @@ class CircleMarker(AbstractMarker):
     """ A marker that is a circle.
     """
 
-    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
-    # The Kiva marker type. (Overrides AbstractMarker.)
+    #: The Kiva marker type. (Overrides AbstractMarker.)
     kiva_marker = CIRCLE_MARKER
-    # Array of points in a circle
+    #: Array of points in a circle
     circle_points = array(
         [
             [1.0, 0.0],
@@ -157,11 +156,11 @@ class TriangleMarker(AbstractMarker):
     """ A marker that is a triangle with one apex pointing up.
     """
 
-    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
-    # The Kiva marker type. (Overrides AbstractMarker.)
+    #: The Kiva marker type. (Overrides AbstractMarker.)
     kiva_marker = TRIANGLE_MARKER
-    # Do not render anti-aliased. (Overrides AbstractMarker.)
+    #: Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
 
     def _add_to_path(self, path, size):
@@ -172,11 +171,11 @@ class Inverted_TriangleMarker(AbstractMarker):
     """ A marker that is a triangle with one apex pointing down.
     """
 
-    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
-    # The Kiva marker type. (Overrides AbstractMarker.)
+    #: The Kiva marker type. (Overrides AbstractMarker.)
     kiva_marker = INVERTED_TRIANGLE_MARKER
-    # Do not render anti-aliased. (Overrides AbstractMarker.)
+    #: Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
 
     def _add_to_path(self, path, size):
@@ -187,7 +186,7 @@ class LeftTriangleMarker(AbstractMarker):
     """ A marker that is a triangle with one apex pointing left.
     """
 
-    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = True
@@ -200,7 +199,7 @@ class RightTriangleMarker(AbstractMarker):
     """ A marker that is a triangle with one apex pointing right.
     """
 
-    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = True
@@ -213,7 +212,7 @@ class PentagonMarker(AbstractMarker):
     """ A marker that is a pentagon.
     """
 
-    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = True
@@ -237,7 +236,7 @@ class Hexagon1Marker(AbstractMarker):
     """ A marker that is a hexagon, with the flat sides on the sides.
     """
 
-    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = True
@@ -262,7 +261,7 @@ class Hexagon2Marker(AbstractMarker):
     """ A marker that is a hexagon, with the flat sides on the top and bottom.
     """
 
-    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = True
@@ -287,11 +286,11 @@ class PlusMarker(AbstractMarker):
     """ A marker that is a plus-sign.
     """
 
-    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = STROKE
-    # The Kiva marker type. (Overrides AbstractMarker.)
+    #: The Kiva marker type. (Overrides AbstractMarker.)
     kiva_marker = PLUS_MARKER
-    # Do not render anti-aliased. (Overrides AbstractMarker.)
+    #: Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
 
     def _add_to_path(self, path, size):
@@ -305,11 +304,11 @@ class CrossMarker(AbstractMarker):
     """ A marker that is an X.
     """
 
-    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = STROKE
-    # The Kiva marker type. (Overrides AbstractMarker.)
+    #: The Kiva marker type. (Overrides AbstractMarker.)
     kiva_marker = CROSS_MARKER
-    # Do not render anti-aliased. (Overrides AbstractMarker.)
+    #: Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
 
     def _add_to_path(self, path, size):
@@ -323,7 +322,7 @@ class StarMarker(AbstractMarker):
     """ A marker that is a (filled) star.
     """
 
-    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = True
@@ -354,7 +353,7 @@ class CrossPlusMarker(AbstractMarker):
     """ A marker that is an X and a + superimposed.
     """
 
-    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = STROKE
     # Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = True
@@ -376,9 +375,9 @@ class DotMarker(AbstractMarker):
     """ A marker that is a dot.
     """
 
-    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = FILL_STROKE
-    # The Kiva marker type. (Overrides AbstractMarker.)
+    #: The Kiva marker type. (Overrides AbstractMarker.)
     kiva_marker = DOT_MARKER
 
     def _add_to_path(self, path, size):
@@ -389,11 +388,11 @@ class PixelMarker(AbstractMarker):
     """ A marker that is a pixel.
     """
 
-    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = STROKE
-    # The Kiva marker type. (Overrides AbstractMarker.)
+    #: The Kiva marker type. (Overrides AbstractMarker.)
     kiva_marker = PIXEL_MARKER
-    # Do not render anti-aliased. (Overrides AbstractMarker.)
+    #: Do not render anti-aliased. (Overrides AbstractMarker.)
     antialias = False
 
     def _add_to_path(self, path, size):
@@ -406,16 +405,16 @@ class CustomMarker(AbstractMarker):
     """ A marker that is a custom shape.
     """
 
-    # How this marker is to be stroked. (Overrides AbstractMarker.)
+    #: How this marker is to be stroked. (Overrides AbstractMarker.)
     draw_mode = STROKE
-    # The Kiva marker type. (Overrides AbstractMarker.)
+    #: The Kiva marker type. (Overrides AbstractMarker.)
     kiva_marker = NO_MARKER
 
-    # The custom path that represents this marker.
+    #: The custom path that represents this marker.
     path = Instance(CompiledPath)
 
-    # Automatically scale **path** based on the input size parameter?
-    # If False, then the path does not respond to the 'size' parameter!
+    #: Automatically scale **path** based on the input size parameter?
+    #: If False, then the path does not respond to the 'size' parameter!
     scale_path = Bool(True)
 
     def _add_to_path(self, path, size):
@@ -442,7 +441,7 @@ class CustomMarker(AbstractMarker):
             return self.path
 
 
-# String names for marker types.
+#: String names for marker types.
 marker_names = (
     "square",
     "circle",
@@ -462,7 +461,7 @@ marker_names = (
     "pixel",
 )
 
-# Mapping of marker string names to classes.
+#: Mapping of marker string names to classes.
 MarkerNameDict = {
     "square": SquareMarker,
     "circle": CircleMarker,
@@ -483,7 +482,7 @@ MarkerNameDict = {
     "custom": CustomMarker,
 }
 
-# A mapped trait that allows string naming of marker classes.
+#: A mapped trait that allows string naming of marker classes.
 MarkerTrait = Trait(
     "square", MarkerNameDict, editor=EnumEditor(values=marker_names)
 )
