@@ -170,6 +170,12 @@ Brushes
 - :class:`LinearGradientBrush <enable.brush.LinearGradientBrush>`
 - :class:`RadialGradientBrush <enable.brush.RadialGradientBrush>`
 
+Miscellaneous
+=============
+
+- :class:`~.CompiledPath`
+- :func:`font_metrics_provider`
+
 """
 
 # Major package imports
@@ -311,3 +317,6 @@ from .viewport import Viewport
 from .window import Window
 
 from .primitives.api import Annotater, Box, Line, Polygon
+
+from .compiled_path import CompiledPath
+from .font_metrics_provider import font_metrics_provider
