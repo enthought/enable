@@ -388,7 +388,7 @@ def macos_extensions():
     for framework in frameworks:
         extra_link_args.extend(['-framework', framework])
 
-    extensions = [
+    return [
         Extension(
             'kiva.quartz.ABCGI',
             sources=[
