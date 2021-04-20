@@ -13,7 +13,7 @@
 #include <iostream>
 #include <stack>
 
-#include "agg_basics.h" 
+#include "agg_basics.h"
 #include "agg_path_storage.h"
 #include "agg_trans_affine.h"
 
@@ -22,16 +22,16 @@
 
 namespace kiva
 {
-   
+
     class compiled_path : public agg24::path_storage
     {
-        
+
         /*-------------------------------------------------------------------
          This extends the standard agg24::path_storage class to include
          matrix transforms within the path definition.  Doing so requires
-	 overriding a number of methods to apply the matrix transformation
-	 to vertices added to the path.
-         
+         overriding a number of methods to apply the matrix transformation
+         to vertices added to the path.
+
          The overridden methods are:
              move_to
              line_to
@@ -39,9 +39,9 @@ namespace kiva
              curve3
              curve4
              add_path
-        
+
          There are a few others that need to be looked at also...
-         
+
          In addition, we need to add several methods:
              translate_ctm
              rotate_ctm
@@ -53,47 +53,46 @@ namespace kiva
              restore_ctm
         -------------------------------------------------------------------*/
 
-	// hack to get VC++ 6.0 to compile correctly
+        // hack to get VC++ 6.0 to compile correctly
         typedef agg24::path_storage base;
 
         /*-------------------------------------------------------------------
          ptm -- path transform matrix.
-         
+
          This is used to transform each point added to the path.  It begins
-         as an identity matrix and accumulates every transform made during the 
-         path formation.  At the end of the path creation, the ptm holds 
+         as an identity matrix and accumulates every transform made during the
+         path formation.  At the end of the path creation, the ptm holds
          the total transformation seen during the path formation.  It
-         can thus be multiplied with the ctm to determine what the ctm 
+         can thus be multiplied with the ctm to determine what the ctm
          should be after the compiled_path has been drawn.
 
-	 Todo: Should this default to the identity matrix or the current ctm?
+        Todo: Should this default to the identity matrix or the current ctm?
         -------------------------------------------------------------------*/
         agg24::trans_affine ptm;
-        
+
         // ptm_stack is used for save/restore of the ptm
         std::stack<agg24::trans_affine> ptm_stack;
 
         // If the path contains curves, this value is true;
         bool _has_curves;
 
-        public:        
-            // constructor        
-            compiled_path() : base(), ptm(agg24::trans_affine())        
+        public:
+            // constructor
+            compiled_path() : base(), ptm(agg24::trans_affine())
             {}
 
             //---------------------------------------------------------------
             // path_storage interface
             //---------------------------------------------------------------
-	    void remove_all();
-
-	    void begin_path();
+            void remove_all();
+            void begin_path();
             void close_path();
             void move_to(double x, double y);
             void line_to(double x, double y);
-            void quad_curve_to(double x_ctrl,  double y_ctrl, 
+            void quad_curve_to(double x_ctrl,  double y_ctrl,
                                double x_to,    double y_to);
-            void curve_to(double x_ctrl1, double y_ctrl1, 
-                          double x_ctrl2, double y_ctrl2, 
+            void curve_to(double x_ctrl1, double y_ctrl1,
+                          double x_ctrl2, double y_ctrl2,
                           double x_to,    double y_to);
 
             // see graphics_context_base for descriptions of these functions
@@ -114,24 +113,24 @@ namespace kiva
             // compiled_path interface
             //---------------------------------------------------------------
 
-	    void _transform_ctm(agg24::trans_affine& m);
-	    void translate_ctm(double x, double y);
-	    void rotate_ctm(double angle);
-	    void scale_ctm(double sx, double sy);
-	    void concat_ctm(agg24::trans_affine& m);
-	    void set_ctm(agg24::trans_affine& m);
-			 agg24::trans_affine get_ctm();
+            void _transform_ctm(agg24::trans_affine& m);
+            void translate_ctm(double x, double y);
+            void rotate_ctm(double angle);
+            void scale_ctm(double sx, double sy);
+            void concat_ctm(agg24::trans_affine& m);
+            void set_ctm(agg24::trans_affine& m);
+            agg24::trans_affine get_ctm();
 
             //---------------------------------------------------------------
             // save/restore ptm methods
             //---------------------------------------------------------------
             void save_ctm();
-	    void restore_ctm();
+            void restore_ctm();
 
             //---------------------------------------------------------------
             // Test whether curves exist in path.
             //---------------------------------------------------------------
-	    inline bool has_curves() { return this->_has_curves;}
+            inline bool has_curves() { return this->_has_curves;}
     };
 }
 
