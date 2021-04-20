@@ -23,10 +23,6 @@ PyObject *PyArray_FromDimsAndStridesAndDataAndDescr(int nd, int *d, int* st,
     int *dimensions, *strides;
     int flags= CONTIGUOUS | OWN_DIMENSIONS | OWN_STRIDES;
     
-    //static int calls = 0;
-    //calls++; 
-    //printf("allocs: %d\n;", calls);
-    
     dimensions = strides = NULL;
         
     if (nd < 0) 

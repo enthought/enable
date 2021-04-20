@@ -229,13 +229,6 @@ namespace kiva
             }
             gradient_mtx.invert();
 
-            //std::cout << "drawing with affine matrix " << gradient_mtx.m0
-            //                                           << ", " << gradient_mtx.m1
-            //                                           << ", " << gradient_mtx.m2
-            //                                           << ", " << gradient_mtx.m3
-            //                                           << ", " << gradient_mtx.m4
-            //                                           << ", " << gradient_mtx.m5 << std::endl;
-
             span_gradient_type span_gradient(span_interpolator,
                                              gradient_func,
                                              color_array,

@@ -381,12 +381,6 @@ class BaseWindow(AbstractWindow):
             else:
                 mouse_wheel_delta = (0, mouse_wheel * 120 / 200.0)
 
-            # Note: The following code fixes a bug in wxPython that returns
-            # 'mouse_wheel' events in screen coordinates, rather than window
-            # coordinates:
-            if wx.VERSION[:2] < (2, 8):
-                if mouse_wheel != 0 and sys.platform == "win32":
-                    x, y = self.control.ScreenToClientXY(x, y)
             return MouseEvent(
                 x=x,
                 y=self._flip_y(y),

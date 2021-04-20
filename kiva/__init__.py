@@ -8,21 +8,10 @@
 #
 # Thanks for using Enthought open source!
 """
-A multi-platform DisplayPDF vector drawing engine.
+A multi-platform raster and vector drawing engine.
 Part of the Enable project of the Enthought Tool Suite.
 """
-import os
-
 from kiva._version import full_version as __version__
 
 from .constants import *
 from .fonttools import Font
-
-if "KIVA_WISHLIST" in os.environ:
-    from warnings import warn
-
-    warn(
-        "Use of the KIVA_WISHLIST environment variable to select Kiva backends"
-        "is no longer supported."
-    )
-del os
