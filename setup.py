@@ -388,7 +388,7 @@ def macos_extensions():
     for framework in frameworks:
         extra_link_args.extend(['-framework', framework])
 
-    return[
+    extensions = [
         Extension(
             'kiva.quartz.ABCGI',
             sources=[
@@ -426,6 +426,9 @@ def macos_extensions():
             include_dirs=include_dirs,
         )
     ]
+    for ext in extensions:
+        ext.cython_directives = {"language_level": 3}
+    return extensions
 
 
 if __name__ == "__main__":

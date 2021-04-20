@@ -1,4 +1,3 @@
-# cython: language_level=3
 # (C) Copyright 2004-2021 Enthought, Inc., Austin, TX
 # All rights reserved.
 #
