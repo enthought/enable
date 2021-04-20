@@ -11,9 +11,7 @@
 
 %module gl
 
-#if (SWIG_VERSION > 0x010322)
 %feature("compactdefaultargs");
-#endif // (SWIG_VERSION > 0x010322)
 
 %include "constants.i"
 %include "rgba.i"
