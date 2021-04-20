@@ -187,7 +187,6 @@ from .base import (
     TOP_RIGHT,
     BOTTOM_LEFT,
     BOTTOM_RIGHT,
-    str_to_font,
     empty_rectangle,
     intersect_bounds,
 )
