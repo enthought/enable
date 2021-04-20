@@ -145,10 +145,7 @@ if len(key_symbols) != len(key_names):
 
 KEY_MAP = dict(zip(key_symbols, key_names))
 
-if wx.VERSION[:3] < (2, 9, 4):
-    mouse_wheel_axes = [0, 1]
-else:
-    mouse_wheel_axes = [wx.MOUSE_WHEEL_VERTICAL, wx.MOUSE_WHEEL_HORIZONTAL]
+mouse_wheel_axes = [wx.MOUSE_WHEEL_VERTICAL, wx.MOUSE_WHEEL_HORIZONTAL]
 
 if len(mouse_wheel_axes) != len(mouse_wheel_axes_names):
     warnings.warn("The WX toolkit backend mouse wheel axes are out of sync!")

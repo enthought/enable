@@ -213,7 +213,6 @@ gl_graphics_context::clip_to_rect(kiva_gl::rect_type &rect)
             // new clip rectangle doesn't intersect anything, so we push on
             // an empty rect as the new clipping region.
             glScissor(0, 0, 0, 0);
-            //printf("NULL intersection area in clip_to_rect\n");
             this->state.device_space_clip_rects.push_back(kiva_gl::rect_type(0, 0, -1, -1));
         }
         else
@@ -234,7 +233,6 @@ gl_graphics_context::clip_to_rect(kiva_gl::rect_type &rect)
         if (this->state.device_space_clip_rects.size() == 0)
         {
             glScissor(0, 0, 0, 0);
-            //printf("NULL intersection area in clip_to_rect\n");
             this->state.device_space_clip_rects.push_back(kiva_gl::rect_type(0, 0, -1, -1));
         }
         else
@@ -245,10 +243,6 @@ gl_graphics_context::clip_to_rect(kiva_gl::rect_type &rect)
             // (same problem as in restore_state())
             kiva_gl::rect_iterator it = rects.begin();
             glScissor(int(it->x), int(it->y), int(it->w), int(it->h));
-            if (rects.size() > 1)
-            {
-                //printf("Warning: more than 1 clip rect in clip_to_rect()\n");
-            }
         }
     }
 }

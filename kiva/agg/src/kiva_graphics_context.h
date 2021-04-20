@@ -1083,10 +1083,6 @@ namespace kiva
             this->close_path();
             this->draw_path(mode);
         }
-        else
-        {
-            //printf("simple worked!\n");
-        }
 
         this->path.remove_all();
     }
@@ -1098,7 +1094,6 @@ namespace kiva
         /* function requires that antialiasing is false and ctm doesn't
            have any rotation.
         */
-        //printf("trying _simple\n");
         int success = 0;
         agg24::trans_affine ctm = this->get_ctm();
 
@@ -1125,8 +1120,6 @@ namespace kiva
             double tx = temp[4];
             double ty = temp[5];
 
-            //printf("rect: %d, %d %d, %d\n", rect[0], rect[1], rect[2], rect[3]);
-            //printf("trans, scale: %d, %d %d, %d\n", tx, ty, scale_x, scale_y);
             // fix me: need to handle rounding here...
             int x1 = int(rect[0]*scale_x + tx);
             int y1 = int(rect[1]*scale_y + ty);
@@ -1137,7 +1130,6 @@ namespace kiva
             if (mode == FILL_STROKE ||
                 mode == EOF_FILL_STROKE)
             {
-                //printf("fill stroke: %d, %d %d, %d\n", x1, y1, x2, y2);
                 renderer.outlined_rectangle(x1, y1, x2, y2);
                 // This isn't right, but it should be faster.  Interestingly,
                 // it didn't seem to be.
@@ -1146,14 +1138,12 @@ namespace kiva
             }
             else if (mode == STROKE )
             {
-                //printf("stroke: %d, %d %d, %d\n", x1, y1, x2, y2);
                 renderer.rectangle(x1, y1, x2, y2);
                 success = 1;
             }
             else if (mode == FILL ||
                      mode == EOF_FILL )
             {
-                //printf("fill: %d, %d %d, %d\n", x1, y1, x2, y2);
                 renderer.solid_rectangle(x1, y1, x2, y2);
                 success = 1;
             }
