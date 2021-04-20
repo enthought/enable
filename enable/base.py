@@ -76,53 +76,6 @@ font_styles = {"italic": ITALIC}
 font_weights = {"bold": BOLD}
 font_noise = ["pt", "point", "family"]
 
-
-def str_to_font(object, name, value):
-    """ Converts a (somewhat) free-form string into a valid Font object.
-    """
-    import warnings
-
-    warnings.warn(
-        ("str_to_font should not be imported from enable.api. Use the version "
-         "from kiva.fonttools instead."),
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    try:
-        point_size = 10
-        family = SWISS
-        style = NORMAL
-        weight = NORMAL
-        underline = 0
-        face_name = []
-        for word in value.split():
-            lword = word.lower()
-            if lword in font_families:
-                family = font_families[lword]
-            elif lword in font_styles:
-                style = font_styles[lword]
-            elif lword in font_weights:
-                weight = font_weights[lword]
-            elif lword == "underline":
-                underline = 1
-            elif lword not in font_noise:
-                try:
-                    point_size = int(lword)
-                except Exception:
-                    face_name.append(word)
-        return Font(
-            face_name=" ".join(face_name),
-            size=point_size,
-            family=family,
-            weight=weight,
-            style=style,
-            underline=underline,
-        )
-    except Exception:
-        pass
-    raise TraitError(object, name, "a font descriptor string", repr(value))
-
-
 # Pick a default font that should work on all platforms.
 default_font_name = "modern 10"
 default_font = Font(family=MODERN, size=10)
