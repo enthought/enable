@@ -18,12 +18,10 @@
   {
     $1 = new std::string((char *)PyBytes_AsString($input));
   }
-#if PY_VERSION_HEX >= 0x03030000
   else if (PyUnicode_Check($input))
   {
     $1 = new std::string((char *)PyUnicode_AsUTF8($input));
   }
-#endif
   else
   {
     PyErr_SetString (PyExc_TypeError, "not a String");
