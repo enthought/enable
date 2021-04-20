@@ -426,6 +426,8 @@ def macos_extensions():
             include_dirs=include_dirs,
         )
     ]
+    # The language level is 2 by default and until it becomes 3, we need to
+    # explicitly set the cython_directives on the extensions.
     for ext in extensions:
         ext.cython_directives = {"language_level": 3}
     return extensions
