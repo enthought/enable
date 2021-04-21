@@ -100,7 +100,7 @@ fill_stroke_map = {
 
 class PSGC(basecore2d.GraphicsContextBase):
     def __init__(self, size, *args, **kwargs):
-        super(PSGC, self).__init__(size, *args, **kwargs)
+        super().__init__(size, *args, **kwargs)
         self.size = size
         self._height = size[1]
         self.contents = StringIO()

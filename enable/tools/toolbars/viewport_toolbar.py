@@ -46,7 +46,7 @@ class ViewportToolbar(Container, AbstractOverlay):
         # self.component should be a CanvasViewport
         if component is not None:
             kw["component"] = component
-        super(ViewportToolbar, self).__init__(**kw)
+        super().__init__(**kw)
 
         for buttontype in self.buttons:
             self.add_button(buttontype())

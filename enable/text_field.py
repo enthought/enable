@@ -117,7 +117,7 @@ class TextField(Component):
         # Initialize internal tracking variables
         self.reset()
 
-        super(TextField, self).__init__(**traits)
+        super().__init__(**traits)
 
         if self.metrics is None:
             self.metrics = font_metrics_provider()

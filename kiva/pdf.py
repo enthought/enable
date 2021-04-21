@@ -84,7 +84,7 @@ class GraphicsContext(GraphicsContextBase):
         self.text_xy = None, None
         # get an agg backend to assist in measuring text
         self._agg_gc = GraphicsContextImage((1, 1))
-        super(GraphicsContext, self).__init__(self, *args, **kwargs)
+        super().__init__(self, *args, **kwargs)
 
     # ----------------------------------------------------------------
     # Coordinate Transform Matrix Manipulation
@@ -560,7 +560,7 @@ class GraphicsContext(GraphicsContextBase):
         """
         self.gc.setFillAlpha(alpha)
         self.gc.setStrokeAlpha(alpha)
-        super(GraphicsContext, self).set_alpha(alpha)
+        super().set_alpha(alpha)
 
     # ----------------------------------------------------------------
     # Drawing Images

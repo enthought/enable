@@ -16,7 +16,7 @@ class White(White):
     """ Customize whitespace to match the CSS spec values"""
 
     def __init__(self, ws=" \t\r\n\f", min=1, max=0, exact=0):
-        super(White, self).__init__(ws, min, max, exact)
+        super().__init__(ws, min, max, exact)
 
 
 escaped = (

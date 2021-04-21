@@ -612,7 +612,7 @@ class Scrolled(Container):
     # -------------------------------------------------------------------------
 
     def __getstate__(self):
-        state = super(Scrolled, self).__getstate__()
+        state = super().__getstate__()
         for key in ["alternate_vsb", "_vsb", "_hsb"]:
             if key in state:
                 del state[key]

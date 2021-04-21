@@ -50,7 +50,7 @@ class Image(Component):
     def __init__(self, data, **traits):
         # the default bounds are the size of the image
         traits.setdefault("bounds", data.shape[1::-1])
-        super(Image, self).__init__(data=data, **traits)
+        super().__init__(data=data, **traits)
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="normal"):
         """ Draws the image. """

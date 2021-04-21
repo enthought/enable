@@ -98,7 +98,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
     """
 
     def __init__(self, *args, **kwargs):
-        super(GraphicsContextBase, self).__init__()
+        super().__init__()
         self.state = GraphicsState()
 
         # The line state has multiple properties that are tracked by a class

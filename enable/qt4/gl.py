@@ -33,7 +33,7 @@ class Window(BaseGLWindow):
         """
         self.control.makeCurrent()
         self._fake_pyglet_context.set_current()
-        super(Window, self)._init_gc()
+        super()._init_gc()
 
     def _paint(self, event=None):
         """ Paint the contents of the window.

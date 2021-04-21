@@ -45,9 +45,7 @@ class GraphicsContext(ABCGI.CGLayerContext):
             image = None
             width, height = size_or_array
 
-        super(GraphicsContext, self).__init__(
-            (width, height), gc, *args, **kwds
-        )
+        super().__init__((width, height), gc, *args, **kwds)
         if image is not None:
             self.draw_image(image)
 
@@ -58,7 +56,7 @@ class GraphicsContext(ABCGI.CGLayerContext):
 
 class _WindowGraphicsContext(ABCGI.CGContextInABox):
     def __init__(self, *args, **kwds):
-        super(_WindowGraphicsContext, self).__init__(*args, **kwds)
+        super().__init__(*args, **kwds)
         self._begun = False
 
     def begin(self):

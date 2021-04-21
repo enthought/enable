@@ -90,7 +90,7 @@ class ResizeTool(ValueDragTool):
     def drag_start(self, event):
         if self.component is not None:
             self._selected_hotspot = self._find_hotspot(event.x, event.y)
-            super(ResizeTool, self).drag_start(event)
+            super().drag_start(event)
             self.component._layout_needed = True
             if self.auto_raise:
                 # Push the component to the top of its container's list

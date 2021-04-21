@@ -75,4 +75,4 @@ class SVGButton(Event):
             view=view,
         )
 
-        super(SVGButton, self).__init__(**metadata)
+        super().__init__(**metadata)

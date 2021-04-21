@@ -431,7 +431,7 @@ class Container(Component):
         should be set to True, and contained components will not be called
         with the event.
         """
-        # super(Container, self)._dispatch_stateful_event(event, suffix)
+        # super()._dispatch_stateful_event(event, suffix)
         Component._dispatch_stateful_event(self, event, suffix)
 
     def get_event_transform(self, event=None, suffix=""):
@@ -574,12 +574,12 @@ class Container(Component):
     def _bounds_changed(self, old, new):
         # crappy... calling our parent's handler seems like a common traits
         # event handling problem
-        super(Container, self)._bounds_changed(old, new)
+        super()._bounds_changed(old, new)
         self._layout_needed = True
         self.invalidate_draw()
 
     def _bounds_items_changed(self, event):
-        super(Container, self)._bounds_items_changed(event)
+        super()._bounds_items_changed(event)
         self._layout_needed = True
         self.invalidate_draw()
 

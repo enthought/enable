@@ -21,7 +21,7 @@ from enable.savage.trait_defs.ui.wx.wx_render_panel import RenderPanel
 
 class ReferencePanel(wx.Panel):
     def __init__(self, parent, bmp):
-        super(ReferencePanel, self).__init__(parent)
+        super().__init__(parent)
         self.bmp = bmp
         self.Bind(wx.EVT_PAINT, self.OnPaint)
 
@@ -35,7 +35,7 @@ class ReferencePanel(wx.Panel):
 
 class ProfileResults(wx.TextCtrl):
     def __init__(self, parent):
-        super(ProfileResults, self).__init__(parent, style=wx.TE_MULTILINE)
+        super().__init__(parent, style=wx.TE_MULTILINE)
         self.SetFont(
             wx.Font(
                 10,

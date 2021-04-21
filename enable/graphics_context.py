@@ -35,15 +35,13 @@ class EnableGCMixin(object):
     def __init__(self, *args, **kwargs):
         if "window" in kwargs:
             self.window = kwargs.pop("window")
-        super(EnableGCMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def clip_to_rect(self, x, y, width, height):
         if getattr(self, "corner_pixel_origin", True):
-            super(EnableGCMixin, self).clip_to_rect(
-                x - 0.5, y - 0.5, width + 1, height + 1
-            )
+            super().clip_to_rect(x - 0.5, y - 0.5, width + 1, height + 1)
         else:
-            super(EnableGCMixin, self).clip_to_rect(x, y, width, height)
+            super().clip_to_rect(x, y, width, height)
 
     def clear_clip(self, color, coordinates):
         """ Clip and clear a Kiva graphics context to a specified area and

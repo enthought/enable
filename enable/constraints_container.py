@@ -211,7 +211,7 @@ class ConstraintsContainer(Container):
     def _bounds_changed(self, old, new):
         """ Run the solver when the container's bounds change.
         """
-        super(ConstraintsContainer, self)._bounds_changed(old, new)
+        super()._bounds_changed(old, new)
         self.refresh()
 
     def _layout_constraints_changed(self):

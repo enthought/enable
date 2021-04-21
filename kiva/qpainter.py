@@ -63,7 +63,7 @@ class GraphicsContext(object):
     """
 
     def __init__(self, size, *args, **kwargs):
-        super(GraphicsContext, self).__init__()
+        super().__init__()
         self._width = size[0]
         self._height = size[1]
 

@@ -123,7 +123,7 @@ class ToolbarButton(Button):
 
     def __init__(self, *args, **kw):
         toolbar = kw.pop("toolbar", None)
-        super(ToolbarButton, self).__init__(*args, **kw)
+        super().__init__(*args, **kw)
         if toolbar:
             self.toolbar = toolbar
             toolbar.add(self)
@@ -171,7 +171,7 @@ class DrawingCanvasToolbar(Container):
         self.y = self.canvas.height - self.height
 
     def _dispatch_stateful_event(self, event, suffix):
-        super(DrawingCanvasToolbar, self)._dispatch_stateful_event(
+        super()._dispatch_stateful_event(
             event, suffix
         )
         event.handled = True
@@ -219,7 +219,7 @@ class DrawingCanvas(Container):
         for tool in self.listening_tools:
             tool.dispatch(event, suffix)
 
-        super(DrawingCanvas, self).dispatch(event, suffix)
+        super().dispatch(event, suffix)
 
     def activate(self, tool):
         """
@@ -233,7 +233,7 @@ class DrawingCanvas(Container):
         if active_tool and active_tool.draw_mode == "exclusive":
             active_tool.draw(gc, view_bounds, mode)
         else:
-            # super(DrawingCanvas, self)._draw(gc, view_bounds, mode)
+            # super()._draw(gc, view_bounds, mode)
             for tool in self.listening_tools:
                 tool.draw(gc, view_bounds, mode)
             if active_tool:

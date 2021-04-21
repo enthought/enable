@@ -35,7 +35,7 @@ class ComponentCommand(AbstractCommand):
     component_name = Unicode
 
     def __init__(self, component, **traits):
-        super(ComponentCommand, self).__init__(component=component, **traits)
+        super().__init__(component=component, **traits)
 
     # -------------------------------------------------------------------------
     # traits handlers
@@ -102,7 +102,7 @@ class ResizeCommand(ComponentCommand):
         else:
             data = new_rectangle
 
-        super(ResizeCommand, self).__init__(
+        super().__init__(
             component=component,
             data=data,
             previous_rectangle=previous_rectangle,
@@ -140,7 +140,7 @@ class ResizeCommand(ComponentCommand):
                 and isinstance(other, self.__class__)
                 and other.component == self.component):
             return self._merge_data(other)
-        return super(ResizeCommand, self).merge(other)
+        return super().merge(other)
 
     def do(self):
         if self.previous_rectangle == ():
@@ -231,7 +231,7 @@ class MoveCommand(ComponentCommand):
         else:
             data = new_position
 
-        super(MoveCommand, self).__init__(
+        super().__init__(
             component=component,
             data=data,
             previous_position=previous_position,
@@ -256,7 +256,7 @@ class MoveCommand(ComponentCommand):
                 and isinstance(other, self.__class__)
                 and other.component == self.component):
             return self._merge_data(other)
-        return super(MoveCommand, self).merge(other)
+        return super().merge(other)
 
     # -------------------------------------------------------------------------
     # Private interface

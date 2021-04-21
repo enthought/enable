@@ -210,7 +210,7 @@ class GraphicsState(object):
 
 class GraphicsContext(basecore2d.GraphicsContextBase):
     def __init__(self, size, *args, **kw):
-        super(GraphicsContext, self).__init__(size, *args, **kw)
+        super().__init__(size, *args, **kw)
         w, h = size
 
         self.surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
