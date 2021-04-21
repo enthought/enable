@@ -53,7 +53,7 @@ LOCATIONS = [
 class HoverToolTestCase(EnableTestAssistant, GuiTestAssistant,
                         unittest.TestCase):
     def setUp(self):
-        super(HoverToolTestCase, self).setUp()
+        GuiTestAssistant.setUp(self)
         self.component = Component(
             position=[LOWER_BOUND, LOWER_BOUND], bounds=[SIZE, SIZE]
         )
