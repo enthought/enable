@@ -150,7 +150,7 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
         # the component as the first positional argument.
         if component is not None:
             kw["component"] = component
-        super(ViewportZoomTool, self).__init__(**kw)
+        super().__init__(**kw)
         self._reset_state_to_current()
 
         if self.tool_mode == "range":

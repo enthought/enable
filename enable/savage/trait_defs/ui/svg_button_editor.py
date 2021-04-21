@@ -78,7 +78,7 @@ class SVGButtonEditor(BasicEditorFactory):
 
     def __init__(self, **traits):
         self._value = 0
-        super(SVGButtonEditor, self).__init__(**traits)
+        super().__init__(**traits)
 
     # -------------------------------------------------------------------------
     #  Traits properties

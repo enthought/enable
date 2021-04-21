@@ -62,7 +62,7 @@ class AbstractOverlay(Component):
     def __init__(self, component=None, **kw):
         if component is not None:
             kw["component"] = component
-        super(AbstractOverlay, self).__init__(**kw)
+        super().__init__(**kw)
 
     def do_layout(self, size=None, force=False, component=None):
         """ Tells this component to do a layout at a given size.  This differs
@@ -94,4 +94,4 @@ class AbstractOverlay(Component):
         """
         if self.component is not None:
             self.component.request_redraw()
-        super(AbstractOverlay, self)._request_redraw()
+        super()._request_redraw()

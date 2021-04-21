@@ -291,22 +291,22 @@ class NativeScrollBar(Component):
         self.request_redraw()
 
     def _bounds_changed(self, old, new):
-        super(NativeScrollBar, self)._bounds_changed(old, new)
+        super()._bounds_changed(old, new)
         self._widget_moved = True
         self.request_redraw()
 
     def _bounds_items_changed(self, event):
-        super(NativeScrollBar, self)._bounds_items_changed(event)
+        super()._bounds_items_changed(event)
         self._widget_moved = True
         self.request_redraw()
 
     def _position_changed(self, old, new):
-        super(NativeScrollBar, self)._position_changed(old, new)
+        super()._position_changed(old, new)
         self._widget_moved = True
         self.request_redraw()
 
     def _position_items_changed(self, event):
-        super(NativeScrollBar, self)._position_items_changed(event)
+        super()._position_items_changed(event)
         self._widget_moved = True
         self.request_redraw()
 

@@ -25,7 +25,7 @@ class Region(PlotComponent, DragTool):
     _offset = Tuple
 
     def __init__(self, color=None, **kw):
-        super(Region, self).__init__(**kw)
+        super().__init__(**kw)
         if color:
             self.color = color
         if "bounds" not in kw:
@@ -55,7 +55,7 @@ class Overlay(AbstractOverlay):
     margin = Int(8)
 
     def __init__(self, text="", *args, **kw):
-        super(Overlay, self).__init__(*args, **kw)
+        super().__init__(*args, **kw)
         self.text = text
 
     def overlay(self, component, gc, view_bounds=None, mode="normal"):

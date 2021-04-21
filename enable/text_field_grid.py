@@ -72,7 +72,7 @@ class TextFieldGrid(Container):
         self.rows = rows
         self.columns = columns
         self.selected_box = []
-        super(TextFieldGrid, self).__init__(**traits)
+        super().__init__(**traits)
 
     def set_cell(self, row, column, text):
         if row < self.rows and column < self.columns:

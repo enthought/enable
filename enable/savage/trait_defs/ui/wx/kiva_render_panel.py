@@ -38,7 +38,7 @@ class KivaContainer(Container):
 
 class RenderPanel(wx.Window):
     def __init__(self, parent, document=None):
-        super(RenderPanel, self).__init__(parent)
+        super().__init__(parent)
 
         self.document = document
         if self.document is not None:

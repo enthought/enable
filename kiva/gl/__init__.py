@@ -466,11 +466,11 @@ class GraphicsContext(GraphicsContextGL):
         self._text_pos = (0, 0)
 
     def save_state(self):
-        super(GraphicsContext, self).save_state()
+        super().save_state()
         self._font_stack.append(self._current_font)
 
     def restore_state(self):
-        super(GraphicsContext, self).restore_state()
+        super().restore_state()
         self._current_font = self._font_stack.pop()
 
     def set_font(self, font):

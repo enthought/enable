@@ -51,7 +51,7 @@ class ResizeCommandTool(ResizeTool, BaseCommandTool):
             self._initial_rectangle = tuple(
                 self.component.position + self.component.bounds
             )
-        result = super(ResizeCommandTool, self).drag_start(event)
+        result = super().drag_start(event)
         return result
 
     def drag_end(self, event):
@@ -68,7 +68,7 @@ class ResizeCommandTool(ResizeTool, BaseCommandTool):
             )
             self.command_stack.push(command)
             event.handled = True
-            return super(ResizeCommandTool, self).drag_end(event)
+            return super().drag_end(event)
         return True
 
     def drag_cancel(self, event):

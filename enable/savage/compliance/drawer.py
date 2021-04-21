@@ -17,7 +17,7 @@ import wx.grid
 
 class PathGrid(wx.grid.Grid):
     def __init__(self, parent, pathOps):
-        super(PathGrid, self).__init__(parent)
+        super().__init__(parent)
         self.CreateGrid(100, 10)
         firstColAttr = wx.grid.GridCellAttr()
         choices = sorted(pathOps.keys())
@@ -31,9 +31,7 @@ class PathPanel(wx.Panel):
     path = None
 
     def __init__(self, parent, contextSource):
-        super(PathPanel, self).__init__(
-            parent, style=wx.FULL_REPAINT_ON_RESIZE
-        )
+        super().__init__(parent, style=wx.FULL_REPAINT_ON_RESIZE)
         self.contextSource = contextSource
         self.Bind(wx.EVT_PAINT, self.OnPaint)
 

@@ -49,7 +49,7 @@ class MoveCommandTool(MoveTool, BaseCommandTool):
         if self.component:
             # we need to save the initial position to give to the Command
             self._initial_position = tuple(self.component.position)
-        return super(MoveCommandTool, self).drag_start(event)
+        return super().drag_start(event)
 
     def drag_end(self, event):
         """ End the drag operation, issuing a MoveCommands

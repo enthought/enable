@@ -30,7 +30,7 @@ class StaticImageExample(HasTraits):
     )
 
     def __init__(self, filename, renderer, *args, **kw):
-        super(StaticImageExample, self).__init__(*args, **kw)
+        super().__init__(*args, **kw)
 
         self.svg = SVGDocument.createFromFile(filename, renderer=renderer)
 

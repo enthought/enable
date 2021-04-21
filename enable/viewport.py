@@ -135,7 +135,7 @@ class Viewport(Component):
                 ]
                 for region in damaged_regions
             ]
-        super(Viewport, self).invalidate_draw(
+        super().invalidate_draw(
             damaged_regions=damaged_regions, self_relative=self_relative
         )
 
@@ -157,7 +157,7 @@ class Viewport(Component):
             )
             return self._component_preferred_size
         else:
-            return super(Viewport, self).get_preferred_size()
+            return super().get_preferred_size()
 
     def viewport_to_component(self, x, y):
         """ Given a coordinate X and Y in the viewport's coordinate system,
@@ -269,7 +269,7 @@ class Viewport(Component):
             self.component.do_layout()
 
         else:
-            super(Viewport, self)._do_layout()
+            super()._do_layout()
 
     def _dispatch_stateful_event(self, event, suffix):
         if isinstance(self.component, Component):

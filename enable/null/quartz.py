@@ -43,9 +43,7 @@ class GraphicsContext(ABCGI.CGLayerContext):
             # No initialization.
             image = None
             width, height = size_or_array
-        super(GraphicsContext, self).__init__(
-            (width, height), gc, *args, **kwds
-        )
+        super().__init__((width, height), gc, *args, **kwds)
         if image is not None:
             self.draw_image(image)
 

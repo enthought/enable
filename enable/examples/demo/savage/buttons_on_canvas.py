@@ -38,7 +38,7 @@ class CanvasButton(Component):
     bounds = [64, 64]
 
     def __init__(self, filename, callback, callback_args, *args, **kw):
-        super(CanvasButton, self).__init__(*args, **kw)
+        super().__init__(*args, **kw)
 
         self.document = self._load_svg_document(filename)
 
@@ -135,7 +135,7 @@ class ButtonCanvasView(HasTraits):
     )
 
     def __init__(self, *args, **kw):
-        super(ButtonCanvasView, self).__init__(*args, **kw)
+        super().__init__(*args, **kw)
         self.add_buttons()
 
     def _canvas_default(self):

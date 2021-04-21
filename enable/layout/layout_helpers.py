@@ -190,7 +190,7 @@ class DeferredConstraintsFunction(DeferredConstraints):
         **kwds
             The keyword arguments to pass to 'func'.
         """
-        super(DeferredConstraintsFunction, self).__init__()
+        super().__init__()
         self.func = func
         self.args = args
         self.kwds = kwds
@@ -228,7 +228,7 @@ class AbutmentHelper(DeferredConstraints):
                 inter-element spacing to use during abutment. The
                 default is the value of DefaultSpacing.ABUTMENT.
         """
-        super(AbutmentHelper, self).__init__()
+        super().__init__()
         self.orientation = orientation
         self.items = items
         self.spacing = config.get("spacing", DefaultSpacing.ABUTMENT)
@@ -277,7 +277,7 @@ class AlignmentHelper(DeferredConstraints):
                 inter-element spacing to use during alignement. The
                 default is the value of DefaultSpacing.ALIGNMENT.
         """
-        super(AlignmentHelper, self).__init__()
+        super().__init__()
         self.anchor = anchor
         self.items = items
         self.spacing = config.get("spacing", DefaultSpacing.ALIGNMENT)
@@ -322,7 +322,7 @@ class BoxHelper(DeferredConstraints):
             A string name to prepend to a unique owner id generated
             for this box helper, to aid in debugging.
         """
-        super(BoxHelper, self).__init__()
+        super().__init__()
         owner = uuid4().hex[:8]
         self.constraints_id = name + "|" + owner
         self._namespace = ConstraintsNamespace(name, owner)
@@ -382,7 +382,7 @@ class LinearBoxHelper(BoxHelper):
                 the bounds of the box. The default is the value of
                 DefaultSpacing.BOX_MARGIN.
         """
-        super(LinearBoxHelper, self).__init__(orientation[0] + "box")
+        super().__init__(orientation[0] + "box")
         self.items = items
         self.orientation = orientation
         self.ortho_orientation = self.ortho_map[orientation]
@@ -562,7 +562,7 @@ class GridHelper(BoxHelper):
                 the bounds of the grid. The default is the value of
                 DefaultSpacing.BOX_MARGIN.
         """
-        super(GridHelper, self).__init__("grid")
+        super().__init__("grid")
         self.grid_rows = rows
         self.row_align = config.get("row_align", "")
         self.col_align = config.get("col_align", "")

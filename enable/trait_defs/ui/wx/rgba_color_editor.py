@@ -293,7 +293,7 @@ class CustomColorEditor(SimpleColorEditor):
         """ Disposes of the contents of an editor.
         """
         self.control._swatch_editor.dispose()
-        super(CustomColorEditor, self).dispose()
+        super().dispose()
 
     # -------------------------------------------------------------------------
     #  Updates the editor when the object trait changes external to the editor:

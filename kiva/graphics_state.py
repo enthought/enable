@@ -104,7 +104,7 @@ class GraphicsState(LineState):
 
         # FIXME: This is a very wierd class. The following code is here to
         # make the basecore2d and the PS, SVG context managers happy
-        super(GraphicsState, self).__init__(
+        super().__init__(
             line_color, line_width, line_cap, line_join, line_dash
         )
         self.line_state = self

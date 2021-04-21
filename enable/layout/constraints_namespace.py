@@ -50,7 +50,7 @@ class ConstraintsNamespace(object):
 
         """
         try:
-            return super(ConstraintsNamespace, self).__getattr__(name)
+            return super().__getattr__(name)
         except AttributeError:
             pass
 
@@ -77,4 +77,4 @@ class ConstraintsNamespace(object):
         if isinstance(value, LinearSymbolic):
             self._constraints[name] = value
         else:
-            super(ConstraintsNamespace, self).__setattr__(name, value)
+            super().__setattr__(name, value)

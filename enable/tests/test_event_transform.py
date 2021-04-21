@@ -42,7 +42,7 @@ class TestComponent(Component):
     last_event = Any
 
     def _dispatch_stateful_event(self, event, suffix):
-        super(TestComponent, self)._dispatch_stateful_event(event, suffix)
+        super()._dispatch_stateful_event(event, suffix)
         self.last_event = copy.copy(event)
 
 
@@ -51,7 +51,7 @@ class TestContainer(Container):
     last_event = Any
 
     def _dispatch_stateful_event(self, event, suffix):
-        super(TestContainer, self)._dispatch_stateful_event(event, suffix)
+        super()._dispatch_stateful_event(event, suffix)
         self.last_event = copy.copy(event)
 
 
@@ -60,7 +60,7 @@ class TestCanvas(Canvas):
     last_event = Any
 
     def _dispatch_stateful_event(self, event, suffix):
-        super(TestCanvas, self)._dispatch_stateful_event(event, suffix)
+        super()._dispatch_stateful_event(event, suffix)
         self.last_event = copy.copy(event)
 
 

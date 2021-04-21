@@ -26,7 +26,7 @@ class Window(BaseWindow):
     control = Instance(GLCanvas)
 
     def __init__(self, *args, **kw):
-        super(Window, self).__init__(*args, **kw)
+        super().__init__(*args, **kw)
 
         # If we are using the GL backend, we will need to have a pyglet
         # GL context
@@ -61,7 +61,7 @@ class Window(BaseWindow):
         dc = wx.PaintDC(self.control)
         self._pyglet_gl_context.set_current()
         self.control.SetCurrent()
-        super(Window, self)._init_gc()
+        super()._init_gc()
 
     def _paint(self, event=None):
         """ Paint the contents of the window.

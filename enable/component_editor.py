@@ -59,7 +59,7 @@ class _ComponentEditor(Editor):
         self._window.cleanup()
         self._window = None
         self._parent = None
-        super(_ComponentEditor, self).dispose()
+        super().dispose()
 
     def update_editor(self):
         """ Updates the editor when the object trait changes externally to the

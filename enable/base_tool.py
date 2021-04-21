@@ -127,7 +127,7 @@ class BaseTool(Interactor):
     def __init__(self, component=None, **traits):
         if component is not None:
             traits["component"] = component
-        super(BaseTool, self).__init__(**traits)
+        super().__init__(**traits)
 
     def dispatch(self, event, suffix):
         """ Dispatches a mouse event based on the current event state.

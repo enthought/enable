@@ -17,7 +17,7 @@ from traitsui.wx.constants import WindowColor
 
 class RenderPanel(wx.Panel):
     def __init__(self, parent, document=None):
-        super(RenderPanel, self).__init__(parent)
+        super().__init__(parent)
         self.lastRender = None
         self.document = document
         self.zoom_x = 100

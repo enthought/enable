@@ -108,7 +108,7 @@ class Canvas(Container):
     def draw(self, gc, view_bounds=None, mode="normal"):
         if self.view_bounds is None:
             self.view_bounds = view_bounds
-        super(Canvas, self).draw(gc, view_bounds, mode)
+        super().draw(gc, view_bounds, mode)
 
     # ------------------------------------------------------------------------
     # Protected methods

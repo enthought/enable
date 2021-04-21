@@ -32,4 +32,4 @@ class Viewable(HasTraits):
             for view in self.viewports:
                 view.draw(gc, view_bounds, mode)
         else:
-            super(Viewable, self).draw(gc, view_bounds, mode)
+            super().draw(gc, view_bounds, mode)

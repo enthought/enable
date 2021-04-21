@@ -381,11 +381,11 @@ class Component(CoordinateBox, Interactor):
             # After the component is otherwise configured, make sure our
             # container gets notified of our being added to it.
             container = traits.pop("container")
-            super(Component, self).__init__(**traits)
+            super().__init__(**traits)
             self._set_padding_traits(padding, padding_traits)
             container.add(self)
         else:
-            super(Component, self).__init__(**traits)
+            super().__init__(**traits)
             self._set_padding_traits(padding, padding_traits)
 
     def draw(self, gc, view_bounds=None, mode="default"):

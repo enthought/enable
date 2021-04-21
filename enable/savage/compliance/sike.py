@@ -171,9 +171,7 @@ class ProfileResults(HasTraits):
 
     def trait_view(self, name=None, view_element=None):
         if name or view_element is not None:
-            return super(ProfileResults, self).trait_view(
-                name=name, view_element=view_element
-            )
+            return super().trait_view(name=name, view_element=view_element)
 
         view = View(
             Group(Item("total_time", style="readonly")),

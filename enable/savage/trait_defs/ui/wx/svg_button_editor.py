@@ -42,7 +42,7 @@ class ButtonRenderPanel(RenderPanel):
 
         self.padding = padding
 
-        super(ButtonRenderPanel, self).__init__(parent, document=self.document)
+        super().__init__(parent, document=self.document)
 
     def DoGetBestSize(self):
         label = self.button.factory.label

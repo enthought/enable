@@ -56,7 +56,7 @@ class ComponentTrait(Instance):
 
     def __init__(self, **kwds):
         kwds.setdefault("klass", Component)
-        super(ComponentTrait, self).__init__(**kwds)
+        super().__init__(**kwds)
 
     def create_editor(self):
         return ComponentEditor()
@@ -218,7 +218,7 @@ class Comparator(HasTraits):
     )
 
     def __init__(self, **traits):
-        super(Comparator, self).__init__(**traits)
+        super().__init__(**traits)
         kiva_ch = activate_tool(
             self.kiva_component, Crosshair(self.kiva_component)
         )

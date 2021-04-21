@@ -99,7 +99,7 @@ class MultiController(HasTraits):
     crosshairs = List()
 
     def __init__(self, *crosshairs, **traits):
-        super(MultiController, self).__init__(**traits)
+        super().__init__(**traits)
         for ch in crosshairs:
             self.add(ch)
 

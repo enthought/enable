@@ -231,13 +231,13 @@ class _QtWindow(QtGui.QWidget):
     """ The Qt widget that implements the enable control. """
 
     def __init__(self, parent, enable_window):
-        super(_QtWindow, self).__init__(parent)
+        super().__init__(parent)
         self.setAcceptDrops(True)
         self.handler = _QtWindowHandler(self, enable_window)
 
     def closeEvent(self, event):
         self.handler.closeEvent(event)
-        return super(_QtWindow, self).closeEvent(event)
+        return super().closeEvent(event)
 
     def paintEvent(self, event):
         self.handler.paintEvent(event)
@@ -285,26 +285,26 @@ class _QtWindow(QtGui.QWidget):
         self.handler.dropEvent(event)
 
     def sizeHint(self):
-        qt_size_hint = super(_QtWindow, self).sizeHint()
+        qt_size_hint = super().sizeHint()
         return self.handler.sizeHint(qt_size_hint)
 
 
 class _QtGLWindow(QtOpenGL.QGLWidget):
     def __init__(self, parent, enable_window):
-        super(_QtGLWindow, self).__init__(parent)
+        super().__init__(parent)
         self.handler = _QtWindowHandler(self, enable_window)
 
     def closeEvent(self, event):
         self.handler.closeEvent(event)
-        return super(_QtGLWindow, self).closeEvent(event)
+        return super().closeEvent(event)
 
     def paintEvent(self, event):
-        super(_QtGLWindow, self).paintEvent(event)
+        super().paintEvent(event)
         self.handler.paintEvent(event)
         self.swapBuffers()
 
     def resizeEvent(self, event):
-        super(_QtGLWindow, self).resizeEvent(event)
+        super().resizeEvent(event)
         self.handler.resizeEvent(event)
 
     def keyPressEvent(self, event):
