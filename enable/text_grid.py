@@ -94,7 +94,7 @@ class TextGrid(Component):
     # ------------------------------------------------------------------------
 
     def __init__(self, **kwtraits):
-        super(Component, self).__init__(**kwtraits)
+        super().__init__(**kwtraits)
         self.selected_cells = []
 
     # ------------------------------------------------------------------------
