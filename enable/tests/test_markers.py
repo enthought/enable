@@ -14,8 +14,10 @@ import numpy as np
 from enable.compiled_path import CompiledPath
 from enable.kiva_graphics_context import GraphicsContext
 from enable.markers import CustomMarker
+from enable.tests._testing import skip_if_not_qt
 
 
+@skip_if_not_qt
 class TestCustomMarker(unittest.TestCase):
 
     # regression test for enthought/chaco#232
