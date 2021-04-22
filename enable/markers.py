@@ -407,7 +407,7 @@ class CustomMarker(AbstractMarker):
     def _add_to_path(self, path, size):
         if self.scale_path:
             path.save_ctm()
-            path.scale_ctm(size, size)
+            path.scale_ctm(float(size), float(size))
         path.add_path(path)
         if self.scale_path:
             path.restore_ctm()
@@ -421,7 +421,7 @@ class CustomMarker(AbstractMarker):
         """
         if self.scale_path:
             newpath = CompiledPath()
-            newpath.scale_ctm(size, size)
+            newpath.scale_ctm(float(size), float(size))
             newpath.add_path(self.path)
             return newpath
         else:
