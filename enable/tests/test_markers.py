@@ -11,13 +11,18 @@ import unittest
 
 import numpy as np
 
+from traits.etsconfig.api import ETSConfig
+
 from enable.compiled_path import CompiledPath
 from enable.kiva_graphics_context import GraphicsContext
 from enable.markers import CustomMarker
-from enable.tests._testing import skip_if_not_qt
 
 
-@skip_if_not_qt
+# change this from 'image' to 'oldagg' when image gets switched to use celiagg
+# see enthought/enable#414 step 4
+@unittest.skipIf(
+    ETSConfig.kiva_backend != 'image', "Test is Kiva Agg specific."
+)
 class TestCustomMarker(unittest.TestCase):
 
     # regression test for enthought/chaco#232
