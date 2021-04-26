@@ -10,8 +10,6 @@
 """ Routines for stacked layout of components in a container
 """
 
-# TODO: stolen from Chaco PlotContainers, should change their classes to use
-
 
 def stacked_preferred_size(container, components=None):
     """ Returns the size (width,height) that is preferred for this component.
@@ -21,6 +19,10 @@ def stacked_preferred_size(container, components=None):
     if container.fixed_preferred_size is not None:
         container._cached_preferred_size = container.fixed_preferred_size
         return container.fixed_preferred_size
+
+    if container.resizable == "":
+        container._cached_preferred_size = container.outer_bounds[:]
+        return container.outer_bounds
 
     if components is None:
         components = container.components
