@@ -18,7 +18,7 @@ from enable.kiva_graphics_context import GraphicsContext
 from enable.markers import CustomMarker
 
 
-# change this from 'image' to 'oldagg' when image getts switched to use celiagg
+# change this from 'image' to 'oldagg' when image gets switched to use celiagg
 # see enthought/enable#414 step 4
 @unittest.skipIf(
     ETSConfig.kiva_backend != 'image', "Test is Kiva Agg specific."
