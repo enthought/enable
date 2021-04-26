@@ -219,4 +219,5 @@ latex_documents = [
 intersphinx_mapping = {
     'traits': ('http://docs.enthought.com/traits', None),
     'pyface': ('http://docs.enthought.com/pyface', None),
+    "python": ("https://docs.python.org/3", None),
 }

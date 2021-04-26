@@ -31,6 +31,7 @@ Enable
   enable/constraints_layout
   enable/traits
   enable/toolkit_selection
+  enable/testing
 
   credits
 
