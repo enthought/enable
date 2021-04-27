@@ -44,10 +44,6 @@ class Container(Component):
     # this for some other reason, you may want to turn fit_window off.
     fit_window = Bool(True)
 
-    # If true, the container get events before its children.  Otherwise, it
-    # gets them afterwards.
-    intercept_events = Bool(True)
-
     # Dimensions in which this container can resize to fit its components.
     # This trait only applies to dimensions that are also resizable; if the
     # container is not resizable in a certain dimension, then fit_components
@@ -110,12 +106,6 @@ class Container(Component):
             self.add(component)
         if "bounds" in traits and "auto_size" not in traits:
             self.auto_size = False
-
-        if "intercept_events" in traits:
-            warnings.warn(
-                "'intercept_events' is a deprecated trait",
-                warnings.DeprecationWarning,
-            )
 
     def add(self, *components):
         """ Adds components to this container """
