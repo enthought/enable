@@ -8,7 +8,7 @@
 #
 # Thanks for using Enthought open source!
 from enable.api import OverlayContainer, Slider
-from enable.example_support import demo_main, DemoFrame
+from enable.examples.example_support import demo_main, DemoFrame
 
 
 class Demo(DemoFrame):

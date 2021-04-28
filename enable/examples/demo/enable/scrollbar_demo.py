@@ -8,7 +8,7 @@
 #
 # Thanks for using Enthought open source!
 from enable.api import Container, Label, NativeScrollBar
-from enable.example_support import DemoFrame, demo_main
+from enable.examples.example_support import DemoFrame, demo_main
 
 
 class Demo(DemoFrame):

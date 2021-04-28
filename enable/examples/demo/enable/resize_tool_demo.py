@@ -11,7 +11,7 @@
 This demonstrates the resize tool.
 """
 from enable.api import Component, Container
-from enable.example_support import DemoFrame, demo_main
+from enable.examples.example_support import DemoFrame, demo_main
 from enable.tools.resize_tool import ResizeTool
 
 

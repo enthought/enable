@@ -16,7 +16,7 @@ from enable.drawing.api import (
     DragLine, DragPolygon, DragSegment, DrawingCanvas, DrawingCanvasToolbar,
     DrawingTool, PointLine, PointPolygon, ToolbarButton
 )
-from enable.example_support import DemoFrame, demo_main
+from enable.examples.example_support import DemoFrame, demo_main
 
 
 class ResetButton(ToolbarButton):

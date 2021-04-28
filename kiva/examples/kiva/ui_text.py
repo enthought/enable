@@ -8,7 +8,7 @@
 #
 # Thanks for using Enthought open source!
 from enable.api import Component
-from enable.example_support import DemoFrame, demo_main
+from enable.examples.example_support import DemoFrame, demo_main
 
 
 def glyph_a(gc):

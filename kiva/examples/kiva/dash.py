@@ -13,7 +13,7 @@ from time import perf_counter
 import numpy
 
 from enable.api import ConstraintsContainer
-from enable.example_support import DemoFrame, demo_main
+from enable.examples.example_support import DemoFrame, demo_main
 from enable.primitives.image import Image
 from kiva import constants
 from kiva.agg import GraphicsContextArray

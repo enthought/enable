@@ -12,7 +12,7 @@ import tempfile
 from scipy import pi
 
 from enable.api import ConstraintsContainer
-from enable.example_support import demo_main, DemoFrame
+from enable.examples.example_support import demo_main, DemoFrame
 from enable.primitives.image import Image
 from kiva.image import GraphicsContext
 

@@ -8,7 +8,7 @@
 #
 # Thanks for using Enthought open source!
 from enable.api import Container, Window, TextField
-from enable.example_support import DemoFrame, demo_main
+from enable.examples.example_support import DemoFrame, demo_main
 from enable.stacked_container import VStackedContainer, HStackedContainer
 
 size = (240, 240)

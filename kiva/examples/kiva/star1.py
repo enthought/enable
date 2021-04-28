@@ -13,7 +13,7 @@ from traits.api import Instance
 from traitsui.api import Item, View
 
 from enable.api import ConstraintsContainer, Component, ComponentEditor
-from enable.example_support import demo_main, DemoFrame
+from enable.examples.example_support import demo_main, DemoFrame
 from enable.primitives.image import Image
 from kiva import constants
 from kiva.image import GraphicsContext

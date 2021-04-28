@@ -27,7 +27,7 @@ from pyface.action.api import Action, Group, MenuBarManager, MenuManager
 from traits.api import Instance
 
 from enable.api import Container, Window, KeySpec
-from enable.example_application import DemoApplication, demo_main
+from enable.examples.example_application import DemoApplication, demo_main
 from enable.primitives.api import Box
 from enable.tools.pyface.api import MoveCommandTool, UndoTool
 
