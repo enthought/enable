@@ -79,7 +79,7 @@ class Scrolled(Container):
 
     # An alternate vertical scroll bar to control this Scrolled, instead of the
     # default one that lives outside the scrolled region.
-    alternate_vsb = Instance(Component)
+    alternate_vsb = Instance(Component, transient=True)
 
     # The size of the left border space
     leftborder = Float(0)
@@ -92,8 +92,8 @@ class Scrolled(Container):
     # Private traits
     # -------------------------------------------------------------------------
 
-    _vsb = Instance(NativeScrollBar)
-    _hsb = Instance(NativeScrollBar)
+    _vsb = Instance(NativeScrollBar, transient=True)
+    _hsb = Instance(NativeScrollBar, transient=True)
 
     # Stores the last horizontal and vertical scroll positions to avoid
     # multiple updates in update_from_viewport()
@@ -606,14 +606,3 @@ class Scrolled(Container):
             elif self._vsb:
                 self._vsb._mouse_wheel_changed(event)
             event.handled = True
-
-    # -------------------------------------------------------------------------
-    # Persistence
-    # -------------------------------------------------------------------------
-
-    def __getstate__(self):
-        state = super().__getstate__()
-        for key in ["alternate_vsb", "_vsb", "_hsb"]:
-            if key in state:
-                del state[key]
-        return state
