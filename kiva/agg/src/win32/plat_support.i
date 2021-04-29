@@ -116,13 +116,6 @@ namespace agg24
          self.bmp_array = pixel_map_as_unowned_array(self)
          return self
 
-    def draw_to_tkwindow(self, window, x, y):
-        window_id = window._tk_widget.winfo_id()
-        hdc = GetDC(window_id)
-        self.draw(hdc, x, y)
-        ReleaseDC(window_id, hdc)
-        return
-
     def draw_to_wxwindow(self, window, x, y, width=-1, height=-1):
         window_dc = getattr(window,'_dc',None)
         if window_dc is None:
