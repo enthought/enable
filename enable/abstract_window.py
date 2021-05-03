@@ -102,8 +102,6 @@ class AbstractWindow(HasTraits):
     # When exceeding this, the entire window is marked damaged to save memory
     MAX_DAMAGED_REGIONS = 100
 
-    _scroll_origin = Tuple()
-
     # -------------------------------------------------------------------------
     #  Abstract methods that must be implemented by concrete subclasses
     # -------------------------------------------------------------------------
@@ -207,7 +205,6 @@ class AbstractWindow(HasTraits):
     # ------------------------------------------------------------------------
 
     def __init__(self, **traits):
-        self._scroll_origin = (0.0, 0.0)
         self._update_region = None
         self._gc = None
         self._pointer_owner = None
