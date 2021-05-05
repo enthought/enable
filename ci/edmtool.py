@@ -106,7 +106,6 @@ dependencies = {
     "traitsui",
     "pyface",
     "pypdf2",
-    "swig",
     "unittest2",
 }
 
