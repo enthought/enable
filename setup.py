@@ -428,20 +428,27 @@ def macos_extensions():
     ]
 
 
-if __name__ == "__main__":
-
+def verify_swig_version():
+    """ Verify we are using swiig version 3.0.x.
+    """
     msg = ("SWIG is a required build dependency of Enable. Furthermore, there "
           "is currently a known issue with SWIG 4.0, see enthought/enable#360."
           " Please install SWIG 3.0.x (see http://www.swig.org/).")
     try:
-        with subprocess.Popen(["swig", "-version"], stdout=subprocess.PIPE, encoding='utf-8') as proc:
+        with subprocess.Popen(["swig", "-version"], \
+                stdout=subprocess.PIPE, encoding='utf-8') as proc:
             swig_version_line = proc.stdout.read().split('\n')[1]
-            # We expect text along the lines of "SWIG Version 3.0.11"
+            # We expect text along the lines of "SWIG Version 3.X.Y"
             swig_version = swig_version_line.split(' ')[2]
             if  not swig_version.startswith('3'):
                 raise Exception(msg)
     except FileNotFoundError:
         raise Exception(msg)
+
+
+if __name__ == "__main__":
+    verify_swig_version()
+    
     # Write version modules as needed
     enable_version_path = os.path.join('enable', '_version.py')
     write_version_py(filename=enable_version_path)
