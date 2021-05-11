@@ -97,17 +97,15 @@ dependencies = {
     "hypothesis",
     "kiwisolver",
     "numpy",
+    "pillow",
+    "pyface",
     "pygments",
     "pyparsing",
-    "pillow",
+    "pypdf2",
     "reportlab",
     "swig",
     "traits",
     "traitsui",
-    "pyface",
-    "pypdf2",
-    "swig",
-    "unittest2",
 }
 
 # Dependencies we install from source for cron tests
