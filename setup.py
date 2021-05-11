@@ -437,10 +437,12 @@ def verify_swig_version():
     try:
         with subprocess.Popen(["swig", "-version"], \
                 stdout=subprocess.PIPE, encoding='utf-8') as proc:
-            swig_version_line = proc.stdout.read().split('\n')[1]
             # We expect text along the lines of "SWIG Version 3.X.Y"
-            swig_version = swig_version_line.split(' ')[2]
-            if  not swig_version.startswith('3'):
+            swig_version_match = re.search(
+                '(SWIG Version 3)\.\d{1,2}\.\d{1,2}',
+                proc.stdout.read()
+            )
+            if swig_version_match is None:
                 raise Exception(msg)
     except FileNotFoundError:
         raise Exception(msg)
