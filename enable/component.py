@@ -341,14 +341,6 @@ class Component(CoordinateBox, Interactor):
         """
         pass
 
-    def _draw_component(self, gc, view_bounds=None, mode="normal"):
-        """ Renders the component.
-
-        Subclasses must implement this method to actually render themselves.
-        Note: This method is used only by the "old" drawing calls.
-        """
-        pass
-
     def _draw_selection(self, gc, view_bounds=None, mode="normal"):
         """ Renders a selected subset of a component's data.
 

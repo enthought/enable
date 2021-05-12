@@ -371,17 +371,6 @@ class Container(Component):
             self.compact()
 
     # ------------------------------------------------------------------------
-    # Deprecated interface
-    # ------------------------------------------------------------------------
-
-    def _draw_overlays(self, gc, view_bounds=None, mode="normal"):
-        """ Method for backward compatability with old drawing scheme.
-        """
-        warnings.warn("Containter._draw_overlays is deprecated.")
-        for component in self.overlays:
-            component.overlay(component, gc, view_bounds, mode)
-
-    # ------------------------------------------------------------------------
     # Property setters & getters
     # ------------------------------------------------------------------------
 
@@ -583,44 +572,3 @@ class Container(Component):
     def __components_changed(self, event):
         self._layout_needed = True
         self.invalidate_draw()
-
-    # -------------------------------------------------------------------------
-    # Old / deprecated draw methods; here for backwards compatibility
-    # -------------------------------------------------------------------------
-
-    def _draw_component(self, gc, view_bounds=None, mode="normal"):
-        """ Draws the component.
-
-        This method is preserved for backwards compatibility. Overrides
-        the implementation in Component.
-        """
-        with gc:
-            gc.set_antialias(False)
-
-            self._draw_container(gc, mode)
-            self._draw_background(gc, view_bounds, mode)
-            self._draw_underlay(gc, view_bounds, mode)
-            self._draw_children(
-                gc, view_bounds, mode
-            )  # This was children_draw_mode
-            self._draw_overlays(gc, view_bounds, mode)
-
-    def _draw_children(self, gc, view_bounds=None, mode="normal"):
-
-        new_bounds = self._transform_view_bounds(view_bounds)
-        if new_bounds == empty_rectangle:
-            return
-
-        with gc:
-            gc.set_antialias(False)
-            gc.translate_ctm(*self.position)
-            for component in self.components:
-                if new_bounds:
-                    tmp = intersect_bounds(
-                        component.outer_position + component.outer_bounds,
-                        new_bounds,
-                    )
-                    if tmp == empty_rectangle:
-                        continue
-                with gc:
-                    component.draw(gc, new_bounds, mode)
