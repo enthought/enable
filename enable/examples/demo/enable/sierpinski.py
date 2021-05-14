@@ -119,9 +119,6 @@ class Viewer(HasTraits):
 
     bgcolor = "black"
 
-    def _get_bounds(self):
-        return [self.base_width, self.base_width*(SQRT3/2)]
-
     def _get_max_iters(self):
         return int(np.log(4/self.base_width)/np.log(.5) + 1)
 

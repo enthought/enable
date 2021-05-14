@@ -117,18 +117,21 @@ class Viewer(HasTraits):
 
     base_width = Int(500)
 
-    max_iters = Property(observe="base_width")
+    max_iters = Property(observe="base_width, viewport.zoom")
 
-    bgcolor = "gray"
+    viewport = Instance(Viewport)
 
     def _get_bounds(self):
         return [self.base_width, self.base_width*(SQRT3/2)]
 
     def _get_max_iters(self):
-        return int(np.log(4/self.base_width)/np.log(.5) + 1)
+        factor = 1
+        if self.viewport:
+            factor = self.viewport.zoom
+        return int(np.log(4/(factor*self.base_width))/np.log(.5) + 1)
 
     def _comp_default(self):
-        canvas = Canvas(draw_axes=True)
+        canvas = Canvas(draw_axes=True, bgcolor="gray")
         self.triangle = SierpinskiTriangle(
             canvas,
             position=[0.0, 0.0],
@@ -136,19 +139,21 @@ class Viewer(HasTraits):
             iterations=self.iterations,
             max_iters=self.max_iters,
             base_width=self.base_width,
-            bgcolor=self.bgcolor,
         )
         canvas.overlays.append(self.triangle)
 
-        viewport = Viewport(component=canvas, enable_zoom=True)
-        viewport.view_position = [0,0]
-        viewport.tools.append(ViewportPanTool(viewport, drag_button="right"))
+        self.viewport = Viewport(
+            component=canvas, enable_zoom=True, stay_inside=True
+        )
+        self.viewport.view_position = [0,0]
+        self.viewport.view_bounds = [self.base_width, self.base_width*(SQRT3/2)]
+        self.viewport.tools.append(ViewportPanTool(self.viewport, drag_button="right"))
 
         scrolled = Scrolled(
             canvas,
             inside_padding_width=0,
             mousewheel_scroll=False,
-            viewport_component=viewport,
+            viewport_component=self.viewport,
             always_show_sb=True,
             continuous_drag_update=True,
         )
@@ -171,7 +176,7 @@ class Viewer(HasTraits):
         UItem(
             "comp",
             # fixme: make size automatically what  we want...
-            editor=ComponentEditor(bgcolor="black", size=(500, 500)),
+            editor=ComponentEditor(size=(500, 500)),
             resizable=True
         ),
         resizable=True,
