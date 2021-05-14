@@ -26,7 +26,8 @@ from enable.api import (
 )
 
 
-m = Inverted_TriangleMarker()
+marker = Inverted_TriangleMarker()
+SQRT3 = np.sqrt(3)
 
 
 class SierpinskiTriangle(Component):
@@ -40,7 +41,7 @@ class SierpinskiTriangle(Component):
     bgcolor = "black"
 
     def _get_bounds(self):
-        return [self.base_width, self.base_width*(np.sqrt(3)/2)]
+        return [self.base_width, self.base_width*(SQRT3/2)]
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         
@@ -49,7 +50,7 @@ class SierpinskiTriangle(Component):
         gc.set_fill_color((1.0, 1.0, 1.0, 1.0))
         gc.move_to(0,0)
         gc.line_to(self.base_width,0)
-        gc.line_to(self.base_width/2, np.sqrt(3)*(self.base_width/2))
+        gc.line_to(self.base_width/2, SQRT3*(self.base_width/2))
         gc.line_to(0,0)
         gc.fill_path()
 
@@ -59,23 +60,27 @@ class SierpinskiTriangle(Component):
             with gc:
                 # draw first inverted triangle
                 path = gc.get_empty_path()
-                m.add_to_path(path, self.base_width/4)
-                gc.translate_ctm(self.base_width/2, (self.base_width/4)*(np.sqrt(3) - 1))
+                marker.add_to_path(path, self.base_width/4)
                 gc.draw_path_at_points(
-                    [[0.0, 0.0]],
+                    [[self.base_width/2, (self.base_width/4)*(SQRT3 - 1)]],
                     path,
-                    m.draw_mode
+                    marker.draw_mode
                 )
-
-                point_contexts = self.sierpinski(gc, {}, 2)
+                point_contexts = self.sierpinski(
+                    (self.base_width, (self.base_width/2)*(SQRT3 - 1)),
+                    {},
+                    2
+                )
 
             for size in point_contexts:
                 path = gc.get_empty_path()
-                m.add_to_path(path, size)
-                gc.draw_path_at_points(point_contexts[size], path, m.draw_mode)
+                marker.add_to_path(path, size)
+                gc.draw_path_at_points(
+                    point_contexts[size], path, marker.draw_mode
+                )
 
     
-    def sierpinski(self, gc, point_contexts, n):
+    def sierpinski(self, center_loc, point_contexts, n):
         """ Recursive method to find locations / sizes of triangles to be
         drawn given the current number of iterations. The method modifies and
         returns the point_contexts input.
@@ -87,23 +92,25 @@ class SierpinskiTriangle(Component):
             # find centers of next 3 inverted triangles relative to the center
             # of the current one.
             rel_to_center_locs = 2*size*np.array([
-                [-1, -(np.sqrt(3) - 1)/2],
-                [1, -(np.sqrt(3) - 1)/2],
-                [0, 1 + (np.sqrt(3) - 1)/2]
+                [-1, -(SQRT3 - 1)/2],
+                [1, -(SQRT3 - 1)/2],
+                [0, 1 + (SQRT3 - 1)/2]
             ])
 
             # absolute location of those centers
-            abs_points = .5 * (gc.get_ctm()[-2:] + 2*rel_to_center_locs)
+            abs_points = .5 * (center_loc + 2*rel_to_center_locs)
 
             if size in point_contexts:
-                point_contexts[size] = np.append(point_contexts[size], abs_points, 0)
+                point_contexts[size] = np.append(
+                    point_contexts[size], abs_points, 0
+                )
             else:
                 point_contexts[size] = abs_points
 
-            for loc in rel_to_center_locs:
-                with gc:
-                    gc.translate_ctm(*loc)
-                    point_contexts = self.sierpinski(gc, point_contexts, n+1)
+            for center_loc in abs_points:
+                point_contexts = self.sierpinski(
+                    2*center_loc, point_contexts, n+1
+                )
             return point_contexts
 
 
