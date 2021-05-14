@@ -32,16 +32,9 @@ SQRT3 = np.sqrt(3)
 
 class SierpinskiTriangle(Component):
 
-    base_width = Int(500)
+    base_width = Int()
 
-    bounds = Property(bounds_trait, observe='base_width')
-
-    iterations = Range(0, 10)
-
-    bgcolor = "black"
-
-    def _get_bounds(self):
-        return [self.base_width, self.base_width*(SQRT3/2)]
+    iterations = Int()
 
     def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         
@@ -118,16 +111,38 @@ class Viewer(HasTraits):
 
     # fixme: have iterations range max depend on basewidth (if size gets so
     # small that it is <1 pixel that is hard cap, at least until we add zoom)
-    iterations = Range(0, 10)
+    iterations = Range(0, 'max_iters')
 
     triangle = Instance(Component)
+
+    base_width = Int(500)
+
+    max_iters = Property(observe="base_width")
+
+    bgcolor = "black"
+
+    def _get_bounds(self):
+        return [self.base_width, self.base_width*(SQRT3/2)]
+
+    def _get_max_iters(self):
+        return int(np.log(4/self.base_width)/np.log(.5) + 1)
 
     def _triangle_default(self):
         tri = SierpinskiTriangle(
             position=[0.0, 0.0],
-            iterations=self.iterations
+            bounds=[self.base_width, self.base_width*(SQRT3/2)],
+            iterations=self.iterations,
+            max_iters=self.max_iters,
+            base_width=self.base_width,
+            bgcolor=self.bgcolor,
         )
         return tri
+
+    @observe("base_width")
+    def _update_base_width(self, event):
+        self.triangle.bounds = [self.base_width, self.base_width*(SQRT3/2)]
+        self.triangle.base_width = event.new
+        self.triangle.invalidate_and_redraw()
 
     @observe("iterations")
     def _redraw(self, event):
@@ -136,6 +151,7 @@ class Viewer(HasTraits):
 
     traits_view = View(
         Item(name='iterations'),
+        Item(name='base_width'),
         UItem(
             "triangle",
             # fixme: make size automatically what  we want...
