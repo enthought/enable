@@ -109,8 +109,6 @@ class SierpinskiTriangle(Component):
 
 class Viewer(HasTraits):
 
-    # fixme: have iterations range max depend on basewidth (if size gets so
-    # small that it is <1 pixel that is hard cap, at least until we add zoom)
     iterations = Range(0, 'max_iters')
 
     triangle = Instance(Component)
