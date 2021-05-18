@@ -68,11 +68,6 @@ class AbstractWindow(HasTraits):
     # painted with this color before the component gets to draw.
     bgcolor = ColorTrait("sys_window")
 
-    # Unfortunately, for a while, there was a naming inconsistency and the
-    # background color trait named "bg_color".  This is still provided for
-    # backwards compatibility but should not be used in new code.
-    bg_color = Alias("bgcolor")
-
     alt_pressed = Bool(False)
     ctrl_pressed = Bool(False)
     shift_pressed = Bool(False)
