@@ -88,6 +88,14 @@ Build and Continuous Integration
 * Install cron job dependencies correctly (#637)
 * Add Cython and SWIG to cron job build deps (#607)
 
+Enable 5.0.1
+============
+
+Fixes
+-----
+
+* Fix KeySpec.from_string (#638)
+* Don't mess up the component bounds in HiDPI mode (#635)
 
 Enable 5.0.0
 ============
