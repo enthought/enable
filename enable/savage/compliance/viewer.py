@@ -271,7 +271,7 @@ class ViewFrame(wx.Frame):
 
     def OnTreeSelectionChange(self, evt):
         item = self.tree.GetSelection()
-        element = self.tree.GetItemPyData(item)
+        element = self.tree.GetItemData(item)
         if element is None:
             return
         path = self.document.paths[element]

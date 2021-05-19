@@ -51,16 +51,20 @@ class ToolkitEditorFactory(EditorFactory):
         import kiva.constants as kc
 
         font = editor.value
-        weight = (wx.NORMAL, wx.BOLD)[font.weight == kc.BOLD]
-        style = (wx.NORMAL, wx.ITALIC)[font.style == kc.ITALIC]
+        weight = (
+            wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD
+        )[font.weight == kc.BOLD]
+        style = (
+            wx.FONTSTYLE_NORMAL, wx.FONTSTYLE_ITALIC
+        )[font.style == kc.ITALIC]
         family = {
-            kc.DEFAULT: wx.DEFAULT,
-            kc.DECORATIVE: wx.DECORATIVE,
-            kc.ROMAN: wx.ROMAN,
-            kc.SCRIPT: wx.SCRIPT,
-            kc.SWISS: wx.SWISS,
-            kc.MODERN: wx.MODERN,
-        }.get(font.family, wx.SWISS)
+            kc.DEFAULT: wx.FONTFAMILY_DEFAULT,
+            kc.DECORATIVE: wx.FONTFAMILY_DECORATIVE,
+            kc.ROMAN: wx.FONTFAMILY_ROMAN,
+            kc.SCRIPT: wx.FONTFAMILY_SCRIPT,
+            kc.SWISS: wx.FONTFAMILY_SWISS,
+            kc.MODERN: wx.FONTFAMILY_MODERN,
+        }.get(font.family, wx.FONTFAMILY_SWISS)
 
         return wx.Font(
             font.size,
@@ -84,15 +88,19 @@ class ToolkitEditorFactory(EditorFactory):
         return Font(
             size=font.GetPointSize(),
             family={
-                wx.DEFAULT: kc.DEFAULT,
-                wx.DECORATIVE: kc.DECORATIVE,
-                wx.ROMAN: kc.ROMAN,
-                wx.SCRIPT: kc.SCRIPT,
-                wx.SWISS: kc.SWISS,
-                wx.MODERN: kc.MODERN,
+                wx.FONTFAMILY_DEFAULT: kc.DEFAULT,
+                wx.FONTFAMILY_DECORATIVE: kc.DECORATIVE,
+                wx.FONTFAMILY_ROMAN: kc.ROMAN,
+                wx.FONTFAMILY_SCRIPT: kc.SCRIPT,
+                wx.FONTFAMILY_SWISS: kc.SWISS,
+                wx.FONTFAMILY_MODERN: kc.MODERN,
             }.get(font.GetFamily(), kc.SWISS),
-            weight=(kc.NORMAL, kc.BOLD)[font.GetWeight() == wx.BOLD],
-            style=(kc.NORMAL, kc.ITALIC)[font.GetStyle() == wx.ITALIC],
+            weight=(
+                kc.NORMAL, kc.BOLD
+            )[font.GetWeight() == wx.FONTWEIGHT_BOLD],
+            style=(
+                kc.NORMAL, kc.ITALIC
+            )[font.GetStyle() == wx.FONTSTYLE_ITALIC],
             underline=font.GetUnderlined() - 0,  # convert Bool to an int type
             face_name=font.GetFaceName(),
         )
