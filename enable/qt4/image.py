@@ -38,7 +38,9 @@ class Window(BaseWindow):
         h = self._gc.height()
         data = self._gc.pixel_map.convert_to_argb32string()
         image = QtGui.QImage(data, w, h, QtGui.QImage.Format_ARGB32)
-        rect = QtCore.QRectF(0, 0, self.control.width(), self.control.height())
+        rect = QtCore.QRectF(
+            0, 0, w / self._gc.base_scale, h / self._gc.base_scale
+        )
         painter = QtGui.QPainter(self.control)
         painter.drawImage(rect, image)
 
