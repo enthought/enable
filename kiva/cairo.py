@@ -224,8 +224,8 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             ctx.scale(1, -1)
 
         # For HiDPI support
-        base_scale = kw.pop("base_pixel_scale", 1)
-        ctx.scale(base_scale, base_scale)
+        self.base_scale = kw.pop("base_pixel_scale", 1)
+        ctx.scale(self.base_scale, self.base_scale)
 
         self._ctx = ctx
         self.state = GraphicsState()
