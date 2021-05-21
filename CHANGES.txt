@@ -1,6 +1,18 @@
 Enable CHANGELOG
 ================
 
+Enable 5.1.1
+============
+
+Thanks to:
+
+* Kit Yan Choi
+
+Fixes
+-----
+
+* Fix artefact in Qt caused by a wrong QRectF size. (#820)
+
 Enable 5.0.0
 ============
 
