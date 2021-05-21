@@ -24,7 +24,7 @@ MAJOR = 5
 MINOR = 1
 MICRO = 1
 PRERELEASE = ""
-IS_RELEASED = False
+IS_RELEASED = True
 
 # Templates for version strings.
 RELEASED_VERSION = "{major}.{minor}.{micro}{prerelease}"
