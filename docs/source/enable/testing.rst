@@ -22,3 +22,40 @@ available.
 
 .. Todo: Add example test. I was going to refer to an existing test, but none
    of the exissting tests seem very helpful for documentation purposes
+
+The following is a Dummy TestCase to showcase some basics of the
+:class:`~.EnableTestAssistant` functionality.  It is not testing things
+users would likely want to test, but it showcases the capabilities / usefulness
+of the test assistant.
+
+::
+
+    import unittest
+    from unittest import mock
+
+    from enable.component import Component
+    from enable.testing import EnableTestAssistant, _MockWindow
+
+    class TestExample(unittest.TestCase):
+        def test_example(self):
+            test_assistant = EnableTestAssistant()
+            component = Component(bounds=[100, 200])
+
+            event = test_assistant.mouse_move(component, 10, 20)
+            self.assertEqual(event.x, 10)
+            self.assertEqual(event.y, 20)
+            self.assertIsInstance(event.window, _MockWindow)
+            self.assertFalse(event.alt_down)
+            self.assertFalse(event.control_down)
+            self.assertFalse(event.shift_down)
+            self.assertFalse(sevent.left_down)
+            self.assertEqual(event.window.get_pointer_position(), (10, 20))
+
+            component.normal_left_down = mock.Mock()
+            test_assistant.mouse_down(component, x=0, y=0)
+            component.normal_left_down.assert_called_once()
+
+            event = test_assistant.mouse_move(component, 20, 30, left_down=True)
+            self.assertEqual(event.x, 20)
+            self.assertEqual(event.y, 30)
+            self.assertIs(event.left_down, True)
