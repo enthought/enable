@@ -17,11 +17,8 @@ the full application window and as such :class:`~.EnableTestAssistant` provides
 a :meth:`~.create_mock_window` method for simply
 mocking out the window itself. This allows for specifically testing the
 component of interest alone, as is the goal in a unit test. Please see the api
-docs (by clicking :class:`~.EnableTestAssistant`) for the full list of methods
+docs (:class:`~.EnableTestAssistant`) for the full list of methods
 available.
-
-.. Todo: Add example test. I was going to refer to an existing test, but none
-   of the exissting tests seem very helpful for documentation purposes
 
 The following is a Dummy TestCase to showcase some basics of the
 :class:`~.EnableTestAssistant` functionality.  It is not testing things
