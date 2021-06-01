@@ -20,18 +20,15 @@ component of interest alone, as is the goal in a unit test. Please see the api
 docs (:class:`~.EnableTestAssistant`) for the full list of methods
 available.
 
-The following is a Dummy TestCase to showcase some basics of the
-:class:`~.EnableTestAssistant` functionality.  It is not testing things
-users would likely want to test, but it showcases the capabilities / usefulness
-of the test assistant.
+Here is an example
 
 ::
 
     import unittest
     from unittest import mock
 
-    from enable.component import Component
-    from enable.testing import EnableTestAssistant, _MockWindow
+    from enable.api import Component
+    from enable.testing import EnableTestAssistant
 
     class TestExample(unittest.TestCase):
         def test_example(self):
@@ -41,7 +38,6 @@ of the test assistant.
             event = test_assistant.mouse_move(component, 10, 20)
             self.assertEqual(event.x, 10)
             self.assertEqual(event.y, 20)
-            self.assertIsInstance(event.window, _MockWindow)
             self.assertFalse(event.alt_down)
             self.assertFalse(event.control_down)
             self.assertFalse(event.shift_down)
