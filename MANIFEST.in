@@ -10,6 +10,7 @@ include docs/kiva/agg/notes
 include kiva/_cython_speedups.*
 include kiva/_hit_test.*
 include kiva/_marker_renderer.*
+include pyproject.toml
 recursive-include docs *.py *.rst *.txt *.css *.png *.ico *.doc
 recursive-include enable/examples *.py *.svg *.jpg *.enaml
 recursive-include kiva/examples *.py *.txt *.gif *.jpg
