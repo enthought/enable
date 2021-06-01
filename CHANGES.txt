@@ -6,17 +6,14 @@ Enable 5.2.0
 
 Thanks to:
 
-* 
+* Aaron Ayres
+* Rahul Poruri
+* John Wiggins
 
 Enhancements
 ------------
 
 * Provide better support for mixed writing systems (#763, #764 #767, #768)
-
-Changes
--------
-
-* 
 
 Fixes
 -----
