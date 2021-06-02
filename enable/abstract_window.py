@@ -92,7 +92,7 @@ class AbstractWindow(HasTraits):
     _size = Trait(None, Tuple, transient=True)
 
     # The regions to update upon redraw
-    _update_region = Any
+    _update_region = Any(transient=True)
 
     # When exceeding this, the entire window is marked damaged to save memory
     MAX_DAMAGED_REGIONS = 100
