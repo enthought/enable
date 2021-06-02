@@ -42,35 +42,35 @@ class AbstractWindow(HasTraits):
 
     # A reference to the nested component that has focus.  This is part of the
     # manual mechanism for determining keyboard focus.
-    focus_owner = Instance(Interactor)
+    focus_owner = Instance(Interactor, transient=True)
 
     # If set, this is the component to which all mouse events are passed,
     # bypassing the normal event propagation mechanism.
-    mouse_owner = Instance(Interactor)
+    mouse_owner = Instance(Interactor, transient=True)
 
     # The transform to apply to mouse event positions to put them into the
     # relative coordinates of the mouse_owner component.
-    mouse_owner_transform = Any()
+    mouse_owner_transform = Any(transient=True)
 
     # When a component captures the mouse, it can optionally store a
     # dispatch order for events (until it releases the mouse).
-    mouse_owner_dispatch_history = Trait(None, None, List)
+    mouse_owner_dispatch_history = Trait(None, None, List, transient=True)
 
     # A scaling constant applied to any GraphicsContext used for drawing the
     # window's component.
-    base_pixel_scale = Float(1.0)
+    base_pixel_scale = Float(1.0, transient=True)
 
     # When True, allow `base_pixel_scale` to be greater than 1 if the
     # underlying toolkit supports it.
-    high_resolution = Bool(True)
+    high_resolution = Bool(True, transient=True)
 
     # The background window of the window.  The entire window first gets
     # painted with this color before the component gets to draw.
     bgcolor = ColorTrait("sys_window")
 
-    alt_pressed = Bool(False)
-    ctrl_pressed = Bool(False)
-    shift_pressed = Bool(False)
+    alt_pressed = Bool(False, transient=True)
+    ctrl_pressed = Bool(False, transient=True)
+    shift_pressed = Bool(False, transient=True)
 
     # A container that gets drawn after & on top of the main component, and
     # which receives events first.
@@ -81,18 +81,18 @@ class AbstractWindow(HasTraits):
     resized = Event
 
     # Whether to enable damaged region handling
-    use_damaged_region = Bool(False)
+    use_damaged_region = Bool(False, transient=True)
 
     # The previous component that handled an event.  Used to generate
     # mouse_enter and mouse_leave events.  Right now this can only be
     # None, self.component, or self.overlay.
-    _prev_event_handler = Instance(Component)
+    _prev_event_handler = Instance(Component, transient=True)
 
     # (dx, dy) integer size of the Window.
-    _size = Trait(None, Tuple)
+    _size = Trait(None, Tuple, transient=True)
 
     # The regions to update upon redraw
-    _update_region = Any
+    _update_region = Any(transient=True)
 
     # When exceeding this, the entire window is marked damaged to save memory
     MAX_DAMAGED_REGIONS = 100
@@ -200,7 +200,6 @@ class AbstractWindow(HasTraits):
     # ------------------------------------------------------------------------
 
     def __init__(self, **traits):
-        self._scroll_origin = (0.0, 0.0)
         self._update_region = None
         self._gc = None
         self._pointer_owner = None
@@ -546,13 +545,6 @@ class AbstractWindow(HasTraits):
         self._window_paint(event)
 
         self._update_region = []
-
-    def __getstate__(self):
-        attribs = ("component", "bgcolor", "overlay", "_scroll_origin")
-        state = {}
-        for attrib in attribs:
-            state[attrib] = getattr(self, attrib)
-        return state
 
     # -------------------------------------------------------------------------
     # Wire up the mouse event handlers
