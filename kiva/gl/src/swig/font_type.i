@@ -78,10 +78,9 @@ def unicode_safe_init(self, _name="Arial", _size=12, _family=0, _style=0,
             _name = _name.decode()
     obj = _gl.new_KivaGLFontType(_name, _size, _family, _style,
                                _encoding, validate)
-    _swig_setattr(self, KivaGLFontType, "this", obj)
-    _swig_setattr(self, KivaGLFontType, "thisown", 1)
+    self.this = obj
+    self.thisown = 1
 
 # This is a crappy way of overriding the constructor
 KivaGLFontType.__init__ = unicode_safe_init
 %}
-

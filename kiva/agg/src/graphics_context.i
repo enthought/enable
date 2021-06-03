@@ -362,12 +362,8 @@ namespace kiva {
                 # Apply base scale for a HiDPI context
                 _agg.GraphicsContextArray_scale_ctm(obj, base_pixel_scale, base_pixel_scale)
 
-                _swig_setattr(self, GraphicsContextArray, 'this', obj)
-                # swig 1.3.28 does not have real thisown, thisown is mapped
-                # to this.own() but with previous 'self.this=obj' an
-                # attribute 'own' error is raised. Does this workaround
-                # work with pre-1.3.28 swig?
-                _swig_setattr(self, GraphicsContextArray, 'thisown2', 1)
+                self.this = obj
+                self.thisown2 = 1
 
                 self.bmp_array = ary
                 self.base_scale = base_pixel_scale
