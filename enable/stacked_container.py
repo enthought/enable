@@ -11,7 +11,7 @@
 
 """
 
-from traits.api import Enum, Float, Int
+from traits.api import Enum, Float
 
 from .container import Container
 from .stacked_layout import stacked_preferred_size, stack_layout
@@ -31,13 +31,22 @@ class StackedContainer(Container):
     # The index into obj.position and obj.bounds that corresponds to
     # **stack_dimension**.  This is a class-level and not an instance-level
     # attribute. It must be 0 or 1.
-    stack_index = Int(0, transient=True)
+    stack_index = 0
 
     # The amount of space to put between components.
     spacing = Float(0.0)
 
     def get_preferred_size(self, components=None):
         return stacked_preferred_size(self, components)
+
+    ### Persistence ###########################################################
+
+    # PICKLE FIXME: blocked with _pickles, but not sure that was correct.
+    def __getstate__(self):
+        state = super().__getstate__()
+        if "stack_index" in state:
+            del state["stack_index"]
+        return state
 
 
 class HStackedContainer(StackedContainer):
