@@ -145,6 +145,12 @@ Enable Components
 - :class:`~.GraphicsContextEnable`
 - :class:`~.ImageGraphicsContextEnable`
 
+Layout Helpers
+--------------
+
+- :func:`~.stack_layout`
+- :func:`~.stacked_preferred_size`
+
 Enable Widgets
 ==============
 
@@ -279,6 +285,7 @@ from .coordinate_box import CoordinateBox
 from .component_editor import ComponentEditor
 from .overlay_container import OverlayContainer
 from .stacked_container import HStackedContainer, VStackedContainer
+from .stacked_layout import stack_layout, stacked_preferred_size
 
 try:
     import kiwisolver

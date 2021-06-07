@@ -12,9 +12,8 @@
 
 
 def stacked_preferred_size(container, components=None):
-    """ Returns the size (width,height) that is preferred for this component.
-
-    Overrides Component.
+    """ Returns the preferred size (width, height) for the given container
+    and components.
     """
     if container.fixed_preferred_size is not None:
         container._cached_preferred_size = container.fixed_preferred_size
