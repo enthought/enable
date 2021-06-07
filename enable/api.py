@@ -148,6 +148,8 @@ Enable Components
 Layout Helpers
 --------------
 
+- :func:`~.simple_container_do_layout`
+- :func:`~.simple_container_get_preferred_size`
 - :func:`~.stack_layout`
 - :func:`~.stacked_preferred_size`
 
@@ -284,6 +286,9 @@ from .container import Container
 from .coordinate_box import CoordinateBox
 from .component_editor import ComponentEditor
 from .overlay_container import OverlayContainer
+from .simple_layout import (
+    simple_container_do_layout, simple_container_get_preferred_size,
+)
 from .stacked_container import HStackedContainer, VStackedContainer
 from .stacked_layout import stack_layout, stacked_preferred_size
 
