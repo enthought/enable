@@ -23,15 +23,15 @@ class StackedContainer(Container):
 
     # The dimension along which to stack components that are added to
     # this container.
-    stack_dimension = Enum("h", "v")
+    stack_dimension = Enum("h", "v", transient=True)
 
     # The "other" dimension, i.e., the dual of the stack dimension.
-    other_dimension = Enum("v", "h")
+    other_dimension = Enum("v", "h", transient=True)
 
     # The index into obj.position and obj.bounds that corresponds to
     # **stack_dimension**.  This is a class-level and not an instance-level
     # attribute. It must be 0 or 1.
-    stack_index = 0
+    stack_index = Int(0, transient=True)
 
     # The amount of space to put between components.
     spacing = Float(0.0)
