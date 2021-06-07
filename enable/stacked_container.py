@@ -11,7 +11,7 @@
 
 """
 
-from traits.api import Enum, Float
+from traits.api import Enum, Float, Int
 
 from .container import Container
 from .stacked_layout import stacked_preferred_size, stack_layout
