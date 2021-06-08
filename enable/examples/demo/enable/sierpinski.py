@@ -16,15 +16,15 @@ from traits.api import (
     HasTraits,
     Instance,
     Int,
-    observe, 
+    observe,
     Range,
     Property
 )
 from traitsui.api import Item, UItem, View
-from enable.api import bounds_trait, Component, ComponentEditor
-
+from enable.api import Component, ComponentEditor
 
 SQRT3 = np.sqrt(3)
+
 
 class SierpinskiTriangle(Component):
 
@@ -37,10 +37,10 @@ class SierpinskiTriangle(Component):
         # draw the base triangle
         gc.translate_ctm(0., 0.)
         gc.set_fill_color((1.0, 1.0, 1.0, 1.0))
-        gc.move_to(0,0)
-        gc.line_to(self.base_width,0)
+        gc.move_to(0, 0)
+        gc.line_to(self.base_width, 0)
         gc.line_to(self.base_width/2, SQRT3*(self.base_width/2))
-        gc.line_to(0,0)
+        gc.line_to(0, 0)
         gc.fill_path()
 
         gc.set_fill_color((0.0, 0.0, 0.0, 1.0))
@@ -64,16 +64,15 @@ class SierpinskiTriangle(Component):
             gc.add_path(path)
             gc.fill_path()
 
-
     def sierpinski(self, path, point, n):
         size = self.base_width/4 * (1/2)**(n - 1)
         if n == self.iterations:
-            return 
+            return
         else:
             # find top left corners of next 3 inverted triangles relative to
             # the top left corner of the current one (ie point)
             #
-            # In the diagram below, X is point, and the ? represent the next 
+            # In the diagram below, X is point, and the ? represent the next
             # points to make recursive calls at
             #
             #       /\
@@ -107,8 +106,7 @@ class SierpinskiTriangle(Component):
         path.move_to(x, y)
         path.line_to(x + size, y)
         path.line_to(x + .5 * size, y - (SQRT3 / 2) * size)
-        path.line_to(x,y)
-
+        path.line_to(x, y)
 
 
 class Viewer(HasTraits):
