@@ -67,6 +67,12 @@ class SierpinskiTriangle(AbstractOverlay):
             gc.fill_path()
 
     def sierpinski(self, path, point, n):
+        """ Recursive method to determine size and location of triangles to
+        add to input path object, based on the current iteration n.
+
+        This method recursively adds to the path object which can be drawn upon
+        completion of the full recursive call.
+        """
         size = self.base_width/4 * (1/2)**(n - 1)
         if n == self.iterations:
             return
