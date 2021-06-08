@@ -87,13 +87,13 @@ class SierpinskiTriangle(Component):
             #  ?/__\ ?/__\
             #  /_\/_\/_\/_\
             #
+
             rel_to_point_locs = (size/2)*np.array([
                 [-1, -SQRT3],
                 [1, SQRT3],
                 [3, -SQRT3]
             ])
-
-            # absolute location of those centers
+            # absolute location of those next points
             abs_points = point + rel_to_point_locs
 
             for point in abs_points:

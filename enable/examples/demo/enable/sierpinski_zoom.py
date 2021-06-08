@@ -90,13 +90,13 @@ class SierpinskiTriangle(AbstractOverlay):
             #  ?/__\ ?/__\
             #  /_\/_\/_\/_\
             #
+
             rel_to_point_locs = (size/2)*np.array([
                 [-1, -SQRT3],
                 [1, SQRT3],
                 [3, -SQRT3]
             ])
-
-            # absolute location of those centers
+            # absolute location of those next points
             abs_points = point + rel_to_point_locs
 
             for point in abs_points:
@@ -110,6 +110,9 @@ class SierpinskiTriangle(AbstractOverlay):
                 )
 
     def add_triangle_to_path(self, path, point, size):
+        """ Adds an inverted triangle to the input path, of side length size,
+        using the input point as the upper left corner of the triangle.
+        """
         x, y = point
         path.move_to(x, y)
         path.line_to(x + size, y)
