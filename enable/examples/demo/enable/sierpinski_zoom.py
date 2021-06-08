@@ -22,11 +22,10 @@ from traits.api import (
 )
 from traitsui.api import Item, UItem, View
 from enable.api import (
-    AbstractOverlay, bounds_trait, Canvas, Component, ComponentEditor, Inverted_TriangleMarker, Viewport, Scrolled
+    AbstractOverlay, bounds_trait, Canvas, Component, ComponentEditor, Viewport, Scrolled
 )
 from enable.tools.api import ViewportPanTool
 
-marker = Inverted_TriangleMarker()
 SQRT3 = np.sqrt(3)
 
 
@@ -49,62 +48,68 @@ class SierpinskiTriangle(AbstractOverlay):
 
         gc.set_fill_color((0.0, 0.0, 0.0, 1.0))
 
+        gc.begin_path()
+        path = gc.get_empty_path()
+
         if self.iterations >= 1:
             with gc:
-                # draw first inverted triangle
-                path = gc.get_empty_path()
-                marker.add_to_path(path, self.base_width/4)
-                gc.draw_path_at_points(
-                    [[self.base_width/2, (self.base_width/4)*(SQRT3 - 1)]],
+                self.add_triangle_to_path(
                     path,
-                    marker.draw_mode
+                    (self.base_width/4, (self.base_width/4)*SQRT3),
+                    self.base_width/2
                 )
-                point_contexts = self.sierpinski(
-                    (self.base_width, (self.base_width/2)*(SQRT3 - 1)),
-                    {},
-                    2
-                )
+            self.sierpinski(
+                path,
+                (self.base_width/4, (self.base_width/4)*SQRT3),
+                1
+            )
 
-            for size in point_contexts:
-                path = gc.get_empty_path()
-                marker.add_to_path(path, size)
-                gc.draw_path_at_points(
-                    point_contexts[size], path, marker.draw_mode
-                )
+            gc.add_path(path)
+            gc.fill_path()
 
-    
-    def sierpinski(self, center_loc, point_contexts, n):
-        """ Recursive method to find locations / sizes of triangles to be
-        drawn given the current number of iterations. The method modifies and
-        returns the point_contexts input.
-        """
+    def sierpinski(self, path, point, n):
         size = self.base_width/4 * (1/2)**(n - 1)
-        if n == self.iterations + 1:
-            return point_contexts
+        if n == self.iterations:
+            return 
         else:
-            # find centers of next 3 inverted triangles relative to the center
-            # of the current one.
-            rel_to_center_locs = 2*size*np.array([
-                [-1, -(SQRT3 - 1)/2],
-                [1, -(SQRT3 - 1)/2],
-                [0, 1 + (SQRT3 - 1)/2]
+            # find top left corners of next 3 inverted triangles relative to
+            # the top left corner of the current one (ie point)
+            #
+            # In the diagram below, X is point, and the ? represent the next 
+            # points to make recursive calls at
+            #
+            #       /\
+            #     ?/__\
+            #    X/_\/_\
+            #    /\    /\
+            #  ?/__\ ?/__\
+            #  /_\/_\/_\/_\
+            #
+            rel_to_point_locs = (size/2)*np.array([
+                [-1, -SQRT3],
+                [1, SQRT3],
+                [3, -SQRT3]
             ])
 
             # absolute location of those centers
-            abs_points = .5 * (center_loc + 2*rel_to_center_locs)
+            abs_points = point + rel_to_point_locs
 
-            if size in point_contexts:
-                point_contexts[size] = np.append(
-                    point_contexts[size], abs_points, 0
+            for point in abs_points:
+                self.add_triangle_to_path(
+                    path,
+                    point,
+                    size
                 )
-            else:
-                point_contexts[size] = abs_points
+                self.sierpinski(
+                    path, point, n+1
+                )
 
-            for center_loc in abs_points:
-                point_contexts = self.sierpinski(
-                    2*center_loc, point_contexts, n+1
-                )
-            return point_contexts
+    def add_triangle_to_path(self, path, point, size):
+        x, y = point
+        path.move_to(x, y)
+        path.line_to(x + size, y)
+        path.line_to(x + .5 * size, y - (SQRT3 / 2) * size)
+        path.line_to(x,y)
 
 
 class Viewer(HasTraits):
