@@ -57,3 +57,22 @@ except ImportError as ex:
     warnings.warn("Error initializing Agg: %s" % ex, Warning, 2)
 
     GraphicsContextSystem = None
+
+
+def points_in_polygon(pts, poly_pts, use_winding=False):
+    """Keep this function around for old code, but warn anyone who calls it.
+    """
+    import inspect
+    import warnings
+    from kiva.api import points_in_polygon as new_points_in_polygon
+
+    msg = "points_in_polygon() has moved to kiva.api"
+    frame = inspect.currentframe().f_back
+    warnings.warn_explicit(
+        msg,
+        category=DeprecationWarning,
+        filename=inspect.getfile(frame.f_code),
+        lineno=frame.f_lineno,
+    )
+
+    new_points_in_polygon(pts, poly_pts, use_winding=use_winding)
