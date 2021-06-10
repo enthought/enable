@@ -23,10 +23,10 @@ class StackedContainer(Container):
 
     # The dimension along which to stack components that are added to
     # this container.
-    stack_dimension = Enum("h", "v")
+    stack_dimension = Enum("h", "v", transient=True)
 
     # The "other" dimension, i.e., the dual of the stack dimension.
-    other_dimension = Enum("v", "h")
+    other_dimension = Enum("v", "h", transient=True)
 
     # The index into obj.position and obj.bounds that corresponds to
     # **stack_dimension**.  This is a class-level and not an instance-level
@@ -38,6 +38,14 @@ class StackedContainer(Container):
 
     def get_preferred_size(self, components=None):
         return stacked_preferred_size(self, components)
+
+    ### Persistence ###########################################################
+
+    def __getstate__(self):
+        state = super().__getstate__()
+        if "stack_index" in state:
+            del state["stack_index"]
+        return state
 
 
 class HStackedContainer(StackedContainer):
