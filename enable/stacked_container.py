@@ -41,7 +41,6 @@ class StackedContainer(Container):
 
     ### Persistence ###########################################################
 
-    # PICKLE FIXME: blocked with _pickles, but not sure that was correct.
     def __getstate__(self):
         state = super().__getstate__()
         if "stack_index" in state:
