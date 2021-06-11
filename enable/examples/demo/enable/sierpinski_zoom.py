@@ -158,10 +158,7 @@ class Viewer(HasTraits):
         self.viewport = Viewport(
             component=canvas, enable_zoom=True, stay_inside=True
         )
-        self.viewport.view_position = [0, 0]
-        self.viewport.view_bounds = [
-            self.base_width, self.base_width*(SQRT3/2)
-        ]
+        self.viewport.zoom_tool.min_zoom = 1.0
         self.viewport.tools.append(
             ViewportPanTool(self.viewport, drag_button="right")
         )
