@@ -189,7 +189,6 @@ class Viewer(HasTraits):
         Item(name='base_width'),
         UItem(
             "comp",
-            # fixme: make size automatically what  we want...
             editor=ComponentEditor(size=(500, 500)),
             resizable=True
         ),

@@ -159,7 +159,6 @@ class Viewer(HasTraits):
         Item(name='base_width'),
         UItem(
             "triangle",
-            # fixme: make size automatically what we want...
             editor=ComponentEditor(bgcolor="black", size=(500, 500)),
             resizable=True
         ),
