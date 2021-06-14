@@ -43,9 +43,6 @@ from .constants import (
 )
 
 
-is_qt4 = QtCore.__version_info__[0] <= 4
-
-
 class _QtWindowHandler(object):
     def __init__(self, qt_window, enable_window):
         self._enable_window = enable_window
@@ -452,29 +449,20 @@ class _Window(AbstractWindow):
         # we treat wheel events like mouse events.
         if isinstance(event, QtGui.QWheelEvent):
             degrees_per_step = 15.0
-            if is_qt4:
-                delta = event.delta()
-                mouse_wheel = delta / float(8 * degrees_per_step)
-                mouse_wheel_axis = MOUSE_WHEEL_AXIS_MAP[event.orientation()]
-                if mouse_wheel_axis == "horizontal":
-                    mouse_wheel_delta = (delta, 0)
-                else:
-                    mouse_wheel_delta = (0, delta)
+            delta = event.pixelDelta()
+            if delta.x() == 0 and delta.y() == 0:  # pixelDelta is optional
+                delta = event.angleDelta()
+            mouse_wheel_delta = (delta.x(), delta.y())
+            if abs(mouse_wheel_delta[0]) > abs(mouse_wheel_delta[1]):
+                mouse_wheel = mouse_wheel_delta[0] / float(
+                    8 * degrees_per_step
+                )
+                mouse_wheel_axis = "horizontal"
             else:
-                delta = event.pixelDelta()
-                if delta.x() == 0 and delta.y() == 0:  # pixelDelta is optional
-                    delta = event.angleDelta()
-                mouse_wheel_delta = (delta.x(), delta.y())
-                if abs(mouse_wheel_delta[0]) > abs(mouse_wheel_delta[1]):
-                    mouse_wheel = mouse_wheel_delta[0] / float(
-                        8 * degrees_per_step
-                    )
-                    mouse_wheel_axis = "horizontal"
-                else:
-                    mouse_wheel = mouse_wheel_delta[1] / float(
-                        8 * degrees_per_step
-                    )
-                    mouse_wheel_axis = "vertical"
+                mouse_wheel = mouse_wheel_delta[1] / float(
+                    8 * degrees_per_step
+                )
+                mouse_wheel_axis = "vertical"
         else:
             mouse_wheel = 0
             mouse_wheel_delta = (0, 0)

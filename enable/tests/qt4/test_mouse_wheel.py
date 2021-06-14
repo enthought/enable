@@ -46,29 +46,18 @@ class MouseWheelTestCase(TestCase):
     def test_vertical_mouse_wheel(self):
         from pyface.qt import QtCore, QtGui
 
-        is_qt4 = QtCore.__version_info__[0] <= 4
-
         # create and mock a mouse wheel event
-        if is_qt4:
-            qt_event = QtGui.QWheelEvent(
-                QtCore.QPoint(0, 0),
-                200,
-                QtCore.Qt.NoButton,
-                QtCore.Qt.NoModifier,
-                QtCore.Qt.Vertical,
-            )
-        else:
-            qt_event = QtGui.QWheelEvent(
-                QtCore.QPoint(0, 0),
-                self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),
-                QtCore.QPoint(0, 200),
-                QtCore.QPoint(0, 200),
-                200,
-                QtCore.Qt.Vertical,
-                QtCore.Qt.NoButton,
-                QtCore.Qt.NoModifier,
-                QtCore.Qt.ScrollUpdate,
-            )
+        qt_event = QtGui.QWheelEvent(
+            QtCore.QPoint(0, 0),
+            self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),
+            QtCore.QPoint(0, 200),
+            QtCore.QPoint(0, 200),
+            200,
+            QtCore.Qt.Vertical,
+            QtCore.Qt.NoButton,
+            QtCore.Qt.NoModifier,
+            QtCore.Qt.ScrollUpdate,
+        )
 
         # dispatch event
         self.window._on_mouse_wheel(qt_event)
@@ -81,29 +70,18 @@ class MouseWheelTestCase(TestCase):
     def test_horizontal_mouse_wheel(self):
         from pyface.qt import QtCore, QtGui
 
-        is_qt4 = QtCore.__version_info__[0] <= 4
-
         # create and mock a mouse wheel event
-        if is_qt4:
-            qt_event = QtGui.QWheelEvent(
-                QtCore.QPoint(0, 0),
-                200,
-                QtCore.Qt.NoButton,
-                QtCore.Qt.NoModifier,
-                QtCore.Qt.Horizontal,
-            )
-        else:
-            qt_event = QtGui.QWheelEvent(
-                QtCore.QPoint(0, 0),
-                self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),
-                QtCore.QPoint(200, 0),
-                QtCore.QPoint(200, 0),
-                200,
-                QtCore.Qt.Vertical,
-                QtCore.Qt.NoButton,
-                QtCore.Qt.NoModifier,
-                QtCore.Qt.ScrollUpdate,
-            )
+        qt_event = QtGui.QWheelEvent(
+            QtCore.QPoint(0, 0),
+            self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),
+            QtCore.QPoint(200, 0),
+            QtCore.QPoint(200, 0),
+            200,
+            QtCore.Qt.Vertical,
+            QtCore.Qt.NoButton,
+            QtCore.Qt.NoModifier,
+            QtCore.Qt.ScrollUpdate,
+        )
 
         # dispatch event
         self.window._on_mouse_wheel(qt_event)
@@ -115,10 +93,6 @@ class MouseWheelTestCase(TestCase):
 
     def test_vertical_mouse_wheel_without_pixel_delta(self):
         from pyface.qt import QtCore, QtGui
-
-        is_qt4 = QtCore.__version_info__[0] <= 4
-        if is_qt4:
-            self.skipTest("Not directly applicable in Qt4")
 
         # create and mock a mouse wheel event
         qt_event = QtGui.QWheelEvent(
