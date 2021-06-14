@@ -69,13 +69,8 @@ def unicode_safe_init(self, _name="Arial", _size=12, _family=0, _style=0,
                       _encoding=0, validate=True):
     ### HACK:  C++ stuff expects a string (not unicode) for the face_name, so fix
     ###        if needed.
-    ### Only for python < 3
-    if '' == b'':
-        if isinstance(_name, unicode):
-            _name = _name.encode("latin1")
-    else:
-        if isinstance(_name, bytes):
-            _name = _name.decode()
+    if isinstance(_name, bytes):
+        _name = _name.decode()
     obj = _gl.new_KivaGLFontType(_name, _size, _family, _style,
                                _encoding, validate)
     _swig_setattr(self, KivaGLFontType, "this", obj)
