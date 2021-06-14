@@ -84,7 +84,7 @@ def unicode_safe_init(self, _name="Arial", _size=12, _family=0, _style=0,
                                _encoding, _face_index, validate)
 
     self.this = obj
-    self.thisown = 1                
+    self.thisown = 1
 
 # This is a crappy way of overriding the constructor
 AggFontType.__init__ = unicode_safe_init
