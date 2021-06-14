@@ -264,23 +264,7 @@ namespace kiva {
             CIRCLE_MARKER: (circle_marker_path, FILL_STROKE)
         }
 
-        # global freetype engine for text rendering.
-        #from enthought import freetype
-        #ft_engine = freetype.FreeType(dpi=120.0)
-
         from kiva import fonttools
-
-        def handle_unicode(text):
-            "Returns a utf8 encoded 8-bit string from 'text'"
-            # For now we just deal with unicode by converting to utf8
-            # Later we can add full-blown support with wchar_t/Py_UNICODE
-            # typemaps etc.
-            try:
-                if '' == b'' and isinstance(text, unicode):
-                    text = text.encode("utf8")
-                return text
-            except:
-                raise UnicodeError("Error encoding text to utf8.")
     %}
 
     void cleanup_font_threading_primitives();
@@ -466,7 +450,6 @@ namespace kiva {
             %feature("shadow") show_text_at_point(char *text, double dx, double dy)
             %{
             def show_text_at_point(self, text, dx, dy):
-                text = handle_unicode(text)
                 return _agg.GraphicsContextArray_show_text_at_point(self, text, dx, dy)
             %}
             bool show_text_at_point(char *text, double dx, double dy);
@@ -478,8 +461,6 @@ namespace kiva {
                    if point is None.  Returns true if text displayed properly,
                    false if there was a font issue or a glyph could not be
                    rendered.  Will handle multi-line text separated by backslash-ns"""
-
-                text = handle_unicode(text)
 
                 linelist = text.split('\n')
 
@@ -510,7 +491,6 @@ namespace kiva {
                 if not self.is_font_initialized():
                     raise RuntimeError("Font not loaded/initialized.")
                 else:
-                    text = handle_unicode(text)
                     return _agg.GraphicsContextArray_get_text_extent(self, text)
             %}
             kiva::rect_type get_text_extent(char *text);
