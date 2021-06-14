@@ -45,12 +45,13 @@ Maintenance
 * Remove old deprecated drawing methods (#814)
 * Remove AbstractWindow.bg_color trait (#816)
 * Remove unused enable/trait_defs/ui/wx/enable_rgba_color_editor.py module (#817)
+* Deal with __getstate__ methods (#804, #841)
 
 Build and Continuous Integration
 --------------------------------
 
 * Skip markers tests if not using agg (#799)
-* Add pyproject.toml to specify cython and numpy as build deps (#808)
+* Add pyproject.toml to specify cython and numpy as build deps (#808, #836, #847)
 * Verify swig version in setup.py (#811)
 
 Enable 5.1.1
