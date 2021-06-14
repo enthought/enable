@@ -8,6 +8,7 @@
 #
 # Thanks for using Enthought open source!
 
+# cython: language_level=3
 cdef extern from "_hit_test.h" namespace "kiva":
     void points_in_polygon(double* pts, int Npts,
                           double* poly_pts, int Npoly_pts,

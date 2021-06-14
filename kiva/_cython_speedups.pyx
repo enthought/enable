@@ -7,6 +7,8 @@
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 #
 # Thanks for using Enthought open source!
+
+# cython: language_level=3
 import numpy as np
 from numpy cimport uint8_t
 cimport _hit_test
