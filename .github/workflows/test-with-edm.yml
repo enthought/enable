@@ -15,7 +15,7 @@ jobs:
   test-edm-linux:
     strategy:
       matrix:
-        toolkit: ['null', 'pyqt', 'pyqt5', 'pyside2', 'wx']
+        toolkit: ['null', 'pyqt5', 'pyside2', 'wx']
     runs-on: ubuntu-16.04
     steps:
       - uses: actions/checkout@v2
@@ -56,7 +56,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, windows-latest]
-        toolkit: ['pyqt', 'pyqt5', 'pyside2', 'wx']
+        toolkit: ['pyqt5', 'pyside2', 'wx']
     runs-on: ${{ matrix.os }}
     env:
       # Set root directory, mainly for Windows, so that the EDM Python
