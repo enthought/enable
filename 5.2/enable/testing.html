@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>Testing Enable Components &mdash; enable 5.2.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="enable 5.2.0 documentation" href="../index.html" >
+    <link rel="next" title="Credits" href="../credits.html" >
+    <link rel="prev" title="Enable Toolkit Selection" href="toolkit_selection.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">enable 5.2.0 documentation</a></li>
+	 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="../credits.html" title="Credits"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="toolkit_selection.html" title="Enable Toolkit Selection"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="testing-enable-components">
+<h1>Testing Enable Components<a class="headerlink" href="#testing-enable-components" title="Permalink to this headline">¶</a></h1>
+<p>In order to assist in the testing of enable <a class="reference internal" href="../api/enable.component.html#enable.component.Component" title="enable.component.Component"><code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code></a> and
+<a class="reference internal" href="../api/enable.interactor.html#enable.interactor.Interactor" title="enable.interactor.Interactor"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interactor</span></code></a> objects, Enable provides the
+<a class="reference internal" href="../api/enable.testing.html#enable.testing.EnableTestAssistant" title="enable.testing.EnableTestAssistant"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnableTestAssistant</span></code></a> class. This is a mixin class intended to work
+along side <a class="reference external" href="https://docs.python.org/3/library/unittest.html#unittest.TestCase" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">unittest.TestCase</span></code></a>. Often times in order to
+effectively test an enable component and its supported interactivity, one needs
+to simulate user interactions such as moving/clicking/dragging the mouse, using
+keys, etc. This involves manually creating the corresponding events with
+appropriate state and dispatching them appropriately. This can be rather
+tedious and <a class="reference internal" href="../api/enable.testing.html#enable.testing.EnableTestAssistant" title="enable.testing.EnableTestAssistant"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnableTestAssistant</span></code></a> provides a number of helper methods
+to greatly simplify the process, making tests both faster/cleaner to write and
+easier to read. Furthermore, in test scenarios it is ofen unnecessary to launch
+the full application window and as such <a class="reference internal" href="../api/enable.testing.html#enable.testing.EnableTestAssistant" title="enable.testing.EnableTestAssistant"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnableTestAssistant</span></code></a> provides
+a <a class="reference internal" href="../api/enable.testing.html#enable.testing.EnableTestAssistant.create_mock_window" title="enable.testing.EnableTestAssistant.create_mock_window"><code class="xref py py-meth docutils literal notranslate"><span class="pre">create_mock_window()</span></code></a> method for simply
+mocking out the window itself. This allows for specifically testing the
+component of interest alone, as is the goal in a unit test. Please see the api
+docs (<a class="reference internal" href="../api/enable.testing.html#enable.testing.EnableTestAssistant" title="enable.testing.EnableTestAssistant"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnableTestAssistant</span></code></a>) for the full list of methods
+available.</p>
+<p>Here is an example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">mock</span>
+
+<span class="kn">from</span> <span class="nn">enable.api</span> <span class="kn">import</span> <span class="n">Component</span>
+<span class="kn">from</span> <span class="nn">enable.testing</span> <span class="kn">import</span> <span class="n">EnableTestAssistant</span>
+
+<span class="k">class</span> <span class="nc">TestExample</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_example</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">test_assistant</span> <span class="o">=</span> <span class="n">EnableTestAssistant</span><span class="p">()</span>
+        <span class="n">component</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">])</span>
+
+        <span class="n">event</span> <span class="o">=</span> <span class="n">test_assistant</span><span class="o">.</span><span class="n">mouse_move</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">alt_down</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">control_down</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">shift_down</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">sevent</span><span class="o">.</span><span class="n">left_down</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">get_pointer_position</span><span class="p">(),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+
+        <span class="n">component</span><span class="o">.</span><span class="n">normal_left_down</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">Mock</span><span class="p">()</span>
+        <span class="n">test_assistant</span><span class="o">.</span><span class="n">mouse_down</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">component</span><span class="o">.</span><span class="n">normal_left_down</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+
+        <span class="n">event</span> <span class="o">=</span> <span class="n">test_assistant</span><span class="o">.</span><span class="n">mouse_move</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">left_down</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIs</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">left_down</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="toolkit_selection.html"
+                        title="previous chapter">Enable Toolkit Selection</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../credits.html"
+                        title="next chapter">Credits</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/enable/testing.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2021, Enthought
+      </li>
+      <li>
+      Last updated on Jun 15, 2021.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
