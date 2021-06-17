@@ -53,7 +53,7 @@ using::
     python edmtool.py test_all
 
 Currently supported runtime value is `3.6``, and currently
-supported toolkits are ``null``, ``pyqt``, and ``pyqt5``.  Not all
+supported toolkits are ``null``, ``pyside2``, and ``pyqt5``.  Not all
 combinations of toolkits and runtimes will work, but the tasks will fail with
 a clear error if that is the case.
 
@@ -85,7 +85,7 @@ from contextlib import contextmanager
 import click
 
 supported_combinations = {
-    '3.6': {'pyside2', 'pyqt', 'pyqt5', 'wx', 'null'},
+    '3.6': {'pyside2', 'pyqt5', 'wx', 'null'},
 }
 
 dependencies = {
@@ -119,7 +119,6 @@ source_dependencies = [
 ]
 
 extra_dependencies = {
-    'pyqt': {'pyqt'},
     'pyqt5': {'pyqt5'},
     'pyside2': {'pyside2'},
     # XXX once wxPython 4 is available in EDM, we will want it here
@@ -129,7 +128,6 @@ extra_dependencies = {
 
 environment_vars = {
     'pyside2': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyside2'},
-    'pyqt': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyqt'},
     'pyqt5': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyqt5'},
     'wx': {'ETS_TOOLKIT': 'wx'},
     'null': {'ETS_TOOLKIT': 'null.image'},
