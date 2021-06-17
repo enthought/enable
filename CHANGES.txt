@@ -1,6 +1,71 @@
 Enable CHANGELOG
 ================
 
+Enable 5.2.0
+============
+
+Thanks to:
+
+* Aaron Ayres
+* Rahul Poruri
+* John Wiggins
+
+Enhancements
+------------
+
+* Provide better support for mixed writing systems (#763, #764 #767, #768)
+
+Fixes
+-----
+
+* Fix listeners hooked up using observe but unhooked using on_trait_change (#766)
+* Handle preferred size computation when container isnt resizable (#778)
+* Fix alignment trait on "HStackedContainer" (#780)
+* Update custom marker as scale_ctm expects floats (#782)
+
+Documentation
+-------------
+
+* Convert # to #: to improve docstrings in markers (#784)
+* Document EnableTestAssistant (#800)
+
+Maintenance
+-----------
+
+* Remove "use_draw_order" code path (#777)
+* Add useful objects to "enable.api" (#779, #788)
+* Remove Python 2 or 3 only conditionals (#785, #810)
+* Remove dead code (#786)
+* Remove deprecated "str_to_font" and "points_in_polygon" functions. (#787)
+* Update super usage (#789, #790)
+* Remove deprecated intercept_events trait on Container (#801)
+* Use non deprecated font families styles etc (#806)
+* Replace use of deprecated GetItemPyData with its new replacement GetItemData (#807)
+* Remove unused tk related drawing methods (#809)
+* Remove old deprecated drawing methods (#814)
+* Remove AbstractWindow.bg_color trait (#816)
+* Remove unused enable/trait_defs/ui/wx/enable_rgba_color_editor.py module (#817)
+* Deal with __getstate__ methods (#804, #841)
+
+Build and Continuous Integration
+--------------------------------
+
+* Skip markers tests if not using agg (#799)
+* Add pyproject.toml to specify cython and numpy as build deps (#808, #836, #847)
+* Verify swig version in setup.py (#811)
+
+Enable 5.1.1
+============
+
+Thanks to:
+
+* Kit Yan Choi
+
+Fixes
+-----
+
+* Fix artefact in Qt caused by a wrong QRectF size. (#820)
+
 Enable 5.1.0
 ============
 
