@@ -16,7 +16,7 @@ import runpy
 import subprocess
 import sys
 
-from Cython.Distutils import build_ext
+from Cython.Build import cythonize
 import numpy
 from setuptools import Extension, find_packages, setup
 from setuptools.command.install import install as base_install
@@ -270,7 +270,7 @@ def agg_extensions():
 
 
 def base_extensions():
-    return [
+    extensions = [
         Extension(
             'kiva._cython_speedups',
             sources=[
@@ -301,6 +301,7 @@ def base_extensions():
             language='c++',
         ),
     ]
+    return cythonize(extensions)
 
 
 def gl_extensions():
@@ -388,7 +389,7 @@ def macos_extensions():
     for framework in frameworks:
         extra_link_args.extend(['-framework', framework])
 
-    return [
+    cython_extensions = [
         Extension(
             'kiva.quartz.ABCGI',
             sources=[
@@ -413,6 +414,9 @@ def macos_extensions():
             ],
             extra_link_args=extra_link_args,
         ),
+    ]
+
+    return cythonize(cython_extensions) + [
         Extension(
             'kiva.quartz.mac_context',
             sources=[
@@ -511,7 +515,6 @@ if __name__ == "__main__":
           cmdclass={
               'build': PatchedBuild,
               'install': PatchedInstall,
-              'build_ext': build_ext,
           },
           entry_points={
             'enable.toolkits': [
