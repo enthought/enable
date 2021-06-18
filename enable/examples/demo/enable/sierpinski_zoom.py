@@ -51,12 +51,11 @@ class SierpinskiTriangle(AbstractOverlay):
         path = gc.get_empty_path()
 
         if self.iterations >= 1:
-            with gc:
-                self.add_triangle_to_path(
-                    path,
-                    (self.base_width/4, (self.base_width/4)*SQRT3),
-                    self.base_width/2
-                )
+            self.add_triangle_to_path(
+                path,
+                (self.base_width/4, (self.base_width/4)*SQRT3),
+                self.base_width/2
+            )
             self.sierpinski(
                 path,
                 (self.base_width/4, (self.base_width/4)*SQRT3),
