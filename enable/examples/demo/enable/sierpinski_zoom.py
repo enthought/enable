@@ -174,7 +174,7 @@ class Viewer(HasTraits):
 
     @observe("base_width")
     def _update_base_width(self, event):
-        self.triangle.bounds = [self.base_width, self.base_width*(SQRT3/2)]
+        self.triangle.bounds = [event.new, event.new*(SQRT3/2)]
         self.triangle.base_width = event.new
         self.triangle.invalidate_and_redraw()
 
