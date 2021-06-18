@@ -75,38 +75,38 @@ class SierpinskiTriangle(AbstractOverlay):
         size = self.base_width/4 * (1/2)**(n - 1)
         if n == self.iterations:
             return
-        else:
-            # find top left corners of next 3 inverted triangles relative to
-            # the top left corner of the current one (ie point)
-            #
-            # In the diagram below, X is point, and the ? represent the next
-            # points to make recursive calls at
-            #
-            #       /\
-            #     ?/__\
-            #    X/_\/_\
-            #    /\    /\
-            #  ?/__\ ?/__\
-            #  /_\/_\/_\/_\
-            #
 
-            rel_to_point_locs = (size/2)*np.array([
-                [-1, -SQRT3],
-                [1, SQRT3],
-                [3, -SQRT3]
-            ])
-            # absolute location of those next points
-            abs_points = point + rel_to_point_locs
+        # find top left corners of next 3 inverted triangles relative to
+        # the top left corner of the current one (ie point)
+        #
+        # In the diagram below, X is point, and the ? represent the next
+        # points to make recursive calls at
+        #
+        #       /\
+        #     ?/__\
+        #    X/_\/_\
+        #    /\    /\
+        #  ?/__\ ?/__\
+        #  /_\/_\/_\/_\
+        #
 
-            for point in abs_points:
-                self.add_triangle_to_path(
-                    path,
-                    point,
-                    size
-                )
-                self.sierpinski(
-                    path, point, n+1
-                )
+        rel_to_point_locs = (size/2)*np.array([
+            [-1, -SQRT3],
+            [1, SQRT3],
+            [3, -SQRT3]
+        ])
+        # absolute location of those next points
+        abs_points = point + rel_to_point_locs
+
+        for point in abs_points:
+            self.add_triangle_to_path(
+                path,
+                point,
+                size
+            )
+            self.sierpinski(
+                path, point, n+1
+            )
 
     def add_triangle_to_path(self, path, point, size):
         """ Adds an inverted triangle to the input path, of side length size,
