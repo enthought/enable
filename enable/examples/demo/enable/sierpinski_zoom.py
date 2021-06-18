@@ -22,20 +22,20 @@ from traits.api import (
 )
 from traitsui.api import Item, UItem, View
 from enable.api import (
-    AbstractOverlay, Canvas, Component, ComponentEditor, Viewport, Scrolled
+    Canvas, Component, ComponentEditor, Viewport, Scrolled
 )
 from enable.tools.api import ViewportPanTool
 
 SQRT3 = np.sqrt(3)
 
 
-class SierpinskiTriangle(AbstractOverlay):
+class SierpinskiTriangle(Component):
 
     base_width = Int()
 
     iterations = Int()
 
-    def overlay(self, component, gc, view_bounds=None, mode="default"):
+    def _draw_mainlayer(self, gc, view_bounds=None, mode="default"):
         # draw the base triangle
         gc.translate_ctm(0., 0.)
         gc.set_fill_color((1.0, 1.0, 1.0, 1.0))
@@ -123,7 +123,7 @@ class Viewer(HasTraits):
 
     iterations = Range(0, 'max_iters')
 
-    triangle = Instance(AbstractOverlay)
+    triangle = Instance(Component)
 
     comp = Instance(Component)
 
@@ -145,14 +145,14 @@ class Viewer(HasTraits):
     def _comp_default(self):
         canvas = Canvas(draw_axes=True, bgcolor="gray")
         self.triangle = SierpinskiTriangle(
-            canvas,
             position=[0.0, 0.0],
             bounds=[self.base_width, self.base_width*(SQRT3/2)],
             iterations=self.iterations,
             max_iters=self.max_iters,
             base_width=self.base_width,
+            bgcolor="gray"
         )
-        canvas.overlays.append(self.triangle)
+        canvas.add(self.triangle)
 
         self.viewport = Viewport(
             component=canvas, enable_zoom=True, stay_inside=True
