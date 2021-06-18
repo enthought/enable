@@ -30,7 +30,8 @@ class AffineMatrixTestCase(unittest.TestCase):
         a = ones(6, "D")
         try:
             agg.AffineMatrix(a)
-        except NotImplementedError:
+        except (NotImplementedError, TypeError):
+            # NotImplementedError in Swig 3, TypeError in Swig 4 (see swig #1261)
             pass  # can't init from complex value.
 
     def test_init_from_array2(self):

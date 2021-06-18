@@ -77,8 +77,9 @@ def unicode_safe_init(self, _name="Arial", _size=12, _family=0, _style=0,
         _name = _name.decode()
     obj = _agg.new_AggFontType(_name, _size, _family, _style,
                                _encoding, _face_index, validate)
-    _swig_setattr(self, AggFontType, "this", obj)
-    _swig_setattr(self, AggFontType, "thisown", 1)
+
+    self.this = obj
+    self.thisown = 1
 
 # This is a crappy way of overriding the constructor
 AggFontType.__init__ = unicode_safe_init
