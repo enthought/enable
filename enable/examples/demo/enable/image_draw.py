@@ -13,7 +13,7 @@ This demonstrates the use of the simple Image component.
 import os
 
 from enable.api import ConstraintsContainer
-from enable.examples.example_support import DemoFrame, demo_main
+from enable.examples._example_support import DemoFrame, demo_main
 from enable.primitives.image import Image
 
 THIS_DIR = os.path.split(__file__)[0]

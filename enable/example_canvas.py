@@ -15,7 +15,7 @@ backwards compatibility.
 """
 import warnings
 
-from enable.examples.example_canvas import Canvas
+from enable.examples._example_canvas import Canvas
 
 warnings.warn(
     "Importing from this module is deprecated, and this module will be"

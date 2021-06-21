@@ -12,7 +12,7 @@ This demonstrates using Brush to set the fill of a region.
 """
 from traits.api import Instance
 
-from enable.examples.example_support import DemoFrame, demo_main
+from enable.examples._example_support import DemoFrame, demo_main
 from enable.api import (
     Brush, ColorStop, Component, Container, Gradient, RadialGradientBrush
 )

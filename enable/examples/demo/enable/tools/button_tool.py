@@ -17,7 +17,7 @@ from kiva.api import FILL, STROKE
 
 from enable.api import Container, transparent_color
 from enable.colors import ColorTrait
-from enable.examples.example_support import DemoFrame, demo_main
+from enable.examples._example_support import DemoFrame, demo_main
 from enable.primitives.api import Box
 from enable.tools.button_tool import ButtonTool
 

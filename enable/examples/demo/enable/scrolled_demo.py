@@ -14,7 +14,7 @@ from numpy import array
 from traits.api import Enum, Float, Instance, Tuple
 
 from enable.api import Component, Scrolled, Container, Pointer
-from enable.examples.example_support import DemoFrame, demo_main
+from enable.examples._example_support import DemoFrame, demo_main
 
 
 class Circle(Component):

@@ -11,7 +11,7 @@ from chaco.api import PlotComponent, AbstractOverlay, OverlayPlotContainer
 from traits.api import Enum, Float, Int, Str, Tuple
 
 from enable.api import ColorTrait
-from enable.examples.example_support import DemoFrame, demo_main
+from enable.examples._example_support import DemoFrame, demo_main
 from enable.tools.api import DragTool
 from kiva.trait_defs.api import KivaFont
 

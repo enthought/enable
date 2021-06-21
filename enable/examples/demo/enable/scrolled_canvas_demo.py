@@ -19,7 +19,7 @@
 from numpy import array
 
 from enable.api import Canvas, Viewport, Scrolled
-from enable.examples.example_support import demo_main, DemoFrame
+from enable.examples._example_support import demo_main, DemoFrame
 from enable.primitives.api import Box
 from enable.tools.api import ViewportPanTool
 

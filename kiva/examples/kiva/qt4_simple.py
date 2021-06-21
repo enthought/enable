@@ -16,7 +16,7 @@ from traits.etsconfig.api import ETSConfig
 
 ETSConfig.toolkit = "qt4.qpainter"
 
-from enable.examples.example_canvas import Canvas
+from enable.examples._example_canvas import Canvas
 
 try:
     from pyface.qt import QtGui

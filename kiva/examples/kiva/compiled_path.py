@@ -16,7 +16,7 @@
 import tempfile
 
 from enable.api import ConstraintsContainer
-from enable.examples.example_support import DemoFrame, demo_main
+from enable.examples._example_support import DemoFrame, demo_main
 from enable.primitives.image import Image
 from kiva.api import STROKE
 from kiva.image import GraphicsContext, CompiledPath

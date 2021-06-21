@@ -8,7 +8,7 @@
 #
 # Thanks for using Enthought open source!
 from enable.api import Container, TextField
-from enable.examples.example_support import DemoFrame, demo_main
+from enable.examples._example_support import DemoFrame, demo_main
 
 
 size = (500, 400)

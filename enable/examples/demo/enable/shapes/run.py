@@ -13,7 +13,7 @@ An example showing moveable shapes.
 
 # Enthought library imports.
 from enable.api import Container
-from enable.examples.example_support import DemoFrame, demo_main
+from enable.examples._example_support import DemoFrame, demo_main
 
 # Local imports
 from enable.examples.demo.enable.shapes.api import Box, Circle

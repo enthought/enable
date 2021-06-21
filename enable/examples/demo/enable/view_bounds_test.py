@@ -13,7 +13,7 @@ to draw().
 
 from enable.api import Container, Component, Scrolled
 from enable.base import empty_rectangle, intersect_bounds
-from enable.examples.example_support import DemoFrame, demo_main
+from enable.examples._example_support import DemoFrame, demo_main
 
 
 class Box(Component):

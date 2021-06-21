@@ -26,7 +26,7 @@ import numpy as np
 from traits.api import Instance, Int, observe
 from traitsui.api import Item, OKCancelButtons, View
 
-from enable.examples.example_support import DemoFrame, demo_main
+from enable.examples._example_support import DemoFrame, demo_main
 from enable.api import (
     AbstractOverlay, BaseTool, ColorStop, Component, Gradient,
     LinearGradientBrush, black_color_trait, marker_trait

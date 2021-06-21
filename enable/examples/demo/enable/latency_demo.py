@@ -16,7 +16,7 @@ import time
 from traits.api import Float
 
 from enable.api import Component, Container, ColorTrait, black_color_trait
-from enable.examples.example_support import DemoFrame, demo_main
+from enable.examples._example_support import DemoFrame, demo_main
 from kiva.api import SWISS, Font
 
 font = Font(family=SWISS)

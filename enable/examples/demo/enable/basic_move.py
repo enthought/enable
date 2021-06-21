@@ -14,7 +14,7 @@ This allows a simple component to be moved around the screen.
 from traits.api import Float
 
 from enable.api import Component, Pointer, Container
-from enable.examples.example_support import DemoFrame, demo_main
+from enable.examples._example_support import DemoFrame, demo_main
 
 
 class Box(Component):

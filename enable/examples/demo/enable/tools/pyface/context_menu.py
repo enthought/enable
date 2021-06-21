@@ -12,7 +12,7 @@ This demonstrates the most basic drawing capabilities using Enable.  A new
 component is created and added to a container.
 """
 
-from enable.examples.example_support import DemoFrame, demo_main
+from enable.examples._example_support import DemoFrame, demo_main
 from enable.api import Component, Container
 from enable.tools.pyface.context_menu_tool import ContextMenuTool
 
