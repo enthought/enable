@@ -18,22 +18,6 @@ from traitsui.api import Item, View
 
 from enable.api import Component, ComponentEditor
 
-# FIXME - it should be enough to do the following import, but because of the
-# PyQt/traits problem (see below) we can't because it would drag in traits too
-# early.  Until it is fixed we just assume wx if we can import it.
-# Force the selection of a valid toolkit.
-# import enable.toolkit
-if not ETSConfig.toolkit:
-    for toolkit, toolkit_module in (("wx", "wx"), ("qt4", "PyQt4")):
-        try:
-            exec("import " + toolkit_module)
-            ETSConfig.toolkit = toolkit
-            break
-        except ImportError:
-            pass
-    else:
-        raise RuntimeError("Can't load wx or qt4 backend for Chaco.")
-
 
 class DemoFrame(HasTraits):
 
