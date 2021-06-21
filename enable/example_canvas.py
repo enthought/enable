@@ -8,18 +8,20 @@
 #
 # Thanks for using Enthought open source!
 """
-A suitable replacement for the old Canvas class in Kiva. 
-Note this has been moved to sit in enable/examples.  This module is kept for
-backwards compatibility.
-
+This module is meant for internal use only and it is not meant for use in
+library code. Importing from this module is deprecated and it will be removed
+in Enable 6.0. We highly recommend that you update your code and vendorize what
+is necessary.
 """
 import warnings
 
 from enable.examples._example_canvas import Canvas
 
 warnings.warn(
-    "Importing from this module is deprecated, and this module will be"
-    " removed in a future release.",
+    "This module is meant for internal use only and it is not meant for use in"
+    " library code. Importing from this module is deprecated and it will be"
+    " removed in Enable 6.0. We highly recommend that you update your code and"
+    " vendorize what is necessary.",
     DeprecationWarning,
     stacklevel=2
 )
