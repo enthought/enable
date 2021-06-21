@@ -18,7 +18,7 @@ sit in enable/examples.  This module is kept for backwards compatibility.
 """
 import warnings
 
-from enable.examples.example_application import DemoApplication
+from enable.examples.example_application import DemoApplication, demo_main
 
 warnings.warn(
     "Importing from this module is deprecated, and this module will be"
