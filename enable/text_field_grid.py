@@ -188,7 +188,7 @@ class TextFieldGrid(Container):
 if __name__ == "__main__":
     from enable.wx_backend.api import Window
     from enable.api import Container
-    from enable.example_support import DemoFrame, demo_main
+    from enable.examples._example_support import DemoFrame, demo_main
 
     class MyFrame(DemoFrame):
         def _create_window(self):

@@ -10,7 +10,7 @@
 import numpy as np
 
 from enable.api import Component
-from enable.example_support import demo_main, DemoFrame
+from enable.examples._example_support import demo_main, DemoFrame
 
 
 class MyCanvas(Component):

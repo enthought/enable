@@ -10,7 +10,7 @@
 from numpy import array
 
 from enable.api import Container
-from enable.example_support import DemoFrame, demo_main
+from enable.examples._example_support import DemoFrame, demo_main
 from enable.text_grid import TextGrid
 
 size = (400, 100)

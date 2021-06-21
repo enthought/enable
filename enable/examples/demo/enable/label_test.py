@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 """ Small demo of the Label component.  """
 
-from enable.example_support import DemoFrame, demo_main
+from enable.examples._example_support import DemoFrame, demo_main
 from enable.label import Label
 
 

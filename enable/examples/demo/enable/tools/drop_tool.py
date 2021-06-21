@@ -11,7 +11,7 @@
 This demonstrates the use of the drop tool.
 """
 
-from enable.example_support import DemoFrame, demo_main
+from enable.examples._example_support import DemoFrame, demo_main
 from enable.api import Component, Container, Label
 from enable.tools.base_drop_tool import BaseDropTool
 

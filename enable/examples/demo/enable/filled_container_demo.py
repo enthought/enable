@@ -22,7 +22,7 @@ from numpy import array
 from traits.api import Any, Enum, Float, Instance, Tuple
 
 from enable.api import Container, Component, Pointer
-from enable.example_support import DemoFrame, demo_main
+from enable.examples._example_support import DemoFrame, demo_main
 from kiva.fonttools import str_to_font
 
 
