@@ -12,7 +12,9 @@ jobs:
   test-ets:
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        # Note that Ubuntu 20 cannot be used because its SWIG version is 4.0
+        # (enthought/enable#360)
+        os: [ubuntu-18.04]
         toolkit: ['pyside2', 'wx']
         python-version: [3.8]
     runs-on: ${{ matrix.os }}
