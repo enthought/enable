@@ -107,7 +107,15 @@ class FontManager:
                 break
         else:
             # use anything
-            self.default_font["ttf"] = ttffiles[0]
+            if len(ttffiles) > 0:
+                self.default_font["ttf"] = ttffiles[0]
+            else:  # no available fonts, use TestTTF font
+                import pkg_resources
+                data_dir = pkg_resources.resource_filename(
+                    "kiva.fonttools.tests", "data"
+                )
+                path = os.path.join(data_dir, "TestTTF.ttf")
+                self.default_font["ttf"] = path
 
         self.ttf_db = create_font_database(ttffiles, fontext="ttf")
 
