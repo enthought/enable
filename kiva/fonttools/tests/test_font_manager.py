@@ -83,6 +83,15 @@ class TestFontCache(unittest.TestCase):
             finally:
                 modules[module_name] = original_module
 
+    # regression test for enthought/enable#870
+    def test_no_available_fonts(self):
+        # ensure we are not using an already existing global font manager or
+        # font cache and that we have no system fonts available
+        with patch_global_font_manager(None):
+            with patch_font_cache(self.temp_dir, []):
+                # should not fail
+                font_manager_module.default_font_manager()
+
 
 class TestFontManager(unittest.TestCase):
     """ Test API of the font manager module."""
