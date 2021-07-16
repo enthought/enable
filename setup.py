@@ -537,6 +537,7 @@ if __name__ == "__main__":
                                   'demo/*/*/*/*/*'],
               'enable.savage.trait_defs.ui.wx': ['data/*.svg'],
               'kiva': ['tests/agg/doubleprom_soho_full.jpg',
+                       'fonttools/data/*.ttf',
                        'fonttools/tests/data/*.afm',
                        'fonttools/tests/data/*.ttc',
                        'fonttools/tests/data/*.ttf',

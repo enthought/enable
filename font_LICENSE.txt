@@ -1,6 +1,7 @@
 Project                 License                   File
 -----------------------------------------------------------------
 fonttools               MIT                 fonttools_LICENSE.txt
+Montserrat        SIL Open Font License           OFL.txt
 
 Files and orginal authors:
 -----------------------------------------------------------------
@@ -8,3 +9,5 @@ kiva/fonttools/tests/data:
                     TestTTC.ttc | fonttools
                     TestTTF.ttf | fonttools
              TestTTF Italic.ttf | fonttools
+kiva/fonttools/data:
+         Montserrat-Regular.ttf | Montserrat

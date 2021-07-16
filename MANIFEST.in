@@ -18,6 +18,7 @@ recursive-include kiva/agg *.py *.i *.cpp *.h *.c
 recursive-include kiva/agg/agg-24 *
 recursive-include kiva/agg/freetype2 *
 recursive-include kiva/agg/LICENSES *
+recursive-include kiva/fonttools/data *.ttf
 recursive-include kiva/fonttools/tests/data *.ttc *.ttf *.afm
 recursive-include kiva/fonttools/LICENSES *
 recursive-include kiva/gl *.h *.cpp *.i LICENSE_*
