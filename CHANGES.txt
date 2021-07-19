@@ -7,7 +7,7 @@ Enable 5.2.1
 Fixes
 -----
 
-* Fix bug when no fonts are available (#871)
+* Fix FontManager bug when no fonts are available (#871)
 
 Enable 5.2.0
 ============
