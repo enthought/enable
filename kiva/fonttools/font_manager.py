@@ -107,7 +107,22 @@ class FontManager:
                 break
         else:
             # use anything
-            self.default_font["ttf"] = ttffiles[0]
+            if len(ttffiles) > 0:
+                self.default_font["ttf"] = ttffiles[0]
+            else:  # no available fonts, use a simple default
+                warnings.warn(
+                    "Unable to find any available fonts. Using the very simple"
+                    " Montserrat-Regular as a default which may not support"
+                    " all desired functionality. If needed please add a font"
+                    " with ``kiva.api.add_application_font``",
+                    stacklevel=2
+                )
+                import pkg_resources
+                data_dir = pkg_resources.resource_filename(
+                    "kiva.fonttools", "data"
+                )
+                path = os.path.join(data_dir, " Montserrat-Regular.ttf")
+                self.default_font["ttf"] = path
 
         self.ttf_db = create_font_database(ttffiles, fontext="ttf")
 

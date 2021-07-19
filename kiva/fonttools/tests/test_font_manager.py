@@ -83,6 +83,17 @@ class TestFontCache(unittest.TestCase):
             finally:
                 modules[module_name] = original_module
 
+    # regression test for enthought/enable#870
+    def test_no_available_fonts(self):
+        # ensure we are not using an already existing global font manager or
+        # font cache and that we have no system fonts available
+        with patch_global_font_manager(None):
+            with self.assertWarns(UserWarning):
+                # patch_font_cache context manager triggers a FontManager
+                # instantiation.  Sould not fail, but should raise warning
+                with patch_font_cache(self.temp_dir, []):
+                    pass
+
 
 class TestFontManager(unittest.TestCase):
     """ Test API of the font manager module."""
