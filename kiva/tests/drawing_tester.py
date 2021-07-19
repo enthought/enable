@@ -186,7 +186,7 @@ class DrawingImageTester(DrawingTester):
         self.gc.save(filename)
         with Image.open(filename) as image:
             dpi = image.info['dpi']
-        return int(dpi[0])
+        return round(dpi[0])
 
     @contextlib.contextmanager
     def draw_and_check(self):
