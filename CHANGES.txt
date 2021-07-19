@@ -1,6 +1,14 @@
 Enable CHANGELOG
 ================
 
+Enable 5.2.1
+============
+
+Fixes
+-----
+
+* Fix FontManager bug when no fonts are available (#871)
+
 Enable 5.2.0
 ============
 
