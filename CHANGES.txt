@@ -8,6 +8,7 @@ Fixes
 -----
 
 * Fix FontManager bug when no fonts are available (#871)
+* Fix the dpi rounding issues with newer versions of pillow (#875)
 
 Enable 5.2.0
 ============
