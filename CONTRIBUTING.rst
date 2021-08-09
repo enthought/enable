@@ -35,21 +35,21 @@ distract the developer who reviews the code.
 Branches and Releases
 ---------------------
 
-Mainline Enable development occurs on the master branch. Features and bug fixes
+Mainline Enable development occurs on the main branch. Features and bug fixes
 should be developed in their own topical branches. Once a branch is ready to be
-merged into the master branch, a pull request should be created on GitHub so
+merged into the main branch, a pull request should be created on GitHub so
 that the code can be reviewed. Once another developer has signed off on the
-changes, they should be **squash merged** into the master branch. This allows
+changes, they should be **squash merged** into the main branch. This allows
 features and bug fixes to be easily cherry-picked into later patch release
 branches if needed.
 
 Given that disruptive changes should only be happening in topical branches, the
-master branch should always be in a buildable/runnable condition. Continuous
+main branch should always be in a buildable/runnable condition. Continuous
 Integration is your friend here, not your nemesis.
 
 Releases will always be tagged. If a patch release is later needed, and major
-changes have occured on the master branch (not just bug fixes), then a branch
-should be created from the release tag and fix commits cherry-picked from master
+changes have occured on the main branch (not just bug fixes), then a branch
+should be created from the release tag and fix commits cherry-picked from main
 until the appropriately patched result is arrived at. That result should then be
 tagged as a normal release and the branch deleted.
 
