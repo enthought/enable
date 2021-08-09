@@ -210,7 +210,7 @@ def install(runtime, toolkit, environment, source):
             github_url_fmt.format(pkg) for pkg in source_dependencies
         ]
         # Without the --no-dependencies flag such that new dependencies on
-        # master are brought in.
+        # main branch are brought in.
         commands = [
             "python -m pip install --force-reinstall {pkg}".format(pkg=pkg)
             for pkg in source_pkgs
