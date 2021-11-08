@@ -40,7 +40,7 @@ class CaselessPreservingLiteral(CaselessLiteral):
 
     def __init__(self, matchString):
         super().__init__(matchString.upper())
-        self.name = "'%s'" % matchString
+        self.set_name("'%s'" % matchString)
         self.errmsg = "Expected " + self.name
 
     def parseImpl(self, instring, loc, doActions=True):
