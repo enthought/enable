@@ -15,8 +15,8 @@ jobs:
   test-edm-linux:
     strategy:
       matrix:
-        toolkit: ['null', 'pyqt', 'pyqt5', 'pyside2', 'wx']
-    runs-on: ubuntu-16.04
+        toolkit: ['null', 'pyqt5', 'pyside2', 'wx']
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
       - name: Install Qt dependencies for Linux
@@ -27,7 +27,7 @@ jobs:
       - name: Install Wx dependencies for Linux
         run: |
           sudo apt-get update
-          sudo apt-get install libsdl2-2.0-0
+          sudo apt-get install libsdl1.2-dev
         if: matrix.toolkit == 'wx'
       - name: Install GL dependencies for Linux
         run: sudo apt-get install libglu1-mesa-dev

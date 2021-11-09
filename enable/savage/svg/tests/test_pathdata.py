@@ -14,8 +14,16 @@ from pyparsing import ParseException
 from enable.savage.svg.pathdata import (
     Sequence, closePath, coordinatePair, curve, ellipticalArc, horizontalLine,
     lineTo, moveTo, number, quadraticBezierCurveto,
-    smoothQuadraticBezierCurveto, svg, verticalLine
+    smoothQuadraticBezierCurveto, svg, verticalLine, CaselessLiteral,
 )
+
+
+class TestCaselessLiteral(unittest.TestCase):
+    def test_instantiation(self):
+        # regression test for https://github.com/enthought/enable/issues/887
+        # observed with pyparsing v >= 3
+        # we just test that instantiating the class doesnt raise exceptions
+        CaselessLiteral("test")
 
 
 class TestNumber(unittest.TestCase):
