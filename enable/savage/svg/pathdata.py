@@ -40,8 +40,13 @@ class CaselessPreservingLiteral(CaselessLiteral):
 
     def __init__(self, matchString):
         super().__init__(matchString.upper())
-        self.name = "'%s'" % matchString
-        self.errmsg = "Expected " + self.name
+
+        quoted_name = f"'{matchString}'"
+        if hasattr(self, "set_name"):
+            # Only available in pyparsing >= 3
+            self.set_name(quoted_name)
+        else:
+            self.setName(quoted_name)
 
     def parseImpl(self, instring, loc, doActions=True):
         test = instring[loc:loc + self.matchLen]
