@@ -29,7 +29,7 @@ __extras_require__ = {
     # Dependencies for PDF backend
     "pdf": ["reportlab"],
     # Dependencies for SVG backend
-    "svg": ["packaging", "pyparsing"],
+    "svg": ["pyparsing"],
     # Dependencies purely for running tests.
     "test": [
         "hypothesis",

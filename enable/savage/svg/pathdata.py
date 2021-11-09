@@ -16,9 +16,7 @@
             pass
 """
 
-from packaging.version import parse
 from pyparsing import (
-    __version__ as pyparsing_version_str,
     CaselessLiteral, Combine, Group, Literal, OneOrMore, Optional,
     ParseException, Word, ZeroOrMore, nums, oneOf
 )
@@ -43,13 +41,12 @@ class CaselessPreservingLiteral(CaselessLiteral):
     def __init__(self, matchString):
         super().__init__(matchString.upper())
 
-        pyparsing_version = parse(pyparsing_version_str)
-        if pyparsing_version.major == 2:
-            self.name = "'%s'" % matchString
-        elif pyparsing_version.major == 3:
-            self.set_name("'%s'" % matchString)
-
-        self.errmsg = "Expected " + self.name
+        quoted_name = f"'{matchString}'"
+        if hasattr(self, "set_name"):
+            # Only available in pyparsing >= 3
+            self.set_name(quoted_name)
+        else:
+            self.setName(quoted_name)
 
     def parseImpl(self, instring, loc, doActions=True):
         test = instring[loc:loc + self.matchLen]
