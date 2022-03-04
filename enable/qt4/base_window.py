@@ -26,7 +26,7 @@
 import warnings
 
 # Qt imports.
-from pyface.qt import QtCore, QtGui, QtOpenGL, is_qt4, qt_api
+from pyface.qt import QtCore, QtGui, QtOpenGL, is_qt4, is_qt5, qt_api
 
 # Enthought library imports.
 from enable.abstract_window import AbstractWindow
@@ -50,6 +50,10 @@ if qt_api == "pyside6":
     from PySide6.QtOpenGLWidgets import QOpenGLWidget
 elif qt_api == "pyqt6":
     from PyQt6.QtOpenGLWidgets import QOpenGLWidget
+elif qt_api == "pyside2":
+    from PySide2.QtWidgets import QOpenGLWidget
+elif qt_api == "pyqt5":
+    from PyQt5.QtWidgets import QOpenGLWidget
 else:
     QOpenGLWidget = QtOpenGL.QGLWidget
 
@@ -309,7 +313,8 @@ class _QtGLWindow(QOpenGLWidget):
     def paintEvent(self, event):
         super().paintEvent(event)
         self.handler.paintEvent(event)
-        self.swapBuffers()
+        if is_qt4:
+            self.swapBuffers()
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

@@ -8,6 +8,7 @@
 #
 # Thanks for using Enthought open source!
 import ctypes
+import logging
 from math import floor
 import sys
 
@@ -18,6 +19,9 @@ from kiva.affine import affine_from_values, transform_points
 from kiva.constants import BOLD, BOLD_ITALIC, ITALIC
 from kiva.fonttools import Font
 from kiva.gl.gl import CompiledPath, GraphicsContextGL, KivaGLFontType
+
+
+logger = logging.getLogger(__name__)
 
 
 def image_as_array(img):
@@ -442,8 +446,11 @@ try:
         return label
 
 
-except ImportError:
+except ImportError as exc:
     # Pyglet is not available, so we forgo some features
+    logger.info(
+        f"Error importing Pyglet, some features not available in gl backend: {exc}",
+    )
     ArrayImage = None
     GetFont = None
     GetLabel = None
