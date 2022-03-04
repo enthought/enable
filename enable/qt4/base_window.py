@@ -26,7 +26,7 @@
 import warnings
 
 # Qt imports.
-from pyface.qt import QtCore, QtGui, QtOpenGL
+from pyface.qt import QtCore, QtGui, QtOpenGL, is_qt4, qt_api
 
 # Enthought library imports.
 from enable.abstract_window import AbstractWindow
@@ -44,6 +44,14 @@ from .constants import (
 
 
 is_qt4 = QtCore.__version_info__[0] <= 4
+
+# QtOpenGLWidgets is not currently exposed in pyface.qt
+if qt_api == "pyside6":
+    from PySide6.QtOpenGLWidgets import QOpenGLWidget
+elif qt_api == "pyqt6":
+    from PyQt6.QtOpenGLWidgets import QOpenGLWidget
+else:
+    QOpenGLWidget = QtOpenGL.QGLWidget
 
 
 class _QtWindowHandler(object):
@@ -289,7 +297,7 @@ class _QtWindow(QtGui.QWidget):
         return self.handler.sizeHint(qt_size_hint)
 
 
-class _QtGLWindow(QtOpenGL.QGLWidget):
+class _QtGLWindow(QOpenGLWidget):
     def __init__(self, parent, enable_window):
         super().__init__(parent)
         self.handler = _QtWindowHandler(self, enable_window)
