@@ -21,6 +21,9 @@ def locale_context(category, new=None):
     """
     old = locale.getlocale(category)
     try:
+        # check that we can set the current locale to ensure finally will work
+        # see Enable #899
+        locale.setlocale(category, old)
         locale.setlocale(category, new)
     except locale.Error as e:
         raise unittest.SkipTest(str(e))
