@@ -9,6 +9,7 @@
 # Thanks for using Enthought open source!
 from contextlib import contextmanager
 import locale
+import sys
 import unittest
 
 from kiva import agg
@@ -21,9 +22,7 @@ def locale_context(category, new=None):
     """
     old = locale.getlocale(category)
     try:
-        # check that we can set the current locale to ensure finally will work
         # see Enable #899
-        locale.setlocale(category, old)
         locale.setlocale(category, new)
     except locale.Error as e:
         raise unittest.SkipTest(str(e))
@@ -34,6 +33,12 @@ def locale_context(category, new=None):
 
 
 class TestText(unittest.TestCase):
+
+    @unittest.skipIf(
+        sys.platform == "win32",
+        "Skipping on windows due to issues with setlocale. "
+        "See https://bugs.python.org/issue38324",
+    )
     def test_locale_independence(self):
         # Ensure that >ASCII Unicode text is decoded correctly regardless of
         # the locale.
