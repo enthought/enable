@@ -50,7 +50,7 @@ class TestText(unittest.TestCase):
                 gc.show_text(text)
                 x0, _ = gc.get_text_position()
 
-        with locale_context(locale.LC_CTYPE, ("en", "ASCII")):
+        with locale_context(locale.LC_CTYPE, ("C", "ASCII")):
             gc = agg.GraphicsContextArray((200, 200))
             f = Font("modern")
             with gc:
