@@ -21,11 +21,7 @@ def locale_context(category, new=None):
     """ Temporarily set the locale.
     """
     old = locale.getlocale(category)
-    try:
-        # see Enable #899
-        locale.setlocale(category, new)
-    except locale.Error as e:
-        raise unittest.SkipTest(str(e))
+    locale.setlocale(category, new)
     try:
         yield
     finally:
@@ -37,7 +33,7 @@ class TestText(unittest.TestCase):
     @unittest.skipIf(
         sys.platform == "win32",
         "Skipping on windows due to issues with setlocale. "
-        "See https://bugs.python.org/issue38324",
+        "See issue #899 and https://bugs.python.org/issue38324",
     )
     def test_locale_independence(self):
         # Ensure that >ASCII Unicode text is decoded correctly regardless of
