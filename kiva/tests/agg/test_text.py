@@ -35,7 +35,7 @@ class TestText(unittest.TestCase):
         # the locale.
         text = "\N{GREEK SMALL LETTER MU}"
 
-        with locale_context(locale.LC_CTYPE, ("en", "UTF-8")):
+        with locale_context(locale.LC_CTYPE, ("en", "utf8")):
             gc = agg.GraphicsContextArray((200, 200))
             f = Font("modern")
             with gc:
