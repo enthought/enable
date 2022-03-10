@@ -28,7 +28,7 @@ DRAG_RESULTS_MAP = {
 BUTTON_NAME_MAP = {
     QtCore.Qt.LeftButton: "left",
     QtCore.Qt.RightButton: "right",
-    QtCore.Qt.MidButton: "middle",
+    QtCore.Qt.MiddleButton: "middle",
     QtCore.Qt.XButton1: "back",
     QtCore.Qt.XButton2: "forward",
     QtCore.Qt.NoButton: "none",
