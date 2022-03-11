@@ -188,7 +188,7 @@ def install(runtime, toolkit, environment, source):
         elif sys.platform == "linux":
             # XXX this is mainly for TravisCI workers; need a generic solution
             commands.append(
-                "edm run -e {environment} -- pip install -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04/ wxPython<4.1"  # noqa: E501
+                "edm run -e {environment} -- pip install -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04/ wxPython<4.1"  # noqa: E501
             )
         else:
             commands.append(
@@ -210,7 +210,7 @@ def install(runtime, toolkit, environment, source):
             github_url_fmt.format(pkg) for pkg in source_dependencies
         ]
         # Without the --no-dependencies flag such that new dependencies on
-        # master are brought in.
+        # main branch are brought in.
         commands = [
             "python -m pip install --force-reinstall {pkg}".format(pkg=pkg)
             for pkg in source_pkgs

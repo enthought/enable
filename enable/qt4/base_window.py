@@ -499,7 +499,7 @@ class _Window(AbstractWindow):
             shift_down=bool(modifiers & QtCore.Qt.ShiftModifier),
             control_down=bool(modifiers & QtCore.Qt.ControlModifier),
             left_down=bool(buttons & QtCore.Qt.LeftButton),
-            middle_down=bool(buttons & QtCore.Qt.MidButton),
+            middle_down=bool(buttons & QtCore.Qt.MiddleButton),
             right_down=bool(buttons & QtCore.Qt.RightButton),
             window=self,
         )
