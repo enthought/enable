@@ -285,7 +285,7 @@ class GraphicsContext(object):
                     "Array of lengths should have an even number of values, "
                     f"got {lengths!r}"
                 )
-            if any(lengths <= 0):
+            if any(length <= 0 for length in lengths):
                 raise ValueError(
                     f"All length values should be positive, got {lengths!r}"
                 )
