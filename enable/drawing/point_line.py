@@ -9,9 +9,9 @@
 # Thanks for using Enthought open source!
 """ A point-to-point drawn polygon. """
 
-from enable.api import cursor_style_trait, Line
 from traits.api import Event, Int, Instance
 
+from enable.api import Line, Pointer
 from .drawing_tool import DrawingTool
 
 
@@ -29,10 +29,10 @@ class PointLine(DrawingTool):
     proximity_distance = Int(4)
 
     # The cursor shapes to use for various modes
-    normal_cursor = cursor_style_trait("arrow")
-    drawing_cursor = cursor_style_trait("pencil")
-    delete_cursor = cursor_style_trait("bullseye")
-    move_cursor = cursor_style_trait("sizing")
+    normal_cursor = Pointer("arrow")
+    drawing_cursor = Pointer("pencil")
+    delete_cursor = Pointer("bullseye")
+    move_cursor = Pointer("sizing")
 
     # The index of the vertex being dragged, if any.
     _dragged = Int
