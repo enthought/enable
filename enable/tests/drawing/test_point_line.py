@@ -10,12 +10,10 @@
 
 import unittest
 
-from traits.testing.api import UnittestTools
-
 from enable.drawing.point_line import PointLine
 
 
-class TestPointLine(UnittestTools, unittest.TestCase):
+class TestPointLine(unittest.TestCase):
 
     def test_pointer_shapes(self):
         point_line = PointLine()
