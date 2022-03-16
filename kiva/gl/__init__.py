@@ -448,8 +448,8 @@ try:
 
 except ImportError as exc:
     # Pyglet is not available, so we forgo some features
-    logger.info(
-        f"Error importing Pyglet, some features not available in gl backend: {exc}",
+    logger.exception(
+        "Error importing Pyglet, some features not available in gl backend"
     )
     ArrayImage = None
     GetFont = None

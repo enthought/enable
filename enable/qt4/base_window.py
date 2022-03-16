@@ -26,7 +26,7 @@
 import warnings
 
 # Qt imports.
-from pyface.qt import QtCore, QtGui, QtOpenGL, is_qt4, is_qt5, qt_api
+from pyface.qt import QtCore, QtGui, QtOpenGL, is_qt4, qt_api
 
 # Enthought library imports.
 from enable.abstract_window import AbstractWindow
