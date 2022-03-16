@@ -9,6 +9,7 @@
 # Thanks for using Enthought open source!
 from contextlib import contextmanager
 import locale
+import sys
 import unittest
 
 from kiva import agg
@@ -31,12 +32,18 @@ def locale_context(category, new=None):
 
 
 class TestText(unittest.TestCase):
+
+    @unittest.skipIf(
+        sys.platform == "win32",
+        "Skipping on windows due to issues with setlocale. "
+        "See issue #899 and https://bugs.python.org/issue38324",
+    )
     def test_locale_independence(self):
         # Ensure that >ASCII Unicode text is decoded correctly regardless of
         # the locale.
         text = "\N{GREEK SMALL LETTER MU}"
 
-        with locale_context(locale.LC_CTYPE, ("en", "UTF-8")):
+        with locale_context(locale.LC_CTYPE, ("en", "utf8")):
             gc = agg.GraphicsContextArray((200, 200))
             f = Font("modern")
             with gc:
@@ -46,7 +53,7 @@ class TestText(unittest.TestCase):
                 gc.show_text(text)
                 x0, _ = gc.get_text_position()
 
-        with locale_context(locale.LC_CTYPE, ("en", "ASCII")):
+        with locale_context(locale.LC_CTYPE, ("C", "ASCII")):
             gc = agg.GraphicsContextArray((200, 200))
             f = Font("modern")
             with gc:

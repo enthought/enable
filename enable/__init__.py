@@ -32,7 +32,6 @@ __extras_require__ = {
     "svg": ["pyparsing"],
     # Dependencies purely for running tests.
     "test": [
-        "hypothesis",
         "PyPDF2",  # for pdf drawing tests in kiva.
         "setuptools",
     ],

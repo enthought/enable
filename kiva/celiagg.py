@@ -280,6 +280,15 @@ class GraphicsContext(object):
         """
         if lengths is not None:
             count = len(lengths)
+            if count % 2 == 1:
+                raise ValueError(
+                    "Array of lengths should have an even number of values, "
+                    f"got {lengths!r}"
+                )
+            if any(length <= 0 for length in lengths):
+                raise ValueError(
+                    f"All length values should be positive, got {lengths!r}"
+                )
             lengths = np.array(lengths).reshape(count // 2, 2)
         else:
             lengths = []

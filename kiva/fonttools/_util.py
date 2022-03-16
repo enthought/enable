@@ -155,10 +155,14 @@ def get_ttf_prop_dict(font):
                 if bit in _ot_unicode_range_bits:
                     languages.add(_ot_unicode_range_bits[bit])
         # Check the codepage range bits
-        cp_bits = table.ulCodePageRange1
-        for lang, mask in _ot_code_page_masks.items():
-            if cp_bits & mask:
-                languages.add(lang)
+        try:
+            cp_bits = table.ulCodePageRange1
+            for lang, mask in _ot_code_page_masks.items():
+                if cp_bits & mask:
+                    languages.add(lang)
+        except AttributeError:
+            # some fonts don't have ulCodePageRange1
+            pass
         # Lock the set so that it's hashable
         propdict["languages"] = frozenset(languages)
     except KeyError:

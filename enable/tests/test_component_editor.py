@@ -10,13 +10,16 @@
 """ Test the interaction between traitsui and enable's ComponentEditor.
 """
 import unittest
+from unittest import mock
 
 from traits.api import Any, HasTraits
 from traitsui.api import Item, View
 
 from enable.component import Component
 from enable.component_editor import ComponentEditor
-from enable.tests._testing import get_dialog_size, skip_if_null
+from enable.tests._testing import (
+    get_dialog_size, skip_if_null, skip_if_not_qt, skip_if_not_wx
+)
 
 ITEM_WIDTH, ITEM_HEIGHT = 700, 200
 
@@ -74,8 +77,8 @@ class TestComponentEditor(unittest.TestCase):
         self.assertGreater(size[0], ITEM_WIDTH - 1)
         self.assertGreater(size[1], ITEM_HEIGHT - 1)
 
-    @skip_if_null
-    def test_component_hidpi_size_stability(self):
+    @skip_if_not_wx
+    def test_component_hidpi_size_stability_wx(self):
         # Issue #634: HiDPI doubles size of components when a component is
         # replaced
         dialog = _ComponentDialogWithSize(thing=Component())
@@ -89,3 +92,20 @@ class TestComponentEditor(unittest.TestCase):
         new_bounds = dialog.thing.bounds
 
         self.assertListEqual(initial_bounds, new_bounds)
+
+    @skip_if_not_qt
+    def test_component_hidpi_size_stability_qt(self):
+        # Issue #634: HiDPI doubles size of components when a component is
+        # replaced
+        dialog = _ComponentDialogWithSize(thing=Component())
+        dialog.edit_traits()
+
+        initial_bounds = dialog.thing.bounds
+        # Force the window into HiDPI mode
+        with mock.patch.object(
+            dialog.thing.window.control, "devicePixelRatio", return_value=2
+        ) as mock_method:
+            dialog.thing = Component()
+            new_bounds = dialog.thing.bounds
+
+            self.assertListEqual(initial_bounds, new_bounds)

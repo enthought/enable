@@ -94,7 +94,6 @@ dependencies = {
     "coverage",
     "Cython",
     "fonttools",
-    "hypothesis",
     "kiwisolver",
     "numpy",
     "pillow",

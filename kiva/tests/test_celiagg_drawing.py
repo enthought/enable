@@ -14,6 +14,7 @@ from kiva.tests.drawing_tester import DrawingImageTester
 
 
 class TestCeliaggDrawing(DrawingImageTester, unittest.TestCase):
+
     def create_graphics_context(self, width, height, pixel_scale):
         return GraphicsContext((width, height), base_pixel_scale=pixel_scale)
 
@@ -37,3 +38,12 @@ class TestCeliaggDrawing(DrawingImageTester, unittest.TestCase):
         with open(filename, 'wb') as fp:
             fp.write(stream)
         self.assertImageSavedWithContent(filename)
+
+    def test_set_line_dash_odd(self):
+        with self.assertRaises(ValueError):
+            self.gc.set_line_dash([1.0, 2.0, 3.0])
+
+    def test_set_line_dash_positive(self):
+        # regression test for #909
+        with self.assertRaises(ValueError):
+            self.gc.set_line_dash([0.0, 0.0])

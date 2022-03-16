@@ -31,7 +31,7 @@ from pyface.qt import QtCore, QtGui, QtOpenGL, is_qt4, is_qt5, qt_api
 # Enthought library imports.
 from enable.abstract_window import AbstractWindow
 from enable.events import KeyEvent, MouseEvent, DragEvent
-from traits.api import Instance
+from traits.api import Instance, Property
 
 # Local imports.
 from .constants import (
@@ -364,6 +364,9 @@ class _Window(AbstractWindow):
 
     control = Instance(QtGui.QWidget)
 
+    # Use a Property since this value can change dynamically
+    base_pixel_scale = Property(observe="control")
+
     def __init__(self, parent, wid=-1, pos=None, size=None, **traits):
         AbstractWindow.__init__(self, **traits)
 
@@ -373,14 +376,20 @@ class _Window(AbstractWindow):
             parent = parent.parentWidget()
         self.control = self._create_control(parent, self)
 
-        if self.high_resolution and hasattr(self.control, "devicePixelRatio"):
-            self.base_pixel_scale = self.control.devicePixelRatio()
-
         if pos is not None:
             self.control.move(*pos)
 
         if size is not None:
             self.control.resize(*size)
+
+    def _get_base_pixel_scale(self):
+        if self.control is None:
+            return 1.0
+
+        if self.high_resolution and hasattr(self.control, "devicePixelRatio"):
+            return self.control.devicePixelRatio()
+
+        return 1.0
 
     # ------------------------------------------------------------------------
     # Implementations of abstract methods in AbstractWindow

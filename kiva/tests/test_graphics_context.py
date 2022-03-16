@@ -9,8 +9,6 @@
 # Thanks for using Enthought open source!
 import unittest
 
-from hypothesis import given
-from hypothesis.strategies import sampled_from
 from numpy import (
     alltrue, array, asarray, concatenate, dtype, newaxis, ones, ravel, zeros
 )
@@ -32,70 +30,74 @@ class TestAlphaBlackImage(unittest.TestCase):
         self.size = (1, 1)
         self.color = 0.0
 
-    @given(sampled_from([1.0, 0.0, 0.5]))
-    def test_simple(self, color):
-        gc = GraphicsContext(self.size, pix_format="bgra32")
-        desired = self.solid_bgra32(self.size, color)
-        img = GraphicsContext(desired, pix_format="bgra32")
-        gc.draw_image(img)
-        actual = gc.bmp_array
-        # for alpha == 1, image should be exactly equal.
-        self.assert_images_equal(desired, actual)
+    def test_simple(self):
+        for color in [1.0, 0.0, 0.5]:
+            with self.subTest(color=color):
+                desired = self.solid_bgra32(self.size, color)
+                gc = GraphicsContext(self.size, pix_format="bgra32")
+                img = GraphicsContext(desired, pix_format="bgra32")
+                gc.draw_image(img)
+                actual = gc.bmp_array
+                # for alpha == 1, image should be exactly equal.
+                self.assert_images_equal(desired, actual)
 
-    @given(sampled_from([1.0, 0.0, 0.5]))
-    def test_image_alpha(self, color):
+    def test_image_alpha(self):
         alpha = 0.5
-        gc = GraphicsContext(self.size, pix_format="bgra32")
-        orig = self.solid_bgra32(self.size, color, alpha)
-        img = GraphicsContext(orig, pix_format="bgra32")
-        gc.draw_image(img)
-        actual = gc.bmp_array
-        gc_background = self.solid_bgra32(self.size, 1.0)
-        orig = self.solid_bgra32(self.size, color, alpha)
-        desired = self.alpha_blend(gc_background, orig)
+        for color in [1.0, 0.0, 0.5]:
+            with self.subTest(color=color):
+                gc = GraphicsContext(self.size, pix_format="bgra32")
+                orig = self.solid_bgra32(self.size, color, alpha)
+                img = GraphicsContext(orig, pix_format="bgra32")
+                gc.draw_image(img)
+                actual = gc.bmp_array
+                gc_background = self.solid_bgra32(self.size, 1.0)
+                orig = self.solid_bgra32(self.size, color, alpha)
+                desired = self.alpha_blend(gc_background, orig)
 
-        # also, the alpha channel of the image is not copied into the
-        # desination graphics context, so we have to ignore alphas
-        self.assert_images_close(
-            desired[:, :, :-1], actual[:, :, :-1], diff_allowed=slop_allowed
-        )
+                # also, the alpha channel of the image is not copied into the
+                # desination graphics context, so we have to ignore alphas
+                self.assert_images_close(
+                    desired[:, :, :-1], actual[:, :, :-1], diff_allowed=slop_allowed
+                )
 
-    @given(sampled_from([1.0, 0.0, 0.5]))
-    def test_ambient_alpha(self, color):
-        orig = self.solid_bgra32(self.size, color)
-        img = GraphicsContext(orig, pix_format="bgra32")
-        gc = GraphicsContext(self.size, pix_format="bgra32")
-        amb_alpha = 0.5
-        gc.set_alpha(amb_alpha)
-        gc.draw_image(img)
-        actual = gc.bmp_array
+    def test_ambient_alpha(self):
+        for color in [1.0, 0.0, 0.5]:
+            with self.subTest(color=color):
+                orig = self.solid_bgra32(self.size, color)
+                img = GraphicsContext(orig, pix_format="bgra32")
+                gc = GraphicsContext(self.size, pix_format="bgra32")
+                amb_alpha = 0.5
+                gc.set_alpha(amb_alpha)
+                gc.draw_image(img)
+                actual = gc.bmp_array
 
-        gc_background = self.solid_bgra32(self.size, 1.0)
-        orig = self.solid_bgra32(self.size, color)
-        desired = self.alpha_blend(
-            gc_background, orig, ambient_alpha=amb_alpha
-        )
-        # alpha blending is approximate, allow channel differences of to 2.
-        self.assert_images_close(desired, actual, diff_allowed=slop_allowed)
+                gc_background = self.solid_bgra32(self.size, 1.0)
+                orig = self.solid_bgra32(self.size, color)
+                desired = self.alpha_blend(
+                    gc_background, orig, ambient_alpha=amb_alpha
+                )
+                # alpha blending is approximate, allow channel differences of to 2.
+                self.assert_images_close(desired, actual, diff_allowed=slop_allowed)
 
-    @given(sampled_from([1.0, 0.0, 0.5]))
-    def test_ambient_plus_image_alpha(self, color):
+    def test_ambient_plus_image_alpha(self):
         amb_alpha = 0.5
         img_alpha = 0.5
-        gc = GraphicsContext(self.size, pix_format="bgra32")
-        orig = self.solid_bgra32(self.size, color, img_alpha)
-        img = GraphicsContext(orig, pix_format="bgra32")
-        gc.set_alpha(amb_alpha)
-        gc.draw_image(img)
-        actual = gc.bmp_array
+        for color in [1.0, 0.0, 0.5]:
+            with self.subTest(color=color):
+                gc = GraphicsContext(self.size, pix_format="bgra32")
+                orig = self.solid_bgra32(self.size, color, img_alpha)
+                img = GraphicsContext(orig, pix_format="bgra32")
+                gc.set_alpha(amb_alpha)
+                gc.draw_image(img)
+                actual = gc.bmp_array
 
-        gc_background = self.solid_bgra32(self.size, 1.0)
-        orig = self.solid_bgra32(self.size, color, img_alpha)
-        desired = self.alpha_blend(
-            gc_background, orig, ambient_alpha=amb_alpha
-        )
-        # alpha blending is approximate, allow channel differences of to 2.
-        self.assert_images_close(desired, actual, diff_allowed=slop_allowed)
+                gc_background = self.solid_bgra32(self.size, 1.0)
+                orig = self.solid_bgra32(self.size, color, img_alpha)
+                desired = self.alpha_blend(
+                    gc_background, orig, ambient_alpha=amb_alpha
+                )
+                # alpha blending is approximate, allow channel differences of to 2.
+                self.assert_images_close(desired, actual, diff_allowed=slop_allowed)
 
     def test_rect_scale(self):
         color = 0.0
