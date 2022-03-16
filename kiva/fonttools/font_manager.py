@@ -8,13 +8,12 @@
 #
 # Thanks for using Enthought open source!
 """
-####### NOTE #######
-This is based heavily on matplotlib's font_manager.py SVN rev 8713
-(git commit f8e4c6ce2408044bc89b78b3c72e54deb1999fb5),
-but has been modified quite a bit in the decade since it was copied.
-####################
-
 A module for finding, managing, and using fonts across platforms.
+
+.. note::
+    This is based heavily on matplotlib's font_manager.py SVN rev 8713
+    (git commit f8e4c6ce2408044bc89b78b3c72e54deb1999fb5),
+    but has been modified quite a bit in the decade since it was copied.
 
 The design is based on the `W3C Cascading Style Sheet, Level 1 (CSS1)
 font specification <http://www.w3.org/TR/1998/REC-CSS2-19980512/>`_.
