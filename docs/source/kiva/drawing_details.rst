@@ -120,9 +120,10 @@ join, and cap:
   :linenos:
   :lineno-match:
 
-Then in a loop, we draw twice (the two :py:meth:`stroke_path` calls). The first
-draw uses a ``with`` block to temporarily modify the drawing state. It adds more
-affine transformations: a rotate and a translate. It also changes some line
+Then in a loop, we draw twice (the two
+:py:meth:`~.AbstractGraphicsContext.stroke_path` calls). The first draw uses a
+``with`` block to temporarily modify the drawing state. It adds more affine
+transformations: a rotate and a translate. It also changes some line
 properties: stroke color, width, and cap. A rectangle is then added to the
 current path and stroked.
 

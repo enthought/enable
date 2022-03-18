@@ -316,7 +316,7 @@ Dashes::
 
 .. image:: images/dashes.png
 
-Before filling a path, the colour of the fill is via the
+Before filling a path, the color of the fill is via the
 :py:meth:`~.AbstractGraphicsContext.set_fill_color` method, and gradient fills
 can be done via the :py:meth:`~.AbstractGraphicsContext.set_linear_gradient`
 and :py:meth:`~.AbstractGraphicsContext.set_radial_gradient` methods.  Finally,
