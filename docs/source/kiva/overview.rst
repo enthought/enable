@@ -11,28 +11,31 @@ Kiva is a 2D vector drawing interface providing functionality similar to
 the 2D drawing routines of `OpenGL <http://www.opengl.org/>`_ , the HTML5
 Canvas element and many other similar 2D vector drawing APIs.  Rather than
 re-implementing everything, Kiva is a Python interface layer that sits on top
-of many different back-ends which are in fact provided by some of these
-libraries, depending on the platform, GUI toolkit, and capabilities of the
-system.
+of many different back-ends, some of which are in fact provided by some of
+these libraries.  Which back-ends are available depends on the platform, GUI
+toolkit, and capabilities of the system. For example the Quartz backend is only
+available on Mac OS systems, while the QPainter backend is available if PyQt
+or PySide are installed in the current Python environment.
 
 This approach permits code to be written to the Kiva API, but produce output
 that could be rendered to a GUI window, an image file, a PDF file, or a number
 of other possible output formats without any (or at least minimal) changes to
 the image generation code.
 
-Kiva is the base drawing layer of the Chaco plotting library, and is what is
-responsible for actually drawing pixels on the screen.  Developers interested
-in writing code that renders new plots or other graphical features for Chaco
-will need to be at least passingly familiar with the Kiva drawing API.
+Kiva is the base drawing layer of the `Chaco <https://docs.enthought.com/chaco>`_
+plotting library, and is what is responsible for actually drawing pixels on the
+screen.  Developers interested in writing code that renders new plots or other
+graphical features for Chaco will need to be at least passingly familiar with
+the Kiva drawing API.
 
 The most important Kiva backend is the Agg or "Image" backend, which is a
 Python extension module which wraps the C++
-`Anti-grain geometry <http://www.antigrain.com/>`_ drawing library into a
-Python extension and exposes the Kiva API.  The Agg renders the vector drawing
-commands into a raster image which can then be saved as a standard image format
-(such as PNG or JPEG) or copied into a GUI window.  The Agg backend should be
-available on any platform, and should work even if there is no GUI or windowing
-system available.
+`Anti-grain geometry <http://http://agg.sourceforge.net/antigrain.com/index.html>`_
+drawing library into a Python extension and exposes the Kiva API.  Agg renders
+the vector drawing commands into a raster image which can then be saved as a
+standard image format (such as PNG or JPEG) or copied into a GUI window.  The
+Agg backend should be available on any platform, and should work even if there
+is no GUI or windowing system available.
 
 Kiva Concepts
 =============
@@ -192,31 +195,44 @@ Paths
 The basic drawing operations are performed by building a path out of primitive
 operations, and then performing stroking and/or filling operations with it.
 
-The simplest path operations are ``move_to()`` and ``line_to()`` which
-respectively move the current point in the path to the specified point, and
-add a line to the path from the current point to the specified point.
+The simplest path operations are :py:meth:`~.AbstractGraphicsContext.move_to`
+and :py:meth:`~.AbstractGraphicsContext.line_to` which respectively move the
+current point in the path to the specified point, and add a line to the path
+from the current point to the specified point.
 
 In addition to the straight line commands, there are 4 arc commands for adding
-curves to a path: ``curve_to()`` which draws a cubic bezier curve,
-``quad_curve_to()`` which draws a quadratic bezier curve, ``arc()`` which
-draws a circular arc based on a center and radius, and ``arc_to()`` which
-draws a circular arc from one point to another.
+curves to a path: :py:meth:`~.AbstractGraphicsContext.curve_to` which draws a
+cubic bezier curve, :py:meth:`~.AbstractGraphicsContext.quad_curve_to` which
+draws a quadratic bezier curve, :py:meth:`~.AbstractGraphicsContext.arc` which
+draws a circular arc based on a center and radius, and
+:py:meth:`~.AbstractGraphicsContext.arc_to` which draws a circular arc from one
+point to another.
 
-Finally, the ``rect()`` method adds a rectangle to the path.
+Finally, the :py:meth:`~.AbstractGraphicsContext.rect` method adds a rectangle
+to the path.
 
-In addition there are convenience methods ``lines()``, ``rects()`` and
-``line_set()`` which add multiple lines or rectangles to a path, reading from
-appropriately shaped numpy arrays.
+In addition there are convenience methods
+:py:meth:`~.AbstractGraphicsContext.lines`,
+:py:meth:`~.AbstractGraphicsContext.rects` and
+:py:meth:`~.AbstractGraphicsContext.line_set` which add multiple lines or
+rectangles to a path, reading from appropriately shaped NumPy arrays.
 
 None of these methods make any change to the visible image until the path is
-either stroked with ``stroke_path()`` or filled with ``fill_path()``.  The way
-these actions are performed depends upon certain state of the graphics context.
+drawn with :py:meth:`~.AbstractGraphicsContext.draw_path` or the convenience
+methods :py:meth:`~.AbstractGraphicsContext.stroke_path`,
+:py:meth:`~.AbstractGraphicsContext.fill_path`, or
+:py:meth:`~.AbstractGraphicsContext.eof_fill_path`.  The way
+these actions are performed depends upon the state of the graphics context.
 
 For stroking, the graphics context keeps track of the color to use with
-``set_stroke_color()``, the thickness of the line with ``set_line_width()``,
-the way that lines are joined with ``set_line_join()`` and
-``set_miter_limit()``, and the way that they are ended with ``set_line_cap()``.
-Lines can also be dashed using the ``set_line_dash()`` method which takes a
+:py:meth:`~.AbstractGraphicsContext.set_stroke_color`, the thickness of the
+line with :py:meth:`~.AbstractGraphicsContext.set_line_width`,
+the way that lines are joined with
+:py:meth:`~.AbstractGraphicsContext.set_line_join` and
+:py:meth:`~.AbstractGraphicsContext.set_miter_limit`, and the way that they are
+ended with :py:meth:`~.AbstractGraphicsContext.set_line_cap`.
+Lines can also be dashed using the
+:py:meth:`~.AbstractGraphicsContext.set_line_dash` method which takes a
 pattern of numbers to use for lengths of on and off, and an optional ``phase``
 for where to start in the pattern.
 
@@ -300,10 +316,11 @@ Dashes::
 
 .. image:: images/dashes.png
 
-Before filling a path, the colour of the fill is via the ``set_fill_color()``
-method, and gradient fills can be done via the ``set_linear_gradient()`` and
-``set_radial_gradient()`` methods.  Finally, there are two different fill modes
-available:
+Before filling a path, the color of the fill is via the
+:py:meth:`~.AbstractGraphicsContext.set_fill_color` method, and gradient fills
+can be done via the :py:meth:`~.AbstractGraphicsContext.set_linear_gradient`
+and :py:meth:`~.AbstractGraphicsContext.set_radial_gradient` methods.  Finally,
+there are two different fill modes available:
 `even-odd fill <http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule>`_ and
 `non-zero winding fill <http://en.wikipedia.org/wiki/Nonzero-rule>`_
 
@@ -343,7 +360,8 @@ Text
 ----
 
 Text can be rendered at a point by first setting the font to use, then setting
-the text location using ``set_text_position()`` and then ``show_text()`` to
+the text location using :py:meth:`~.AbstractGraphicsContextset_text_position`
+and then :py:meth:`~.AbstractGraphicsContext.show_text` to
 render the text::
 
     from kiva.api import Font
@@ -361,54 +379,60 @@ render the text::
 
 Text defaults to being rendered filled, but can be rendered with an outline.
 
+Images
+------
+
+Raster images from NumPy arrays, Pillow ``Image`` objects, or some Kiva
+graphics contexts can be rendered into a graphics context using the
+:py:meth:`~.AbstractGraphicsContext.draw_image` method.
+
 
 Kiva Backends
 =============
+
+The Kiva package comes with a number of backends included.
 
 GUI-capable
 -----------
 Each of these backends can be used to draw the contents of windows in a
 graphical user interface.
 
-kiva.agg/image
-~~~~~~~~~~~~~~
-This is a wrapper of the popular Anti-Grain Geometry C++ library. It is the
-current default backend.
+kiva.agg/image/oldagg
+    This is a wrapper of the popular Anti-Grain Geometry C++ library. It is the
+    current default backend.  This backend will be replaced by the celiagg
+    backend in a future release.
 
 cairo
-~~~~~
-A backend based on the `Cairo graphics library <https://www.cairographics.org/>`_.
+    A backend based on the `Cairo graphics library <https://www.cairographics.org/>`_.
 
 celiagg
-~~~~~~~
-A newer wrapper of Anti-Grain Geometry which is maintained outside of
-kiva/enable.
+    A newer wrapper of Anti-Grain Geometry which is maintained outside of
+    kiva/enable.  It is planned that this will become the default image backend
+    in a future release.
 
 gl
-~~
-OpenGL drawing. This backend is quite limited compared to others.
+    OpenGL drawing. This backend is quite limited compared to others.
 
 qpainter
-~~~~~~~~
-Qt ``QPainter`` drawing. This is only availble with the Qt toolkit.
+    Qt ``QPainter`` drawing. This is only availble with the Qt toolkit.
 
 quartz
-~~~~~~
-macOS Quartz graphics (ie `CGContext <https://developer.apple.com/documentation/coregraphics/cgcontext>`_).
-This is only available on macOS.
+    MacOS Quartz graphics (ie `CGContext <https://developer.apple.com/documentation/coregraphics/cgcontext>`_).
+    This is only available on macOS.
+
+blend2d
+    An experimental backend using the `Blend2D <https://blend2d.com/>`_
+    `Python wrapper <https://github.com/jwiggins/blend2d-python>`_.
 
 File-only
 ---------
 Each of these backends can be used to create an output file.
 
 pdf
-~~~
-A backend which writes PDF files.
+    A backend which writes PDF files.
 
 ps
-~~
-A backend which writes PostScript files.
+    A backend which writes PostScript files.
 
 svg
-~~~
-A backend which writes SVG files.
+    A backend which writes SVG files.

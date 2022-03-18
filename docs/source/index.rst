@@ -16,8 +16,8 @@ Kiva
   :maxdepth: 2
 
   kiva/overview
-  kiva/quickref
   kiva/drawing_details
+  kiva/quickref
 
 Enable
 ------
@@ -48,9 +48,10 @@ Internal Documentation
 ----------------------
 
 .. toctree::
-  :maxdepth: 1
+  :maxdepth: 2
 
   kiva/font_manager
+  kiva/writing_a_backend
 
 ----
 
