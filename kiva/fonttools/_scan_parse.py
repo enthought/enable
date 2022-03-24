@@ -20,7 +20,7 @@ import os
 from fontTools.afmLib import AFM
 from fontTools.ttLib import TTCollection, TTFont, TTLibError
 
-from kiva.fonttools._constants import weight_dict
+from kiva.fonttools._constants import stretch_dict, weight_dict
 from kiva.fonttools._database import FontDatabase, FontEntry
 from kiva.fonttools._util import get_ttf_prop_dict, weight_as_number
 
@@ -167,15 +167,9 @@ def _afm_font_property(fpath, font):
     else:
         stretch = "normal"
 
-    #  Sizes can be absolute and relative.
-    #  Absolute sizes are: xx-small, x-small, small, medium, large, x-large,
-    #    and xx-large.
-    #  Relative sizes are: larger, smaller
-    #  Length value is an absolute font size, e.g. 12pt
-    #  Percentage values are in 'em's.  Most robust specification.
-
-    #  All AFM fonts are apparently scalable.
+    #  All AFM fonts are scalable.
     size = "scalable"
+
     return FontEntry(
         fname=fpath,
         family=family,
@@ -205,16 +199,22 @@ def _ttf_font_property(fpath, font, face_index=0):
         # For backwards compatibility with previous parsing behavior
         style_prop = full_name
 
-    #  Styles are: italic, oblique, and normal (default)
-    if style_prop.find("oblique") >= 0:
+    # Styles are: italic, oblique, and normal (default)
+    # We prefer to get the information from the "slope" property if it is
+    # available, as that is more accurate.
+    if "slope" in props:
+        style = props["slope"]
+    elif "oblique" in style_prop:
         style = "oblique"
-    elif style_prop.find("italic") >= 0:
+    elif "italic" in style_prop:
         style = "italic"
     else:
         style = "normal"
 
-    #  Variants are: small-caps and normal (default)
-    # NOTE: Not sure how many fonts actually have these strings in their family
+    # Variants are: small-caps and normal (default)
+    # NOTE: Small caps is usually handled through alternative mappings of the
+    # characters to glyphs eg. via "smcp" feature.  However some older fonts
+    # may indicate it via the name, in which case they may be preferred.
     variant = "normal"
     for value in ("capitals", "small-caps", "smallcaps"):
         if value in family.lower():
@@ -224,13 +224,16 @@ def _ttf_font_property(fpath, font, face_index=0):
     #  Weights are: 100, 200, 300, 400 (normal: default), 500 (medium),
     #    600 (semibold, demibold), 700 (bold), 800 (heavy), 900 (black)
     #    lighter and bolder are also allowed.
-    weight = None
-    for w in weight_dict.keys():
-        if style_prop.find(w) >= 0:
-            weight = w
-            break
+    # We prefer weight values from the OS/2 table, if available, otherwise
+    # infer from the "name" table's style
+    weight = props.get("weight")
     if not weight:
-        weight = 400
+        for w in weight_dict.keys():
+            if w in style_prop:
+                weight = w
+                break
+        if not weight:
+            weight = 400
     weight = weight_as_number(weight)
 
     #  Stretch can be absolute and relative
@@ -239,26 +242,27 @@ def _ttf_font_property(fpath, font, face_index=0):
     #    and ultra-expanded.
     #  Relative stretches are: wider, narrower
     #  Child value is: inherit
-    if full_name.find("demi cond") >= 0:
-        stretch = "semi-condensed"
-    elif (full_name.find("narrow") >= 0
-            or full_name.find("condensed") >= 0
-            or full_name.find("cond") >= 0):
-        stretch = "condensed"
-    elif full_name.find("wide") >= 0 or full_name.find("expanded") >= 0:
-        stretch = "expanded"
+    if "stretch" in props:
+        stretch = props["stretch"]
     else:
-        stretch = "normal"
+        for stretch in stretch_dict:
+            if stretch in full_name:
+                break
+        else:
+            if "demi cond" in full_name:
+                stretch = "semi-condensed"
+            elif ("narrow" in full_name
+                    or "condensed" in full_name
+                    or "cond" in full_name):
+                stretch = "condensed"
+            elif "wide" in full_name or "expanded" in full_name:
+                stretch = "expanded"
+            else:
+                stretch = "normal"
 
-    #  Sizes can be absolute and relative.
-    #  Absolute sizes are: xx-small, x-small, small, medium, large, x-large,
-    #    and xx-large.
-    #  Relative sizes are: larger, smaller
-    #  Length value is an absolute font size, e.g. 12pt
-    #  Percentage values are in 'em's.  Most robust specification.
-
-    #  !!!!  Incomplete
+    # TrueType and OpenType fonts are always scalable
     size = "scalable"
+
     return FontEntry(
         fname=fpath,
         family=family,

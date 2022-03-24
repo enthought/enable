@@ -116,6 +116,17 @@ _ot_unicode_range_bits = {
     97: "Glagolitic",
     98: "Tifinagh",
 }
+_ot_width = {
+    1: 'ultra-condensed',
+    2: 'extra-condensed',
+    3: 'condensed',
+    4: 'semi-condensed',
+    5: 'normal',
+    6: 'semi-expanded',
+    7: 'expanded',
+    8: 'extra-expanded',
+    9: 'ultra-expanded',
+}
 
 
 def get_ttf_prop_dict(font):
@@ -143,7 +154,8 @@ def get_ttf_prop_dict(font):
         propdict[key] = rec.toStr()
 
     # NOTE: Not all fonts have the "OS/2" table, but it's the easiest to
-    # extract language support information from.
+    # extract language support information from.  There is also information
+    # about styles and weights that can be used.
     propdict["languages"] = set()
     try:
         table = font["OS/2"]
@@ -165,7 +177,22 @@ def get_ttf_prop_dict(font):
             pass
         # Lock the set so that it's hashable
         propdict["languages"] = frozenset(languages)
+
+        # This is the numeric weight value from 100 to 1000
+        if 100 <= table.usWeightClass <= 1000:
+            propdict["weight"] = table.usWeightClass
+
+        # This is the numeric stretch value from 1-9
+        if 1 <= table.usWidthClass <= 9:
+            propdict["stretch"] = _ot_width[table.usWidthClass]
+
+        # Do we match the italic or oblique bits
+        if table.fsSelection % 0x0001:
+            propdict["slope"] = "italic"
+        elif table.fsSelection % 0x0010:
+            propdict["slope"] = "oblique"
     except KeyError:
+        # don't have an OS/2 table
         pass
 
     # Make sure "languages" is never empty
@@ -180,13 +207,12 @@ def weight_as_number(weight):
 
     String values are converted to their corresponding numeric value.
     """
-    allowed_weights = set(weight_dict.values())
     if isinstance(weight, str):
         try:
             weight = weight_dict[weight.lower()]
         except KeyError:
             weight = weight_dict["regular"]
-    elif weight in allowed_weights:
+    elif 100 <= weight <= 1000:
         pass
     else:
         raise ValueError("weight not a valid integer")
