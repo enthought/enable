@@ -11,10 +11,12 @@
 specification strings into Font instances.
 """
 import copy
+import warnings
 
 from kiva.constants import (
-    BOLD_ITALIC, BOLD, DECORATIVE, DEFAULT, ITALIC, MODERN, NORMAL, ROMAN,
-    SCRIPT, SWISS, TELETYPE,
+    BOLD, DECORATIVE, DEFAULT, ITALIC, MODERN, NORMAL, ROMAN,
+    SCRIPT, SWISS, TELETYPE, WEIGHT_BOLD, WEIGHT_MEDIUM, WEIGHT_NORMAL,
+    bold_styles, italic_syles
 )
 from kiva.fonttools._query import FontQuery
 from kiva.fonttools.font_manager import default_font_manager
@@ -29,7 +31,7 @@ font_families = {
     "modern": MODERN,
 }
 font_styles = {"italic": ITALIC}
-font_weights = {"bold": BOLD}
+font_weights = {"bold": WEIGHT_BOLD}
 font_noise = {"pt", "point", "family"}
 
 
@@ -93,8 +95,9 @@ class Font(object):
         TELETYPE: "monospace",
     }
 
-    def __init__(self, face_name="", size=12, family=SWISS, weight=NORMAL,
-                 style=NORMAL, underline=0, encoding=DEFAULT):
+    def __init__(self, face_name="", size=12, family=SWISS,
+                 weight=WEIGHT_NORMAL, style=NORMAL, underline=0,
+                 encoding=DEFAULT):
         if (not isinstance(face_name, str)
                 or not isinstance(size, int)
                 or not isinstance(family, int)
@@ -104,6 +107,14 @@ class Font(object):
                 or not isinstance(encoding, int)):
             raise RuntimeError("Bad value in Font() constructor.")
 
+        # This can be removed in Enable 7
+        if weight == BOLD:
+            weight = WEIGHT_BOLD
+            warnings.warn(
+                "Use WEIGHT_BOLD instead of BOLD for Font.weight",
+                DeprecationWarning
+            )
+
         self.face_name = face_name
         self.size = size
         self.family = family
@@ -111,6 +122,10 @@ class Font(object):
         self.style = style
         self.underline = underline
         self.encoding = encoding
+
+        # correct the style and weight if needed (can be removed in Enable 7)
+        self.weight = self._get_weight()
+        self.style = style & ~BOLD
 
     def findfont(self, language=None):
         """ Returns the file name and face index of the font that most closely
@@ -146,18 +161,26 @@ class Font(object):
 
         return query.get_name()
 
+    def is_bold(self):
+        """Is the font considered bold or not?
+
+        This is a convenience method for backends which don't fully support
+        font weights.  We consider a font to be bold if its weight is more
+        than medium.
+        """
+        weight = self._get_weight()
+        return (weight > WEIGHT_MEDIUM)
+
     def _make_font_query(self):
         """ Returns a FontQuery object that encapsulates our font properties.
         """
-        # XXX: change the weight to a numerical value
-        if self.style == BOLD or self.style == BOLD_ITALIC:
-            weight = "bold"
-        else:
-            weight = "normal"
-        if self.style == ITALIC or self.style == BOLD_ITALIC:
+        weight = self._get_weight()
+
+        if self.style in italic_styles:
             style = "italic"
         else:
             style = "normal"
+
         query = FontQuery(
             family=self.familymap[self.family],
             style=style,
@@ -167,6 +190,27 @@ class Font(object):
         if self.face_name != "":
             query.set_name(self.face_name)
         return query
+
+    def _get_weight(self):
+        """Get a corrected weight value from the font.
+
+        Note: this is a temporary method that will be removed in Enable 7.
+        """
+        if self.weight == BOLD:
+            warnings.warn(
+                "Use WEIGHT_BOLD instead of BOLD for Font.weight",
+                DeprecationWarning
+            )
+            return WEIGHT_BOLD
+        elif self.weight == WEIGHT_NORMAL and self.style in bold_styles:
+            warnings.warn(
+                "Set Font.weight to WEIGHT_BOLD instead of Font.style to "
+                "BOLD or BOLD_STYLE",
+                DeprecationWarning
+            )
+            return WEIGHT_BOLD
+
+        return self.weight
 
     def _get_name(self):
         return self.face_name

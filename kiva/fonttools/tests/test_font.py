@@ -12,7 +12,10 @@
 import os
 import unittest
 
-from kiva.api import BOLD, Font, ITALIC, MODERN, ROMAN
+from kiva.api import (
+    BOLD, BOLD_ITALIC, Font, ITALIC, MODERN, NORMAL, ROMAN, WEIGHT_BOLD,
+    WEIGHT_LIGHT
+)
 from kiva.fonttools import str_to_font
 from kiva.fonttools.tests._testing import patch_global_font_manager
 
@@ -74,7 +77,7 @@ class TestFont(unittest.TestCase):
 
         # Some complexity
         from_str = str_to_font("roman bold italic 12")
-        from_ctor = Font(family=ROMAN, weight=BOLD, style=ITALIC, size=12)
+        from_ctor = Font(family=ROMAN, weight=WEIGHT_BOLD, style=ITALIC, size=12)
         self.assertEqual(from_ctor, from_str)
 
         # Lots of complexity
@@ -82,9 +85,93 @@ class TestFont(unittest.TestCase):
         from_ctor = Font(
             "Times",
             family=ROMAN,
-            weight=BOLD,
+            weight=WEIGHT_BOLD,
             style=ITALIC,
             size=72,
             underline=1,
         )
         self.assertEqual(from_ctor, from_str)
+
+    def test_is_bold_false(self):
+        for weight in range(100, 501, 100):
+            with self.subTest(weight=weight):
+                font = Font(weight=weight)
+
+                self.assertFalse(font.is_bold())
+
+    def test_is_bold_true(self):
+        for weight in range(600, 1001, 100):
+            with self.subTest(weight=weight):
+                font = Font(weight=weight)
+
+                self.assertTrue(font.is_bold())
+
+    def test_weight_warnings(self):
+        # Don't use BOLD as a weight
+        with self.assertWarns(DeprecationWarning):
+            font = Font(weight=BOLD)
+        self.assertEqual(font.weight, WEIGHT_BOLD)
+
+        # Don't use BOLD as a style
+        with self.assertWarns(DeprecationWarning):
+            font = Font(style=BOLD)
+        self.assertEqual(font.weight, WEIGHT_BOLD)
+        self.assertEqual(font.style, NORMAL)
+
+        # Don't use BOLD_ITALIC as a style
+        with self.assertWarns(DeprecationWarning):
+            font = Font(style=BOLD_ITALIC)
+        self.assertEqual(font.weight, WEIGHT_BOLD)
+        self.assertEqual(font.style, ITALIC)
+
+        # Ignore BOLD style if weight is not normal
+        with self.assertWarns(DeprecationWarning):
+            font = Font(style=BOLD, weight=WEIGHT_LIGHT)
+        self.assertEqual(font.weight, WEIGHT_LIGHT)
+        self.assertEqual(font.style, NORMAL)
+
+        with self.assertWarns(DeprecationWarning):
+            font = Font(style=BOLD_ITALIC, weight=WEIGHT_LIGHT)
+        self.assertEqual(font.weight, WEIGHT_LIGHT)
+        self.assertEqual(font.style, ITALIC)
+
+    def test_font_query_warnings(self):
+        # Don't use BOLD as a weight
+        font = Font()
+        font.weight = BOLD
+        with self.assertWarns(DeprecationWarning):
+            query = font.findfont()
+        self.assertEqual(query.weight, WEIGHT_BOLD)
+
+        # Don't use BOLD as a style
+        font = Font()
+        font.style = BOLD
+        with self.assertWarns(DeprecationWarning):
+            query = font.findfont()
+        self.assertEqual(query.weight, WEIGHT_BOLD)
+        self.assertEqual(query.style, "normal")
+
+        # Don't use BOLD_ITALIC as a style
+        font = Font()
+        font.style = BOLD_ITALIC
+        with self.assertWarns(DeprecationWarning):
+            query = font.findfont()
+        self.assertEqual(query.weight, WEIGHT_BOLD)
+        self.assertEqual(query.style, "italic")
+
+        # Ignore BOLD style if weight is not normal
+        font = Font()
+        font.weight = WEIGHT_LIGHT
+        font.style = BOLD
+        with self.assertWarns(DeprecationWarning):
+            query = font.findfont()
+        self.assertEqual(query.weight, WEIGHT_LIGHT)
+        self.assertEqual(query.style, "normal")
+
+        font = Font()
+        font.weight = WEIGHT_LIGHT
+        font.style = BOLD_ITALIC
+        with self.assertWarns(DeprecationWarning):
+            query = font.findfont()
+        self.assertEqual(query.weight, WEIGHT_LIGHT)
+        self.assertEqual(query.style, "italic")
