@@ -48,12 +48,11 @@ class ToolkitEditorFactory(EditorFactory):
         """ Returns a wxFont object corresponding to a specified object's font
             trait.
         """
+        from pyface.ui.wx.font import weight_to_wx_weight
         import kiva.constants as kc
 
         font = editor.value
-        weight = (
-            wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD
-        )[font.weight == kc.WEIGHT_BOLD]
+        weight = weight_to_wx_weight[font.weight]
         style = (
             wx.FONTSTYLE_NORMAL, wx.FONTSTYLE_ITALIC
         )[font.style == kc.ITALIC]
@@ -82,6 +81,7 @@ class ToolkitEditorFactory(EditorFactory):
     def from_wx_font(self, font):
         """ Gets the application equivalent of a wxPython value.
         """
+        from pyface.ui.wx.font import wx_weight_to_weight
         import kiva.constants as kc
         from kiva.fonttools import Font
 
@@ -95,9 +95,7 @@ class ToolkitEditorFactory(EditorFactory):
                 wx.FONTFAMILY_SWISS: kc.SWISS,
                 wx.FONTFAMILY_MODERN: kc.MODERN,
             }.get(font.GetFamily(), kc.SWISS),
-            weight=(
-                kc.WEIGHT_NORMAL, kc.WEIGHT_BOLD
-            )[font.GetWeight() == wx.FONTWEIGHT_BOLD],
+            weight=wx_weight_to_weight[font.GetWeight()],
             style=(
                 kc.NORMAL, kc.ITALIC
             )[font.GetStyle() == wx.FONTSTYLE_ITALIC],
