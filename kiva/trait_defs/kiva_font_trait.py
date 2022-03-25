@@ -35,14 +35,14 @@ from traits.api import Trait, TraitError, TraitHandler, TraitFactory
 # Strings to ignore in text representations of fonts
 font_noise = ["pt", "point", "family"]
 
-font_families = font_styles = font_weights = DEFAULT = NORMAL = None
+font_families = font_styles = font_weights = DEFAULT = NORMAL = WEIGHT_NORMAL = None
 
 
 def init_constants():
     """ Dynamically load Kiva constants to avoid import dependencies.
     """
     global font_families, font_styles, font_weights, default_face
-    global DEFAULT, NORMAL
+    global DEFAULT, NORMAL, WEIGHT_NORMAL
 
     if font_families is not None:
         return
@@ -51,6 +51,7 @@ def init_constants():
 
     DEFAULT = kc.DEFAULT
     NORMAL = kc.NORMAL
+    WEIGHT_NORMAL = kc.WEIGHT_NORMAL
 
     # Mapping of strings to valid Kiva font families:
     font_families = {
@@ -110,7 +111,7 @@ class TraitKivaFont(TraitHandler):
             point_size = 10
             family = DEFAULT
             style = NORMAL
-            weight = NORMAL
+            weight = WEIGHT_NORMAL
             underline = 0
             facename = []
             for word in value.split():
