@@ -65,6 +65,18 @@ DECORATIVE = 4  # Fantasy
 SCRIPT = 5  # Cursive
 TELETYPE = 6
 
+# Font weight constants
+WEIGHT_THIN = 100
+WEIGHT_EXTRALIGHT = 200
+WEIGHT_LIGHT = 300
+WEIGHT_NORMAL = 400
+WEIGHT_MEDIUM = 500
+WEIGHT_SEMIBOLD = 600
+WEIGHT_BOLD = 700
+WEIGHT_EXTRABOLD = 800
+WEIGHT_HEAVY = 900
+WEIGHT_EXTRAHEAVY = 1000
+
 # -----------------------------------------------------------------------------
 # Text Drawing Mode Constants
 # -----------------------------------------------------------------------------
