@@ -52,10 +52,12 @@ class ToolkitEditorFactory(EditorFactory):
         import kiva.constants as kc
 
         font = editor.value
-        weight = weight_to_wx_weight[font.weight]
+        weight = weight_to_wx_weight.get(
+            font._get_weight(), wx.FONTWEIGHT_NORMAL)
         style = (
-            wx.FONTSTYLE_NORMAL, wx.FONTSTYLE_ITALIC
-        )[font.style == kc.ITALIC]
+            wx.FONTSTYLE_ITALIC if font.style in kc.italic_styles
+            else wx.FONTSTYLE_NORMAL
+        )
         family = {
             kc.DEFAULT: wx.FONTFAMILY_DEFAULT,
             kc.DECORATIVE: wx.FONTFAMILY_DECORATIVE,
@@ -97,8 +99,10 @@ class ToolkitEditorFactory(EditorFactory):
             }.get(font.GetFamily(), kc.SWISS),
             weight=wx_weight_to_weight[font.GetWeight()],
             style=(
-                kc.NORMAL, kc.ITALIC
-            )[font.GetStyle() == wx.FONTSTYLE_ITALIC],
+                # XXX: treat wx.FONTSTYLE_OBLIQUE as italic for now
+                kc.NORMAL if font.GetStyle() == wx.FONTSTYLE_NORMAL
+                else kc.ITALIC
+            ),
             underline=font.GetUnderlined() - 0,  # convert Bool to an int type
             face_name=font.GetFaceName(),
         )
@@ -112,9 +116,9 @@ class ToolkitEditorFactory(EditorFactory):
         """
         import kiva.constants as kc
 
-        weight = {kc.WEIGHT_BOLD: " Bold"}.get(font.weight, "")
-        style = {kc.ITALIC: " Italic"}.get(font.style, "")
-        underline = " Underline" if font.underline != 0 else ""
+        weight = " Bold" if font.is_bold() else ""
+        style = " Italic" if font.style in italic_styles else ""
+        underline = " Underline" if font.underline else ""
 
         return "%s point %s%s%s%s" % (
             font.size,
